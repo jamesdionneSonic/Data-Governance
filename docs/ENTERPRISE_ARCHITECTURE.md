@@ -7,6 +7,57 @@
 
 ---
 
+## 0. Current State and Future State
+
+### 0.1 Current State (As-Is)
+
+At present, this repository contains strategy and governance documentation only.
+
+- No running application services in this workspace
+- No deployed metadata database
+- No import pipeline processing markdown files yet
+- No active admin screens, APIs, or deployment environments
+- Markdown content intended to be source documentation in folders/Git
+
+### 0.2 Future State (To-Be After Development)
+
+After implementation, the platform will operate as a full enterprise system:
+
+- Web UI + API runtime with role-based admin/user experiences
+- Markdown import pipeline (`upload -> validate -> preview -> apply`)
+- Metadata index and lineage persistence in SQL Server/Azure SQL
+- Object/document storage and exports in Blob-compatible storage
+- Entra ID authentication and RBAC authorization
+- CI/CD validation gates for markdown quality, tests, and security
+- Audit, monitoring, and compliance reporting enabled by default
+
+### 0.3 Current vs Future Mapping
+
+| Domain | Current State | Future State |
+|--------|---------------|--------------|
+| Runtime | No app runtime deployed | Frontend + API running in managed environment |
+| Identity | None configured | Entra ID SSO with role mapping |
+| Data Store | None for app metadata | SQL metadata catalog + audit schema |
+| Documents | Markdown files only | Markdown + indexed metadata + versioned artifacts |
+| Import | Manual file handling | Validated, auditable import service |
+| Operations | No monitoring | Health checks, logs, metrics, alerting |
+| Delivery | No deployment workflow | CI/CD with promotion gates and approvals |
+
+### 0.4 Migration Trajectory
+
+The recommended migration path is:
+
+1. Foundation and platform setup
+2. App and metadata service deployment
+3. Markdown import service implementation
+4. Historical markdown backfill and reconciliation
+5. Dual-run validation and production cutover
+6. Hypercare and optimization
+
+Detailed sequencing, controls, cutover criteria, and rollback are documented in [CLOUD_MIGRATION_RUNBOOK.md](CLOUD_MIGRATION_RUNBOOK.md).
+
+---
+
 ## 1. System Architecture Overview
 
 ```
