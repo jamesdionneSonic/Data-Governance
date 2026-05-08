@@ -9,11 +9,13 @@ Welcome to the Data Governance project! This document outlines the best practice
 1. [Architecture & Design Principles](#architecture--design-principles)
 2. [View.js & Viewdify Best Practices](#viewjs--viewdify-best-practices)
 3. [Code Organization & Modularity](#code-organization--modularity)
-4. [Response Validation](#response-validation)
-5. [Testing Requirements](#testing-requirements)
-6. [CI/CD Integration](#cicd-integration)
-7. [Documentation Standards](#documentation-standards)
-8. [Submission Process](#submission-process)
+4. [Backend-for-Frontend (BFF) Standards](#backend-for-frontend-bff-standards)
+5. [Response Validation](#response-validation)
+6. [Testing Requirements](#testing-requirements)
+7. [Infrastructure as Code (IaC) First](#infrastructure-as-code-iac-first)
+8. [CI/CD Integration](#cicd-integration)
+9. [Documentation Standards](#documentation-standards)
+10. [Submission Process](#submission-process)
 
 ---
 
@@ -164,6 +166,53 @@ import { validateEmail } from '../validators/userValidators.js';
 // ✗ BAD
 import * as utils from '../utils.js';
 ```
+
+---
+
+## Backend-for-Frontend (BFF) Standards
+
+### BFF Is Required
+
+For all UI channels, use a **Backend-for-Frontend (BFF)** layer. Frontends must not directly orchestrate multiple domain services.
+
+### Mandatory BFF Rules
+
+1. **One channel, one BFF contract**
+  - Web UI should consume web-focused BFF endpoints
+  - Keep BFF response shapes optimized for UI needs
+  - Do not leak downstream service contracts to UI clients
+
+2. **No direct client-to-microservice coupling**
+  - Browser clients must call BFF APIs only
+  - BFF handles orchestration, aggregation, and composition
+  - Avoid N+1 frontend API calls by composing responses in BFF
+
+3. **Strict contract and validation boundaries**
+  - Validate all request payloads at BFF entry points
+  - Validate downstream responses before mapping to UI DTOs
+  - Never forward raw downstream payloads without mapping
+
+4. **Security and identity propagation**
+  - Enforce authentication and authorization in BFF
+  - Propagate identity claims and correlation IDs downstream
+  - Never expose secrets, internal headers, or privileged fields to clients
+
+5. **Resilience and performance controls**
+  - Use timeouts, retries (idempotent operations only), and circuit-breaker patterns
+  - Implement caching for safe read endpoints
+  - Apply pagination and server-side filtering for large datasets
+
+6. **Observability by default**
+  - Log request IDs, user context, latency, and downstream call metrics
+  - Emit trace spans for orchestration steps
+  - Track error classes and dependency failure rates
+
+### BFF Testing Requirements
+
+- Contract tests for each BFF endpoint
+- Integration tests for service orchestration paths
+- Authorization tests per role (`Admin`, `Power User`, `Analyst`, `Viewer`)
+- Failure-mode tests (timeouts, partial downstream failures, retries)
 
 ---
 
@@ -353,6 +402,48 @@ const runInternalTests = () => {
 
 ---
 
+## Infrastructure as Code (IaC) First
+
+### IaC Is Mandatory
+
+All infrastructure must be defined and versioned as code. Manual portal-only configuration is not allowed for production changes.
+
+### Required IaC Standards
+
+1. **Source-controlled infrastructure**
+  - Define infrastructure in code (Terraform/Bicep/ARM/Pulumi)
+  - Store IaC in repository under a dedicated `infra/` structure
+  - Every environment change must come from pull requests
+
+2. **Environment parity and promotion**
+  - Maintain reproducible `dev`, `test`, and `prod` stacks
+  - Promote changes through environments using the same IaC modules
+  - Avoid environment drift using regular plan/diff checks
+
+3. **Policy and security as code**
+  - Enforce network, encryption, and identity policies in IaC
+  - Use least-privilege identities and managed identities where possible
+  - Store secrets in Key Vault or approved secret manager (never in code)
+
+4. **State and rollback strategy**
+  - Use remote state with locking and access controls
+  - Keep versioned change history and rollback procedures
+  - Require disaster recovery and backup configuration in IaC
+
+5. **Reusable modules, no monolithic templates**
+  - Build reusable IaC modules by domain (network, compute, data, observability)
+  - Keep modules small, composable, and testable
+  - Do not create one massive template for all resources
+
+### IaC Validation Gates
+
+- IaC format/lint checks must pass
+- IaC security scan must pass
+- IaC plan must be reviewed in pull request
+- Production apply requires approval
+
+---
+
 ## CI/CD Integration
 
 ### Build Tests
@@ -367,6 +458,8 @@ All the following must pass before merging:
 4. Build - Successful production build
 5. Security Scan - No vulnerabilities or security issues
 6. Performance Tests - Load and performance benchmarks
+7. IaC Validate/Plan - Infrastructure checks and reviewed plan output
+8. IaC Apply (approved only) - Controlled environment deployment
 ```
 
 ### Pre-commit Hooks
@@ -388,6 +481,8 @@ npm run build
 - **Build must succeed** - No build errors allowed
 - **No security vulnerabilities** - Scan all dependencies
 - **Code quality gates** - Enforce linting rules
+- **IaC plan review is mandatory** - Infrastructure changes require reviewed plan output
+- **No manual prod infra changes** - All production infrastructure changes must be applied through pipeline
 
 ### Automated Testing in CI/CD
 
@@ -558,6 +653,9 @@ Document all changes:
 - [ ] No monolithic code patterns
 - [ ] Components are reusable and modular
 - [ ] Feature is on a feature branch
+- [ ] BFF boundaries are respected (UI calls BFF, not downstream services)
+- [ ] Infrastructure changes are done through IaC (no manual portal drift)
+- [ ] IaC validation and plan output are attached for infra changes
 
 ### PR Requirements
 
@@ -582,6 +680,8 @@ Reviewers will verify:
 - [ ] Code is well-commented
 - [ ] No security vulnerabilities
 - [ ] Performance is acceptable
+- [ ] BFF contract boundaries and DTO mappings are enforced
+- [ ] IaC standards and reviewed plan are present for infra changes
 
 ---
 
@@ -592,8 +692,10 @@ As a contributor, you are responsible for:
 1. **Breaking down features** into modular, reusable components
 2. **Validating all responses** before use
 3. **Writing comprehensive tests** (unit, integration, component)
-4. **Ensuring CI/CD builds pass** with all tests and checks
-5. **Documenting everything** - code, components, APIs, and changes
+4. **Implementing BFF patterns** for frontend-facing APIs and orchestration
+5. **Treating infrastructure as code first** with reviewed plans and controlled applies
+6. **Ensuring CI/CD builds pass** with all tests and checks
+7. **Documenting everything** - code, components, APIs, and changes
 
 Thank you for contributing to Data Governance! Your adherence to these guidelines ensures we maintain a high-quality, scalable, and maintainable codebase.
 
