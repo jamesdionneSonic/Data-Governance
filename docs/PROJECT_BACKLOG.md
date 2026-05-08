@@ -2614,5 +2614,105 @@ DevOps Engineer: 0.5 FTE
 
 ---
 
+## Post-MVP Conditional Phases (Approval Required)
+
+**Execution Gate:** The following phases are intentionally **out of MVP scope** and are executed only if:
+
+- MVP is accepted by stakeholders
+- Funding and roadmap approval are granted for cloud expansion
+- Security/compliance sign-off is complete for cloud deployment
+
+### Phase 11: Cloud Foundation & Landing Zone (2-3 weeks)
+
+**Objective:** Establish Azure baseline for enterprise deployment.
+
+**Key Stories:**
+- Create Azure resource groups and environment separation (`dev`, `test`, `prod`)
+- Configure Entra ID app registration and role/group mappings
+- Deploy Key Vault, Log Analytics, and Application Insights
+- Configure network boundaries and private access patterns
+- Define infrastructure-as-code templates and environment promotion model
+
+**Exit Criteria:**
+- Non-production cloud foundation is operational
+- Entra authentication works in non-production
+
+---
+
+### Phase 12: Cloud App Baseline & Managed Services (3-4 weeks)
+
+**Objective:** Deploy application runtime and managed data services in Azure.
+
+**Key Stories:**
+- Deploy frontend/API runtime to App Service (or AKS if selected)
+- Provision Azure SQL metadata database and run baseline migrations
+- Provision Azure Blob Storage for markdown artifacts and exports
+- Provision Azure Cache for Redis for sessions and graph cache
+- Implement Managed Identity and secret retrieval from Key Vault
+- Add health checks and baseline observability dashboards
+
+**Exit Criteria:**
+- Core app services are healthy in cloud non-production
+- Database, storage, and cache integrations pass smoke tests
+
+---
+
+### Phase 13: Markdown Import Pipeline (Cloud) (3-5 weeks)
+
+**Objective:** Implement enterprise-grade markdown ingestion and indexing.
+
+**Key Stories:**
+- Build upload/sync entry points (zip upload, folder sync, Git sync)
+- Enforce markdown frontmatter contract (`object_key`, type, environment)
+- Validate required sections and link integrity
+- Add preview mode (`create`, `update`, `skip`, `reject`) before apply
+- Persist import runs, validation errors, and user actions in audit logs
+- Support idempotent re-import and deterministic upsert by `object_key`
+
+**Exit Criteria:**
+- Import pipeline is auditable, repeatable, and role-protected
+- Validation reports are generated for every run
+
+---
+
+### Phase 14: Backfill, Dual-Run, and Cloud Cutover (3-4 weeks)
+
+**Objective:** Migrate existing markdown corpus and safely cut over to cloud.
+
+**Key Stories:**
+- Run initial full markdown backfill into cloud index
+- Reconcile unmapped/duplicate object identities
+- Execute dual-run comparison (legacy process vs cloud output parity)
+- Freeze legacy writes and run final delta sync
+- Perform production cutover and activate alerting
+- Execute rollback runbook validation prior to go-live
+
+**Exit Criteria:**
+- Stakeholders accept output parity and access behavior
+- Production cutover completed with no critical defects
+
+---
+
+### Phase 15: Post-Cutover Hypercare & Optimization (2 weeks)
+
+**Objective:** Stabilize cloud operations and tune performance.
+
+**Key Stories:**
+- Daily monitoring and incident triage
+- Dependency query and graph performance tuning
+- Access certification and audit verification
+- Cost/performance tuning for Azure resources
+- Final operational handoff to support and platform teams
+
+**Exit Criteria:**
+- SLA baseline is stable for two consecutive weeks
+- Support team owns steady-state operations
+
+---
+
+**Reference:** Detailed procedures, cutover checklist, and rollback steps are documented in `docs/CLOUD_MIGRATION_RUNBOOK.md`.
+
+---
+
 **Document End**  
 *For questions or updates to this backlog, contact the Project Management Office.*
