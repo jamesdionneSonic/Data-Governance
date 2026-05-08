@@ -4,6 +4,8 @@
 
 The market for SQL Server and SSIS dependency visualization is dominated by a few key players, with significant gaps in enterprise-ready, modern implementations. This analysis identifies competitive advantages for a comprehensive, enterprise-focused solution with Entra ID integration, full admin frameworks, and advanced metadata management.
 
+> **Strategic Guardrails:** Product differentiation and delivery execution assume **BFF-first API architecture** and **IaC-first platform operations** as baseline enterprise standards.
+
 ---
 
 ## Existing Solutions

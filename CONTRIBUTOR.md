@@ -2,6 +2,8 @@
 
 Welcome to the Data Governance project! This document outlines the best practices and standards for contributing to this project. We build scalable, maintainable applications using View.js and Viewdify with a focus on modular architecture, thorough testing, and comprehensive documentation.
 
+> **Non-Negotiable Engineering Guardrails:** We build with **Backend-for-Frontend (BFF)** architecture for frontend-facing APIs and follow **Infrastructure as Code (IaC) First** for all environment and platform changes.
+
 ---
 
 ## Table of Contents

@@ -5,6 +5,8 @@
 **Last Updated:** May 8, 2026  
 **Architecture Pattern**: Microservices-Ready Modular Monolith with Layered Architecture
 
+> **Non-Negotiable Engineering Guardrails:** This architecture enforces **Backend-for-Frontend (BFF)** as the frontend API boundary and **Infrastructure as Code (IaC) First** for all environment provisioning and changes.
+
 ---
 
 ## 0. Current State and Future State
@@ -193,12 +195,14 @@ src/views/
 - Advanced search and filtering
 - Accessibility (WCAG 2.1 AA compliance)
 
-### 2.2 API Gateway Layer
+### 2.2 BFF/API Gateway Layer
 
 **Technology**: Express.js middleware stack
 
 **Responsibilities**:
 - Route requests to appropriate microservice
+- Serve as the only frontend API boundary (BFF pattern)
+- Aggregate and orchestrate downstream service responses for UI use-cases
 - Authenticate every request
 - Rate limiting and throttling
 - Request validation and sanitization

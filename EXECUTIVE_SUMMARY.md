@@ -5,6 +5,8 @@
 **Status**: Strategic Planning Complete - Ready for Development Kickoff  
 **Confidentiality**: Internal Use Only
 
+> **Non-Negotiable Engineering Guardrails:** Delivery must enforce **Backend-for-Frontend (BFF)** architecture and **Infrastructure as Code (IaC) First** across all phases.
+
 ---
 
 ## Business Opportunity

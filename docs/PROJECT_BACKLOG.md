@@ -11,6 +11,8 @@
 
 This backlog contains **150+ detailed user stories** organized across **6 phases** to deliver a complete, production-ready enterprise platform. Estimated delivery timeline: **12-15 months** for full MVP + Phase 2.
 
+> **Non-Negotiable Engineering Guardrails:** MVP and post-MVP work must enforce **Backend-for-Frontend (BFF)** architecture and **Infrastructure as Code (IaC) First** delivery.
+
 ---
 
 ## Project Phases Overview
@@ -44,6 +46,7 @@ This backlog contains **150+ detailed user stories** organized across **6 phases
 - Establish development environment
 - Configure CI/CD pipeline
 - Create documentation templates
+- Establish BFF architecture and IaC standards from day one
 
 ### User Stories
 
@@ -218,6 +221,58 @@ This backlog contains **150+ detailed user stories** organized across **6 phases
 
 ---
 
+#### PHASE0-009: BFF Architecture Baseline
+**Story**: Establish the BFF boundary and contracts for frontend clients  
+**Points**: 5  
+**Priority**: 🔴 CRITICAL  
+**Acceptance Criteria**:
+- [ ] BFF layer defined as the only frontend API surface
+- [ ] Frontend does not call downstream domain services directly
+- [ ] BFF DTO contracts documented and versioned
+- [ ] Correlation IDs and identity claims propagation implemented
+- [ ] BFF request/response validation middleware enforced
+- [ ] BFF contract tests included in CI
+
+**Tasks**:
+- Define BFF API boundary and route structure
+- Create DTO mapping layer and schema validation
+- Implement auth propagation and correlation ID middleware
+- Add contract test suite for BFF endpoints
+- Publish BFF standards in architecture docs
+
+**Tests Required**:
+- Contract tests pass for all BFF endpoints
+- Frontend integration tests verify BFF-only access
+- Authorization tests pass per role
+
+---
+
+#### PHASE0-010: Infrastructure as Code Baseline
+**Story**: Establish IaC-first delivery for all environments  
+**Points**: 5  
+**Priority**: 🔴 CRITICAL  
+**Acceptance Criteria**:
+- [ ] `infra/` repository structure created for environment provisioning
+- [ ] Core environment modules defined (network, compute, data, observability)
+- [ ] Remote state management with locking configured
+- [ ] CI pipeline runs IaC validate/lint/security scan and plan
+- [ ] No manual production infrastructure changes policy documented
+- [ ] Approval workflow for IaC apply to production configured
+
+**Tasks**:
+- Define IaC module structure and naming conventions
+- Configure remote state and access controls
+- Add IaC pipeline steps (validate, plan, scan, apply)
+- Add environment promotion workflow (`dev -> test -> prod`)
+- Document operational runbook for infra changes
+
+**Tests Required**:
+- IaC validation and lint checks pass
+- Security scan returns no critical findings
+- Plan/apply dry-run succeeds in non-production
+
+---
+
 ### Phase 0 Deliverables
 - ✅ Repository with proper structure
 - ✅ Docker Compose development environment
@@ -225,6 +280,8 @@ This backlog contains **150+ detailed user stories** organized across **6 phases
 - ✅ Linting and code quality
 - ✅ Testing infrastructure
 - ✅ Documentation templates
+- ✅ BFF architecture baseline and contract framework
+- ✅ IaC-first environment and pipeline baseline
 
 ---
 
@@ -1859,6 +1916,7 @@ This backlog contains **150+ detailed user stories** organized across **6 phases
 - Implement webhooks
 - Build CI/CD integrations
 - Create external system connections
+- Enforce BFF orchestration standards for frontend APIs
 
 ### User Stories
 
@@ -2014,12 +2072,39 @@ This backlog contains **150+ detailed user stories** organized across **6 phases
 
 ---
 
+#### PHASE8-006: BFF Orchestration Hardening
+**Story**: Harden BFF orchestration layer for scale, resilience, and governance  
+**Points**: 5  
+**Priority**: 🟠 HIGH  
+**Acceptance Criteria**:
+- [ ] BFF aggregation endpoints implemented for high-traffic UI workflows
+- [ ] Resilience controls added (timeouts, retries, circuit breakers)
+- [ ] Caching strategy implemented for read-heavy BFF endpoints
+- [ ] End-to-end tracing added for BFF downstream calls
+- [ ] BFF performance SLOs defined and measured
+- [ ] BFF failure modes covered in integration tests
+
+**Tasks**:
+- Implement aggregation/orchestration endpoints for dashboard and explorer
+- Add resilience middleware and policy configuration
+- Add BFF-level caching and cache invalidation rules
+- Instrument BFF with structured logs and distributed traces
+- Add load tests for BFF hotspots
+
+**Tests Required**:
+- Resilience tests pass (timeouts/fallbacks)
+- Performance tests meet BFF SLO targets
+- Trace and observability assertions pass in staging
+
+---
+
 ### Phase 8 Deliverables
 - ✅ Full REST API
 - ✅ Webhook system
 - ✅ PowerShell module
 - ✅ CI/CD integration
 - ✅ External system integrations
+- ✅ Hardened BFF orchestration and observability
 
 ---
 

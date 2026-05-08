@@ -5,6 +5,8 @@
 **Last Updated:** May 8, 2026  
 **Goal:** Migrate from local markdown-centric operation to enterprise Azure deployment with Entra ID, managed services, and CI/CD.
 
+> **Non-Negotiable Engineering Guardrails:** Cloud migration execution must preserve **BFF** boundaries for frontend APIs and apply **IaC First** controls for all platform changes.
+
 ---
 
 ## 1. Current State vs Future State

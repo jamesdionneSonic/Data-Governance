@@ -23,6 +23,8 @@ Enable data-driven organizations to understand their data infrastructure, manage
 5. **Impact Analysis** - Understand downstream effects of changes before implementation
 6. **Compliance Ready** - Built with audit trails, data lineage, and regulatory features
 
+> **Non-Negotiable Engineering Guardrails:** The platform must enforce **Backend-for-Frontend (BFF)** for frontend-facing APIs and **Infrastructure as Code (IaC) First** for environment and platform delivery.
+
 ---
 
 ## 2. Product Scope
@@ -73,8 +75,10 @@ Enable data-driven organizations to understand their data infrastructure, manage
 #### 2.2 Technical Requirements
 - **Framework**: View.js/Viewdify for frontend
 - **Backend**: Node.js/Express (or similar)
+- **Frontend API Pattern**: Backend-for-Frontend (BFF) is mandatory
 - **Database**: SQL Server for metadata storage
 - **Deployment**: Docker containerized
+- **Infrastructure Delivery**: Infrastructure as Code (IaC) is mandatory for all environments
 - **API**: REST API for all operations
 - **Testing**: >80% unit test coverage, integration tests, CI/CD pipeline
 
@@ -229,6 +233,24 @@ Enable data-driven organizations to understand their data infrastructure, manage
 ---
 
 ## 4. Functional Requirements
+
+### 4.0 Architecture & Delivery Guardrails
+
+#### FR-ARCH-001: Backend-for-Frontend (BFF) Enforcement
+- **Requirement**: Frontend clients must consume BFF endpoints only
+- **Details**:
+  * UI clients cannot call downstream domain services directly
+  * BFF owns orchestration, aggregation, DTO mapping, and response shaping
+  * BFF enforces request/response validation and role authorization
+  * BFF endpoints require contract tests and observability metrics
+
+#### FR-PLAT-001: Infrastructure as Code (IaC) First
+- **Requirement**: All infrastructure must be provisioned and changed through IaC
+- **Details**:
+  * Use approved IaC tooling (Terraform/Bicep/ARM/Pulumi)
+  * Manual production infrastructure changes are not allowed
+  * CI/CD must run IaC validate/lint/security scan/plan gates
+  * Production apply requires approval workflow and audit trail
 
 ### 4.1 Authentication & Security
 
