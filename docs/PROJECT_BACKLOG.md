@@ -29,6 +29,8 @@ This backlog contains **150+ detailed user stories** organized across **6 phases
 | **Phase 9** | Testing & QA | 4-5 weeks | Full QA, security audit | QA | 🟠 HIGH |
 | **Phase 10** | Launch & Documentation | 2-3 weeks | Release notes, user docs | Ops | 🟠 HIGH |
 
+> **MVP Boundary (Decision Gate):** **Phases 0-10 are MVP scope.** Cloud migration and cloud operating model work (**Phases 11-15**) are **post-MVP only** and execute **only after formal approval, funding, and stakeholder sign-off**.
+
 **Total Estimated Effort**: 180-220 person-days  
 **Recommended Team Size**: 5-7 developers + 1 architect + 1 QA  
 **Recommended Timeline**: 12-15 months (with 2 concurrent teams)
