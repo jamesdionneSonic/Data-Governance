@@ -1,0 +1,93 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: dg-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - dg-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: dg-redis
+    command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    networks:
+      - dg-net
+
+  backend:
+    image: node:20-alpine
+    container_name: dg-backend
+    working_dir: /workspace
+    command: >
+      sh -c "echo '[backend] placeholder runtime active';
+      echo '[backend] implement API in Phase 1+';
+      tail -f /dev/null"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/workspace
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      SQLSERVER_HOST: sqlserver
+      SQLSERVER_PORT: 1433
+      SQLSERVER_DATABASE: ${APP_DB_NAME}
+      SQLSERVER_USER: sa
+      SQLSERVER_PASSWORD: ${MSSQL_SA_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - sqlserver
+      - redis
+    networks:
+      - dg-net
+
+  frontend:
+    image: nginx:1.27-alpine
+    container_name: dg-frontend
+    ports:
+      - "5173:80"
+    volumes:
+      - ./docker/frontend/index.html:/usr/share/nginx/html/index.html:ro
+    depends_on:
+      - backend
+    networks:
+      - dg-net
+
+  sql-init:
+    image: mcr.microsoft.com/mssql-tools
+    container_name: dg-sql-init
+    depends_on:
+      - sqlserver
+    environment:
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      APP_DB_NAME: ${APP_DB_NAME}
+    volumes:
+      - ./docker/sql/init:/docker-entrypoint-initdb.d:ro
+      - ./docker/scripts/init-sql.sh:/init-sql.sh:ro
+    entrypoint: ["/bin/bash", "/init-sql.sh"]
+    networks:
+      - dg-net
+
+volumes:
+  sqlserver_data:
+  redis_data:
+
+networks:
+  dg-net:
+    name: dg-net

@@ -28,6 +28,16 @@ docs/       architecture, backlog, runbooks
 .github/    pull request and issue templates
 ```
 
+### Local Container Baseline (Phase0-002)
+
+```bash
+cp .env.example .env
+docker compose up -d
+docker compose ps
+```
+
+Detailed guide: [docs/LOCAL_DEV_SETUP.md](docs/LOCAL_DEV_SETUP.md)
+
 ## Development
 
 ### Standards
