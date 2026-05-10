@@ -2,9 +2,9 @@
 
 # Data Governance & Dependency Visualization Platform (Markdown-First Edition)
 
-**Version:** 3.0  
-**Last Updated:** May 8, 2026  
-**Architecture**: Markdown-Driven, File-Based, Meilisearch Powered
+**Version:** 3.1  
+**Last Updated:** May 10, 2026  
+**Architecture**: Markdown-Driven Source of Truth + SQL Operational Store + Meilisearch
 
 ---
 
@@ -16,13 +16,32 @@ This backlog contains the complete delivery history for MVP phases and the forwa
 **Recommended Team**: Core Platform (4-5 developers) + Governance Features (6-8 developers) + 1 architect + 2 QA + 1 Product Manager  
 **Total Estimated Effort**: MVP (100-130 person-days) + Governance Extensions (280-350 person-days) + Azure (80-120 person-days) = 460-600 person-days (~12-15 months for cross-functional team)
 
-> **Non-Negotiable Principles**:
+> **Non-Negotiable Architecture Principles**:
 >
-> - Markdown is the source of truth (not SQL Server scanning)
-> - All data lineage defined in organization markdown files with YAML frontmatter
-> - BFF API layer handles all business logic
-> - Every API request checks database-level RBAC
-> - Modern, interactive visualizations (Cytoscape.js, D3.js, Mermaid)
+> **Layer 1 – Markdown Source of Truth (unchanged)**
+>
+> - Markdown `.md` files with YAML frontmatter remain the authoritative source for data asset documentation, lineage, schema definitions, and dependency declarations
+> - All data lineage defined in organization markdown files; pushed via Git or uploaded via the ingestion API
+> - Meilisearch indexes markdown content for full-text discovery
+>
+> **Layer 2 – SQL Operational Store (required for Phase 7a-7r governance features)**
+>
+> - Governance metadata that is transactional, stateful, or high-frequency write belongs in SQL Server (local dev) / Azure SQL (production)
+> - This includes: business glossary terms, quality rules + results, access requests, task assignments, incident records, audit events, usage analytics, and classification policies
+> - SQL is the right tool for concurrent edits, workflow state machines, SLA timers, and compliance-grade audit logs — markdown files cannot reliably support these use cases
+> - SQL data is **enrichment/operational overlay** on top of markdown assets; it does not replace markdown as the lineage source
+>
+> **Layer 3 – BFF API (unchanged)**
+>
+> - Single REST API boundary merges markdown-indexed search results with SQL governance metadata
+> - All business logic centralized in the BFF; frontend never reads SQL or Meilisearch directly
+>
+> **Summary: Hybrid model**
+>
+> - Asset definitions & lineage → Markdown files (Git-versioned)
+> - Search & discovery index → Meilisearch
+> - Operational governance state → SQL Server / Azure SQL
+> - Auth & permissions → Entra ID + custom RBAC store (SQL)
 
 ---
 
