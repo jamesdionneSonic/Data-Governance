@@ -29,13 +29,23 @@ function getLegacyErrorLabel(status, err) {
 }
 
 export default function errorHandler(err, req, res, _next) {
-  const status = err.status || err.statusCode || 500;
-  const message = err.message || 'Internal Server Error';
+  const requestedStatus = Number(err.status || err.statusCode || 500);
+  const isValidHttpStatus =
+    Number.isInteger(requestedStatus) && requestedStatus >= 400 && requestedStatus <= 599;
+  const status = isValidHttpStatus ? requestedStatus : 500;
+  const originalMessage = err.message || 'Internal Server Error';
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  const isServerError = status >= 500;
+  const message = isServerError && !isDevelopment ? 'Internal Server Error' : originalMessage;
   const timestamp = new Date().toISOString();
   const requestId = req.requestId || req.headers['x-request-id'] || null;
   const legacyError = getLegacyErrorLabel(status, err);
+  const safeDetails = isServerError && !isDevelopment ? null : err.details || null;
 
-  console.error(`[ERROR] ${status}: ${message}`, err);
+  console.error(
+    `[ERROR] ${status} ${req.method} ${req.originalUrl} requestId=${requestId || 'n/a'}: ${originalMessage}`,
+    err
+  );
 
   const payload = {
     status: 'error',
@@ -47,12 +57,12 @@ export default function errorHandler(err, req, res, _next) {
       status,
       code: err.code || 'API_ERROR',
       message,
-      details: err.details || null,
+      details: safeDetails,
       path: req.originalUrl,
       method: req.method,
       requestId,
       timestamp,
-      ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+      ...(isDevelopment && { stack: err.stack }),
     },
   };
 

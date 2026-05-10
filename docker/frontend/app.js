@@ -102,7 +102,7 @@ const demoSnapshot = {
   },
 };
 
-createApp({
+const appConfig = {
   data() {
     return {
       navItems,
@@ -510,10 +510,11 @@ createApp({
       });
 
       const ranked = filtered
-        .map((item, index) => ({
+        .map((item, idx) => ({
+          // Lineage ranking for relevant assets
           ...item,
           rankScore: scoreResult(item),
-          rankIndex: index + 1,
+          rankIndex: idx + 1,
           trustLevel: trustLevel(item),
         }))
         .sort((first, second) => {
@@ -822,8 +823,8 @@ createApp({
     },
     syncMarketplaceFormWithSelection() {
       const selected = this.selectedObjectDetail || {};
-      this.marketplace.form.assetId =
-        selected.id || this.selectedObjectId || this.marketplace.form.assetId;
+      const fallbackId = this.selectedObjectId || this.marketplace.form.assetId;
+      this.marketplace.form.assetId = selected.id || fallbackId;
     },
     async submitMarketplaceAccessRequest() {
       this.syncMarketplaceFormWithSelection();
@@ -1189,9 +1190,10 @@ createApp({
 
           const outDegree = (outAdj.get(id) || []).length;
           const inDegree = (inAdj.get(id) || []).length;
-          const downstreamWeight =
-            downstreamDepth === null ? 0 : Math.max(0, 6 - downstreamDepth) * 2;
-          const upstreamWeight = upstreamDepth === null ? 0 : Math.max(0, 6 - upstreamDepth);
+          const ddNull = downstreamDepth === null;
+          const udNull = upstreamDepth === null;
+          const downstreamWeight = ddNull ? 0 : Math.max(0, 6 - downstreamDepth) * 2;
+          const upstreamWeight = udNull ? 0 : Math.max(0, 6 - upstreamDepth);
           const score = downstreamWeight + upstreamWeight + outDegree + inDegree;
           const minDepth = Math.min(
             downstreamDepth === null ? Number.MAX_SAFE_INTEGER : downstreamDepth,
@@ -1734,8 +1736,8 @@ createApp({
           }
         );
 
-        this.reports.sharedLink =
-          payload.data?.url || payload.data?.link || JSON.stringify(payload.data);
+        const shareUrl = payload.data?.url || payload.data?.link;
+        this.reports.sharedLink = shareUrl || JSON.stringify(payload.data);
       } catch (err) {
         this.showToast(`Share link failed: ${err.message}`);
       }
@@ -3738,6 +3740,55 @@ createApp({
       <div v-if="toast" class="toast">{{ toast }}</div>
     </v-app>
   `,
-})
-  .use(vuetify)
-  .mount('#app-root');
+};
+
+const appInstance = createApp(appConfig).use(vuetify).mount('#app-root');
+
+function createGlobalUiErrorEntry(message, details = null, code = 'UI_RUNTIME_ERROR') {
+  return {
+    id: appInstance?.makeUiErrorId?.() || `${Date.now()}-ui-error`,
+    timestamp: new Date().toISOString(),
+    endpoint: 'client-runtime',
+    method: 'CLIENT',
+    status: 0,
+    code,
+    message,
+    requestId: 'n/a',
+    details,
+  };
+}
+
+function registerGlobalUiErrorHandlers() {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  window.addEventListener('error', (event) => {
+    const errorMessage = event?.error?.message || event?.message || 'Unhandled UI error';
+    const entry = createGlobalUiErrorEntry(errorMessage, {
+      file: event?.filename || null,
+      line: event?.lineno || null,
+      column: event?.colno || null,
+      stack: event?.error?.stack || null,
+    });
+    appInstance?.recordApiError?.(entry);
+    appInstance?.showToast?.(`UI error: ${errorMessage}`);
+  });
+
+  window.addEventListener('unhandledrejection', (event) => {
+    const reason = event?.reason;
+    const rejectionMessage = reason?.message || String(reason || 'Unhandled promise rejection');
+    const entry = createGlobalUiErrorEntry(
+      rejectionMessage,
+      {
+        reason: rejectionMessage,
+        stack: reason?.stack || null,
+      },
+      'UI_UNHANDLED_REJECTION'
+    );
+    appInstance?.recordApiError?.(entry);
+    appInstance?.showToast?.(`Unhandled rejection: ${rejectionMessage}`);
+  });
+}
+
+registerGlobalUiErrorHandlers();

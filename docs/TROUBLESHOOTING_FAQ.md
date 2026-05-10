@@ -56,6 +56,24 @@
 - Confirm dependent services (Meilisearch) are reachable.
 - Check backend logs and `/health` output.
 
+### Q: How do I trace a specific API failure end-to-end?
+
+- Capture the `requestId` from the API error response body.
+- Search backend logs for the same `requestId`.
+- Re-run the failing request with `x-request-id` header to correlate retries.
+
+### Q: What happens on unhandled server exceptions?
+
+- The service traps `unhandledRejection` and `uncaughtException`.
+- It logs root cause and performs graceful shutdown.
+- If shutdown exceeds timeout, process exits forcefully to avoid hung state.
+
+### Q: How do I inspect frontend runtime errors?
+
+- Open the Admin Center `API Error Stream` table.
+- Runtime UI exceptions and unhandled promise rejections are recorded there.
+- Use browser DevTools stack traces for deep debugging.
+
 ### Q: Shared visualization link says expired.
 
 - Shared links are TTL-based.

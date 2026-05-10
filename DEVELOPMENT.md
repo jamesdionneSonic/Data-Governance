@@ -167,6 +167,14 @@ describe('Feature Name', () => {
 });
 ```
 
+### Error Hardening Checklist
+
+- Ensure route handlers propagate errors to global middleware.
+- Ensure process-level traps exist for `unhandledRejection` and `uncaughtException`.
+- Ensure production `5xx` responses do not leak internal exception messages.
+- Ensure frontend runtime failures are captured in the UI error stream.
+- Ensure all error responses include correlation via `requestId`.
+
 ## Debugging
 
 ### Backend
@@ -185,6 +193,13 @@ node --inspect src/index.js
 - React DevTools browser extension
 - Redux DevTools extension
 - Network tab in browser DevTools
+- Check the **API Error Stream** panel for captured API and runtime UI errors.
+
+### Error Correlation
+
+- Every backend error response should include `requestId`.
+- Use `x-request-id` header in requests to trace calls across logs.
+- Match `requestId` from API response with server logs during incident triage.
 
 ### Docker
 
