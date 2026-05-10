@@ -80,6 +80,105 @@ This backlog contains the complete delivery history for MVP phases and the forwa
 | **Phase 7r** | Glossary SME Management              | 2-3 weeks | Term approval workflows, glossary stewardship, governance         | 🟠 HIGH     | 🟡 Planned |
 | **Phase 8**  | Azure Cloud Epic                     | 4-8 weeks | Azure production migration and operational hardening              | 🔴 CRITICAL | 🟡 Planned |
 
+---
+
+## Story Storage Breakdown: Markdown vs SQL
+
+> **Decision context**: SQL Server is not currently authorized. The table below shows exactly which stories can be built now with markdown-only, which are hybrid (definitions in markdown, live state in SQL), and which are fully blocked on SQL.
+
+### ✅ Markdown-Only — Can Build Now (~60% of Phase 7 stories, ~130 story points)
+
+These require zero SQL. Everything lives in `.md` / `.yml` files parsed by the existing ingestion pipeline and indexed into Meilisearch.
+
+| Story                                                | Phase | What Gets Built                                                                                                                                                                                                         | Points |
+| ---------------------------------------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| **7A-001** Business Glossary Management              | 7a    | `data/glossary/` folder of `.md` files with YAML frontmatter (term, definition, synonyms, owner, related-terms). Browse/edit UI + search integration.                                                                   | 8      |
+| **7A-002** Semantic Asset Mapping                    | 7a    | `glossary_terms:` field in asset YAML frontmatter linking terms to physical assets. Search resolves business terms to physical assets.                                                                                  | 5      |
+| **7B-001** Classification Framework                  | 7b    | `data/classification/taxonomy.yml` defines categories (PII, GDPR, Financial, etc.). Admin UI to manage taxonomy. Classification appears as search facet.                                                                | 6      |
+| **7B-002** Automated Classification Rules            | 7b    | Rule definitions in YAML; pattern-matching engine in BFF runs rules against asset metadata at index time and writes `classification:` back to YAML frontmatter.                                                         | 7      |
+| **7D-001** Metadata Harvesting                       | 7d    | Already partially done (`markdownFromSqlServer.js`). Extend connectors (PostgreSQL, Snowflake etc.), generate markdown files for all harvested assets.                                                                  | 9      |
+| **7D-002** Data Dictionary & Schema Browser          | 7d    | UI that reads existing markdown files and renders schema browser (table hierarchy, column details, history via Git log, export to PDF/HTML).                                                                            | 5      |
+| **7D-003** Business Metadata Enrichment              | 7d    | UI to edit YAML frontmatter fields (description, owner, domain, business justification) and push changes back to markdown files.                                                                                        | 5      |
+| **7E-001** Multi-Role Ownership Model                | 7e    | Extend YAML frontmatter with `owner:`, `steward:`, `domain_manager:`, `custodian:` fields. Ownership inheritance via folder hierarchy. Bulk assignment via CSV upload.                                                  | 5      |
+| **7G-001** Compliance Framework Management           | 7g    | `data/compliance/gdpr.md`, `hipaa.md`, etc. Each framework file maps requirements to classification tags and policy files.                                                                                              | 6      |
+| **7H-001** Data Products & Marketplace               | 7h    | `data/products/` folder. Each product is a markdown file (description, owner, SLAs, linked datasets, target audience, lifecycle state). Marketplace UI reads the index.                                                 | 10     |
+| **7H-002** Data Product Contracts (definitions only) | 7h    | Contract YAML included in the product markdown file (schema guarantees, freshness SLA, quality thresholds). Rendered in marketplace detail view.                                                                        | 4      |
+| **7J-001** Trust & Certification Framework           | 7j    | `certified:`, `trust_level:`, `certification_date:`, `certified_by:` fields in YAML frontmatter. Trust score formula runs at index time from existing quality/lineage/ownership fields. Trust badges in search results. | 7      |
+| **7J-002** Data Endorsements                         | 7j    | `endorsements:` YAML block in asset markdown (who endorsed, confidence, conditions). Endorsements aggregate into trust score.                                                                                           | 5      |
+| **7K-002** Guidelines & Decision Logs                | 7k    | `## Guidelines` and `## Decision Log` sections appended to asset markdown files. Git history is the audit trail.                                                                                                        | 4      |
+| **7K-003** Steward Annotations                       | 7k    | `## Steward Notes` section in asset markdown (type: warning/info/deprecated, text, date). Annotations rendered in asset detail UI.                                                                                      | 4      |
+| **7O-001** Blast Radius Analysis                     | 7o    | Already 90% done in Phase 4 lineage graph. Improve UI to highlight blast radius clearly and generate impact reports.                                                                                                    | 3      |
+| **7O-002** Change Risk Assessment Documentation      | 7o    | Risk notes and migration guides as sections in asset markdown. API computes risk score from lineage depth + dependent count (all in Meilisearch).                                                                       | 4      |
+| **7O-003** Dependency Graph Visualization            | 7o    | Already done in Phase 4. Polish and extend with domain filtering and SVG export.                                                                                                                                        | 2      |
+| **7P-001** Governance Context API                    | 7p    | REST/GraphQL endpoint that wraps Meilisearch queries — returns asset + lineage + classification + trust + owner + glossary context per asset.                                                                           | 8      |
+| **7P-002** Third-Party Tool Integrations             | 7p    | Embed governance API in BI tools. Integration config stored as markdown/YAML.                                                                                                                                           | 5      |
+| **7Q-002** ROI & Business Impact Tracking            | 7q    | ROI metric definitions and baselines stored as markdown. BFF computes savings from metadata completeness improvements (countable from index).                                                                           | 4      |
+| **7R-002** Glossary Stewardship                      | 7r    | Steward assignments stored in glossary markdown files. Stewardship dashboard reads completeness from index (% terms with owners, % reviewed).                                                                           | 4      |
+
+**Markdown subtotal: ~120 story points across 22 stories, 11 phases**
+
+---
+
+### 🟡 Hybrid — Definitions in Markdown, Live State Needs SQL (~20% of stories, ~45 points)
+
+The _definition_ part (rules, policies, frameworks) can be built in markdown now. The _operational state_ part (is it passing? what's the trend? who approved?) needs SQL later. These can be built in markdown first as a foundation, then upgraded.
+
+| Story                                        | Markdown Now                                           | SQL Later                                          |
+| -------------------------------------------- | ------------------------------------------------------ | -------------------------------------------------- |
+| **7B-003** Classification Policy Enforcement | Policy definitions in markdown                         | Enforcement event log, per-access decision records |
+| **7E-002** Steward Portfolio Dashboard       | Reads existing markdown index for completeness metrics | Quality trend history, SLA breach time-series      |
+| **7G-003** Compliance Reporting              | Report templates + data mapping from markdown index    | Accurate counts depend on 7G-002 audit log (SQL)   |
+| **7R-001** Glossary Term Approval            | Term drafts stored as markdown PRs / file state        | Inline approval state if not using Git PR workflow |
+
+---
+
+### 🔴 Needs SQL — Fully Blocked Without SQL Server (~20% of stories, ~110 points)
+
+These cannot be meaningfully built without a database because they are inherently stateful, time-series, or require immutable records.
+
+| Story                                    | Phase | Why SQL Is Required                                                                                 |
+| ---------------------------------------- | ----- | --------------------------------------------------------------------------------------------------- |
+| **7C-001** Quality Rule Execution        | 7c    | Rule _definitions_ = markdown ✅. But results (ran at 08:00, found 412 nulls) must be stored in SQL |
+| **7C-002** Profiling & Anomaly Detection | 7c    | Statistical profiles over time — requires time-series storage                                       |
+| **7C-003** Quality Scorecard & Trends    | 7c    | Trend lines require historical result rows in SQL                                                   |
+| **7E-003** Stewardship Tasks             | 7e    | Task state machine (open → in-progress → resolved), SLA timers ticking                              |
+| **7F-003** Data Access Request Workflow  | 7f    | Request pending/approved/expired changes in real time                                               |
+| **7G-002** Audit Logging                 | 7g    | Immutable, cryptographically signed, compliance-grade append-only log                               |
+| **7H-003** Data Access Fulfillment       | 7h    | Access grant state, auto-expiry, audit trail                                                        |
+| **7I-001** Workflow Engine               | 7i    | Rule execution state, event triggers, workflow run history                                          |
+| **7I-002** Task Management & SLA         | 7i    | Live task state with SLA timers                                                                     |
+| **7I-003** Approval Workflows            | 7i    | Multi-step approval state                                                                           |
+| **7K-001** Comments & Discussions        | 7k    | Concurrent real-time comments (can't safely do multi-author append to flat files)                   |
+| **7L-001** Usage Event Capture           | 7l    | High-frequency event stream (every search, view, download)                                          |
+| **7L-002** Adoption Scoring              | 7l    | Depends on 7L-001 event data                                                                        |
+| **7L-003** Retirement Recommendations    | 7l    | Depends on 7L-001 usage history                                                                     |
+| **7M-001** Pipeline SLA Monitoring       | 7m    | SLA measurement results with timestamps                                                             |
+| **7M-002** Anomaly Detection             | 7m    | Time-series comparison against historical baselines                                                 |
+| **7M-003** Schema Change Detection       | 7m    | Schema snapshots over time                                                                          |
+| **7N-001-003** Incident Management       | 7n    | Live incident state, MTTR calculations                                                              |
+| **7P-003** Governance Webhooks           | 7p    | Webhook delivery state and retry tracking                                                           |
+| **7Q-001** KPI Dashboard                 | 7q    | Depends on usage events and quality results (7L-001, 7C-001)                                        |
+
+---
+
+### Recommendation: Build Markdown-First, SQL Later
+
+Build all markdown-only stories now. They represent the **entire documentation and definitional layer** of governance — glossary, classification, ownership, trust, data products, compliance frameworks, impact analysis, and the governance context API. This is high business value and zero SQL dependency.
+
+When SQL Server is authorized, the SQL stories plug **on top of** the markdown foundation — they don't replace it. The markdown work done now is never wasted.
+
+**Suggested immediate sequence (no SQL required):**
+
+1. **Phase 7a** (Glossary + Semantic Mapping) — highest visible business value, zero SQL
+2. **Phase 7e-001** (Ownership model in YAML) — trivial to extend existing frontmatter, unlocks steward dashboards
+3. **Phase 7b-001/002** (Classification taxonomy + auto-classification rules) — build the rule engine in BFF, write results back to markdown
+4. **Phase 7h-001/002** (Data Products + Contracts as markdown) — marketplace UI reads the index
+5. **Phase 7j** (Trust + Certification in YAML frontmatter) — scoring from existing metadata fields
+6. **Phase 7d** (Metadata enrichment UI + Schema browser) — already have metadata, just need UI
+7. **Phase 7p-001** (Governance Context API) — wraps everything above into a single queryable endpoint
+
+---
+
 **Total MVP Effort**: 100-130 person-days  
 **MVP Delivery Target**: 10 months
 
