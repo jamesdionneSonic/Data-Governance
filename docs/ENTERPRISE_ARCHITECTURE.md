@@ -1,11 +1,16 @@
 # Enterprise Architecture Framework
 # Data Governance & Dependency Visualization Platform
 
-**Version:** 1.0  
+**Version:** 2.0 (Markdown-First, Visualization-Centric)  
 **Last Updated:** May 8, 2026  
-**Architecture Pattern**: Microservices-Ready Modular Monolith with Layered Architecture
+**Architecture Pattern**: Markdown-Driven, File-Based with REST BFF API
 
-> **Non-Negotiable Engineering Guardrails:** This architecture enforces **Backend-for-Frontend (BFF)** as the frontend API boundary and **Infrastructure as Code (IaC) First** for all environment provisioning and changes.
+> **Non-Negotiable Engineering Guardrails:** 
+> - **Markdown-First Source of Truth**: All data lineage, documentation, and metadata flows from markdown files in organized folder hierarchies
+> - **Backend-for-Frontend (BFF)**: Single REST API boundary for frontend UI; all business logic centralized  
+> - **Enterprise RBAC**: Database-level and field-level permission controls via Entra ID + custom permission store
+> - **Modern Visualization Layer**: Interactive graphs, impact analysis, and faceted search for discovery
+> - **Infrastructure as Code**: All environments provisioned via Docker Compose with environment variables
 
 ---
 
@@ -13,125 +18,102 @@
 
 ### 0.1 Current State (As-Is)
 
-At present, this repository contains strategy and governance documentation only.
+At present, this repository contains strategy, governance, and data guidance documentation only.
 
-- No running application services in this workspace
-- No deployed metadata database
-- No import pipeline processing markdown files yet
-- No active admin screens, APIs, or deployment environments
-- Markdown content intended to be source documentation in folders/Git
+- No running application services
+- No active UI or APIs  
+- Documentation stored as markdown files in organized folder hierarchies
+- No live scanning or integration with external systems (by design)
 
 ### 0.2 Future State (To-Be After Development)
 
-After implementation, the platform will operate as a full enterprise system:
+After implementation, the platform will operate as a comprehensive data governance system:
 
-- Web UI + API runtime with role-based admin/user experiences
-- Markdown import pipeline (`upload -> validate -> preview -> apply`)
-- Metadata index and lineage persistence in SQL Server/Azure SQL
-- Object/document storage and exports in Blob-compatible storage
-- Entra ID authentication and RBAC authorization
-- CI/CD validation gates for markdown quality, tests, and security
-- Audit, monitoring, and compliance reporting enabled by default
+- Web UI + REST BFF API with role-based experiences (Admin, Power User, Analyst, Viewer)
+- Markdown file ingestion pipeline (upload → parse → index → serve)
+- Enterprise-grade full-text search with faceted filtering (via Meilisearch)
+- Interactive dependency visualization (graph, matrices, impact diagrams)
+- Database-level and field-level RBAC tied to Entra ID
+- Permission matrix management (who can see what databases/objects)
+- User annotations, ownership tracking, and custom metadata
+- Audit logging for all access and changes
+- Export capabilities (reports, dependency diagrams, documentation bundles)
 
 ### 0.3 Current vs Future Mapping
 
 | Domain | Current State | Future State |
 |--------|---------------|--------------|
-| Runtime | No app runtime deployed | Frontend + API running in managed environment |
-| Identity | None configured | Entra ID SSO with role mapping |
-| Data Store | None for app metadata | SQL metadata catalog + audit schema |
-| Documents | Markdown files only | Markdown + indexed metadata + versioned artifacts |
-| Import | Manual file handling | Validated, auditable import service |
-| Operations | No monitoring | Health checks, logs, metrics, alerting |
-| Delivery | No deployment workflow | CI/CD with promotion gates and approvals |
+| Data Source | Markdown files only | Markdown files + ingestion API |
+| Discovery | Manual file search | Full-text + faceted search via Meilisearch |
+| Visualization | None | Interactive graphs, impact analysis, matrices |
+| Access Control | None | Entra ID SSO + database-level RBAC |
+| Metadata | Inline in markdown | Parsed + indexed for search and discovery |
+| User Experience | Read markdown files | Web UI with role-based views |
+| Operations | None | Audit trails, permission matrix, user management |
+| Delivery | No deployment | Docker containerized, multi-environment ready |
 
-### 0.4 Migration Trajectory
+### 0.4 Implementation Phases
 
-The recommended migration path is:
+The recommended implementation path is:
 
-1. Foundation and platform setup
-2. App and metadata service deployment
-3. Markdown import service implementation
-4. Historical markdown backfill and reconciliation
-5. Dual-run validation and production cutover
-6. Hypercare and optimization
+1. **Phase 0**: Foundation & tooling setup (ci/cd, testing framework, docker)
+2. **Phase 1**: Authentication, authorization, and BFF API skeleton
+3. **Phase 2**: Markdown parsing, lineage extraction, and indexing
+4. **Phase 3**: Interactive visualization (dependency graphs, impact analysis, matrices)
+5. **Phase 4**: Search, discovery, and faceted filtering
+6. **Phase 5**: Admin dashboard, user management, permission matrix
+7. **Phase 6**: Reporting, export, and audit trails
 
-Detailed sequencing, controls, cutover criteria, and rollback are documented in [CLOUD_MIGRATION_RUNBOOK.md](CLOUD_MIGRATION_RUNBOOK.md).
+Detailed phase breakdown, story estimation, and sequencing documented in [PROJECT_BACKLOG.md](PROJECT_BACKLOG.md).
 
 ---
 
 ## 1. System Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         CLIENT LAYER                             │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │  Web Browser (View.js/Viewdify Frontend)                 │   │
-│  │  - Dashboard | Analysis | Admin | Reports               │   │
-│  └──────────────────────────┬───────────────────────────────┘   │
-└─────────────────────────┬───────────────────────────────────────┘
-                          │ HTTPS/WebSocket
-┌─────────────────────────────────────────────────────────────────┐
-│                     API GATEWAY LAYER                            │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │  - Request Routing                                       │   │
-│  │  - Rate Limiting                                         │   │
-│  │  - Authentication Middleware                            │   │
-│  │  - Request Validation                                   │   │
-│  │  - CORS Management                                      │   │
-│  └──────────────────────────┬───────────────────────────────┘   │
-└─────────────────────────┬───────────────────────────────────────┘
-                          │
-    ┌─────────────────────┼─────────────────────┐
-    │                     │                     │
-┌───┴────────────┐ ┌──────┴──────┐ ┌───────────┴──────┐
-│                │ │             │ │                   │
-│  AUTH SERVICE  │ │  API ROUTES │ │   MIDDLEWARE     │
-│  Layer         │ │  Layer      │ │   Layer          │
-│                │ │             │ │                   │
-└────────────────┘ └──────┬───────┘ └───────────────────┘
-                          │
-    ┌─────────────────────┼─────────────────────┐
-    │                     │                     │
-┌───┴──────┐ ┌────────────┴────────┐ ┌──────────┴────┐
-│           │ │                    │ │               │
-│ DISCOVERY │ │   DEPENDENCY       │ │ DOCUMENTATION│
-│ SERVICE   │ │   SERVICE          │ │ SERVICE      │
-│           │ │                    │ │               │
-└───────────┘ └────────────────────┘ └──────────────┘
-
-    ┌─────────────────────┼─────────────────────┐
-    │                     │                     │
-┌───┴──────┐ ┌────────────┴────────┐ ┌──────────┴────┐
-│           │ │                    │ │               │
-│ ADMIN     │ │   REPORTING        │ │  AUDIT        │
-│ SERVICE   │ │   SERVICE          │ │  SERVICE      │
-│           │ │                    │ │               │
-└───────────┘ └────────────────────┘ └──────────────┘
-
-                          │
-┌─────────────────────────┼─────────────────────────────────────────┐
-│                   DATA PERSISTENCE LAYER                          │
-│  ┌──────────────────────────────────────────────────────────┐    │
-│  │  SQL Server (Metadata Store)                            │    │
-│  │  - Objects, Connections, Users, Permissions            │    │
-│  │  - Documentation, Audit Logs, API Usage                │    │
-│  └──────────────────────────────────────────────────────────┘    │
-│  ┌──────────────────────────────────────────────────────────┐    │
-│  │  Cache Layer (Redis)                                     │    │
-│  │  - Session Cache, Query Results, Hot Data              │    │
-│  └──────────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────────┘
-
-                          │
-┌─────────────────────────┼─────────────────────────────────────────┐
-│                  EXTERNAL INTEGRATIONS                            │
-│  ┌──────────────────────────────────────────────────────────┐    │
-│  │  SQL Server (Target)  │  Entra ID  │  LDAP/AD           │    │
-│  │  Event Bus            │  Webhooks  │  External APIs     │    │
-│  └──────────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────┐
+│                       CLIENT LAYER                             │
+│  ┌──────────────────────────────────────────────────────────┐  │
+│  │  Web Browser (Vue.js/React)                              │  │
+│  │  - Dashboard | Visualization | Search | Admin            │  │
+│  └──────────────────────┬─────────────────────────────────┘   │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │ HTTPS/REST API
+┌──────────────────────────────────────────────────────────────────┐
+│              BACKEND-FOR-FRONTEND (BFF) LAYER                    │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │  Express.js API Gateway (Node.js)                          │  │
+│  │  • Entra ID Authentication & OIDC                         │  │
+│  │  • Database-Level RBAC Permission Checks                 │  │
+│  │  • Markdown Parsing & Lineage Extraction                 │  │
+│  │  • Search API Coordination (Meilisearch)                 │  │
+│  │  • REST Endpoints:                                        │  │
+│  │    - /api/v1/auth/* (login, refresh, me)                │  │
+│  │    - /api/v1/objects (search, filter, detail)           │  │
+│  │    - /api/v1/lineage (dependencies, impact)             │  │
+│  │    - /api/v1/search (full-text + faceted)               │  │
+│  │    - /api/v1/admin/* (users, permissions)               │  │
+│  └────────────────────────┬────────────────────────────────────┘  │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │
+        ┌──────────────────┼──────────────────┐
+        │                  │                  │
+┌───────┴──────┐  ┌────────┴────────┐  ┌─────┴──────┐
+│              │  │                 │  │            │
+│   MARKDOWN   │  │  MEILISEARCH    │  │  ENTRA ID  │
+│   DATA FILES │  │  (Search Index) │  │  (Auth)    │
+│   /data      │  │  :7700          │  │  Tenant    │
+│              │  │                 │  │            │
+└──────────────┘  └─────────────────┘  └────────────┘
 ```
+
+**Key Architectural Components**:
+
+- **Markdown Files**: Organized by database → table/object → lineage relationships
+- **Express BFF**: Single API boundary, handles all business logic and orchestration
+- **Meilisearch**: Full-text index with faceting for instant discovery
+- **Entra ID**: Enterprise authentication; RBAC enforced per API request
+- **Frontend**: Interactive visualizations, real-time search, permission-aware UI
 
 ---
 

@@ -1,0 +1,42 @@
+---
+name: usp_LoadDimDepartmentCDK_tables_MSC
+database: Sonic_DW
+type: procedure
+schema: dbo
+owner: Data Team
+tags:
+  - procedure
+  - auto-extracted
+extracted_at: 2026-05-09T12:34:14.349Z
+---
+
+## Overview
+
+Metadata auto-extracted from SQL Server.
+
+- **Type**: Stored Procedure
+- **Schema**: dbo
+
+## Definition
+
+```sql
+
+CREATE   PROCEDURE dbo.usp_LoadDimDepartmentCDK_tables_MSC 
+AS
+
+	/******** DimDepartmentCDK *********/
+	MERGE sonic_dw.dbo.DimDepartmentCDK AS tgt
+	USING (
+		SELECT DISTINCT Department
+		FROM [ETL_Staging].stage.Sonic_MSC_Tasks_Department
+	) AS src
+	ON tgt.Department = src.Department
+	-- WHEN MATCHED -- since there are no additional attributes, there is nothing to update when MATCHED.
+	WHEN NOT MATCHED BY TARGET THEN
+		INSERT (Department, Meta_LoadDate)
+		VALUES (src.Department, G
+```
+
+## Governance
+
+- **Last Extracted**: 2026-05-09T12:34:14.349Z

@@ -1,30 +1,18 @@
 services:
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: dg-sqlserver
+  meilisearch:
+    image: meili/meilisearch:v1.10-latest
+    container_name: dg-meilisearch
     environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
-      MSSQL_PID: "Developer"
+      MEILI_ENV: development
+      MEILI_MASTER_KEY: ${MEILISEARCH_MASTER_KEY}
     ports:
-      - "1433:1433"
+      - "7700:7700"
     volumes:
-      - sqlserver_data:/var/opt/mssql
-    networks:
-      - dg-net
-
-  redis:
-    image: redis:7-alpine
-    container_name: dg-redis
-    command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
+      - meilisearch_data:/meili_data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
       interval: 10s
-      timeout: 3s
+      timeout: 5s
       retries: 10
     networks:
       - dg-net
@@ -34,26 +22,25 @@ services:
     container_name: dg-backend
     working_dir: /workspace
     command: >
-      sh -c "echo '[backend] placeholder runtime active';
-      echo '[backend] implement API in Phase 1+';
-      tail -f /dev/null"
+      sh -c "npm install --silent &&
+      npm run dev"
     ports:
       - "3000:3000"
     volumes:
       - ./:/workspace
+      - /workspace/node_modules
     environment:
       NODE_ENV: development
       PORT: 3000
-      SQLSERVER_HOST: sqlserver
-      SQLSERVER_PORT: 1433
-      SQLSERVER_DATABASE: ${APP_DB_NAME}
-      SQLSERVER_USER: sa
-      SQLSERVER_PASSWORD: ${MSSQL_SA_PASSWORD}
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      MEILISEARCH_HOST: http://meilisearch:7700
+      MEILISEARCH_MASTER_KEY: ${MEILISEARCH_MASTER_KEY}
+      ENTRA_CLIENT_ID: ${ENTRA_CLIENT_ID}
+      ENTRA_CLIENT_SECRET: ${ENTRA_CLIENT_SECRET}
+      ENTRA_TENANT_ID: ${ENTRA_TENANT_ID}
+      MARKDOWN_DATA_PATH: /workspace/data/markdown
     depends_on:
-      - sqlserver
-      - redis
+      meilisearch:
+        condition: service_healthy
     networks:
       - dg-net
 
@@ -69,24 +56,8 @@ services:
     networks:
       - dg-net
 
-  sql-init:
-    image: mcr.microsoft.com/mssql-tools
-    container_name: dg-sql-init
-    depends_on:
-      - sqlserver
-    environment:
-      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
-      APP_DB_NAME: ${APP_DB_NAME}
-    volumes:
-      - ./docker/sql/init:/docker-entrypoint-initdb.d:ro
-      - ./docker/scripts/init-sql.sh:/init-sql.sh:ro
-    entrypoint: ["/bin/bash", "/init-sql.sh"]
-    networks:
-      - dg-net
-
 volumes:
-  sqlserver_data:
-  redis_data:
+  meilisearch_data:
 
 networks:
   dg-net:
