@@ -1,0 +1,64 @@
+services:
+  meilisearch:
+    image: meili/meilisearch:v1.10-latest
+    container_name: dg-meilisearch
+    environment:
+      MEILI_ENV: development
+      MEILI_MASTER_KEY: ${MEILISEARCH_MASTER_KEY}
+    ports:
+      - "7700:7700"
+    volumes:
+      - meilisearch_data:/meili_data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - dg-net
+
+  backend:
+    image: node:20-alpine
+    container_name: dg-backend
+    working_dir: /workspace
+    command: >
+      sh -c "npm install --silent &&
+      npm run dev"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/workspace
+      - /workspace/node_modules
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      MEILISEARCH_HOST: http://meilisearch:7700
+      MEILISEARCH_MASTER_KEY: ${MEILISEARCH_MASTER_KEY}
+      ENTRA_CLIENT_ID: ${ENTRA_CLIENT_ID}
+      ENTRA_CLIENT_SECRET: ${ENTRA_CLIENT_SECRET}
+      ENTRA_TENANT_ID: ${ENTRA_TENANT_ID}
+      MARKDOWN_DATA_PATH: /workspace/data/markdown
+    depends_on:
+      meilisearch:
+        condition: service_healthy
+    networks:
+      - dg-net
+
+  frontend:
+    image: nginx:1.27-alpine
+    container_name: dg-frontend
+    ports:
+      - "5173:80"
+    volumes:
+      - ./docker/frontend/index.html:/usr/share/nginx/html/index.html:ro
+    depends_on:
+      - backend
+    networks:
+      - dg-net
+
+volumes:
+  meilisearch_data:
+
+networks:
+  dg-net:
+    name: dg-net

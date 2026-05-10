@@ -1,96 +1,110 @@
 # Product Requirements Document (PRD)
 # Data Governance & Dependency Visualization Platform
 
-**Version:** 1.0  
+**Version:** 2.0 (Markdown-First Edition)  
 **Last Updated:** May 8, 2026  
-**Status:** Draft - In Strategic Planning Phase
+**Status:** Active Development - MVP Definition
 
 ---
 
 ## 1. Executive Overview
 
 ### Vision
-Create an enterprise-grade, modern web application that provides comprehensive visibility into SQL Server and SSIS dependencies, with built-in governance, Entra ID authentication, admin frameworks, and automated documentation generation.
+Build an enterprise-grade data governance platform that transforms markdown-based data lineage documentation into a living, interactive, and discoverable knowledge system with role-based access, stunning visualizations, and full-text search.
 
 ### Mission
-Enable data-driven organizations to understand their data infrastructure, manage dependencies, ensure compliance, and make informed architectural decisions through an intuitive, enterprise-ready platform.
+Enable organizations to share, understand, and govern data lineage through a modern, intuitive platform that turns static markdown documentation into dynamic, visual, and permission-controlled enterprise knowledge.
 
 ### Core Value Propositions
-1. **Dependency Clarity** - Visualize all SQL and SSIS dependencies in one place
-2. **Enterprise Governance** - Complete admin framework with role-based access and audit trails
-3. **Automated Documentation** - Generate markdown files for every database object automatically
-4. **Modern Security** - Native Entra ID/AD integration with granular controls
-5. **Impact Analysis** - Understand downstream effects of changes before implementation
-6. **Compliance Ready** - Built with audit trails, data lineage, and regulatory features
+1. **Instant Visualization** - Transform markdown lineage into interactive dependency graphs, impact analysis, and matrices
+2. **Enterprise Discovery** - Find relevant data sources via full-text + faceted search (database, owner, sensitivity, tags)
+3. **Access Control** - Database-level RBAC; users see only what they're permitted to access
+4. **Modern UX** - 2026-grade interactive visualization (Cytoscape.js, D3.js) with real-time filtering
+5. **Lightweight Infrastructure** - File-based markdown + Meilisearch; no heavy database scanning
+6. **Compliance Ready** - Audit trails, permission matrix, ownership tracking, version control via Git
 
-> **Non-Negotiable Engineering Guardrails:** The platform must enforce **Backend-for-Frontend (BFF)** for frontend-facing APIs and **Infrastructure as Code (IaC) First** for environment and platform delivery.
+> **Non-Negotiable Engineering Guardrails:** 
+> - **Markdown-First Architecture**: All data originates from organized markdown files
+> - **Backend-for-Frontend (BFF)**: Single REST API boundary; all business logic centralized
+> - **Enterprise RBAC**: Database-level permissions tied to Entra ID
+> - **Modern Visualization**: Interactive graphs, impact analysis, dependency matrices
+> - **Data Organization**: Hierarchical folder structure (database → object → lineage)
 
 ---
 
 ## 2. Product Scope
 
-### In Scope - MVP (Phase 1)
+### In Scope - MVP
 
 #### 2.1 Core Features
-- **Dependency Discovery**
-  - SQL Server schema analysis (tables, views, stored procedures, functions, triggers)
-  - SSIS package parsing and analysis
-  - Cross-database dependency tracking
-  - Manual dependency documentation (user-added)
+- **Markdown Ingestion & Organization**
+  - Organize markdown files by database → tables, procedures, packages
+  - Parse YAML frontmatter for metadata (owner, sensitivity, tags, dependencies)
+  - Index all documentation for search
+  - Version control via Git
 
-- **Visualization**
-  - Interactive dependency graph (web-based)
-  - Table-based object explorer
-  - Dependency matrices
-  - Impact analysis diagrams
+- **Visualizations** (Beyond Basic Lineage)
+  - **Interactive Dependency Graph**: Drag, zoom, filter, highlight upstream/downstream
+  - **Impact Analysis Diagram**: Show blast radius of changes before execution
+  - **Dependency Matrix**: Heatmap view of object relationships
+  - **Database Explorer**: Tree view with search and filtering
+  - **Column-Level Lineage**: Track data transformations at field granularity
+  - **Owner/Tag Search**: Find related objects by owner, sensitivity, domain
+
+- **Enterprise Search & Discovery**
+  - Full-text search across all documentation
+  - Faceted filtering (database, owner, sensitivity level, tags)
+  - Search-as-you-type (<50ms response)
+  - Saved searches and smart suggestions
 
 - **Authentication & Authorization**
-  - Entra ID integration
-  - Local Active Directory fallback
-  - Role-based access control (RBAC):
-    * Admin (full access)
-    * Power User (create/edit documentation)
-    * Analyst (view and export)
-    * Viewer (read-only access)
+  - Entra ID SSO (OIDC flow)
+  - Database-level RBAC (who can see which databases)
+  - Role hierarchy:
+    * **Admin**: All databases, all features, user management
+    * **Power User**: Assigned databases, can upload/edit markdown, manage permissions
+    * **Analyst**: Assigned databases, view all details, export reports
+    * **Viewer**: Assigned databases, read-only, summary view only
+  - Permission matrix UI (Admin sees/manages who has what access)
 
 - **Admin Dashboard**
-  - User management interface
-  - Permission matrix management
-  - Environment/instance management
-  - Audit log viewer
-  - Configuration settings
+  - User management (add, remove, role assignment)
+  - Permission matrix (visual assignment of database access by user)
+  - Audit log viewer (who accessed what, when)
+  - Organization settings (tenant config, integrations)
+  - Markdown sync/upload interface
 
-- **Documentation Generation**
-  - Auto-generate markdown for each table/object
-  - Include metadata, dependencies, data types
-  - Custom documentation sections
-  - Version control for documentation
+- **User Annotations & Collaboration**
+  - Add comments/notes to objects
+  - Tag objects (domain, owner, sensitivity level)
+  - Mark objects as deprecated/critical
+  - Track ownership and stewardship
 
-- **Basic Reporting**
-  - Object catalog
-  - Dependency reports
-  - Impact analysis reports
-  - User activity reports
+- **Reporting & Export**
+  - Generate dependency reports (PDF/CSV)
+  - Export object catalog
+  - Share visualization links
+  - Impact analysis export
 
-#### 2.2 Technical Requirements
-- **Framework**: View.js/Viewdify for frontend
-- **Backend**: Node.js/Express (or similar)
-- **Frontend API Pattern**: Backend-for-Frontend (BFF) is mandatory
-- **Database**: SQL Server for metadata storage
-- **Deployment**: Docker containerized
-- **Infrastructure Delivery**: Infrastructure as Code (IaC) is mandatory for all environments
-- **API**: REST API for all operations
-- **Testing**: >80% unit test coverage, integration tests, CI/CD pipeline
+#### 2.2 Technical Stack
+- **Frontend**: Vue.js or React with TypeScript
+- **Visualization**: Cytoscape.js (interactive graphs) + D3.js (advanced charts) + Mermaid (diagrams)
+- **Backend**: Express.js/Node.js (BFF layer)
+- **Search**: Meilisearch (full-text + faceted search)
+- **Auth**: Entra ID (OIDC) + custom permission store
+- **Data Storage**: Markdown files (Git-versioned) + lightweight JSON permission store
+- **Deployment**: Docker Compose (dev/prod) with GitHub Actions CI/CD
+- **Testing**: Jest (unit), Cypress (E2E), >80% coverage
 
 ### Out of Scope - MVP
 
-- Advanced machine learning impact predictions
-- Real-time code scanning
-- GDPR/PII data discovery
-- Multi-cloud support (Phase 2)
+- Live SQL Server scanning (by design—markdown is truth source)
+- Real-time schema change detection
+- Advanced ML impact predictions
+- Multi-tenant SaaS architecture
+- API for external systems (Phase 2)
 - Mobile app (Phase 2)
-- Advanced performance analytics (Phase 2)
-- ETL optimization recommendations (Phase 2)
+- Workflow automation (Phase 2)
 
 ---
 

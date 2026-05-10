@@ -1,0 +1,163 @@
+---
+name: FactRemedy
+database: Sonic_DW
+type: view
+schema: dbo
+owner: Data Team
+sensitivity: internal
+tags:
+  - view
+  - core-schema
+depends_on:
+  - dbo.DimRemedyDetail
+  - dbo.DimRemedyUnmappedSites
+row_count: 0
+size_kb: 0
+extraction_warnings:
+  - MISSING_VIEW_DATABASE_STATE
+  - LITE_MODE_ENABLED
+extracted_at: 2026-05-09T12:34:14.349Z
+---
+
+## Overview
+
+Metadata auto-extracted from SQL Server.
+
+- **Type**: view
+- **Schema**: dbo
+- **Row Count**: 0
+- **Size**: 0 KB
+
+## Extraction Notes
+
+- **MISSING_VIEW_DATABASE_STATE**: Missing VIEW DATABASE STATE permission. Row count and size metrics are unavailable.
+- **LITE_MODE_ENABLED**: Column-level lineage analysis disabled for large extraction (751 tables). Only explicit foreign keys detected.
+
+## Relationships
+
+### High Confidence (≥ 0.8)
+
+- **explicit_fk**: dbo.DimRemedyDetail → dbo.FactRemedy
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `RemedyKey` → `RemedyKey`
+- **explicit_fk**: dbo.DimRemedyUnmappedSites → dbo.FactRemedy
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `TicketNumber` → `Meta_NaturalKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.Dim_Date
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `ClosedDateKey` → `DateKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.dim_Time
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `ClosedDateTimeKey` → `TimeKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.DimCategory
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `ClosureCategoryTier1Key` → `CategoryKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.DimCategory
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `ClosureCategoryTier2Key` → `CategoryKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.DimCategory
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `ClosureCategoryTier3Key` → `CategoryKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.DimStatus
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `ImpactStatusKey` → `StatusKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.Dim_Date
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `LastModifiedDateKey` → `DateKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.dim_Time
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `LastModifiedTimeKey` → `TimeKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.Dim_Date
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `LastResolvedDateKey` → `DateKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.dim_Time
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `LastResolvedTimeKey` → `TimeKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.DimCategory
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `MainCategoryTier1Key` → `CategoryKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.DimCategory
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `MainCategoryTier2Key` → `CategoryKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.DimCategory
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `MainCategoryTier3Key` → `CategoryKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.DimStatus
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `OutageStatusKey` → `StatusKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.DimStatus
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `PriorityStatusKey` → `StatusKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.DimCategory
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `ProductCategoryTier1Key` → `CategoryKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.DimCategory
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `ProductCategoryTier2Key` → `CategoryKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.DimCategory
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `ProductCategoryTier3Key` → `CategoryKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.DimRemedyUserGroup
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `RemedyUserGroupKey` → `RemedyUserGroupKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.DimRemedyUser
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `RemedyUserKey` → `RemedyUserKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.Dim_Date
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `ReportedDateKey` → `DateKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.DimReportingSource
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `ReportedSourceKey` → `ReportingSourceKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.dim_Time
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `ReportedTimeKey` → `TimeKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.DimService
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `ServiceKey` → `ServiceKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.Dim_Date
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `SubmitDateKey` → `DateKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.dim_Time
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `SubmitTimeKey` → `TimeKey`
+- **explicit_fk**: dbo.FactRemedy → dbo.DimStatus
+  - Confidence: 95%
+  - Evidence: undefined
+  - Column: `UrgencyStatusKey` → `StatusKey`
+
+## Governance
+
+- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Data Classification**: To be assigned
+- **Stewardship**: To be assigned
+- **Compliance**: Review for GDPR/HIPAA applicability
+- **Extractor Warnings**: Present (see Extraction Notes)
