@@ -3,7 +3,8 @@
 ## Local Setup
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - Docker Desktop
 - Git
 
@@ -27,6 +28,7 @@ npm run prepare
 ### Running Locally
 
 #### Option 1: Full Stack (Recommended)
+
 ```bash
 docker compose up -d
 
@@ -36,6 +38,7 @@ docker compose up -d
 ```
 
 #### Option 2: Backend Only (for development)
+
 ```bash
 # Terminal 1: Start Meilisearch + Frontend via Docker
 docker compose up -d meilisearch frontend
@@ -49,6 +52,7 @@ npm run dev
 ### Making Changes
 
 1. **Create feature branch**
+
 ```bash
 git checkout -b feature/your-feature-name
 ```
@@ -59,6 +63,7 @@ git checkout -b feature/your-feature-name
    - Aim for >80% coverage
 
 3. **Run checks locally**
+
 ```bash
 npm run lint        # Fix linting issues
 npm run format      # Format code
@@ -67,14 +72,17 @@ npm run test:e2e   # Run E2E tests (optional)
 ```
 
 4. **Commit changes**
+
 ```bash
 git add .
 git commit -m "feat: description of changes"
 ```
-   - Pre-commit hooks will run linting automatically
-   - If hooks fail, fix the issues and try again
+
+- Pre-commit hooks will run linting automatically
+- If hooks fail, fix the issues and try again
 
 5. **Push and create PR**
+
 ```bash
 git push origin feature/your-feature-name
 # Create PR on GitHub
@@ -82,17 +90,18 @@ git push origin feature/your-feature-name
 
 ### Available Commands
 
-| Command | Purpose |
-|---------|---------|
-| `npm run dev` | Start backend in development mode |
-| `npm run start` | Start backend in production mode |
-| `npm test` | Run unit tests with coverage |
-| `npm run test:watch` | Run tests in watch mode |
-| `npm run test:coverage` | Generate coverage report |
-| `npm run test:e2e` | Run Cypress E2E tests |
-| `npm run test:e2e:open` | Open Cypress UI |
-| `npm run lint` | Run ESLint and fix issues |
-| `npm run format` | Format code with Prettier |
+| Command                   | Purpose                           |
+| ------------------------- | --------------------------------- |
+| `npm run dev`             | Start backend in development mode |
+| `npm run start`           | Start backend in production mode  |
+| `npm test`                | Run unit tests with coverage      |
+| `npm run test:watch`      | Run tests in watch mode           |
+| `npm run test:coverage`   | Generate coverage report          |
+| `npm run test:e2e`        | Run Playwright smoke E2E tests    |
+| `npm run test:e2e:ui`     | Open Playwright UI mode           |
+| `npm run test:e2e:headed` | Run Playwright in headed mode     |
+| `npm run lint`            | Run ESLint and fix issues         |
+| `npm run format`          | Format code with Prettier         |
 
 ## Project Structure
 
@@ -106,7 +115,7 @@ src/
 
 tests/
 ├── unit/            # Unit tests
-└── e2e/             # End-to-end tests (Cypress)
+└── e2e/             # End-to-end tests (Playwright)
 
 config/             # Configuration files
 data/              # Markdown documentation files
@@ -117,18 +126,21 @@ docker/            # Docker related files
 ## Code Standards
 
 ### JavaScript/ES6
+
 - Use ES6 modules (`import`/`export`)
 - Use async/await for promises
 - No `var`, use `let` and `const`
 - Use arrow functions where appropriate
 
 ### Naming
+
 - camelCase for variables and functions
 - PascalCase for classes and components
 - UPPER_CASE for constants
 - Prefix private methods with `_`
 
 ### Comments
+
 ```javascript
 /**
  * Brief description of what this does
@@ -141,6 +153,7 @@ export function myFunction(paramName) {
 ```
 
 ### Testing
+
 - All new features require tests
 - Target >80% code coverage
 - Use descriptive test names
@@ -157,6 +170,7 @@ describe('Feature Name', () => {
 ## Debugging
 
 ### Backend
+
 ```bash
 # Run with debug logging
 DEBUG=* npm run dev
@@ -167,11 +181,13 @@ node --inspect src/index.js
 ```
 
 ### Frontend
+
 - React DevTools browser extension
 - Redux DevTools extension
 - Network tab in browser DevTools
 
 ### Docker
+
 ```bash
 # View logs
 docker compose logs -f backend
@@ -187,6 +203,7 @@ docker compose exec backend sh
 ## Git Workflow
 
 ### Branch Naming
+
 ```
 feature/description        # New feature
 fix/description           # Bug fix
@@ -196,6 +213,7 @@ test/description          # Test additions
 ```
 
 ### Commit Message Format
+
 ```
 type: description
 
@@ -205,6 +223,7 @@ Optional detailed explanation
 **Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
 **Examples**:
+
 ```
 feat: add markdown parser service
 fix: handle circular dependencies in lineage
@@ -212,6 +231,7 @@ docs: update local dev setup guide
 ```
 
 ### Pull Request
+
 - Title: `[PHASE0-001] Brief description`
 - Description: Include what changed and why
 - Link related issues
@@ -235,6 +255,7 @@ docs: update local dev setup guide
 ## Common Issues
 
 ### "Port already in use"
+
 ```bash
 # Find process using port 3000
 lsof -i :3000
@@ -243,6 +264,7 @@ kill -9 <PID>
 ```
 
 ### "Module not found"
+
 ```bash
 # Reinstall dependencies
 rm -rf node_modules package-lock.json
@@ -250,6 +272,7 @@ npm ci
 ```
 
 ### "Docker container won't start"
+
 ```bash
 # Rebuild container
 docker compose build --no-cache

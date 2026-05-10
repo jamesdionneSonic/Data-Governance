@@ -83,8 +83,20 @@ const demoSnapshot = {
         { data: { id: 'finance.revenue_daily', label: 'revenue_daily' } },
       ],
       edges: [
-        { data: { id: 'sales.order_items-sales.orders', source: 'sales.order_items', target: 'sales.orders' } },
-        { data: { id: 'sales.orders-finance.revenue_daily', source: 'sales.orders', target: 'finance.revenue_daily' } },
+        {
+          data: {
+            id: 'sales.order_items-sales.orders',
+            source: 'sales.order_items',
+            target: 'sales.orders',
+          },
+        },
+        {
+          data: {
+            id: 'sales.orders-finance.revenue_daily',
+            source: 'sales.orders',
+            target: 'finance.revenue_daily',
+          },
+        },
       ],
     },
   },
@@ -156,11 +168,27 @@ createApp({
         notifyChannel: 'email',
         notifyEventType: 'documentation.updated',
         webhooks: [],
-        newWebhook: { name: 'Default Webhook', url: 'https://example.com/webhook', events: 'integration.test' },
+        newWebhook: {
+          name: 'Default Webhook',
+          url: 'https://example.com/webhook',
+          events: 'integration.test',
+        },
         linkObjectId: 'sales.orders',
         linkType: 'jira',
         linkUrl: 'https://jira.example.com/browse/DG-123',
         links: [],
+      },
+      marketplace: {
+        form: {
+          assetId: 'sales.orders',
+          requestedRole: 'Viewer',
+          justification: '',
+          approverId: '',
+          approverEmail: '',
+        },
+        requests: [],
+        scope: 'mine',
+        loading: false,
       },
       importer: {
         files: [],
@@ -252,19 +280,34 @@ createApp({
 
       return [
         {
-          key: 'discover', label: 'Discover Scope', done: discovered, view: 'import',
+          key: 'discover',
+          label: 'Discover Scope',
+          done: discovered,
+          view: 'import',
         },
         {
-          key: 'extract', label: 'Extract Metadata', done: extracted, view: 'import',
+          key: 'extract',
+          label: 'Extract Metadata',
+          done: extracted,
+          view: 'import',
         },
         {
-          key: 'validate', label: 'Validate Markdown', done: validated, view: 'import',
+          key: 'validate',
+          label: 'Validate Markdown',
+          done: validated,
+          view: 'import',
         },
         {
-          key: 'load', label: 'Load to Index', done: loaded, view: 'import',
+          key: 'load',
+          label: 'Load to Index',
+          done: loaded,
+          view: 'import',
         },
         {
-          key: 'analyze', label: 'Blast Radius Analysis', done: analyzed, view: 'reports',
+          key: 'analyze',
+          label: 'Blast Radius Analysis',
+          done: analyzed,
+          view: 'reports',
         },
       ];
     },
@@ -281,6 +324,10 @@ createApp({
         blastObjects: this.reports?.blastRadius?.impactedObjects || 0,
         blastDepth: this.reports?.blastRadius?.maxDepth || 0,
       };
+    },
+    isMarketplaceAdmin() {
+      const roles = (this.currentUser?.roles || []).map((role) => String(role).toLowerCase());
+      return roles.includes('admin');
     },
     criticalDependencyLeaderboard() {
       return (this.reports.blastRows || [])
@@ -385,13 +432,13 @@ createApp({
       const source = this.catalogBaseResults || [];
       const sourceTypes = new Set(source.map((item) => normalizeType(item.type)).filter(Boolean));
       const sourceDatabases = new Set(
-        source.map((item) => item.database || item.schema).filter(Boolean),
+        source.map((item) => item.database || item.schema).filter(Boolean)
       );
 
       const facetTypes = this.searchFacets?.types
         ? Object.keys(this.searchFacets.types)
-          .map((value) => normalizeType(value))
-          .filter(Boolean)
+            .map((value) => normalizeType(value))
+            .filter(Boolean)
         : Array.from(sourceTypes);
 
       const facetDatabases = this.searchFacets?.databases
@@ -405,7 +452,9 @@ createApp({
       };
     },
     filteredCatalogResults() {
-      const query = String(this.browseQuery || '').trim().toLowerCase();
+      const query = String(this.browseQuery || '')
+        .trim()
+        .toLowerCase();
       const selectedTypes = this.selectedFacetFilters.types || [];
       const selectedQuality = this.selectedFacetFilters.quality || [];
       const selectedDatabases = this.selectedFacetFilters.databases || [];
@@ -454,8 +503,8 @@ createApp({
 
         const typeMatch = selectedTypes.length === 0 || selectedTypes.includes(itemType);
         const qualityMatch = selectedQuality.length === 0 || selectedQuality.includes(itemQuality);
-        const databaseMatch = selectedDatabases.length === 0
-          || selectedDatabases.includes(itemDatabase);
+        const databaseMatch =
+          selectedDatabases.length === 0 || selectedDatabases.includes(itemDatabase);
 
         return typeMatch && qualityMatch && databaseMatch;
       });
@@ -469,7 +518,9 @@ createApp({
         }))
         .sort((first, second) => {
           if (this.browseSort === 'alphabetical') {
-            return String(first.id || first.name || '').localeCompare(String(second.id || second.name || ''));
+            return String(first.id || first.name || '').localeCompare(
+              String(second.id || second.name || '')
+            );
           }
 
           if (this.browseSort === 'quality') {
@@ -545,15 +596,14 @@ createApp({
     makeUiErrorId() {
       return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
     },
-    normalizeApiError({
-      path, method, status, payload, fallbackMessage,
-    }) {
+    normalizeApiError({ path, method, status, payload, fallbackMessage }) {
       const errorNode = payload?.errorInfo || payload?.error;
-      const message = payload?.message
-        || (typeof errorNode === 'string' ? errorNode : errorNode?.message)
-        || (typeof payload?.error === 'string' ? payload.error : null)
-        || fallbackMessage
-        || `Request failed: ${status || 'network error'}`;
+      const message =
+        payload?.message ||
+        (typeof errorNode === 'string' ? errorNode : errorNode?.message) ||
+        (typeof payload?.error === 'string' ? payload.error : null) ||
+        fallbackMessage ||
+        `Request failed: ${status || 'network error'}`;
 
       return {
         id: this.makeUiErrorId(),
@@ -605,7 +655,10 @@ createApp({
       this.discoveryGraph = demoSnapshot.graph;
       this.impactData = {
         stats: {
-          totalAffected: 2, directCount: 1, twoHopsCount: 1, threeOrMoreCount: 0,
+          totalAffected: 2,
+          directCount: 1,
+          twoHopsCount: 1,
+          threeOrMoreCount: 0,
         },
         levels: {
           direct: [{ id: 'finance.revenue_daily', name: 'revenue_daily' }],
@@ -654,18 +707,18 @@ createApp({
       }
     },
     async api(path, options = {}) {
-      const {
-        includeAuth = true,
-        trackError = true,
-        ...fetchOptions
-      } = options;
+      const { includeAuth = true, trackError = true, ...fetchOptions } = options;
 
       const headers = {
         ...(includeAuth ? this.authHeader : {}),
         ...(fetchOptions.headers || {}),
       };
 
-      if (!headers['Content-Type'] && fetchOptions.body && !(fetchOptions.body instanceof FormData)) {
+      if (
+        !headers['Content-Type'] &&
+        fetchOptions.body &&
+        !(fetchOptions.body instanceof FormData)
+      ) {
         headers['Content-Type'] = 'application/json';
       }
 
@@ -761,10 +814,116 @@ createApp({
         this.loadBrowse(),
         this.loadDiscovery(),
         this.loadIntegrations(),
+        this.loadMarketplaceRequests(),
         this.loadImportStatus(),
         this.loadAdmin(),
       ]);
       this.startImportStatusPolling();
+    },
+    syncMarketplaceFormWithSelection() {
+      const selected = this.selectedObjectDetail || {};
+      this.marketplace.form.assetId =
+        selected.id || this.selectedObjectId || this.marketplace.form.assetId;
+    },
+    async submitMarketplaceAccessRequest() {
+      this.syncMarketplaceFormWithSelection();
+
+      if (!this.marketplace.form.assetId) {
+        this.showToast('Select an asset before requesting access.');
+        return;
+      }
+
+      try {
+        this.marketplace.loading = true;
+        await this.api('/api/v1/marketplace/requests', {
+          method: 'POST',
+          body: JSON.stringify({
+            assetId: this.marketplace.form.assetId,
+            requestedRole: this.marketplace.form.requestedRole,
+            justification: this.marketplace.form.justification,
+            approverId: this.marketplace.form.approverId || undefined,
+            approverEmail: this.marketplace.form.approverEmail || undefined,
+          }),
+        });
+
+        this.marketplace.form.justification = '';
+        this.showToast('Access request submitted.');
+        await this.loadMarketplaceRequests();
+      } catch (err) {
+        this.showToast(`Request submit failed: ${err.message}`);
+      } finally {
+        this.marketplace.loading = false;
+      }
+    },
+    async loadMarketplaceRequests(forceScope) {
+      const chosenScope = forceScope || this.marketplace.scope || 'mine';
+      const scope = !this.isMarketplaceAdmin && chosenScope === 'all' ? 'mine' : chosenScope;
+      this.marketplace.scope = scope;
+
+      try {
+        this.marketplace.loading = true;
+        const payload = await this.api(
+          `/api/v1/marketplace/requests?scope=${encodeURIComponent(scope)}`
+        );
+        this.marketplace.requests = payload.data?.requests || [];
+      } catch (err) {
+        this.showToast(`Marketplace load failed: ${err.message}`);
+      } finally {
+        this.marketplace.loading = false;
+      }
+    },
+    canReviewMarketplaceRequest(requestItem) {
+      if (this.isMarketplaceAdmin) {
+        return true;
+      }
+
+      const approverId = requestItem?.approver?.userId;
+      const currentUserId = this.currentUser?.id;
+      return !!approverId && !!currentUserId && approverId === currentUserId;
+    },
+    async reviewMarketplaceRequest(requestItem, action) {
+      if (!requestItem?.requestId) {
+        return;
+      }
+
+      const comment =
+        window.prompt(`Comment for ${action.replace('_', ' ')} (optional):`, '') || '';
+
+      try {
+        await this.api(
+          `/api/v1/marketplace/requests/${encodeURIComponent(requestItem.requestId)}/review`,
+          {
+            method: 'POST',
+            body: JSON.stringify({ action, comment }),
+          }
+        );
+        this.showToast(`Request moved to ${action}.`);
+        await this.loadMarketplaceRequests();
+      } catch (err) {
+        this.showToast(`Review action failed: ${err.message}`);
+      }
+    },
+    async fulfillMarketplaceRequest(requestItem) {
+      if (!requestItem?.requestId) {
+        return;
+      }
+
+      const assignmentReference = window.prompt('Assignment reference (optional):', '') || '';
+      const notes = window.prompt('Fulfillment notes (optional):', '') || '';
+
+      try {
+        await this.api(
+          `/api/v1/marketplace/requests/${encodeURIComponent(requestItem.requestId)}/fulfill`,
+          {
+            method: 'POST',
+            body: JSON.stringify({ assignmentReference, notes }),
+          }
+        );
+        this.showToast('Request fulfilled.');
+        await this.loadMarketplaceRequests();
+      } catch (err) {
+        this.showToast(`Fulfillment failed: ${err.message}`);
+      }
     },
     startImportStatusPolling() {
       if (this.importStatusPoller || !this.token) {
@@ -786,7 +945,12 @@ createApp({
     },
     async runRecommendedWorkflowAction() {
       const next = this.recommendedWorkflowAction;
-      if (next.key === 'discover' || next.key === 'extract' || next.key === 'validate' || next.key === 'load') {
+      if (
+        next.key === 'discover' ||
+        next.key === 'extract' ||
+        next.key === 'validate' ||
+        next.key === 'load'
+      ) {
         this.activeView = 'import';
       }
 
@@ -1025,14 +1189,13 @@ createApp({
 
           const outDegree = (outAdj.get(id) || []).length;
           const inDegree = (inAdj.get(id) || []).length;
-          const downstreamWeight = downstreamDepth === null
-            ? 0
-            : Math.max(0, 6 - downstreamDepth) * 2;
+          const downstreamWeight =
+            downstreamDepth === null ? 0 : Math.max(0, 6 - downstreamDepth) * 2;
           const upstreamWeight = upstreamDepth === null ? 0 : Math.max(0, 6 - upstreamDepth);
           const score = downstreamWeight + upstreamWeight + outDegree + inDegree;
           const minDepth = Math.min(
             downstreamDepth === null ? Number.MAX_SAFE_INTEGER : downstreamDepth,
-            upstreamDepth === null ? Number.MAX_SAFE_INTEGER : upstreamDepth,
+            upstreamDepth === null ? Number.MAX_SAFE_INTEGER : upstreamDepth
           );
 
           let tier = 'T3+';
@@ -1104,17 +1267,17 @@ createApp({
           datasets: [
             {
               label: 'Downstream Reach',
-              data: topRows.map((row) => (row.downstreamDepth === null
-                ? 0
-                : Math.max(0, 6 - row.downstreamDepth) * 2)),
+              data: topRows.map((row) =>
+                row.downstreamDepth === null ? 0 : Math.max(0, 6 - row.downstreamDepth) * 2
+              ),
               backgroundColor: 'rgba(239, 68, 68, 0.75)',
               borderColor: '#dc2626',
               borderWidth: 1,
             },
             {
               label: 'Upstream Reach',
-              data: topRows.map(
-                (row) => (row.upstreamDepth === null ? 0 : Math.max(0, 6 - row.upstreamDepth)),
+              data: topRows.map((row) =>
+                row.upstreamDepth === null ? 0 : Math.max(0, 6 - row.upstreamDepth)
               ),
               backgroundColor: 'rgba(37, 99, 235, 0.75)',
               borderColor: '#1d4ed8',
@@ -1175,12 +1338,14 @@ createApp({
     },
     async runSearch() {
       try {
-        const search = await this.api(`/api/v1/search?q=${encodeURIComponent(this.browseQuery)}&limit=50`);
+        const search = await this.api(
+          `/api/v1/search?q=${encodeURIComponent(this.browseQuery)}&limit=50`
+        );
         this.browseResults = search.results || [];
       } catch (err) {
         if (this.demoModeEnabled && !this.hasRealData) {
-          this.browseResults = demoSnapshot.objects.filter(
-            (item) => item.id.includes(this.browseQuery),
+          this.browseResults = demoSnapshot.objects.filter((item) =>
+            item.id.includes(this.browseQuery)
           );
           return;
         }
@@ -1264,7 +1429,9 @@ createApp({
       }
 
       try {
-        const payload = await this.api(`/api/v1/docs/library/${encodeURIComponent(this.selectedDocKey)}`);
+        const payload = await this.api(
+          `/api/v1/docs/library/${encodeURIComponent(this.selectedDocKey)}`
+        );
         this.selectedDoc = payload.data || null;
       } catch (err) {
         this.showToast(`Document open failed: ${err.message}`);
@@ -1291,8 +1458,12 @@ createApp({
       try {
         const [detail, upstream, downstream, impact] = await Promise.all([
           this.api(`/api/v1/objects/${encodeURIComponent(this.selectedObjectId)}`),
-          this.api(`/api/v1/lineage/${encodeURIComponent(this.selectedObjectId)}/upstream?depth=${this.discoveryDepth}`),
-          this.api(`/api/v1/lineage/${encodeURIComponent(this.selectedObjectId)}/downstream?depth=${this.discoveryDepth}`),
+          this.api(
+            `/api/v1/lineage/${encodeURIComponent(this.selectedObjectId)}/upstream?depth=${this.discoveryDepth}`
+          ),
+          this.api(
+            `/api/v1/lineage/${encodeURIComponent(this.selectedObjectId)}/downstream?depth=${this.discoveryDepth}`
+          ),
           this.api(`/api/v1/lineage/${encodeURIComponent(this.selectedObjectId)}/impact`),
         ]);
 
@@ -1302,6 +1473,7 @@ createApp({
           downstream,
           impact,
         };
+        this.syncMarketplaceFormWithSelection();
       } catch (_err) {
         this.selectedObjectDetail = null;
       }
@@ -1309,7 +1481,9 @@ createApp({
     async loadDiscovery() {
       try {
         const [graph, impact, matrix] = await Promise.all([
-          this.api(`/api/v1/discovery/graph/${encodeURIComponent(this.selectedObjectId)}?format=${this.discoveryFormat}&depth=${this.discoveryDepth}`),
+          this.api(
+            `/api/v1/discovery/graph/${encodeURIComponent(this.selectedObjectId)}?format=${this.discoveryFormat}&depth=${this.discoveryDepth}`
+          ),
           this.api(`/api/v1/discovery/impact/${encodeURIComponent(this.selectedObjectId)}`),
           this.api(`/api/v1/discovery/matrix/${encodeURIComponent(this.matrixDatabase)}`),
         ]);
@@ -1340,7 +1514,7 @@ createApp({
 
       const normalized = this.normalizeGraphData(this.discoveryGraph.data);
       const impactScoreById = new Map(
-        (this.reports.blastRows || []).map((row) => [row.id, row.reachScore]),
+        (this.reports.blastRows || []).map((row) => [row.id, row.reachScore])
       );
 
       if (this.discoveryFormat === 'cytoscape') {
@@ -1395,11 +1569,26 @@ createApp({
                 'font-weight': 'bold',
               },
             },
-            { selector: 'node[type = "table"]', style: { shape: 'round-rectangle', 'background-color': '#2563eb' } },
-            { selector: 'node[type = "view"]', style: { shape: 'diamond', 'background-color': '#7c3aed' } },
-            { selector: 'node[type = "procedure"]', style: { shape: 'hexagon', 'background-color': '#ea580c' } },
-            { selector: 'node[type = "function"]', style: { shape: 'ellipse', 'background-color': '#0d9488' } },
-            { selector: 'node[type = "trigger"]', style: { shape: 'triangle', 'background-color': '#be123c' } },
+            {
+              selector: 'node[type = "table"]',
+              style: { shape: 'round-rectangle', 'background-color': '#2563eb' },
+            },
+            {
+              selector: 'node[type = "view"]',
+              style: { shape: 'diamond', 'background-color': '#7c3aed' },
+            },
+            {
+              selector: 'node[type = "procedure"]',
+              style: { shape: 'hexagon', 'background-color': '#ea580c' },
+            },
+            {
+              selector: 'node[type = "function"]',
+              style: { shape: 'ellipse', 'background-color': '#0d9488' },
+            },
+            {
+              selector: 'node[type = "trigger"]',
+              style: { shape: 'triangle', 'background-color': '#be123c' },
+            },
             {
               selector: 'edge',
               style: {
@@ -1451,7 +1640,9 @@ createApp({
         if (!response.ok) {
           const contentType = response.headers.get('content-type') || '';
           const payload = contentType.includes('application/json') ? await response.json() : null;
-          const fallbackMessage = payload ? null : (await response.text()) || `Download failed (${response.status})`;
+          const fallbackMessage = payload
+            ? null
+            : (await response.text()) || `Download failed (${response.status})`;
           const entry = this.normalizeApiError({
             path: url,
             method: 'GET',
@@ -1483,16 +1674,28 @@ createApp({
       const packDefinitions = {
         executive: [
           { url: '/api/v1/reporting/export/catalog.xlsx', fileName: 'executive-catalog.xlsx' },
-          { url: `/api/v1/reporting/export/dependency/${objectId}.pdf`, fileName: `executive-dependency-${this.selectedObjectId}.pdf` },
-          { url: `/api/v1/reporting/export/visualization/${objectId}?format=svg`, fileName: `executive-visual-${this.selectedObjectId}.svg` },
+          {
+            url: `/api/v1/reporting/export/dependency/${objectId}.pdf`,
+            fileName: `executive-dependency-${this.selectedObjectId}.pdf`,
+          },
+          {
+            url: `/api/v1/reporting/export/visualization/${objectId}?format=svg`,
+            fileName: `executive-visual-${this.selectedObjectId}.svg`,
+          },
         ],
         steward: [
           { url: '/api/v1/reporting/export/catalog.csv', fileName: 'steward-catalog.csv' },
-          { url: `/api/v1/reporting/export/dependency/${objectId}.pdf`, fileName: `steward-dependency-${this.selectedObjectId}.pdf` },
+          {
+            url: `/api/v1/reporting/export/dependency/${objectId}.pdf`,
+            fileName: `steward-dependency-${this.selectedObjectId}.pdf`,
+          },
         ],
         analyst: [
           { url: '/api/v1/reporting/export/catalog.csv', fileName: 'analyst-catalog.csv' },
-          { url: `/api/v1/reporting/export/visualization/${objectId}?format=svg`, fileName: `analyst-visual-${this.selectedObjectId}.svg` },
+          {
+            url: `/api/v1/reporting/export/visualization/${objectId}?format=svg`,
+            fileName: `analyst-visual-${this.selectedObjectId}.svg`,
+          },
         ],
       };
 
@@ -1519,18 +1722,20 @@ createApp({
     },
     async createShareLink() {
       try {
-        const payload = await this.api(`/api/v1/reporting/share/visualization/${encodeURIComponent(this.reports.shareObjectId)}`, {
-          method: 'POST',
-          body: JSON.stringify({
-            format: this.reports.shareFormat,
-            ttlMinutes: 1440,
-            baseUrl: window.location.origin,
-          }),
-        });
+        const payload = await this.api(
+          `/api/v1/reporting/share/visualization/${encodeURIComponent(this.reports.shareObjectId)}`,
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              format: this.reports.shareFormat,
+              ttlMinutes: 1440,
+              baseUrl: window.location.origin,
+            }),
+          }
+        );
 
-        this.reports.sharedLink = payload.data?.url
-          || payload.data?.link
-          || JSON.stringify(payload.data);
+        this.reports.sharedLink =
+          payload.data?.url || payload.data?.link || JSON.stringify(payload.data);
       } catch (err) {
         this.showToast(`Share link failed: ${err.message}`);
       }
@@ -1539,7 +1744,11 @@ createApp({
       try {
         await this.api('/api/v1/reporting/schedules', {
           method: 'POST',
-          body: JSON.stringify({ recipient: this.reports.recipient, reportType: 'catalog.csv', frequency: 'daily' }),
+          body: JSON.stringify({
+            recipient: this.reports.recipient,
+            reportType: 'catalog.csv',
+            frequency: 'daily',
+          }),
         });
         await this.loadSchedules();
       } catch (err) {
@@ -1611,7 +1820,10 @@ createApp({
           body: JSON.stringify({
             name: this.integrations.newWebhook.name,
             url: this.integrations.newWebhook.url,
-            events: this.integrations.newWebhook.events.split(',').map((value) => value.trim()).filter(Boolean),
+            events: this.integrations.newWebhook.events
+              .split(',')
+              .map((value) => value.trim())
+              .filter(Boolean),
           }),
         });
         await this.loadIntegrations();
@@ -1640,14 +1852,17 @@ createApp({
     },
     async addExternalLink() {
       try {
-        await this.api(`/api/v1/integrations/links/${encodeURIComponent(this.integrations.linkObjectId)}`, {
-          method: 'POST',
-          body: JSON.stringify({
-            type: this.integrations.linkType,
-            url: this.integrations.linkUrl,
-            label: this.integrations.linkType.toUpperCase(),
-          }),
-        });
+        await this.api(
+          `/api/v1/integrations/links/${encodeURIComponent(this.integrations.linkObjectId)}`,
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              type: this.integrations.linkType,
+              url: this.integrations.linkUrl,
+              label: this.integrations.linkType.toUpperCase(),
+            }),
+          }
+        );
         await this.loadLinks();
       } catch (err) {
         this.showToast(`External link add failed: ${err.message}`);
@@ -1655,7 +1870,9 @@ createApp({
     },
     async loadLinks() {
       try {
-        const payload = await this.api(`/api/v1/integrations/links/${encodeURIComponent(this.integrations.linkObjectId)}`);
+        const payload = await this.api(
+          `/api/v1/integrations/links/${encodeURIComponent(this.integrations.linkObjectId)}`
+        );
         this.integrations.links = payload.data?.links || [];
       } catch (err) {
         this.showToast(`Link load failed: ${err.message}`);
@@ -1663,7 +1880,10 @@ createApp({
     },
     async removeLink(linkId) {
       try {
-        await this.api(`/api/v1/integrations/links/${encodeURIComponent(this.integrations.linkObjectId)}/${linkId}`, { method: 'DELETE' });
+        await this.api(
+          `/api/v1/integrations/links/${encodeURIComponent(this.integrations.linkObjectId)}/${linkId}`,
+          { method: 'DELETE' }
+        );
         await this.loadLinks();
       } catch (err) {
         this.showToast(`Link remove failed: ${err.message}`);
@@ -1673,9 +1893,18 @@ createApp({
       try {
         const objectIds = [this.selectedObjectId];
         await Promise.all([
-          this.api('/api/v1/integrations/cicd/impact-analysis', { method: 'POST', body: JSON.stringify({ objectIds }) }),
-          this.api('/api/v1/integrations/cicd/compliance-check', { method: 'POST', body: JSON.stringify({ objectIds }) }),
-          this.api('/api/v1/integrations/cicd/post-deploy-docs', { method: 'POST', body: JSON.stringify({ objectIds }) }),
+          this.api('/api/v1/integrations/cicd/impact-analysis', {
+            method: 'POST',
+            body: JSON.stringify({ objectIds }),
+          }),
+          this.api('/api/v1/integrations/cicd/compliance-check', {
+            method: 'POST',
+            body: JSON.stringify({ objectIds }),
+          }),
+          this.api('/api/v1/integrations/cicd/post-deploy-docs', {
+            method: 'POST',
+            body: JSON.stringify({ objectIds }),
+          }),
         ]);
         this.showToast('CI/CD checks executed');
       } catch (err) {
@@ -1691,8 +1920,10 @@ createApp({
         return false;
       }
 
-      if (auth === 'sql-server'
-        && (!this.importer.sqlServer.username || !this.importer.sqlServer.password)) {
+      if (
+        auth === 'sql-server' &&
+        (!this.importer.sqlServer.username || !this.importer.sqlServer.password)
+      ) {
         this.showToast('Username and password are required for this authentication method.');
         return false;
       }
@@ -1706,10 +1937,12 @@ createApp({
         }
       }
 
-      if (auth === 'azure-ad'
-        && (!this.importer.sqlServer.clientId
-          || !this.importer.sqlServer.clientSecret
-          || !this.importer.sqlServer.tenantId)) {
+      if (
+        auth === 'azure-ad' &&
+        (!this.importer.sqlServer.clientId ||
+          !this.importer.sqlServer.clientSecret ||
+          !this.importer.sqlServer.tenantId)
+      ) {
         this.showToast('Client ID, Client Secret, and Tenant ID are required for Azure AD auth.');
         return false;
       }
@@ -1759,7 +1992,9 @@ createApp({
         this.importer.sqlServer.discoveredObjectCount = payload?.data?.totalObjectCount || 0;
         this.importer.sqlServer.showScopeSelector = true;
         this.importer.sqlServer.selectionMode = 'schema'; // Default to schema mode
-        this.showToast(`Discovered ${payload?.data?.schemaCount || 0} schemas with ${this.importer.sqlServer.discoveredObjectCount} total objects. Select what to extract.`);
+        this.showToast(
+          `Discovered ${payload?.data?.schemaCount || 0} schemas with ${this.importer.sqlServer.discoveredObjectCount} total objects. Select what to extract.`
+        );
       } catch (err) {
         this.showToast(`SQL Server discovery failed: ${err.message}`);
       } finally {
@@ -1773,10 +2008,12 @@ createApp({
         }
 
         const isTableMode = this.importer.sqlServer.selectionMode === 'table';
-        const hasSchemas = this.importer.sqlServer.selectedSchemas
-          && this.importer.sqlServer.selectedSchemas.length > 0;
-        const hasTables = this.importer.sqlServer.selectedTables
-          && this.importer.sqlServer.selectedTables.length > 0;
+        const hasSchemas =
+          this.importer.sqlServer.selectedSchemas &&
+          this.importer.sqlServer.selectedSchemas.length > 0;
+        const hasTables =
+          this.importer.sqlServer.selectedTables &&
+          this.importer.sqlServer.selectedTables.length > 0;
 
         if (!isTableMode && !hasSchemas) {
           this.showToast('Select at least one schema to extract.');
@@ -1821,7 +2058,9 @@ createApp({
         const outputHint = payload.data.markdownOutputPath
           ? ` Files saved to ${payload.data.markdownOutputPath}`
           : '';
-        this.showToast(`SQL Server extraction complete: ${objectSummary}, ${payload.data.relationshipsDetected} relationships.${outputHint}`);
+        this.showToast(
+          `SQL Server extraction complete: ${objectSummary}, ${payload.data.relationshipsDetected} relationships.${outputHint}`
+        );
       } catch (err) {
         this.showToast(`SQL Server extraction failed: ${err.message}`);
       } finally {
@@ -1830,17 +2069,16 @@ createApp({
     },
     toggleAllSqlServerSchemas(selectAll) {
       if (selectAll) {
-        this.importer.sqlServer.selectedSchemas = this.importer.sqlServer.availableSchemas
-          .map((schema) => schema.schemaName);
+        this.importer.sqlServer.selectedSchemas = this.importer.sqlServer.availableSchemas.map(
+          (schema) => schema.schemaName
+        );
       } else {
         this.importer.sqlServer.selectedSchemas = [];
       }
     },
     selectTopSqlServerSchemas() {
       const parsedTopN = Number(this.importer.sqlServer.topSchemaCount);
-      const topN = Number.isFinite(parsedTopN)
-        ? Math.max(1, Math.floor(parsedTopN))
-        : 1;
+      const topN = Number.isFinite(parsedTopN) ? Math.max(1, Math.floor(parsedTopN)) : 1;
 
       const topSchemas = [...this.importer.sqlServer.availableSchemas]
         .sort((a, b) => (b.totalObjectCount || 0) - (a.totalObjectCount || 0))
@@ -1862,8 +2100,8 @@ createApp({
 
       // Lazy-load tables for this schema if not already loaded
       if (
-        this.importer.sqlServer.expandedSchemas[schemaName]
-        && !this.importer.sqlServer.schemaTableLists[schemaName]
+        this.importer.sqlServer.expandedSchemas[schemaName] &&
+        !this.importer.sqlServer.schemaTableLists[schemaName]
       ) {
         this.loadTablesForSchema(schemaName);
       }
@@ -1891,8 +2129,9 @@ createApp({
         // Deselect all tables in schema
         const tables = this.importer.sqlServer.schemaTableLists[schemaName] || [];
         const tablesToRemove = new Set(tables.map((t) => `${schemaName}.${t.name}`));
-        this.importer.sqlServer.selectedTables = this.importer.sqlServer.selectedTables
-          .filter((id) => !tablesToRemove.has(id));
+        this.importer.sqlServer.selectedTables = this.importer.sqlServer.selectedTables.filter(
+          (id) => !tablesToRemove.has(id)
+        );
       }
     },
     isSchemaFullySelected(schemaName) {
@@ -1906,29 +2145,31 @@ createApp({
       this.importer.files = files;
       this.importer.parsed = [];
 
-      const parsedEntries = await Promise.all(files.map(async (file) => {
-        try {
-          const content = await file.text();
-          const payload = await this.api('/api/v1/ingestion/parse-content', {
-            method: 'POST',
-            body: JSON.stringify({ content, fileName: file.name }),
-          });
+      const parsedEntries = await Promise.all(
+        files.map(async (file) => {
+          try {
+            const content = await file.text();
+            const payload = await this.api('/api/v1/ingestion/parse-content', {
+              method: 'POST',
+              body: JSON.stringify({ content, fileName: file.name }),
+            });
 
-          return {
-            fileName: file.name,
-            status: 'valid',
-            objectId: payload.data.id,
-            database: payload.data.database,
-            type: payload.data.type,
-          };
-        } catch (err) {
-          return {
-            fileName: file.name,
-            status: 'invalid',
-            error: err.message,
-          };
-        }
-      }));
+            return {
+              fileName: file.name,
+              status: 'valid',
+              objectId: payload.data.id,
+              database: payload.data.database,
+              type: payload.data.type,
+            };
+          } catch (err) {
+            return {
+              fileName: file.name,
+              status: 'invalid',
+              error: err.message,
+            };
+          }
+        })
+      );
 
       this.importer.parsed = parsedEntries;
     },
@@ -1942,7 +2183,9 @@ createApp({
           body: JSON.stringify({ dataPath: this.importer.validatePath }),
         });
         this.importer.validationResult = payload.data;
-        this.showToast(`Validation complete: ${payload.data.valid} valid / ${payload.data.invalid} invalid`);
+        this.showToast(
+          `Validation complete: ${payload.data.valid} valid / ${payload.data.invalid} invalid`
+        );
       } catch (err) {
         this.showToast(`Validation failed: ${err.message}`);
       }
@@ -1951,7 +2194,9 @@ createApp({
       try {
         if (!this.canLoadToIndex) {
           const meiliUrl = this.importer.status?.meilisearchUrl || 'http://localhost:7700';
-          this.showToast(`Load blocked: Meilisearch is unavailable at ${meiliUrl}. Start it and refresh status.`);
+          this.showToast(
+            `Load blocked: Meilisearch is unavailable at ${meiliUrl}. Start it and refresh status.`
+          );
           return;
         }
         if (this.importer.loadPath === './docs' && this.importer.status?.lastGeneratedPath) {
@@ -1971,7 +2216,8 @@ createApp({
     },
     async downloadGeneratedMarkdownZip() {
       try {
-        const sourcePath = this.importer.loadPath || this.importer.validatePath || './docs/generated/sqlserver';
+        const sourcePath =
+          this.importer.loadPath || this.importer.validatePath || './docs/generated/sqlserver';
         const url = `/api/v1/ingestion/export-zip?dataPath=${encodeURIComponent(sourcePath)}`;
         await this.downloadProtected(url, 'sqlserver-markdown.zip');
       } catch (err) {
@@ -2098,6 +2344,7 @@ createApp({
       if (view === 'reports') {
         this.loadSchedules();
         this.buildBlastRadiusReport();
+        this.loadMarketplaceRequests();
         await nextTick();
         this.renderBlastRadiusChart();
       }
@@ -2537,6 +2784,7 @@ createApp({
                       <div class="btn-row mt-8">
                         <button class="btn ghost btn-sm" @click="onViewChange('discovery'); $nextTick(loadDiscovery)">View in Lineage</button>
                         <button class="btn ghost btn-sm" @click="buildBlastRadiusReport(); onViewChange('reports');">Blast Radius</button>
+                        <button class="btn" @click="syncMarketplaceFormWithSelection(); onViewChange('reports');">Request Access</button>
                       </div>
                     </div>
                   </div>
@@ -2688,6 +2936,91 @@ createApp({
                     <div class="value">{{ executiveReportMetrics.blastObjects }}</div>
                     <div class="label">High-Risk Objects</div>
                   </div>
+                </div>
+              </div>
+
+              <div class="card span-12">
+                <div class="section-header">
+                  <span class="section-title">Data Marketplace Access Workflow</span>
+                  <div class="btn-row">
+                    <select v-model="marketplace.scope" @change="loadMarketplaceRequests()" style="width:170px;">
+                      <option value="mine">My Requests</option>
+                      <option value="approvals">My Approvals</option>
+                      <option v-if="isMarketplaceAdmin" value="all">All Requests</option>
+                    </select>
+                    <button class="btn ghost btn-sm" @click="loadMarketplaceRequests()">Refresh</button>
+                  </div>
+                </div>
+
+                <div class="form-row" style="margin-bottom:10px;">
+                  <div class="col-3"><label>Asset ID</label><input v-model="marketplace.form.assetId" placeholder="sales.orders" /></div>
+                  <div class="col-2"><label>Requested Role</label><select v-model="marketplace.form.requestedRole"><option>Viewer</option><option>Analyst</option><option>PowerUser</option></select></div>
+                  <div class="col-3"><label>Approver User ID</label><input v-model="marketplace.form.approverId" placeholder="user-approver" /></div>
+                  <div class="col-4"><label>Approver Email</label><input v-model="marketplace.form.approverEmail" placeholder="approver@company.com" /></div>
+                </div>
+                <label>Business Justification</label>
+                <textarea v-model="marketplace.form.justification" rows="3" placeholder="Describe why access is required and business impact if delayed."></textarea>
+                <div class="btn-row" style="margin-top:10px;">
+                  <button class="btn success" @click="submitMarketplaceAccessRequest" :disabled="marketplace.loading">Submit Request</button>
+                  <button class="btn muted" @click="syncMarketplaceFormWithSelection">Use Selected Object</button>
+                </div>
+
+                <div class="table-wrap mt-8">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Request</th>
+                        <th>Asset</th>
+                        <th>Status</th>
+                        <th>Requester</th>
+                        <th>Approver</th>
+                        <th>SLA Due</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="requestItem in marketplace.requests" :key="requestItem.requestId">
+                        <td class="text-mono text-small">{{ requestItem.requestId }}</td>
+                        <td>{{ requestItem.assetId }}</td>
+                        <td>
+                          <span class="status-pill" :class="requestItem.sla?.overdue ? 'pill-red' : 'pill-blue'">{{ requestItem.status }}</span>
+                        </td>
+                        <td>{{ requestItem.requester?.email || requestItem.requester?.userId || '-' }}</td>
+                        <td>{{ requestItem.approver?.email || requestItem.approver?.userId || '-' }}</td>
+                        <td>{{ formatTimestamp(requestItem.sla?.dueAt) }}</td>
+                        <td class="btn-row">
+                          <button
+                            v-if="canReviewMarketplaceRequest(requestItem) && ['submitted','in-review','request-more-info'].includes(requestItem.status)"
+                            class="btn ghost btn-sm"
+                            @click="reviewMarketplaceRequest(requestItem, 'start_review')"
+                          >Start</button>
+                          <button
+                            v-if="canReviewMarketplaceRequest(requestItem) && ['submitted','in-review','request-more-info'].includes(requestItem.status)"
+                            class="btn ghost btn-sm"
+                            @click="reviewMarketplaceRequest(requestItem, 'request_more_info')"
+                          >More Info</button>
+                          <button
+                            v-if="canReviewMarketplaceRequest(requestItem) && ['submitted','in-review','request-more-info'].includes(requestItem.status)"
+                            class="btn success btn-sm"
+                            @click="reviewMarketplaceRequest(requestItem, 'approve')"
+                          >Approve</button>
+                          <button
+                            v-if="canReviewMarketplaceRequest(requestItem) && ['submitted','in-review','request-more-info'].includes(requestItem.status)"
+                            class="btn danger btn-sm"
+                            @click="reviewMarketplaceRequest(requestItem, 'reject')"
+                          >Reject</button>
+                          <button
+                            v-if="isMarketplaceAdmin && requestItem.status === 'approved'"
+                            class="btn btn-sm"
+                            @click="fulfillMarketplaceRequest(requestItem)"
+                          >Fulfill</button>
+                        </td>
+                      </tr>
+                      <tr v-if="!marketplace.requests.length">
+                        <td colspan="7" class="empty">No access requests found for this scope.</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
@@ -3405,4 +3738,6 @@ createApp({
       <div v-if="toast" class="toast">{{ toast }}</div>
     </v-app>
   `,
-}).use(vuetify).mount('#app-root');
+})
+  .use(vuetify)
+  .mount('#app-root');

@@ -24,6 +24,9 @@ import ingestionRoutes from './api/ingestion.js';
 import discoveryRoutes, { setDiscoveryCache } from './api/discovery.js';
 import integrationsRoutes, { setIntegrationCache } from './api/integrations.js';
 import docsRoutes from './api/docs.js';
+import ssisRoutes from './api/ssis.js';
+import marketplaceRoutes, { setMarketplaceCache } from './api/marketplace.js';
+import dataProductsRoutes from './api/dataProducts.js';
 
 // Import utilities and config
 import { validateEntraConfig } from './utils/entraConfig.js';
@@ -41,6 +44,7 @@ export function initializeCache(app, objects, lineageGraph) {
   setDashboardCache(objects);
   setReportingCache(objects, lineageGraph);
   setIntegrationCache(objects, lineageGraph);
+  setMarketplaceCache(objects);
 }
 
 /**
@@ -95,6 +99,9 @@ export default function createApp() {
   apiRouter.use('/discovery', discoveryRoutes);
   apiRouter.use('/integrations', integrationsRoutes);
   apiRouter.use('/docs', docsRoutes);
+  apiRouter.use('/ssis', ssisRoutes);
+  apiRouter.use('/marketplace', marketplaceRoutes);
+  apiRouter.use('/data-products', dataProductsRoutes);
 
   // API info endpoint
   apiRouter.get('/', (req, res) => {
@@ -120,6 +127,11 @@ export default function createApp() {
         reporting: 'GET|POST /reporting/* (export/reporting endpoints)',
         integrations: 'GET|POST|PUT|DELETE /integrations/* (requires auth, admin for mutations)',
         docs: 'GET /docs/library and /docs/library/:key (requires auth)',
+        ssis: 'POST /ssis/extract|lineage|catalog|agent-jobs – SSIS metadata ingestion (requires auth)',
+        marketplace:
+          'GET|POST /marketplace/requests* – access request workflow (requires auth, admin for export/fulfillment)',
+        dataProducts:
+          'GET|POST /data-products/products* – data product contracts, state transitions, SLA violations (requires auth)',
       },
     });
   });
