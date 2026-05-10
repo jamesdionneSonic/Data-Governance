@@ -18,30 +18,34 @@ This backlog contains the complete delivery history for MVP phases and the forwa
 
 > **Non-Negotiable Architecture Principles**:
 >
-> **Layer 1 – Markdown Source of Truth (unchanged)**
+> **Layer 1 – Markdown Source of Truth (the dominant layer — ~80% of all governance content)**
 >
-> - Markdown `.md` files with YAML frontmatter remain the authoritative source for data asset documentation, lineage, schema definitions, and dependency declarations
-> - All data lineage defined in organization markdown files; pushed via Git or uploaded via the ingestion API
-> - Meilisearch indexes markdown content for full-text discovery
+> - Markdown `.md` files with YAML frontmatter are the authoritative source for the vast majority of governance data
+> - This includes: data asset documentation, lineage, schema definitions, dependency declarations, **business glossary terms**, **classification taxonomies**, **ownership declarations**, **policy definitions**, **compliance framework mappings**, **data product descriptions**, **steward annotations**, **guidelines**, **decision logs**, and **quality rule definitions**
+> - Git history of markdown files provides version control, change tracking, and a natural audit trail for all documentation-style governance content — you don't need SQL for this
+> - Modeled after the same approach used by dbt (`schema.yml`), OpenMetadata (YAML ingestion), and Amundsen (file-based metadata) — industry-proven pattern
+> - Meilisearch indexes all markdown/YAML content for full-text discovery
 >
-> **Layer 2 – SQL Operational Store (required for Phase 7a-7r governance features)**
+> **Layer 2 – SQL Operational Store (narrow use cases only — ~20% of governance features)**
 >
-> - Governance metadata that is transactional, stateful, or high-frequency write belongs in SQL Server (local dev) / Azure SQL (production)
-> - This includes: business glossary terms, quality rules + results, access requests, task assignments, incident records, audit events, usage analytics, and classification policies
-> - SQL is the right tool for concurrent edits, workflow state machines, SLA timers, and compliance-grade audit logs — markdown files cannot reliably support these use cases
-> - SQL data is **enrichment/operational overlay** on top of markdown assets; it does not replace markdown as the lineage source
+> - A small subset of governance features generate genuinely stateful, high-frequency, or real-time data that cannot be stored reliably in flat markdown files
+> - SQL is used **only** for: quality rule **execution results** (time-series measurements with timestamps), access request **live workflow state** (pending/approved/expired, changes in real time), task **assignment status** with SLA timers ticking, incident **lifecycle state** (acknowledged/resolved with MTTR), usage **event capture** (high-frequency user activity stream), **audit event log** (immutable compliance records), and notification **dispatch tracking**
+> - Every SQL-stored item is either changing state too rapidly (events), is time-sensitive (SLA timers), or is legally required to be immutable (audit logs) — these are genuinely not document-style data
+> - SQL data is **operational overlay** on top of the markdown asset registry; it never replaces markdown as source of truth
 >
 > **Layer 3 – BFF API (unchanged)**
 >
-> - Single REST API boundary merges markdown-indexed search results with SQL governance metadata
+> - Single REST API boundary merges markdown-indexed search results with SQL operational metadata
 > - All business logic centralized in the BFF; frontend never reads SQL or Meilisearch directly
 >
-> **Summary: Hybrid model**
+> **In plain terms:**
 >
-> - Asset definitions & lineage → Markdown files (Git-versioned)
-> - Search & discovery index → Meilisearch
-> - Operational governance state → SQL Server / Azure SQL
-> - Auth & permissions → Entra ID + custom RBAC store (SQL)
+> - "What is the definition of Revenue?" → Markdown glossary file ✅
+> - "Who owns the Customers table?" → `owner:` in the asset's YAML frontmatter ✅
+> - "What are our PII classification rules?" → Markdown classification file ✅
+> - "Has the quality check passed today?" → SQL (time-series measurement result with timestamp)
+> - "What is the status of John's access request?" → SQL (live workflow state changes hourly)
+> - "Who accessed PII data at 3:42 AM?" → SQL append-only audit log (compliance-grade, immutable)
 
 ---
 
