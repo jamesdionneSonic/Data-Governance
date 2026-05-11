@@ -55,7 +55,7 @@ describe('governanceContextService', () => {
     expect(context.asset_id).toBe('sales.orders');
     expect(context.asset.name).toBe('orders');
     expect(context.lineage.upstream).toEqual(
-      expect.arrayContaining(['sales.customers', 'sales.products'])
+      expect.arrayContaining(['sales.customers', 'sales.products']),
     );
     expect(context.lineage.downstream).toContain('sales.invoices');
     expect(Array.isArray(context.classifications)).toBe(true);

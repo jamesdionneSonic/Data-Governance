@@ -13,9 +13,9 @@ describe('trustService', () => {
       domain_manager: 'manager@example.com',
       custodian: 'custodian@example.com',
       description:
-        'This is a long business-critical description that exceeds three hundred characters. ' +
-        'It includes governance notes, ownership details, and usage patterns for finance and audit ' +
-        'operations with restricted data handling and compliance requirements.',
+        'This is a long business-critical description that exceeds three hundred characters. '
+        + 'It includes governance notes, ownership details, and usage patterns for finance and audit '
+        + 'operations with restricted data handling and compliance requirements.',
       sensitivity: 'confidential',
       tags: ['pii', 'finance', 'gold'],
       depends_on: ['source.customers', 'source.products'],

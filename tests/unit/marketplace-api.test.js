@@ -3,7 +3,9 @@ import createApp, { initializeCache } from '../../src/app.js';
 import { generateToken } from '../../src/utils/tokenManager.js';
 import { clearAccessRequests } from '../../src/services/accessRequestService.js';
 
-function createAuthHeader({ id, email, name, roles = ['Viewer'] }) {
+function createAuthHeader({
+  id, email, name, roles = ['Viewer'],
+}) {
   const token = generateToken({
     id,
     email,

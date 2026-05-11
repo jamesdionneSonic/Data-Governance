@@ -30,17 +30,15 @@ function nowIso() {
 function calculateReadinessScore(product) {
   const latestContract = product.contracts[product.contracts.length - 1] || null;
   const hasOwnerAndSteward = !!product.owner?.userId && !!product.steward?.userId;
-  const hasContractTerms =
-    !!latestContract &&
-    !!latestContract.schemaGuarantees &&
-    Number(latestContract.freshnessSlaMinutes) > 0 &&
-    Number(latestContract.qualityThreshold) > 0 &&
-    !!latestContract.accessTerms;
+  const hasContractTerms = !!latestContract
+    && !!latestContract.schemaGuarantees
+    && Number(latestContract.freshnessSlaMinutes) > 0
+    && Number(latestContract.qualityThreshold) > 0
+    && !!latestContract.accessTerms;
 
   const openViolations = product.violations.filter((violation) => !violation.resolvedAt);
   const severeOpenViolations = openViolations.filter((violation) =>
-    ['high', 'critical'].includes(violation.severity)
-  );
+    ['high', 'critical'].includes(violation.severity));
 
   let score = 0;
   if (hasOwnerAndSteward) {
@@ -61,8 +59,9 @@ function calculateReadinessScore(product) {
 }
 
 function normalizeProduct(product) {
-  const currentContract =
-    product.contracts.find((contract) => contract.contractId === product.currentContractId) || null;
+  const currentContract = product.contracts.find(
+    (contract) => contract.contractId === product.currentContractId,
+  ) || null;
   const readinessScore = calculateReadinessScore(product);
 
   return {
@@ -145,7 +144,9 @@ export function getDataProduct(productId) {
 }
 
 export function listDataProducts(filters = {}) {
-  const { state, domain, ownerUserId, stewardUserId } = filters;
+  const {
+    state, domain, ownerUserId, stewardUserId,
+  } = filters;
 
   return Array.from(productStore.values())
     .filter((product) => {
@@ -178,12 +179,13 @@ export function addContractVersion(productId, payload = {}, actor = {}) {
     throw new Error('Data product not found');
   }
 
-  const { schemaGuarantees, freshnessSlaMinutes, qualityThreshold, accessTerms, effectiveFrom } =
-    payload;
+  const {
+    schemaGuarantees, freshnessSlaMinutes, qualityThreshold, accessTerms, effectiveFrom,
+  } = payload;
 
   if (!schemaGuarantees || !freshnessSlaMinutes || !qualityThreshold || !accessTerms) {
     throw new Error(
-      'schemaGuarantees, freshnessSlaMinutes, qualityThreshold, and accessTerms are required'
+      'schemaGuarantees, freshnessSlaMinutes, qualityThreshold, and accessTerms are required',
     );
   }
 

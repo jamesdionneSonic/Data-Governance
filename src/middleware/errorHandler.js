@@ -15,8 +15,9 @@ export class ApiError extends Error {
 
 function normalizeStatus(err) {
   const requestedStatus = Number(err.status || err.statusCode || 500);
-  const isValidHttpStatus =
-    Number.isInteger(requestedStatus) && requestedStatus >= 400 && requestedStatus <= 599;
+  const isValidHttpStatus = Number.isInteger(requestedStatus)
+    && requestedStatus >= 400
+    && requestedStatus <= 599;
   return isValidHttpStatus ? requestedStatus : 500;
 }
 
@@ -48,7 +49,7 @@ export default function errorHandler(err, req, res, _next) {
 
   console.error(
     `[ERROR] ${status} ${req.method} ${req.originalUrl} requestId=${requestId || 'n/a'}: ${originalMessage}`,
-    err
+    err,
   );
 
   const payload = {
@@ -84,8 +85,9 @@ export function buildErrorResponse(err, req, options = {}) {
   const timestamp = options.timestamp || new Date().toISOString();
   const requestId = req.requestId || req.headers['x-request-id'] || null;
   const legacyError = options.errorLabel || getLegacyErrorLabel(status, err);
-  const safeDetails =
-    isServerError && !isDevelopment ? null : err.details || options.details || null;
+  const safeDetails = isServerError && !isDevelopment
+    ? null
+    : err.details || options.details || null;
 
   return {
     status,

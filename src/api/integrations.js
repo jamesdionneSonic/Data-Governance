@@ -33,8 +33,7 @@ router.get('/settings', requireAdmin, (req, res) =>
   res.json({
     status: 'success',
     data: getIntegrationSettings(),
-  })
-);
+  }));
 
 router.put('/notifications/:channel', requireAdmin, (req, res) => {
   try {
@@ -93,8 +92,7 @@ router.get('/webhooks', requireAdmin, (req, res) =>
     data: {
       webhooks: listWebhooks(),
     },
-  })
-);
+  }));
 
 router.delete('/webhooks/:webhookId', requireAdmin, (req, res) => {
   const deleted = deleteWebhook(req.params.webhookId);
@@ -148,8 +146,7 @@ router.get('/links/:objectId', (req, res) =>
       objectId: req.params.objectId,
       links: getExternalLinks(req.params.objectId),
     },
-  })
-);
+  }));
 
 router.delete('/links/:objectId/:linkId', requireAdmin, (req, res) => {
   const removed = removeExternalLink(req.params.objectId, req.params.linkId);

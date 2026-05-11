@@ -110,10 +110,10 @@ export function searchTerms(query) {
   const q = query.toLowerCase();
   return loadAllTerms().filter(
     (t) =>
-      t.term.toLowerCase().includes(q) ||
-      t.body.toLowerCase().includes(q) ||
-      t.tags.some((tag) => tag.toLowerCase().includes(q)) ||
-      t.domain.toLowerCase().includes(q)
+      t.term.toLowerCase().includes(q)
+      || t.body.toLowerCase().includes(q)
+      || t.tags.some((tag) => tag.toLowerCase().includes(q))
+      || t.domain.toLowerCase().includes(q),
   );
 }
 
@@ -136,8 +136,7 @@ export function saveTerm(slug, termData) {
     last_reviewed: new Date().toISOString().split('T')[0],
   });
 
-  const body =
-    termData.body || `# ${termData.term}\n\n## Definition\n\n${termData.definition || ''}`;
+  const body = termData.body || `# ${termData.term}\n\n## Definition\n\n${termData.definition || ''}`;
   const content = `---\n${frontmatter}---\n\n${body}\n`;
 
   const filePath = join(GLOSSARY_DIR, `${slug}.md`);

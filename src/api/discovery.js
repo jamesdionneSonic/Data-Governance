@@ -65,13 +65,12 @@ router.get('/dashboard', authenticate, (req, res) => {
         'Data not yet loaded. Run ingestion endpoint first.',
         {
           code: 'SERVICE_UNAVAILABLE',
-        }
+        },
       );
     }
 
     const summary = getOrSetCache('dashboard', () =>
-      getDashboardSummary(cachedObjects, cachedLineageGraph)
-    );
+      getDashboardSummary(cachedObjects, cachedLineageGraph));
 
     return res.json({
       status: 'success',
@@ -99,8 +98,7 @@ router.get('/recommendations', authenticate, (req, res) => {
     }
 
     const recommendations = getOrSetCache('recommendations', () =>
-      getRecommendations(cachedObjects, cachedLineageGraph)
-    );
+      getRecommendations(cachedObjects, cachedLineageGraph));
 
     return res.json({
       status: 'success',
@@ -128,8 +126,7 @@ router.get('/insights', authenticate, (req, res) => {
     }
 
     const insights = getOrSetCache('insights', () =>
-      getLineageInsights(cachedObjects, cachedLineageGraph)
-    );
+      getLineageInsights(cachedObjects, cachedLineageGraph));
 
     return res.json({
       status: 'success',
@@ -151,8 +148,7 @@ router.get('/insights', authenticate, (req, res) => {
 router.get('/quality', authenticate, (req, res) => {
   try {
     const metrics = getOrSetCache('quality', () =>
-      getQualityMetrics(cachedObjects, cachedLineageGraph)
-    );
+      getQualityMetrics(cachedObjects, cachedLineageGraph));
 
     return res.json({
       status: 'success',
@@ -249,8 +245,7 @@ router.get('/impact/:objectId', authenticate, (req, res) => {
     }
 
     const impact = getOrSetCache(`impact:${objectId}`, () =>
-      buildImpactVisualization(objectId, cachedLineageGraph, cachedObjects)
-    );
+      buildImpactVisualization(objectId, cachedLineageGraph, cachedObjects));
 
     return res.json({
       status: 'success',
@@ -274,8 +269,7 @@ router.get('/matrix/:database', authenticate, (req, res) => {
     const { database } = req.params;
 
     const matrix = getOrSetCache(`matrix:${database}`, () =>
-      buildDependencyMatrix(database, cachedObjects, cachedLineageGraph)
-    );
+      buildDependencyMatrix(database, cachedObjects, cachedLineageGraph));
 
     return res.json({
       status: 'success',

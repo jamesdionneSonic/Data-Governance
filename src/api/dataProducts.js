@@ -61,7 +61,9 @@ router.post('/products', (req, res) => {
 });
 
 router.get('/products', (req, res) => {
-  const { state, domain, ownerUserId, stewardUserId } = req.query;
+  const {
+    state, domain, ownerUserId, stewardUserId,
+  } = req.query;
 
   const products = listDataProducts({
     state,
@@ -152,7 +154,7 @@ router.post('/products/:productId/state', (req, res) => {
       req.params.productId,
       state,
       actorFromUser(req.user),
-      reason
+      reason,
     );
 
     return res.json({
@@ -186,7 +188,7 @@ router.post('/products/:productId/violations', (req, res) => {
     const updated = recordContractViolation(
       req.params.productId,
       req.body,
-      actorFromUser(req.user)
+      actorFromUser(req.user),
     );
 
     return res.status(201).json({
