@@ -1,5 +1,6 @@
 import { createApiRouter } from '../utils/apiRouter.js';
 import { authenticate } from '../middleware/auth.js';
+import { sendErrorResponse } from '../middleware/errorHandler.js';
 import {
   DATA_PRODUCT_STATE,
   createDataProduct,
@@ -53,9 +54,8 @@ router.post('/products', (req, res) => {
       data: created,
     });
   } catch (err) {
-    return res.status(400).json({
-      error: 'Bad Request',
-      message: err.message,
+    return sendErrorResponse(res, req, 400, err.message, {
+      code: 'BAD_REQUEST',
     });
   }
 });
@@ -83,9 +83,8 @@ router.get('/products/:productId', (req, res) => {
   const product = getDataProduct(req.params.productId);
 
   if (!product) {
-    return res.status(404).json({
-      error: 'Not Found',
-      message: 'Data product not found',
+    return sendErrorResponse(res, req, 404, 'Data product not found', {
+      code: 'NOT_FOUND',
     });
   }
 
@@ -99,16 +98,14 @@ router.post('/products/:productId/contracts', (req, res) => {
   const product = getDataProduct(req.params.productId);
 
   if (!product) {
-    return res.status(404).json({
-      error: 'Not Found',
-      message: 'Data product not found',
+    return sendErrorResponse(res, req, 404, 'Data product not found', {
+      code: 'NOT_FOUND',
     });
   }
 
   if (!canManageProduct(req.user, product)) {
-    return res.status(403).json({
-      error: 'Forbidden',
-      message: 'Owner, steward, or admin role required',
+    return sendErrorResponse(res, req, 403, 'Owner, steward, or admin role required', {
+      code: 'FORBIDDEN',
     });
   }
 
@@ -121,9 +118,8 @@ router.post('/products/:productId/contracts', (req, res) => {
       data: updated,
     });
   } catch (err) {
-    return res.status(400).json({
-      error: 'Bad Request',
-      message: err.message,
+    return sendErrorResponse(res, req, 400, err.message, {
+      code: 'BAD_REQUEST',
     });
   }
 });
@@ -132,25 +128,22 @@ router.post('/products/:productId/state', (req, res) => {
   const product = getDataProduct(req.params.productId);
 
   if (!product) {
-    return res.status(404).json({
-      error: 'Not Found',
-      message: 'Data product not found',
+    return sendErrorResponse(res, req, 404, 'Data product not found', {
+      code: 'NOT_FOUND',
     });
   }
 
   if (!canManageProduct(req.user, product)) {
-    return res.status(403).json({
-      error: 'Forbidden',
-      message: 'Owner, steward, or admin role required',
+    return sendErrorResponse(res, req, 403, 'Owner, steward, or admin role required', {
+      code: 'FORBIDDEN',
     });
   }
 
   const { state, reason = '' } = req.body;
 
   if (!state) {
-    return res.status(400).json({
-      error: 'Bad Request',
-      message: 'state is required',
+    return sendErrorResponse(res, req, 400, 'state is required', {
+      code: 'BAD_REQUEST',
     });
   }
 
@@ -168,9 +161,8 @@ router.post('/products/:productId/state', (req, res) => {
       data: updated,
     });
   } catch (err) {
-    return res.status(400).json({
-      error: 'Bad Request',
-      message: err.message,
+    return sendErrorResponse(res, req, 400, err.message, {
+      code: 'BAD_REQUEST',
     });
   }
 });
@@ -179,16 +171,14 @@ router.post('/products/:productId/violations', (req, res) => {
   const product = getDataProduct(req.params.productId);
 
   if (!product) {
-    return res.status(404).json({
-      error: 'Not Found',
-      message: 'Data product not found',
+    return sendErrorResponse(res, req, 404, 'Data product not found', {
+      code: 'NOT_FOUND',
     });
   }
 
   if (!canManageProduct(req.user, product)) {
-    return res.status(403).json({
-      error: 'Forbidden',
-      message: 'Owner, steward, or admin role required',
+    return sendErrorResponse(res, req, 403, 'Owner, steward, or admin role required', {
+      code: 'FORBIDDEN',
     });
   }
 
@@ -205,18 +195,16 @@ router.post('/products/:productId/violations', (req, res) => {
       data: updated,
     });
   } catch (err) {
-    return res.status(400).json({
-      error: 'Bad Request',
-      message: err.message,
+    return sendErrorResponse(res, req, 400, err.message, {
+      code: 'BAD_REQUEST',
     });
   }
 });
 
 router.get('/contracts/export/compliance', (req, res) => {
   if (!isAdmin(req.user)) {
-    return res.status(403).json({
-      error: 'Forbidden',
-      message: 'Admin role required to export contract compliance',
+    return sendErrorResponse(res, req, 403, 'Admin role required to export contract compliance', {
+      code: 'FORBIDDEN',
     });
   }
 

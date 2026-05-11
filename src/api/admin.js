@@ -5,6 +5,7 @@
 
 import { createApiRouter } from '../utils/apiRouter.js';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
+import { sendErrorResponse } from '../middleware/errorHandler.js';
 import {
   upsertUser,
   getUser,
@@ -52,7 +53,7 @@ router.get('/users', authenticate, requireAdmin, (req, res) => {
     const { role, active } = req.query;
     const users = getAllUsers({ role: role || undefined, active: active === 'true' || undefined });
 
-    res.json({
+    return res.json({
       status: 'success',
       message: 'Users retrieved',
       data: {
@@ -61,9 +62,8 @@ router.get('/users', authenticate, requireAdmin, (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({
-      error: 'Failed to retrieve users',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'ADMIN_USERS_LIST_ERROR',
     });
   }
 });
@@ -78,21 +78,19 @@ router.get('/users/:userId', authenticate, requireAdmin, (req, res) => {
     const user = getUser(req.params.userId);
 
     if (!user) {
-      res.status(404).json({
-        error: 'Not Found',
-        message: 'User not found',
-      });
-    } else {
-      res.json({
-        status: 'success',
-        message: 'User retrieved',
-        data: user,
+      return sendErrorResponse(res, req, 404, 'User not found', {
+        code: 'NOT_FOUND',
       });
     }
+
+    return res.json({
+      status: 'success',
+      message: 'User retrieved',
+      data: user,
+    });
   } catch (err) {
-    res.status(500).json({
-      error: 'Failed to retrieve user',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'ADMIN_USER_GET_ERROR',
     });
   }
 });
@@ -104,34 +102,30 @@ router.get('/users/:userId', authenticate, requireAdmin, (req, res) => {
  */
 router.post('/users', authenticate, requireAdmin, (req, res) => {
   try {
-    const {
-      email, name, role, department,
-    } = req.body;
+    const { email, name, role, department } = req.body;
 
     if (!email) {
-      res.status(400).json({
-        error: 'Bad Request',
-        message: 'Email is required',
-      });
-    } else {
-      const user = upsertUser(email, {
-        name,
-        role: role || 'Viewer',
-        department,
-      });
-
-      logAuditEvent(req.user.userId, 'user_created', { userId: user.userId, email });
-
-      res.json({
-        status: 'success',
-        message: 'User created/updated',
-        data: user,
+      return sendErrorResponse(res, req, 400, 'Email is required', {
+        code: 'BAD_REQUEST',
       });
     }
+
+    const user = upsertUser(email, {
+      name,
+      role: role || 'Viewer',
+      department,
+    });
+
+    logAuditEvent(req.user.userId, 'user_created', { userId: user.userId, email });
+
+    return res.json({
+      status: 'success',
+      message: 'User created/updated',
+      data: user,
+    });
   } catch (err) {
-    res.status(500).json({
-      error: 'Failed to create user',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'ADMIN_USER_CREATE_ERROR',
     });
   }
 });
@@ -146,23 +140,21 @@ router.put('/users/:userId', authenticate, requireAdmin, (req, res) => {
     const updated = updateUser(req.params.userId, req.body);
 
     if (!updated) {
-      res.status(404).json({
-        error: 'Not Found',
-        message: 'User not found',
-      });
-    } else {
-      logAuditEvent(req.user.userId, 'user_updated', { userId: req.params.userId });
-
-      res.json({
-        status: 'success',
-        message: 'User updated',
-        data: updated,
+      return sendErrorResponse(res, req, 404, 'User not found', {
+        code: 'NOT_FOUND',
       });
     }
+
+    logAuditEvent(req.user.userId, 'user_updated', { userId: req.params.userId });
+
+    return res.json({
+      status: 'success',
+      message: 'User updated',
+      data: updated,
+    });
   } catch (err) {
-    res.status(500).json({
-      error: 'Failed to update user',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'ADMIN_USER_UPDATE_ERROR',
     });
   }
 });
@@ -177,22 +169,20 @@ router.delete('/users/:userId', authenticate, requireAdmin, (req, res) => {
     const success = deleteUser(req.params.userId);
 
     if (!success) {
-      res.status(404).json({
-        error: 'Not Found',
-        message: 'User not found',
-      });
-    } else {
-      logAuditEvent(req.user.userId, 'user_deleted', { userId: req.params.userId });
-
-      res.json({
-        status: 'success',
-        message: 'User deleted',
+      return sendErrorResponse(res, req, 404, 'User not found', {
+        code: 'NOT_FOUND',
       });
     }
+
+    logAuditEvent(req.user.userId, 'user_deleted', { userId: req.params.userId });
+
+    return res.json({
+      status: 'success',
+      message: 'User deleted',
+    });
   } catch (err) {
-    res.status(500).json({
-      error: 'Failed to delete user',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'ADMIN_USER_DELETE_ERROR',
     });
   }
 });
@@ -207,22 +197,20 @@ router.post('/users/:userId/deactivate', authenticate, requireAdmin, (req, res) 
     const success = deactivateUser(req.params.userId);
 
     if (!success) {
-      res.status(404).json({
-        error: 'Not Found',
-        message: 'User not found',
-      });
-    } else {
-      logAuditEvent(req.user.userId, 'user_deactivated', { userId: req.params.userId });
-
-      res.json({
-        status: 'success',
-        message: 'User deactivated',
+      return sendErrorResponse(res, req, 404, 'User not found', {
+        code: 'NOT_FOUND',
       });
     }
+
+    logAuditEvent(req.user.userId, 'user_deactivated', { userId: req.params.userId });
+
+    return res.json({
+      status: 'success',
+      message: 'User deactivated',
+    });
   } catch (err) {
-    res.status(500).json({
-      error: 'Failed to deactivate user',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'ADMIN_USER_DEACTIVATE_ERROR',
     });
   }
 });
@@ -237,22 +225,20 @@ router.post('/users/:userId/reactivate', authenticate, requireAdmin, (req, res) 
     const success = reactivateUser(req.params.userId);
 
     if (!success) {
-      res.status(404).json({
-        error: 'Not Found',
-        message: 'User not found',
-      });
-    } else {
-      logAuditEvent(req.user.userId, 'user_reactivated', { userId: req.params.userId });
-
-      res.json({
-        status: 'success',
-        message: 'User reactivated',
+      return sendErrorResponse(res, req, 404, 'User not found', {
+        code: 'NOT_FOUND',
       });
     }
+
+    logAuditEvent(req.user.userId, 'user_reactivated', { userId: req.params.userId });
+
+    return res.json({
+      status: 'success',
+      message: 'User reactivated',
+    });
   } catch (err) {
-    res.status(500).json({
-      error: 'Failed to reactivate user',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'ADMIN_USER_REACTIVATE_ERROR',
     });
   }
 });
@@ -264,9 +250,7 @@ router.post('/users/:userId/reactivate', authenticate, requireAdmin, (req, res) 
  */
 router.get('/audit', authenticate, requireAdmin, (req, res) => {
   try {
-    const {
-      userId, action, limit, days,
-    } = req.query;
+    const { userId, action, limit, days } = req.query;
     const startDate = days ? new Date(Date.now() - days * 24 * 60 * 60 * 1000) : undefined;
 
     const events = getAuditLog({
@@ -276,7 +260,7 @@ router.get('/audit', authenticate, requireAdmin, (req, res) => {
       startDate,
     });
 
-    res.json({
+    return res.json({
       status: 'success',
       message: 'Audit log retrieved',
       data: {
@@ -285,9 +269,8 @@ router.get('/audit', authenticate, requireAdmin, (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({
-      error: 'Failed to retrieve audit log',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'ADMIN_AUDIT_LOG_ERROR',
     });
   }
 });
@@ -301,15 +284,14 @@ router.get('/audit/statistics', authenticate, requireAdmin, (req, res) => {
   try {
     const stats = getAuditStatistics();
 
-    res.json({
+    return res.json({
       status: 'success',
       message: 'Audit statistics retrieved',
       data: stats,
     });
   } catch (err) {
-    res.status(500).json({
-      error: 'Failed to retrieve audit statistics',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'ADMIN_AUDIT_STATS_ERROR',
     });
   }
 });
@@ -329,7 +311,7 @@ router.get('/activity', authenticate, requireAdmin, (req, res) => {
       limit: parseInt(limit, 10) || 100,
     });
 
-    res.json({
+    return res.json({
       status: 'success',
       message: 'Activity log retrieved',
       data: {
@@ -338,9 +320,8 @@ router.get('/activity', authenticate, requireAdmin, (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({
-      error: 'Failed to retrieve activity log',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'ADMIN_ACTIVITY_LOG_ERROR',
     });
   }
 });
@@ -354,15 +335,14 @@ router.get('/activity/statistics', authenticate, requireAdmin, (req, res) => {
   try {
     const stats = getActivityStatistics();
 
-    res.json({
+    return res.json({
       status: 'success',
       message: 'Activity statistics retrieved',
       data: stats,
     });
   } catch (err) {
-    res.status(500).json({
-      error: 'Failed to retrieve activity statistics',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'ADMIN_ACTIVITY_STATS_ERROR',
     });
   }
 });
@@ -377,15 +357,14 @@ router.get('/activity/views', authenticate, requireAdmin, (req, res) => {
     const { limit } = req.query;
     const views = getMostViewedObjects(parseInt(limit, 10) || 10);
 
-    res.json({
+    return res.json({
       status: 'success',
       message: 'Most viewed objects retrieved',
       data: views,
     });
   } catch (err) {
-    res.status(500).json({
-      error: 'Failed to retrieve views',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'ADMIN_ACTIVITY_VIEWS_ERROR',
     });
   }
 });
@@ -399,15 +378,14 @@ router.get('/metadata/statistics', authenticate, requireAdmin, (req, res) => {
   try {
     const stats = getMetadataStatistics(cachedObjects);
 
-    res.json({
+    return res.json({
       status: 'success',
       message: 'Metadata statistics retrieved',
       data: stats,
     });
   } catch (err) {
-    res.status(500).json({
-      error: 'Failed to retrieve metadata statistics',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'ADMIN_METADATA_STATS_ERROR',
     });
   }
 });
@@ -422,23 +400,21 @@ router.get('/metadata/validate/:objectId', authenticate, requireAdmin, (req, res
     const obj = cachedObjects.get(req.params.objectId);
 
     if (!obj) {
-      res.status(404).json({
-        error: 'Not Found',
-        message: 'Object not found',
-      });
-    } else {
-      const validation = validateMetadata(obj);
-
-      res.json({
-        status: 'success',
-        message: 'Metadata validation complete',
-        data: validation,
+      return sendErrorResponse(res, req, 404, 'Object not found', {
+        code: 'NOT_FOUND',
       });
     }
+
+    const validation = validateMetadata(obj);
+
+    return res.json({
+      status: 'success',
+      message: 'Metadata validation complete',
+      data: validation,
+    });
   } catch (err) {
-    res.status(500).json({
-      error: 'Validation failed',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'ADMIN_METADATA_VALIDATE_ERROR',
     });
   }
 });
@@ -452,7 +428,7 @@ router.get('/objects/by-tag/:tag', authenticate, requireAdmin, (req, res) => {
   try {
     const objects = getObjectsByTag(req.params.tag, cachedObjects);
 
-    res.json({
+    return res.json({
       status: 'success',
       message: 'Objects retrieved',
       data: {
@@ -461,9 +437,8 @@ router.get('/objects/by-tag/:tag', authenticate, requireAdmin, (req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({
-      error: 'Failed to retrieve objects',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'ADMIN_OBJECTS_BY_TAG_ERROR',
     });
   }
 });
@@ -477,7 +452,7 @@ router.get('/objects/by-sensitivity/:sensitivity', authenticate, requireAdmin, (
   try {
     const objects = getObjectsBySensitivity(req.params.sensitivity, cachedObjects);
 
-    res.json({
+    return res.json({
       status: 'success',
       message: 'Objects retrieved',
       data: {
@@ -486,9 +461,8 @@ router.get('/objects/by-sensitivity/:sensitivity', authenticate, requireAdmin, (
       },
     });
   } catch (err) {
-    res.status(500).json({
-      error: 'Failed to retrieve objects',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'ADMIN_OBJECTS_BY_SENSITIVITY_ERROR',
     });
   }
 });

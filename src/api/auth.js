@@ -7,6 +7,7 @@ import { createApiRouter } from '../utils/apiRouter.js';
 import { generateToken, generateRefreshToken } from '../utils/tokenManager.js';
 import { createOrGetUser } from '../services/userService.js';
 import { authenticate } from '../middleware/auth.js';
+import { sendErrorResponse } from '../middleware/errorHandler.js';
 
 const router = createApiRouter();
 
@@ -94,9 +95,8 @@ router.post('/refresh', (req, res) => {
   const { refreshToken } = req.body;
 
   if (!refreshToken) {
-    return res.status(400).json({
-      error: 'Bad Request',
-      message: 'Refresh token required',
+    return sendErrorResponse(res, req, 400, 'Refresh token required', {
+      code: 'BAD_REQUEST',
     });
   }
 
@@ -107,9 +107,8 @@ router.post('/refresh', (req, res) => {
       received: { refreshToken: !!refreshToken },
     });
   } catch (err) {
-    return res.status(401).json({
-      error: 'Unauthorized',
-      message: 'Invalid refresh token',
+    return sendErrorResponse(res, req, 401, 'Invalid refresh token', {
+      code: 'UNAUTHORIZED',
     });
   }
 });

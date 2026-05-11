@@ -5,6 +5,7 @@
 
 import { createApiRouter } from '../utils/apiRouter.js';
 import { authenticate } from '../middleware/auth.js';
+import { sendErrorResponse } from '../middleware/errorHandler.js';
 import {
   getDashboardSummary,
   getRecommendations,
@@ -57,13 +58,20 @@ export function setDiscoveryCache(objects, lineageGraph) {
 router.get('/dashboard', authenticate, (req, res) => {
   try {
     if (cachedObjects.size === 0) {
-      return res.status(503).json({
-        error: 'Service Unavailable',
-        message: 'Data not yet loaded. Run ingestion endpoint first.',
-      });
+      return sendErrorResponse(
+        res,
+        req,
+        503,
+        'Data not yet loaded. Run ingestion endpoint first.',
+        {
+          code: 'SERVICE_UNAVAILABLE',
+        }
+      );
     }
 
-    const summary = getOrSetCache('dashboard', () => getDashboardSummary(cachedObjects, cachedLineageGraph));
+    const summary = getOrSetCache('dashboard', () =>
+      getDashboardSummary(cachedObjects, cachedLineageGraph)
+    );
 
     return res.json({
       status: 'success',
@@ -71,9 +79,8 @@ router.get('/dashboard', authenticate, (req, res) => {
       data: summary,
     });
   } catch (err) {
-    return res.status(500).json({
-      error: 'Dashboard Error',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'DASHBOARD_ERROR',
     });
   }
 });
@@ -86,13 +93,14 @@ router.get('/dashboard', authenticate, (req, res) => {
 router.get('/recommendations', authenticate, (req, res) => {
   try {
     if (cachedObjects.size === 0) {
-      return res.status(503).json({
-        error: 'Service Unavailable',
-        message: 'Data not yet loaded',
+      return sendErrorResponse(res, req, 503, 'Data not yet loaded', {
+        code: 'SERVICE_UNAVAILABLE',
       });
     }
 
-    const recommendations = getOrSetCache('recommendations', () => getRecommendations(cachedObjects, cachedLineageGraph));
+    const recommendations = getOrSetCache('recommendations', () =>
+      getRecommendations(cachedObjects, cachedLineageGraph)
+    );
 
     return res.json({
       status: 'success',
@@ -100,9 +108,8 @@ router.get('/recommendations', authenticate, (req, res) => {
       data: recommendations,
     });
   } catch (err) {
-    return res.status(500).json({
-      error: 'Recommendations Error',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'RECOMMENDATIONS_ERROR',
     });
   }
 });
@@ -115,13 +122,14 @@ router.get('/recommendations', authenticate, (req, res) => {
 router.get('/insights', authenticate, (req, res) => {
   try {
     if (cachedObjects.size === 0) {
-      return res.status(503).json({
-        error: 'Service Unavailable',
-        message: 'Data not yet loaded',
+      return sendErrorResponse(res, req, 503, 'Data not yet loaded', {
+        code: 'SERVICE_UNAVAILABLE',
       });
     }
 
-    const insights = getOrSetCache('insights', () => getLineageInsights(cachedObjects, cachedLineageGraph));
+    const insights = getOrSetCache('insights', () =>
+      getLineageInsights(cachedObjects, cachedLineageGraph)
+    );
 
     return res.json({
       status: 'success',
@@ -129,9 +137,8 @@ router.get('/insights', authenticate, (req, res) => {
       data: insights,
     });
   } catch (err) {
-    return res.status(500).json({
-      error: 'Insights Error',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'INSIGHTS_ERROR',
     });
   }
 });
@@ -143,7 +150,9 @@ router.get('/insights', authenticate, (req, res) => {
  */
 router.get('/quality', authenticate, (req, res) => {
   try {
-    const metrics = getOrSetCache('quality', () => getQualityMetrics(cachedObjects, cachedLineageGraph));
+    const metrics = getOrSetCache('quality', () =>
+      getQualityMetrics(cachedObjects, cachedLineageGraph)
+    );
 
     return res.json({
       status: 'success',
@@ -151,9 +160,8 @@ router.get('/quality', authenticate, (req, res) => {
       data: metrics,
     });
   } catch (err) {
-    return res.status(500).json({
-      error: 'Quality Metrics Error',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'QUALITY_METRICS_ERROR',
     });
   }
 });
@@ -173,9 +181,8 @@ router.get('/activity', authenticate, (req, res) => {
       data: activity,
     });
   } catch (err) {
-    return res.status(500).json({
-      error: 'Activity Error',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'ACTIVITY_ERROR',
     });
   }
 });
@@ -192,9 +199,8 @@ router.get('/graph/:objectId', authenticate, (req, res) => {
     const { format = 'cytoscape', depth = 2 } = req.query;
 
     if (!cachedObjects.has(objectId)) {
-      return res.status(404).json({
-        error: 'Not Found',
-        message: `Object not found: ${objectId}`,
+      return sendErrorResponse(res, req, 404, `Object not found: ${objectId}`, {
+        code: 'NOT_FOUND',
       });
     }
 
@@ -205,22 +211,12 @@ router.get('/graph/:objectId', authenticate, (req, res) => {
     const graphData = getOrSetCache(graphCacheKey, () => {
       switch (normalizedFormat) {
         case 'd3':
-          return buildD3Graph(
-            objectId,
-            cachedLineageGraph,
-            cachedObjects,
-            parsedDepth,
-          );
+          return buildD3Graph(objectId, cachedLineageGraph, cachedObjects, parsedDepth);
         case 'mermaid':
           return buildMermaidDiagram(objectId, cachedLineageGraph, cachedObjects);
         case 'cytoscape':
         default:
-          return buildCytoscapeGraph(
-            objectId,
-            cachedLineageGraph,
-            cachedObjects,
-            parsedDepth,
-          );
+          return buildCytoscapeGraph(objectId, cachedLineageGraph, cachedObjects, parsedDepth);
       }
     });
 
@@ -231,9 +227,8 @@ router.get('/graph/:objectId', authenticate, (req, res) => {
       data: graphData,
     });
   } catch (err) {
-    return res.status(500).json({
-      error: 'Graph Error',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'GRAPH_ERROR',
     });
   }
 });
@@ -248,15 +243,13 @@ router.get('/impact/:objectId', authenticate, (req, res) => {
     const { objectId } = req.params;
 
     if (!cachedObjects.has(objectId)) {
-      return res.status(404).json({
-        error: 'Not Found',
-        message: `Object not found: ${objectId}`,
+      return sendErrorResponse(res, req, 404, `Object not found: ${objectId}`, {
+        code: 'NOT_FOUND',
       });
     }
 
-    const impact = getOrSetCache(
-      `impact:${objectId}`,
-      () => buildImpactVisualization(objectId, cachedLineageGraph, cachedObjects),
+    const impact = getOrSetCache(`impact:${objectId}`, () =>
+      buildImpactVisualization(objectId, cachedLineageGraph, cachedObjects)
     );
 
     return res.json({
@@ -265,9 +258,8 @@ router.get('/impact/:objectId', authenticate, (req, res) => {
       data: impact,
     });
   } catch (err) {
-    return res.status(500).json({
-      error: 'Impact Error',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'IMPACT_ERROR',
     });
   }
 });
@@ -281,9 +273,8 @@ router.get('/matrix/:database', authenticate, (req, res) => {
   try {
     const { database } = req.params;
 
-    const matrix = getOrSetCache(
-      `matrix:${database}`,
-      () => buildDependencyMatrix(database, cachedObjects, cachedLineageGraph),
+    const matrix = getOrSetCache(`matrix:${database}`, () =>
+      buildDependencyMatrix(database, cachedObjects, cachedLineageGraph)
     );
 
     return res.json({
@@ -292,9 +283,8 @@ router.get('/matrix/:database', authenticate, (req, res) => {
       data: matrix,
     });
   } catch (err) {
-    return res.status(500).json({
-      error: 'Matrix Error',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'MATRIX_ERROR',
     });
   }
 });

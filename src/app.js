@@ -14,9 +14,9 @@ import performanceMonitor from './middleware/performanceMonitor.js';
 // Import routes
 import healthRoutes from './api/health.js';
 import authRoutes from './api/auth.js';
-import objectsRoutes from './api/objects.js';
+import objectsRoutes, { setObjectsCache } from './api/objects.js';
 import lineageRoutes from './api/lineage.js';
-import searchRoutes from './api/search.js';
+import searchRoutes, { setSearchCache } from './api/search.js';
 import adminRoutes, { setAdminCache } from './api/admin.js';
 import dashboardRoutes, { setDashboardCache } from './api/dashboard.js';
 import reportingRoutes, { setReportingCache } from './api/reporting.js';
@@ -27,6 +27,10 @@ import docsRoutes from './api/docs.js';
 import ssisRoutes from './api/ssis.js';
 import marketplaceRoutes, { setMarketplaceCache } from './api/marketplace.js';
 import dataProductsRoutes from './api/dataProducts.js';
+import glossaryRoutes from './api/glossary.js';
+import classificationRoutes, { setClassificationCache } from './api/classification.js';
+import governanceRoutes, { setGovernanceCache } from './api/governance.js';
+import productsRoutes from './api/products.js';
 
 // Import utilities and config
 import { validateEntraConfig } from './utils/entraConfig.js';
@@ -39,12 +43,16 @@ import { validateEntraConfig } from './utils/entraConfig.js';
  * @param {Map} lineageGraph - Lineage graph
  */
 export function initializeCache(app, objects, lineageGraph) {
+  setObjectsCache(objects);
+  setSearchCache(objects);
   setDiscoveryCache(objects, lineageGraph);
   setAdminCache(objects);
   setDashboardCache(objects);
   setReportingCache(objects, lineageGraph);
   setIntegrationCache(objects, lineageGraph);
   setMarketplaceCache(objects);
+  setClassificationCache(objects);
+  setGovernanceCache(objects, lineageGraph);
 }
 
 /**
@@ -62,7 +70,30 @@ export default function createApp() {
   const app = express();
 
   // Security middleware
-  app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            "'unsafe-eval'",
+            'https://cdn.jsdelivr.net',
+            'https://unpkg.com',
+          ],
+          styleSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net', 'https://unpkg.com'],
+          imgSrc: ["'self'", 'data:', 'blob:', 'https:'],
+          fontSrc: ["'self'", 'data:', 'https://cdn.jsdelivr.net', 'https://unpkg.com'],
+          connectSrc: ["'self'", 'https://cdn.jsdelivr.net', 'https://unpkg.com'],
+          objectSrc: ["'none'"],
+          baseUri: ["'self'"],
+          frameAncestors: ["'self'"],
+        },
+      },
+      crossOriginEmbedderPolicy: false,
+    })
+  );
   app.use(cors());
 
   // Body parsing
@@ -102,6 +133,10 @@ export default function createApp() {
   apiRouter.use('/ssis', ssisRoutes);
   apiRouter.use('/marketplace', marketplaceRoutes);
   apiRouter.use('/data-products', dataProductsRoutes);
+  apiRouter.use('/glossary', glossaryRoutes);
+  apiRouter.use('/classification', classificationRoutes);
+  apiRouter.use('/governance', governanceRoutes);
+  apiRouter.use('/products', productsRoutes);
 
   // API info endpoint
   apiRouter.get('/', (req, res) => {
@@ -132,6 +167,12 @@ export default function createApp() {
           'GET|POST /marketplace/requests* – access request workflow (requires auth, admin for export/fulfillment)',
         dataProducts:
           'GET|POST /data-products/products* – data product contracts, state transitions, SLA violations (requires auth)',
+        glossary: 'GET|POST|PUT /glossary* – business glossary backed by markdown (requires auth)',
+        classification:
+          'GET /classification/* – taxonomy and asset classifications (requires auth)',
+        governance: 'GET /governance/* – governance context and health summaries (requires auth)',
+        products:
+          'GET|POST|PUT /products* – markdown-backed data products marketplace (requires auth)',
       },
     });
   });

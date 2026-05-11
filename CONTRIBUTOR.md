@@ -1,6 +1,6 @@
 # Contributor Guidelines - Data Governance
 
-Welcome to the Data Governance project! This document outlines the best practices and standards for contributing to this project. We build scalable, maintainable applications using View.js and Viewdify with a focus on modular architecture, thorough testing, and comprehensive documentation.
+Welcome to the Data Governance project! This document outlines the best practices and standards for contributing to this project. We build scalable, maintainable applications using Vue.js and Vuetify with a focus on modular architecture, thorough testing, and comprehensive documentation.
 
 > **Non-Negotiable Engineering Guardrails:** We build with **Backend-for-Frontend (BFF)** architecture for frontend-facing APIs and follow **Infrastructure as Code (IaC) First** for all environment and platform changes.
 
@@ -9,7 +9,7 @@ Welcome to the Data Governance project! This document outlines the best practice
 ## Table of Contents
 
 1. [Architecture & Design Principles](#architecture--design-principles)
-2. [View.js & Viewdify Best Practices](#viewjs--viewdify-best-practices)
+2. [Vue.js & Vuetify Best Practices](#vuejs--vuetify-best-practices)
 3. [Code Organization & Modularity](#code-organization--modularity)
 4. [Backend-for-Frontend (BFF) Standards](#backend-for-frontend-bff-standards)
 5. [Response Validation](#response-validation)
@@ -36,7 +36,7 @@ We strictly prohibit monolithic code structures. All features must be:
 
 ```
 src/
-├── components/          # Reusable View.js/Viewdify components
+├── components/          # Reusable Vue.js/Vuetify components
 ├── modules/             # Feature modules (each with own views, logic, validation)
 ├── services/            # Business logic and API integration
 ├── validators/          # Centralized validation logic
@@ -50,7 +50,7 @@ Each module should be self-contained and re-usable across the application.
 
 ---
 
-## View.js & Viewdify Best Practices
+## Vue.js & Vuetify Best Practices
 
 ### Component Design
 
@@ -74,7 +74,7 @@ Each module should be self-contained and re-usable across the application.
    - Avoid nested logic; extract into separate components
    - Use composition over inheritance
 
-### View.js Patterns
+### Vue.js Patterns
 
 ```javascript
 // ✓ GOOD - Modular, reusable component
@@ -97,12 +97,13 @@ const CompleteWidget = () => ({
 });
 ```
 
-### Viewdify Integration
+### Vuetify Integration
 
 1. **Lifecycle Management**
    - Properly handle component mounting and unmounting
    - Clean up event listeners and subscriptions
-   - Use Viewdify hooks for lifecycle events
+
+- Use Vuetify component APIs for UI lifecycle/state integration
 
 2. **State Management**
    - Keep component state minimal
@@ -112,7 +113,8 @@ const CompleteWidget = () => ({
 3. **Templating**
    - Use data bindings for dynamic content
    - Bind events properly to avoid memory leaks
-   - Leverage Viewdify directives for conditional rendering
+
+- Leverage Vue directives for conditional rendering
 
 ---
 
@@ -525,6 +527,46 @@ npm run build
 - **Code quality gates** - Enforce linting rules
 - **IaC plan review is mandatory** - Infrastructure changes require reviewed plan output
 - **No manual prod infra changes** - All production infrastructure changes must be applied through pipeline
+
+### Build Workflow Error Handling
+
+- `build.yml` must fail fast on lint, unit test, or build failures.
+- Container image build must only publish on `push` to `main` after all quality gates pass.
+- Pull requests should still run container build (without push) to catch Dockerfile/runtime packaging issues early.
+- Container publish authentication should use short-lived workflow credentials where possible (for example, `GITHUB_TOKEN` to GHCR) rather than long-lived static secrets.
+
+### IaC Guardrails (FR-PLAT-001)
+
+All infrastructure changes must flow through the IaC process defined in [`infra/`](infra/README.md).
+
+**Rules — no exceptions:**
+
+- **No manual production changes.** Any direct change to cloud resources without a corresponding Terraform PR is a compliance violation.
+- **Every PR touching `infra/`** triggers `.github/workflows/iac.yml`:
+  - `terraform fmt -check` — HCL formatting gate.
+  - `terraform validate` — schema and syntax validation (runs without cloud credentials).
+  - `terraform plan` — execution preview posted to the PR as a comment.
+- **No `terraform apply` in CI.** Apply is a manual, reviewer-approved operation performed outside the pipeline.
+- **Secrets are never committed.** Use `TF_VAR_*` environment variables or GitHub repository/environment secrets for all sensitive values. The `*.tfvars` files must never contain real credentials.
+- **State backend must be remote.** The `backend "azurerm"` block in `providers.tf` must be configured before any team member runs `apply` in a shared environment.
+
+**Local IaC workflow:**
+
+```bash
+cd infra/terraform
+
+# Format your HCL before committing
+terraform fmt -recursive
+
+# Validate (no credentials required)
+terraform init -backend=false
+terraform validate
+
+# Plan against dev (credentials required)
+terraform plan -var-file=environments/dev.tfvars
+```
+
+See [infra/README.md](infra/README.md) for full setup instructions and required environment variables.
 
 ### Automated Testing in CI/CD
 

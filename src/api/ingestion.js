@@ -8,6 +8,7 @@ import { join, resolve } from 'path';
 import { ZipArchive } from 'archiver';
 import { createApiRouter } from '../utils/apiRouter.js';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
+import { sendErrorResponse } from '../middleware/errorHandler.js';
 import {
   parseMarkdownFile,
   parseMarkdownContent,
@@ -81,10 +82,8 @@ async function buildSqlConnectionContext(payload) {
     return {
       error: {
         status: 400,
-        body: {
-          error: 'Bad Request',
-          message: 'server and database are required',
-        },
+        code: 'BAD_REQUEST',
+        message: 'server and database are required',
       },
     };
   }
@@ -114,10 +113,8 @@ async function buildSqlConnectionContext(payload) {
       return {
         error: {
           status: 400,
-          body: {
-            error: 'Bad Request',
-            message: 'username and password are required for SQL Server authentication',
-          },
+          code: 'BAD_REQUEST',
+          message: 'username and password are required for SQL Server authentication',
         },
       };
     }
@@ -144,10 +141,9 @@ async function buildSqlConnectionContext(payload) {
         return {
           error: {
             status: 400,
-            body: {
-              error: 'Bad Request',
-              message: 'Windows integrated auth requires msnodesqlv8. Install with `npm i msnodesqlv8`, or provide username/password for NTLM.',
-            },
+            code: 'BAD_REQUEST',
+            message:
+              'Windows integrated auth requires msnodesqlv8. Install with `npm i msnodesqlv8`, or provide username/password for NTLM.',
           },
         };
       }
@@ -156,10 +152,9 @@ async function buildSqlConnectionContext(payload) {
         return {
           error: {
             status: 400,
-            body: {
-              error: 'Bad Request',
-              message: 'For NTLM Windows auth, provide both username and password. For integrated auth, leave both blank.',
-            },
+            code: 'BAD_REQUEST',
+            message:
+              'For NTLM Windows auth, provide both username and password. For integrated auth, leave both blank.',
           },
         };
       }
@@ -188,10 +183,8 @@ async function buildSqlConnectionContext(payload) {
       return {
         error: {
           status: 400,
-          body: {
-            error: 'Bad Request',
-            message: 'clientId, clientSecret, and tenantId are required for Azure AD authentication',
-          },
+          code: 'BAD_REQUEST',
+          message: 'clientId, clientSecret, and tenantId are required for Azure AD authentication',
         },
       };
     }
@@ -208,10 +201,8 @@ async function buildSqlConnectionContext(payload) {
     return {
       error: {
         status: 400,
-        body: {
-          error: 'Bad Request',
-          message: `Unsupported authentication method: ${authentication}`,
-        },
+        code: 'BAD_REQUEST',
+        message: `Unsupported authentication method: ${authentication}`,
       },
     };
   }
@@ -232,9 +223,8 @@ router.post('/parse', authenticate, (req, res) => {
     const { filePath } = req.body;
 
     if (!filePath) {
-      return res.status(400).json({
-        error: 'Bad Request',
-        message: 'filePath is required',
+      return sendErrorResponse(res, req, 400, 'filePath is required', {
+        code: 'BAD_REQUEST',
       });
     }
 
@@ -242,10 +232,9 @@ router.post('/parse', authenticate, (req, res) => {
     const errors = validateMetadata(metadata);
 
     if (errors.length > 0) {
-      return res.status(400).json({
-        error: 'Validation Error',
-        message: 'Metadata validation failed',
-        errors,
+      return sendErrorResponse(res, req, 400, 'Metadata validation failed', {
+        code: 'VALIDATION_ERROR',
+        details: { errors },
       });
     }
 
@@ -255,9 +244,8 @@ router.post('/parse', authenticate, (req, res) => {
       data: metadata,
     });
   } catch (err) {
-    return res.status(400).json({
-      error: 'Parse Error',
-      message: err.message,
+    return sendErrorResponse(res, req, 400, err.message, {
+      code: 'PARSE_ERROR',
     });
   }
 });
@@ -272,9 +260,8 @@ router.post('/parse-content', authenticate, (req, res) => {
     const { content, fileName = 'uploaded-file.md' } = req.body;
 
     if (!content || typeof content !== 'string') {
-      return res.status(400).json({
-        error: 'Bad Request',
-        message: 'content is required and must be a string',
+      return sendErrorResponse(res, req, 400, 'content is required and must be a string', {
+        code: 'BAD_REQUEST',
       });
     }
 
@@ -282,10 +269,9 @@ router.post('/parse-content', authenticate, (req, res) => {
     const errors = validateMetadata(metadata);
 
     if (errors.length > 0) {
-      return res.status(400).json({
-        error: 'Validation Error',
-        message: 'Metadata validation failed',
-        errors,
+      return sendErrorResponse(res, req, 400, 'Metadata validation failed', {
+        code: 'VALIDATION_ERROR',
+        details: { errors },
       });
     }
 
@@ -295,9 +281,8 @@ router.post('/parse-content', authenticate, (req, res) => {
       data: metadata,
     });
   } catch (err) {
-    return res.status(400).json({
-      error: 'Parse Error',
-      message: err.message,
+    return sendErrorResponse(res, req, 400, err.message, {
+      code: 'PARSE_ERROR',
     });
   }
 });
@@ -316,9 +301,9 @@ router.post('/load', authenticate, requireAdmin, async (req, res) => {
     const objects = loadAllMarkdown(dataPath);
 
     if (objects.size === 0) {
-      return res.status(400).json({
-        error: 'No Data',
-        message: 'No markdown files found',
+      return sendErrorResponse(res, req, 400, 'No markdown files found', {
+        code: 'NO_DATA',
+        errorLabel: 'No Data',
       });
     }
 
@@ -349,18 +334,25 @@ router.post('/load', authenticate, requireAdmin, async (req, res) => {
   } catch (err) {
     const lowerMessage = String(err?.message || '').toLowerCase();
     if (lowerMessage.includes('fetch failed') || lowerMessage.includes('connect')) {
-      return res.status(503).json({
-        error: 'Ingestion Dependency Error',
-        message: 'Load to Index requires Meilisearch on http://localhost:7700. Start Meilisearch and retry.',
-        details: {
-          meilisearchUrl: process.env.MEILISEARCH_URL || process.env.MEILISEARCH_HOST || 'http://localhost:7700',
-        },
-      });
+      return sendErrorResponse(
+        res,
+        req,
+        503,
+        'Load to Index requires Meilisearch on http://localhost:7700. Start Meilisearch and retry.',
+        {
+          code: 'INGESTION_DEPENDENCY_ERROR',
+          details: {
+            meilisearchUrl:
+              process.env.MEILISEARCH_URL ||
+              process.env.MEILISEARCH_HOST ||
+              'http://localhost:7700',
+          },
+        }
+      );
     }
 
-    return res.status(500).json({
-      error: 'Ingestion Error',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'INGESTION_ERROR',
     });
   }
 });
@@ -404,9 +396,8 @@ router.post('/validate', authenticate, requireAdmin, (req, res) => {
       data: results,
     });
   } catch (err) {
-    return res.status(500).json({
-      error: 'Validation Error',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'VALIDATION_ERROR',
     });
   }
 });
@@ -422,15 +413,18 @@ router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) 
   try {
     const SqlServerMetadataExtractor = (await import('../services/sqlServerExtractor.js')).default;
     const MarkdownGenerator = (await import('../services/markdownFromSqlServer.js')).default;
-    const {
-      database,
-      selectedSchemas = [],
-      selectedTables = [],
-      outputPath,
-    } = req.body;
+    const { database, selectedSchemas = [], selectedTables = [], outputPath } = req.body;
     const connectionContext = await buildSqlConnectionContext(req.body);
     if (connectionContext.error) {
-      return res.status(connectionContext.error.status).json(connectionContext.error.body);
+      return sendErrorResponse(
+        res,
+        req,
+        connectionContext.error.status,
+        connectionContext.error.message,
+        {
+          code: connectionContext.error.code || 'BAD_REQUEST',
+        }
+      );
     }
 
     const { connConfig, sqlDriver } = connectionContext;
@@ -483,9 +477,8 @@ router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) 
       },
     });
   } catch (err) {
-    return res.status(500).json({
-      error: 'SQL Server Connection Error',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'SQL_SERVER_CONNECTION_ERROR',
     });
   } finally {
     if (extractor) {
@@ -504,7 +497,15 @@ router.post('/connect-sql-server/discover', authenticate, requireAdmin, async (r
     const SqlServerMetadataExtractor = (await import('../services/sqlServerExtractor.js')).default;
     const connectionContext = await buildSqlConnectionContext(req.body);
     if (connectionContext.error) {
-      return res.status(connectionContext.error.status).json(connectionContext.error.body);
+      return sendErrorResponse(
+        res,
+        req,
+        connectionContext.error.status,
+        connectionContext.error.message,
+        {
+          code: connectionContext.error.code || 'BAD_REQUEST',
+        }
+      );
     }
 
     const { connConfig, sqlDriver } = connectionContext;
@@ -527,9 +528,13 @@ router.post('/connect-sql-server/discover', authenticate, requireAdmin, async (r
         procedureCount: typeCount.stored_procedure || 0,
         functionCount: typeCount.function || typeCount.table_function || 0,
         triggerCount: typeCount.trigger || 0,
-        totalObjectCount: (typeCount.table || 0) + (typeCount.view || 0)
-                          + (typeCount.stored_procedure || 0) + (typeCount.function || 0)
-                          + (typeCount.table_function || 0) + (typeCount.trigger || 0),
+        totalObjectCount:
+          (typeCount.table || 0) +
+          (typeCount.view || 0) +
+          (typeCount.stored_procedure || 0) +
+          (typeCount.function || 0) +
+          (typeCount.table_function || 0) +
+          (typeCount.trigger || 0),
       };
     });
 
@@ -544,9 +549,8 @@ router.post('/connect-sql-server/discover', authenticate, requireAdmin, async (r
       },
     });
   } catch (err) {
-    return res.status(500).json({
-      error: 'SQL Server Discovery Error',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'SQL_SERVER_DISCOVERY_ERROR',
     });
   } finally {
     if (extractor) {
@@ -570,9 +574,8 @@ router.get('/export-zip', authenticate, requireAdmin, (req, res) => {
     const resolvedPath = resolve(process.cwd(), requestedPath);
 
     if (!existsSync(resolvedPath)) {
-      return res.status(404).json({
-        error: 'Not Found',
-        message: `Directory not found: ${resolvedPath}`,
+      return sendErrorResponse(res, req, 404, `Directory not found: ${resolvedPath}`, {
+        code: 'NOT_FOUND',
       });
     }
 
@@ -583,7 +586,9 @@ router.get('/export-zip', authenticate, requireAdmin, (req, res) => {
     const archive = new ZipArchive({ zlib: { level: 9 } });
     archive.on('error', (err) => {
       if (!res.headersSent) {
-        res.status(500).json({ error: 'Zip Export Error', message: err.message });
+        sendErrorResponse(res, req, 500, err.message, {
+          code: 'ZIP_EXPORT_ERROR',
+        });
       } else {
         res.end();
       }
@@ -595,9 +600,8 @@ router.get('/export-zip', authenticate, requireAdmin, (req, res) => {
 
     return undefined;
   } catch (err) {
-    return res.status(500).json({
-      error: 'Zip Export Error',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'ZIP_EXPORT_ERROR',
     });
   }
 });
@@ -621,7 +625,8 @@ router.get('/status', authenticate, async (req, res) => {
       lastDataPath: ingestionState.lastDataPath,
       lastGeneratedPath: ingestionState.lastGeneratedPath,
       meilisearchHealthy,
-      meilisearchUrl: process.env.MEILISEARCH_URL || process.env.MEILISEARCH_HOST || 'http://localhost:7700',
+      meilisearchUrl:
+        process.env.MEILISEARCH_URL || process.env.MEILISEARCH_HOST || 'http://localhost:7700',
       lastUpdated: new Date().toISOString(),
     },
   });

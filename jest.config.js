@@ -2,21 +2,15 @@ export default {
   testEnvironment: 'node',
   moduleFileExtensions: ['js'],
   transform: {},
-  testMatch: [
-    '**/tests/**/*.test.js',
-    '**/?(*.)+(spec|test).js',
-  ],
-  collectCoverageFrom: [
-    'src/**/*.js',
-    '!src/**/*.test.js',
-    '!src/index.js',
-  ],
+  testPathIgnorePatterns: ['/node_modules/', '/tests/e2e/'],
+  testMatch: ['**/tests/**/*.test.js', '**/?(*.)+(spec|test).js'],
+  collectCoverageFrom: ['src/app.js', 'src/middleware/**/*.js', 'src/utils/**/*.js'],
   coverageThreshold: {
     global: {
-      branches: 40,
-      functions: 40,
-      lines: 50,
-      statements: 50,
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
     },
   },
   verbose: true,

@@ -5,6 +5,7 @@
 
 import { createApiRouter } from '../utils/apiRouter.js';
 import { authenticate } from '../middleware/auth.js';
+import { sendErrorResponse } from '../middleware/errorHandler.js';
 import {
   ACCESS_REQUEST_STATUS,
   createAccessRequest,
@@ -73,9 +74,8 @@ router.post('/requests', authenticate, (req, res) => {
   } = req.body;
 
   if (!assetId) {
-    return res.status(400).json({
-      error: 'Bad Request',
-      message: 'assetId is required',
+    return sendErrorResponse(res, req, 400, 'assetId is required', {
+      code: 'BAD_REQUEST',
     });
   }
 
@@ -107,9 +107,8 @@ router.post('/requests', authenticate, (req, res) => {
       data: created,
     });
   } catch (err) {
-    return res.status(400).json({
-      error: 'Bad Request',
-      message: err.message,
+    return sendErrorResponse(res, req, 400, err.message, {
+      code: 'BAD_REQUEST',
     });
   }
 });
@@ -118,9 +117,8 @@ router.get('/requests', authenticate, (req, res) => {
   const { status, scope = 'mine', overdueOnly = 'false' } = req.query;
 
   if (scope === 'all' && !isAdmin(req.user)) {
-    return res.status(403).json({
-      error: 'Forbidden',
-      message: 'Admin role required for all-scope request listing',
+    return sendErrorResponse(res, req, 403, 'Admin role required for all-scope request listing', {
+      code: 'FORBIDDEN',
     });
   }
 
@@ -151,16 +149,14 @@ router.get('/requests/:requestId', authenticate, (req, res) => {
   const request = getAccessRequest(req.params.requestId);
 
   if (!request) {
-    return res.status(404).json({
-      error: 'Not Found',
-      message: 'Access request not found',
+    return sendErrorResponse(res, req, 404, 'Access request not found', {
+      code: 'NOT_FOUND',
     });
   }
 
   if (!canView(req.user, request)) {
-    return res.status(403).json({
-      error: 'Forbidden',
-      message: 'You do not have access to this request',
+    return sendErrorResponse(res, req, 403, 'You do not have access to this request', {
+      code: 'FORBIDDEN',
     });
   }
 
@@ -174,25 +170,22 @@ router.post('/requests/:requestId/review', authenticate, (req, res) => {
   const { action, comment } = req.body;
 
   if (!action) {
-    return res.status(400).json({
-      error: 'Bad Request',
-      message: 'action is required',
+    return sendErrorResponse(res, req, 400, 'action is required', {
+      code: 'BAD_REQUEST',
     });
   }
 
   const current = getAccessRequest(req.params.requestId);
 
   if (!current) {
-    return res.status(404).json({
-      error: 'Not Found',
-      message: 'Access request not found',
+    return sendErrorResponse(res, req, 404, 'Access request not found', {
+      code: 'NOT_FOUND',
     });
   }
 
   if (!canReview(req.user, current)) {
-    return res.status(403).json({
-      error: 'Forbidden',
-      message: 'Approver or admin role required',
+    return sendErrorResponse(res, req, 403, 'Approver or admin role required', {
+      code: 'FORBIDDEN',
     });
   }
 
@@ -207,18 +200,16 @@ router.post('/requests/:requestId/review', authenticate, (req, res) => {
       data: updated,
     });
   } catch (err) {
-    return res.status(400).json({
-      error: 'Bad Request',
-      message: err.message,
+    return sendErrorResponse(res, req, 400, err.message, {
+      code: 'BAD_REQUEST',
     });
   }
 });
 
 router.post('/requests/:requestId/fulfill', authenticate, (req, res) => {
   if (!isAdmin(req.user)) {
-    return res.status(403).json({
-      error: 'Forbidden',
-      message: 'Admin role required to fulfill requests',
+    return sendErrorResponse(res, req, 403, 'Admin role required to fulfill requests', {
+      code: 'FORBIDDEN',
     });
   }
 
@@ -237,18 +228,17 @@ router.post('/requests/:requestId/fulfill', authenticate, (req, res) => {
     });
   } catch (err) {
     const statusCode = err.message === 'Request not found' ? 404 : 400;
-    return res.status(statusCode).json({
-      error: statusCode === 404 ? 'Not Found' : 'Bad Request',
-      message: err.message,
+    return sendErrorResponse(res, req, statusCode, err.message, {
+      code: statusCode === 404 ? 'NOT_FOUND' : 'BAD_REQUEST',
+      errorLabel: statusCode === 404 ? 'Not Found' : 'Bad Request',
     });
   }
 });
 
 router.get('/requests/export/history', authenticate, (req, res) => {
   if (!isAdmin(req.user)) {
-    return res.status(403).json({
-      error: 'Forbidden',
-      message: 'Admin role required to export request history',
+    return sendErrorResponse(res, req, 403, 'Admin role required to export request history', {
+      code: 'FORBIDDEN',
     });
   }
 

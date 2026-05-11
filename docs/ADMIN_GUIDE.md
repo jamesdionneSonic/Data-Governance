@@ -4,7 +4,17 @@
 
 This guide covers platform administration: users, permissions, ingestion, reporting operations, and health monitoring.
 
-You can open this guide directly from the application via **Help & Docs**.
+You can open this guide directly from the application via **Help Center**.
+
+## Quick Admin Tasks
+
+Use this list when you need to act fast:
+
+1. Check [Troubleshooting FAQ](TROUBLESHOOTING_FAQ.md) if a user reports access errors.
+2. Review `/health` if the app feels slow or unavailable.
+3. Use `/api/v1/admin/users` to verify roles.
+4. Validate ingestion before loading new markdown.
+5. Review audit and activity logs before making permission changes.
 
 ## 1) User and Role Management
 
@@ -20,6 +30,7 @@ Recommended controls:
 - Keep `Admin` assignments minimal.
 - Grant least privilege by default (`Viewer` / `Analyst`).
 - Audit role changes regularly.
+- When in doubt, check the audit log before changing permissions again.
 
 ## 2) Data Ingestion and Indexing
 
@@ -77,6 +88,12 @@ Target:
 3. Validate auth token and role claims.
 4. Re-run ingestion if metadata/index drift is suspected.
 5. Roll back to the last known good deployment if needed.
+
+## Friendly Reminders
+
+- Use the fewest permissions that still let the user do their job.
+- Make one change at a time when you are troubleshooting.
+- Capture the `requestId` before escalating an issue.
 
 ## Documentation Routing
 

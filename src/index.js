@@ -1,8 +1,12 @@
 import dotenv from 'dotenv';
 import http from 'http';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Import app factory
-import createApp from './app.js';
+import createApp, { initializeCache } from './app.js';
+import { loadAllMarkdown } from './services/markdownService.js';
+import { buildLineageGraph } from './services/lineageService.js';
 
 // Load environment variables
 dotenv.config();
@@ -14,6 +18,13 @@ const SHUTDOWN_TIMEOUT_MS = Number(process.env.SHUTDOWN_TIMEOUT_MS || 10000);
 
 // Create and start Express app
 const app = createApp();
+const fileName = fileURLToPath(import.meta.url);
+const dirName = path.dirname(fileName);
+const markdownDataPath = path.resolve(dirName, '../data/markdown');
+const objects = loadAllMarkdown(markdownDataPath);
+const lineageGraph = buildLineageGraph(objects);
+initializeCache(app, objects, lineageGraph);
+
 let activeServer = null;
 let isShuttingDown = false;
 

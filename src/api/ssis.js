@@ -15,6 +15,7 @@ import { mkdirSync, writeFileSync } from 'fs';
 import { join, resolve } from 'path';
 import { createApiRouter } from '../utils/apiRouter.js';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
+import { sendErrorResponse } from '../middleware/errorHandler.js';
 import { SsisMetadataExtractor } from '../services/ssisExtractor.js';
 
 const router = createApiRouter();
@@ -449,7 +450,9 @@ router.get('/schema', (_req, res) => {
 router.post('/extract', authenticate, requireAdmin, async (req, res) => {
   const built = await buildConnectionConfig(req.body);
   if (built.error) {
-    return res.status(built.error.status).json(built.error.body);
+    return sendErrorResponse(res, req, built.error.status, built.error.body.message, {
+      code: 'BAD_REQUEST',
+    });
   }
 
   const { connConfig, sqlDriver } = built;
@@ -465,10 +468,9 @@ router.post('/extract', authenticate, requireAdmin, async (req, res) => {
       extractXml: opts.extractXml !== false,
     });
   } catch (err) {
-    return res.status(500).json({
-      error: 'Extraction Failed',
-      message: err.message,
-      detail:
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'SSIS_EXTRACTION_FAILED',
+      details:
         'Check server connectivity and permissions. See GET /api/v1/ssis/schema for required permissions.',
     });
   } finally {
@@ -495,7 +497,9 @@ router.post('/extract', authenticate, requireAdmin, async (req, res) => {
 router.post('/lineage', authenticate, async (req, res) => {
   const built = await buildConnectionConfig(req.body);
   if (built.error) {
-    return res.status(built.error.status).json(built.error.body);
+    return sendErrorResponse(res, req, built.error.status, built.error.body.message, {
+      code: 'BAD_REQUEST',
+    });
   }
 
   const { connConfig, sqlDriver } = built;
@@ -511,9 +515,8 @@ router.post('/lineage', authenticate, async (req, res) => {
       extractXml: opts.extractXml !== false,
     });
   } catch (err) {
-    return res.status(500).json({
-      error: 'Lineage Extraction Failed',
-      message: err.message,
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'SSIS_LINEAGE_EXTRACTION_FAILED',
     });
   } finally {
     await extractor.disconnect().catch(() => {});
@@ -535,7 +538,9 @@ router.post('/lineage', authenticate, async (req, res) => {
 router.post('/catalog', authenticate, async (req, res) => {
   const built = await buildConnectionConfig(req.body);
   if (built.error) {
-    return res.status(built.error.status).json(built.error.body);
+    return sendErrorResponse(res, req, built.error.status, built.error.body.message, {
+      code: 'BAD_REQUEST',
+    });
   }
 
   const { connConfig, sqlDriver } = built;
@@ -558,7 +563,9 @@ router.post('/catalog', authenticate, async (req, res) => {
       executables = await extractor.extractExecutables(warnings);
     }
   } catch (err) {
-    return res.status(500).json({ error: 'Catalog Extraction Failed', message: err.message });
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'SSIS_CATALOG_EXTRACTION_FAILED',
+    });
   } finally {
     await extractor.disconnect().catch(() => {});
   }
@@ -581,7 +588,9 @@ router.post('/catalog', authenticate, async (req, res) => {
 router.post('/agent-jobs', authenticate, async (req, res) => {
   const built = await buildConnectionConfig(req.body);
   if (built.error) {
-    return res.status(built.error.status).json(built.error.body);
+    return sendErrorResponse(res, req, built.error.status, built.error.body.message, {
+      code: 'BAD_REQUEST',
+    });
   }
 
   const { connConfig, sqlDriver } = built;
@@ -593,7 +602,9 @@ router.post('/agent-jobs', authenticate, async (req, res) => {
     await extractor.connect();
     agentJobs = await extractor.extractAgentJobs(warnings);
   } catch (err) {
-    return res.status(500).json({ error: 'Agent Job Extraction Failed', message: err.message });
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'SSIS_AGENT_JOB_EXTRACTION_FAILED',
+    });
   } finally {
     await extractor.disconnect().catch(() => {});
   }

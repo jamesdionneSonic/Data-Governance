@@ -13,6 +13,13 @@ export class ApiError extends Error {
   }
 }
 
+function normalizeStatus(err) {
+  const requestedStatus = Number(err.status || err.statusCode || 500);
+  const isValidHttpStatus =
+    Number.isInteger(requestedStatus) && requestedStatus >= 400 && requestedStatus <= 599;
+  return isValidHttpStatus ? requestedStatus : 500;
+}
+
 function getLegacyErrorLabel(status, err) {
   if (err.error && typeof err.error === 'string') {
     return err.error;
@@ -29,10 +36,7 @@ function getLegacyErrorLabel(status, err) {
 }
 
 export default function errorHandler(err, req, res, _next) {
-  const requestedStatus = Number(err.status || err.statusCode || 500);
-  const isValidHttpStatus =
-    Number.isInteger(requestedStatus) && requestedStatus >= 400 && requestedStatus <= 599;
-  const status = isValidHttpStatus ? requestedStatus : 500;
+  const status = normalizeStatus(err);
   const originalMessage = err.message || 'Internal Server Error';
   const isDevelopment = process.env.NODE_ENV === 'development';
   const isServerError = status >= 500;
@@ -69,4 +73,45 @@ export default function errorHandler(err, req, res, _next) {
   res.status(status).json({
     ...payload,
   });
+}
+
+export function buildErrorResponse(err, req, options = {}) {
+  const status = normalizeStatus(err);
+  const originalMessage = err.message || options.defaultMessage || 'Internal Server Error';
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  const isServerError = status >= 500;
+  const message = isServerError && !isDevelopment ? 'Internal Server Error' : originalMessage;
+  const timestamp = options.timestamp || new Date().toISOString();
+  const requestId = req.requestId || req.headers['x-request-id'] || null;
+  const legacyError = options.errorLabel || getLegacyErrorLabel(status, err);
+  const safeDetails =
+    isServerError && !isDevelopment ? null : err.details || options.details || null;
+
+  return {
+    status,
+    body: {
+      status: 'error',
+      error: legacyError,
+      message,
+      requestId,
+      timestamp,
+      errorInfo: {
+        status,
+        code: err.code || options.code || 'API_ERROR',
+        message,
+        details: safeDetails,
+        path: req.originalUrl,
+        method: req.method,
+        requestId,
+        timestamp,
+        ...(isDevelopment && { stack: err.stack }),
+      },
+    },
+  };
+}
+
+export function sendErrorResponse(res, req, status, message, options = {}) {
+  const apiError = new ApiError(status, message, options);
+  const built = buildErrorResponse(apiError, req, options);
+  return res.status(built.status).json(built.body);
 }

@@ -2,7 +2,7 @@
 
 ## Research Inputs
 
-- Nielsen Norman Group: *Hamburger Menus and Hidden Navigation Hurt UX Metrics*
+- Nielsen Norman Group: _Hamburger Menus and Hidden Navigation Hurt UX Metrics_
 - Material 3 navigation guidance (navigation drawer / expanded rail updates)
 - Existing product screenshots and current DataGov IA density
 
@@ -25,7 +25,7 @@
 - Keep **visible left navigation** on desktop (no hamburger-only desktop pattern).
 - Add **collapsible sidebar** (expanded ↔ compact) to reclaim horizontal workspace.
 - Keep **mobile drawer** behavior with a hamburger trigger and overlay.
-- Add **contextual help strip** in Integrations and route users to **Help & Docs**.
+- Add **contextual help strip** in Integrations and route users to **Help Center**.
 
 ## Future Enhancements
 

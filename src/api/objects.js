@@ -5,8 +5,15 @@
 
 import { createApiRouter } from '../utils/apiRouter.js';
 import { authenticate } from '../middleware/auth.js';
+import { sendErrorResponse } from '../middleware/errorHandler.js';
+import { updateMarkdownMetadata } from '../services/markdownService.js';
 
 const router = createApiRouter();
+let objectCache = new Map();
+
+export function setObjectsCache(objects) {
+  objectCache = objects || new Map();
+}
 
 /**
  * GET /api/v1/objects
@@ -14,25 +21,40 @@ const router = createApiRouter();
  * Requires authentication
  */
 router.get('/', authenticate, (req, res) => {
-  const {
-    limit = 20, offset = 0, database, type, owner,
-  } = req.query;
+  const { limit = 20, offset = 0, database, type, owner } = req.query;
 
-  // TODO: Implement object listing from Meilisearch
+  let results = Array.from(objectCache.values());
+
+  if (database) {
+    results = results.filter((item) => item.database === database);
+  }
+
+  if (type) {
+    results = results.filter((item) => item.type === type);
+  }
+
+  if (owner) {
+    results = results.filter((item) => item.owner === owner);
+  }
+
+  const parsedOffset = parseInt(offset, 10);
+  const parsedLimit = parseInt(limit, 10);
+  const total = results.length;
+  const paged = results.slice(parsedOffset, parsedOffset + parsedLimit);
+
   return res.json({
     status: 'success',
-    message: 'Objects listing endpoint',
     pagination: {
-      limit: parseInt(limit, 10),
-      offset: parseInt(offset, 10),
-      total: 0,
+      limit: parsedLimit,
+      offset: parsedOffset,
+      total,
     },
     filters: {
       database,
       type,
       owner,
     },
-    data: [],
+    data: paged,
   });
 });
 
@@ -44,20 +66,73 @@ router.get('/', authenticate, (req, res) => {
 router.get('/:id', authenticate, (req, res) => {
   const { id } = req.params;
 
-  // TODO: Implement object detail retrieval
+  const object = objectCache.get(id);
+  if (!object) {
+    return sendErrorResponse(res, req, 404, `Object '${id}' not found`, {
+      code: 'NOT_FOUND',
+    });
+  }
+
   return res.json({
     status: 'success',
-    message: 'Object detail endpoint',
     objectId: id,
-    data: {
-      id,
-      name: 'example_object',
-      database: 'example_db',
-      type: 'table',
-      owner: 'data-team',
-      description: 'Example object',
-    },
+    data: object,
   });
+});
+
+/**
+ * PUT /api/v1/objects/:id
+ * Update editable markdown-backed metadata fields
+ * Requires authentication and PowerUser/Admin role
+ */
+router.put('/:id', authenticate, (req, res) => {
+  const { id } = req.params;
+  const object = objectCache.get(id);
+
+  if (!object) {
+    return sendErrorResponse(res, req, 404, `Object '${id}' not found`, {
+      code: 'NOT_FOUND',
+    });
+  }
+
+  const hasRole = req.user.roles.includes('PowerUser') || req.user.roles.includes('Admin');
+  if (!hasRole) {
+    return sendErrorResponse(res, req, 403, 'Requires PowerUser or Admin role', {
+      code: 'FORBIDDEN',
+    });
+  }
+
+  const allowedFields = [
+    'owner',
+    'steward',
+    'domain_manager',
+    'custodian',
+    'description',
+    'sensitivity',
+    'tags',
+    'certified',
+    'certified_by',
+    'certification_date',
+    'trust_level',
+  ];
+
+  const updates = Object.fromEntries(
+    Object.entries(req.body || {}).filter(([key]) => allowedFields.includes(key))
+  );
+
+  try {
+    const updated = updateMarkdownMetadata(object.filePath, updates);
+    objectCache.set(id, updated);
+    return res.json({
+      status: 'success',
+      message: 'Object metadata updated',
+      data: updated,
+    });
+  } catch (err) {
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'OBJECT_UPDATE_ERROR',
+    });
+  }
 });
 
 /**
@@ -66,17 +141,14 @@ router.get('/:id', authenticate, (req, res) => {
  * Requires authentication and PowerUser role
  */
 router.post('/', authenticate, (req, res) => {
-  const {
-    name, database, type, description,
-  } = req.body;
+  const { name, database, type, description } = req.body;
 
   // Check if user has PowerUser or Admin role
   const hasRole = req.user.roles.includes('PowerUser') || req.user.roles.includes('Admin');
 
   if (!hasRole) {
-    return res.status(403).json({
-      error: 'Forbidden',
-      message: 'Requires PowerUser or Admin role',
+    return sendErrorResponse(res, req, 403, 'Requires PowerUser or Admin role', {
+      code: 'FORBIDDEN',
     });
   }
 

@@ -110,8 +110,10 @@ src/
 ├── api/              # Express route handlers
 ├── services/         # Business logic (parsing, search, permissions)
 ├── middleware/       # Express middleware (auth, error handling, logging)
-├── utils/            # Utility functions and configuration
-└── frontend/         # Frontend app placeholder
+└── utils/            # Utility functions and configuration
+
+docker/
+└── frontend/         # Vue + Vuetify frontend shell (app.js, app.css, index.html)
 
 tests/
 ├── unit/            # Unit tests
@@ -175,6 +177,12 @@ describe('Feature Name', () => {
 - Ensure frontend runtime failures are captured in the UI error stream.
 - Ensure all error responses include correlation via `requestId`.
 
+### Error Handling Audit
+
+- Phase 2 error-handling standardization is complete and documented.
+- API route errors, middleware responses, and CI workflow failure behavior now follow the same fail-fast pattern.
+- Use the shared error helpers and centralized middleware for any new route or runtime error path.
+
 ## Debugging
 
 ### Backend
@@ -190,8 +198,7 @@ node --inspect src/index.js
 
 ### Frontend
 
-- React DevTools browser extension
-- Redux DevTools extension
+- Vue DevTools browser extension
 - Network tab in browser DevTools
 - Check the **API Error Stream** panel for captured API and runtime UI errors.
 
