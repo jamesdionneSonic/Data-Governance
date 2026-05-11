@@ -33,6 +33,12 @@ Version `v1.0.0` marks launch readiness for the Data Governance platform across 
 - Lint: passing
 - Tests: passing (latest local run)
 
+## Post-Release CI Stabilization (May 11, 2026)
+
+- CI baseline established at tag `ci-baseline-2026-05-11` (commit `2bf8d9c`)
+- GitHub Actions status: `Lint & Format Check`, `Test & Coverage`, and `Build & Container` all green
+- Docker image build reliability improved by using production install with optional dependencies and lifecycle scripts omitted during container build
+
 ## Documentation Bundle
 
 - `docs/LAUNCH_CHECKLIST.md`
