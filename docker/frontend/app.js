@@ -282,6 +282,8 @@ const appConfig = {
           topSchemaCount: 5,
           discoveredObjectCount: 0,
           result: null,
+          availableDatabases: [],
+          discoveringDatabases: false,
         },
       },
       admin: {
@@ -2303,6 +2305,49 @@ const appConfig = {
         this.importer.sqlServer.connecting = false;
       }
     },
+    async discoverSqlServerDatabases() {
+      try {
+        if (!this.importer.sqlServer.server) {
+          return;
+        }
+
+        this.importer.sqlServer.discoveringDatabases = true;
+        this.importer.sqlServer.availableDatabases = [];
+
+        const payload = await this.api('/api/v1/ingestion/connect-sql-server/databases', {
+          method: 'POST',
+          body: JSON.stringify({
+            server: this.importer.sqlServer.server,
+            port: this.importer.sqlServer.port,
+            authentication: this.importer.sqlServer.authentication,
+            useIntegratedAuth: this.importer.sqlServer.useIntegratedAuth,
+            username: this.importer.sqlServer.username,
+            password: this.importer.sqlServer.password,
+            domain: this.importer.sqlServer.domain,
+            clientId: this.importer.sqlServer.clientId,
+            clientSecret: this.importer.sqlServer.clientSecret,
+            tenantId: this.importer.sqlServer.tenantId,
+            encrypt: this.importer.sqlServer.encrypt,
+            trustServerCertificate: this.importer.sqlServer.trustServerCertificate,
+          }),
+        });
+
+        const databases = (payload?.data?.databases || []).map((db) => ({
+          title: db,
+          value: db,
+        }));
+        this.importer.sqlServer.availableDatabases = databases;
+
+        if (databases.length > 0) {
+          this.showToast(`Discovered ${databases.length} database(s). Select one to continue.`);
+        }
+      } catch (err) {
+        // Silently handle database discovery errors to avoid spam
+        console.warn('Database discovery failed:', err.message);
+      } finally {
+        this.importer.sqlServer.discoveringDatabases = false;
+      }
+    },
     toggleAllSqlServerSchemas(selectAll) {
       if (selectAll) {
         this.importer.sqlServer.selectedSchemas = this.importer.sqlServer.availableSchemas.map(
@@ -3964,7 +4009,7 @@ const appConfig = {
                   <div class="col-2"><v-label>Auth Method</v-label><v-select v-model="importer.sqlServer.authentication" density="compact" variant="outlined" hide-details :items="[{ title: 'SQL Server Auth', value: 'sql-server' }, { title: 'Windows Auth', value: 'windows' }, { title: 'Azure AD', value: 'azure-ad' }]" item-title="title" item-value="value"></v-select></div>
                   <div class="col-3"><v-label>Server</v-label><v-text-field v-model="importer.sqlServer.server" placeholder="localhost or server.database.windows.net" density="compact" variant="outlined" hide-details></v-text-field></div>
                   <div class="col-2"><v-label>Port</v-label><v-text-field v-model.number="importer.sqlServer.port" type="number" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-3"><v-label>Database</v-label><v-text-field v-model="importer.sqlServer.database" density="compact" variant="outlined" hide-details></v-text-field></div>
+                  <div class="col-3"><v-label>Database</v-label><v-select v-model="importer.sqlServer.database" :items="importer.sqlServer.availableDatabases" :loading="importer.sqlServer.discoveringDatabases" density="compact" variant="outlined" hide-details @focus="discoverSqlServerDatabases" placeholder="Select or auto-discover..."></v-select></div>
                 </div>
                 <div class="form-row" style="margin-bottom: 8px;" v-if="importer.sqlServer.authentication === 'sql-server'">
                   <div class="col-6"><v-label>Username</v-label><v-text-field v-model="importer.sqlServer.username" density="compact" variant="outlined" hide-details></v-text-field></div>

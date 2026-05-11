@@ -1,6 +1,6 @@
 services:
   meilisearch:
-    image: meili/meilisearch:v1.10-latest
+    image: getmeili/meilisearch:latest
     container_name: dg-meilisearch
     environment:
       MEILI_ENV: development

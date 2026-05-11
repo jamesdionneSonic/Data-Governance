@@ -491,6 +491,137 @@ router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) 
   }
 });
 
+router.post('/connect-sql-server/databases', authenticate, requireAdmin, async (req, res) => {
+  let connection;
+  try {
+    const mssqlDriver = await import('mssql');
+    const {
+      server,
+      port = 1433,
+      username,
+      password,
+      domain,
+      clientId,
+      clientSecret,
+      tenantId,
+      authentication = 'sql-server',
+      useIntegratedAuth = false,
+      encrypt = true,
+      trustServerCertificate = false,
+    } = req.body;
+
+    if (!server) {
+      return sendErrorResponse(res, req, 400, 'server is required', {
+        code: 'BAD_REQUEST',
+      });
+    }
+
+    // Build connection config for master database (to discover other databases)
+    const connConfig = {
+      server,
+      port: Number(port) || 1433,
+      database: 'master',
+      options: {
+        encrypt: encrypt === true || encrypt === 'true',
+        trustServerCertificate:
+          trustServerCertificate === true || trustServerCertificate === 'true',
+        enableArithAbort: true,
+      },
+    };
+
+    // Configure authentication based on method
+    if (authentication === 'sql-server') {
+      if (!username || !password) {
+        return sendErrorResponse(
+          res,
+          req,
+          400,
+          'username and password required for SQL Server Auth',
+          {
+            code: 'BAD_REQUEST',
+          }
+        );
+      }
+      connConfig.authentication = {
+        type: 'default',
+        options: {
+          userName: username,
+          password,
+        },
+      };
+    } else if (authentication === 'windows') {
+      if (useIntegratedAuth) {
+        connConfig.authentication = {
+          type: 'ntlm',
+          options: {
+            domain: domain || undefined,
+          },
+        };
+      } else if (username && password) {
+        connConfig.authentication = {
+          type: 'ntlm',
+          options: {
+            userName: username,
+            password,
+            domain: domain || undefined,
+          },
+        };
+      }
+    } else if (authentication === 'azure-ad') {
+      if (!clientId || !clientSecret || !tenantId) {
+        return sendErrorResponse(
+          res,
+          req,
+          400,
+          'clientId, clientSecret, and tenantId required for Azure AD',
+          {
+            code: 'BAD_REQUEST',
+          }
+        );
+      }
+      connConfig.authentication = {
+        type: 'azure-active-directory-service-principal-secret',
+        options: {
+          clientId,
+          clientSecret,
+          tenantId,
+        },
+      };
+    }
+
+    // Connect and query for databases
+    connection = new mssqlDriver.ConnectionPool(connConfig);
+    await connection.connect();
+
+    const result = await connection
+      .request()
+      .query('SELECT name FROM sys.databases WHERE state = 0 AND database_id > 4 ORDER BY name');
+
+    const databases = result.recordset.map((row) => row.name);
+
+    return res.json({
+      status: 'success',
+      message: `Discovered ${databases.length} database(s)`,
+      data: {
+        databases,
+        count: databases.length,
+      },
+    });
+  } catch (err) {
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'SQL_SERVER_DATABASE_DISCOVERY_ERROR',
+    });
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+      } catch (_closeErr) {
+        // no-op
+      }
+    }
+  }
+});
+
 router.post('/connect-sql-server/discover', authenticate, requireAdmin, async (req, res) => {
   let extractor;
   try {
