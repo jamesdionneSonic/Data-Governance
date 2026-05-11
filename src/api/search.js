@@ -32,9 +32,7 @@ export function setSearchCache(objects) {
  * - tags: Filter by tags (comma-separated)
  */
 router.get('/', authenticate, (req, res) => {
-  const {
-    q, limit = 20, offset = 0, database, type, owner, sensitivity, tags,
-  } = req.query;
+  const { q, limit = 20, offset = 0, database, type, owner, sensitivity, tags } = req.query;
 
   if (!q) {
     return sendErrorResponse(res, req, 400, 'Search query (q) is required', {
@@ -77,7 +75,8 @@ router.get('/', authenticate, (req, res) => {
       .map((tag) => tag.trim())
       .filter(Boolean);
     results = results.filter((item) =>
-      requestedTags.every((tag) => (item.tags || []).includes(tag)));
+      requestedTags.every((tag) => (item.tags || []).includes(tag))
+    );
   }
 
   const enriched = results.map((item) => {
@@ -140,6 +139,7 @@ router.get('/facets', authenticate, (req, res) =>
         ...new Set(Array.from(objectCache.values()).flatMap((o) => classifyAsset(o))),
       ].sort(),
     },
-  }));
+  })
+);
 
 export default router;

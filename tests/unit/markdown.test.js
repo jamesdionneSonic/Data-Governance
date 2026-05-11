@@ -3,10 +3,7 @@
  * Tests for parsing and validating markdown files
  */
 
-import {
-  extractPlainText,
-  validateMetadata,
-} from '../../src/services/markdownService.js';
+import { extractPlainText, validateMetadata } from '../../src/services/markdownService.js';
 
 describe('Markdown Service', () => {
   describe('Plain Text Extraction', () => {

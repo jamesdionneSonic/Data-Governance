@@ -14,10 +14,11 @@ let client = null;
  * @returns {MeiliSearch} Meilisearch client
  */
 export function initializeClient(config = {}) {
-  const url = config.url
-    || process.env.MEILISEARCH_URL
-    || process.env.MEILISEARCH_HOST
-    || 'http://localhost:7700';
+  const url =
+    config.url ||
+    process.env.MEILISEARCH_URL ||
+    process.env.MEILISEARCH_HOST ||
+    'http://localhost:7700';
   const apiKey = config.apiKey || process.env.MEILISEARCH_MASTER_KEY || '';
 
   client = new MeiliSearch({
@@ -171,9 +172,7 @@ export function buildFilterString(filter) {
 
   if (filter.sensitivity) {
     if (Array.isArray(filter.sensitivity)) {
-      conditions.push(
-        `sensitivity IN [${filter.sensitivity.map((s) => `"${s}"`).join(', ')}]`,
-      );
+      conditions.push(`sensitivity IN [${filter.sensitivity.map((s) => `"${s}"`).join(', ')}]`);
     } else {
       conditions.push(`sensitivity = "${filter.sensitivity}"`);
     }

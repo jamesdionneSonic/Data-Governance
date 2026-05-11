@@ -92,7 +92,7 @@ export default function createApp() {
         },
       },
       crossOriginEmbedderPolicy: false,
-    }),
+    })
   );
   app.use(cors());
 

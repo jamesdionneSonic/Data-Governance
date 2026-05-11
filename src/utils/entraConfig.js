@@ -27,8 +27,8 @@ export function validateEntraConfig() {
 
     if (missing.length > 0) {
       throw new Error(
-        `Missing required Entra ID configuration: ${missing.join(', ')}. `
-          + 'Set these environment variables in production.',
+        `Missing required Entra ID configuration: ${missing.join(', ')}. ` +
+          'Set these environment variables in production.'
       );
     }
   }

@@ -117,14 +117,12 @@ describe('Phase 9 - Integrations API QA', () => {
     const { webhookId } = createResponse.body.data;
     expect(webhookId).toBeDefined();
 
-    const listResponse = await request(app)
-      .get('/api/v1/integrations/webhooks')
-      .set(adminHeaders);
+    const listResponse = await request(app).get('/api/v1/integrations/webhooks').set(adminHeaders);
 
     expect(listResponse.status).toBe(200);
-    expect(
-      listResponse.body.data.webhooks.some((entry) => entry.webhookId === webhookId),
-    ).toBe(true);
+    expect(listResponse.body.data.webhooks.some((entry) => entry.webhookId === webhookId)).toBe(
+      true
+    );
 
     const deleteResponse = await request(app)
       .delete(`/api/v1/integrations/webhooks/${webhookId}`)

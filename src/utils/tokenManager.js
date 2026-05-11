@@ -29,7 +29,7 @@ export function generateToken(user) {
     {
       expiresIn: JWT_EXPIRY,
       algorithm: 'HS256',
-    },
+    }
   );
 }
 
@@ -48,7 +48,7 @@ export function generateRefreshToken(userId) {
     {
       expiresIn: REFRESH_TOKEN_EXPIRY,
       algorithm: 'HS256',
-    },
+    }
   );
 }
 

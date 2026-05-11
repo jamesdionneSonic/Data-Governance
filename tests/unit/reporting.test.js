@@ -55,7 +55,11 @@ describe('Phase 6 - Reporting Service', () => {
   test('REP-002: Exports object catalog as Excel-compatible text', () => {
     const excel = exportObjectCatalogExcel(objects);
 
-    expect(excel.startsWith('id\tname\tdatabase\ttype\towner\tsensitivity\ttags\tdepends_on\tdescription')).toBe(true);
+    expect(
+      excel.startsWith(
+        'id\tname\tdatabase\ttype\towner\tsensitivity\ttags\tdepends_on\tdescription'
+      )
+    ).toBe(true);
     expect(excel).toContain('sales.customers');
     expect(excel).toContain('sales.orders');
   });
@@ -95,7 +99,7 @@ describe('Phase 6 - Reporting Service', () => {
       'http://localhost:3000',
       'sales.customers',
       'svg',
-      60,
+      60
     );
 
     expect(link.token).toBeDefined();
@@ -104,12 +108,7 @@ describe('Phase 6 - Reporting Service', () => {
   });
 
   test('REP-008: Resolves valid shared visualization token', () => {
-    const link = createSharedVisualizationLink(
-      'http://localhost:3000',
-      'sales.orders',
-      'svg',
-      60,
-    );
+    const link = createSharedVisualizationLink('http://localhost:3000', 'sales.orders', 'svg', 60);
 
     const payload = resolveSharedVisualization(link.token);
     expect(payload).toBeDefined();

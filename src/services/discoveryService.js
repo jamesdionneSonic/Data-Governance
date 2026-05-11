@@ -3,11 +3,7 @@
  * Provides insights and recommendations for data exploration
  */
 
-import {
-  getTrendingObjects,
-  getCriticalObjects,
-  getSearchStatistics,
-} from './searchService.js';
+import { getTrendingObjects, getCriticalObjects, getSearchStatistics } from './searchService.js';
 import { getLineageStats } from './lineageService.js';
 
 /**
@@ -39,8 +35,8 @@ export function getDashboardSummary(objects, lineageGraph) {
       avgDependenciesPerObject: searchStats.avgDependenciesPerObject,
       maxDependencies: lineageStats.maxDependencies,
       networkDensity: (
-        searchStats.totalDependencies
-        / (searchStats.totalObjects * (searchStats.totalObjects - 1))
+        searchStats.totalDependencies /
+        (searchStats.totalObjects * (searchStats.totalObjects - 1))
       ).toFixed(4),
     },
   };
@@ -201,8 +197,9 @@ export function getQualityMetrics(objects, _lineageGraph) {
   });
 
   // Check for objects with tags
-  const withTags = Array.from(objects.values()).filter((obj) => obj.tags && obj.tags.length > 0)
-    .length;
+  const withTags = Array.from(objects.values()).filter(
+    (obj) => obj.tags && obj.tags.length > 0
+  ).length;
   const tagRate = ((withTags / objects.size) * 100).toFixed(1);
 
   metrics.completeness.checks.push({
@@ -237,11 +234,9 @@ export function getActivitySummary(objects) {
   const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
   const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-  const thisWeek = Array.from(objects.values()).filter(
-    (obj) => obj.createdAt >= oneWeekAgo,
-  ).length;
+  const thisWeek = Array.from(objects.values()).filter((obj) => obj.createdAt >= oneWeekAgo).length;
   const thisMonth = Array.from(objects.values()).filter(
-    (obj) => obj.createdAt >= oneMonthAgo,
+    (obj) => obj.createdAt >= oneMonthAgo
   ).length;
 
   return {

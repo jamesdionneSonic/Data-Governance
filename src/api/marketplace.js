@@ -98,7 +98,7 @@ router.post('/requests', authenticate, (req, res) => {
         },
       },
       actorFromUser(req.user),
-      { slaHours },
+      { slaHours }
     );
 
     return res.status(201).json({

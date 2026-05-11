@@ -52,7 +52,7 @@ describe('middleware/auth', () => {
       expect.objectContaining({
         sub: 'u-1',
         email: 'user@example.com',
-      }),
+      })
     );
   });
 
@@ -90,7 +90,7 @@ describe('middleware/auth', () => {
     requireDatabaseAccess(
       { user: { databases: ['sales'] }, params: {}, query: {} },
       {},
-      noDatabaseNext,
+      noDatabaseNext
     );
     expect(noDatabaseNext.calls[0][0].status).toBe(400);
 
@@ -98,7 +98,7 @@ describe('middleware/auth', () => {
     requireDatabaseAccess(
       { user: { databases: ['sales'] }, params: { database: 'finance' }, query: {} },
       {},
-      forbiddenNext,
+      forbiddenNext
     );
     expect(forbiddenNext.calls[0][0].status).toBe(403);
 

@@ -36,9 +36,7 @@ function mergeNotificationConfig(existing, updates = {}) {
   return {
     ...existing,
     ...updates,
-    recipients: Array.isArray(updates.recipients)
-      ? updates.recipients
-      : existing.recipients,
+    recipients: Array.isArray(updates.recipients) ? updates.recipients : existing.recipients,
   };
 }
 
@@ -105,7 +103,7 @@ export function updateNotificationSettings(channel, updates = {}) {
 
   integrationSettings.notifications[channel] = mergeNotificationConfig(
     integrationSettings.notifications[channel],
-    updates,
+    updates
   );
 
   return {
@@ -151,9 +149,10 @@ export function registerWebhook(config = {}) {
     webhookId,
     name: config.name || `webhook-${webhookId.slice(0, 8)}`,
     url: config.url,
-    events: Array.isArray(config.events) && config.events.length > 0
-      ? config.events
-      : ['dependency.created', 'documentation.updated'],
+    events:
+      Array.isArray(config.events) && config.events.length > 0
+        ? config.events
+        : ['dependency.created', 'documentation.updated'],
     secret: config.secret || randomUUID().replace(/-/g, ''),
     maxRetries: Number.isInteger(config.maxRetries) ? config.maxRetries : 3,
     active: config.active !== false,
@@ -187,12 +186,7 @@ export async function dispatchWebhook(webhookId, eventType, payload = {}) {
 
   const signature = signWebhookPayload(body, webhook.secret);
 
-  const deliveryResult = await deliverWebhookWithRetries(
-    webhook,
-    eventType,
-    body,
-    signature,
-  );
+  const deliveryResult = await deliverWebhookWithRetries(webhook, eventType, body, signature);
 
   webhook.lastDeliveryAt = new Date().toISOString();
   webhookStore.set(webhookId, webhook);
@@ -293,9 +287,8 @@ export function runImpactAnalysisForPipeline(objectIds, objects, lineageGraph) {
 }
 
 export function runComplianceValidation(objectIds, objects) {
-  const targets = (Array.isArray(objectIds) && objectIds.length > 0)
-    ? objectIds
-    : Array.from(objects.keys());
+  const targets =
+    Array.isArray(objectIds) && objectIds.length > 0 ? objectIds : Array.from(objects.keys());
 
   const failures = [];
 
@@ -338,9 +331,10 @@ export function runComplianceValidation(objectIds, objects) {
 }
 
 export function getPostDeployDocumentationUpdateSummary(objectIds, objects) {
-  const targets = (Array.isArray(objectIds) && objectIds.length > 0)
-    ? objectIds
-    : Array.from(objects.keys()).slice(0, 100);
+  const targets =
+    Array.isArray(objectIds) && objectIds.length > 0
+      ? objectIds
+      : Array.from(objects.keys()).slice(0, 100);
 
   return {
     updatedObjects: targets.length,

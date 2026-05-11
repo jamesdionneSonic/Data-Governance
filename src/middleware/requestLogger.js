@@ -9,7 +9,7 @@ export default function requestLogger(req, res, next) {
   res.on('finish', () => {
     const duration = Date.now() - start;
     console.log(
-      `[${new Date().toISOString()}] ${req.method} ${req.path} - ${res.statusCode} (${duration}ms)`,
+      `[${new Date().toISOString()}] ${req.method} ${req.path} - ${res.statusCode} (${duration}ms)`
     );
   });
 

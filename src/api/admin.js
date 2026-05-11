@@ -102,9 +102,7 @@ router.get('/users/:userId', authenticate, requireAdmin, (req, res) => {
  */
 router.post('/users', authenticate, requireAdmin, (req, res) => {
   try {
-    const {
-      email, name, role, department,
-    } = req.body;
+    const { email, name, role, department } = req.body;
 
     if (!email) {
       return sendErrorResponse(res, req, 400, 'Email is required', {
@@ -252,9 +250,7 @@ router.post('/users/:userId/reactivate', authenticate, requireAdmin, (req, res) 
  */
 router.get('/audit', authenticate, requireAdmin, (req, res) => {
   try {
-    const {
-      userId, action, limit, days,
-    } = req.query;
+    const { userId, action, limit, days } = req.query;
     const startDate = days ? new Date(Date.now() - days * 24 * 60 * 60 * 1000) : undefined;
 
     const events = getAuditLog({

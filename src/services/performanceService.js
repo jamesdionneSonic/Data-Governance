@@ -49,9 +49,8 @@ export function getPerformanceSummary() {
   const routes = Array.from(routeMetrics.entries())
     .map(([routeKey, routeDurations]) => {
       const totalDuration = routeDurations.reduce((sum, value) => sum + value, 0);
-      const averageMs = routeDurations.length > 0
-        ? Number((totalDuration / routeDurations.length).toFixed(2))
-        : 0;
+      const averageMs =
+        routeDurations.length > 0 ? Number((totalDuration / routeDurations.length).toFixed(2)) : 0;
 
       return {
         route: routeKey,

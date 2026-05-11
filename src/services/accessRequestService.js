@@ -131,9 +131,7 @@ export function getAccessRequest(requestId) {
 }
 
 export function listAccessRequests(filters = {}) {
-  const {
-    requesterId, approverId, status, overdueOnly = false,
-  } = filters;
+  const { requesterId, approverId, status, overdueOnly = false } = filters;
 
   return Array.from(requestStore.values())
     .filter((entry) => {

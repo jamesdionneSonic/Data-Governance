@@ -234,14 +234,14 @@ function buildSsisPackageMarkdown(result, packageRow) {
   const pkg = packageRow.package_name || 'unknown_package';
   const objectName = `${folder}.${project}.${pkg}`;
   const packageEdges = (result.lineageEdges || []).filter(
-    (edge) => String(edge.packageName || '').toLowerCase() === String(pkg).toLowerCase(),
+    (edge) => String(edge.packageName || '').toLowerCase() === String(pkg).toLowerCase()
   );
   const upstream = [
     ...new Set(
       packageEdges
         .map((edge) => edge.from)
         .filter(Boolean)
-        .filter((item) => item !== 'UNKNOWN'),
+        .filter((item) => item !== 'UNKNOWN')
     ),
   ];
   const warnings = (result.warnings || []).slice(0, 15);
@@ -284,7 +284,7 @@ function buildSsisLineageMarkdown(result) {
   const topEdges = edges.slice(0, 500);
   const lines = topEdges.map(
     (edge) =>
-      `- ${edge.from || 'UNKNOWN'} -> ${edge.to || 'UNKNOWN'} (type=${edge.edgeType || 'ETL'}, confidence=${edge.confidence ?? 'n/a'}, via=${edge.via || 'n/a'})`,
+      `- ${edge.from || 'UNKNOWN'} -> ${edge.to || 'UNKNOWN'} (type=${edge.edgeType || 'ETL'}, confidence=${edge.confidence ?? 'n/a'}, via=${edge.via || 'n/a'})`
   );
   return `---
 name: ssis_catalog_lineage
@@ -335,7 +335,7 @@ function persistSsisMarkdown(result, outputPath) {
   writeFileSync(
     join(summaryDir, 'ssis_catalog_lineage.md'),
     buildSsisLineageMarkdown(result),
-    'utf-8',
+    'utf-8'
   );
   filesWritten += 1;
 

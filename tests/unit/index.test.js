@@ -3,9 +3,7 @@
  * Tests for Meilisearch integration and indexing
  */
 
-import {
-  buildFilterString,
-} from '../../src/services/indexService.js';
+import { buildFilterString } from '../../src/services/indexService.js';
 
 describe('Index Service', () => {
   describe('Filter String Building', () => {

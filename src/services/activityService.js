@@ -174,8 +174,11 @@ export function getUserTimeline(userId, limit = 50) {
 export function getObjectChangeHistory(objectId) {
   return activityLog
     .filter(
-      (e) => e.resourceId === objectId
-        && (e.action === 'lineage_created' || e.action === 'lineage_updated' || e.action === 'lineage_deleted'),
+      (e) =>
+        e.resourceId === objectId &&
+        (e.action === 'lineage_created' ||
+          e.action === 'lineage_updated' ||
+          e.action === 'lineage_deleted')
     )
     .map((e) => ({
       id: e.id,

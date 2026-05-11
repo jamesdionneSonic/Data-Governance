@@ -4,7 +4,11 @@
  * Supports Cytoscape.js, D3.js, and Mermaid
  */
 
-import { getUpstreamDependencies, getDownstreamDependents, analyzeImpact } from './lineageService.js';
+import {
+  getUpstreamDependencies,
+  getDownstreamDependents,
+  analyzeImpact,
+} from './lineageService.js';
 
 /**
  * Build Cytoscape.js graph format

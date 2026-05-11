@@ -3,9 +3,7 @@ import createApp from '../../src/app.js';
 import { generateToken } from '../../src/utils/tokenManager.js';
 import { clearDataProducts } from '../../src/services/dataProductContractService.js';
 
-function createAuthHeader({
-  id, email, name, roles = ['Viewer'],
-}) {
+function createAuthHeader({ id, email, name, roles = ['Viewer'] }) {
   const token = generateToken({
     id,
     email,

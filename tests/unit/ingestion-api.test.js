@@ -38,7 +38,8 @@ describe('Ingestion API', () => {
   });
 
   test('ING-003: parse-content accepts valid markdown payload', async () => {
-    const markdown = '---\nname: test_asset\ndatabase: sales\ntype: table\nowner: owner@example.com\nsensitivity: internal\ntags:\n  - core\n---\n\n# Test Asset\n\nSample description for ingestion test.';
+    const markdown =
+      '---\nname: test_asset\ndatabase: sales\ntype: table\nowner: owner@example.com\nsensitivity: internal\ntags:\n  - core\n---\n\n# Test Asset\n\nSample description for ingestion test.';
 
     const res = await request(app).post('/api/v1/ingestion/parse-content').set(viewerHeaders).send({
       content: markdown,

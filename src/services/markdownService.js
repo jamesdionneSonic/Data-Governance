@@ -189,7 +189,7 @@ export function validateMetadata(metadata) {
   const validSensitivity = ['public', 'internal', 'confidential', 'restricted'];
   if (metadata.sensitivity && !validSensitivity.includes(metadata.sensitivity)) {
     errors.push(
-      `Invalid sensitivity: ${metadata.sensitivity}. Must be one of: ${validSensitivity.join(', ')}`,
+      `Invalid sensitivity: ${metadata.sensitivity}. Must be one of: ${validSensitivity.join(', ')}`
     );
   }
 

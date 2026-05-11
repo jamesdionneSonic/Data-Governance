@@ -15,16 +15,10 @@ class MarkdownGenerator {
     const extractionWarnings = this.metadata.extractionWarnings || [];
 
     const relationships = this.metadata.relationships
-      .filter(
-        (r) =>
-          (r.fromTable === table.id || r.toTable === table.id)
-          && r.confidence >= 0.5,
-      )
+      .filter((r) => (r.fromTable === table.id || r.toTable === table.id) && r.confidence >= 0.5)
       .sort((a, b) => b.confidence - a.confidence);
 
-    const dependsOn = relationships
-      .filter((r) => r.toTable === table.id)
-      .map((r) => r.fromTable);
+    const dependsOn = relationships.filter((r) => r.toTable === table.id).map((r) => r.fromTable);
 
     const frontmatter = {
       name: table.name,
@@ -46,9 +40,7 @@ class MarkdownGenerator {
 
     // Group relationships by confidence
     const highConfidence = relationships.filter((r) => r.confidence >= 0.8);
-    const mediumConfidence = relationships.filter(
-      (r) => r.confidence >= 0.6 && r.confidence < 0.8,
-    );
+    const mediumConfidence = relationships.filter((r) => r.confidence >= 0.6 && r.confidence < 0.8);
     const lowConfidence = relationships.filter((r) => r.confidence < 0.6);
 
     let markdown = '---\n';
@@ -97,8 +89,11 @@ class MarkdownGenerator {
       markdown += '\n';
     }
 
-    if (table.primaryKey || (table.uniqueConstraints && table.uniqueConstraints.length > 0)
-      || (table.checkConstraints && table.checkConstraints.length > 0)) {
+    if (
+      table.primaryKey ||
+      (table.uniqueConstraints && table.uniqueConstraints.length > 0) ||
+      (table.checkConstraints && table.checkConstraints.length > 0)
+    ) {
       markdown += '## Constraints\n\n';
       if (table.primaryKey && table.primaryKey.columns?.length > 0) {
         markdown += `- **Primary Key**: ${table.primaryKey.name}\n`;

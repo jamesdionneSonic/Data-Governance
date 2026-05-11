@@ -8,7 +8,8 @@ import { randomUUID } from 'crypto';
 const sharedVisualizationLinks = new Map();
 const scheduledReports = new Map();
 
-const ONE_PIXEL_PNG_BASE64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO2W4WQAAAAASUVORK5CYII=';
+const ONE_PIXEL_PNG_BASE64 =
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO2W4WQAAAAASUVORK5CYII=';
 
 function toArray(objects) {
   return Array.from(objects.values());
@@ -36,17 +37,21 @@ export function exportObjectCatalogCsv(objects) {
     'description',
   ];
 
-  const lines = rows.map((obj) => [
-    obj.id,
-    obj.name,
-    obj.database,
-    obj.type,
-    obj.owner,
-    obj.sensitivity,
-    (obj.tags || []).join('|'),
-    (obj.depends_on || []).join('|'),
-    obj.description || '',
-  ].map(escapeCsv).join(','));
+  const lines = rows.map((obj) =>
+    [
+      obj.id,
+      obj.name,
+      obj.database,
+      obj.type,
+      obj.owner,
+      obj.sensitivity,
+      (obj.tags || []).join('|'),
+      (obj.depends_on || []).join('|'),
+      obj.description || '',
+    ]
+      .map(escapeCsv)
+      .join(',')
+  );
 
   return [headers.join(','), ...lines].join('\n');
 }
@@ -65,17 +70,19 @@ export function exportObjectCatalogExcel(objects) {
     'description',
   ];
 
-  const lines = rows.map((obj) => [
-    obj.id,
-    obj.name,
-    obj.database,
-    obj.type,
-    obj.owner,
-    obj.sensitivity,
-    (obj.tags || []).join(';'),
-    (obj.depends_on || []).join(';'),
-    obj.description || '',
-  ].join('\t'));
+  const lines = rows.map((obj) =>
+    [
+      obj.id,
+      obj.name,
+      obj.database,
+      obj.type,
+      obj.owner,
+      obj.sensitivity,
+      (obj.tags || []).join(';'),
+      (obj.depends_on || []).join(';'),
+      obj.description || '',
+    ].join('\t')
+  );
 
   return [headers.join('\t'), ...lines].join('\n');
 }
@@ -156,7 +163,12 @@ export function exportVisualization(objectId, format, lineageGraph) {
   };
 }
 
-export function createSharedVisualizationLink(baseUrl, objectId, format = 'svg', ttlMinutes = 1440) {
+export function createSharedVisualizationLink(
+  baseUrl,
+  objectId,
+  format = 'svg',
+  ttlMinutes = 1440
+) {
   const token = randomUUID().replace(/-/g, '');
   const now = Date.now();
   const expiresAt = new Date(now + Math.max(1, ttlMinutes) * 60 * 1000).toISOString();
@@ -222,9 +234,10 @@ export function runScheduledReport(scheduleId, objects, lineageGraph) {
   let artifact;
 
   if (schedule.type === 'catalog') {
-    artifact = schedule.format === 'xlsx'
-      ? exportObjectCatalogExcel(objects)
-      : exportObjectCatalogCsv(objects);
+    artifact =
+      schedule.format === 'xlsx'
+        ? exportObjectCatalogExcel(objects)
+        : exportObjectCatalogCsv(objects);
   } else if (schedule.type === 'dependency' && schedule.objectId) {
     artifact = generateDependencyReportPdf(schedule.objectId, objects, lineageGraph);
   } else {

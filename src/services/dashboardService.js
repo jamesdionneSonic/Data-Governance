@@ -3,12 +3,7 @@
  * Aggregates admin, activity, and metadata data for dashboard views
  */
 
-import {
-  getAllUsers,
-  getAuditLog,
-  getAuditStatistics,
-  getUser,
-} from './adminService.js';
+import { getAllUsers, getAuditLog, getAuditStatistics, getUser } from './adminService.js';
 import {
   getActivityLog,
   getActivityStatistics,
@@ -215,9 +210,7 @@ function calculateCompleteness(objects, metadataData) {
     percentage: Math.round(((withDescription + withTags) / (total * 2)) * 100) || 0,
     withDescription: Math.round((withDescription / total) * 100),
     withTags: Math.round((withTags / total) * 100),
-    classified: Math.round(
-      ((total - metadataData.statistics.untagged) / total) * 100,
-    ),
+    classified: Math.round(((total - metadataData.statistics.untagged) / total) * 100),
   };
 }
 

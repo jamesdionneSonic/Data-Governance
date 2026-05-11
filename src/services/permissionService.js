@@ -21,27 +21,15 @@ const rolePermissions = {
   },
   PowerUser: {
     description: 'Can read all data, upload and edit markdown, manage database permissions',
-    permissions: [
-      'read:*',
-      'write:markdown',
-      'write:objects',
-      'admin:permissions',
-    ],
+    permissions: ['read:*', 'write:markdown', 'write:objects', 'admin:permissions'],
   },
   Analyst: {
     description: 'Can read all data and generate reports, but no write access',
-    permissions: [
-      'read:*',
-      'read:analytics',
-      'export:reports',
-    ],
+    permissions: ['read:*', 'read:analytics', 'export:reports'],
   },
   Viewer: {
     description: 'Read-only access to assigned databases',
-    permissions: [
-      'read:objects',
-      'read:lineage',
-    ],
+    permissions: ['read:objects', 'read:lineage'],
   },
 };
 

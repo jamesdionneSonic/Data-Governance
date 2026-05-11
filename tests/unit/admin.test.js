@@ -335,7 +335,11 @@ describe('Phase 4 - Metadata Service', () => {
   describe('Metadata Updates', () => {
     test('META-001: Should update object metadata', () => {
       const objects = createTestObjects();
-      const updated = updateObjectMetadata('customers', { description: 'New description' }, objects);
+      const updated = updateObjectMetadata(
+        'customers',
+        { description: 'New description' },
+        objects
+      );
 
       expect(updated.description).toBe('New description');
     });

@@ -155,13 +155,25 @@ describe('Phase 3 - Search Integration', () => {
 
   describe('searchService - searchByProximity', () => {
     test('SEARCH-004: Should find upstream dependencies', () => {
-      const result = searchByProximity('order_summary', 'upstream', 1, mockLineageGraph, mockObjects);
+      const result = searchByProximity(
+        'order_summary',
+        'upstream',
+        1,
+        mockLineageGraph,
+        mockObjects
+      );
       expect(result.length).toBeGreaterThan(0);
       expect(result[0].name).toBeDefined();
     });
 
     test('SEARCH-005: Should find downstream dependents', () => {
-      const result = searchByProximity('order_summary', 'downstream', 1, mockLineageGraph, mockObjects);
+      const result = searchByProximity(
+        'order_summary',
+        'downstream',
+        1,
+        mockLineageGraph,
+        mockObjects
+      );
       expect(result.length).toBeGreaterThan(0);
       expect(result.some((obj) => obj.id === 'reports')).toBe(true);
     });
@@ -213,8 +225,9 @@ describe('Phase 3 - Search Integration', () => {
     test('SEARCH-013: Should sort by reference count descending', () => {
       const trending = getTrendingObjects(mockObjects, mockLineageGraph, 10);
       for (let i = 0; i < trending.length - 1; i += 1) {
-        expect(trending[i].referencedByCount)
-          .toBeGreaterThanOrEqual(trending[i + 1].referencedByCount);
+        expect(trending[i].referencedByCount).toBeGreaterThanOrEqual(
+          trending[i + 1].referencedByCount
+        );
       }
     });
 

@@ -69,7 +69,7 @@ describe('utils/apiRouter', () => {
           res.json({
             ok: req.hitOne && req.hitTwo,
           });
-        },
+        }
       );
 
       apiRouter.get('/handled-by-error-mw', () => {

@@ -15,7 +15,9 @@ export function authenticate(req, res, next) {
     const token = extractToken(req.headers.authorization);
 
     if (!token) {
-      return next(new ApiError(401, 'Missing or invalid authorization token', { code: 'UNAUTHORIZED' }));
+      return next(
+        new ApiError(401, 'Missing or invalid authorization token', { code: 'UNAUTHORIZED' })
+      );
     }
 
     const decoded = verifyToken(token);
@@ -66,7 +68,9 @@ export function requireDatabaseAccess(req, res, next) {
   }
 
   if (!req.user.databases || !req.user.databases.includes(dbName)) {
-    return next(new ApiError(403, `User does not have access to database: ${dbName}`, { code: 'FORBIDDEN' }));
+    return next(
+      new ApiError(403, `User does not have access to database: ${dbName}`, { code: 'FORBIDDEN' })
+    );
   }
 
   req.database = dbName;

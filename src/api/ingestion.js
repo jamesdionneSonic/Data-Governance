@@ -343,11 +343,11 @@ router.post('/load', authenticate, requireAdmin, async (req, res) => {
           code: 'INGESTION_DEPENDENCY_ERROR',
           details: {
             meilisearchUrl:
-              process.env.MEILISEARCH_URL
-              || process.env.MEILISEARCH_HOST
-              || 'http://localhost:7700',
+              process.env.MEILISEARCH_URL ||
+              process.env.MEILISEARCH_HOST ||
+              'http://localhost:7700',
           },
-        },
+        }
       );
     }
 
@@ -413,9 +413,7 @@ router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) 
   try {
     const SqlServerMetadataExtractor = (await import('../services/sqlServerExtractor.js')).default;
     const MarkdownGenerator = (await import('../services/markdownFromSqlServer.js')).default;
-    const {
-      database, selectedSchemas = [], selectedTables = [], outputPath,
-    } = req.body;
+    const { database, selectedSchemas = [], selectedTables = [], outputPath } = req.body;
     const connectionContext = await buildSqlConnectionContext(req.body);
     if (connectionContext.error) {
       return sendErrorResponse(
@@ -425,7 +423,7 @@ router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) 
         connectionContext.error.message,
         {
           code: connectionContext.error.code || 'BAD_REQUEST',
-        },
+        }
       );
     }
 
@@ -506,7 +504,7 @@ router.post('/connect-sql-server/discover', authenticate, requireAdmin, async (r
         connectionContext.error.message,
         {
           code: connectionContext.error.code || 'BAD_REQUEST',
-        },
+        }
       );
     }
 
@@ -531,12 +529,12 @@ router.post('/connect-sql-server/discover', authenticate, requireAdmin, async (r
         functionCount: typeCount.function || typeCount.table_function || 0,
         triggerCount: typeCount.trigger || 0,
         totalObjectCount:
-          (typeCount.table || 0)
-          + (typeCount.view || 0)
-          + (typeCount.stored_procedure || 0)
-          + (typeCount.function || 0)
-          + (typeCount.table_function || 0)
-          + (typeCount.trigger || 0),
+          (typeCount.table || 0) +
+          (typeCount.view || 0) +
+          (typeCount.stored_procedure || 0) +
+          (typeCount.function || 0) +
+          (typeCount.table_function || 0) +
+          (typeCount.trigger || 0),
       };
     });
 

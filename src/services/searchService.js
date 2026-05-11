@@ -20,7 +20,7 @@ export async function enhancedSearch(
   query,
   options = {},
   lineageGraph = null,
-  objects = null,
+  objects = null
 ) {
   try {
     // Execute base search
@@ -67,7 +67,7 @@ export async function enhancedFacetedSearch(
   query,
   options = {},
   lineageGraph = null,
-  objects = null,
+  objects = null
 ) {
   try {
     const results = await facetedSearch(indexName, query, options);
@@ -281,9 +281,10 @@ export function getSearchStatistics(objects, lineageGraph) {
     }
   }
 
-  stats.avgDependenciesPerObject = stats.objectsWithDependencies > 0
-    ? (stats.totalDependencies / stats.objectsWithDependencies).toFixed(2)
-    : 0;
+  stats.avgDependenciesPerObject =
+    stats.objectsWithDependencies > 0
+      ? (stats.totalDependencies / stats.objectsWithDependencies).toFixed(2)
+      : 0;
 
   return stats;
 }

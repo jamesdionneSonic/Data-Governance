@@ -258,9 +258,8 @@ export function getLineageStats(graph) {
     }
   }
 
-  const avgDependencies = objectsWithDependencies > 0
-    ? totalDependencies / objectsWithDependencies
-    : 0;
+  const avgDependencies =
+    objectsWithDependencies > 0 ? totalDependencies / objectsWithDependencies : 0;
 
   return {
     totalObjects: graph.size,

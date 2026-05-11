@@ -327,7 +327,7 @@ describe('SSIS-004: buildLineageEdges – derives edges from mock data', () => {
       mockCatalog,
       mockXmlMeta,
       mockAgentJobs,
-      mockPerfStats,
+      mockPerfStats
     );
 
     expect(Array.isArray(edges)).toBe(true);
@@ -343,7 +343,7 @@ describe('SSIS-004: buildLineageEdges – derives edges from mock data', () => {
       mockCatalog,
       mockXmlMeta,
       mockAgentJobs,
-      mockPerfStats,
+      mockPerfStats
     );
     const edge = edges.find((e) => e.from !== 'UNKNOWN');
     expect(edge.via).toContain('LoadFact.dtsx');
@@ -354,7 +354,7 @@ describe('SSIS-004: buildLineageEdges – derives edges from mock data', () => {
       mockCatalog,
       [], // no XML metadata
       mockAgentJobs,
-      mockPerfStats,
+      mockPerfStats
     );
     const placeholder = edges.find((e) => e.from === 'UNKNOWN');
     expect(placeholder).toBeDefined();
@@ -367,7 +367,7 @@ describe('SSIS-004: buildLineageEdges – derives edges from mock data', () => {
       mockCatalog,
       mockXmlMeta,
       mockAgentJobs,
-      mockPerfStats,
+      mockPerfStats
     );
     const xmlEdge = edges.find((e) => e.from !== 'UNKNOWN' && e.edgeType === 'ETL');
     expect(xmlEdge.confidence).toBe(0.85);

@@ -21,9 +21,7 @@ export function setObjectsCache(objects) {
  * Requires authentication
  */
 router.get('/', authenticate, (req, res) => {
-  const {
-    limit = 20, offset = 0, database, type, owner,
-  } = req.query;
+  const { limit = 20, offset = 0, database, type, owner } = req.query;
 
   let results = Array.from(objectCache.values());
 
@@ -119,7 +117,7 @@ router.put('/:id', authenticate, (req, res) => {
   ];
 
   const updates = Object.fromEntries(
-    Object.entries(req.body || {}).filter(([key]) => allowedFields.includes(key)),
+    Object.entries(req.body || {}).filter(([key]) => allowedFields.includes(key))
   );
 
   try {
@@ -143,9 +141,7 @@ router.put('/:id', authenticate, (req, res) => {
  * Requires authentication and PowerUser role
  */
 router.post('/', authenticate, (req, res) => {
-  const {
-    name, database, type, description,
-  } = req.body;
+  const { name, database, type, description } = req.body;
 
   // Check if user has PowerUser or Admin role
   const hasRole = req.user.roles.includes('PowerUser') || req.user.roles.includes('Admin');

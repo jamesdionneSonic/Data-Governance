@@ -129,7 +129,7 @@ async function safeQuery(pool, sql, params = {}) {
 async function ssisdbExists(pool) {
   const { rows } = await safeQuery(
     pool,
-    "SELECT name FROM sys.databases WHERE name = 'SSISDB' AND state_desc = 'ONLINE'",
+    "SELECT name FROM sys.databases WHERE name = 'SSISDB' AND state_desc = 'ONLINE'"
   );
   return rows.length > 0;
 }
@@ -142,7 +142,7 @@ async function objectExists(pool, db, schema, name) {
     pool,
     `SELECT 1 FROM [${db}].sys.objects
      WHERE SCHEMA_NAME(schema_id) = @schema AND name = @name`,
-    { schema, name },
+    { schema, name }
   );
   return rows.length > 0;
 }
@@ -354,7 +354,7 @@ class SsisMetadataExtractor {
        FROM catalog.folders f
        JOIN catalog.projects p  ON f.folder_id = p.folder_id
        JOIN catalog.packages pkg ON p.project_id = pkg.project_id
-       ORDER BY f.name, p.name, pkg.name`,
+       ORDER BY f.name, p.name, pkg.name`
     );
     if (error) {
       warnings.push(`catalog_inventory: ${error}`);
@@ -393,7 +393,7 @@ class SsisMetadataExtractor {
                                  AND (par.object_name = pkg.name OR par.object_type = 20)
        JOIN catalog.projects  p   ON pkg.project_id = p.project_id
        JOIN catalog.folders   f   ON p.folder_id    = f.folder_id
-       ORDER BY f.name, p.name, pkg.name, par.object_type, par.parameter_name`,
+       ORDER BY f.name, p.name, pkg.name, par.object_type, par.parameter_name`
     );
     if (error) {
       warnings.push(`parameters: ${error}`);
@@ -424,7 +424,7 @@ class SsisMetadataExtractor {
        JOIN catalog.packages pkg ON e.package_id = pkg.package_id
        JOIN catalog.projects  p   ON pkg.project_id = p.project_id
        JOIN catalog.folders   f   ON p.folder_id    = f.folder_id
-       ORDER BY f.name, p.name, pkg.name, e.execution_path`,
+       ORDER BY f.name, p.name, pkg.name, e.execution_path`
     );
     if (error) {
       warnings.push(`executables: ${error}`);
@@ -450,7 +450,7 @@ class SsisMetadataExtractor {
          e.created_time
        FROM catalog.environments e
        JOIN catalog.folders f ON e.folder_id = f.folder_id
-       ORDER BY f.name, e.environment_name`,
+       ORDER BY f.name, e.environment_name`
     );
     if (envErr) warnings.push(`environments: ${envErr}`);
 
@@ -472,7 +472,7 @@ class SsisMetadataExtractor {
        FROM catalog.environment_variables v
        JOIN catalog.environments  e ON v.environment_id = e.environment_id
        JOIN catalog.folders       f ON e.folder_id      = f.folder_id
-       ORDER BY f.name, e.environment_name, v.name`,
+       ORDER BY f.name, e.environment_name, v.name`
     );
     if (varErr) warnings.push(`environment_variables: ${varErr}`);
 
@@ -489,7 +489,7 @@ class SsisMetadataExtractor {
        FROM catalog.environment_references er
        JOIN catalog.projects p ON er.project_id = p.project_id
        JOIN catalog.folders  f ON p.folder_id   = f.folder_id
-       ORDER BY f.name, p.name`,
+       ORDER BY f.name, p.name`
     );
     if (refErr) warnings.push(`environment_references: ${refErr}`);
 
@@ -536,7 +536,7 @@ class SsisMetadataExtractor {
        FROM catalog.executions e
        WHERE e.start_time >= DATEADD(DAY, -@days, GETUTCDATE())
        ORDER BY e.start_time DESC`,
-      { maxRows, days },
+      { maxRows, days }
     );
     if (error) {
       warnings.push(`execution_history: ${error}`);
@@ -568,7 +568,7 @@ class SsisMetadataExtractor {
        JOIN catalog.executions e ON ecp.execution_id = e.execution_id
        WHERE e.start_time >= DATEADD(DAY, -@days, GETUTCDATE())
        ORDER BY ecp.execution_id DESC, ecp.start_time`,
-      { days, maxRows },
+      { days, maxRows }
     );
     if (error) {
       warnings.push(`component_phases: ${error}`);
@@ -600,7 +600,7 @@ class SsisMetadataExtractor {
        JOIN catalog.executions e ON eds.execution_id = e.execution_id
        WHERE e.start_time >= DATEADD(DAY, -@days, GETUTCDATE())
        ORDER BY eds.execution_id DESC, eds.rows_sent DESC`,
-      { days, maxRows },
+      { days, maxRows }
     );
     if (error) {
       warnings.push(`data_statistics: ${error}`);
@@ -632,7 +632,7 @@ class SsisMetadataExtractor {
        JOIN catalog.executions e ON epv.execution_id = e.execution_id
        WHERE e.start_time >= DATEADD(DAY, -@days, GETUTCDATE())
        ORDER BY epv.execution_id DESC`,
-      { days, maxRows },
+      { days, maxRows }
     );
     if (error) {
       warnings.push(`execution_parameter_values: ${error}`);
@@ -667,7 +667,7 @@ class SsisMetadataExtractor {
        WHERE e.start_time >= DATEADD(DAY, -@days, GETUTCDATE())
          AND em.message_type IN (110, 120)  -- errors + warnings only
        ORDER BY em.operation_id DESC, em.message_time DESC`,
-      { days, maxRows },
+      { days, maxRows }
     );
     if (error) {
       warnings.push(`event_messages: ${error}`);
@@ -702,7 +702,7 @@ class SsisMetadataExtractor {
          v.project_lsn,
          v.use32bitruntime
        FROM catalog.validations v
-       ORDER BY v.start_time DESC`,
+       ORDER BY v.start_time DESC`
     );
     if (error) {
       warnings.push(`validations: ${error}`);
@@ -735,7 +735,7 @@ class SsisMetadataExtractor {
          ov.object_data    -- varbinary – the raw .ispac / .dtsx bytes
        FROM catalog.object_versions ov
        WHERE ov.object_type IN (20, 30)
-       ORDER BY ov.created_time DESC`,
+       ORDER BY ov.created_time DESC`
     );
     if (verErr) {
       warnings.push(`object_versions: ${verErr}`);
@@ -804,7 +804,7 @@ class SsisMetadataExtractor {
          wa.machine_cores,
          wa.machine_ram_mb
        FROM catalog.worker_agents wa
-       ORDER BY wa.machine_name`,
+       ORDER BY wa.machine_name`
     );
     if (error) {
       warnings.push(`scale_out_agents: ${error}`);
@@ -829,7 +829,7 @@ class SsisMetadataExtractor {
          wt.end_time,
          DATEDIFF(SECOND, wt.start_time, wt.end_time) AS duration_seconds
        FROM catalog.worker_agent_tasks wt
-       ORDER BY wt.start_time DESC`,
+       ORDER BY wt.start_time DESC`
     );
     if (taskErr) warnings.push(`scale_out_agent_tasks: ${taskErr}`);
 
@@ -862,7 +862,7 @@ class SsisMetadataExtractor {
          j.delete_level
        FROM msdb.dbo.sysjobs j
        LEFT JOIN msdb.dbo.syscategories cat ON j.category_id = cat.category_id
-       ORDER BY j.name`,
+       ORDER BY j.name`
     );
     if (jobErr) {
       warnings.push(`agent_jobs: ${jobErr}`);
@@ -894,7 +894,7 @@ class SsisMetadataExtractor {
        FROM msdb.dbo.sysjobsteps js
        WHERE js.subsystem IN ('SSIS')
           OR (js.subsystem IN ('CmdExec','PowerShell') AND js.command LIKE '%dtexec%')
-       ORDER BY js.job_id, js.step_id`,
+       ORDER BY js.job_id, js.step_id`
     );
     if (stepErr) warnings.push(`agent_job_steps: ${stepErr}`);
 
@@ -903,7 +903,7 @@ class SsisMetadataExtractor {
       this.pool,
       `SELECT job_id, step_id, step_name, subsystem, step_uid
        FROM msdb.dbo.sysjobsteps
-       ORDER BY job_id, step_id`,
+       ORDER BY job_id, step_id`
     );
     if (allStepErr) warnings.push(`agent_all_steps: ${allStepErr}`);
 
@@ -933,7 +933,7 @@ class SsisMetadataExtractor {
          sch.date_created      AS schedule_created
        FROM msdb.dbo.sysjobschedules jsch
        JOIN msdb.dbo.sysschedules sch ON jsch.schedule_id = sch.schedule_id
-       ORDER BY jsch.job_id, sch.name`,
+       ORDER BY jsch.job_id, sch.name`
     );
     if (schedErr) warnings.push(`agent_schedules: ${schedErr}`);
 
@@ -963,7 +963,7 @@ class SsisMetadataExtractor {
                   OR (subsystem IN ('CmdExec','PowerShell') AND command LIKE '%dtexec%')
              )
          AND jh.run_date >= CONVERT(int, CONVERT(varchar(8), DATEADD(DAY,-30,GETDATE()), 112))
-       ORDER BY jh.run_date DESC, jh.run_time DESC`,
+       ORDER BY jh.run_date DESC, jh.run_time DESC`
     );
     if (histErr) warnings.push(`agent_history: ${histErr}`);
 
@@ -1005,7 +1005,7 @@ class SsisMetadataExtractor {
        FROM msdb.dbo.sysssislog
        WHERE starttime >= DATEADD(DAY, -@days, GETDATE())
        ORDER BY starttime DESC`,
-      { days, maxRows },
+      { days, maxRows }
     );
     if (error) {
       warnings.push(`legacy_ssis_log: ${error}`);
@@ -1043,7 +1043,7 @@ class SsisMetadataExtractor {
          packagetype,
          isencrypted
        FROM msdb.dbo.sysssispackages
-       ORDER BY folderid, name`,
+       ORDER BY folderid, name`
     );
     if (error) {
       warnings.push(`msdb_packages: ${error}`);
@@ -1079,7 +1079,7 @@ class SsisMetadataExtractor {
        WHERE start_time >= DATEADD(DAY, -90, GETUTCDATE())
          AND end_time IS NOT NULL
        GROUP BY folder_name, project_name, package_name
-       ORDER BY folder_name, project_name, package_name`,
+       ORDER BY folder_name, project_name, package_name`
     );
     if (error) {
       warnings.push(`performance_stats: ${error}`);
@@ -1107,7 +1107,7 @@ class SsisMetadataExtractor {
          ov.is_current
        FROM catalog.object_versions ov
        WHERE ov.object_type = 20   -- project only (no binary blob)
-       ORDER BY ov.object_name, ov.created_time DESC`,
+       ORDER BY ov.object_name, ov.created_time DESC`
     );
     if (error) {
       warnings.push(`project_version_history: ${error}`);
@@ -1337,7 +1337,7 @@ class SsisMetadataExtractor {
       result.catalog,
       result.xmlMetadata,
       result.agentJobs,
-      result.performanceStats,
+      result.performanceStats
     );
 
     return result;

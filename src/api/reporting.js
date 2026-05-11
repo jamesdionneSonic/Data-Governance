@@ -51,7 +51,8 @@ router.get('/share/:token', (req, res) => {
   }
 
   const exported = getOrSetCache(`shared:${payload.objectId}:${payload.format}`, () =>
-    exportVisualization(payload.objectId, payload.format, cachedLineageGraph));
+    exportVisualization(payload.objectId, payload.format, cachedLineageGraph)
+  );
   return res.type(exported.contentType).send(exported.body);
 });
 
@@ -79,7 +80,8 @@ router.get('/export/catalog.xlsx', requireAdmin, (req, res) => {
 
 router.get('/export/dependency/:objectId.pdf', requireAdmin, (req, res) => {
   const pdf = getOrSetCache(`dependency:${req.params.objectId}`, () =>
-    generateDependencyReportPdf(req.params.objectId, cachedObjects, cachedLineageGraph));
+    generateDependencyReportPdf(req.params.objectId, cachedObjects, cachedLineageGraph)
+  );
 
   if (!pdf) {
     return sendErrorResponse(res, req, 404, 'Object not found', {
@@ -98,7 +100,7 @@ router.get('/export/visualization/:objectId', requireAdmin, (req, res) => {
   const { format = 'svg' } = req.query;
   const exported = getOrSetCache(
     `visualization:${req.params.objectId}:${String(format).toLowerCase()}`,
-    () => exportVisualization(req.params.objectId, format, cachedLineageGraph),
+    () => exportVisualization(req.params.objectId, format, cachedLineageGraph)
   );
 
   const { extension } = exported;
@@ -118,7 +120,7 @@ router.post('/share/visualization/:objectId', requireAdmin, (req, res) => {
     baseUrl,
     req.params.objectId,
     format,
-    parseInt(ttlMinutes, 10),
+    parseInt(ttlMinutes, 10)
   );
 
   return res.status(201).json({
