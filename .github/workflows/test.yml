@@ -8,9 +8,18 @@ on:
   schedule:
     - cron: '0 2 * * *'  # 2 AM UTC daily
 
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: test-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     strategy:
       matrix:
@@ -61,3 +70,79 @@ jobs:
               repo: context.repo.repo,
               body: `✅ Test Coverage: ${badge}`
             });
+
+  playwright-smoke:
+    runs-on: ubuntu-latest
+    needs: test
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright smoke tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
+
+      - name: Upload Playwright traces
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: test-results/
+          if-no-files-found: ignore
+
+  performance-smoke:
+    runs-on: ubuntu-latest
+    needs: test
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run performance smoke test
+        env:
+          PERF_REQUESTS: 60
+          PERF_CONCURRENCY: 6
+          PERF_BASE_URL: http://localhost:3000
+          PERF_LOGIN_EMAIL: perf-tester@example.com
+        run: |
+          npm run dev > dg-app.log 2>&1 &
+          APP_PID=$!
+          trap 'kill $APP_PID' EXIT
+
+          for i in {1..60}; do
+            if curl -fsS http://localhost:3000/health > /dev/null; then
+              break
+            fi
+            sleep 2
+          done
+
+          npm run perf:load

@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 
 import { createApiRouter } from '../utils/apiRouter.js';
 import { authenticate } from '../middleware/auth.js';
+import { sendErrorResponse } from '../middleware/errorHandler.js';
 
 const router = createApiRouter();
 
@@ -56,9 +57,8 @@ router.get('/library', (_req, res) => {
 router.get('/library/:key', async (req, res) => {
   const doc = docsByKey.get(req.params.key);
   if (!doc) {
-    return res.status(404).json({
-      error: 'Not Found',
-      message: 'Document not found',
+    return sendErrorResponse(res, req, 404, 'Document not found', {
+      code: 'NOT_FOUND',
     });
   }
 
@@ -75,9 +75,8 @@ router.get('/library/:key', async (req, res) => {
       },
     });
   } catch (err) {
-    return res.status(500).json({
-      error: 'Internal Server Error',
-      message: `Unable to read document: ${err.message}`,
+    return sendErrorResponse(res, req, 500, `Unable to read document: ${err.message}`, {
+      code: 'DOC_READ_ERROR',
     });
   }
 });
@@ -85,9 +84,8 @@ router.get('/library/:key', async (req, res) => {
 router.get('/library/:key/raw', async (req, res) => {
   const doc = docsByKey.get(req.params.key);
   if (!doc) {
-    return res.status(404).json({
-      error: 'Not Found',
-      message: 'Document not found',
+    return sendErrorResponse(res, req, 404, 'Document not found', {
+      code: 'NOT_FOUND',
     });
   }
 
@@ -97,9 +95,8 @@ router.get('/library/:key/raw', async (req, res) => {
     res.type('text/markdown');
     return res.send(content);
   } catch (err) {
-    return res.status(500).json({
-      error: 'Internal Server Error',
-      message: `Unable to read document: ${err.message}`,
+    return sendErrorResponse(res, req, 500, `Unable to read document: ${err.message}`, {
+      code: 'DOC_READ_ERROR',
     });
   }
 });

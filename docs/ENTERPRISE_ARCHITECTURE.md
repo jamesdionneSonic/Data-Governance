@@ -1,13 +1,15 @@
 # Enterprise Architecture Framework
+
 # Data Governance & Dependency Visualization Platform
 
 **Version:** 2.0 (Markdown-First, Visualization-Centric)  
 **Last Updated:** May 8, 2026  
 **Architecture Pattern**: Markdown-Driven, File-Based with REST BFF API
 
-> **Non-Negotiable Engineering Guardrails:** 
+> **Non-Negotiable Engineering Guardrails:**
+>
 > - **Markdown-First Source of Truth**: All data lineage, documentation, and metadata flows from markdown files in organized folder hierarchies
-> - **Backend-for-Frontend (BFF)**: Single REST API boundary for frontend UI; all business logic centralized  
+> - **Backend-for-Frontend (BFF)**: Single REST API boundary for frontend UI; all business logic centralized
 > - **Enterprise RBAC**: Database-level and field-level permission controls via Entra ID + custom permission store
 > - **Modern Visualization Layer**: Interactive graphs, impact analysis, and faceted search for discovery
 > - **Infrastructure as Code**: All environments provisioned via Docker Compose with environment variables
@@ -21,7 +23,7 @@
 At present, this repository contains strategy, governance, and data guidance documentation only.
 
 - No running application services
-- No active UI or APIs  
+- No active UI or APIs
 - Documentation stored as markdown files in organized folder hierarchies
 - No live scanning or integration with external systems (by design)
 
@@ -41,16 +43,16 @@ After implementation, the platform will operate as a comprehensive data governan
 
 ### 0.3 Current vs Future Mapping
 
-| Domain | Current State | Future State |
-|--------|---------------|--------------|
-| Data Source | Markdown files only | Markdown files + ingestion API |
-| Discovery | Manual file search | Full-text + faceted search via Meilisearch |
-| Visualization | None | Interactive graphs, impact analysis, matrices |
-| Access Control | None | Entra ID SSO + database-level RBAC |
-| Metadata | Inline in markdown | Parsed + indexed for search and discovery |
-| User Experience | Read markdown files | Web UI with role-based views |
-| Operations | None | Audit trails, permission matrix, user management |
-| Delivery | No deployment | Docker containerized, multi-environment ready |
+| Domain          | Current State       | Future State                                     |
+| --------------- | ------------------- | ------------------------------------------------ |
+| Data Source     | Markdown files only | Markdown files + ingestion API                   |
+| Discovery       | Manual file search  | Full-text + faceted search via Meilisearch       |
+| Visualization   | None                | Interactive graphs, impact analysis, matrices    |
+| Access Control  | None                | Entra ID SSO + database-level RBAC               |
+| Metadata        | Inline in markdown  | Parsed + indexed for search and discovery        |
+| User Experience | Read markdown files | Web UI with role-based views                     |
+| Operations      | None                | Audit trails, permission matrix, user management |
+| Delivery        | No deployment       | Docker containerized, multi-environment ready    |
 
 ### 0.4 Implementation Phases
 
@@ -124,6 +126,7 @@ Detailed phase breakdown, story estimation, and sequencing documented in [PROJEC
 **Technology Stack**: View.js/Viewdify, CSS, JavaScript
 
 **Components**:
+
 ```
 src/views/
 ├── layouts/
@@ -141,25 +144,10 @@ src/views/
 │       ├── Environments.js
 │       ├── AuditLog.js
 │       └── Settings.js
-├── components/
-│   ├── common/
-│   │   ├── Button.js
-│   │   ├── Card.js
-│   │   ├── Modal.js
-│   │   ├── Table.js
-│   │   └── FormField.js
-│   ├── graph/
-│   │   ├── DependencyGraph.js
-│   │   ├── GraphNode.js
-│   │   └── GraphEdge.js
-│   ├── explorer/
-│   │   ├── ObjectTree.js
-│   │   ├── SearchBox.js
-│   │   └── FilterPanel.js
-│   └── admin/
-│       ├── UserManagement.js
-│       ├── ConnectionManager.js
-│       └── AuditViewer.js
+├── frontend/
+│   ├── index.html
+│   ├── app.js
+│   └── app.css
 ├── services/
 │   ├── apiClient.js
 │   ├── authService.js
@@ -171,8 +159,9 @@ src/views/
 ```
 
 **Key Features**:
+
 - Responsive design (desktop, tablet, mobile-ready)
-- Real-time updates via WebSocket
+- Vuetify-first UI controls and layout primitives
 - Graph visualization (D3.js integration)
 - Advanced search and filtering
 - Accessibility (WCAG 2.1 AA compliance)
@@ -182,6 +171,7 @@ src/views/
 **Technology**: Express.js middleware stack
 
 **Responsibilities**:
+
 - Route requests to appropriate microservice
 - Serve as the only frontend API boundary (BFF pattern)
 - Aggregate and orchestrate downstream service responses for UI use-cases
@@ -194,6 +184,7 @@ src/views/
 - Request/response logging
 
 **Key Routes**:
+
 ```javascript
 // Authentication
 POST   /api/v1/auth/login
@@ -235,6 +226,7 @@ POST   /api/v1/reports/generate
 **Components**:
 
 #### 2.3.1 Authentication Service
+
 ```
 auth/
 ├── strategies/
@@ -247,6 +239,7 @@ auth/
 ```
 
 **Features**:
+
 - Multi-strategy authentication (Entra ID, LDAP, Local)
 - JWT token generation and validation
 - Token refresh mechanism
@@ -255,6 +248,7 @@ auth/
 - 2FA capability (optional)
 
 #### 2.3.2 Authorization Service
+
 ```
 auth/rbac/
 ├── roleDefinitions.js
@@ -264,11 +258,12 @@ auth/rbac/
 ```
 
 **Role Structure**:
+
 ```javascript
 const ROLES = {
   ADMIN: {
     permissions: ['*:*'], // All permissions
-    description: 'Full platform access'
+    description: 'Full platform access',
   },
   POWER_USER: {
     permissions: [
@@ -280,8 +275,8 @@ const ROLES = {
       'documentation:edit',
       'reports:view',
       'reports:export',
-      'teams:manage'
-    ]
+      'teams:manage',
+    ],
   },
   ANALYST: {
     permissions: [
@@ -290,16 +285,12 @@ const ROLES = {
       'dependencies:analyze',
       'documentation:view',
       'reports:view',
-      'reports:export'
-    ]
+      'reports:export',
+    ],
   },
   VIEWER: {
-    permissions: [
-      'objects:view',
-      'dependencies:view',
-      'documentation:view'
-    ]
-  }
+    permissions: ['objects:view', 'dependencies:view', 'documentation:view'],
+  },
 };
 ```
 
@@ -308,6 +299,7 @@ const ROLES = {
 **Technology**: Node.js with SQL Server driver
 
 **Responsibilities**:
+
 - Connect to SQL Server instances
 - Discover schema metadata
 - Extract SSIS package information
@@ -316,6 +308,7 @@ const ROLES = {
 - Schedule recurring discovery
 
 **Components**:
+
 ```
 services/discovery/
 ├── connectors/
@@ -337,6 +330,7 @@ services/discovery/
 ```
 
 **Discovery Process**:
+
 1. Connect to SQL Server instance
 2. Query system views for schema info
 3. Parse SSIS catalog (if available)
@@ -349,6 +343,7 @@ services/discovery/
 ### 2.5 Dependency Service
 
 **Responsibilities**:
+
 - Maintain dependency graph
 - Calculate transitive dependencies
 - Perform impact analysis
@@ -356,6 +351,7 @@ services/discovery/
 - Suggest dependency optimizations
 
 **Components**:
+
 ```
 services/dependencies/
 ├── graph/
@@ -373,6 +369,7 @@ services/dependencies/
 ```
 
 **Algorithms**:
+
 - Depth-First Search (DFS) for transitive closures
 - Breadth-First Search (BFS) for shortest paths
 - Topological sorting for change sequence
@@ -381,6 +378,7 @@ services/dependencies/
 ### 2.6 Documentation Service
 
 **Responsibilities**:
+
 - Generate markdown from metadata
 - Manage custom documentation
 - Version control documentation
@@ -388,6 +386,7 @@ services/dependencies/
 - Track documentation changes
 
 **Components**:
+
 ```
 services/documentation/
 ├── generators/
@@ -407,6 +406,7 @@ services/documentation/
 ```
 
 **Documentation Template Structure**:
+
 ```markdown
 # [Object Name]
 
@@ -416,47 +416,59 @@ services/documentation/
 **Last Modified**: [Date]
 
 ## Description
+
 [Auto-generated or custom description]
 
 ## Metadata
+
 - Schema: [Schema]
 - Database: [Database]
 - Status: [Active/Archived]
 - Sensitive: [Yes/No]
 
 ## Columns (for tables/views)
-| Column | Type | Nullable | PK | FK | Description |
-|--------|------|----------|----|----|-------------|
+
+| Column | Type | Nullable | PK  | FK  | Description |
+| ------ | ---- | -------- | --- | --- | ----------- |
 
 ## Parameters (for procedures/functions)
+
 | Parameter | Type | Default | Description |
 
 ## Dependencies
+
 ### Incoming Dependencies (Objects that use this)
+
 - [Object 1] - [Description]
 - [Object 2] - [Description]
 
 ### Outgoing Dependencies (Objects this uses)
+
 - [Object 1] - [Description]
 - [Object 2] - [Description]
 
 ## Data Lineage
+
 [Diagram or description of data flow]
 
 ## Impact Assessment
+
 [Business impact of changes]
 
 ## Related Documentation
+
 - [Link 1]
 - [Link 2]
 
 ## Change History
+
 [Tracked changes over time]
 ```
 
 ### 2.7 Admin Service
 
 **Responsibilities**:
+
 - User management
 - Environment/connection management
 - Configuration management
@@ -464,13 +476,13 @@ services/documentation/
 - Audit log management
 
 **Components**:
+
 ```
 services/admin/
-├── userManagement/
+├── users/
 │   ├── UserManager.js
 │   ├── RoleManager.js
-│   ├── PermissionManager.js
-│   └── TeamManager.js
+│   └── PermissionManager.js
 ├── environments/
 │   ├── EnvironmentManager.js
 │   ├── ConnectionManager.js
@@ -483,6 +495,7 @@ services/admin/
 ```
 
 **Admin Dashboard Features**:
+
 - User/role management table
 - Environment configuration
 - Discovery scheduling
@@ -493,12 +506,14 @@ services/admin/
 ### 2.8 Reporting Service
 
 **Responsibilities**:
+
 - Generate various reports
 - Schedule recurring reports
 - Export reports in multiple formats
 - Track report usage
 
 **Components**:
+
 ```
 services/reporting/
 ├── reporters/
@@ -519,6 +534,7 @@ services/reporting/
 ### 2.9 Audit Service
 
 **Responsibilities**:
+
 - Log all user actions
 - Track data changes
 - Monitor permission usage
@@ -526,6 +542,7 @@ services/reporting/
 - Enforce retention policies
 
 **Components**:
+
 ```
 services/audit/
 ├── loggers/
@@ -541,6 +558,7 @@ services/audit/
 ```
 
 **Audit Trail Structure**:
+
 ```javascript
 {
   id: UUID,
@@ -568,6 +586,7 @@ services/audit/
 **Core Tables**:
 
 #### Users & Authorization
+
 ```sql
 -- Users
 CREATE TABLE Users (
@@ -628,6 +647,7 @@ CREATE TABLE TeamMembers (
 ```
 
 #### Connections & Environments
+
 ```sql
 -- SQL Server Connections
 CREATE TABLE SqlServerConnections (
@@ -666,6 +686,7 @@ CREATE TABLE DiscoveryHistory (
 ```
 
 #### Objects & Metadata
+
 ```sql
 -- Database Objects
 CREATE TABLE DatabaseObjects (
@@ -717,6 +738,7 @@ CREATE TABLE SsisPackages (
 ```
 
 #### Dependencies
+
 ```sql
 -- Dependencies
 CREATE TABLE Dependencies (
@@ -748,6 +770,7 @@ CREATE TABLE SsisDependencies (
 ```
 
 #### Documentation
+
 ```sql
 -- Documentation
 CREATE TABLE Documentation (
@@ -782,6 +805,7 @@ CREATE TABLE DocumentationHistory (
 ```
 
 #### Audit & Compliance
+
 ```sql
 -- Audit Log
 CREATE TABLE AuditLog (
@@ -819,7 +843,7 @@ CACHE_KEYS = {
   OBJECT: 'object:{objectId}',
   DEPENDENCIES: 'dependencies:{objectId}',
   GRAPH: 'graph:{connectionId}',
-  SEARCH: 'search:{query}:{offset}:{limit}'
+  SEARCH: 'search:{query}:{offset}:{limit}',
 };
 
 // TTLs
@@ -830,7 +854,7 @@ TTL = {
   OBJECT: 24 * 60 * 60, // 24 hours (invalidated on discovery)
   DEPENDENCIES: 24 * 60 * 60, // 24 hours (invalidated on discovery)
   GRAPH: 24 * 60 * 60, // 24 hours
-  SEARCH: 60 * 60 // 1 hour
+  SEARCH: 60 * 60, // 1 hour
 };
 ```
 
@@ -881,6 +905,7 @@ User Request
 ### 4.2 Authorization Matrix
 
 **Resource-Based Access Control**:
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ REQUEST ARRIVES                                             │
@@ -914,15 +939,18 @@ User Request
 ### 4.3 Data Encryption
 
 **In Transit**:
+
 - HTTPS/TLS 1.3 for all communications
 - WebSocket Secure (WSS) for real-time updates
 
 **At Rest**:
+
 - SQL Server encryption (TDE)
 - Connection strings encrypted with master key
 - Sensitive metadata encrypted in database
 
 **API Keys & Tokens**:
+
 - JWT tokens (RS256 algorithm)
 - API keys hashed before storage
 - Webhook signatures (HMAC-SHA256)
@@ -946,6 +974,7 @@ Local Machine
 ### 5.2 Production Environment
 
 **On-Premises Deployment**:
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ Load Balancer (HAProxy/Nginx)                              │
@@ -982,17 +1011,17 @@ stages:
       - Unit Tests
       - Build Docker image
       - Security scan (Trivy)
-  
+
   - Test:
       - Integration tests
       - API tests
       - E2E tests
-  
+
   - Staging:
       - Deploy to staging
       - Smoke tests
       - Performance tests
-  
+
   - Production:
       - Approvals
       - Blue-green deployment
@@ -1007,12 +1036,14 @@ stages:
 ### 6.1 Logging
 
 **Application Logging** (ELK Stack / App Insights):
+
 - INFO: General application events
 - WARN: Warning conditions
 - ERROR: Error conditions
 - DEBUG: Debug information
 
 **Log Aggregation**:
+
 ```
 Application Logs → Logstash → Elasticsearch → Kibana
 ```
@@ -1020,6 +1051,7 @@ Application Logs → Logstash → Elasticsearch → Kibana
 ### 6.2 Metrics & Performance
 
 **Prometheus Metrics**:
+
 - Request duration (histogram)
 - Request count (counter)
 - Active connections (gauge)
@@ -1028,6 +1060,7 @@ Application Logs → Logstash → Elasticsearch → Kibana
 - API error rate
 
 **Grafana Dashboards**:
+
 - System health (CPU, memory, disk)
 - Application performance
 - User activity
@@ -1059,6 +1092,7 @@ GET /api/v1/health
 **Versioning**: `/api/v1/`, `/api/v2/`, etc.
 
 **Response Format**:
+
 ```javascript
 // Success Response
 {
@@ -1147,12 +1181,14 @@ Platform → Entra ID (Auth)
 ### 9.2 Event Driven Architecture
 
 **Event Bus**:
+
 - Message queue (RabbitMQ/Azure Service Bus)
 - Event topics by category
 - Dead-letter queue for failures
 - Event retention policies
 
 **Events**:
+
 - `object.discovered`
 - `dependency.created`
 - `dependency.deleted`
@@ -1176,6 +1212,7 @@ Platform → Entra ID (Auth)
 ## Conclusion
 
 This enterprise architecture provides:
+
 - **Scalability**: Handle 10,000+ objects and 1,000+ concurrent users
 - **Security**: Multi-layer authentication and authorization
 - **Reliability**: Failover, backup, and disaster recovery

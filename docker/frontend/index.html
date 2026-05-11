@@ -2,7 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes, maximum-scale=5" />
+    <meta name="description" content="Data Governance Platform - Enterprise metadata, lineage, and governance" />
+    <meta name="theme-color" content="#2563eb" />
     <title>Data Governance Platform</title>
     <link href="https://cdn.jsdelivr.net/npm/vuetify@3.6.14/dist/vuetify.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/app.css" />
@@ -16,6 +18,21 @@
       window.mermaid = mermaid;
       mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'loose' });
     </script>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        min-height: 100vh;
+        -webkit-text-size-adjust: 100%;
+      }
+      #app-root {
+        display: flex;
+        width: 100%;
+        min-height: 100vh;
+      }
+    </style>
   </head>
   <body>
     <div id="app-root"></div>

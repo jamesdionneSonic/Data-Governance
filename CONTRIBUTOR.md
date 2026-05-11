@@ -1,6 +1,6 @@
 # Contributor Guidelines - Data Governance
 
-Welcome to the Data Governance project! This document outlines the best practices and standards for contributing to this project. We build scalable, maintainable applications using View.js and Viewdify with a focus on modular architecture, thorough testing, and comprehensive documentation.
+Welcome to the Data Governance project! This document outlines the best practices and standards for contributing to this project. We build scalable, maintainable applications using Vue.js and Vuetify with a focus on modular architecture, thorough testing, and comprehensive documentation.
 
 > **Non-Negotiable Engineering Guardrails:** We build with **Backend-for-Frontend (BFF)** architecture for frontend-facing APIs and follow **Infrastructure as Code (IaC) First** for all environment and platform changes.
 
@@ -9,7 +9,7 @@ Welcome to the Data Governance project! This document outlines the best practice
 ## Table of Contents
 
 1. [Architecture & Design Principles](#architecture--design-principles)
-2. [View.js & Viewdify Best Practices](#viewjs--viewdify-best-practices)
+2. [Vue.js & Vuetify Best Practices](#vuejs--vuetify-best-practices)
 3. [Code Organization & Modularity](#code-organization--modularity)
 4. [Backend-for-Frontend (BFF) Standards](#backend-for-frontend-bff-standards)
 5. [Response Validation](#response-validation)
@@ -36,7 +36,7 @@ We strictly prohibit monolithic code structures. All features must be:
 
 ```
 src/
-├── components/          # Reusable View.js/Viewdify components
+├── components/          # Reusable Vue.js/Vuetify components
 ├── modules/             # Feature modules (each with own views, logic, validation)
 ├── services/            # Business logic and API integration
 ├── validators/          # Centralized validation logic
@@ -50,7 +50,7 @@ Each module should be self-contained and re-usable across the application.
 
 ---
 
-## View.js & Viewdify Best Practices
+## Vue.js & Vuetify Best Practices
 
 ### Component Design
 
@@ -74,7 +74,7 @@ Each module should be self-contained and re-usable across the application.
    - Avoid nested logic; extract into separate components
    - Use composition over inheritance
 
-### View.js Patterns
+### Vue.js Patterns
 
 ```javascript
 // ✓ GOOD - Modular, reusable component
@@ -85,24 +85,25 @@ const Button = ({ label, onClick, variant = 'primary', disabled = false }) => ({
     </button>`;
   },
   events: {
-    click: onClick
-  }
+    click: onClick,
+  },
 });
 
 // ✗ BAD - Monolithic, hardcoded logic
 const CompleteWidget = () => ({
   render() {
     // 200+ lines of mixed concerns
-  }
+  },
 });
 ```
 
-### Viewdify Integration
+### Vuetify Integration
 
 1. **Lifecycle Management**
    - Properly handle component mounting and unmounting
    - Clean up event listeners and subscriptions
-   - Use Viewdify hooks for lifecycle events
+
+- Use Vuetify component APIs for UI lifecycle/state integration
 
 2. **State Management**
    - Keep component state minimal
@@ -112,7 +113,8 @@ const CompleteWidget = () => ({
 3. **Templating**
    - Use data bindings for dynamic content
    - Bind events properly to avoid memory leaks
-   - Leverage Viewdify directives for conditional rendering
+
+- Leverage Vue directives for conditional rendering
 
 ---
 
@@ -180,34 +182,40 @@ For all UI channels, use a **Backend-for-Frontend (BFF)** layer. Frontends must 
 ### Mandatory BFF Rules
 
 1. **One channel, one BFF contract**
-  - Web UI should consume web-focused BFF endpoints
-  - Keep BFF response shapes optimized for UI needs
-  - Do not leak downstream service contracts to UI clients
+
+- Web UI should consume web-focused BFF endpoints
+- Keep BFF response shapes optimized for UI needs
+- Do not leak downstream service contracts to UI clients
 
 2. **No direct client-to-microservice coupling**
-  - Browser clients must call BFF APIs only
-  - BFF handles orchestration, aggregation, and composition
-  - Avoid N+1 frontend API calls by composing responses in BFF
+
+- Browser clients must call BFF APIs only
+- BFF handles orchestration, aggregation, and composition
+- Avoid N+1 frontend API calls by composing responses in BFF
 
 3. **Strict contract and validation boundaries**
-  - Validate all request payloads at BFF entry points
-  - Validate downstream responses before mapping to UI DTOs
-  - Never forward raw downstream payloads without mapping
+
+- Validate all request payloads at BFF entry points
+- Validate downstream responses before mapping to UI DTOs
+- Never forward raw downstream payloads without mapping
 
 4. **Security and identity propagation**
-  - Enforce authentication and authorization in BFF
-  - Propagate identity claims and correlation IDs downstream
-  - Never expose secrets, internal headers, or privileged fields to clients
+
+- Enforce authentication and authorization in BFF
+- Propagate identity claims and correlation IDs downstream
+- Never expose secrets, internal headers, or privileged fields to clients
 
 5. **Resilience and performance controls**
-  - Use timeouts, retries (idempotent operations only), and circuit-breaker patterns
-  - Implement caching for safe read endpoints
-  - Apply pagination and server-side filtering for large datasets
+
+- Use timeouts, retries (idempotent operations only), and circuit-breaker patterns
+- Implement caching for safe read endpoints
+- Apply pagination and server-side filtering for large datasets
 
 6. **Observability by default**
-  - Log request IDs, user context, latency, and downstream call metrics
-  - Emit trace spans for orchestration steps
-  - Track error classes and dependency failure rates
+
+- Log request IDs, user context, latency, and downstream call metrics
+- Emit trace spans for orchestration steps
+- Track error classes and dependency failure rates
 
 ### BFF Testing Requirements
 
@@ -230,22 +238,22 @@ For all UI channels, use a **Backend-for-Frontend (BFF)** layer. Frontends must 
 // ✓ REQUIRED - Validate all incoming data
 const validateUserInput = (data) => {
   const errors = [];
-  
+
   if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
     errors.push('Invalid email format');
   }
-  
+
   if (!data.name || typeof data.name !== 'string' || data.name.trim().length === 0) {
     errors.push('Name is required and must be a string');
   }
-  
+
   if (data.age && (typeof data.age !== 'number' || data.age < 0 || data.age > 150)) {
     errors.push('Age must be a valid number between 0 and 150');
   }
-  
+
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   };
 };
 ```
@@ -258,24 +266,24 @@ const validateApiResponse = (response) => {
   if (!response || typeof response !== 'object') {
     return {
       isValid: false,
-      error: 'Invalid response format'
+      error: 'Invalid response format',
     };
   }
-  
+
   if (!response.data) {
     return {
       isValid: false,
-      error: 'Missing required field: data'
+      error: 'Missing required field: data',
     };
   }
-  
+
   if (response.status && !['success', 'error'].includes(response.status)) {
     return {
       isValid: false,
-      error: 'Invalid status value'
+      error: 'Invalid status value',
     };
   }
-  
+
   return { isValid: true };
 };
 ```
@@ -290,7 +298,7 @@ const UserSchema = {
   email: { type: 'string', required: true, pattern: 'email' },
   name: { type: 'string', required: true, minLength: 1 },
   age: { type: 'number', required: false, min: 0, max: 150 },
-  role: { type: 'string', enum: ['admin', 'user', 'guest'] }
+  role: { type: 'string', enum: ['admin', 'user', 'guest'] },
 };
 
 const validateagainst = (data, schema) => {
@@ -307,7 +315,7 @@ try {
   if (!validation.isValid) {
     return {
       success: false,
-      errors: validation.errors
+      errors: validation.errors,
     };
   }
   // Process valid data
@@ -315,10 +323,39 @@ try {
   console.error('Validation error:', error);
   return {
     success: false,
-    error: 'An unexpected error occurred during validation'
+    error: 'An unexpected error occurred during validation',
   };
 }
 ```
+
+### Runtime Error Trapping (Required)
+
+All runtime layers must trap and route errors through standardized handlers:
+
+1. **API route handlers**
+
+- Use wrapped handlers that forward rejected promises to Express error middleware.
+- Never allow `async` route rejections to bypass `next(error)`.
+
+2. **Express global error middleware**
+
+- Return a consistent error envelope with `requestId`, `timestamp`, `code`, and `status`.
+- Sanitize `5xx` errors in production (`Internal Server Error`) to avoid leaking internals.
+
+3. **Node process-level handlers**
+
+- Register `unhandledRejection` and `uncaughtException` handlers.
+- Log root cause and perform graceful shutdown with timeout.
+
+4. **Frontend runtime handlers**
+
+- Register `window.onerror` and `window.unhandledrejection` listeners.
+- Route runtime failures to the UI error stream and user-visible toast notification.
+
+5. **Shutdown behavior**
+
+- Handle `SIGTERM` and `SIGINT` gracefully.
+- Force exit if shutdown exceeds configured timeout to avoid zombie process states.
 
 ---
 
@@ -353,13 +390,13 @@ describe('validateEmail', () => {
     const result = validateEmail('user@example.com');
     expect(result.isValid).toBe(true);
   });
-  
+
   it('should return false for invalid email format', () => {
     const result = validateEmail('invalid-email');
     expect(result.isValid).toBe(false);
     expect(result.errors).toContain('Invalid email format');
   });
-  
+
   it('should handle edge cases', () => {
     expect(validateEmail('').isValid).toBe(false);
     expect(validateEmail(null).isValid).toBe(false);
@@ -372,7 +409,7 @@ describe('UserCard Component', () => {
     const component = UserCard(props);
     expect(component.render()).toContain('John');
   });
-  
+
   it('should trigger callback on button click', () => {
     const callback = jest.fn();
     const component = UserCard({ onClick: callback });
@@ -392,12 +429,12 @@ const runInternalTests = () => {
   const tests = {
     validators: [],
     components: [],
-    services: []
+    services: [],
   };
-  
+
   // Register tests
   // Validate module integrity on startup
-  
+
   return tests;
 };
 ```
@@ -413,29 +450,34 @@ All infrastructure must be defined and versioned as code. Manual portal-only con
 ### Required IaC Standards
 
 1. **Source-controlled infrastructure**
-  - Define infrastructure in code (Terraform/Bicep/ARM/Pulumi)
-  - Store IaC in repository under a dedicated `infra/` structure
-  - Every environment change must come from pull requests
+
+- Define infrastructure in code (Terraform/Bicep/ARM/Pulumi)
+- Store IaC in repository under a dedicated `infra/` structure
+- Every environment change must come from pull requests
 
 2. **Environment parity and promotion**
-  - Maintain reproducible `dev`, `test`, and `prod` stacks
-  - Promote changes through environments using the same IaC modules
-  - Avoid environment drift using regular plan/diff checks
+
+- Maintain reproducible `dev`, `test`, and `prod` stacks
+- Promote changes through environments using the same IaC modules
+- Avoid environment drift using regular plan/diff checks
 
 3. **Policy and security as code**
-  - Enforce network, encryption, and identity policies in IaC
-  - Use least-privilege identities and managed identities where possible
-  - Store secrets in Key Vault or approved secret manager (never in code)
+
+- Enforce network, encryption, and identity policies in IaC
+- Use least-privilege identities and managed identities where possible
+- Store secrets in Key Vault or approved secret manager (never in code)
 
 4. **State and rollback strategy**
-  - Use remote state with locking and access controls
-  - Keep versioned change history and rollback procedures
-  - Require disaster recovery and backup configuration in IaC
+
+- Use remote state with locking and access controls
+- Keep versioned change history and rollback procedures
+- Require disaster recovery and backup configuration in IaC
 
 5. **Reusable modules, no monolithic templates**
-  - Build reusable IaC modules by domain (network, compute, data, observability)
-  - Keep modules small, composable, and testable
-  - Do not create one massive template for all resources
+
+- Build reusable IaC modules by domain (network, compute, data, observability)
+- Keep modules small, composable, and testable
+- Do not create one massive template for all resources
 
 ### IaC Validation Gates
 
@@ -486,6 +528,46 @@ npm run build
 - **IaC plan review is mandatory** - Infrastructure changes require reviewed plan output
 - **No manual prod infra changes** - All production infrastructure changes must be applied through pipeline
 
+### Build Workflow Error Handling
+
+- `build.yml` must fail fast on lint, unit test, or build failures.
+- Container image build must only publish on `push` to `main` after all quality gates pass.
+- Pull requests should still run container build (without push) to catch Dockerfile/runtime packaging issues early.
+- Container publish authentication should use short-lived workflow credentials where possible (for example, `GITHUB_TOKEN` to GHCR) rather than long-lived static secrets.
+
+### IaC Guardrails (FR-PLAT-001)
+
+All infrastructure changes must flow through the IaC process defined in [`infra/`](infra/README.md).
+
+**Rules — no exceptions:**
+
+- **No manual production changes.** Any direct change to cloud resources without a corresponding Terraform PR is a compliance violation.
+- **Every PR touching `infra/`** triggers `.github/workflows/iac.yml`:
+  - `terraform fmt -check` — HCL formatting gate.
+  - `terraform validate` — schema and syntax validation (runs without cloud credentials).
+  - `terraform plan` — execution preview posted to the PR as a comment.
+- **No `terraform apply` in CI.** Apply is a manual, reviewer-approved operation performed outside the pipeline.
+- **Secrets are never committed.** Use `TF_VAR_*` environment variables or GitHub repository/environment secrets for all sensitive values. The `*.tfvars` files must never contain real credentials.
+- **State backend must be remote.** The `backend "azurerm"` block in `providers.tf` must be configured before any team member runs `apply` in a shared environment.
+
+**Local IaC workflow:**
+
+```bash
+cd infra/terraform
+
+# Format your HCL before committing
+terraform fmt -recursive
+
+# Validate (no credentials required)
+terraform init -backend=false
+terraform validate
+
+# Plan against dev (credentials required)
+terraform plan -var-file=environments/dev.tfvars
+```
+
+See [infra/README.md](infra/README.md) for full setup instructions and required environment variables.
+
 ### Automated Testing in CI/CD
 
 ```javascript
@@ -493,19 +575,15 @@ npm run build
 module.exports = {
   testEnvironment: 'node',
   coveragePathIgnorePatterns: ['/node_modules/'],
-  collectCoverageFrom: [
-    'src/**/*.js',
-    '!src/**/*.test.js',
-    '!src/index.js'
-  ],
+  collectCoverageFrom: ['src/**/*.js', '!src/**/*.test.js', '!src/index.js'],
   coverageThreshold: {
     global: {
       branches: 80,
       functions: 80,
       lines: 80,
-      statements: 80
-    }
-  }
+      statements: 80,
+    },
+  },
 };
 ```
 
@@ -522,18 +600,18 @@ Every contribution must include comprehensive documentation.
 ```javascript
 /**
  * Validates user email address against standard email format.
- * 
+ *
  * @param {string} email - The email address to validate
  * @returns {Object} Validation result object
  * @returns {boolean} result.isValid - Whether email is valid
  * @returns {string[]} result.errors - Array of validation errors (if any)
- * 
+ *
  * @example
  * const result = validateEmail('user@example.com');
  * if (result.isValid) {
  *   console.log('Email is valid');
  * }
- * 
+ *
  * @throws {TypeError} If email is not a string
  */
 const validateEmail = (email) => {
@@ -545,31 +623,38 @@ const validateEmail = (email) => {
 
 Each module must have a README.md:
 
-```markdown
+````markdown
 # Module Name
 
 ## Purpose
+
 Clear description of what this module does.
 
 ## Usage
+
 ```javascript
 import { MyComponent } from './MyComponent.js';
 ```
+````
 
 ## API
 
 ### `functionName(param)`
+
 - **Description:** What it does
 - **Parameters:** Types and descriptions
 - **Returns:** What it returns
 - **Example:** Usage example
 
 ## Testing
+
 How to run tests for this module.
 
 ## Contributing
+
 Any specific guidelines for this module.
-```
+
+````
 
 ### Inline Documentation
 
@@ -582,23 +667,26 @@ const sortByCreatedDate = (users) => {
 
 // ✗ Don't document obvious code
 // const x = a + b; // Add a and b
-```
+````
 
 ### API Documentation
 
 Document all API endpoints, request/response formats:
 
-```markdown
+````markdown
 ## API Endpoints
 
 ### GET /api/users
+
 Retrieves list of all users with pagination support.
 
 **Query Parameters:**
+
 - `page` (number): Page number (default: 1)
 - `limit` (number): Items per page (default: 20)
 
 **Response:**
+
 ```json
 {
   "status": "success",
@@ -606,8 +694,10 @@ Retrieves list of all users with pagination support.
   "pagination": { "total": 100, "page": 1 }
 }
 ```
+````
 
 **Error Response:**
+
 ```json
 {
   "status": "error",
@@ -615,7 +705,8 @@ Retrieves list of all users with pagination support.
   "code": "ERROR_CODE"
 }
 ```
-```
+
+````
 
 ### Change Logs
 
@@ -637,7 +728,7 @@ Document all changes:
 
 #### Removed
 - Deprecated API endpoint `/api/old-endpoint`
-```
+````
 
 ---
 

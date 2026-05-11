@@ -6,9 +6,18 @@ on:
   push:
     branches: [main, develop]
 
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: lint-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     strategy:
       matrix:
@@ -36,7 +45,7 @@ jobs:
         run: npx prettier --check 'src/**/*.js' 'tests/**/*.js'
 
       - name: Comment on PR with lint results
-        if: failure()
+        if: failure() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |

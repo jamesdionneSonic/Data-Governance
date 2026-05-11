@@ -5,6 +5,7 @@
 
 import { createApiRouter } from '../utils/apiRouter.js';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
+import { sendErrorResponse } from '../middleware/errorHandler.js';
 import {
   getUserManagementData,
   getPermissionMatrixData,
@@ -42,7 +43,9 @@ router.get('/admin', (req, res) => {
     const summary = getAdminDashboardSummary(cachedObjects);
     return res.json(summary);
   } catch (err) {
-    return res.status(500).json({ error: 'Failed to fetch dashboard summary' });
+    return sendErrorResponse(res, req, 500, 'Failed to fetch dashboard summary', {
+      code: 'DASHBOARD_SUMMARY_ERROR',
+    });
   }
 });
 
@@ -55,7 +58,9 @@ router.get('/users', (req, res) => {
     const data = getUserManagementData(cachedObjects);
     return res.json(data);
   } catch (err) {
-    return res.status(500).json({ error: 'Failed to fetch user management data' });
+    return sendErrorResponse(res, req, 500, 'Failed to fetch user management data', {
+      code: 'DASHBOARD_USERS_ERROR',
+    });
   }
 });
 
@@ -68,7 +73,9 @@ router.get('/permissions', (req, res) => {
     const data = getPermissionMatrixData();
     return res.json(data);
   } catch (err) {
-    return res.status(500).json({ error: 'Failed to fetch permission matrix data' });
+    return sendErrorResponse(res, req, 500, 'Failed to fetch permission matrix data', {
+      code: 'DASHBOARD_PERMISSIONS_ERROR',
+    });
   }
 });
 
@@ -89,7 +96,9 @@ router.get('/audit', (req, res) => {
     const data = getAuditLogData(filters, page, pageSize);
     return res.json(data);
   } catch (err) {
-    return res.status(500).json({ error: 'Failed to fetch audit log data' });
+    return sendErrorResponse(res, req, 500, 'Failed to fetch audit log data', {
+      code: 'DASHBOARD_AUDIT_ERROR',
+    });
   }
 });
 
@@ -102,7 +111,9 @@ router.get('/activity', (req, res) => {
     const data = getActivityDashboardData();
     return res.json(data);
   } catch (err) {
-    return res.status(500).json({ error: 'Failed to fetch activity data' });
+    return sendErrorResponse(res, req, 500, 'Failed to fetch activity data', {
+      code: 'DASHBOARD_ACTIVITY_ERROR',
+    });
   }
 });
 
@@ -115,7 +126,9 @@ router.get('/metadata', (req, res) => {
     const data = getMetadataGovernanceData(cachedObjects);
     return res.json(data);
   } catch (err) {
-    return res.status(500).json({ error: 'Failed to fetch metadata governance data' });
+    return sendErrorResponse(res, req, 500, 'Failed to fetch metadata governance data', {
+      code: 'DASHBOARD_METADATA_ERROR',
+    });
   }
 });
 
@@ -129,11 +142,15 @@ router.get('/users/:userId/activity', (req, res) => {
     const timeline = getUserActivityTimeline(req.params.userId, limit);
 
     if (!timeline) {
-      return res.status(404).json({ error: 'User not found' });
+      return sendErrorResponse(res, req, 404, 'User not found', {
+        code: 'NOT_FOUND',
+      });
     }
     return res.json(timeline);
   } catch (err) {
-    return res.status(500).json({ error: 'Failed to fetch user activity timeline' });
+    return sendErrorResponse(res, req, 500, 'Failed to fetch user activity timeline', {
+      code: 'DASHBOARD_USER_TIMELINE_ERROR',
+    });
   }
 });
 
@@ -146,7 +163,9 @@ router.get('/health', (req, res) => {
     const metrics = getSystemHealthMetrics(cachedObjects);
     return res.json(metrics);
   } catch (err) {
-    return res.status(500).json({ error: 'Failed to fetch system health metrics' });
+    return sendErrorResponse(res, req, 500, 'Failed to fetch system health metrics', {
+      code: 'DASHBOARD_HEALTH_ERROR',
+    });
   }
 });
 
@@ -162,7 +181,9 @@ router.get('/settings', (req, res) => {
       data: settings,
     });
   } catch (err) {
-    return res.status(500).json({ error: 'Failed to fetch dashboard settings' });
+    return sendErrorResponse(res, req, 500, 'Failed to fetch dashboard settings', {
+      code: 'DASHBOARD_SETTINGS_READ_ERROR',
+    });
   }
 });
 
@@ -179,7 +200,9 @@ router.put('/settings', (req, res) => {
       data: settings,
     });
   } catch (err) {
-    return res.status(500).json({ error: 'Failed to update dashboard settings' });
+    return sendErrorResponse(res, req, 500, 'Failed to update dashboard settings', {
+      code: 'DASHBOARD_SETTINGS_UPDATE_ERROR',
+    });
   }
 });
 

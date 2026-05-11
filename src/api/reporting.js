@@ -5,6 +5,7 @@
 
 import { createApiRouter } from '../utils/apiRouter.js';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
+import { sendErrorResponse } from '../middleware/errorHandler.js';
 import {
   exportObjectCatalogCsv,
   exportObjectCatalogExcel,
@@ -44,15 +45,13 @@ router.get('/share/:token', (req, res) => {
   const payload = resolveSharedVisualization(req.params.token);
 
   if (!payload) {
-    return res.status(404).json({
-      error: 'Not Found',
-      message: 'Shared link is invalid or expired',
+    return sendErrorResponse(res, req, 404, 'Shared link is invalid or expired', {
+      code: 'NOT_FOUND',
     });
   }
 
-  const exported = getOrSetCache(
-    `shared:${payload.objectId}:${payload.format}`,
-    () => exportVisualization(payload.objectId, payload.format, cachedLineageGraph),
+  const exported = getOrSetCache(`shared:${payload.objectId}:${payload.format}`, () =>
+    exportVisualization(payload.objectId, payload.format, cachedLineageGraph)
   );
   return res.type(exported.contentType).send(exported.body);
 });
@@ -80,15 +79,13 @@ router.get('/export/catalog.xlsx', requireAdmin, (req, res) => {
 });
 
 router.get('/export/dependency/:objectId.pdf', requireAdmin, (req, res) => {
-  const pdf = getOrSetCache(
-    `dependency:${req.params.objectId}`,
-    () => generateDependencyReportPdf(req.params.objectId, cachedObjects, cachedLineageGraph),
+  const pdf = getOrSetCache(`dependency:${req.params.objectId}`, () =>
+    generateDependencyReportPdf(req.params.objectId, cachedObjects, cachedLineageGraph)
   );
 
   if (!pdf) {
-    return res.status(404).json({
-      error: 'Not Found',
-      message: 'Object not found',
+    return sendErrorResponse(res, req, 404, 'Object not found', {
+      code: 'NOT_FOUND',
     });
   }
 
@@ -103,7 +100,7 @@ router.get('/export/visualization/:objectId', requireAdmin, (req, res) => {
   const { format = 'svg' } = req.query;
   const exported = getOrSetCache(
     `visualization:${req.params.objectId}:${String(format).toLowerCase()}`,
-    () => exportVisualization(req.params.objectId, format, cachedLineageGraph),
+    () => exportVisualization(req.params.objectId, format, cachedLineageGraph)
   );
 
   const { extension } = exported;
@@ -123,7 +120,7 @@ router.post('/share/visualization/:objectId', requireAdmin, (req, res) => {
     baseUrl,
     req.params.objectId,
     format,
-    parseInt(ttlMinutes, 10),
+    parseInt(ttlMinutes, 10)
   );
 
   return res.status(201).json({
@@ -136,9 +133,8 @@ router.post('/share/visualization/:objectId', requireAdmin, (req, res) => {
 router.post('/schedules', requireAdmin, (req, res) => {
   const { recipient } = req.body;
   if (!recipient) {
-    return res.status(400).json({
-      error: 'Bad Request',
-      message: 'recipient is required',
+    return sendErrorResponse(res, req, 400, 'recipient is required', {
+      code: 'BAD_REQUEST',
     });
   }
 
@@ -166,9 +162,8 @@ router.post('/schedules/:scheduleId/run', requireAdmin, (req, res) => {
   const result = runScheduledReport(req.params.scheduleId, cachedObjects, cachedLineageGraph);
 
   if (!result) {
-    return res.status(404).json({
-      error: 'Not Found',
-      message: 'Schedule not found or inactive',
+    return sendErrorResponse(res, req, 404, 'Schedule not found or inactive', {
+      code: 'NOT_FOUND',
     });
   }
 

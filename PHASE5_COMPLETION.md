@@ -4,6 +4,8 @@
 **Test Results**: 296/296 tests passing (100%)  
 **Coverage**: 55.02% statements, 50.14% branches, 49.82% functions
 
+> **Historical note (May 2026):** Legacy standalone files under `src/components/` referenced in this phase report were later superseded by the consolidated Vuetify frontend shell in `docker/frontend/app.js`.
+
 ---
 
 ## Overview
@@ -15,9 +17,11 @@ Phase 5 implements the Admin Dashboard UI layer, providing frontend-ready compon
 ## Completed Components
 
 ### 1. Dashboard Service (`src/services/dashboardService.js`)
+
 **Status**: ✅ Complete (481 lines, 8 functions, 71.42% coverage)
 
 **Core Functionality**:
+
 - **User Management Data**
   - `getUserManagementData(objects)` - Aggregate user stats, roles, audit events
   - Returns: Total/active users, breakdown by role, user list with metadata
@@ -51,6 +55,7 @@ Phase 5 implements the Admin Dashboard UI layer, providing frontend-ready compon
   - Returns: Health status, metrics, memory usage, last updated
 
 **Features**:
+
 - Data aggregation from admin, activity, metadata services
 - Pagination support with configurable page sizes
 - Data quality score calculation (0-100%)
@@ -59,6 +64,7 @@ Phase 5 implements the Admin Dashboard UI layer, providing frontend-ready compon
 - Comprehensive helper functions for filtering and aggregation
 
 **Example Usage**:
+
 ```javascript
 const dashboard = getAdminDashboardSummary(objects);
 console.log(`Governance score: ${dashboard.dataQuality.governance.complianceLevel}`);
@@ -70,22 +76,24 @@ console.log(`${auditLog.pagination.total} audit events found`);
 ---
 
 ### 2. Dashboard API Routes (`src/api/dashboard.js`)
+
 **Status**: ✅ Complete (148 lines, 8 endpoints, 22% coverage)
 
 **REST Endpoints**:
 
-| Endpoint | Method | Purpose | Auth |
-|---|---|---|---|
-| `/api/v1/dashboard/admin` | GET | Main dashboard summary | Admin |
-| `/api/v1/dashboard/users` | GET | User management data | Admin |
-| `/api/v1/dashboard/permissions` | GET | Permission matrix data | Admin |
-| `/api/v1/dashboard/audit` | GET | Audit log with filters & pagination | Admin |
-| `/api/v1/dashboard/activity` | GET | Activity analytics | Admin |
-| `/api/v1/dashboard/metadata` | GET | Metadata governance | Admin |
-| `/api/v1/dashboard/users/:userId/activity` | GET | User activity timeline | Admin |
-| `/api/v1/dashboard/health` | GET | System health metrics | Admin |
+| Endpoint                                   | Method | Purpose                             | Auth  |
+| ------------------------------------------ | ------ | ----------------------------------- | ----- |
+| `/api/v1/dashboard/admin`                  | GET    | Main dashboard summary              | Admin |
+| `/api/v1/dashboard/users`                  | GET    | User management data                | Admin |
+| `/api/v1/dashboard/permissions`            | GET    | Permission matrix data              | Admin |
+| `/api/v1/dashboard/audit`                  | GET    | Audit log with filters & pagination | Admin |
+| `/api/v1/dashboard/activity`               | GET    | Activity analytics                  | Admin |
+| `/api/v1/dashboard/metadata`               | GET    | Metadata governance                 | Admin |
+| `/api/v1/dashboard/users/:userId/activity` | GET    | User activity timeline              | Admin |
+| `/api/v1/dashboard/health`                 | GET    | System health metrics               | Admin |
 
 **Query Parameters**:
+
 - `page` - Page number (default: 1)
 - `pageSize` - Results per page (default: 50, max: 100)
 - `user` - Filter by user (audit endpoint)
@@ -94,6 +102,7 @@ console.log(`${auditLog.pagination.total} audit events found`);
 - `limit` - Number of records to return (default: 50, max: 100)
 
 **Response Format**:
+
 ```json
 {
   "timestamp": "2026-05-08T17:45:25.000Z",
@@ -106,6 +115,7 @@ console.log(`${auditLog.pagination.total} audit events found`);
 ```
 
 **Security**:
+
 - All endpoints require authentication
 - Admin role enforcement
 - 401/403 error responses for unauthorized access
@@ -116,9 +126,11 @@ console.log(`${auditLog.pagination.total} audit events found`);
 ### 3. Vue.js Component Scaffolds
 
 #### UserManagement Component (`src/components/UserManagement.js`)
+
 **Status**: ✅ Complete (Vue.js Template, 222 lines)
 
 **Features**:
+
 - User statistics dashboard (Total, Active, Admin count)
 - Searchable user table with columns:
   - Name, Email, Role (dropdown), Status, Created date, Actions
@@ -137,9 +149,11 @@ console.log(`${auditLog.pagination.total} audit events found`);
   - `DELETE /api/v1/admin/users/:userId` - Delete user
 
 **Computed Properties**:
+
 - `filteredUsers` - Search results based on name/email
 
 **Methods**:
+
 - `loadUserData()` - Fetch dashboard user data
 - `showAddUserForm()` - Open add user modal
 - `saveUser()` - Create or update user
@@ -150,9 +164,11 @@ console.log(`${auditLog.pagination.total} audit events found`);
 ---
 
 #### PermissionMatrix Component (`src/components/PermissionMatrix.js`)
+
 **Status**: ✅ Complete (Vue.js Template, 160 lines)
 
 **Features**:
+
 - Permission matrix table:
   - Rows = Users, Columns = Permissions
   - Checkbox cells for each permission
@@ -167,6 +183,7 @@ console.log(`${auditLog.pagination.total} audit events found`);
   - Timestamped file name
 
 **Permissions**:
+
 - `view` - View data objects
 - `search` - Perform searches
 - `export` - Export data
@@ -176,6 +193,7 @@ console.log(`${auditLog.pagination.total} audit events found`);
 - `viewAudit` - View audit logs
 
 **Methods**:
+
 - `loadPermissionMatrix()` - Fetch permission data
 - `updatePermission(userId, permission, checked)` - Toggle permission
 - `persistPermissions(userId)` - Save to backend
@@ -187,9 +205,11 @@ console.log(`${auditLog.pagination.total} audit events found`);
 ---
 
 #### AuditLogViewer Component (`src/components/AuditLogViewer.js`)
+
 **Status**: ✅ Complete (Vue.js Template, 203 lines)
 
 **Features**:
+
 - Audit statistics dashboard:
   - Total Events, Unique Users, Event Type Count
 - Filtering system:
@@ -210,6 +230,7 @@ console.log(`${auditLog.pagination.total} audit events found`);
   - Timestamps, user info, action, details, outcome
 
 **Supported Actions**:
+
 - login, logout
 - user_created, user_deleted
 - permission_changed
@@ -217,6 +238,7 @@ console.log(`${auditLog.pagination.total} audit events found`);
 - metadata_updated
 
 **Methods**:
+
 - `loadAuditLog()` - Fetch filtered and paginated audit data
 - `applyFilters()` - Reset page and reload with filters
 - `nextPage()`, `previousPage()` - Navigate pagination
@@ -230,21 +252,25 @@ console.log(`${auditLog.pagination.total} audit events found`);
 ### 4. App.js Integration
 
 **Imports**:
+
 ```javascript
 import dashboardRoutes, { setDashboardCache } from './api/dashboard.js';
 ```
 
 **Cache Initialization** (in `initializeCache` function):
+
 ```javascript
-setDashboardCache(objects);  // Provides dashboard service with object reference
+setDashboardCache(objects); // Provides dashboard service with object reference
 ```
 
 **Route Registration**:
+
 ```javascript
 apiRouter.use('/dashboard', dashboardRoutes);
 ```
 
 **API Info Update**:
+
 ```javascript
 dashboard: 'GET /dashboard/* (requires auth + admin role)',
 ```
@@ -252,24 +278,26 @@ dashboard: 'GET /dashboard/* (requires auth + admin role)',
 ---
 
 ### 5. Test Suite (`tests/unit/dashboard.test.js`)
+
 **Status**: ✅ Complete (370 lines, 66 tests, 100% passing)
 
 **Test Coverage**:
 
-| Category | Tests | IDs | Status |
-|---|---|---|---|
-| User Management Data | 5 | DASH-001 to DASH-005 | ✅ Passing |
-| Permission Matrix Data | 5 | DASH-006 to DASH-010 | ✅ Passing |
-| Audit Log Data | 5 | DASH-011 to DASH-015 | ✅ Passing |
-| Activity Dashboard Data | 5 | DASH-016 to DASH-020 | ✅ Passing |
-| Metadata Governance Data | 5 | DASH-021 to DASH-025 | ✅ Passing |
-| Admin Summary | 5 | DASH-026 to DASH-030 | ✅ Passing |
-| User Activity Timeline | 5 | DASH-031 to DASH-035 | ✅ Passing |
-| System Health Metrics | 5 | DASH-036 to DASH-040 | ✅ Passing |
-| Component Structure | 24 | DASH-041 to DASH-066 | ✅ Passing |
-| Integration Tests | 8 | INTEG-P5-001 to INTEG-P5-008 | ✅ Passing |
+| Category                 | Tests | IDs                          | Status     |
+| ------------------------ | ----- | ---------------------------- | ---------- |
+| User Management Data     | 5     | DASH-001 to DASH-005         | ✅ Passing |
+| Permission Matrix Data   | 5     | DASH-006 to DASH-010         | ✅ Passing |
+| Audit Log Data           | 5     | DASH-011 to DASH-015         | ✅ Passing |
+| Activity Dashboard Data  | 5     | DASH-016 to DASH-020         | ✅ Passing |
+| Metadata Governance Data | 5     | DASH-021 to DASH-025         | ✅ Passing |
+| Admin Summary            | 5     | DASH-026 to DASH-030         | ✅ Passing |
+| User Activity Timeline   | 5     | DASH-031 to DASH-035         | ✅ Passing |
+| System Health Metrics    | 5     | DASH-036 to DASH-040         | ✅ Passing |
+| Component Structure      | 24    | DASH-041 to DASH-066         | ✅ Passing |
+| Integration Tests        | 8     | INTEG-P5-001 to INTEG-P5-008 | ✅ Passing |
 
 **Key Test Scenarios**:
+
 - Data aggregation from all sources
 - Pagination metadata validation
 - Filtering and sorting
@@ -284,6 +312,7 @@ dashboard: 'GET /dashboard/* (requires auth + admin role)',
 ## Architecture & Design Patterns
 
 ### Service Architecture
+
 ```
 Express Router (dashboard.js)
     ↓
@@ -301,6 +330,7 @@ JSON Response → Vue.js Components
 ```
 
 ### Component Architecture
+
 ```
 UserManagement Component ←→ API: POST/PUT/DELETE /users
 PermissionMatrix Component ←→ API: GET /permissions, PUT /users/:id
@@ -308,6 +338,7 @@ AuditLogViewer Component ←→ API: GET /audit with filters & pagination
 ```
 
 ### Data Flow
+
 ```
 Dashboard Service
   ├── getUserManagementData(objects)
@@ -334,16 +365,17 @@ Dashboard Service
 
 ## Performance Characteristics
 
-| Operation | Complexity | Notes |
-|---|---|---|
-| getUserManagementData | O(n) | Iterates users and audit events |
-| getPermissionMatrixData | O(n×m) | n = users, m = permissions (constant ~7) |
-| getAuditLogData | O(n) | Full scan with filtering, then pagination |
-| getActivityDashboardData | O(n) | Aggregates activity statistics |
-| getMetadataGovernanceData | O(n) | Scans all objects for statistics |
-| getAdminDashboardSummary | O(n) | Aggregates all data sources |
+| Operation                 | Complexity | Notes                                     |
+| ------------------------- | ---------- | ----------------------------------------- |
+| getUserManagementData     | O(n)       | Iterates users and audit events           |
+| getPermissionMatrixData   | O(n×m)     | n = users, m = permissions (constant ~7)  |
+| getAuditLogData           | O(n)       | Full scan with filtering, then pagination |
+| getActivityDashboardData  | O(n)       | Aggregates activity statistics            |
+| getMetadataGovernanceData | O(n)       | Scans all objects for statistics          |
+| getAdminDashboardSummary  | O(n)       | Aggregates all data sources               |
 
 **Optimization Notes**:
+
 - Pagination reduces memory usage for large audit logs
 - In-memory operations suitable for <100k events
 - Component rendering optimized with Vue.js virtual DOM
@@ -354,22 +386,27 @@ Dashboard Service
 ## Integration Points
 
 ### With Admin Service (Phase 4)
+
 - Uses: `getAllUsers()`, `getAuditLog()`, `getAuditStatistics()`, `getUser()`, `getUserActivity()`
 - Purpose: User management, audit logging data
 
 ### With Activity Service (Phase 4)
+
 - Uses: `getActivityLog()`, `getActivityStatistics()`, `getMostViewedObjects()`, `getPopularSearches()`
 - Purpose: Activity analytics, trending data
 
 ### With Metadata Service (Phase 4)
+
 - Uses: `getMetadataStatistics()`
 - Purpose: Data classification, tag analytics, ownership tracking
 
 ### With Discovery Service (Phase 3)
+
 - Uses: setDiscoveryCache() - already integrated
 - Purpose: Lineage and visualization context
 
 ### With App.js
+
 - Imports: dashboard routes and cache setter
 - Exports: `setDashboardCache()` for app initialization
 - Registers: All 8 dashboard endpoints under `/api/v1/dashboard`
@@ -379,6 +416,7 @@ Dashboard Service
 ## Component Usage Examples
 
 ### UserManagement Component
+
 ```vue
 <template>
   <UserManagement />
@@ -387,12 +425,13 @@ Dashboard Service
 <script>
 import UserManagement from '@/components/UserManagement.js';
 export default {
-  components: { UserManagement }
+  components: { UserManagement },
 };
 </script>
 ```
 
 ### PermissionMatrix Component
+
 ```vue
 <template>
   <PermissionMatrix />
@@ -401,12 +440,13 @@ export default {
 <script>
 import PermissionMatrix from '@/components/PermissionMatrix.js';
 export default {
-  components: { PermissionMatrix }
+  components: { PermissionMatrix },
 };
 </script>
 ```
 
 ### AuditLogViewer Component
+
 ```vue
 <template>
   <AuditLogViewer />
@@ -415,12 +455,13 @@ export default {
 <script>
 import AuditLogViewer from '@/components/AuditLogViewer.js';
 export default {
-  components: { AuditLogViewer }
+  components: { AuditLogViewer },
 };
 </script>
 ```
 
 ### Full Dashboard Page
+
 ```vue
 <template>
   <div class="admin-dashboard">
@@ -442,24 +483,28 @@ export default {
 ## API Endpoint Examples
 
 ### Get Dashboard Summary
+
 ```bash
 curl -H "Authorization: Bearer <token>" \
   https://api.example.com/api/v1/dashboard/admin
 ```
 
 ### Get Paginated Audit Log
+
 ```bash
 curl -H "Authorization: Bearer <token>" \
   "https://api.example.com/api/v1/dashboard/audit?page=1&pageSize=50&user=john@example.com&action=login"
 ```
 
 ### Get User Activity Timeline
+
 ```bash
 curl -H "Authorization: Bearer <token>" \
   "https://api.example.com/api/v1/dashboard/users/user-id-123/activity?limit=100"
 ```
 
 ### Get Permission Matrix
+
 ```bash
 curl -H "Authorization: Bearer <token>" \
   https://api.example.com/api/v1/dashboard/permissions
@@ -470,6 +515,7 @@ curl -H "Authorization: Bearer <token>" \
 ## Known Limitations & Future Enhancements
 
 **Current Limitations**:
+
 - In-memory storage (no database persistence)
 - Components are Vue.js templates (framework-agnostic scaffolds)
 - No real-time updates (must refresh page)
@@ -477,6 +523,7 @@ curl -H "Authorization: Bearer <token>" \
 - Limited filtering options on admin page
 
 **Future Enhancements**:
+
 - **Real-time**: WebSocket support for live dashboard updates
 - **Advanced Reporting**: Scheduled dashboard export via email
 - **Customization**: User preference for dashboard layout
@@ -518,6 +565,7 @@ Component Coverage:
 ## Phase 5 Deliverables
 
 ### Files Created
+
 1. `src/services/dashboardService.js` - Aggregation service (481 lines)
 2. `src/api/dashboard.js` - REST API routes (148 lines)
 3. `src/components/UserManagement.js` - User management component (222 lines)
@@ -526,9 +574,11 @@ Component Coverage:
 6. `tests/unit/dashboard.test.js` - Test suite (370 lines)
 
 ### Files Modified
+
 1. `src/app.js` - Added dashboard routes and cache initialization (3 lines)
 
 ### Documentation Files
+
 - This completion document
 - Inline JSDoc comments in all service/component files
 
@@ -537,6 +587,7 @@ Component Coverage:
 ## Summary
 
 Phase 5 successfully delivers:
+
 - ✅ **8 Dashboard API endpoints** for admin data aggregation
 - ✅ **3 Production-ready Vue.js components** for user management, permissions, and audit logs
 - ✅ **66 comprehensive tests** with 100% pass rate
@@ -551,6 +602,7 @@ The Admin Dashboard is **production-ready** for deployment and provides comprehe
 ## Next Steps
 
 ### Phase 6 - Reporting & Polish
+
 - Dashboard export/scheduling
 - Performance optimization
 - Advanced reporting endpoints
@@ -558,6 +610,7 @@ The Admin Dashboard is **production-ready** for deployment and provides comprehe
 - Release preparation
 
 ### Deployment Checklist
+
 - [ ] Configure database persistence for audit logs
 - [ ] Set up email notifications for audit events
 - [ ] Configure log retention policies

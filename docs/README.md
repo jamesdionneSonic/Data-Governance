@@ -2,6 +2,14 @@
 
 This is the master index for platform documentation.
 
+## Current Product Navigation (2026 IA)
+
+- **Workspace**: Command Center, Catalog Search, Lineage Explorer
+- **Govern**: Business Glossary, Trust & Compliance
+- **Deliver**: Data Products, Governance Insights
+- **Operate**: Connections, Metadata Ingestion, Administration
+- **Support**: Help Center
+
 ## In-App User Help (Surfaced in UI)
 
 - [Help Center](HELP_CENTER.md)
@@ -28,6 +36,12 @@ This is the master index for platform documentation.
 - [Cloud Migration Runbook](CLOUD_MIGRATION_RUNBOOK.md)
 - [Branch Protection Setup](BRANCH_PROTECTION_SETUP.md)
 
+## Infrastructure as Code (IaC)
+
+- [IaC README — infra/](../infra/README.md) — FR-PLAT-001 baseline, Terraform scaffold, and local usage
+- [Deployment Guide](DEPLOYMENT_GUIDE.md) — cloud-oriented deployment notes
+- [IaC CI Workflow](../.github/workflows/iac.yml) — validate/lint/plan gates (no apply in CI)
+
 ## Architecture, Product, and Engineering
 
 - [Enterprise Architecture](ENTERPRISE_ARCHITECTURE.md)
@@ -52,10 +66,26 @@ This is the master index for platform documentation.
 
 - [Release Notes v0.6.0](RELEASE_NOTES_v0.6.0.md)
 - [Release Notes v1.0.0](RELEASE_NOTES_v1.0.0.md)
+- [Vuetify Final Audit 2026-05-10](VUETIFY_FINAL_AUDIT_2026-05-10.md)
 - [Documentation Visual Audit 2026](DOCUMENTATION_VISUAL_AUDIT_2026.md)
+- [UI IA Audit 2026](UI_IA_AUDIT_2026.md)
 - [Competitive UX Analysis](COMPETITIVE_UX_ANALYSIS.md)
 - [Sidebar UX Research 2026](SIDEBAR_UX_RESEARCH_2026.md)
 - [Documentation Audit Register](DOCUMENTATION_AUDIT_REGISTER.md)
+
+## Source and Contributor Documentation
+
+Use these references when working inside the codebase:
+
+- [Source Structure](../src/README.md)
+- [API Routes](../src/api/README.md)
+- [Services](../src/services/README.md)
+- [Middleware](../src/middleware/README.md)
+- [Utilities](../src/utils/README.md)
+- [Components](../src/components/README.md)
+- [Modules](../src/modules/README.md)
+- [Validators](../src/validators/README.md)
+- [Frontend](../src/frontend/README.md)
 
 ## Generated Artifacts
 

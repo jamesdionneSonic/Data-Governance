@@ -1,0 +1,84 @@
+# Data Classification Taxonomy
+# Used by classificationService.js to auto-classify data assets
+# based on name patterns, sensitivity, and tags in YAML frontmatter.
+#
+# Each category has:
+#   label: The classification label applied to matching assets
+#   description: Human-readable description
+#   name_patterns: Regex patterns matched against asset name + description + tags
+#   sensitivity_triggers: sensitivity values that trigger this classification
+#   tag_triggers: Tags that trigger this classification
+#   regulatory_frameworks: Applicable compliance frameworks
+
+categories:
+
+  - label: PII
+    description: Personally Identifiable Information
+    regulatory_frameworks: [GDPR, CCPA, PIPEDA]
+    name_patterns:
+      - "(first|last|full)_?name"
+      - "email"
+      - "phone"
+      - "address"
+      - "ssn|social_security"
+      - "passport"
+      - "date_of_birth|dob"
+      - "national_id"
+      - "customer_id"
+      - "user_id"
+    sensitivity_triggers: [confidential, restricted]
+    tag_triggers: [pii, personal, gdpr]
+
+  - label: Financial
+    description: Financial data subject to SOX and financial regulation
+    regulatory_frameworks: [SOX, PCI-DSS]
+    name_patterns:
+      - "revenue"
+      - "salary|compensation|payroll"
+      - "account_balance|balance"
+      - "credit_card|payment_card"
+      - "invoice|billing"
+      - "transaction"
+      - "profit|loss|ebitda"
+      - "bank_account"
+    sensitivity_triggers: [confidential, restricted]
+    tag_triggers: [financial, sox, pci]
+
+  - label: Health
+    description: Protected Health Information (PHI) under HIPAA
+    regulatory_frameworks: [HIPAA, HITECH]
+    name_patterns:
+      - "diagnosis|icd"
+      - "medication|prescription|drug"
+      - "patient"
+      - "medical_record|mrn"
+      - "health_plan|insurance_claim"
+      - "lab_result|test_result"
+    sensitivity_triggers: [restricted]
+    tag_triggers: [hipaa, phi, health]
+
+  - label: GDPR
+    description: Data subject to GDPR special category requirements
+    regulatory_frameworks: [GDPR]
+    name_patterns:
+      - "political_opinion|religion|ethnicity|race"
+      - "sexual_orientation|gender_identity"
+      - "biometric|fingerprint|facial"
+      - "criminal_record"
+      - "union_membership"
+    sensitivity_triggers: [restricted]
+    tag_triggers: [gdpr, special-category]
+
+  - label: Internal
+    description: Internal business data not for external sharing
+    regulatory_frameworks: []
+    name_patterns: []
+    sensitivity_triggers: [internal]
+    tag_triggers: [internal, proprietary]
+
+  - label: Public
+    description: Data approved for public consumption
+    regulatory_frameworks: []
+    name_patterns: []
+    sensitivity_triggers: [public]
+    tag_triggers: [public, open-data]

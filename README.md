@@ -11,6 +11,14 @@ A modern, enterprise-grade platform for visualizing data lineage from markdown d
 - **Lightweight Stack**: File-based architecture with Meilisearch indexing; no heavy database scanning
 - **Admin Dashboard**: User management, permission matrix, audit logs, settings
 
+## Governance-First Navigation Model
+
+- **Workspace**: Command Center, Catalog Search, Lineage Explorer
+- **Govern**: Business Glossary, Trust & Compliance
+- **Deliver**: Data Products, Governance Insights
+- **Operate**: Connections, Metadata Ingestion, Administration
+- **Support**: Help Center
+
 ## Getting Started
 
 ### Prerequisites
@@ -68,7 +76,6 @@ sensitivity: confidential
 tags: [core, audit, pii]
 depends_on: []
 ---
-
 ## Overview
 Master customer table...
 ```
@@ -94,6 +101,7 @@ Master customer table...
 ### Technical & Engineering
 
 - **Docs Portal (full index)**: [docs/README.md](docs/README.md)
+- **Source Structure**: [src/README.md](src/README.md)
 - **Architecture**: [docs/ENTERPRISE_ARCHITECTURE.md](docs/ENTERPRISE_ARCHITECTURE.md)
 - **Product Requirements**: [docs/PRODUCT_REQUIREMENTS.md](docs/PRODUCT_REQUIREMENTS.md)
 - **Project Backlog**: [docs/PROJECT_BACKLOG.md](docs/PROJECT_BACKLOG.md)
@@ -105,11 +113,25 @@ Master customer table...
 
 - **Release Notes (v0.6.0)**: [docs/RELEASE_NOTES_v0.6.0.md](docs/RELEASE_NOTES_v0.6.0.md)
 - **Release Notes (v1.0.0)**: [docs/RELEASE_NOTES_v1.0.0.md](docs/RELEASE_NOTES_v1.0.0.md)
+- **Vuetify Final Audit (2026-05-10)**: [docs/VUETIFY_FINAL_AUDIT_2026-05-10.md](docs/VUETIFY_FINAL_AUDIT_2026-05-10.md)
 - **Phase 8 Completion**: [PHASE8_COMPLETION.md](PHASE8_COMPLETION.md)
 - **Phase 9 Completion**: [PHASE9_COMPLETION.md](PHASE9_COMPLETION.md)
 - **Phase 10 Completion**: [PHASE10_COMPLETION.md](PHASE10_COMPLETION.md)
 - **Final Release Handoff**: [FINAL_RELEASE_HANDOFF.md](FINAL_RELEASE_HANDOFF.md)
 - **Documentation Visual Audit (2026)**: [docs/DOCUMENTATION_VISUAL_AUDIT_2026.md](docs/DOCUMENTATION_VISUAL_AUDIT_2026.md)
+
+### Source Documentation
+
+If you are updating code, use the source-level README files for guidance:
+
+- [src/api/README.md](src/api/README.md)
+- [src/services/README.md](src/services/README.md)
+- [src/middleware/README.md](src/middleware/README.md)
+- [src/utils/README.md](src/utils/README.md)
+- [src/components/README.md](src/components/README.md)
+- [src/modules/README.md](src/modules/README.md)
+- [src/validators/README.md](src/validators/README.md)
+- [src/frontend/README.md](src/frontend/README.md)
 
 ## Performance Validation
 
