@@ -5,8 +5,8 @@ WORKDIR /workspace
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production --omit=optional
+# Install production dependencies without lifecycle scripts
+RUN npm ci --omit=dev --omit=optional --ignore-scripts
 
 # Copy source code
 COPY src/ ./src/
