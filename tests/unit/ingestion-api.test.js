@@ -78,7 +78,7 @@ describe('Ingestion API', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('success');
-    expect(res.body.data).toHaveProperty('meilisearchHealthy');
+    expect(res.body.data).toHaveProperty('elasticsearchHealthy');
     expect(res.body.data).toHaveProperty('lastUpdated');
   });
 
