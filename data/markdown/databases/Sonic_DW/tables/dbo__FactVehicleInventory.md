@@ -1,0 +1,2837 @@
+---
+name: FactVehicleInventory
+database: Sonic_DW
+type: table
+schema: dbo
+owner: Data Team
+sensitivity: internal
+tags:
+  - core-schema
+depends_on:
+  - CallSourceDedupe20211221_FactRows_2
+  - ControllerPoints
+  - Dim_Account
+  - Dim_Account_20250618
+  - Dim_Account_20250918_Clone
+  - Dim_Account_Bk
+  - Dim_Account_BKP_20250709
+  - Dim_Account_testing
+  - Dim_AccountMgmt
+  - Dim_AccountMgmtGrouping
+  - Dim_CarsImpressionType
+  - Dim_CarsLeadType
+  - Dim_CarsProduct
+  - Dim_CBNumber
+  - Dim_CouponXref
+  - Dim_Customer
+  - Dim_DMSCustomer
+  - dim_dmsCustomer_bk05052022
+  - Dim_DMSCustomer_history
+  - Dim_DMSEmployee
+  - Dim_DMSVendor
+  - Dim_ECStatusEmail
+  - Dim_ECStatusPhone
+  - Dim_ECStatusText
+  - Dim_Entity
+  - Dim_EPTNotificationType
+  - Dim_Expense
+  - Dim_FIProduct
+  - Dim_GLDetail
+  - Dim_GLDetail_arch
+  - Dim_GLDetail_ToBeDeleted
+  - Dim_GLScheduleSummary_degen
+  - Dim_Journal
+  - Dim_LaborType
+  - Dim_LaborType_Transact
+  - Dim_LeadSource
+  - Dim_Lender
+  - Dim_MailCoupon
+  - Dim_MailPiece
+  - Dim_OpCode
+  - Dim_Part
+  - Dim_PricingGrid
+  - Dim_RegionalTechnologyManager
+  - Dim_Scenario
+  - Dim_SchedExceptionAccounts
+  - Dim_ScheduleException
+  - Dim_SECRollup
+  - Dim_Status
+  - Dim_Step
+  - Dim_StepSource
+  - Dim_StepTarget
+  - Dim_Validation
+  - Dim_Vehicle
+  - dim_vehicle_20241119
+  - dim_vehicle_20241119_test
+  - dim_vehicle_20241216
+  - Dim_Vehicle_20250130
+  - dim_vehicle_bkp_20241204
+  - dim_vehicle_BKP_20241209
+  - dim_vehicle_bkp_20241212
+  - Dim_Vehicle_bkp_20241213
+  - Dim_Vehicle_bkp_20250130
+  - dim_vehicle_BKP_20250131
+  - dim_vehicle_BKP_20250203
+  - Dim_Vehicle_BKP_20250204
+  - Dim_Vehicle_BKP_20250206
+  - dim_Vehicle_bkp_20250403
+  - dim_Vehicle_bkp_20250410
+  - dim_vehicle_BKP_20250702
+  - Dim_Vehicle_new
+  - dim_vehicle_PreUpdate_20250702
+  - Dim_Vendor
+  - DimAdSource
+  - DimAdSource_orig
+  - DimApplicationSource
+  - DimCallRevuDepartment
+  - DimCategory
+  - DimCategoryType
+  - DimCustomer
+  - DimCustomer_20250109
+  - dimcustomer_bk05052022
+  - DimDMSCoraAccount
+  - DimEmployee
+  - DimEmployeeEleadDepartments
+  - DimFinanceDecision
+  - DimFinanceSource
+  - DimIVROption
+  - DimRemedyDetail
+  - DimRemedyUnmappedSites
+  - DimRemedyUser
+  - DimRemedyUserGroup
+  - DimReportingSource
+  - DimResult
+  - DimReviewStatus
+  - DimService
+  - DimServiceAppointment
+  - DimServiceAppointmentDetail
+  - DimServiceAppointmentDetail_BKP
+  - DimServiceType
+  - DimStatus
+  - DimStatusType
+  - DimSurveyAudit
+  - DimSurveyAuditDetail
+  - DimSurveyAuditDetail_BK_20211018
+  - DimSurveyQuestion
+  - DimVehicle
+  - DimVehicleHistory
+  - DimVehicleType
+  - DimVin
+  - DimVinHistory
+  - Fact_AccountingDetail
+  - Fact_AccountingDetail_arch
+  - Fact_AccountingDetail_ToBeDeleted
+  - Fact_AccountingDetailCurrent
+  - Fact_AdvertisingExpense
+  - Fact_ASI
+  - Fact_AutoTrader
+  - Fact_AutoTraderVINLevel
+  - Fact_AutoTraderVINLevel_338_339
+  - Fact_BlackBookLeads
+  - Fact_CallBright
+  - Fact_CarsImpression
+  - Fact_CarsInvoice
+  - Fact_CarsLeads
+  - Fact_DataLoad
+  - Fact_DDCVehicleViews
+  - Fact_EPTNotification
+  - Fact_GLBalances
+  - Fact_GLChecks
+  - Fact_GLSchedule
+  - Fact_GLSchedule_arc
+  - Fact_GLScheduleSummary
+  - Fact_GLScheduleSummary_bk_12_11_2023
+  - Fact_GoldDigger
+  - Fact_GridPenentration
+  - Fact_HFM
+  - Fact_HFM_20250619
+  - Fact_HFM_20250819
+  - Fact_HFM_20250916
+  - Fact_HFM_Backup20250819
+  - Fact_HFM_bk
+  - Fact_HFM_bk_20230630
+  - Fact_HFM_bk_20230712
+  - Fact_HFM_Budget_T5_2025
+  - Fact_HFM_Dev
+  - Fact_HFM_Dev2
+  - Fact_HFM_Dev3
+  - Fact_HFM_Dev4
+  - Fact_HFM_Snapshot
+  - Fact_HFMBudget
+  - Fact_HFMManual
+  - Fact_HROverTime
+  - Fact_HRTurnOver
+  - Fact_Jumpstart
+  - Fact_LeadBySource
+  - Fact_Merchandising
+  - Fact_Opportunity
+  - Fact_PartsSalesDetail
+  - Fact_PromoMailing
+  - Fact_RetailUnits
+  - Fact_SAAR
+  - Fact_SecurityAwareness
+  - Fact_SecurityOffenses
+  - Fact_SEM
+  - Fact_SEO
+  - Fact_Service
+  - Fact_Service_arch
+  - Fact_Service_DISCOUNT_NOT_MATCHED
+  - Fact_ServiceDetail
+  - Fact_ServiceDetail_arch
+  - Fact_ServiceDetail_DISCOUNT_NOT_MATCHED
+  - Fact_StopSaleUsed
+  - Fact_SymantecEvents
+  - Fact_TemplateData
+  - Fact_test_service
+  - Fact_TradeAppraisal
+  - Fact_TrafficManagement
+  - Fact_TrafficManagementATIM
+  - Fact_Vulnerabilities
+  - Fact_WebPageViews
+  - Fact_WebStats
+  - Fact_WhiteHatSecurity_Event
+  - FactCallSource
+  - FactCallSourceNew
+  - FactCollisionCSI
+  - FactCSIQuarterly
+  - factFIRE
+  - factFIRE_BMWMini
+  - FactFireBookings_preDW
+  - factFIREBookingsWeOwe
+  - FactRemedy
+  - FactServiceAppointment
+  - FactServiceAppointmentDetail
+  - FactSurveyAuditDetail
+  - FactSurveyAuditDetail__BK_20211018
+  - CallSourceDedupe20211221_FactRows_2
+  - ControllerPoints
+  - CustomerMatchResult
+  - CustomerMatchResult_bak
+  - Dim_Account
+  - Dim_Account_20250618
+  - Dim_Account_20250918_Clone
+  - Dim_Account_Bk
+  - Dim_Account_BKP_20250709
+  - Dim_Account_old
+  - Dim_Account_testing
+  - Dim_AccountMgmt
+  - Dim_AccountMgmtGrouping
+  - Dim_ActivityStatus
+  - Dim_Application
+  - Dim_AutoTrader
+  - Dim_CarsImpressionType
+  - Dim_CarsLeadType
+  - Dim_CarsProduct
+  - Dim_CBNumber
+  - Dim_CouponXref
+  - Dim_Customer
+  - Dim_DMSCustomer
+  - dim_dmsCustomer_bk05052022
+  - Dim_DMSCustomer_history
+  - Dim_DMSEmployee
+  - Dim_ECStatusEmail
+  - Dim_ECStatusPhone
+  - Dim_ECStatusText
+  - Dim_Entity
+  - Dim_EPTContactStatus
+  - Dim_EPTEmailURL
+  - Dim_EPTNotificationType
+  - Dim_Expense
+  - Dim_FIProduct
+  - Dim_GeoLocation
+  - dim_GLSchedule_degen
+  - dim_GLSchedule_degen_arc
+  - Dim_GLScheduleSummary_degen
+  - Dim_HFM
+  - Dim_HFMBrand
+  - Dim_Journal
+  - Dim_KeyWord
+  - Dim_LaborType
+  - Dim_LaborType_Transact
+  - Dim_LeadSource
+  - Dim_LeadStatus
+  - Dim_Lender
+  - Dim_MailCoupon
+  - Dim_MailPiece
+  - Dim_MgmtRollup
+  - Dim_OffenseLevel
+  - Dim_OpCode
+  - Dim_Operator
+  - Dim_OpportunitySource
+  - Dim_Part
+  - Dim_PricingGrid
+  - Dim_Referrer
+  - Dim_RegionalTechnologyManager
+  - Dim_Scenario
+  - Dim_SchedExceptionAccounts
+  - Dim_Schedule
+  - Dim_ScheduleException
+  - Dim_SearchPhrase
+  - Dim_SECRollup
+  - Dim_SecurityAssetClass
+  - Dim_SecurityAssetGroup
+  - Dim_SecurityModule
+  - Dim_SecurityOffense
+  - Dim_SEMCampaign
+  - Dim_Status
+  - Dim_Step
+  - Dim_StepSource
+  - Dim_StepTarget
+  - Dim_StockType
+  - Dim_Validation
+  - Dim_Vehicle
+  - dim_vehicle_20241119
+  - dim_vehicle_20241119_test
+  - dim_vehicle_20241216
+  - Dim_Vehicle_20250130
+  - dim_vehicle_bkp_20241204
+  - dim_vehicle_BKP_20241209
+  - dim_vehicle_bkp_20241212
+  - Dim_Vehicle_bkp_20241213
+  - Dim_Vehicle_bkp_20250130
+  - dim_vehicle_BKP_20250131
+  - dim_vehicle_BKP_20250203
+  - Dim_Vehicle_BKP_20250204
+  - Dim_Vehicle_BKP_20250206
+  - dim_Vehicle_bkp_20250403
+  - dim_Vehicle_bkp_20250410
+  - dim_vehicle_BKP_20250702
+  - Dim_Vehicle_new
+  - dim_vehicle_PreUpdate_20250702
+  - Dim_VehicleDetail
+  - Dim_VehicleGeneral
+  - Dim_WebPage
+  - DimActivityStatus
+  - DimActivityType
+  - DimAdSource
+  - DimAdSource_orig
+  - DimApplicationSource
+  - DimAssociate
+  - DimAssociate_0418
+  - DimAssociate_07282023
+  - DimAssociate_0816
+  - DimAssociate_914_new
+  - DimAssociate_bk_0413
+  - DimAssociate_FULL
+  - DimAssociate_newfile
+  - DimAssociate0711
+  - DimAssociate0829
+  - DimAssociate1010
+  - DimAssociate110724
+  - DimAuctionSource
+  - DimCallRevuDepartment
+  - DimCategory
+  - DimCategoryType
+  - DimCustomer
+  - DimCustomer_20250109
+  - dimcustomer_bk05052022
+  - DimDealType
+  - DimDMSCoraAccount
+  - DimDMSLegacyDealXREF
+  - DimEmployee
+  - DimEmployeeEleadDepartments
+  - DimFinanceDecision
+  - DimFinanceSource
+  - DimFocusCustomer
+  - DimGMBMetric
+  - DimIVROption
+  - DimLeadSource
+  - DimLeadSource_Backup
+  - DimLeadStatus
+  - DimLeadSubSource
+  - DimOpportunityPositionXREF
+  - DimOpportunitySource
+  - DimPurchaseMethod
+  - DimRemedyDetail
+  - DimRemedyUser
+  - DimRemedyUserGroup
+  - DimReportingSource
+  - DimResult
+  - DimReviewStatus
+  - DimService
+  - DimServiceAppointment
+  - DimServiceAppointmentDetail
+  - DimServiceAppointmentDetail_BKP
+  - DimServiceType
+  - DimSourceSystem
+  - DimStatus
+  - DimStatusType
+  - DimSurveyAuditDetail
+  - DimSurveyAuditDetail_BK_20211018
+  - DimSurveyQuestion
+  - DimTransportCompany
+  - DimVehicle
+  - DimVehicleHistory
+  - DimVehicleSought
+  - DimVehicleSoughtXref
+  - DimVehicleSoughtXref_UAT
+  - DimVehicleType
+  - DimVin
+  - DimVinHistory
+  - DimWorkflow
+  - Fact_Appointment
+  - Fact_AutoTrader
+  - Fact_AutoTraderVINLevel
+  - Fact_AutoTraderVINLevel_338_339
+  - Fact_BlackBookLeads
+  - Fact_CallBright
+  - Fact_CarsInvoice
+  - Fact_DataLoad
+  - Fact_DDCVehicleViews
+  - Fact_DQValidation
+  - Fact_GLBalances
+  - Fact_GLChecks
+  - Fact_GLSchedule
+  - Fact_GLSchedule_arc
+  - Fact_GLScheduleSummary
+  - Fact_GLScheduleSummary_bk_12_11_2023
+  - Fact_GoldDigger
+  - Fact_HFM
+  - Fact_HFM_20250619
+  - Fact_HFM_20250819
+  - Fact_HFM_20250916
+  - Fact_HFM_Backup20250819
+  - Fact_HFM_bk
+  - Fact_HFM_bk_20230630
+  - Fact_HFM_bk_20230712
+  - Fact_HFM_Budget_T5_2025
+  - Fact_HFM_Dev
+  - Fact_HFM_Dev2
+  - Fact_HFM_Dev3
+  - Fact_HFM_Dev4
+  - Fact_HFM_Snapshot
+  - Fact_HFMBudget
+  - Fact_HFMManual
+  - Fact_Inventory
+  - Fact_Jumpstart
+  - Fact_LeadBySource
+  - Fact_Merchandising
+  - Fact_PartsSalesDetail
+  - Fact_PromoMailing
+  - Fact_SecurityAwareness
+  - Fact_SecurityOffenses
+  - Fact_SEM
+  - Fact_SEO
+  - Fact_Service
+  - Fact_Service_arch
+  - Fact_Service_DISCOUNT_NOT_MATCHED
+  - Fact_ServiceDetail
+  - Fact_ServiceDetail_arch
+  - Fact_ServiceDetail_DISCOUNT_NOT_MATCHED
+  - Fact_SymantecEvents
+  - Fact_test_service
+  - Fact_Vulnerabilities
+  - Fact_WhiteHatSecurity_Event
+  - FactActivity
+  - FactActivity_0805
+  - FactCallSource
+  - FactCallSourceNew
+  - FactCBABuyerTarget
+  - FactCollisionCSI
+  - FactCSIQuarterly
+  - factFIRE
+  - factFIRE_BMWMini
+  - FactFireBookings_preDW
+  - factFIREBookingsWeOwe
+  - FactFireSummary
+  - FactFireSummary_update
+  - FactFocusBudget
+  - FactMSCTasks
+  - FactMSCTasksDept
+  - FactOpportunity
+  - FactOpportunity_0805
+  - FactOpportunity_10032023
+  - FactOpportunity_10042023
+  - FactOpportunity_20250109
+  - FactRemedy
+  - FactServiceAppointment
+  - FactServiceAppointmentDetail
+  - FactSurveyAuditDetail
+  - FactSurveyAuditDetail__BK_20211018
+  - FactTrafficSummary
+  - FactTrafficSummary_06102022
+  - FactTrafficSummary_06132022
+  - FactTrafficSummary_07292023
+  - FactTrafficSummary_20230706
+  - FactTrafficSummary_20230727
+  - FactTrafficSummary_bk02172022
+  - Facttrafficsummary_TMR_Export
+  - Facttrafficsummary_TMR_Export_06142022
+  - FactTrafficSummary_TMR_Export_1006
+  - Facttrafficsummary_TMR_Export_bk02172022
+  - Facttrafficsummary_TMR_Export_old 0610
+  - FactTrafficSummary_TMR_Export_zz
+  - FactTrafficSummaryDaily
+  - FactTrafficSummaryDaily_07292023
+  - FactTrafficSummaryDaily_20230706
+  - FactTrafficSummaryDaily_20230727
+  - FactTrafficSummaryDailyDept
+  - FactTrafficSummarySubSource
+  - FactTrafficSummarySubSource_05032024
+  - FactTrafficSummarySubSource_20240404
+  - FactTrafficSummarySubSourcebkp
+  - CSI_Email_Change_Tracking
+  - Dim_EPOpCodeBucket_Transact
+  - DimFocusCustomer
+  - DimGMBMetric
+  - DimVehicle
+  - DimVehicleBodyStyle
+  - DimVehicleCab
+  - DimVehicleCategory
+  - DimVehicleChassis
+  - DimVehicleCylinders
+  - DimVehicleDMVCategory
+  - DimVehicleDriveType
+  - DimVehicleEngine
+  - DimVehicleExteriorColor
+  - DimVehicleFuelType
+  - DimVehicleHistory
+  - DimVehicleInteriorColor
+  - DimVehicleMake
+  - DimVehicleModel
+  - DimVehicleModelNumber
+  - DimVehicleRestraints
+  - DimVehicleSeries
+  - DimVehicleTransmission
+  - DimVehicleTrim
+  - DimVin
+  - DimVinHistory
+  - Doc_TXN_BulkPermissionAdd
+  - Fact_ReconAging_TXN
+  - Fact_TrafficManagementGoals
+  - FactFireSummary
+  - FactFireSummary_update
+  - FactGMB
+  - FactMSCTasks
+  - FactMSCTasksDept
+  - FactTrafficSummary
+  - FactTrafficSummary_06102022
+  - FactTrafficSummary_06132022
+  - FactTrafficSummary_07292023
+  - FactTrafficSummary_20230706
+  - FactTrafficSummary_20230727
+  - FactTrafficSummary_bk02172022
+  - Facttrafficsummary_TMR_Export
+  - Facttrafficsummary_TMR_Export_06142022
+  - FactTrafficSummary_TMR_Export_1006
+  - Facttrafficsummary_TMR_Export_bk02172022
+  - Facttrafficsummary_TMR_Export_old 0610
+  - FactTrafficSummary_TMR_Export_zz
+  - FactTrafficSummaryDaily
+  - FactTrafficSummaryDaily_07292023
+  - FactTrafficSummaryDaily_20230706
+  - FactTrafficSummaryDaily_20230727
+  - FactTrafficSummaryDailyDept
+  - FactTrafficSummarySubSource
+  - FactTrafficSummarySubSource_05032024
+  - FactTrafficSummarySubSource_20240404
+  - FactTrafficSummarySubSourcebkp
+row_count: 0
+size_kb: 0
+column_count: 25
+index_count: 1
+check_constraint_count: 0
+extraction_warnings:
+  - MISSING_VIEW_DATABASE_STATE
+extracted_at: 2026-05-13T11:28:24.843Z
+---
+
+## Overview
+
+Metadata auto-extracted from SQL Server.
+
+- **Type**: table
+- **Schema**: dbo
+- **Row Count**: 0
+- **Size**: 0 KB
+
+## Columns
+
+| Name                     | Type      | Nullable | Identity | Default | Description |
+| ------------------------ | --------- | -------- | -------- | ------- | ----------- |
+| `VehicleInventoryKey`    | int       |          | ✓        |         |             |
+| `VehicleKey`             | int       |          |          |         |             |
+| `AccountingCostAmount`   | numeric   | ✓        |          |         |             |
+| `CertifiedFlag`          | bit       |          |          |         |             |
+| `DeliveredFlag`          | bit       |          |          |         |             |
+| `EntityKey`              | int       |          |          |         |             |
+| `InventoryAccount`       | varchar   | ✓        |          |         |             |
+| `InventoryCompany`       | int       | ✓        |          |         |             |
+| `InventoryStatusCode`    | char      |          |          |         |             |
+| `InvoiceTotalListAmount` | numeric   | ✓        |          |         |             |
+| `LocationId`             | int       |          |          |         |             |
+| `NewVehicleFlag`         | varchar   |          |          |         |             |
+| `OdometerReading`        | int       | ✓        |          |         |             |
+| `StockDate`              | datetime2 | ✓        |          |         |             |
+| `StockNumber`            | varchar   | ✓        |          |         |             |
+| `TotalListAmount`        | numeric   | ✓        |          |         |             |
+| `ETLExecution_ID`        | int       |          |          |         |             |
+| `Meta_ComputerName`      | varchar   |          |          |         |             |
+| `Meta_LoadDate`          | datetime2 |          |          |         |             |
+| `Meta_RowIsCurrent`      | varchar   |          |          |         |             |
+| `Meta_RowEffectiveDate`  | datetime2 |          |          |         |             |
+| `Meta_RowExpiredDate`    | datetime2 |          |          |         |             |
+| `Meta_SourceSystemName`  | varchar   |          |          |         |             |
+| `Meta_Src_Sys_ID`        | int       |          |          |         |             |
+| `Meta_UserID`            | varchar   |          |          |         |             |
+
+## Constraints
+
+- **Primary Key**: PK**FactVehi**9EA9B3A2F9B09BBD
+  - Columns: VehicleInventoryKey
+
+## Indexes
+
+- **PK**FactVehi**9EA9B3A2F9B09BBD** (CLUSTERED)
+  - Unique: Yes
+  - Primary Key: Yes
+  - Key Columns: VehicleInventoryKey ASC
+
+## Extraction Notes
+
+- **MISSING_VIEW_DATABASE_STATE**: Missing VIEW DATABASE STATE permission. Row count and size metrics are unavailable.
+
+## Relationships
+
+### High Confidence (≥ 0.8)
+
+- **column_match**: dbo.CallSourceDedupe20211221_FactRows_2 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.ControllerPoints → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Account → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Account_20250618 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Account_20250918_Clone → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Account_Bk → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Account_BKP_20250709 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Account_testing → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_AccountMgmt → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_AccountMgmtGrouping → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_CarsImpressionType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_CarsLeadType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_CarsProduct → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_CBNumber → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_CouponXref → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Customer → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_DMSCustomer → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_dmsCustomer_bk05052022 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_DMSCustomer_history → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_DMSEmployee → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_DMSVendor → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_ECStatusEmail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_ECStatusPhone → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_ECStatusText → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Entity → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_EPTNotificationType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Expense → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_FIProduct → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_GLDetail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_GLDetail_arch → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_GLDetail_ToBeDeleted → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_GLScheduleSummary_degen → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Journal → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_LaborType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_LaborType_Transact → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_LeadSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Lender → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_MailCoupon → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_MailPiece → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_OpCode → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Part → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_PricingGrid → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_RegionalTechnologyManager → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Scenario → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_SchedExceptionAccounts → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_ScheduleException → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_SECRollup → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Status → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Step → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_StepSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_StepTarget → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Validation → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Vehicle → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_20241119 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_20241119_test → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_20241216 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Vehicle_20250130 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_bkp_20241204 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20241209 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_bkp_20241212 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Vehicle_bkp_20241213 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Vehicle_bkp_20250130 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20250131 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20250203 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Vehicle_BKP_20250204 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Vehicle_BKP_20250206 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_Vehicle_bkp_20250403 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_Vehicle_bkp_20250410 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20250702 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Vehicle_new → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_PreUpdate_20250702 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Vendor → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimAdSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimAdSource_orig → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimApplicationSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimCallRevuDepartment → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimCategory → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimCategoryType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimCustomer → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimCustomer_20250109 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dimcustomer_bk05052022 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimDMSCoraAccount → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimEmployee → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimEmployeeEleadDepartments → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimFinanceDecision → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimFinanceSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimIVROption → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimRemedyDetail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimRemedyUnmappedSites → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimRemedyUser → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimRemedyUserGroup → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimReportingSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimResult → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimReviewStatus → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimService → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimServiceAppointment → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimServiceAppointmentDetail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimServiceAppointmentDetail_BKP → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimServiceType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimStatus → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimStatusType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAuditDetail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAuditDetail_BK_20211018 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyQuestion → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimVehicle → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimVehicleHistory → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimVehicleType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimVin → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimVinHistory → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_AccountingDetail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_AccountingDetail_arch → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_AccountingDetail_ToBeDeleted → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_AccountingDetailCurrent → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_AdvertisingExpense → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_ASI → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_AutoTrader → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_AutoTraderVINLevel → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_AutoTraderVINLevel_338_339 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_BlackBookLeads → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_CallBright → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_CarsImpression → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_CarsInvoice → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_CarsLeads → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_DataLoad → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_DDCVehicleViews → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_EPTNotification → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_GLBalances → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_GLChecks → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_GLSchedule → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_GLSchedule_arc → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_GLScheduleSummary → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_GLScheduleSummary_bk_12_11_2023 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_GoldDigger → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_GridPenentration → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_HFM → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_HFM_20250619 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_HFM_20250819 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_HFM_20250916 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_HFM_Backup20250819 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_HFM_bk → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_HFM_bk_20230630 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_HFM_bk_20230712 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_HFM_Budget_T5_2025 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_HFM_Dev → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_HFM_Dev2 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_HFM_Dev3 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_HFM_Dev4 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_HFM_Snapshot → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_HFMBudget → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_HFMManual → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_HROverTime → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_HRTurnOver → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_Jumpstart → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_LeadBySource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_Merchandising → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_Opportunity → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_PartsSalesDetail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_PromoMailing → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_RetailUnits → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_SAAR → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_SecurityAwareness → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_SecurityOffenses → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_SEM → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_SEO → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_Service → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_Service_arch → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_Service_DISCOUNT_NOT_MATCHED → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_ServiceDetail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_ServiceDetail_arch → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_ServiceDetail_DISCOUNT_NOT_MATCHED → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_StopSaleUsed → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_SymantecEvents → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_TemplateData → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_test_service → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_TradeAppraisal → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_TrafficManagement → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_TrafficManagementATIM → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_Vulnerabilities → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_WebPageViews → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_WebStats → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Fact_WhiteHatSecurity_Event → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactCallSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactCallSourceNew → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactCollisionCSI → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactCSIQuarterly → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.factFIRE → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.factFIRE_BMWMini → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactFireBookings_preDW → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.factFIREBookingsWeOwe → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactRemedy → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactServiceAppointment → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactServiceAppointmentDetail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactSurveyAuditDetail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactSurveyAuditDetail\_\_BK_20211018 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.FactVehiclePriceChangeNotification
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.GLDetail\_ MissingAcctInfo
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Sonic_Dim_CarsLeadType
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Sonic_Dim_CarsStockType
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Sonic_Dim_CarsTimeZone
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Sonic_Dim_CarsVehicleStatus
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Sonic_Fact_CarsVINLeads
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.TargetSourceRel
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.wrk_Dim_HFMBrand
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.CallSourceDedupe20211221_FactRows_2 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.ControllerPoints → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.CustomerMatchResult → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.CustomerMatchResult_bak → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account_20250618 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account_20250918_Clone → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account_Bk → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account_BKP_20250709 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account_old → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account_testing → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_AccountMgmt → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_AccountMgmtGrouping → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_ActivityStatus → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Application → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_AutoTrader → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_CarsImpressionType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_CarsLeadType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_CarsProduct → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_CBNumber → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_CouponXref → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Customer → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_DMSCustomer → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_dmsCustomer_bk05052022 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_DMSCustomer_history → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_DMSEmployee → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_ECStatusEmail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_ECStatusPhone → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_ECStatusText → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Entity → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_EPTContactStatus → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_EPTEmailURL → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_EPTNotificationType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Expense → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_FIProduct → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_GeoLocation → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_id` → `ETLExecution_ID`
+- **column_match**: dbo.dim_GLSchedule_degen → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_GLSchedule_degen_arc → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_GLScheduleSummary_degen → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_HFM → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_HFMBrand → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Journal → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_KeyWord → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_LaborType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_LaborType_Transact → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_LeadSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_LeadStatus → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Lender → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_MailCoupon → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_MailPiece → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_MgmtRollup → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_OffenseLevel → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_OpCode → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Operator → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_OpportunitySource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Part → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_PricingGrid → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Referrer → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_RegionalTechnologyManager → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Scenario → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SchedExceptionAccounts → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Schedule → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_ScheduleException → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SearchPhrase → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SECRollup → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SecurityAssetClass → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SecurityAssetGroup → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SecurityModule → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SecurityOffense → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SEMCampaign → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Status → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Step → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_StepSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_StepTarget → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_StockType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Validation → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_20241119 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_20241119_test → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_20241216 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle_20250130 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_bkp_20241204 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20241209 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_bkp_20241212 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle_bkp_20241213 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle_bkp_20250130 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20250131 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20250203 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle_BKP_20250204 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle_BKP_20250206 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_Vehicle_bkp_20250403 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_Vehicle_bkp_20250410 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20250702 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle_new → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_PreUpdate_20250702 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_VehicleDetail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_VehicleGeneral → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_WebPage → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimActivityStatus → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimActivityType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAdSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAdSource_orig → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimApplicationSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_0418 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_07282023 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_0816 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_914_new → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_bk_0413 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_FULL → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_newfile → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate0711 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate0829 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate1010 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate110724 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAuctionSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimCallRevuDepartment → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimCategory → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimCategoryType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimCustomer → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimCustomer_20250109 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dimcustomer_bk05052022 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimDealType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimDMSCoraAccount → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimDMSLegacyDealXREF → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimEmployee → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimEmployeeEleadDepartments → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimFinanceDecision → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimFinanceSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimFocusCustomer → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_Id` → `ETLExecution_ID`
+- **column_match**: dbo.DimGMBMetric → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_id` → `ETLExecution_ID`
+- **column_match**: dbo.DimIVROption → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimLeadSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimLeadSource_Backup → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimLeadStatus → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimLeadSubSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimOpportunityPositionXREF → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimOpportunitySource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimPurchaseMethod → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimRemedyDetail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimRemedyUser → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimRemedyUserGroup → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimReportingSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimResult → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimReviewStatus → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimService → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimServiceAppointment → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimServiceAppointmentDetail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimServiceAppointmentDetail_BKP → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimServiceType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimSourceSystem → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimStatus → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimStatusType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimSurveyAuditDetail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimSurveyAuditDetail_BK_20211018 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimSurveyQuestion → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimTransportCompany → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVehicle → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVehicleHistory → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVehicleSought → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVehicleSoughtXref → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVehicleSoughtXref_UAT → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVehicleType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVin → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVinHistory → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimWorkflow → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Appointment → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_AutoTrader → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_AutoTraderVINLevel → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_AutoTraderVINLevel_338_339 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_BlackBookLeads → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_CallBright → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_CarsInvoice → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_DataLoad → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_DDCVehicleViews → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_DQValidation → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GLBalances → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GLChecks → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GLSchedule → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GLSchedule_arc → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GLScheduleSummary → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GLScheduleSummary_bk_12_11_2023 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GoldDigger → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_20250619 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_20250819 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_20250916 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Backup20250819 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_bk → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_bk_20230630 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_bk_20230712 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Budget_T5_2025 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Dev → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Dev2 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Dev3 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Dev4 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Snapshot → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFMBudget → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFMManual → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Inventory → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Jumpstart → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_LeadBySource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Merchandising → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_PartsSalesDetail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_PromoMailing → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_SecurityAwareness → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_SecurityOffenses → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_SEM → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_SEO → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Service → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Service_arch → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Service_DISCOUNT_NOT_MATCHED → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_ServiceDetail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_ServiceDetail_arch → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_ServiceDetail_DISCOUNT_NOT_MATCHED → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_SymantecEvents → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_test_service → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Vulnerabilities → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_WhiteHatSecurity_Event → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactActivity → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactActivity_0805 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactCallSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactCallSourceNew → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactCBABuyerTarget → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactCollisionCSI → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactCSIQuarterly → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.factFIRE → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.factFIRE_BMWMini → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactFireBookings_preDW → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.factFIREBookingsWeOwe → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactFireSummary → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactFireSummary_update → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactFocusBudget → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_Id` → `ETLExecution_ID`
+- **column_match**: dbo.FactMSCTasks → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactMSCTasksDept → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactOpportunity → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactOpportunity_0805 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactOpportunity_10032023 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactOpportunity_10042023 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactOpportunity_20250109 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactRemedy → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactServiceAppointment → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactServiceAppointmentDetail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactSurveyAuditDetail → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactSurveyAuditDetail\_\_BK_20211018 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_06102022 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_06132022 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_07292023 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_20230706 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_20230727 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_bk02172022 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Facttrafficsummary_TMR_Export → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Facttrafficsummary_TMR_Export_06142022 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_TMR_Export_1006 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Facttrafficsummary_TMR_Export_bk02172022 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Facttrafficsummary_TMR_Export_old 0610 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_TMR_Export_zz → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummaryDaily → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummaryDaily_07292023 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummaryDaily_20230706 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummaryDaily_20230727 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummaryDailyDept → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummarySubSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummarySubSource_05032024 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummarySubSource_20240404 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummarySubSourcebkp → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.FactVehiclePriceChangeNotification
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.FOCUS_Elead_ActivityTypeChange
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.GLDetail\_ MissingAcctInfo
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.SalesTranAssociate_Outbound
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Sonic_Dim_CarsLeadType
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Sonic_Dim_CarsStockType
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Sonic_Dim_CarsTimeZone
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Sonic_Dim_CarsVehicleStatus
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.TargetSourceRel
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.testassociate
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.xDim_Customer
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.zzzDim_Associate
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.zzzzDimAssociate
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.CSI_Email_Change_Tracking → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.Dim_EPOpCodeBucket_Transact → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimFocusCustomer → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserId` → `Meta_UserID`
+- **column_match**: dbo.DimGMBMetric → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicle → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleBodyStyle → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleCab → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleCategory → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleChassis → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleCylinders → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleDMVCategory → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleDriveType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleEngine → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleExteriorColor → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleFuelType → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleHistory → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleInteriorColor → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleMake → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleModel → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleModelNumber → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleRestraints → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleSeries → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleTransmission → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleTrim → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVin → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVinHistory → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.Doc_TXN_BulkPermissionAdd → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.Fact_ReconAging_TXN → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.Fact_TrafficManagementGoals → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactFireSummary → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactFireSummary_update → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactMSCTasks → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactMSCTasksDept → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactTrafficSummary → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactTrafficSummary_06102022 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactTrafficSummary_06132022 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactTrafficSummary_07292023 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactTrafficSummary_20230706 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactTrafficSummary_20230727 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactTrafficSummary_bk02172022 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.Facttrafficsummary_TMR_Export → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.Facttrafficsummary_TMR_Export_06142022 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactTrafficSummary_TMR_Export_1006 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.Facttrafficsummary_TMR_Export_bk02172022 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.Facttrafficsummary_TMR_Export_old 0610 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactTrafficSummary_TMR_Export_zz → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactTrafficSummaryDaily → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactTrafficSummaryDaily_07292023 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactTrafficSummaryDaily_20230706 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactTrafficSummaryDaily_20230727 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactTrafficSummaryDailyDept → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactTrafficSummarySubSource → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactTrafficSummarySubSource_05032024 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactTrafficSummarySubSource_20240404 → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactTrafficSummarySubSourcebkp → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactVehicleInventory → dbo.FactVehiclePriceChangeNotification
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactVehicleInventory → dbo.SalesTranAssociate_Outbound
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Syndicate_Floorplan_BoA_Dont_Fund
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Syndicate_Floorplan_BoA_Dont_Fund_Old
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Syndicate_Floorplan_BoA_Response
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Syndicate_Floorplan_BoA_Response_Old
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Syndicate_Floorplan_BoA_Response_Old2
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Syndicate_Floorplan_BoA_Response_tmp
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Syndicate_Floorplan_Payoff
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Syndicate_Floorplan_Payoff_Old
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Syndicate_Floorplan_Payoffs_Skip
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Syndicate_Floorplan_Payoffs_Skip_Old
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Syndicate_Floorplan_Transaction
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Syndicate_MaxPayoff
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Syndicate_MaxPayoff_History
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactVehicleInventory → dbo.Syndicate_MaxPayoff_Old
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+
+## Governance
+
+- **Last Extracted**: 2026-05-13T11:28:24.843Z
+- **Data Classification**: To be assigned
+- **Stewardship**: To be assigned
+- **Compliance**: Review for GDPR/HIPAA applicability
+- **Extractor Warnings**: Present (see Extraction Notes)

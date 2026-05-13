@@ -8,7 +8,9 @@ sensitivity: internal
 tags:
   - view
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+column_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -34,18 +36,32 @@ Metadata auto-extracted from SQL Server.
 
 
 
-CREATE view [dbo].[vwPCNBottleRocket] as 
-select 
+CREATE view [dbo].[vwPCNBottleRocket] as
+select
 	pcn.PriceChangeNotificationId
 ,convert(int,opp.meta_originaldealid) as ldealid
-, xref.VINSought		
+, xref.VINSought
 from	dbo.FactVehiclePriceChangeNotification pcn
 		inner join dbo.Dim_Entity de on pcn.entitykey = de.entitykey
-		inner join dbo.DimVehicleSoughtXref x
+		inner join dbo.DimVehicleSoughtXref xref on pcn.Meta_NaturalKey = xref.VehicleSoughtXrefKey
+		inner join dbo.FactOpportunity opp on xref.factopportunitykey = opp.factopportunitykey
+		inner join dbo.dimcustomer cus on opp.FocusCustomerKey = cus.customerkey
+where	pcn.meta_loaddate >= getdate()-2
+		and pcn.activityname = 'Price Change Decrease'
+		and pcn.pricechangeamount >= pcn.pricedecreasethreshold
+		and pcn.hasbeensent = 0
+		and pcn.activitytype = 14 -- email
+		and de.entlineofbusiness = 'EchoPark'
+		--and coalesce(cus.email1, cus.email2) is not null
+
+
+
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z
 - **Data Classification**: To be assigned
 - **Stewardship**: To be assigned

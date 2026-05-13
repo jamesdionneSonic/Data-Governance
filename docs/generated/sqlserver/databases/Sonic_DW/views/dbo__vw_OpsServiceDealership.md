@@ -8,7 +8,9 @@ sensitivity: internal
 tags:
   - view
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+column_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -24,13 +26,23 @@ Metadata auto-extracted from SQL Server.
 
 CREATE VIEW [dbo].[vw_OpsServiceDealership]
 AS
-SELECT        dbo.OpsServiceDealership.EntityKey, dbo.OpsServiceDealership.OpsReviewItemID, dbo.OpsServiceDealership.ConsecDays, dbo.vw_OpsReview.DateKey, 
-                         dbo.OpsServiceDealership.EntityType, dbo.OpsServiceDealership.TicketNumber, dbo.Dim_Entity.EntDealerLvl1, CAST(dbo.OpsReviewItem.ServiceID AS varchar(20)) 
-                         + '.' + CAST(dbo.OpsServiceDealership.EntityKey AS varchar(20)) AS ServiceEntityID, 0
+SELECT        dbo.OpsServiceDealership.EntityKey, dbo.OpsServiceDealership.OpsReviewItemID, dbo.OpsServiceDealership.ConsecDays, dbo.vw_OpsReview.DateKey,
+                         dbo.OpsServiceDealership.EntityType, dbo.OpsServiceDealership.TicketNumber, dbo.Dim_Entity.EntDealerLvl1, CAST(dbo.OpsReviewItem.ServiceID AS varchar(20))
+                         + '.' + CAST(dbo.OpsServiceDealership.EntityKey AS varchar(20)) AS ServiceEntityID, 0 AS DeleteFlag, dbo.Dim_Entity.EntLineOfBusiness,
+                         CAST(dbo.OpsReviewItem.ServiceID AS varchar(20)) + '.' + CAST(dbo.vw_OpsReview.DateKey AS varchar(20)) AS ServiceDateID, dbo.OpsReviewItem.ServiceID,
+                         CAST(dbo.OpsServiceDealership.OpsReviewItemID AS varchar(20)) + '.' + CAST(dbo.OpsServiceDealership.EntityKey AS varchar(20)) AS ItemEntityID,
+                         dbo.OpsService.ServiceName
+FROM            dbo.OpsServiceDealership INNER JOIN
+                         dbo.OpsReviewItem ON dbo.OpsServiceDealership.OpsReviewItemID = dbo.OpsReviewItem.OpsReviewItemID INNER JOIN
+                         dbo.vw_OpsReview ON dbo.OpsReviewItem.OpsReviewID = dbo.vw_OpsReview.OpsReviewID INNER JOIN
+                         dbo.Dim_Entity ON dbo.OpsServiceDealership.EntityKey = dbo.Dim_Entity.EntityKey INNER JOIN
+                         dbo.OpsService ON dbo.OpsReviewItem.ServiceID = dbo.OpsService.ServiceID
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z
 - **Data Classification**: To be assigned
 - **Stewardship**: To be assigned

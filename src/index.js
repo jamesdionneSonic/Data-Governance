@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import http from 'http';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
 // Import app factory
 import createApp, { initializeCache } from './app.js';
@@ -18,9 +17,13 @@ const SHUTDOWN_TIMEOUT_MS = Number(process.env.SHUTDOWN_TIMEOUT_MS || 10000);
 
 // Create and start Express app
 const app = createApp();
-const fileName = fileURLToPath(import.meta.url);
-const dirName = path.dirname(fileName);
-const markdownDataPath = path.resolve(dirName, '../data/markdown');
+// const fileName = fileURLToPath(import.meta.url);
+// const dirName = path.dirname(fileName);
+
+// FIX: Actually use the .env variable, and resolve it from the project root!
+const envPath = process.env.MARKDOWN_DATA_PATH || 'data/markdown';
+const markdownDataPath = path.resolve(process.cwd(), envPath);
+
 const objects = loadAllMarkdown(markdownDataPath);
 const lineageGraph = buildLineageGraph(objects);
 initializeCache(app, objects, lineageGraph);
@@ -71,7 +74,7 @@ const startServer = (port, attemptsRemaining = MAX_PORT_ATTEMPTS) => {
     activeServer = server;
     console.log(`✓ Data Governance Platform running on port ${port}`);
     console.log(`✓ Environment: ${NODE_ENV}`);
-    console.log(`✓ Meilisearch: ${process.env.MEILISEARCH_HOST || 'http://localhost:7700'}`);
+    console.log(`✓ Elasticsearch: ${process.env.ELASTICSEARCH_URL || 'https://localhost:9200'}`);
   });
 
   server.on('clientError', (err, socket) => {

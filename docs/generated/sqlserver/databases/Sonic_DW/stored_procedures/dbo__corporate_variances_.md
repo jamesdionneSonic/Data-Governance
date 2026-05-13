@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -24,9 +26,22 @@ CREATE PROC [dbo].[corporate_variances_] (@month int, @secrollupkey int,@departm
 IF NOT EXISTS (SELECT * FROM dbo.corporate_variances cv WHERE cv.[SECRollupKey] = @secrollupkey AND cv.FiscalMonthKey = @month AND cv.DepartmentKey = @departmentkey)
 BEGIN
 INSERT INTO dbo.corporate_variances (FiscalMonthKey,[SECRollupKey], DepartmentKey,Comments,meta_loaddate,approved,denied,mstr_user_input)
-VALUES (@month,@secrollupkey,@departmentkey,@
+VALUES (@month,@secrollupkey,@departmentkey,@comment,getdate(),0,0,@user)
+END
+
+ELSE
+
+BEGIN
+UPDATE dbo.corporate_variances
+SET
+    Comments = @comment, meta_loaddate = getdate(),Meta_LastUpdateDate = getdate(), denied = 0,mstr_user_input=@user
+WHERE FiscalMonthKey = @month AND [SECRollupKey] = @secrollupkey AND DepartmentKey = @departmentkey
+END
+
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

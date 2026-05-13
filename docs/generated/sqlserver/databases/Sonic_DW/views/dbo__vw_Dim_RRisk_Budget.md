@@ -8,12 +8,15 @@ sensitivity: internal
 tags:
   - view
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+column_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
 
 1- **Type**: View
+
 - **Schema**: dbo
 
 ## Definition
@@ -29,12 +32,19 @@ SELECT * FROM
         ORDER BY EntityKey ASC
     ) AS RankByAccHFMAccount
 FROM
-(SELECT        dbo.Dim_RRisk_ForecastAccounts.store_name, dbo.Dim_RRisk_ForecastAccounts.account_number_dms, dbo.Dim_RRisk_ForecastAccounts.AccountNum, dbo.Dim_RRisk_ForecastAccounts.account_description, 
-                         dbo.Dim_RRisk_ForecastAccounts.account_type
+(SELECT        dbo.Dim_RRisk_ForecastAccounts.store_name, dbo.Dim_RRisk_ForecastAccounts.account_number_dms, dbo.Dim_RRisk_ForecastAccounts.AccountNum, dbo.Dim_RRisk_ForecastAccounts.account_description,
+                         dbo.Dim_RRisk_ForecastAccounts.account_type, dbo.Dim_RRisk_ForecastAccounts.category, dbo.Dim_RRisk_ForecastAccounts.sub_category, dbo.Dim_RRisk_ForecastAccounts.brand_name,
+                         dbo.Dim_RRisk_ForecastAccounts.department, dbo.Dim_RRisk_ForecastAccounts.EntityKey, dbo.vw_Dim_Account.AccountMgmtKey, dbo.vw_Dim_Account.AccHFMAccount,
+                         CASE WHEN Department = 'NEW' THEN 2 WHEN Department = 'USED' THEN 4 WHEN Department = 'SERVICE' THEN 6 WHEN Department = 'COLLISION' THEN 5 WHEN Department = 'PARTS' THEN 7 ELSE 2 END AS DepartmentKey
+FROM            dbo.vw_Dim_Account RIGHT OUTER JOIN
+                         dbo.Dim_RRisk_ForecastAccounts ON dbo.vw_Dim_Account.EntityKey = dbo.Dim_RRisk_ForecastAccounts.EntityKey AND dbo.vw_Dim_Account.AccAccountNumber = dbo.Dim_RRisk_ForecastAccounts.account_number_dms) A1
+ ) AS R
+ WHERE RankByAccHFMAccount = 1
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z
 - **Data Classification**: To be assigned
 - **Stewardship**: To be assigned

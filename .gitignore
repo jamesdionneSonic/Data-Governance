@@ -26,3 +26,6 @@ build/
 *.log
 playwright-report/
 test-results/
+
+# Ignore generated catalog data from SQL Server
+data/markdown/sqlserver/

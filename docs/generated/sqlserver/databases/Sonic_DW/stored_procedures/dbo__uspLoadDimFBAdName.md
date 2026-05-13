@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -28,7 +30,7 @@ CREATE PROCEDURE [dbo].[uspLoadDimFBAdName] ( @MetaLoadDate varchar(100)
 AS
 BEGIN TRY
  BEGIN TRANSACTION
-	
+
 	 BEGIN
 		insert into dbo.DimFBAdName
 		(
@@ -40,9 +42,28 @@ BEGIN TRY
 		,MetaSrcSysID
 		,ETLExecutionID
 		)
-    SELECT a.*,@MetaLoadDate, @MetaComputerName,@Met
+    SELECT a.*,@MetaLoadDate, @MetaComputerName,@MetaUserId,@MetaSourceSystemName,@MetaSrcSysID,@ETLExecutionID
+	FROM (
+		Select Distinct [AdName] from ETL_Staging.stage.StgFBAdsOfflineMetrices with (nolock)
+		except
+		Select Distinct AdName from dbo.DimFBAdName  with (nolock)
+		) a;
+	END
+
+   COMMIT TRANSACTION
+END TRY
+BEGIN CATCH
+   DECLARE @Message varchar(MAX) = ERROR_MESSAGE(),
+        @Severity int = ERROR_SEVERITY(),
+        @State smallint = ERROR_STATE();
+
+   RAISERROR (@Message, @Severity, @State)
+ ROLLBACK TRANSACTION
+END CATCH
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

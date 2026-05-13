@@ -1,0 +1,1583 @@
+---
+name: FactVehiclePurchase
+database: Sonic_DW
+type: table
+schema: dbo
+owner: Data Team
+sensitivity: internal
+tags:
+  - core-schema
+depends_on:
+  - CallSourceDedupe20211221_FactRows_2
+  - ControllerPoints
+  - CustomerMatchResult
+  - CustomerMatchResult_bak
+  - Dim_Account
+  - Dim_Account_20250618
+  - Dim_Account_20250918_Clone
+  - Dim_Account_Bk
+  - Dim_Account_BKP_20250709
+  - Dim_Account_old
+  - Dim_Account_testing
+  - Dim_AccountMgmt
+  - Dim_AccountMgmtGrouping
+  - Dim_ActivityStatus
+  - Dim_Application
+  - Dim_AutoTrader
+  - Dim_CarsImpressionType
+  - Dim_CarsLeadType
+  - Dim_CarsProduct
+  - Dim_CBNumber
+  - Dim_CouponXref
+  - Dim_Customer
+  - Dim_DMSCustomer
+  - dim_dmsCustomer_bk05052022
+  - Dim_DMSCustomer_history
+  - Dim_DMSEmployee
+  - Dim_ECStatusEmail
+  - Dim_ECStatusPhone
+  - Dim_ECStatusText
+  - Dim_Entity
+  - Dim_EPTContactStatus
+  - Dim_EPTEmailURL
+  - Dim_EPTNotificationType
+  - Dim_Expense
+  - Dim_FIProduct
+  - Dim_GeoLocation
+  - dim_GLSchedule_degen
+  - dim_GLSchedule_degen_arc
+  - Dim_GLScheduleSummary_degen
+  - Dim_HFM
+  - Dim_HFMBrand
+  - Dim_Journal
+  - Dim_KeyWord
+  - Dim_LaborType
+  - Dim_LaborType_Transact
+  - Dim_LeadSource
+  - Dim_LeadStatus
+  - Dim_Lender
+  - Dim_MailCoupon
+  - Dim_MailPiece
+  - Dim_MgmtRollup
+  - Dim_OffenseLevel
+  - Dim_OpCode
+  - Dim_Operator
+  - Dim_OpportunitySource
+  - Dim_Part
+  - Dim_PricingGrid
+  - Dim_Referrer
+  - Dim_RegionalTechnologyManager
+  - Dim_Scenario
+  - Dim_SchedExceptionAccounts
+  - Dim_Schedule
+  - Dim_ScheduleException
+  - Dim_SearchPhrase
+  - Dim_SECRollup
+  - Dim_SecurityAssetClass
+  - Dim_SecurityAssetGroup
+  - Dim_SecurityModule
+  - Dim_SecurityOffense
+  - Dim_SEMCampaign
+  - Dim_Status
+  - Dim_Step
+  - Dim_StepSource
+  - Dim_StepTarget
+  - Dim_StockType
+  - Dim_Validation
+  - Dim_Vehicle
+  - dim_vehicle_20241119
+  - dim_vehicle_20241119_test
+  - dim_vehicle_20241216
+  - Dim_Vehicle_20250130
+  - dim_vehicle_bkp_20241204
+  - dim_vehicle_BKP_20241209
+  - dim_vehicle_bkp_20241212
+  - Dim_Vehicle_bkp_20241213
+  - Dim_Vehicle_bkp_20250130
+  - dim_vehicle_BKP_20250131
+  - dim_vehicle_BKP_20250203
+  - Dim_Vehicle_BKP_20250204
+  - Dim_Vehicle_BKP_20250206
+  - dim_Vehicle_bkp_20250403
+  - dim_Vehicle_bkp_20250410
+  - dim_vehicle_BKP_20250702
+  - Dim_Vehicle_new
+  - dim_vehicle_PreUpdate_20250702
+  - Dim_VehicleDetail
+  - Dim_VehicleGeneral
+  - Dim_WebPage
+  - DimActivityStatus
+  - DimActivityType
+  - DimAdSource
+  - DimAdSource_orig
+  - DimApplicationSource
+  - DimAssociate
+  - DimAssociate_0418
+  - DimAssociate_07282023
+  - DimAssociate_0816
+  - DimAssociate_914_new
+  - DimAssociate_bk_0413
+  - DimAssociate_FULL
+  - DimAssociate_newfile
+  - DimAssociate0711
+  - DimAssociate0829
+  - DimAssociate1010
+  - DimAssociate110724
+  - DimAuctionSource
+  - DimCallRevuDepartment
+  - DimCategory
+  - DimCategoryType
+  - DimCustomer
+  - DimCustomer_20250109
+  - dimcustomer_bk05052022
+  - DimDealType
+  - DimDMSCoraAccount
+  - DimDMSLegacyDealXREF
+  - DimEmployee
+  - DimEmployeeEleadDepartments
+  - DimFinanceDecision
+  - DimFinanceSource
+  - DimFocusCustomer
+  - DimGMBMetric
+  - DimIVROption
+  - DimLeadSource
+  - DimLeadSource_Backup
+  - DimLeadStatus
+  - DimLeadSubSource
+  - DimOpportunityPositionXREF
+  - DimOpportunitySource
+  - DimPurchaseMethod
+  - DimRemedyDetail
+  - DimRemedyUser
+  - DimRemedyUserGroup
+  - DimReportingSource
+  - DimResult
+  - DimReviewStatus
+  - DimService
+  - DimServiceAppointment
+  - DimServiceAppointmentDetail
+  - DimServiceAppointmentDetail_BKP
+  - DimServiceType
+  - DimSourceSystem
+  - DimStatus
+  - DimStatusType
+  - DimSurveyAuditDetail
+  - DimSurveyAuditDetail_BK_20211018
+  - DimSurveyQuestion
+  - DimTransportCompany
+  - DimVehicle
+  - DimVehicleHistory
+  - DimVehicleSought
+  - DimVehicleSoughtXref
+  - DimVehicleSoughtXref_UAT
+  - DimVehicleType
+  - DimVin
+  - DimVinHistory
+  - DimWorkflow
+  - Fact_Appointment
+  - Fact_AutoTrader
+  - Fact_AutoTraderVINLevel
+  - Fact_AutoTraderVINLevel_338_339
+  - Fact_BlackBookLeads
+  - Fact_CallBright
+  - Fact_CarsInvoice
+  - Fact_DataLoad
+  - Fact_DDCVehicleViews
+  - Fact_DQValidation
+  - Fact_GLBalances
+  - Fact_GLChecks
+  - Fact_GLSchedule
+  - Fact_GLSchedule_arc
+  - Fact_GLScheduleSummary
+  - Fact_GLScheduleSummary_bk_12_11_2023
+  - Fact_GoldDigger
+  - Fact_HFM
+  - Fact_HFM_20250619
+  - Fact_HFM_20250819
+  - Fact_HFM_20250916
+  - Fact_HFM_Backup20250819
+  - Fact_HFM_bk
+  - Fact_HFM_bk_20230630
+  - Fact_HFM_bk_20230712
+  - Fact_HFM_Budget_T5_2025
+  - Fact_HFM_Dev
+  - Fact_HFM_Dev2
+  - Fact_HFM_Dev3
+  - Fact_HFM_Dev4
+  - Fact_HFM_Snapshot
+  - Fact_HFMBudget
+  - Fact_HFMManual
+  - Fact_Inventory
+  - Fact_Jumpstart
+  - Fact_LeadBySource
+  - Fact_Merchandising
+  - Fact_PartsSalesDetail
+  - Fact_PromoMailing
+  - Fact_SecurityAwareness
+  - Fact_SecurityOffenses
+  - Fact_SEM
+  - Fact_SEO
+  - Fact_Service
+  - Fact_Service_arch
+  - Fact_Service_DISCOUNT_NOT_MATCHED
+  - Fact_ServiceDetail
+  - Fact_ServiceDetail_arch
+  - Fact_ServiceDetail_DISCOUNT_NOT_MATCHED
+  - Fact_SymantecEvents
+  - Fact_test_service
+  - Fact_Vulnerabilities
+  - Fact_WhiteHatSecurity_Event
+  - FactActivity
+  - FactActivity_0805
+  - FactCallSource
+  - FactCallSourceNew
+  - FactCBABuyerTarget
+  - FactCollisionCSI
+  - FactCSIQuarterly
+  - factFIRE
+  - factFIRE_BMWMini
+  - FactFireBookings_preDW
+  - factFIREBookingsWeOwe
+  - FactFireSummary
+  - FactFireSummary_update
+  - FactFocusBudget
+  - FactMSCTasks
+  - FactMSCTasksDept
+  - FactOpportunity
+  - FactOpportunity_0805
+  - FactOpportunity_10032023
+  - FactOpportunity_10042023
+  - FactOpportunity_20250109
+  - FactRemedy
+  - FactServiceAppointment
+  - FactServiceAppointmentDetail
+  - FactSurveyAuditDetail
+  - FactSurveyAuditDetail__BK_20211018
+  - FactTrafficSummary
+  - FactTrafficSummary_06102022
+  - FactTrafficSummary_06132022
+  - FactTrafficSummary_07292023
+  - FactTrafficSummary_20230706
+  - FactTrafficSummary_20230727
+  - FactTrafficSummary_bk02172022
+  - Facttrafficsummary_TMR_Export
+  - Facttrafficsummary_TMR_Export_06142022
+  - FactTrafficSummary_TMR_Export_1006
+  - Facttrafficsummary_TMR_Export_bk02172022
+  - Facttrafficsummary_TMR_Export_old 0610
+  - FactTrafficSummary_TMR_Export_zz
+  - FactTrafficSummaryDaily
+  - FactTrafficSummaryDaily_07292023
+  - FactTrafficSummaryDaily_20230706
+  - FactTrafficSummaryDaily_20230727
+  - FactTrafficSummaryDailyDept
+  - FactTrafficSummarySubSource
+  - FactTrafficSummarySubSource_05032024
+  - FactTrafficSummarySubSource_20240404
+  - FactTrafficSummarySubSourcebkp
+  - FactVehicleInventory
+  - FactVehiclePriceChangeNotification
+  - DimAuctionSource
+  - DimLineOfBusiness
+  - DimMarket
+  - DimPurchaseMethod
+  - DimTransportCompany
+  - FactCBABuyerTarget
+  - FactCBAMarketTarget
+row_count: 0
+size_kb: 0
+column_count: 53
+index_count: 1
+check_constraint_count: 0
+extraction_warnings:
+  - MISSING_VIEW_DATABASE_STATE
+extracted_at: 2026-05-13T11:28:24.843Z
+---
+
+## Overview
+
+Metadata auto-extracted from SQL Server.
+
+- **Type**: table
+- **Schema**: dbo
+- **Row Count**: 0
+- **Size**: 0 KB
+
+## Columns
+
+| Name                       | Type     | Nullable | Identity | Default | Description |
+| -------------------------- | -------- | -------- | -------- | ------- | ----------- |
+| `VehiclePurchaseKey`       | int      |          | ✓        |         |             |
+| `VehicleKey`               | int      |          |          |         |             |
+| `BuyerKey`                 | int      |          |          |         |             |
+| `LineOfBusinessKey`        | int      |          |          |         |             |
+| `AuctionSourceKey`         | int      |          |          |         |             |
+| `PurchaseMethodKey`        | int      |          |          |         |             |
+| `PurchasingDealerKey`      | int      |          |          |         |             |
+| `TransportationCompanyKey` | int      |          |          |         |             |
+| `ReceivingDealerKey`       | int      |          |          |         |             |
+| `MarketKey`                | int      |          |          |         |             |
+| `PurchaseDateKey`          | int      |          |          |         |             |
+| `PurchaseCount`            | int      |          |          | ((1))   |             |
+| `AuctionFee`               | decimal  |          |          | ((0))   |             |
+| `BuyFee`                   | decimal  |          |          | ((0))   |             |
+| `Cost`                     | decimal  |          |          | ((0))   |             |
+| `CPOCost`                  | decimal  |          |          | ((0))   |             |
+| `TransportCost`            | decimal  |          |          | ((0))   |             |
+| `PSIFee`                   | decimal  |          |          | ((0))   |             |
+| `MHFee`                    | decimal  |          |          | ((0))   |             |
+| `EstimatedReconCost`       | decimal  |          |          | ((0))   |             |
+| `TotalCost`                | decimal  |          |          | ((0))   |             |
+| `RetailPrice`              | decimal  |          |          | ((0))   |             |
+| `ProjectedProfit`          | decimal  |          |          | ((0))   |             |
+| `TransportAssistAmount`    | decimal  |          |          | ((0))   |             |
+| `AddSonicShieldFlag`       | bit      |          |          |         |             |
+| `SonicShieldCost`          | decimal  |          |          | ((0))   |             |
+| `MSRP`                     | decimal  | ✓        |          |         |             |
+| `AverageMMR`               | decimal  |          |          | ((0))   |             |
+| `BackOfBook`               | decimal  |          |          | ((0))   |             |
+| `MMRACV`                   | decimal  |          |          | ((0))   |             |
+| `DMVRegistrationFee`       | decimal  |          |          | ((0))   |             |
+| `NADAValue`                | decimal  |          |          | ((0))   |             |
+| `CRGrade`                  | decimal  |          |          |         |             |
+| `IsFullDeal`               | bit      |          |          |         |             |
+| `IsAuctionClosed`          | bit      | ✓        |          |         |             |
+| `IsProcessed`              | bit      |          |          |         |             |
+| `IsLive`                   | bit      | ✓        |          |         |             |
+| `IsBillOfSaleSent`         | bit      |          |          | ((0))   |             |
+| `IsDeleted`                | bit      |          |          | ((0))   |             |
+| `IsConfirmed`              | bit      |          |          |         |             |
+| `ProcessingStatusKey`      | int      |          |          |         |             |
+| `ProcessedByAssociateKey`  | int      |          |          |         |             |
+| `CreatedByAssociateKey`    | int      |          |          |         |             |
+| `ModifiedByAssociateKey`   | int      |          |          |         |             |
+| `CreatedOnDateKey`         | int      |          |          |         |             |
+| `ModifiedOnDateKey`        | int      |          |          |         |             |
+| `ConfirmedDateKey`         | int      |          |          |         |             |
+| `ETLExecution_ID`          | int      |          |          |         |             |
+| `Meta_Naturalkey`          | varchar  |          |          |         |             |
+| `Meta_RowLastChangedDate`  | datetime |          |          |         |             |
+| `Meta_ComputerName`        | varchar  |          |          |         |             |
+| `Meta_Src_System_ID`       | int      |          |          |         |             |
+| `Meta_LoadDate`            | datetime |          |          |         |             |
+
+## Constraints
+
+- **Primary Key**: Pk_FactVehiclePurchase_VehiclePurchaseKey
+  - Columns: VehiclePurchaseKey
+
+## Indexes
+
+- **Pk_FactVehiclePurchase_VehiclePurchaseKey** (CLUSTERED)
+  - Unique: Yes
+  - Primary Key: Yes
+  - Key Columns: VehiclePurchaseKey ASC
+
+## Extraction Notes
+
+- **MISSING_VIEW_DATABASE_STATE**: Missing VIEW DATABASE STATE permission. Row count and size metrics are unavailable.
+
+## Relationships
+
+### High Confidence (≥ 0.8)
+
+- **explicit_fk**: dbo.FactVehiclePurchase → dbo.Dim_Date
+  - Confidence: 100%
+  - Evidence: undefined
+  - Column: `PurchaseDateKey` → `DateKey`
+- **explicit_fk**: dbo.FactVehiclePurchase → dbo.Dim_Date
+  - Confidence: 100%
+  - Evidence: undefined
+  - Column: `CreatedOnDateKey` → `DateKey`
+- **explicit_fk**: dbo.FactVehiclePurchase → dbo.Dim_Date
+  - Confidence: 100%
+  - Evidence: undefined
+  - Column: `ModifiedOnDateKey` → `DateKey`
+- **explicit_fk**: dbo.FactVehiclePurchase → dbo.DimAuctionSource
+  - Confidence: 100%
+  - Evidence: undefined
+  - Column: `AuctionSourceKey` → `AuctionSourceKey`
+- **explicit_fk**: dbo.FactVehiclePurchase → dbo.DimLineOfBusiness
+  - Confidence: 100%
+  - Evidence: undefined
+  - Column: `LineOfBusinessKey` → `LineOfBusinessKey`
+- **explicit_fk**: dbo.FactVehiclePurchase → dbo.DimMarket
+  - Confidence: 100%
+  - Evidence: undefined
+  - Column: `MarketKey` → `MarketKey`
+- **explicit_fk**: dbo.FactVehiclePurchase → dbo.DimPurchaseMethod
+  - Confidence: 100%
+  - Evidence: undefined
+  - Column: `PurchaseMethodKey` → `PurchaseMethodKey`
+- **explicit_fk**: dbo.FactVehiclePurchase → dbo.DimTransportCompany
+  - Confidence: 100%
+  - Evidence: undefined
+  - Column: `TransportationCompanyKey` → `TransportCompanyKey`
+- **explicit_fk**: dbo.FactVehiclePurchase → dbo.DimVin
+  - Confidence: 100%
+  - Evidence: undefined
+  - Column: `VehicleKey` → `VehicleKey`
+- **column_match**: dbo.CallSourceDedupe20211221_FactRows_2 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.ControllerPoints → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.CustomerMatchResult → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.CustomerMatchResult_bak → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account_20250618 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account_20250918_Clone → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account_Bk → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account_BKP_20250709 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account_old → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account_testing → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_AccountMgmt → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_AccountMgmtGrouping → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_ActivityStatus → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Application → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_AutoTrader → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_CarsImpressionType → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_CarsLeadType → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_CarsProduct → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_CBNumber → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_CouponXref → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Customer → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_DMSCustomer → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_dmsCustomer_bk05052022 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_DMSCustomer_history → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_DMSEmployee → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_ECStatusEmail → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_ECStatusPhone → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_ECStatusText → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Entity → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_EPTContactStatus → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_EPTEmailURL → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_EPTNotificationType → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Expense → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_FIProduct → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_GeoLocation → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_id` → `ETLExecution_ID`
+- **column_match**: dbo.dim_GLSchedule_degen → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_GLSchedule_degen_arc → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_GLScheduleSummary_degen → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_HFM → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_HFMBrand → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Journal → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_KeyWord → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_LaborType → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_LaborType_Transact → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_LeadSource → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_LeadStatus → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Lender → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_MailCoupon → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_MailPiece → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_MgmtRollup → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_OffenseLevel → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_OpCode → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Operator → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_OpportunitySource → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Part → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_PricingGrid → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Referrer → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_RegionalTechnologyManager → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Scenario → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SchedExceptionAccounts → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Schedule → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_ScheduleException → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SearchPhrase → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SECRollup → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SecurityAssetClass → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SecurityAssetGroup → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SecurityModule → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SecurityOffense → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SEMCampaign → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Status → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Step → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_StepSource → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_StepTarget → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_StockType → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Validation → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_20241119 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_20241119_test → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_20241216 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle_20250130 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_bkp_20241204 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20241209 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_bkp_20241212 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle_bkp_20241213 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle_bkp_20250130 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20250131 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20250203 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle_BKP_20250204 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle_BKP_20250206 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_Vehicle_bkp_20250403 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_Vehicle_bkp_20250410 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20250702 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle_new → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_PreUpdate_20250702 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_VehicleDetail → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_VehicleGeneral → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_WebPage → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimActivityStatus → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimActivityType → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAdSource → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAdSource_orig → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimApplicationSource → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_0418 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_07282023 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_0816 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_914_new → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_bk_0413 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_FULL → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_newfile → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate0711 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate0829 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate1010 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate110724 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAuctionSource → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimCallRevuDepartment → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimCategory → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimCategoryType → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimCustomer → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimCustomer_20250109 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dimcustomer_bk05052022 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimDealType → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimDMSCoraAccount → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimDMSLegacyDealXREF → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimEmployee → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimEmployeeEleadDepartments → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimFinanceDecision → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimFinanceSource → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimFocusCustomer → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_Id` → `ETLExecution_ID`
+- **column_match**: dbo.DimGMBMetric → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_id` → `ETLExecution_ID`
+- **column_match**: dbo.DimIVROption → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimLeadSource → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimLeadSource_Backup → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimLeadStatus → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimLeadSubSource → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimOpportunityPositionXREF → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimOpportunitySource → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimPurchaseMethod → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimRemedyDetail → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimRemedyUser → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimRemedyUserGroup → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimReportingSource → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimResult → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimReviewStatus → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimService → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimServiceAppointment → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimServiceAppointmentDetail → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimServiceAppointmentDetail_BKP → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimServiceType → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimSourceSystem → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimStatus → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimStatusType → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimSurveyAuditDetail → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimSurveyAuditDetail_BK_20211018 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimSurveyQuestion → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimTransportCompany → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVehicle → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVehicleHistory → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVehicleSought → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVehicleSoughtXref → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVehicleSoughtXref_UAT → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVehicleType → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVin → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVinHistory → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimWorkflow → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Appointment → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_AutoTrader → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_AutoTraderVINLevel → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_AutoTraderVINLevel_338_339 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_BlackBookLeads → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_CallBright → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_CarsInvoice → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_DataLoad → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_DDCVehicleViews → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_DQValidation → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GLBalances → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GLChecks → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GLSchedule → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GLSchedule_arc → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GLScheduleSummary → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GLScheduleSummary_bk_12_11_2023 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GoldDigger → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_20250619 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_20250819 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_20250916 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Backup20250819 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_bk → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_bk_20230630 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_bk_20230712 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Budget_T5_2025 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Dev → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Dev2 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Dev3 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Dev4 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Snapshot → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFMBudget → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFMManual → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Inventory → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Jumpstart → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_LeadBySource → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Merchandising → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_PartsSalesDetail → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_PromoMailing → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_SecurityAwareness → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_SecurityOffenses → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_SEM → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_SEO → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Service → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Service_arch → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Service_DISCOUNT_NOT_MATCHED → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_ServiceDetail → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_ServiceDetail_arch → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_ServiceDetail_DISCOUNT_NOT_MATCHED → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_SymantecEvents → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_test_service → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Vulnerabilities → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_WhiteHatSecurity_Event → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactActivity → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactActivity_0805 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactCallSource → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactCallSourceNew → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactCBABuyerTarget → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactCollisionCSI → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactCSIQuarterly → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.factFIRE → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.factFIRE_BMWMini → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactFireBookings_preDW → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.factFIREBookingsWeOwe → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactFireSummary → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactFireSummary_update → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactFocusBudget → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_Id` → `ETLExecution_ID`
+- **column_match**: dbo.FactMSCTasks → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactMSCTasksDept → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactOpportunity → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactOpportunity_0805 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactOpportunity_10032023 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactOpportunity_10042023 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactOpportunity_20250109 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactRemedy → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactServiceAppointment → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactServiceAppointmentDetail → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactSurveyAuditDetail → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactSurveyAuditDetail\_\_BK_20211018 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_06102022 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_06132022 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_07292023 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_20230706 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_20230727 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_bk02172022 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Facttrafficsummary_TMR_Export → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Facttrafficsummary_TMR_Export_06142022 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_TMR_Export_1006 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Facttrafficsummary_TMR_Export_bk02172022 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Facttrafficsummary_TMR_Export_old 0610 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_TMR_Export_zz → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummaryDaily → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummaryDaily_07292023 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummaryDaily_20230706 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummaryDaily_20230727 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummaryDailyDept → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummarySubSource → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummarySubSource_05032024 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummarySubSource_20240404 → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummarySubSourcebkp → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehiclePriceChangeNotification → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehiclePurchase → dbo.FOCUS_Elead_ActivityTypeChange
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehiclePurchase → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehiclePurchase → dbo.GLDetail\_ MissingAcctInfo
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehiclePurchase → dbo.SalesTranAssociate_Outbound
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehiclePurchase → dbo.Sonic_Dim_CarsLeadType
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehiclePurchase → dbo.Sonic_Dim_CarsStockType
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehiclePurchase → dbo.Sonic_Dim_CarsTimeZone
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehiclePurchase → dbo.Sonic_Dim_CarsVehicleStatus
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehiclePurchase → dbo.TargetSourceRel
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehiclePurchase → dbo.testassociate
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehiclePurchase → dbo.xDim_Customer
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehiclePurchase → dbo.zzzDim_Associate
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehiclePurchase → dbo.zzzzDimAssociate
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAuctionSource → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_system_id" in both tables
+  - Column: `Meta_Src_System_ID` → `Meta_Src_System_ID`
+- **column_match**: dbo.DimLineOfBusiness → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_system_id" in both tables
+  - Column: `Meta_Src_System_ID` → `Meta_Src_System_ID`
+- **column_match**: dbo.DimMarket → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_system_id" in both tables
+  - Column: `Meta_Src_System_ID` → `Meta_Src_System_ID`
+- **column_match**: dbo.DimPurchaseMethod → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_system_id" in both tables
+  - Column: `Meta_Src_System_ID` → `Meta_Src_System_ID`
+- **column_match**: dbo.DimTransportCompany → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_system_id" in both tables
+  - Column: `Meta_Src_System_ID` → `Meta_Src_System_ID`
+- **column_match**: dbo.FactCBABuyerTarget → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_system_id" in both tables
+  - Column: `Meta_Src_System_ID` → `Meta_Src_System_ID`
+- **column_match**: dbo.FactCBAMarketTarget → dbo.FactVehiclePurchase
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_system_id" in both tables
+  - Column: `Meta_Src_System_ID` → `Meta_Src_System_ID`
+
+## Governance
+
+- **Last Extracted**: 2026-05-13T11:28:24.843Z
+- **Data Classification**: To be assigned
+- **Stewardship**: To be assigned
+- **Compliance**: Review for GDPR/HIPAA applicability
+- **Extractor Warnings**: Present (see Extraction Notes)

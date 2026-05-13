@@ -8,12 +8,15 @@ sensitivity: internal
 tags:
   - view
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+column_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
 
 1- **Type**: View
+
 - **Schema**: dbo
 
 ## Definition
@@ -25,11 +28,14 @@ SELECT     a.pbyear, a.Playbook, a.InspectionDate, a.Dealership, a.TotalScore, a
 FROM         dbo.tbl_PlayBookSummary_All_Diffwtd AS a INNER JOIN
                           (SELECT     pbyear, Playbook, Dealership, MAX(InspectionDate) AS MaxDate
                             FROM          dbo.tbl_PlayBookSummary_All_Diffwtd AS b
-                         
+                            GROUP BY pbyear, Playbook, Dealership) AS c ON c.pbyear = a.pbyear AND c.Playbook = a.Playbook AND c.Dealership = a.Dealership AND
+                      c.MaxDate = a.InspectionDate
+WHERE     (a.pbyear <> N'Diff')
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z
 - **Data Classification**: To be assigned
 - **Stewardship**: To be assigned

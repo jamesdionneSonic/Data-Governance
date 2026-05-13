@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - function
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -33,9 +35,17 @@ BEGIN
 	SET @tpid = @tpid + SUBSTRING(@charid, 23, 2)
 	SET @tpid = @tpid + SUBSTRING(@charid, 21, 2) + '-'
 	SET @tpid = @tpid + SUBSTRING(@charid, 19, 2)
-	SET @tpid = @tpid + SUBSTR
+	SET @tpid = @tpid + SUBSTRING(@charid, 17, 2)
+	SET @tpid = @tpid + SUBSTRING(@charid, 31, 2)
+	SET @tpid = @tpid + SUBSTRING(@charid, 29, 2)
+	SET @tpid = @tpid + SUBSTRING(@charid, 27, 2)
+	SET @tpid = @tpid + SUBSTRING(@charid, 25, 2)
+	SET @uid = CAST(@tpid AS UNIQUEIDENTIFIER)
+	RETURN @uid
+END
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

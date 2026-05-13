@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -42,8 +44,45 @@ AS
 		City
 		,EntityKey
 		,EntDealerLvl1
+		,TransactionDate
+		,AudienceType
+		,LoadStatus
+		,ErrorCode
+		,MetaDataDate
+		,MetaLoadDate
+		,MetaComputerName
+		,MetaUserId
+		,MetaSourceSystemName
+		,MetaSrcSysID
+		,ETLExecutionID
+		)
+	SELECT S.AudienceID
+		,S.CustomerID
+		,S.FirstName
+		,S.LastName
+		,S.Email
+		,S.PhoneNumber
+		,S.ZipCode
+		,S.City
+		,S.EntityKey
+		,S.EntDealerLvl1
+		,S.TransactionDate
+		,S.AudienceType
+		,S.STATUS
+		,S.ErrorStatus
+		,@MetaDataDate
+		,MetaLoadDate
+		,@MetaComputerName
+		,@MetaUserId
+		,@MetaSourceSystemName
+		,@MetaSourceSystemID
+		,@ETLExecutionID
+	FROM ETL_Staging.[dbo].[StgFBAudienceEquityCustomers] AS S;
+END;
+--END of SP
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

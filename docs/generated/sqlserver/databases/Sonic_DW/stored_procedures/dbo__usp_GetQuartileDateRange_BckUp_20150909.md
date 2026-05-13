@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -22,14 +24,14 @@ Metadata auto-extracted from SQL Server.
 ```sql
 CREATE PROCEDURE [dbo].[usp_GetQuartileDateRange] (
  @st DATETIME
- ,@en DATETIME 
+ ,@en DATETIME
  )
 
 /*
-======================== 
+========================
 Author : Amrendra Kumar
 Date : 22 Jul 2015
-Remarks : To get the MTD extraction date range for the Quartile report ETL 
+Remarks : To get the MTD extraction date range for the Quartile report ETL
 ========================
 */
 AS
@@ -40,9 +42,30 @@ select min(st) st,en,month(DATEADD(mm, DATEDIFF(m, 0, st) , 0)) mnt,year(DATEADD
 from
 (
 
-select DATEADD(mm, DATEDIFF(m, 0, st) , 0) st,DATEADD(mm, DATEDIFF
+select DATEADD(mm, DATEDIFF(m, 0, st) , 0) st,DATEADD(mm, DATEDIFF(m, 0, st) , 0)+14 as en
+from
+(
+  select  min(FullDate) st,max(FullDate) en from dim_date
+  where FullDate between @st and @en
+  group by month(FullDate),year(FullDate)
+
+)OK1
+union  all
+select DATEADD(mm, DATEDIFF(m, 0, st) , 0) st,en
+from
+(
+  select  min(FullDate) st,max(FullDate) en from dim_date
+  where FullDate between @st and @en
+  group by month(FullDate),year(FullDate)
+
+)OK
+)OK1
+group by en,month(DATEADD(mm, DATEDIFF(m, 0, st) , 0)) ,year(DATEADD(mm, DATEDIFF(m, 0, st) , 0))
+)OK2
+where en>=@st and en <=@en
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -26,7 +28,7 @@ Metadata auto-extracted from SQL Server.
 -- Description:	<Description,,>
 -- =============================================
 CREATE PROCEDURE [dbo].[uspFloorPlanMaxPayoff]
-	@MaxPayoffStockType varchar(10), 
+	@MaxPayoffStockType varchar(10),
 	@MaxPayoffAmount numeric(18,0),
 	@Meta_UserID varchar(50)
 AS
@@ -36,9 +38,44 @@ BEGIN
 	SET NOCOUNT ON;
 
 	CREATE TABLE #MaxTemp (
-		M
+		MaxPayoffStockType varchar(10),
+		MaxPayoffAmount numeric(18,0),
+		Meta_UserID varchar(50),
+	);
+
+	BEGIN
+		INSERT INTO #MaxTemp
+		(MaxPayoffStockType,
+		MaxPayoffAmount,
+		Meta_UserID)
+		SELECT
+		@MaxPayoffStockType,
+		@MaxPayoffAmount,
+		@Meta_UserID
+	END
+
+
+	MERGE [dbo].[Syndicate_MaxPayoff] AS T
+	USING #MaxTemp AS S
+	ON (T.MaxPayoffStockType = S.MaxPayoffStockType)
+	WHEN MATCHED THEN
+	UPDATE SET
+           [MaxPayoffAmount] = S.MaxPayoffAmount
+           ,[Meta_UserID] = S.Meta_UserID
+    WHEN NOT MATCHED BY TARGET
+	THEN INSERT
+		(MaxPayoffStockType,
+		MaxPayoffAmount,
+		Meta_UserID)
+	VALUES
+		(S.MaxPayoffStockType,
+		S.MaxPayoffAmount,
+		S.Meta_UserID);
+
+END
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

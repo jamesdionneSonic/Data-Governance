@@ -1,0 +1,1829 @@
+---
+name: FOCUS_Elead_ActivityTypeChange_UAT
+database: Sonic_DW
+type: table
+schema: dbo
+owner: Data Team
+sensitivity: internal
+tags:
+  - core-schema
+depends_on:
+  - CallSourceDedupe20211221_FactRows_2
+  - ControllerPoints
+  - CustomerMatchResult
+  - CustomerMatchResult_bak
+  - Dim_Account
+  - Dim_Account_20250618
+  - Dim_Account_20250918_Clone
+  - Dim_Account_Bk
+  - Dim_Account_BKP_20250709
+  - Dim_Account_old
+  - Dim_Account_testing
+  - Dim_AccountMgmt
+  - Dim_AccountMgmtGrouping
+  - Dim_ActivityStatus
+  - Dim_Application
+  - Dim_AutoTrader
+  - Dim_CarsImpressionType
+  - Dim_CarsLeadType
+  - Dim_CarsProduct
+  - Dim_CBNumber
+  - Dim_CouponXref
+  - Dim_Customer
+  - Dim_DMSCustomer
+  - dim_dmsCustomer_bk05052022
+  - Dim_DMSCustomer_history
+  - Dim_DMSEmployee
+  - Dim_ECStatusEmail
+  - Dim_ECStatusPhone
+  - Dim_ECStatusText
+  - Dim_Entity
+  - Dim_EPTContactStatus
+  - Dim_EPTEmailURL
+  - Dim_EPTNotificationType
+  - Dim_Expense
+  - Dim_FIProduct
+  - Dim_GeoLocation
+  - dim_GLSchedule_degen
+  - dim_GLSchedule_degen_arc
+  - Dim_GLScheduleSummary_degen
+  - Dim_HFM
+  - Dim_HFMBrand
+  - Dim_Journal
+  - Dim_KeyWord
+  - Dim_LaborType
+  - Dim_LaborType_Transact
+  - Dim_LeadSource
+  - Dim_LeadStatus
+  - Dim_Lender
+  - Dim_MailCoupon
+  - Dim_MailPiece
+  - Dim_MgmtRollup
+  - Dim_OffenseLevel
+  - Dim_OpCode
+  - Dim_Operator
+  - Dim_OpportunitySource
+  - Dim_Part
+  - Dim_PricingGrid
+  - Dim_Referrer
+  - Dim_RegionalTechnologyManager
+  - Dim_Scenario
+  - Dim_SchedExceptionAccounts
+  - Dim_Schedule
+  - Dim_ScheduleException
+  - Dim_SearchPhrase
+  - Dim_SECRollup
+  - Dim_SecurityAssetClass
+  - Dim_SecurityAssetGroup
+  - Dim_SecurityModule
+  - Dim_SecurityOffense
+  - Dim_SEMCampaign
+  - Dim_Status
+  - Dim_Step
+  - Dim_StepSource
+  - Dim_StepTarget
+  - Dim_StockType
+  - Dim_Validation
+  - Dim_Vehicle
+  - dim_vehicle_20241119
+  - dim_vehicle_20241119_test
+  - dim_vehicle_20241216
+  - Dim_Vehicle_20250130
+  - dim_vehicle_bkp_20241204
+  - dim_vehicle_BKP_20241209
+  - dim_vehicle_bkp_20241212
+  - Dim_Vehicle_bkp_20241213
+  - Dim_Vehicle_bkp_20250130
+  - dim_vehicle_BKP_20250131
+  - dim_vehicle_BKP_20250203
+  - Dim_Vehicle_BKP_20250204
+  - Dim_Vehicle_BKP_20250206
+  - dim_Vehicle_bkp_20250403
+  - dim_Vehicle_bkp_20250410
+  - dim_vehicle_BKP_20250702
+  - Dim_Vehicle_new
+  - dim_vehicle_PreUpdate_20250702
+  - Dim_VehicleDetail
+  - Dim_VehicleGeneral
+  - Dim_WebPage
+  - DimActivityStatus
+  - DimActivityType
+  - DimAdSource
+  - DimAdSource_orig
+  - DimApplicationSource
+  - DimAssociate
+  - DimAssociate_0418
+  - DimAssociate_07282023
+  - DimAssociate_0816
+  - DimAssociate_914_new
+  - DimAssociate_bk_0413
+  - DimAssociate_FULL
+  - DimAssociate_newfile
+  - DimAssociate0711
+  - DimAssociate0829
+  - DimAssociate1010
+  - DimAssociate110724
+  - DimAuctionSource
+  - DimCallRevuDepartment
+  - DimCategory
+  - DimCategoryType
+  - DimCustomer
+  - DimCustomer_20250109
+  - dimcustomer_bk05052022
+  - DimDealType
+  - DimDMSCoraAccount
+  - DimDMSLegacyDealXREF
+  - DimEmployee
+  - DimEmployeeEleadDepartments
+  - DimFinanceDecision
+  - DimFinanceSource
+  - DimFocusCustomer
+  - DimGMBMetric
+  - DimIVROption
+  - DimLeadSource
+  - DimLeadSource_Backup
+  - DimLeadStatus
+  - DimLeadSubSource
+  - DimOpportunityPositionXREF
+  - DimOpportunitySource
+  - DimPurchaseMethod
+  - DimRemedyDetail
+  - DimRemedyUser
+  - DimRemedyUserGroup
+  - DimReportingSource
+  - DimResult
+  - DimReviewStatus
+  - DimService
+  - DimServiceAppointment
+  - DimServiceAppointmentDetail
+  - DimServiceAppointmentDetail_BKP
+  - DimServiceType
+  - DimSourceSystem
+  - DimStatus
+  - DimStatusType
+  - DimSurveyAuditDetail
+  - DimSurveyAuditDetail_BK_20211018
+  - DimSurveyQuestion
+  - DimTransportCompany
+  - DimVehicle
+  - DimVehicleHistory
+  - DimVehicleSought
+  - DimVehicleSoughtXref
+  - DimVehicleSoughtXref_UAT
+  - DimVehicleType
+  - DimVin
+  - DimVinHistory
+  - DimWorkflow
+  - Fact_Appointment
+  - Fact_AutoTrader
+  - Fact_AutoTraderVINLevel
+  - Fact_AutoTraderVINLevel_338_339
+  - Fact_BlackBookLeads
+  - Fact_CallBright
+  - Fact_CarsInvoice
+  - Fact_DataLoad
+  - Fact_DDCVehicleViews
+  - Fact_DQValidation
+  - Fact_GLBalances
+  - Fact_GLChecks
+  - Fact_GLSchedule
+  - Fact_GLSchedule_arc
+  - Fact_GLScheduleSummary
+  - Fact_GLScheduleSummary_bk_12_11_2023
+  - Fact_GoldDigger
+  - Fact_HFM
+  - Fact_HFM_20250619
+  - Fact_HFM_20250819
+  - Fact_HFM_20250916
+  - Fact_HFM_Backup20250819
+  - Fact_HFM_bk
+  - Fact_HFM_bk_20230630
+  - Fact_HFM_bk_20230712
+  - Fact_HFM_Budget_T5_2025
+  - Fact_HFM_Dev
+  - Fact_HFM_Dev2
+  - Fact_HFM_Dev3
+  - Fact_HFM_Dev4
+  - Fact_HFM_Snapshot
+  - Fact_HFMBudget
+  - Fact_HFMManual
+  - Fact_Inventory
+  - Fact_Jumpstart
+  - Fact_LeadBySource
+  - Fact_Merchandising
+  - Fact_PartsSalesDetail
+  - Fact_PromoMailing
+  - Fact_SecurityAwareness
+  - Fact_SecurityOffenses
+  - Fact_SEM
+  - Fact_SEO
+  - Fact_Service
+  - Fact_Service_arch
+  - Fact_Service_DISCOUNT_NOT_MATCHED
+  - Fact_ServiceDetail
+  - Fact_ServiceDetail_arch
+  - Fact_ServiceDetail_DISCOUNT_NOT_MATCHED
+  - Fact_SymantecEvents
+  - Fact_test_service
+  - Fact_Vulnerabilities
+  - Fact_WhiteHatSecurity_Event
+  - FactActivity
+  - FactActivity_0805
+  - FactCallSource
+  - FactCallSourceNew
+  - FactCBABuyerTarget
+  - FactCollisionCSI
+  - FactCSIQuarterly
+  - factFIRE
+  - factFIRE_BMWMini
+  - FactFireBookings_preDW
+  - factFIREBookingsWeOwe
+  - FactFireSummary
+  - FactFireSummary_update
+  - FactFocusBudget
+  - FactMSCTasks
+  - FactMSCTasksDept
+  - FactOpportunity
+  - FactOpportunity_0805
+  - FactOpportunity_10032023
+  - FactOpportunity_10042023
+  - FactOpportunity_20250109
+  - FactRemedy
+  - FactServiceAppointment
+  - FactServiceAppointmentDetail
+  - FactSurveyAuditDetail
+  - FactSurveyAuditDetail__BK_20211018
+  - FactTrafficSummary
+  - FactTrafficSummary_06102022
+  - FactTrafficSummary_06132022
+  - FactTrafficSummary_07292023
+  - FactTrafficSummary_20230706
+  - FactTrafficSummary_20230727
+  - FactTrafficSummary_bk02172022
+  - Facttrafficsummary_TMR_Export
+  - Facttrafficsummary_TMR_Export_06142022
+  - FactTrafficSummary_TMR_Export_1006
+  - Facttrafficsummary_TMR_Export_bk02172022
+  - Facttrafficsummary_TMR_Export_old 0610
+  - FactTrafficSummary_TMR_Export_zz
+  - FactTrafficSummaryDaily
+  - FactTrafficSummaryDaily_07292023
+  - FactTrafficSummaryDaily_20230706
+  - FactTrafficSummaryDaily_20230727
+  - FactTrafficSummaryDailyDept
+  - FactTrafficSummarySubSource
+  - FactTrafficSummarySubSource_05032024
+  - FactTrafficSummarySubSource_20240404
+  - FactTrafficSummarySubSourcebkp
+  - FactVehicleInventory
+  - FactVehiclePriceChangeNotification
+  - FactVehiclePurchase
+  - FOCUS_Elead_ActivityTypeChange
+  - Dim_ActivityStatus
+  - Dim_Application
+  - Dim_AutoTrader
+  - Dim_EPTContactStatus
+  - Dim_EPTEmailURL
+  - Dim_HFM
+  - Dim_HFMBrand
+  - Dim_KeyWord
+  - Dim_LeadStatus
+  - Dim_OffenseLevel
+  - Dim_Operator
+  - Dim_OpportunitySource
+  - Dim_Referrer
+  - Dim_SearchPhrase
+  - Dim_SecurityAssetClass
+  - Dim_SecurityAssetGroup
+  - Dim_SecurityModule
+  - Dim_SecurityOffense
+  - Dim_SEMCampaign
+  - Dim_StockType
+  - Dim_VehicleSought
+  - Dim_WebPage
+  - DimActivityStatus
+  - DimActivityType
+  - DimAssociate
+  - DimAssociate_0418
+  - DimAssociate_07282023
+  - DimAssociate_0816
+  - DimAssociate_914_new
+  - DimAssociate_bk_0413
+  - DimAssociate_FULL
+  - DimAssociate_newfile
+  - DimAssociate0711
+  - DimAssociate0829
+  - DimAssociate1010
+  - DimAssociate110724
+  - DimDealType
+  - DimDMSLegacyDealXREF
+  - DimFocusCustomer
+  - DimLeadSource
+  - DimLeadSource_Backup
+  - DimLeadStatus
+  - DimLeadSubSource
+  - DimOpportunityPositionXREF
+  - DimOpportunitySource
+  - DimPosition
+  - DimSourceSystem
+  - DimUpType
+  - DimVehicleSought
+  - DimVehicleSoughtXref
+  - DimVehicleSoughtXref_UAT
+  - DimWorkflow
+  - FactActivity
+  - FactActivity_0805
+  - FactFocusBudget
+  - FactOpportunity
+  - FactOpportunity_0805
+  - FactOpportunity_10032023
+  - FactOpportunity_10042023
+  - FactOpportunity_20250109
+  - FOCUS_Elead_ActivityTypeChange
+row_count: 0
+size_kb: 0
+column_count: 67
+index_count: 0
+check_constraint_count: 0
+extraction_warnings:
+  - MISSING_VIEW_DATABASE_STATE
+extracted_at: 2026-05-13T11:28:24.843Z
+---
+
+## Overview
+
+Metadata auto-extracted from SQL Server.
+
+- **Type**: table
+- **Schema**: dbo
+- **Row Count**: 0
+- **Size**: 0 KB
+
+## Columns
+
+| Name                             | Type      | Nullable | Identity | Default | Description |
+| -------------------------------- | --------- | -------- | -------- | ------- | ----------- |
+| `FactActivityKey`                | bigint    |          |          |         |             |
+| `EntityKey`                      | int       |          |          |         |             |
+| `LeadStatusKey`                  | int       |          |          |         |             |
+| `CreatedOnDateKey`               | int       |          |          |         |             |
+| `CreatedOnTimeKey`               | int       |          |          |         |             |
+| `SourceKey`                      | int       |          |          |         |             |
+| `OpportunityNaturalKey`          | varchar   |          |          |         |             |
+| `OpportunityCreatedOnDateKey`    | int       |          |          |         |             |
+| `CreatedByKey`                   | int       |          |          |         |             |
+| `ActivityTypeKey`                | int       |          |          |         |             |
+| `WorkflowKey`                    | int       |          |          |         |             |
+| `ActivityStatusKey`              | int       |          |          |         |             |
+| `ScheduledStartTimeKey`          | int       |          |          |         |             |
+| `ScheduledEndTimeKey`            | int       |          |          |         |             |
+| `ActualStartTimeKey`             | int       |          |          |         |             |
+| `ActualEndDateKey`               | int       |          |          |         |             |
+| `ActualEndTimeKey`               | int       |          |          |         |             |
+| `ModifiedOnDateKey`              | int       |          |          |         |             |
+| `NextActivityDateDueKey`         | int       |          |          |         |             |
+| `ScheduledStartDateKey`          | int       |          |          |         |             |
+| `ActualStartDateKey`             | int       |          |          |         |             |
+| `ScheduledEndDateKey`            | int       |          |          |         |             |
+| `ScheduledByKey`                 | int       |          |          |         |             |
+| `ConfirmedByKey`                 | int       |          |          |         |             |
+| `CompletedByKey`                 | int       |          |          |         |             |
+| `ModifiedByKey`                  | int       |          |          |         |             |
+| `ModifiedOnBehalfByKey`          | int       |          |          |         |             |
+| `CreatedOnBehalfBykey`           | int       |          |          |         |             |
+| `VehicleKey`                     | int       |          |          |         |             |
+| `ActivityCount`                  | int       |          |          |         |             |
+| `ActualDurationMinutes`          | int       | ✓        |          |         |             |
+| `AccessoriesPresentedFlag`       | smallint  | ✓        |          |         |             |
+| `ActivityIsPartOfProcessFlag`    | smallint  | ✓        |          |         |             |
+| `AppointmentMadeFlag`            | smallint  | ✓        |          |         |             |
+| `AppraisalCompletedFlag`         | smallint  | ✓        |          |         |             |
+| `ActivityAttemptedFlag`          | smallint  | ✓        |          |         |             |
+| `ActivityAutoClosedFlag`         | smallint  | ✓        |          |         |             |
+| `BypassFollowupFlag`             | smallint  | ✓        |          |         |             |
+| `CallCenterFlag`                 | smallint  | ✓        |          |         |             |
+| `ConfirmationSentFlag`           | smallint  | ✓        |          |         |             |
+| `ConfirmedFlag`                  | smallint  | ✓        |          |         |             |
+| `ContactSinceFlag`               | smallint  | ✓        |          |         |             |
+| `CreateNextActivityFlag`         | smallint  | ✓        |          |         |             |
+| `DemoFlag`                       | smallint  | ✓        |          |         |             |
+| `ESalesFlag`                     | smallint  | ✓        |          |         |             |
+| `IsAutomatedFlag`                | smallint  | ✓        |          |         |             |
+| `LifestyleProductsPresentedFlag` | smallint  | ✓        |          |         |             |
+| `MetManagerFlag`                 | smallint  | ✓        |          |         |             |
+| `SIMSReserveVehicleFlag`         | smallint  | ✓        |          |         |             |
+| `StopWorkflowFlag`               | smallint  | ✓        |          |         |             |
+| `WriteUpFlag`                    | smallint  | ✓        |          |         |             |
+| `Meta_ComputerName`              | varchar   |          |          |         |             |
+| `Meta_LoadDate`                  | datetime2 | ✓        |          |         |             |
+| `Meta_AuditScore`                | int       | ✓        |          |         |             |
+| `Meta_SrcSysID`                  | int       | ✓        |          |         |             |
+| `Meta_SourceSystemName`          | varchar   | ✓        |          |         |             |
+| `Meta_RowEffectiveDate`          | datetime2 | ✓        |          |         |             |
+| `Meta_RowExpiredDate`            | datetime2 | ✓        |          |         |             |
+| `Meta_RowIsCurrent`              | char      | ✓        |          |         |             |
+| `Meta_RowLastChangedDate`        | datetime2 | ✓        |          |         |             |
+| `Meta_NaturalKey`                | varchar   | ✓        |          |         |             |
+| `Meta_Checksum`                  | int       | ✓        |          |         |             |
+| `ETLExecution_ID`                | int       |          |          |         |             |
+| `ScribeDeletedOn`                | datetime2 | ✓        |          |         |             |
+| `FactOpportunityKey`             | bigint    | ✓        |          |         |             |
+| `OldActivityTypeKey`             | int       | ✓        |          |         |             |
+| `OwnedByKey`                     | int       | ✓        |          |         |             |
+
+## Extraction Notes
+
+- **MISSING_VIEW_DATABASE_STATE**: Missing VIEW DATABASE STATE permission. Row count and size metrics are unavailable.
+
+## Relationships
+
+### High Confidence (≥ 0.8)
+
+- **column_match**: dbo.CallSourceDedupe20211221_FactRows_2 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.ControllerPoints → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.CustomerMatchResult → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.CustomerMatchResult_bak → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account_20250618 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account_20250918_Clone → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account_Bk → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account_BKP_20250709 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account_old → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Account_testing → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_AccountMgmt → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_AccountMgmtGrouping → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_ActivityStatus → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Application → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_AutoTrader → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_CarsImpressionType → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_CarsLeadType → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_CarsProduct → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_CBNumber → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_CouponXref → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Customer → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_DMSCustomer → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_dmsCustomer_bk05052022 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_DMSCustomer_history → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_DMSEmployee → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_ECStatusEmail → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_ECStatusPhone → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_ECStatusText → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Entity → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_EPTContactStatus → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_EPTEmailURL → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_EPTNotificationType → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Expense → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_FIProduct → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_GeoLocation → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_id` → `ETLExecution_ID`
+- **column_match**: dbo.dim_GLSchedule_degen → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_GLSchedule_degen_arc → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_GLScheduleSummary_degen → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_HFM → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_HFMBrand → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Journal → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_KeyWord → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_LaborType → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_LaborType_Transact → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_LeadSource → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_LeadStatus → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Lender → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_MailCoupon → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_MailPiece → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_MgmtRollup → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_OffenseLevel → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_OpCode → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Operator → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_OpportunitySource → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Part → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_PricingGrid → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Referrer → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_RegionalTechnologyManager → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Scenario → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SchedExceptionAccounts → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Schedule → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_ScheduleException → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SearchPhrase → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SECRollup → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SecurityAssetClass → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SecurityAssetGroup → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SecurityModule → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SecurityOffense → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_SEMCampaign → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Status → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Step → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_StepSource → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_StepTarget → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_StockType → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Validation → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_20241119 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_20241119_test → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_20241216 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle_20250130 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_bkp_20241204 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20241209 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_bkp_20241212 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle_bkp_20241213 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle_bkp_20250130 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20250131 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20250203 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle_BKP_20250204 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle_BKP_20250206 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_Vehicle_bkp_20250403 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_Vehicle_bkp_20250410 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20250702 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_Vehicle_new → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dim_vehicle_PreUpdate_20250702 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_VehicleDetail → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_VehicleGeneral → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_WebPage → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimActivityStatus → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimActivityType → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAdSource → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAdSource_orig → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimApplicationSource → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_0418 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_07282023 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_0816 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_914_new → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_bk_0413 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_FULL → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate_newfile → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate0711 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate0829 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate1010 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAssociate110724 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimAuctionSource → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimCallRevuDepartment → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimCategory → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimCategoryType → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimCustomer → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimCustomer_20250109 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.dimcustomer_bk05052022 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimDealType → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimDMSCoraAccount → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimDMSLegacyDealXREF → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimEmployee → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimEmployeeEleadDepartments → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimFinanceDecision → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimFinanceSource → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimFocusCustomer → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_Id` → `ETLExecution_ID`
+- **column_match**: dbo.DimGMBMetric → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_id` → `ETLExecution_ID`
+- **column_match**: dbo.DimIVROption → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimLeadSource → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimLeadSource_Backup → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimLeadStatus → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimLeadSubSource → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimOpportunityPositionXREF → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimOpportunitySource → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimPurchaseMethod → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimRemedyDetail → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimRemedyUser → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimRemedyUserGroup → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimReportingSource → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimResult → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimReviewStatus → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimService → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimServiceAppointment → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimServiceAppointmentDetail → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimServiceAppointmentDetail_BKP → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimServiceType → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimSourceSystem → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimStatus → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimStatusType → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimSurveyAuditDetail → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimSurveyAuditDetail_BK_20211018 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimSurveyQuestion → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimTransportCompany → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVehicle → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVehicleHistory → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVehicleSought → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVehicleSoughtXref → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVehicleSoughtXref_UAT → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVehicleType → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVin → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimVinHistory → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.DimWorkflow → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Appointment → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_AutoTrader → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_AutoTraderVINLevel → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_AutoTraderVINLevel_338_339 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_BlackBookLeads → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_CallBright → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_CarsInvoice → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_DataLoad → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_DDCVehicleViews → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_DQValidation → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GLBalances → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GLChecks → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GLSchedule → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GLSchedule_arc → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GLScheduleSummary → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GLScheduleSummary_bk_12_11_2023 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_GoldDigger → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_20250619 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_20250819 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_20250916 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Backup20250819 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_bk → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_bk_20230630 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_bk_20230712 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Budget_T5_2025 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Dev → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Dev2 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Dev3 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Dev4 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFM_Snapshot → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFMBudget → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_HFMManual → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Inventory → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Jumpstart → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_LeadBySource → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Merchandising → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_PartsSalesDetail → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_PromoMailing → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_SecurityAwareness → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_SecurityOffenses → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_SEM → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_SEO → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Service → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Service_arch → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Service_DISCOUNT_NOT_MATCHED → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_ServiceDetail → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_ServiceDetail_arch → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_ServiceDetail_DISCOUNT_NOT_MATCHED → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_SymantecEvents → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_test_service → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_Vulnerabilities → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Fact_WhiteHatSecurity_Event → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactActivity → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactActivity_0805 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactCallSource → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactCallSourceNew → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactCBABuyerTarget → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactCollisionCSI → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactCSIQuarterly → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.factFIRE → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.factFIRE_BMWMini → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactFireBookings_preDW → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.factFIREBookingsWeOwe → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactFireSummary → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactFireSummary_update → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactFocusBudget → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_Id` → `ETLExecution_ID`
+- **column_match**: dbo.FactMSCTasks → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactMSCTasksDept → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactOpportunity → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactOpportunity_0805 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactOpportunity_10032023 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactOpportunity_10042023 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactOpportunity_20250109 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactRemedy → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactServiceAppointment → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactServiceAppointmentDetail → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactSurveyAuditDetail → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactSurveyAuditDetail\_\_BK_20211018 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_06102022 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_06132022 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_07292023 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_20230706 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_20230727 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_bk02172022 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Facttrafficsummary_TMR_Export → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Facttrafficsummary_TMR_Export_06142022 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_TMR_Export_1006 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Facttrafficsummary_TMR_Export_bk02172022 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Facttrafficsummary_TMR_Export_old 0610 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummary_TMR_Export_zz → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummaryDaily → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummaryDaily_07292023 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummaryDaily_20230706 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummaryDaily_20230727 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummaryDailyDept → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummarySubSource → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummarySubSource_05032024 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummarySubSource_20240404 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactTrafficSummarySubSourcebkp → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehicleInventory → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehiclePriceChangeNotification → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FactVehiclePurchase → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FOCUS_Elead_ActivityTypeChange → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FOCUS*Elead_ActivityTypeChange_UAT → dbo.GLDetail* MissingAcctInfo
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FOCUS_Elead_ActivityTypeChange_UAT → dbo.SalesTranAssociate_Outbound
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FOCUS_Elead_ActivityTypeChange_UAT → dbo.Sonic_Dim_CarsLeadType
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FOCUS_Elead_ActivityTypeChange_UAT → dbo.Sonic_Dim_CarsStockType
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FOCUS_Elead_ActivityTypeChange_UAT → dbo.Sonic_Dim_CarsTimeZone
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FOCUS_Elead_ActivityTypeChange_UAT → dbo.Sonic_Dim_CarsVehicleStatus
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FOCUS_Elead_ActivityTypeChange_UAT → dbo.TargetSourceRel
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FOCUS_Elead_ActivityTypeChange_UAT → dbo.testassociate
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FOCUS_Elead_ActivityTypeChange_UAT → dbo.xDim_Customer
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FOCUS_Elead_ActivityTypeChange_UAT → dbo.zzzDim_Associate
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.FOCUS_Elead_ActivityTypeChange_UAT → dbo.zzzzDimAssociate
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecution_id" in both tables
+  - Column: `ETLExecution_ID` → `ETLExecution_ID`
+- **column_match**: dbo.Dim_ActivityStatus → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_Application → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_AutoTrader → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_EPTContactStatus → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_EPTEmailURL → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_HFM → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_HFMBrand → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_KeyWord → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_LeadStatus → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_OffenseLevel → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_Operator → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_OpportunitySource → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_Referrer → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_SearchPhrase → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_SecurityAssetClass → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_SecurityAssetGroup → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_SecurityModule → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_SecurityOffense → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_SEMCampaign → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_StockType → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_VehicleSought → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.Dim_WebPage → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimActivityStatus → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimActivityType → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimAssociate → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimAssociate_0418 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimAssociate_07282023 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimAssociate_0816 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimAssociate_914_new → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimAssociate_bk_0413 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimAssociate_FULL → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimAssociate_newfile → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimAssociate0711 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimAssociate0829 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimAssociate1010 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimAssociate110724 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimDealType → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimDMSLegacyDealXREF → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimFocusCustomer → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimLeadSource → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimLeadSource_Backup → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimLeadStatus → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimLeadSubSource → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimOpportunityPositionXREF → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimOpportunitySource → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimPosition → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimSourceSystem → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimUpType → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimVehicleSought → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimVehicleSoughtXref → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimVehicleSoughtXref_UAT → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.DimWorkflow → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.FactActivity → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.FactActivity_0805 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.FactFocusBudget → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.FactOpportunity → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.FactOpportunity_0805 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.FactOpportunity_10032023 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.FactOpportunity_10042023 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.FactOpportunity_20250109 → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.FOCUS_Elead_ActivityTypeChange → dbo.FOCUS_Elead_ActivityTypeChange_UAT
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.FOCUS_Elead_ActivityTypeChange_UAT → dbo.testassociate
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+- **column_match**: dbo.FOCUS_Elead_ActivityTypeChange_UAT → dbo.zzzzDimAssociate
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_srcsysid" in both tables
+  - Column: `Meta_SrcSysID` → `Meta_SrcSysID`
+
+## Governance
+
+- **Last Extracted**: 2026-05-13T11:28:24.843Z
+- **Data Classification**: To be assigned
+- **Stewardship**: To be assigned
+- **Compliance**: Review for GDPR/HIPAA applicability
+- **Extractor Warnings**: Present (see Extraction Notes)

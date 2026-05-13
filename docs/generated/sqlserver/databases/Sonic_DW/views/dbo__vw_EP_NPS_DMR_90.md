@@ -8,12 +8,15 @@ sensitivity: internal
 tags:
   - view
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+column_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
 
 1- **Type**: View
+
 - **Schema**: dbo
 
 ## Definition
@@ -34,11 +37,26 @@ select e.entdealerlvl1 Dealership
 		, SUM(CASE WHEN a.QuestionAnswer > 8 THEN 1 ELSE 0 END) AS Promoters
 		, count(*) AS Answercount
 from sonic_dw.dbo.factsurveyauditdetail a
-join sonic_dw.dbo.dimsur
+join sonic_dw.dbo.dimsurveyquestion q
+on a.questionID = q.questionID
+join sonic_dw.dbo.dimsurveyauditdetail dsad
+on dsad.SurveyAuditDetailKey = a.surveyauditdetailkey
+join sonic_dw.dbo.dimsurveyaudit dsa
+on dsa.surveyauditkey = dsad.surveyauditkey
+join sonic_dw.dbo.vw_dim_entityEP e
+on e.entitykey = dsa.EntityKey
+where 1=1
+		and questionnumber = 1 -- this is the new NPS question number
+		and dsa.BuyerType<> 'Future Buyer' -- exclude future buyer surveys
+		and q.Meta_SourceSystemName = 'IBEX' -- this is the new data source
+		and cast(a.datesubmitted as date) >= DATEADD(DD, - 90, GETDATE())
+group by e.entdealerlvl1 , e.EntityKey
+		, REPLACE(dsa.ExperienceGuideName, ', ', ',')
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z
 - **Data Classification**: To be assigned
 - **Stewardship**: To be assigned

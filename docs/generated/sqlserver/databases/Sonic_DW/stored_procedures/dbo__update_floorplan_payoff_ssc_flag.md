@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -25,10 +27,10 @@ CREATE PROC [dbo].[update_floorplan_payoff_ssc_flag] (@vin VARCHAR(30),@fpbalanc
 AS
 UPDATE dbo.Syndicate_Floorplan_Payoff
 SET SSC_Manual_Payoff_Flag = @flag, Meta_UserID = @user, Meta_LastUpdateDate = getdate()
-WHERE vin= @vin AND FloorplanBalance = @fpbalance AND days_until_due = @days_until_due AND CONVERT(date,Meta_LoadDate) = CONVERT(date,GETDATE()) 
+WHERE vin= @vin AND FloorplanBalance = @fpbalance AND days_until_due = @days_until_due AND CONVERT(date,Meta_LoadDate) = CONVERT(date,GETDATE())
 
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

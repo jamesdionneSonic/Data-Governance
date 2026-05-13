@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -20,7 +22,7 @@ Metadata auto-extracted from SQL Server.
 ## Definition
 
 ```sql
--- stored proc for MSTR -- 
+-- stored proc for MSTR --
 CREATE PROC dbo.update_dim_lender_category
 				 @sonic_grouping VARCHAR(100) = '' ,
 				 @grouping_category VARCHAR(100) = '' ,
@@ -33,9 +35,36 @@ AS
 	IF @sonic_grouping = ''
 		AND
 		@sonic_grouping NOT IN (SELECT DISTINCT Lender_Category FROM dbo.Dim_Lender_Categories)
-		INSERT INTO Sonic_DW.dbo.Dim_Lender_Categories (Lender_Cat
+		INSERT INTO Sonic_DW.dbo.Dim_Lender_Categories (Lender_Category , UserID)
+		VALUES (@grouping_category , @userid)
+
+	IF @sonic_grouping <> ''
+
+		UPDATE dl
+			   SET dl.LenderCategoryKey = dlc.LenderCategoryKey
+		FROM Sonic_DW.dbo.Dim_Lender dl JOIN Dim_Lender_Categories dlc ON dlc.Lender_Category = @grouping_category
+		WHERE Sonic_Grouping = @sonic_grouping
+
+	IF @FicoTier <> ''
+
+		UPDATE dl
+			   SET dl.LenderFICOTierKey = dlc.LenderFICOTierKey
+		FROM Sonic_DW.dbo.Dim_Lender dl JOIN dbo.Dim_Lender_FICO_Tiers dlc ON dlc.FICO_Tier = @FicoTier
+		WHERE Sonic_Grouping = @sonic_grouping
+
+	IF @LenderType <> ''
+
+		UPDATE dl
+			   SET dl.LenderTypeKey = dlc.LenderTypeKey
+		FROM Sonic_DW.dbo.Dim_Lender dl JOIN dbo.Dim_Lender_Type dlc ON dlc.LenderType = @LenderType
+		WHERE Sonic_Grouping = @sonic_grouping
+
+	IF @PreferenceStatus <> ''
+		UPDATE Sonic_DW.dbo.Dim_Lender
+			   SET PreferenceStatus = @PreferenceStatus
+		WHERE Sonic_Grouping = @sonic_grouping
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

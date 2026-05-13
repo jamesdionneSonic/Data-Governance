@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -36,9 +38,53 @@ BEGIN
     SET NOCOUNT ON;
 
     IF @DateEventID IS NOT NULL AND @DateEventID <> -1
-       AND EXISTS (SELECT 1 FROM dbo.D
+       AND EXISTS (SELECT 1 FROM dbo.Dim_DateEvent WHERE DateEventID = @DateEventID)
+    BEGIN
+
+        UPDATE dbo.Dim_DateEvent
+        SET
+            EventDescription = COALESCE(NULLIF(@EventDescription, ''), EventDescription),
+            IsSonic          = COALESCE(@IsSonic, IsSonic),
+            IsEchoPark       = COALESCE(@IsEchoPark, IsEchoPark),
+            IsPowersports    = COALESCE(@IsPowersports, IsPowersports),
+            IsActive         = COALESCE(@IsActive, IsActive),
+            DateGUID         = COALESCE(NULLIF(@GUID, ''), DateGUID),
+            Meta_User        = COALESCE(NULLIF(@Meta_User, ''), Meta_User),
+            Meta_LastModifiedDate = GETDATE()
+        WHERE DateEventID = @DateEventID;
+    END
+
+    ELSE
+    BEGIN
+        INSERT INTO dbo.Dim_DateEvent
+        (
+            EventDescription,
+            IsSonic,
+            IsEchoPark,
+            IsPowersports,
+            IsActive,
+            Meta_LoadDate,
+            Meta_LastModifiedDate,
+            Meta_User,
+            DateGUID
+        )
+        VALUES
+        (
+            @EventDescription,
+            @IsSonic,
+            @IsEchoPark,
+            @IsPowersports,
+            1,              -- IsActive default
+            GETDATE(),
+            GETDATE(),
+            @Meta_User,
+            @GUID
+        );
+    END
+END;
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

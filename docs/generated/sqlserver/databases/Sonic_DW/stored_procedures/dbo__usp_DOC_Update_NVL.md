@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -41,9 +43,50 @@ DECLARE @DocID INT = (SELECT DocID FROM [dbo].[Doc_Record] WITH (NOLOCK) WHERE E
 
 
 --Insert Amounts into Temp Table
-INSER
+INSERT INTO @DDTempUnits (MetricID, MetricNum) values (13, @NewUnitsIncCM)
+INSERT INTO @DDTempUnits (MetricID, MetricNum) values (14, @NewUnitsPreSoldCM)
+INSERT INTO @DDTempUnits (MetricID, MetricNum) values (15, @NewUnitsIncNM)
+INSERT INTO @DDTempUnits (MetricID, MetricNum) values (16, @NewSalesVolumeNM)
+
+
+SET NOCOUNT ON
+
+BEGIN TRY
+
+ IF @DocID IS NOT NULL
+
+    BEGIN
+
+	;with tUnits as (
+		SELECT MetricID, MetricNum FROM @DDTempUnits
+	)
+	UPDATE dbo.Doc_Projection
+
+	SET StatCount = MetricNum,
+		ControllerUserID = @UserLogin,
+		UpdateDate = GETDATE()
+	FROM tUnits
+		INNER JOIN dbo.Doc_Projection b WITH (NOLOCK)
+			ON (b.GroupElementSort = tUnits.MetricID)
+	WHERE
+		DocID = @DocID AND MetricNum IS NOT NULL AND MetricNum <> ''
+
+	END
+
+END TRY
+
+BEGIN CATCH
+    SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_MESSAGE() AS ErrorMessage
+    RETURN -1
+END CATCH
+
+
+SET NOCOUNT OFF
+
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

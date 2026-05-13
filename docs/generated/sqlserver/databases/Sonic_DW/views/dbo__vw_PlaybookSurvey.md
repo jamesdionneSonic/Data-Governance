@@ -8,12 +8,15 @@ sensitivity: internal
 tags:
   - view
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+column_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
 
 1- **Type**: View
+
 - **Schema**: dbo
 
 ## Definition
@@ -29,12 +32,18 @@ extracted_at: 2026-05-09T12:34:14.349Z
 ************************************************************************/
 CREATE VIEW [dbo].[vw_PlaybookSurvey]
 AS
-SELECT        dbo.PlaybookSurvey.PlaybookSurveyID, dbo.PlaybookName.PlaybookName, dbo.PlaybookSurvey.EntityKey, dbo.PlaybookSurvey.PlaybookID, dbo.PlaybookName.PlaybookYear, 
-                         dbo.PlaybookSurve
+SELECT        dbo.PlaybookSurvey.PlaybookSurveyID, dbo.PlaybookName.PlaybookName, dbo.PlaybookSurvey.EntityKey, dbo.PlaybookSurvey.PlaybookID, dbo.PlaybookName.PlaybookYear,
+                         dbo.PlaybookSurvey.SurveyComments, dbo.PlaybookSurvey.CommentUserID, dbo.PlaybookSurvey.SurveyApproval, dbo.PlaybookSurvey.PlaybookStatusID, dbo.PlaybookSurvey.ApprovalDate,
+                         dbo.PlaybookSurvey.ReviewSignoffID, dbo.PlaybookSurvey.CreateDate, dbo.PlaybookSurvey.SurveyQuarter, dbo.PlaybookSurvey.ApprovalUserID
+FROM            dbo.PlaybookSurvey INNER JOIN
+                         dbo.PlaybookName ON dbo.PlaybookSurvey.PlaybookID = dbo.PlaybookName.PlaybookID
+WHERE        (1 = 1)
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z
 - **Data Classification**: To be assigned
 - **Stewardship**: To be assigned

@@ -81,6 +81,7 @@ class SqlServerMetadataExtractor {
    */
   async extractTables(_database, scope = {}) {
     const query = `
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
       SELECT 
         SCHEMA_NAME(t.schema_id) as schema_name,
         t.name as table_name,
@@ -113,7 +114,7 @@ class SqlServerMetadataExtractor {
         id: `${row.schema_name}.${row.table_name}`,
         name: row.table_name,
         schema: row.schema_name,
-        type: row.table_type === 'U' ? 'table' : 'view',
+        type: String(row.table_type).trim() === 'U' ? 'table' : 'view',
         description: row.table_description || '',
         rowCount: row.row_count || 0,
         sizeKb: row.size_kb || 0,
@@ -158,7 +159,7 @@ class SqlServerMetadataExtractor {
         id: `${row.schema_name}.${row.table_name}`,
         name: row.table_name,
         schema: row.schema_name,
-        type: row.table_type === 'U' ? 'table' : 'view',
+        type: String(row.table_type).trim() === 'U' ? 'table' : 'view',
         description: row.table_description || '',
         rowCount: 0,
         sizeKb: 0,
@@ -172,10 +173,11 @@ class SqlServerMetadataExtractor {
    */
   async listSchemasAndTables() {
     const query = `
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
       SELECT
         SCHEMA_NAME(t.schema_id) as schema_name,
         t.name as table_name
-      FROM sys.tables t
+      FROM sys.tables t WITH (NOLOCK)
       ORDER BY SCHEMA_NAME(t.schema_id), t.name
     `;
 
@@ -207,6 +209,7 @@ class SqlServerMetadataExtractor {
    */
   async listAllObjectsByType() {
     const query = `
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
       SELECT
         SCHEMA_NAME(o.schema_id) as schema_name,
         CASE 
@@ -219,7 +222,7 @@ class SqlServerMetadataExtractor {
           ELSE 'other'
         END as object_type,
         COUNT(*) as count
-      FROM sys.objects o
+      FROM sys.objects o WITH (NOLOCK)
       WHERE o.schema_id NOT IN (SELECT schema_id FROM sys.schemas WHERE name IN ('sys', 'INFORMATION_SCHEMA'))
       GROUP BY SCHEMA_NAME(o.schema_id), o.type
       ORDER BY SCHEMA_NAME(o.schema_id), o.type
@@ -248,7 +251,7 @@ class SqlServerMetadataExtractor {
    */
   async extractObjectTypeInventory(scope = {}) {
     const query = `
-      SELECT
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
         SCHEMA_NAME(o.schema_id) as schema_name,
         o.type as object_type,
         COUNT(*) as object_count
@@ -420,45 +423,11 @@ class SqlServerMetadataExtractor {
   }
 
   /**
-   * Extract columns for a set of tables (batched to avoid timeout)
-   */
-  async extractTableColumnsInBatches(tables, batchSize = 10) {
-    const columnsByTable = new Map();
-    const batches = [];
-
-    for (let i = 0; i < tables.length; i += batchSize) {
-      batches.push(tables.slice(i, i + batchSize));
-    }
-
-    console.log(`Extracting columns in ${batches.length} batches of ${batchSize}...`);
-
-    for (let batchIndex = 0; batchIndex < batches.length; batchIndex += 1) {
-      const batch = batches[batchIndex];
-      console.log(
-        `Processing batch ${batchIndex + 1}/${batches.length} (${batch.length} tables)...`
-      );
-
-      const promises = batch.map(async (table) => {
-        try {
-          const columns = await this.extractColumns(table.schema, table.name);
-          columnsByTable.set(table.id, columns);
-        } catch (err) {
-          console.warn(`Failed to extract columns for ${table.schema}.${table.name}:`, err.message);
-        }
-      });
-
-      // eslint-disable-next-line no-await-in-loop
-      await Promise.all(promises);
-    }
-
-    return columnsByTable;
-  }
-
-  /**
    * Extract index metadata for user tables
    */
   async extractTableIndexes(scope = {}) {
     const query = `
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
       SELECT
         SCHEMA_NAME(t.schema_id) as schema_name,
         t.name as table_name,
@@ -678,6 +647,7 @@ class SqlServerMetadataExtractor {
    */
   async extractRoutineParameters(scope = {}) {
     const query = `
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
       SELECT
         SCHEMA_NAME(o.schema_id) as schema_name,
         o.name as routine_name,
@@ -741,6 +711,7 @@ class SqlServerMetadataExtractor {
    */
   async extractObjectDependencies(objects) {
     const query = `
+        SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
         SELECT DISTINCT
           SCHEMA_NAME(o1.schema_id) as schema_name,
           o1.name as object_name,
@@ -787,11 +758,15 @@ class SqlServerMetadataExtractor {
   }
 
   /**
-   * Extract columns for a specific table
+   * Bulk Extract columns for all tables and views in one single query.
+   * Eliminates the N+1 query problem.
    */
-  async extractColumns(schema, table) {
+  async extractAllColumns(scope = {}) {
     const query = `
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
       SELECT 
+        SCHEMA_NAME(o.schema_id) as schema_name,
+        o.name as object_name,
         c.name as column_name,
         t.name as data_type,
         c.max_length,
@@ -799,41 +774,59 @@ class SqlServerMetadataExtractor {
         c.is_identity,
         c.is_computed,
         cc.definition as computed_definition,
-        ep.value as column_description,
+        CAST(ep.value AS NVARCHAR(MAX)) as column_description,
         dc.definition as default_definition
-      FROM sys.columns c
+      FROM sys.objects o
+      JOIN sys.columns c ON o.object_id = c.object_id
       JOIN sys.types t ON c.user_type_id = t.user_type_id
-      LEFT JOIN sys.computed_columns cc ON cc.object_id = c.object_id 
-        AND cc.column_id = c.column_id
-      LEFT JOIN sys.extended_properties ep ON ep.major_id = c.object_id 
-        AND ep.minor_id = c.column_id AND ep.class = 1
-      LEFT JOIN sys.default_constraints dc ON dc.parent_object_id = c.object_id 
-        AND dc.parent_column_id = c.column_id
-      WHERE OBJECT_NAME(c.object_id) = @table 
-        AND SCHEMA_NAME(OBJECTPROPERTY(c.object_id, 'SchemaId')) = @schema
-      ORDER BY c.column_id
+      LEFT JOIN sys.computed_columns cc ON cc.object_id = c.object_id AND cc.column_id = c.column_id
+      LEFT JOIN sys.extended_properties ep ON ep.major_id = c.object_id AND ep.minor_id = c.column_id AND ep.class = 1
+      LEFT JOIN sys.default_constraints dc ON dc.parent_object_id = c.object_id AND dc.parent_column_id = c.column_id
+      WHERE o.type IN ('U', 'V') AND o.is_ms_shipped = 0
+      ORDER BY SCHEMA_NAME(o.schema_id), o.name, c.column_id
     `;
 
     try {
-      const result = await this.pool
-        .request()
-        .input('schema', schema)
-        .input('table', table)
-        .query(query);
+      const result = await this.pool.request().query(query);
 
-      return result.recordset.map((row) => ({
-        name: row.column_name,
-        dataType: row.data_type,
-        maxLength: row.max_length,
-        isNullable: row.is_nullable,
-        isIdentity: row.is_identity,
-        isComputed: row.is_computed,
-        computedDefinition: row.computed_definition,
-        description: row.column_description || '',
-        defaultValue: row.default_definition,
-      }));
+      const selectedSchemas = new Set((scope.schemas || []).map((s) => s.toLowerCase()));
+      const selectedTables = new Set((scope.tables || []).map((t) => t.toLowerCase()));
+      const columnsByObject = new Map();
+
+      result.recordset.forEach((row) => {
+        const objectId = `${row.schema_name}.${row.object_name}`;
+        const objectKey = objectId.toLowerCase();
+
+        // Only keep objects that are in the user's selected scope
+        const schemaMatch =
+          selectedSchemas.size === 0 ||
+          selectedSchemas.has(String(row.schema_name || '').toLowerCase());
+        const tableMatch = selectedTables.size === 0 || selectedTables.has(objectKey);
+
+        if (!schemaMatch || !tableMatch) {
+          return;
+        }
+
+        if (!columnsByObject.has(objectId)) {
+          columnsByObject.set(objectId, []);
+        }
+
+        columnsByObject.get(objectId).push({
+          name: row.column_name,
+          dataType: row.data_type,
+          maxLength: row.max_length,
+          isNullable: row.is_nullable,
+          isIdentity: row.is_identity,
+          isComputed: row.is_computed,
+          computedDefinition: row.computed_definition,
+          description: row.column_description || '',
+          defaultValue: row.default_definition,
+        });
+      });
+
+      return columnsByObject;
     } catch (err) {
-      console.error(`Error extracting columns for ${schema}.${table}:`, err.message);
+      console.error('Error extracting all columns:', err.message);
       throw err;
     }
   }
@@ -843,6 +836,7 @@ class SqlServerMetadataExtractor {
    */
   async extractPrimaryKeys(schema, table) {
     const query = `
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
       SELECT 
         c.name as column_name,
         ic.key_ordinal
@@ -876,6 +870,7 @@ class SqlServerMetadataExtractor {
    */
   async extractStoredProcedures(scope = {}) {
     const query = `
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
       SELECT
         SCHEMA_NAME(r.schema_id) as schema_name,
         r.name as procedure_name,
@@ -920,6 +915,7 @@ class SqlServerMetadataExtractor {
    */
   async extractFunctions(scope = {}) {
     const query = `
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
       SELECT
         SCHEMA_NAME(r.schema_id) as schema_name,
         r.name as function_name,
@@ -966,6 +962,7 @@ class SqlServerMetadataExtractor {
    */
   async extractTriggers(scope = {}) {
     const query = `
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
       SELECT
         SCHEMA_NAME(t.schema_id) as schema_name,
         tr.name as trigger_name,
@@ -1013,6 +1010,7 @@ class SqlServerMetadataExtractor {
    */
   async extractViews(scope = {}) {
     const query = `
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
       SELECT
         SCHEMA_NAME(v.schema_id) as schema_name,
         v.name as view_name,
@@ -1057,6 +1055,7 @@ class SqlServerMetadataExtractor {
    */
   async extractForeignKeys() {
     const query = `
+      SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
       SELECT 
         fk.name as constraint_name,
         SCHEMA_NAME(t1.schema_id) as from_schema,
@@ -1098,17 +1097,15 @@ class SqlServerMetadataExtractor {
   /**
    * Detect column-level relationships (same names across tables)
    */
-  async detectColumnMatches(tables) {
+  static detectColumnMatches(tables) {
     const relationships = [];
     const columnIndex = new Map();
 
-    // Build column index by name - extract columns in parallel
-    const columnsByTable = await Promise.all(
-      tables.map(async (table) => ({
-        table,
-        cols: await this.extractColumns(table.schema, table.name),
-      }))
-    );
+    // Build column index by name - columns are already in RAM!
+    const columnsByTable = tables.map((table) => ({
+      table,
+      cols: table.columns || [],
+    }));
 
     for (const { table, cols } of columnsByTable) {
       for (const col of cols) {
@@ -1242,39 +1239,24 @@ class SqlServerMetadataExtractor {
       `Found ${tables.length} tables, ${views.length} views, ${storedProcedures.length} procs, ${functions.length} functions, ${triggers.length} triggers`
     );
 
-    // Extract columns for tables in batches (improved over previous lite-mode approach)
-    let columnsByTable = new Map();
-    let columnExtractionEnabled = false;
-    if (tables.length > 0 && tables.length <= 200) {
-      console.log(`Extracting columns for ${tables.length} tables in batches...`);
-      columnsByTable = await this.extractTableColumnsInBatches(tables, 15);
-      const tablesWithColumns = tables.map((table) => ({
-        ...table,
-        columns: columnsByTable.get(table.id) || table.columns || [],
-      }));
-      tables.length = 0;
-      tables.push(...tablesWithColumns);
-      columnExtractionEnabled = true;
-    } else if (tables.length > 200) {
-      console.log(
-        `Skipping column extraction for ${tables.length} tables (exceeds threshold). Use scoped extraction for full column lineage.`
-      );
-      this.metadata.extractionWarnings.push({
-        code: 'LARGE_EXTRACTION_LITE_MODE',
-        message: `Column extraction skipped: ${tables.length} tables exceeds threshold. Use scoped extraction for column-level lineage.`,
-      });
-    }
+    console.log('Extracting all columns in a single bulk operation...');
+    const allColumnsMap = await this.extractAllColumns(scope);
 
-    let columnsByView = new Map();
-    if (views.length > 0 && views.length <= 300) {
-      console.log(`Extracting columns for ${views.length} views in batches...`);
-      columnsByView = await this.extractTableColumnsInBatches(views, 20);
-    } else if (views.length > 300) {
-      this.metadata.extractionWarnings.push({
-        code: 'VIEW_COLUMN_EXTRACTION_SKIPPED',
-        message: `View column extraction skipped: ${views.length} views exceeds threshold. Use scoped extraction for full view metadata.`,
-      });
-    }
+    // Instantly map columns to tables in RAM
+    const tablesWithColumns = tables.map((table) => ({
+      ...table,
+      columns: allColumnsMap.get(table.id) || [],
+    }));
+    tables.length = 0;
+    tables.push(...tablesWithColumns);
+
+    // Instantly map columns to views in RAM
+    const columnsByView = new Map(); // Keep this reference for the view mapping later
+    views.forEach((view) => {
+      columnsByView.set(view.id, allColumnsMap.get(view.id) || []);
+    });
+
+    const columnExtractionEnabled = true; // Lite Mode is officially dead!
 
     console.log('Extracting index and constraint metadata...');
     const [tableIndexes, tableConstraints] = await Promise.all([
@@ -1344,22 +1326,11 @@ class SqlServerMetadataExtractor {
     let etlPatterns = [];
     let namingConventions = [];
 
-    if (columnExtractionEnabled && tables.length <= 100) {
-      // Only detect column matches for small datasets (<=100 tables)
-      columnMatches = await this.detectColumnMatches(tables);
+    if (columnExtractionEnabled) {
+      // Detect column matches for ALL tables!
+      columnMatches = SqlServerMetadataExtractor.detectColumnMatches(tables);
       etlPatterns = SqlServerMetadataExtractor.detectEtlPatterns(tables);
       namingConventions = SqlServerMetadataExtractor.detectNamingConventions(tables);
-    } else {
-      // For large datasets, skip column analysis but still detect ETL patterns
-      if (tables.length <= 200) {
-        console.log(
-          `Limited column-level analysis for ${tables.length} tables (lite mode for mid-size extraction)`
-        );
-      }
-      this.metadata.extractionWarnings.push({
-        code: 'LITE_MODE_ENABLED',
-        message: `Column-level relationship detection skipped for ${tables.length} tables. Column metadata extracted but not cross-table matched.`,
-      });
     }
 
     // Combine and deduplicate
@@ -1394,7 +1365,6 @@ class SqlServerMetadataExtractor {
       allObjects,
       objectInventory,
       researchReport,
-      columnsByTable,
       columnsByView,
       objectDependencies,
       relationships: allRelationships,

@@ -41,7 +41,8 @@ function sanitizePathSegment(value) {
 }
 
 function persistGeneratedMarkdown(markdowns, database, outputPath) {
-  const defaultBasePath = './docs/generated/sqlserver';
+  // CHANGED: Point to the true data directory
+  const defaultBasePath = './data/markdown';
   const baseOutputPath = resolve(process.cwd(), outputPath || defaultBasePath);
   const safeDatabase = sanitizePathSegment(database);
 
@@ -338,14 +339,11 @@ router.post('/load', authenticate, requireAdmin, async (req, res) => {
         res,
         req,
         503,
-        'Load to Index requires Meilisearch on http://localhost:7700. Start Meilisearch and retry.',
+        'Load to Index requires Elasticsearch on https://localhost:9200. Ensure the engine is running and retry.',
         {
           code: 'INGESTION_DEPENDENCY_ERROR',
           details: {
-            meilisearchUrl:
-              process.env.MEILISEARCH_URL ||
-              process.env.MEILISEARCH_HOST ||
-              'http://localhost:7700',
+            engineUrl: process.env.ELASTICSEARCH_URL || 'https://localhost:9200',
           },
         }
       );
@@ -442,15 +440,31 @@ router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) 
     const metadata = await extractor.extractAllMetadata(database, scope);
     await extractor.disconnect();
 
-    // Generate markdown files
-    const generator = new MarkdownGenerator(metadata);
-    const markdowns = generator.generateAllMarkdowns();
-    const persisted = persistGeneratedMarkdown(markdowns, database, outputPath);
-    ingestionState.lastGeneratedPath = persisted.baseOutputPath;
+    // 1. DETERMINE OUTPUT PATH
+    const defaultBasePath = './data/markdown';
+    const baseOutputPath = resolve(process.cwd(), outputPath || defaultBasePath);
 
+    // 2. KICK OFF BACKGROUND JOB FOR DISK I/O
+    setTimeout(() => {
+      try {
+        console.log(
+          `\n[Background Job] Starting markdown generation for ${metadata.allObjects.length} objects...`
+        );
+        const generator = new MarkdownGenerator(metadata);
+        const markdowns = generator.generateAllMarkdowns();
+        const persisted = persistGeneratedMarkdown(markdowns, database, outputPath);
+        ingestionState.lastGeneratedPath = persisted.baseOutputPath;
+        console.log(`[Background Job] SUCCESS! Wrote ${persisted.filesWritten} files to disk.\n`);
+      } catch (err) {
+        console.error('[Background Job] Markdown generation failed:', err);
+      }
+    }, 100);
+
+    // 3. SEND RESPONSE TO UI IMMEDIATELY
+    // We return this to satisfy the linter's consistent-return rule
     return res.json({
       status: 'success',
-      message: `Extracted metadata from ${metadata.database}`,
+      message: `Extracted metadata from ${metadata.database}. Generating files in background...`,
       data: {
         tablesExtracted: metadata.tables.length,
         viewsExtracted: metadata.views.length,
@@ -465,15 +479,12 @@ router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) 
         extractionWarnings: metadata.extractionWarnings || [],
         selectedSchemas,
         selectedTables,
-        markdownFiles: markdowns.length,
-        markdownFilesWritten: persisted.filesWritten,
-        markdownOutputPath: persisted.baseOutputPath,
-        markdownPreview: markdowns.slice(0, 3).map((m) => ({
-          fileName: m.fileName,
-          directory: m.directory,
-          contentPreview: m.content.substring(0, 300),
-        })),
-        ready: 'Use the Markdown Importer to process these files',
+        markdownFiles: metadata.allObjects.length, // The expected count
+        markdownFilesWritten: 'Processing in background...',
+        markdownOutputPath: baseOutputPath,
+        markdownPreview: [],
+        ready:
+          'Files are generating in the background. Watch your terminal for completion before loading the index.',
       },
     });
   } catch (err) {
@@ -494,108 +505,40 @@ router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) 
 router.post('/connect-sql-server/databases', authenticate, requireAdmin, async (req, res) => {
   let connection;
   try {
-    const mssqlDriver = await import('mssql');
-    const {
-      server,
-      port = 1433,
-      username,
-      password,
-      domain,
-      clientId,
-      clientSecret,
-      tenantId,
-      authentication = 'sql-server',
-      useIntegratedAuth = false,
-      encrypt = true,
-      trustServerCertificate = false,
-    } = req.body;
+    // 1. Prepare payload and force 'master' database for discovery
+    const payload = { ...req.body, database: 'master' };
 
-    if (!server) {
-      return sendErrorResponse(res, req, 400, 'server is required', {
-        code: 'BAD_REQUEST',
-      });
+    // 2. Strip credentials if Integrated Auth is checked so the context builder knows to use msnodesqlv8
+    if (payload.authentication === 'windows' && payload.useIntegratedAuth) {
+      payload.username = '';
+      payload.password = '';
+      payload.domain = '';
     }
 
-    // Build connection config for master database (to discover other databases)
-    const connConfig = {
-      server,
-      port: Number(port) || 1433,
-      database: 'master',
-      options: {
-        encrypt: encrypt === true || encrypt === 'true',
-        trustServerCertificate:
-          trustServerCertificate === true || trustServerCertificate === 'true',
-        enableArithAbort: true,
-      },
-    };
+    // 3. Use your existing helper to safely build the connection
+    const connectionContext = await buildSqlConnectionContext(payload);
 
-    // Configure authentication based on method
-    if (authentication === 'sql-server') {
-      if (!username || !password) {
-        return sendErrorResponse(
-          res,
-          req,
-          400,
-          'username and password required for SQL Server Auth',
-          {
-            code: 'BAD_REQUEST',
-          }
-        );
-      }
-      connConfig.authentication = {
-        type: 'default',
-        options: {
-          userName: username,
-          password,
-        },
-      };
-    } else if (authentication === 'windows') {
-      if (useIntegratedAuth) {
-        connConfig.authentication = {
-          type: 'ntlm',
-          options: {
-            domain: domain || undefined,
-          },
-        };
-      } else if (username && password) {
-        connConfig.authentication = {
-          type: 'ntlm',
-          options: {
-            userName: username,
-            password,
-            domain: domain || undefined,
-          },
-        };
-      }
-    } else if (authentication === 'azure-ad') {
-      if (!clientId || !clientSecret || !tenantId) {
-        return sendErrorResponse(
-          res,
-          req,
-          400,
-          'clientId, clientSecret, and tenantId required for Azure AD',
-          {
-            code: 'BAD_REQUEST',
-          }
-        );
-      }
-      connConfig.authentication = {
-        type: 'azure-active-directory-service-principal-secret',
-        options: {
-          clientId,
-          clientSecret,
-          tenantId,
-        },
-      };
+    if (connectionContext.error) {
+      return sendErrorResponse(
+        res,
+        req,
+        connectionContext.error.status,
+        connectionContext.error.message,
+        { code: connectionContext.error.code || 'BAD_REQUEST' }
+      );
     }
 
-    // Connect and query for databases
-    connection = new mssqlDriver.ConnectionPool(connConfig);
+    const { connConfig, sqlDriver } = connectionContext;
+
+    // 4. Connect and query for databases using the correctly resolved driver
+    connection = new sqlDriver.ConnectionPool(connConfig);
     await connection.connect();
 
     const result = await connection
       .request()
-      .query('SELECT name FROM sys.databases WHERE state = 0 AND database_id > 4 ORDER BY name');
+      .query(
+        'SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;SELECT name FROM sys.databases WHERE state = 0 AND database_id > 4 ORDER BY name'
+      );
 
     const databases = result.recordset.map((row) => row.name);
 
@@ -643,11 +586,9 @@ router.post('/connect-sql-server/discover', authenticate, requireAdmin, async (r
     extractor = new SqlServerMetadataExtractor(connConfig, sqlDriver);
     await extractor.connect();
 
-    // Get lightweight discovery (no DMV scans for large schemas)
-    const [discovery, objectTypeCounts] = await Promise.all([
-      extractor.listSchemasAndTables(),
-      extractor.listAllObjectsByType(),
-    ]);
+    // Get lightweight discovery sequentially to prevent Windows Auth driver hangs
+    const discovery = await extractor.listSchemasAndTables();
+    const objectTypeCounts = await extractor.listAllObjectsByType();
 
     // Enrich schemas with all object type counts
     const enrichedSchemas = discovery.schemas.map((schema) => {
@@ -743,7 +684,7 @@ router.get('/export-zip', authenticate, requireAdmin, (req, res) => {
  * Requires authentication
  */
 router.get('/status', authenticate, async (req, res) => {
-  const meilisearchHealthy = await healthCheck();
+  const engineHealthy = await healthCheck();
   res.json({
     status: 'success',
     message: 'Ingestion service status',
@@ -755,9 +696,9 @@ router.get('/status', authenticate, async (req, res) => {
       lastValidatedAt: ingestionState.lastValidatedAt,
       lastDataPath: ingestionState.lastDataPath,
       lastGeneratedPath: ingestionState.lastGeneratedPath,
-      meilisearchHealthy,
-      meilisearchUrl:
-        process.env.MEILISEARCH_URL || process.env.MEILISEARCH_HOST || 'http://localhost:7700',
+      // Pass the Elasticsearch health status!
+      elasticsearchHealthy: engineHealthy,
+      elasticsearchUrl: process.env.ELASTICSEARCH_URL || 'https://localhost:9200',
       lastUpdated: new Date().toISOString(),
     },
   });

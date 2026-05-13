@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -32,11 +34,14 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-		
+
 	update sonic_dw.dbo.dim_FIGLAccounts_bak_20110920 set FIGLProductCategoryKey = 1
-    -- Insert
+    -- Insert statements for procedure here
+	return
+END
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

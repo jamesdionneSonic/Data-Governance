@@ -1,0 +1,1316 @@
+---
+name: DimSurveyAudit
+database: Sonic_DW
+type: table
+schema: dbo
+owner: Data Team
+sensitivity: internal
+tags:
+  - core-schema
+depends_on:
+  - DimSurveyAuditDetail
+  - CallSourceDedupe20211221_FactRows_2
+  - ControllerPoints
+  - Dim_Account
+  - Dim_Account_20250618
+  - Dim_Account_20250918_Clone
+  - Dim_Account_Bk
+  - Dim_Account_BKP_20250709
+  - Dim_Account_testing
+  - Dim_AccountMgmt
+  - Dim_AccountMgmtGrouping
+  - Dim_CarsImpressionType
+  - Dim_CarsLeadType
+  - Dim_CarsProduct
+  - Dim_CBNumber
+  - Dim_CouponXref
+  - Dim_Customer
+  - Dim_DMSCustomer
+  - dim_dmsCustomer_bk05052022
+  - Dim_DMSCustomer_history
+  - Dim_DMSEmployee
+  - Dim_DMSVendor
+  - Dim_ECStatusEmail
+  - Dim_ECStatusPhone
+  - Dim_ECStatusText
+  - Dim_Entity
+  - Dim_EPTNotificationType
+  - Dim_Expense
+  - Dim_FIProduct
+  - Dim_GLDetail
+  - Dim_GLDetail_arch
+  - Dim_GLDetail_ToBeDeleted
+  - Dim_GLScheduleSummary_degen
+  - Dim_Journal
+  - Dim_LaborType
+  - Dim_LaborType_Transact
+  - Dim_LeadSource
+  - Dim_Lender
+  - Dim_MailCoupon
+  - Dim_MailPiece
+  - Dim_OpCode
+  - Dim_Part
+  - Dim_PricingGrid
+  - Dim_RegionalTechnologyManager
+  - Dim_Scenario
+  - Dim_SchedExceptionAccounts
+  - Dim_ScheduleException
+  - Dim_SECRollup
+  - Dim_Status
+  - Dim_Step
+  - Dim_StepSource
+  - Dim_StepTarget
+  - Dim_Validation
+  - Dim_Vehicle
+  - dim_vehicle_20241119
+  - dim_vehicle_20241119_test
+  - dim_vehicle_20241216
+  - Dim_Vehicle_20250130
+  - dim_vehicle_bkp_20241204
+  - dim_vehicle_BKP_20241209
+  - dim_vehicle_bkp_20241212
+  - Dim_Vehicle_bkp_20241213
+  - Dim_Vehicle_bkp_20250130
+  - dim_vehicle_BKP_20250131
+  - dim_vehicle_BKP_20250203
+  - Dim_Vehicle_BKP_20250204
+  - Dim_Vehicle_BKP_20250206
+  - dim_Vehicle_bkp_20250403
+  - dim_Vehicle_bkp_20250410
+  - dim_vehicle_BKP_20250702
+  - Dim_Vehicle_new
+  - dim_vehicle_PreUpdate_20250702
+  - Dim_Vendor
+  - DimAdSource
+  - DimAdSource_orig
+  - DimApplicationSource
+  - DimCallRevuDepartment
+  - DimCategory
+  - DimCategoryType
+  - DimCustomer
+  - DimCustomer_20250109
+  - dimcustomer_bk05052022
+  - DimDMSCoraAccount
+  - DimEmployee
+  - DimEmployeeEleadDepartments
+  - DimFinanceDecision
+  - DimFinanceSource
+  - DimIVROption
+  - DimRemedyDetail
+  - DimRemedyUnmappedSites
+  - DimRemedyUser
+  - DimRemedyUserGroup
+  - DimReportingSource
+  - DimResult
+  - DimReviewStatus
+  - DimService
+  - DimServiceAppointment
+  - DimServiceAppointmentDetail
+  - DimServiceAppointmentDetail_BKP
+  - DimServiceType
+  - DimStatus
+  - DimStatusType
+  - Dim_DMSVendor
+  - Dim_GLDetail
+  - Dim_GLDetail_arch
+  - Dim_GLDetail_ToBeDeleted
+  - Dim_Vendor
+  - DimFBAdName
+  - DimFBCampaign
+  - DimGSCAppearance
+  - DimGSCCountry
+  - DimGSCDevice
+  - DimGSCLandingPage
+  - DimGSCSearchQuery
+  - DimGSCSearchType
+  - DimGSCSite
+  - DimMarket
+  - DimRegion
+  - DimRMDepartment
+  - DimRMSource
+  - DimRMStoreNames
+  - DimSurvey
+  - DimSurvey
+  - DimSurvey
+row_count: 0
+size_kb: 0
+column_count: 46
+index_count: 1
+check_constraint_count: 0
+extraction_warnings:
+  - MISSING_VIEW_DATABASE_STATE
+extracted_at: 2026-05-13T11:28:24.843Z
+---
+
+## Overview
+
+Metadata auto-extracted from SQL Server.
+
+- **Type**: table
+- **Schema**: dbo
+- **Row Count**: 0
+- **Size**: 0 KB
+
+## Columns
+
+| Name                            | Type      | Nullable | Identity | Default | Description |
+| ------------------------------- | --------- | -------- | -------- | ------- | ----------- |
+| `SurveyAuditKey`                | int       |          | ✓        |         |             |
+| `ReportingSourceKey`            | int       |          |          |         |             |
+| `BuyerType`                     | varchar   |          |          |         |             |
+| `CampaignID`                    | varchar   |          |          |         |             |
+| `Comments`                      | varchar   | ✓        |          |         |             |
+| `CustomerKey`                   | int       |          |          |         |             |
+| `CustomerKeyDMS`                | int       |          |          |         |             |
+| `CustomerFirstName`             | varchar   | ✓        |          |         |             |
+| `CustomerLastName`              | varchar   | ✓        |          |         |             |
+| `CustomerPhoneNumber`           | varchar   | ✓        |          |         |             |
+| `CustomerStreetAddress`         | varchar   | ✓        |          |         |             |
+| `CustomerCity`                  | varchar   | ✓        |          |         |             |
+| `CustomerState`                 | varchar   | ✓        |          |         |             |
+| `CustomerZipCode`               | varchar   | ✓        |          |         |             |
+| `CustomerEmailAddress`          | varchar   | ✓        |          |         |             |
+| `DealNumber`                    | varchar   | ✓        |          |         |             |
+| `EmailID`                       | varchar   |          |          |         |             |
+| `EntityKey`                     | int       |          |          |         |             |
+| `GeneralManagerEmailAddress`    | varchar   | ✓        |          |         |             |
+| `GeneralManagerName`            | varchar   | ✓        |          |         |             |
+| `HasVehicleServiceContract`     | char      | ✓        |          |         |             |
+| `LoyaltySpecialistEmailAddress` | varchar   | ✓        |          |         |             |
+| `LoyaltySpecialistName`         | varchar   | ✓        |          |         |             |
+| `PurchaseType`                  | varchar   | ✓        |          |         |             |
+| `ExperienceGuideEmailAddress`   | varchar   | ✓        |          |         |             |
+| `ExperienceGuideName`           | varchar   | ✓        |          |         |             |
+| `SurveyID`                      | varchar   |          |          |         |             |
+| `SurveyStatus`                  | varchar   | ✓        |          |         |             |
+| `StoreName`                     | varchar   | ✓        |          |         |             |
+| `StockNumber`                   | varchar   | ✓        |          |         |             |
+| `VehicleMake`                   | varchar   | ✓        |          |         |             |
+| `VehicleModel`                  | varchar   | ✓        |          |         |             |
+| `VehicleYear`                   | int       | ✓        |          |         |             |
+| `VisitDateKey`                  | int       |          |          |         |             |
+| `IsSent`                        | bit       |          |          |         |             |
+| `SentDate`                      | datetime2 | ✓        |          |         |             |
+| `CreatedBy`                     | varchar   |          |          |         |             |
+| `CreatedDate`                   | datetime2 |          |          |         |             |
+| `ModifiedBy`                    | varchar   |          |          |         |             |
+| `ModifiedDate`                  | datetime2 |          |          |         |             |
+| `DeliverySpecialistName`        | varchar   | ✓        |          |         |             |
+| `DeliverySpecialistEmail`       | varchar   | ✓        |          |         |             |
+| `IsOnlineSales`                 | varchar   | ✓        |          |         |             |
+| `ETLExecutionID`                | int       | ✓        |          |         |             |
+| `Meta_SourceSystemName`         | varchar   | ✓        |          |         |             |
+| `Meta_Src_Sys_ID`               | int       | ✓        |          |         |             |
+
+## Constraints
+
+- **Primary Key**: PK_DimSurveyAudit_SurveyAuditKey
+  - Columns: SurveyAuditKey
+
+## Indexes
+
+- **PK_DimSurveyAudit_SurveyAuditKey** (CLUSTERED)
+  - Unique: Yes
+  - Primary Key: Yes
+  - Key Columns: SurveyAuditKey ASC
+
+## Extraction Notes
+
+- **MISSING_VIEW_DATABASE_STATE**: Missing VIEW DATABASE STATE permission. Row count and size metrics are unavailable.
+
+## Relationships
+
+### High Confidence (≥ 0.8)
+
+- **explicit_fk**: dbo.DimSurveyAuditDetail → dbo.DimSurveyAudit
+  - Confidence: 100%
+  - Evidence: undefined
+  - Column: `SurveyAuditKey` → `SurveyAuditKey`
+- **column_match**: dbo.CallSourceDedupe20211221_FactRows_2 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.ControllerPoints → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Account → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Account_20250618 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Account_20250918_Clone → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Account_Bk → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Account_BKP_20250709 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Account_testing → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_AccountMgmt → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_AccountMgmtGrouping → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_CarsImpressionType → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_CarsLeadType → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_CarsProduct → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_CBNumber → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_CouponXref → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Customer → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_DMSCustomer → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_dmsCustomer_bk05052022 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_DMSCustomer_history → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_DMSEmployee → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_DMSVendor → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_ECStatusEmail → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_ECStatusPhone → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_ECStatusText → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Entity → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_EPTNotificationType → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Expense → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_FIProduct → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_GLDetail → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_GLDetail_arch → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_GLDetail_ToBeDeleted → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_GLScheduleSummary_degen → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Journal → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_LaborType → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_LaborType_Transact → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_LeadSource → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Lender → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_MailCoupon → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_MailPiece → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_OpCode → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Part → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_PricingGrid → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_RegionalTechnologyManager → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Scenario → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_SchedExceptionAccounts → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_ScheduleException → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_SECRollup → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Status → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Step → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_StepSource → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_StepTarget → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Validation → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Vehicle → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_20241119 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_20241119_test → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_20241216 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Vehicle_20250130 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_bkp_20241204 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20241209 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_bkp_20241212 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Vehicle_bkp_20241213 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Vehicle_bkp_20250130 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20250131 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20250203 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Vehicle_BKP_20250204 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Vehicle_BKP_20250206 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_Vehicle_bkp_20250403 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_Vehicle_bkp_20250410 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_BKP_20250702 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Vehicle_new → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dim_vehicle_PreUpdate_20250702 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_Vendor → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimAdSource → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimAdSource_orig → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimApplicationSource → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimCallRevuDepartment → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimCategory → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimCategoryType → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimCustomer → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimCustomer_20250109 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.dimcustomer_bk05052022 → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimDMSCoraAccount → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimEmployee → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimEmployeeEleadDepartments → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimFinanceDecision → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimFinanceSource → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimIVROption → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimRemedyDetail → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimRemedyUnmappedSites → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimRemedyUser → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimRemedyUserGroup → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimReportingSource → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimResult → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimReviewStatus → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimService → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimServiceAppointment → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimServiceAppointmentDetail → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimServiceAppointmentDetail_BKP → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimServiceType → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimStatus → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimStatusType → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.DimSurveyAuditDetail
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.DimSurveyAuditDetail_BK_20211018
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.DimSurveyQuestion
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.DimVehicle
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.DimVehicleHistory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.DimVehicleType
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.DimVin
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.DimVinHistory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_AccountingDetail
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_AccountingDetail_arch
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_AccountingDetail_ToBeDeleted
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_AccountingDetailCurrent
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_AdvertisingExpense
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_ASI
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_AutoTrader
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_AutoTraderVINLevel
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_AutoTraderVINLevel_338_339
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_BlackBookLeads
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_CallBright
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_CarsImpression
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_CarsInvoice
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_CarsLeads
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_DataLoad
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_DDCVehicleViews
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_EPTNotification
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_GLBalances
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_GLChecks
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_GLSchedule
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_GLSchedule_arc
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_GLScheduleSummary
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_GLScheduleSummary_bk_12_11_2023
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_GoldDigger
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_GridPenentration
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HFM
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HFM_20250619
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HFM_20250819
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HFM_20250916
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HFM_Backup20250819
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HFM_bk
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HFM_bk_20230630
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HFM_bk_20230712
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HFM_Budget_T5_2025
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HFM_Dev
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HFM_Dev2
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HFM_Dev3
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HFM_Dev4
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HFM_Snapshot
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HFMBudget
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HFMManual
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HROverTime
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HRTurnOver
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_Jumpstart
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_LeadBySource
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_Merchandising
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_Opportunity
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_PartsSalesDetail
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_PromoMailing
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_RetailUnits
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_SAAR
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_SecurityAwareness
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_SecurityOffenses
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_SEM
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_SEO
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_Service
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_Service_arch
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_Service_DISCOUNT_NOT_MATCHED
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_ServiceDetail
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_ServiceDetail_arch
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_ServiceDetail_DISCOUNT_NOT_MATCHED
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_StopSaleUsed
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_SymantecEvents
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_TemplateData
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_test_service
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_TradeAppraisal
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_TrafficManagement
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_TrafficManagementATIM
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_Vulnerabilities
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_WebPageViews
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_WebStats
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_WhiteHatSecurity_Event
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactCallSource
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactCallSourceNew
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactCollisionCSI
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactCSIQuarterly
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.factFIRE
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.factFIRE_BMWMini
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactFireBookings_preDW
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.factFIREBookingsWeOwe
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactRemedy
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactServiceAppointment
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactServiceAppointmentDetail
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactSurveyAuditDetail
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactSurveyAuditDetail\_\_BK_20211018
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactVehiclePriceChangeNotification
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.GLDetail\_ MissingAcctInfo
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Sonic_Dim_CarsLeadType
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Sonic_Dim_CarsStockType
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Sonic_Dim_CarsTimeZone
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Sonic_Dim_CarsVehicleStatus
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Sonic_Fact_CarsVINLeads
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.TargetSourceRel
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.DimSurveyAudit → dbo.wrk_Dim_HFMBrand
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_src_sys_id" in both tables
+  - Column: `Meta_Src_Sys_ID` → `Meta_Src_Sys_ID`
+- **column_match**: dbo.Dim_DMSVendor → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Dim_GLDetail → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Dim_GLDetail_arch → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Dim_GLDetail_ToBeDeleted → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Dim_Vendor → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBAdName → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimGSCAppearance → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimGSCCountry → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimGSCDevice → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimGSCLandingPage → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimGSCSearchQuery → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimGSCSearchType → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimGSCSite → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimMarket → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimRegion → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimRMDepartment → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimRMSource → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimRMStoreNames → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.DimTextPerformance
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FacebookCustomerExport
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_AccountingDetail
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_AccountingDetail_arch
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_AccountingDetail_ToBeDeleted
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_AccountingDetailCurrent
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_AccountingSummary
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_AdvertisingExpense
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_ASI
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_CarsImpression
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_CarsLeads
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_CustomerSatisfactionIndex
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_EPTNotification
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_GridPenentration
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HROverTime
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_HRTurnOver
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_Opportunity
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_RetailUnits
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_SAAR
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_StopSaleUsed
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_TemplateData
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_TradeAppraisal
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_TrafficManagement
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_TrafficManagementATIM
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_WebPageViews
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.Fact_WebStats
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactCBAMarketTarget
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactFBCampaignDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactFBCampaignMonthly
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactFBOfflineMetrices
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactGSCAppearanceDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactGSCDevicesCountryDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactGSCPagesDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactGSCQueryDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactRMReviewMetrics
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactRMReviewMonthly
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.QuartileOpportunityMart
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionId`
+- **column_match**: dbo.DimSurveyAudit → dbo.RegionAssociate
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.StartTotalMORMetrics
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.wrk_Dim_HFMBrand
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurvey → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "campaignid" in both tables
+  - Column: `CampaignID` → `CampaignID`
+- **column_match**: dbo.DimSurveyAudit → dbo.vw_GoogleAds
+  - Confidence: 80%
+  - Evidence: Exact column name match: "campaignid" in both tables
+  - Column: `CampaignID` → `campaignId`
+- **column_match**: dbo.DimSurveyAudit → dbo.vw_GoogleAds_Advertising
+  - Confidence: 80%
+  - Evidence: Exact column name match: "campaignid" in both tables
+  - Column: `CampaignID` → `campaignId`
+- **column_match**: dbo.DimSurveyAudit → dbo.vw_GoogleAds_Advertising_new
+  - Confidence: 80%
+  - Evidence: Exact column name match: "campaignid" in both tables
+  - Column: `CampaignID` → `campaignId`
+- **column_match**: dbo.DimSurvey → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "emailid" in both tables
+  - Column: `EmailID` → `EmailID`
+- **column_match**: dbo.DimSurvey → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "surveyid" in both tables
+  - Column: `SurveyID` → `SurveyID`
+
+## Governance
+
+- **Last Extracted**: 2026-05-13T11:28:24.843Z
+- **Data Classification**: To be assigned
+- **Stewardship**: To be assigned
+- **Compliance**: Review for GDPR/HIPAA applicability
+- **Extractor Warnings**: Present (see Extraction Notes)

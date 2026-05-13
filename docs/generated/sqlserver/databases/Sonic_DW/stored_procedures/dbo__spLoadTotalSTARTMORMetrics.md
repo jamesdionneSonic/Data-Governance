@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -25,7 +27,7 @@ Metadata auto-extracted from SQL Server.
 
 
 CREATE PROC [dbo].[spLoadTotalSTARTMORMetrics]
-AS 
+AS
 
 /*********************************************************************************
 Author: Sudip Karki
@@ -41,9 +43,82 @@ DECLARE @Summary TABLE ( [Action] VARCHAR(20));
 --DECLARE @Inserts INT, @Updates INT;
 
 
-MERGE StartTotalMORMetrics
+MERGE StartTotalMORMetrics TGT
+	USING vw_TotalStart SRC
+	ON TGT.StartMetricsKey = SRC.StartMetricsKey
+	AND TGT.SourceMetricsKey = SRC.SourceMetricsKey
+
+WHEN MATCHED AND
+	(ISNULL(SRC.StatCount,0) !=  ISNULL(TGT.StatCount,0)
+	 OR ISNULL(SRC.Amount,0) != ISNULL(TGT.Amount,0))
+THEN UPDATE SET
+			TGT.StatCount		=  SRC.StatCount
+		   ,TGT.Amount			=  SRC.Amount
+		   ,TGT.Meta_lastDMLAction = 'U'
+		   ,TGT.Meta_LastUpdateDate = GETDATE()
+
+WHEN NOT MATCHED THEN INSERT
+	 ( [StartMetricsKey]
+      ,[SourceMetricsKey]
+      ,[EntityKey]
+      ,[FiscalDateKey]
+      ,[FiscalMonthKey]
+      ,[AccountMgmtKey]
+      ,[DepartmentKey]
+      ,[ScenarioKey]
+      ,[Amount]
+      ,[StatCount]
+      ,[Meta_LoadDate]
+      ,[UserID]
+      ,[Meta_ComputerName]
+      ,[Meta_LastUpdateDate]
+      ,[Meta_LastDMLAction]
+
+	  )
+
+
+VALUES
+	(
+	   SRC.[StartMetricsKey]
+      ,SRC.[SourceMetricsKey]
+      ,SRC.[EntityKey]
+      ,SRC.[FiscalDateKey]
+      ,SRC.[FiscalMonthKey]
+      ,SRC.[AccountMgmtKey]
+      ,SRC.[DepartmentKey]
+      ,SRC.[ScenarioKey]
+      ,SRC.[Amount]
+      ,SRC.[StatCount]
+      ,GETDATE()
+      ,USER_ID()
+      ,HOST_NAME()
+      ,GETDATE()
+      ,'I'
+
+	)
+OUTPUT $action INTO @Summary;
+
+INSERT INTO [ETL_Staging].[Stage].[START_MergeLog]
+([Action],[RecordCount])
+	SELECT
+		[Action]
+	   ,COUNT(*) RecordCount
+	FROM @Summary
+	GROUP BY [Action]
+
+;
+
+
+END
+
+
+
+
+
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

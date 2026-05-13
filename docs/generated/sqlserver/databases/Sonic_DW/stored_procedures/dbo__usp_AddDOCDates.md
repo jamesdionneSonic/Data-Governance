@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -35,8 +37,61 @@ SET NOCOUNT ON
 BEGIN TRY
 
 DECLARE @NextMonthStartDate date = DateAdd(d, 1, EOMONTH(CONVERT(CHAR(10), @StartDocDate, 120)))
+
+----- Update Final DOC Date -----
+UPDATE [dbo].[Dim_Date]
+   SET [DocRolloverFlag] = 2
+ WHERE DateKey = @FinalDocDate
+
+
+ ---- Update Day Before Final DOC Date
+ UPDATE [dbo].[Dim_Date]
+   SET [DocRolloverFlag] = 4
+ WHERE DateKey IN (SELECT DateKey
+  FROM [Sonic_DW].[dbo].[Dim_Date]
+  WHERE DayNumberOfWeek_Sun_Start BETWEEN 2 and 6 and
+  datekey < @FinalDocDate
+  AND datekey >= CONVERT(CHAR(8),DATEADD(DAY,1,EOMONTH(CONVERT(CHAR(10), @FinalDocDate, 120),-1)),112))
+
+
+
+ ---- Update Off Day DOC Date
+ UPDATE [dbo].[Dim_Date]
+   SET [DocRolloverFlag] = 3
+ WHERE DateKey > @FinalDocDate AND DateKey < @StartDocDate
+
+
+
+ ---- Update First DOC Date
+ UPDATE [dbo].[Dim_Date]
+   SET [DocRolloverFlag] = 1
+      ,[DocRolloverDate] = @StartDocDate
+ WHERE DateKey = @StartDocDate
+
+
+
+ ---- Update Days Inbetween DOC Dates
+ UPDATE [dbo].[Dim_Date]
+   SET [DocRolloverFlag] = 0
+      ,[DocRolloverDate] = @StartDocDate
+ WHERE DateKey > @StartDocDate
+  and DateKey <= (SELECT TOP (1) DateKey FROM (SELECT TOP (4) DateKey FROM Dim_Date WHERE FullDate >= @NextMonthStartDate and DayNumberOfWeek_Sun_Start BETWEEN 2 and 6
+					and IsCompanyHoliday = 'N' ORDER BY DateKey) as a ORDER BY DateKey DESC)
+
+
+END TRY
+
+
+BEGIN CATCH
+    SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_MESSAGE() AS ErrorMessage
+    RETURN -1
+END CATCH
+
+
+SET NOCOUNT OFF
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

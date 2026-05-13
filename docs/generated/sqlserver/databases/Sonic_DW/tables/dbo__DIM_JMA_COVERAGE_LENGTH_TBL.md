@@ -13,10 +13,15 @@ depends_on:
   - dbo.FACT_JMA_CONTRACT_TBL
 row_count: 0
 size_kb: 0
+column_count: 0
+index_count: 0
+check_constraint_count: 0
 extraction_warnings:
   - MISSING_VIEW_DATABASE_STATE
+  - LARGE_EXTRACTION_LITE_MODE
+  - VIEW_COLUMN_EXTRACTION_SKIPPED
   - LITE_MODE_ENABLED
-extracted_at: 2026-05-09T12:34:14.349Z
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -31,7 +36,9 @@ Metadata auto-extracted from SQL Server.
 ## Extraction Notes
 
 - **MISSING_VIEW_DATABASE_STATE**: Missing VIEW DATABASE STATE permission. Row count and size metrics are unavailable.
-- **LITE_MODE_ENABLED**: Column-level lineage analysis disabled for large extraction (751 tables). Only explicit foreign keys detected.
+- **LARGE_EXTRACTION_LITE_MODE**: Column extraction skipped: 751 tables exceeds threshold. Use scoped extraction for column-level lineage.
+- **VIEW_COLUMN_EXTRACTION_SKIPPED**: View column extraction skipped: 523 views exceeds threshold. Use scoped extraction for full view metadata.
+- **LITE_MODE_ENABLED**: Column-level relationship detection skipped for 751 tables. Column metadata extracted but not cross-table matched.
 
 ## Relationships
 
@@ -44,7 +51,7 @@ Metadata auto-extracted from SQL Server.
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z
 - **Data Classification**: To be assigned
 - **Stewardship**: To be assigned
 - **Compliance**: Review for GDPR/HIPAA applicability

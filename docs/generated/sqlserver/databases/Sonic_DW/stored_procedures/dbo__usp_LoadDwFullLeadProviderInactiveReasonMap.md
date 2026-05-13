@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -22,7 +24,7 @@ Metadata auto-extracted from SQL Server.
 ```sql
 
 Create Procedure dbo.usp_LoadDwFullLeadProviderInactiveReasonMap (@ETLExecutionID int)
-as 
+as
 --exec usp_LoadDwFullCompanySource 999
 
 DECLARE @rowsdeleted int , @rowsInserted int , @rowsUpdated int;
@@ -36,9 +38,73 @@ INSERT INTO [dbo].[dwFullLeadProviderInactiveReasonMap]
            ,[lSourceID]
            ,[lDealSubstatusID]
            ,[szDealSubStatus]
-         
+           ,[szInactiveReason]
+           ,[bActive]
+           ,[dtEntry]
+           ,[dtLastEdit]
+		   ,[ETLExecution_ID])
+
+SELECT [lLeadProviderInactiveReasonMapID]
+      ,[lCompanyID]
+      ,[lSourceID]
+      ,[lDealSubstatusID]
+      ,[szDealSubStatus]
+      ,[szInactiveReason]
+      ,[bActive]
+      ,[dtEntry]
+      ,[dtLastEdit]
+	  ,@ETLExecutionID
+FROM [dbo].[dwDiffLeadProviderInactiveReasonMap_I];
+
+SELECT @rowsinserted = @@ROWCOUNT;
+
+
+-- Delete Rows to be Updated
+DELETE DwFullLeadProviderInactiveReasonMap where [lLeadProviderInactiveReasonMapID] in ( select [lLeadProviderInactiveReasonMapID] from [dwDiffLeadProviderInactiveReasonMap_U]);
+
+-- InsertUpdatedRows
+INSERT INTO [dbo].[dwFullLeadProviderInactiveReasonMap]
+           ([lLeadProviderInactiveReasonMapID]
+           ,[lCompanyID]
+           ,[lSourceID]
+           ,[lDealSubstatusID]
+           ,[szDealSubStatus]
+           ,[szInactiveReason]
+           ,[bActive]
+           ,[dtEntry]
+           ,[dtLastEdit]
+		   ,[ETLExecution_ID])
+
+SELECT [lLeadProviderInactiveReasonMapID]
+      ,[lCompanyID]
+      ,[lSourceID]
+      ,[lDealSubstatusID]
+      ,[szDealSubStatus]
+      ,[szInactiveReason]
+      ,[bActive]
+      ,[dtEntry]
+      ,[dtLastEdit]
+	  ,@ETLExecutionID
+FROM [dbo].[dwDiffLeadProviderInactiveReasonMap_U];
+
+SELECT @rowsupdated = @@ROWCOUNT;
+
+  		--Deletes should follow one of these options:
+		--Either hard delete rows
+DELETE DwFullLeadProviderInactiveReasonMap WHERE [lLeadProviderInactiveReasonMapID] in ( SELECT [lLeadProviderInactiveReasonMapID] FROM [dwDiffLeadProviderInactiveReasonMap_D]);
+		--or soft delete the rows using dwActive.   In order to do this we'd need to add a column for dwactive.
+		 --UPDATE dwFullCompanySource
+		 --SET dwActive = 0
+		 --WHERE lCompanySourceID in ( SELECT lCompanySourceID FROM dwDiffCompanySource_D)
+
+SELECT @rowsdeleted = @@ROWCOUNT;
+
+  		-- generate a time stamp for this Activity load
+INSERT INTO dbo.eLeads_Load_UDI_status (ExecutionDate, InsertedCount, DeletedCount, UpdateCount, TableName,StartDateTime, EndDateTime, CompletionStatus, ETLExecution_ID)
+SELECT @ExecutionDate, @rowsinserted, @rowsdeleted, @rowsupdated, 'daily load - dwFullLeadProviderInactiveReasonMap', null, getdate(), 'Y', @ETLExecutionID;
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

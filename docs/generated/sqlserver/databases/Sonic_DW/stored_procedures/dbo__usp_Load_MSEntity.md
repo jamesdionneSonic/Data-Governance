@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -43,7 +45,7 @@ BEGIN TRY
 --@MSEntityID, @MSCreatedUserID, @MSComments
 
 Insert into dbo.MSEntity
-   Select 
+   Select
       -- Procedure INPUT keyed user id
  @MSState as MSState
 ,@MSCity as MSCity
@@ -51,9 +53,66 @@ Insert into dbo.MSEntity
 ,@MSUserID as MSEntityCreatedBy
 ,GETDATE() as MSEntityCreatedOn
 
-  
+   WHERE (1=1
+      );
+
+  SELECT @MSEntityID = (SELECT MSEntityID from MSEntity where
+	MSState = @MSState
+	AND MSCity = @MSCity
+	AND MSStore = @MSStore)
+
+
+  INSERT INTO dbo.MSSurvey
+   SELECT
+      @MSUserID AS MSSurveyCreatedBy -- Procedure INPUT keyed user id
+      ,GETDATE() AS MSSurveyCreateDate
+      ,NULL  AS MSSurveyComments
+      ,e.MSEntityID AS MSEntityID
+   FROM Sonic_DW.dbo.MSEntity e
+   WHERE (1=1
+       AND e.MSEntityID = @MSEntityID
+
+      );
+
+
+INSERT INTO dbo.MSAnswer
+
+SELECT 0 AS QuestionScore
+	,NULL AS MSScoreSubmitDate
+	,NULL AS MSScoreUserID
+	,NULL AS MSUpdateDate
+	,NULL AS MSAnswerComment
+	,q.[MSQuestionID]
+	,s.MSSurveyID
+	,e.MSEntityID
+	,1 as MSValidValuesID
+FROM [dbo].[MSQuestion] q
+  CROSS JOIN MSEntity e
+  LEFT JOIN MSSurvey s
+  on s.msentityID = e.msentityID
+  WHERE (1=1
+       AND e.MSEntityID = @MSEntityID
+
+      );
+
+
+END TRY
+
+
+BEGIN CATCH
+ SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_MESSAGE() AS ErrorMessage
+    RETURN -1
+END CATCH
+
+
+
+
+SET NOCOUNT OFF
+
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

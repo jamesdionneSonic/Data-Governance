@@ -4,7 +4,11 @@
 const { createApp, nextTick } = Vue;
 const { createVuetify } = Vuetify;
 
-const vuetify = createVuetify();
+const vuetify = createVuetify({
+  icons: {
+    defaultSet: 'mdi',
+  },
+});
 
 const navSections = [
   {
@@ -149,6 +153,9 @@ const appConfig = {
       token: localStorage.getItem('dg_token') || '',
       refreshToken: localStorage.getItem('dg_refresh') || '',
       currentUser: JSON.parse(localStorage.getItem('dg_user') || 'null'),
+      isLoggingOut: false,
+      isRefreshingToken: false,
+      showProfileSecrets: false,
       toast: '',
       apiErrors: [],
       health: null,
@@ -157,7 +164,7 @@ const appConfig = {
       activity: null,
       recommendations: null,
       insights: null,
-      browseQuery: 'sales.orders',
+      browseQuery: '',
       browseResults: [],
       searchFacets: null,
       browseSort: 'relevance',
@@ -168,7 +175,7 @@ const appConfig = {
       },
       objectList: [],
       selectedObjectDetail: null,
-      selectedObjectId: 'sales.orders',
+      selectedObjectId: '',
       selectedObjectGovernance: null,
       editableObjectMetadata: {
         description: '',
@@ -248,6 +255,13 @@ const appConfig = {
         scope: 'mine',
         loading: false,
       },
+      promptDialog: {
+        show: false,
+        title: '',
+        message: '',
+        fields: [],
+        resolve: null,
+      },
       importer: {
         files: [],
         parsed: [],
@@ -321,17 +335,70 @@ const appConfig = {
     authHeader() {
       return this.token ? { Authorization: `Bearer ${this.token}` } : {};
     },
-    isMeilisearchHealthy() {
-      return this.importer.status?.meilisearchHealthy === true;
+    profileInitials() {
+      const name = this.currentUser?.name || this.currentUser?.email || 'User';
+      const parts = String(name)
+        .split(/\s+|@|\.|_/)
+        .filter(Boolean);
+      if (parts.length === 0) {
+        return 'U';
+      }
+      if (parts.length === 1) {
+        return parts[0].slice(0, 2).toUpperCase();
+      }
+      return `${parts[0][0] || ''}${parts[1][0] || ''}`.toUpperCase();
+    },
+    accessTokenPayload() {
+      return this.decodeTokenPayload(this.token);
+    },
+    refreshTokenPayload() {
+      return this.decodeTokenPayload(this.refreshToken);
+    },
+    profileOverviewRows() {
+      const accessExp = this.accessTokenPayload?.exp
+        ? this.formatEpochSeconds(this.accessTokenPayload.exp)
+        : 'Unavailable';
+      const refreshExp = this.refreshTokenPayload?.exp
+        ? this.formatEpochSeconds(this.refreshTokenPayload.exp)
+        : 'Unavailable';
+      const issuedAt = this.accessTokenPayload?.iat
+        ? this.formatEpochSeconds(this.accessTokenPayload.iat)
+        : 'Unavailable';
+
+      return [
+        {
+          label: 'User ID',
+          value: this.currentUser?.id || this.accessTokenPayload?.sub || 'Unavailable',
+        },
+        { label: 'Issued At', value: issuedAt },
+        { label: 'Access Expires', value: accessExp },
+        { label: 'Refresh Expires', value: refreshExp },
+        {
+          label: 'Databases',
+          value: (this.currentUser?.databases || []).length
+            ? this.currentUser.databases.join(', ')
+            : 'All / Not Scoped',
+        },
+      ];
+    },
+    accessTokenPreview() {
+      return this.showProfileSecrets ? this.token : this.maskToken(this.token);
+    },
+    refreshTokenPreview() {
+      return this.showProfileSecrets ? this.refreshToken : this.maskToken(this.refreshToken);
+    },
+    isElasticsearchHealthy() {
+      // Changed to look for the elasticsearch key
+      return this.importer.status?.elasticsearchHealthy === true;
     },
     canLoadToIndex() {
-      return this.isMeilisearchHealthy;
+      return this.isElasticsearchHealthy;
     },
-    meilisearchStatusLabel() {
-      if (this.importer.status?.meilisearchHealthy === true) {
+    elasticsearchStatusLabel() {
+      if (this.importer.status?.elasticsearchHealthy === true) {
         return 'Connected';
       }
-      if (this.importer.status?.meilisearchHealthy === false) {
+      if (this.importer.status?.elasticsearchHealthy === false) {
         return 'Unavailable';
       }
       return 'Checking...';
@@ -483,7 +550,7 @@ const appConfig = {
           ];
         default:
           return [
-            `Meilisearch: ${this.meilisearchStatusLabel}`,
+            `Elasticsearch: ${this.elasticsearchStatusLabel}`,
             `Last generated path: ${this.importer.status?.lastGeneratedPath || 'n/a'}`,
             'Use workflow controls to keep pipeline healthy end to end.',
           ];
@@ -544,13 +611,10 @@ const appConfig = {
       );
 
       const facetTypes = this.searchFacets?.types
-        ? Object.keys(this.searchFacets.types)
-            .map((value) => normalizeType(value))
-            .filter(Boolean)
+        ? this.searchFacets.types.map((value) => normalizeType(value)).filter(Boolean)
         : Array.from(sourceTypes);
-
       const facetDatabases = this.searchFacets?.databases
-        ? Object.keys(this.searchFacets.databases).filter(Boolean)
+        ? this.searchFacets.databases.filter(Boolean)
         : Array.from(sourceDatabases);
 
       return {
@@ -732,6 +796,102 @@ const appConfig = {
     clearApiErrors() {
       this.apiErrors = [];
     },
+    decodeTokenPayload(token) {
+      if (!token || typeof token !== 'string') {
+        return null;
+      }
+
+      const parts = token.split('.');
+      if (parts.length < 2) {
+        return null;
+      }
+
+      try {
+        const encoded = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+        const padded = encoded.padEnd(encoded.length + ((4 - (encoded.length % 4)) % 4), '=');
+        const decoded = atob(padded);
+        return JSON.parse(decoded);
+      } catch (_err) {
+        return null;
+      }
+    },
+    formatEpochSeconds(value) {
+      const asNumber = Number(value || 0);
+      if (!asNumber) {
+        return 'Unavailable';
+      }
+
+      const asDate = new Date(asNumber * 1000);
+      if (Number.isNaN(asDate.getTime())) {
+        return 'Unavailable';
+      }
+
+      return asDate.toLocaleString();
+    },
+    maskToken(token) {
+      if (!token) {
+        return 'Unavailable';
+      }
+
+      if (token.length <= 16) {
+        return '••••••••';
+      }
+
+      return `${token.slice(0, 10)}…${token.slice(-8)}`;
+    },
+    async copyTextToClipboard(value, label) {
+      if (!value) {
+        this.showToast(`${label} is not available`);
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(value);
+        this.showToast(`${label} copied`);
+      } catch (_err) {
+        this.showToast(`Unable to copy ${label.toLowerCase()}`);
+      }
+    },
+    async refreshAccessTokenFromProfile() {
+      if (!this.refreshToken || this.isRefreshingToken) {
+        return;
+      }
+
+      this.isRefreshingToken = true;
+      try {
+        const payload = await this.api('/api/v1/auth/refresh', {
+          method: 'POST',
+          includeAuth: false,
+          body: JSON.stringify({ refreshToken: this.refreshToken }),
+        });
+
+        if (payload?.token) {
+          this.token = payload.token;
+          localStorage.setItem('dg_token', this.token);
+        }
+
+        if (payload?.refreshToken) {
+          this.refreshToken = payload.refreshToken;
+          localStorage.setItem('dg_refresh', this.refreshToken);
+        }
+
+        if (payload?.user) {
+          this.currentUser = payload.user;
+          localStorage.setItem('dg_user', JSON.stringify(this.currentUser));
+        }
+
+        if (payload?.token || payload?.refreshToken) {
+          this.showToast('Token refresh completed.');
+          return;
+        }
+
+        this.showToast(payload?.message || 'Refresh endpoint responded without new token.');
+      } catch (err) {
+        this.showToast(`Token refresh failed: ${err.message}`);
+      } finally {
+        this.isRefreshingToken = false;
+      }
+    },
     setPersona(persona) {
       this.reports.persona = persona;
     },
@@ -748,6 +908,27 @@ const appConfig = {
       if (item.view) {
         this.onViewChange(item.view);
       }
+    },
+    openCustomPrompt(title, message, fields) {
+      return new Promise((resolve) => {
+        this.promptDialog.title = title;
+        this.promptDialog.message = message;
+        this.promptDialog.fields = fields.map((f) => ({ ...f, value: '' }));
+        this.promptDialog.resolve = resolve;
+        this.promptDialog.show = true;
+      });
+    },
+    submitCustomPrompt() {
+      this.promptDialog.show = false;
+      const result = this.promptDialog.fields.reduce((acc, field) => {
+        acc[field.key] = field.value;
+        return acc;
+      }, {});
+      if (this.promptDialog.resolve) this.promptDialog.resolve(result);
+    },
+    cancelCustomPrompt() {
+      this.promptDialog.show = false;
+      if (this.promptDialog.resolve) this.promptDialog.resolve(null);
     },
     toggleSidebar() {
       this.sidebarCollapsed = !this.sidebarCollapsed;
@@ -926,15 +1107,38 @@ const appConfig = {
         this.showToast(`Login failed: ${err.message}`);
       }
     },
-    logout() {
+    clearSessionState() {
       this.stopImportStatusPolling();
       this.token = '';
       this.refreshToken = '';
       this.currentUser = null;
+      this.showProfileSecrets = false;
+      this.apiErrors = [];
       localStorage.removeItem('dg_token');
       localStorage.removeItem('dg_refresh');
       localStorage.removeItem('dg_user');
-      this.showToast('Logged out');
+    },
+    async logout() {
+      if (this.isLoggingOut) {
+        return;
+      }
+
+      this.isLoggingOut = true;
+      try {
+        if (this.token) {
+          await this.api('/api/v1/auth/logout', {
+            method: 'POST',
+            trackError: false,
+          });
+        }
+      } catch (_err) {
+        // Ignore logout endpoint failures and always clear local session
+      } finally {
+        this.clearSessionState();
+        this.isLoggingOut = false;
+      }
+
+      this.showToast('Logged out. Sign in again to get a fresh token.');
     },
     async bootstrapData() {
       // Auto-enable demo mode if no real data or token issues
@@ -1022,19 +1226,22 @@ const appConfig = {
       return !!approverId && !!currentUserId && approverId === currentUserId;
     },
     async reviewMarketplaceRequest(requestItem, action) {
-      if (!requestItem?.requestId) {
-        return;
-      }
+      if (!requestItem?.requestId) return;
 
-      const comment =
-        window.prompt(`Comment for ${action.replace('_', ' ')} (optional):`, '') || '';
+      const result = await this.openCustomPrompt(
+        'Review Request',
+        `Action: ${action.replace('_', ' ')}`,
+        [{ key: 'comment', label: 'Comment (optional)', type: 'textarea' }]
+      );
+
+      if (!result) return; // User clicked Cancel
 
       try {
         await this.api(
           `/api/v1/marketplace/requests/${encodeURIComponent(requestItem.requestId)}/review`,
           {
             method: 'POST',
-            body: JSON.stringify({ action, comment }),
+            body: JSON.stringify({ action, comment: result.comment }),
           }
         );
         this.showToast(`Request moved to ${action}.`);
@@ -1044,19 +1251,24 @@ const appConfig = {
       }
     },
     async fulfillMarketplaceRequest(requestItem) {
-      if (!requestItem?.requestId) {
-        return;
-      }
+      if (!requestItem?.requestId) return;
 
-      const assignmentReference = window.prompt('Assignment reference (optional):', '') || '';
-      const notes = window.prompt('Fulfillment notes (optional):', '') || '';
+      const result = await this.openCustomPrompt('Fulfill Request', 'Enter fulfillment details.', [
+        { key: 'assignmentReference', label: 'Assignment reference (optional)', type: 'text' },
+        { key: 'notes', label: 'Fulfillment notes (optional)', type: 'textarea' },
+      ]);
+
+      if (!result) return; // User clicked Cancel
 
       try {
         await this.api(
           `/api/v1/marketplace/requests/${encodeURIComponent(requestItem.requestId)}/fulfill`,
           {
             method: 'POST',
-            body: JSON.stringify({ assignmentReference, notes }),
+            body: JSON.stringify({
+              assignmentReference: result.assignmentReference,
+              notes: result.notes,
+            }),
           }
         );
         this.showToast('Request fulfilled.');
@@ -1596,6 +1808,13 @@ const appConfig = {
         .replace(/\n/g, '<br/>');
     },
     async loadObjectContext() {
+      // Guard clause: Stop if no object is selected
+      if (!this.selectedObjectId) {
+        this.selectedObjectDetail = null;
+        this.selectedObjectGovernance = null;
+        return;
+      }
+
       try {
         const [detail, upstream, downstream, impact, governanceContext] = await Promise.all([
           this.api(`/api/v1/objects/${encodeURIComponent(this.selectedObjectId)}`),
@@ -1629,39 +1848,6 @@ const appConfig = {
       } catch (_err) {
         this.selectedObjectDetail = null;
         this.selectedObjectGovernance = null;
-      }
-    },
-    async saveSelectedObjectMetadata() {
-      if (!this.selectedObjectId) {
-        return;
-      }
-
-      try {
-        const payload = await this.api(
-          `/api/v1/objects/${encodeURIComponent(this.selectedObjectId)}`,
-          {
-            method: 'PUT',
-            body: JSON.stringify({
-              description: this.editableObjectMetadata.description,
-              owner: this.editableObjectMetadata.owner,
-              steward: this.editableObjectMetadata.steward,
-              domain_manager: this.editableObjectMetadata.domain_manager,
-              custodian: this.editableObjectMetadata.custodian,
-              sensitivity: this.editableObjectMetadata.sensitivity,
-              tags: this.editableObjectMetadata.tags
-                .split(',')
-                .map((item) => item.trim())
-                .filter(Boolean),
-            }),
-          }
-        );
-
-        this.selectedObjectDetail = payload.data || this.selectedObjectDetail;
-        this.showToast('Metadata updated in markdown.');
-        await this.loadObjectContext();
-        await this.loadBrowse();
-      } catch (err) {
-        this.showToast(`Metadata update failed: ${err.message}`);
       }
     },
     async loadGlossary() {
@@ -1717,6 +1903,13 @@ const appConfig = {
       }
     },
     async loadDiscovery() {
+      // Guard clause: Stop if no object is selected
+      if (!this.selectedObjectId) {
+        this.discoveryGraph = null;
+        this.impactData = null;
+        return;
+      }
+
       try {
         const [graph, impact, matrix] = await Promise.all([
           this.api(
@@ -2194,6 +2387,11 @@ const appConfig = {
         ...this.importer.sqlServer,
       };
 
+      // THIS IS THE CRITICAL NEW SECTION
+      if (typeof sqlPayload.database === 'object' && sqlPayload.database !== null) {
+        sqlPayload.database = sqlPayload.database.value || sqlPayload.database.title || '';
+      }
+
       if (auth === 'windows' && useIntegratedAuth) {
         sqlPayload.username = '';
         sqlPayload.password = '';
@@ -2273,10 +2471,7 @@ const appConfig = {
 
         if (isTableMode) {
           // Table mode: extract specific tables
-          sqlPayload.selectedTables = this.importer.sqlServer.selectedTables.map((id) => ({
-            schema: id.split('.')[0],
-            name: id.split('.')[1],
-          }));
+          sqlPayload.selectedTables = this.importer.sqlServer.selectedTables;
         } else {
           // Schema mode: extract entire schemas
           sqlPayload.selectedSchemas = this.importer.sqlServer.selectedSchemas;
@@ -2311,8 +2506,11 @@ const appConfig = {
           return;
         }
 
+        if (this.importer.sqlServer.availableDatabases.length > 0) {
+          return;
+        }
+
         this.importer.sqlServer.discoveringDatabases = true;
-        this.importer.sqlServer.availableDatabases = [];
 
         const payload = await this.api('/api/v1/ingestion/connect-sql-server/databases', {
           method: 'POST',
@@ -2748,13 +2946,99 @@ const appConfig = {
                 {{ demoModeEnabled ? 'Disable Demo Data' : 'Enable Demo Data' }}
               </v-btn>
               <v-btn size="small" variant="tonal" @click="bootstrapData">Refresh All</v-btn>
-              <v-btn size="small" color="secondary" variant="tonal" @click="logout">Logout</v-btn>
+              <v-menu location="bottom end" :close-on-content-click="false" offset="8">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    icon
+                    variant="text"
+                    size="small"
+                    class="profile-trigger"
+                    :title="currentUser?.email || 'Profile'"
+                  >
+                    <v-avatar class="profile-avatar" size="30">{{ profileInitials }}</v-avatar>
+                  </v-btn>
+                </template>
+
+                <v-card class="profile-menu-card" min-width="360" elevation="6">
+                  <div class="profile-menu-header">
+                    <v-avatar class="profile-avatar" size="38">{{ profileInitials }}</v-avatar>
+                    <div class="profile-identity">
+                      <strong>{{ currentUser?.name || currentUser?.email || 'User' }}</strong>
+                      <span>{{ currentUser?.email || 'No email available' }}</span>
+                    </div>
+                  </div>
+
+                  <div class="profile-role-row">
+                    <v-chip
+                      v-for="role in (currentUser?.roles || ['Viewer'])"
+                      :key="role"
+                      size="x-small"
+                      variant="tonal"
+                    >{{ role }}</v-chip>
+                  </div>
+
+                  <div class="profile-section">
+                    <h5>Session Rundown</h5>
+                    <div class="profile-info-grid">
+                      <div class="profile-info-item" v-for="item in profileOverviewRows" :key="item.label">
+                        <span>{{ item.label }}</span>
+                        <strong>{{ item.value }}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="profile-section">
+                    <h5>Token Center</h5>
+                    <v-switch
+                      v-model="showProfileSecrets"
+                      density="compact"
+                      hide-details
+                      inset
+                      :label="showProfileSecrets ? 'Hide full tokens' : 'Show full tokens'"
+                    ></v-switch>
+
+                    <div class="profile-token-block">
+                      <span>Access Token</span>
+                      <code>{{ accessTokenPreview }}</code>
+                    </div>
+                    <div class="profile-token-block">
+                      <span>Refresh Token</span>
+                      <code>{{ refreshTokenPreview }}</code>
+                    </div>
+
+                    <div class="btn-row" style="margin-top:8px;">
+                      <v-btn size="small" variant="tonal" @click="copyTextToClipboard(token, 'Access token')">Copy Access</v-btn>
+                      <v-btn size="small" variant="tonal" @click="copyTextToClipboard(refreshToken, 'Refresh token')">Copy Refresh</v-btn>
+                      <v-btn
+                        size="small"
+                        color="primary"
+                        variant="tonal"
+                        :loading="isRefreshingToken"
+                        :disabled="isRefreshingToken || !refreshToken"
+                        @click="refreshAccessTokenFromProfile"
+                      >Refresh Token</v-btn>
+                    </div>
+                  </div>
+
+                  <div class="profile-footer">
+                    <v-btn size="small" variant="outlined" @click="loadProfile">Sync Profile</v-btn>
+                    <v-btn
+                      size="small"
+                      color="secondary"
+                      variant="tonal"
+                      :loading="isLoggingOut"
+                      :disabled="isLoggingOut"
+                      @click="logout"
+                    >Logout</v-btn>
+                  </div>
+                </v-card>
+              </v-menu>
             </div>
           </v-app-bar>
 
           <v-container fluid class="content">
             <div v-if="activeView === 'overview'">
-              <!-- Search Hero (Atlan/Alation style) -->
               <div class="search-hero" style="margin-bottom:14px;">
                 <h2>&#128269; Find anything in your data catalog</h2>
                 <p>Search tables, views, procedures, functions — all in one place</p>
@@ -2773,7 +3057,6 @@ const appConfig = {
               </div>
 
               <v-row dense>
-                <!-- Persona KPIs Header -->
                 <v-col cols="12">
                   <v-card variant="outlined" style="padding:12px 16px;">
                     <div class="section-header" style="margin-bottom:10px;">
@@ -2817,7 +3100,6 @@ const appConfig = {
                   </v-card>
                 </v-col>
 
-                <!-- Quality Radar -->
                 <v-col cols="12" sm="12" md="7" lg="8">
                   <v-card variant="outlined">
                     <v-card-title style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:12px;">Quality Radar</v-card-title>
@@ -2825,7 +3107,6 @@ const appConfig = {
                   </v-card>
                 </v-col>
 
-                <!-- Insights + Activity -->
                 <v-col cols="12" sm="12" md="5" lg="4">
                   <v-card variant="outlined">
                     <v-card-title style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:12px;">Persona Insights</v-card-title>
@@ -2848,7 +3129,6 @@ const appConfig = {
                   </v-card>
                 </v-col>
 
-                <!-- Recent Assets -->
                 <v-col cols="12" sm="12" md="8" lg="8">
                   <v-card variant="outlined">
                     <v-card-title style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:12px;">Recent Catalog Objects</v-card-title>
@@ -2892,7 +3172,6 @@ const appConfig = {
                   </v-card>
                 </v-col>
 
-                <!-- Workflow progress sidebar -->
                 <v-col cols="12" sm="12" md="4" lg="4">
                   <v-card variant="outlined">
                     <v-card-title style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:12px;">Pipeline Progress</v-card-title>
@@ -2923,7 +3202,7 @@ const appConfig = {
                       <div class="mini-stack">
                         <div class="mini-metric">
                           <span>Search Index</span>
-                          <v-chip size="x-small" :class="isMeilisearchHealthy ? 'pill-green' : 'pill-red'" variant="flat">{{ meilisearchStatusLabel }}</v-chip>
+                          <v-chip size="x-small" :class="isElasticsearchHealthy ? 'pill-green' : 'pill-red'" variant="flat">{{ elasticsearchStatusLabel }}</v-chip>
                         </div>
                         <div class="mini-metric">
                           <span>Demo Mode</span>
@@ -2945,7 +3224,6 @@ const appConfig = {
             </div>
 
             <div v-if="activeView === 'browse'">
-              <!-- Search bar -->
               <div class="search-hero" style="margin-bottom:14px;">
                 <h2>&#125; Search &amp; Catalog</h2>
                 <p>Find, explore, and understand every asset in your data ecosystem</p>
@@ -2964,7 +3242,6 @@ const appConfig = {
               </div>
 
               <v-row>
-                <!-- Facet Rail (Atlan / DataHub style) -->
                 <v-col cols="12" md="3" lg="2">
                 <div class="facet-rail">
                   <div class="facet-rail-title">Filters</div>
@@ -3084,10 +3361,8 @@ const appConfig = {
                 </div>
                 </v-col>
 
-                <!-- Main Results Area -->
                 <v-col cols="12" md="9" lg="10">
                 <div>
-                  <!-- Results header -->
                   <div class="section-header" style="margin-bottom:10px;">
                     <span class="section-title">
                       {{ filteredCatalogResults.length }} filtered results
@@ -3098,9 +3373,7 @@ const appConfig = {
                     </div>
                   </div>
 
-                  <!-- Search Results (as asset cards - Atlan style) -->
                   <div class="asset-results" v-if="filteredCatalogResults.length > 0">
-                    <!-- Search hits first -->
                     <div
                       v-for="item in filteredCatalogResults"
                       :key="item.id || item.name"
@@ -3144,7 +3417,6 @@ const appConfig = {
                     </div>
                   </div>
 
-                  <!-- Empty state (Alation / DataHub style) -->
                   <div v-else class="card">
                     <div class="empty-state">
                       <div class="empty-state-icon">&#128269;</div>
@@ -3154,7 +3426,6 @@ const appConfig = {
                     </div>
                   </div>
 
-                  <!-- Detail panel when object selected -->
                   <div class="detail-panel mt-12" v-if="selectedObjectDetail">
                     <div class="detail-header">
                       <div class="detail-header-row">
@@ -3396,7 +3667,6 @@ const appConfig = {
 
             <div v-if="activeView === 'discovery'">
               <v-row>
-              <!-- Graph controls -->
               <v-col cols="12">
               <v-card class="card" style="padding:12px 16px;" variant="outlined">
                 <div class="section-header" style="margin-bottom:8px;">
@@ -3422,7 +3692,6 @@ const appConfig = {
                   <v-text-field type="number" min="1" max="5" v-model.number="discoveryDepth" density="compact" variant="outlined" hide-details style="width:70px;" title="Depth"></v-text-field>
                   <v-btn color="primary" @click="loadDiscovery">Render Graph</v-btn>
                 </div>
-                <!-- Node legend -->
                 <div class="graph-legend">
                   <span class="legend-item"><span class="legend-dot" style="background:#2563eb;border-radius:2px;"></span>Table</span>
                   <span class="legend-item"><span class="legend-dot" style="background:#7c3aed;transform:rotate(45deg);"></span>View</span>
@@ -3434,7 +3703,6 @@ const appConfig = {
               </v-card>
               </v-col>
 
-              <!-- Blast Radius KPIs -->
               <v-row v-if="reports.blastRadius">
                 <v-col cols="12" sm="6" md="3">
                   <v-card class="card kpi" variant="outlined"><div class="value">{{ reports.blastRadius.impactedObjects }}</div><div class="label">Blast Radius</div></v-card>
@@ -3450,7 +3718,6 @@ const appConfig = {
                 </v-col>
               </v-row>
 
-              <!-- Graph canvas and Impact side panel -->
               <v-row>
               <v-col cols="12" md="8" lg="8">
               <v-card class="card" style="padding:12px;" variant="outlined">
@@ -3466,7 +3733,6 @@ const appConfig = {
               </v-card>
               </v-col>
 
-              <!-- Impact side panel -->
               <v-col cols="12" md="4" lg="4">
               <v-card class="card" style="padding:12px;" variant="outlined">
                 <h3>Impact Summary</h3>
@@ -3499,7 +3765,6 @@ const appConfig = {
               </v-col>
               </v-row>
 
-              <!-- Heat map / matrix -->
               <v-row>
               <v-col cols="12">
               <v-card class="card" variant="outlined">
@@ -3534,7 +3799,6 @@ const appConfig = {
 
             <div v-if="activeView === 'reports'">
               <v-row>
-              <!-- Executive KPIs -->
               <v-col cols="12">
               <v-card class="card" style="padding:12px 16px;" variant="outlined">
                 <div class="section-header" style="margin-bottom:10px;">
@@ -3651,7 +3915,6 @@ const appConfig = {
                 </div>
               </v-card>
 
-              <!-- Blast radius chart -->
               <v-card class="card span-8" variant="outlined">
                 <div class="section-header">
                   <span class="section-title">Blast Radius Analysis</span>
@@ -3670,7 +3933,6 @@ const appConfig = {
                 <div style="height:280px;margin-top:10px;"><canvas id="blast-radius-chart"></canvas></div>
               </v-card>
 
-              <!-- Heat map -->
               <v-card class="card span-4" variant="outlined">
                 <h3>Tier &times; Type Distribution</h3>
                 <div class="table-wrap" v-if="reports.blastHeatmap && reports.blastHeatmap.length">
@@ -3692,7 +3954,6 @@ const appConfig = {
                 </div>
               </v-card>
 
-              <!-- Critical Dependency Leaderboard (Select Star / Alation style) -->
               <v-card class="card span-12" variant="outlined">
                 <div class="section-header">
                   <span class="section-title">&#127942; Critical Dependency Leaderboard</span>
@@ -3723,7 +3984,6 @@ const appConfig = {
                 </div>
               </v-card>
 
-              <!-- Top Dependency Table -->
               <v-card class="card span-12" variant="outlined">
                 <div class="section-header">
                   <span class="section-title">All Dependency Reach</span>
@@ -3757,7 +4017,6 @@ const appConfig = {
                 </div>
               </v-card>
 
-              <!-- Export Center & One-Click Packs -->
               <v-card class="card span-7" variant="outlined">
                 <h3>Export Center</h3>
                 <div class="export-cards">
@@ -3794,7 +4053,6 @@ const appConfig = {
                 <div class="code-block mt-8" v-if="reports.sharedLink" style="word-break:break-all;">{{ reports.sharedLink }}</div>
               </v-card>
 
-              <!-- One-Click Persona Packs -->
               <v-card class="card span-5" variant="outlined">
                 <h3>One-Click Report Packs</h3>
                 <div class="pack-cards" style="grid-template-columns:1fr;">
@@ -4009,7 +4267,23 @@ const appConfig = {
                   <div class="col-2"><v-label>Auth Method</v-label><v-select v-model="importer.sqlServer.authentication" density="compact" variant="outlined" hide-details :items="[{ title: 'SQL Server Auth', value: 'sql-server' }, { title: 'Windows Auth', value: 'windows' }, { title: 'Azure AD', value: 'azure-ad' }]" item-title="title" item-value="value"></v-select></div>
                   <div class="col-3"><v-label>Server</v-label><v-text-field v-model="importer.sqlServer.server" placeholder="localhost or server.database.windows.net" density="compact" variant="outlined" hide-details></v-text-field></div>
                   <div class="col-2"><v-label>Port</v-label><v-text-field v-model.number="importer.sqlServer.port" type="number" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-3"><v-label>Database</v-label><v-select v-model="importer.sqlServer.database" :items="importer.sqlServer.availableDatabases" :loading="importer.sqlServer.discoveringDatabases" density="compact" variant="outlined" hide-details @focus="discoverSqlServerDatabases" placeholder="Select or auto-discover..."></v-select></div>
+                  <div class="col-3">
+                    <v-label>Database</v-label>
+                    <v-combobox
+                      v-model="importer.sqlServer.database"
+                      :items="importer.sqlServer.availableDatabases.length > 0 ? importer.sqlServer.availableDatabases : [{ title: 'No databases found', value: '' }]"
+                      :loading="importer.sqlServer.discoveringDatabases"
+                      item-title="title"
+                      item-value="value"
+                      density="compact"
+                      variant="outlined"
+                      hide-details
+                      @focus="discoverSqlServerDatabases"
+                      placeholder="Type or auto-discover..."
+                    ></v-combobox>
+                    <div v-if="importer.sqlServer.availableDatabases.length === 0 && !importer.sqlServer.discoveringDatabases" style="font-size:0.85em;color:#b71c1c;margin-top:2px;">No databases found for this server. You can type a database name manually.</div>
+                    <div style="font-size:0.85em;color:#666;margin-top:2px;">Start typing to filter or enter a database name.</div>
+                  </div>
                 </div>
                 <div class="form-row" style="margin-bottom: 8px;" v-if="importer.sqlServer.authentication === 'sql-server'">
                   <div class="col-6"><v-label>Username</v-label><v-text-field v-model="importer.sqlServer.username" density="compact" variant="outlined" hide-details></v-text-field></div>
@@ -4017,7 +4291,7 @@ const appConfig = {
                 </div>
                 <div class="form-row" style="margin-bottom: 8px;" v-if="importer.sqlServer.authentication === 'windows'">
                   <div class="col-12">
-                    <v-checkbox v-model="importer.sqlServer.useIntegratedAuth" density="compact" hide-details label="Use current Windows user (Integrated Auth)"></v-checkbox>
+                    <v-checkbox v-model="importer.sqlServer.useIntegratedAuth" density="compact" hide-details label="Use current Windows user (Integrated Auth)" color="primary" :class="{'checkbox-visible': true}"></v-checkbox>
                   </div>
                 </div>
                 <div class="form-row" style="margin-bottom: 6px;" v-if="importer.sqlServer.authentication === 'windows' && !importer.sqlServer.useIntegratedAuth">
@@ -4035,8 +4309,26 @@ const appConfig = {
                 </div>
                 <div class="form-row" style="margin-bottom: 15px;">
                   <div class="col-6" style="display:flex; gap:10px; align-items:center;">
-                    <v-checkbox v-model="importer.sqlServer.encrypt" density="compact" hide-details label="Encrypt Connection"></v-checkbox>
-                    <v-checkbox v-model="importer.sqlServer.trustServerCertificate" density="compact" hide-details label="Trust Server Cert"></v-checkbox>
+                    <div style="display:flex;align-items:center;gap:18px;">
+                      <v-checkbox
+                        v-model="importer.sqlServer.encrypt"
+                        density="compact"
+                        label="Encrypt Connection"
+                        color="primary"
+                        :class="'checkbox-visible always-show-checkbox'"
+                        hide-details="auto"
+                        style="min-width: 44px;"
+                      ></v-checkbox>
+                      <v-checkbox
+                        v-model="importer.sqlServer.trustServerCertificate"
+                        density="compact"
+                        label="Trust Server Cert"
+                        color="primary"
+                        :class="'checkbox-visible always-show-checkbox'"
+                        hide-details="auto"
+                        style="min-width: 44px;"
+                      ></v-checkbox>
+                    </div>
                   </div>
                   <div class="col-6" style="display:flex;align-items:end; gap:10px;">
                     <v-btn color="primary" @click="discoverSqlServerScope" :loading="importer.sqlServer.discovering" :disabled="importer.sqlServer.discovering || importer.sqlServer.connecting" style="flex:1;">{{ importer.sqlServer.discovering ? 'Discovering...' : 'Connect & Select Scope' }}</v-btn>
@@ -4065,10 +4357,9 @@ const appConfig = {
                       </div>
                     </div>
 
-                    <!-- Schema Mode: Simple checkboxes -->
                     <div v-if="importer.sqlServer.selectionMode === 'schema'" style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 10px; max-height: 45vh; overflow-y: auto;">
                       <div v-for="schema in importer.sqlServer.availableSchemas" :key="schema.schemaName" style="display:flex; justify-content:space-between; align-items:center; padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
-                        <v-checkbox-btn :value="schema.schemaName" v-model="importer.sqlServer.selectedSchemas" density="compact" hide-details></v-checkbox-btn>
+                        <v-checkbox-btn :value="schema.schemaName" v-model="importer.sqlServer.selectedSchemas" density="compact" hide-details color="primary" :class="{'checkbox-visible': true}"></v-checkbox-btn>
                         <span style="font-weight: 500; margin-right:auto;">{{ schema.schemaName }}</span>
                         <span style="font-size: 0.8em; color: #999;">
                           {{ schema.totalObjectCount }} objects ({{ schema.tableCount }}T, {{ schema.viewCount }}V, {{ schema.procedureCount }}P)
@@ -4077,7 +4368,6 @@ const appConfig = {
                       <div v-if="importer.sqlServer.availableSchemas.length === 0" class="empty">No schemas found.</div>
                     </div>
 
-                    <!-- Table Mode: Expandable schemas with table lists -->
                     <div v-if="importer.sqlServer.selectionMode === 'table'" style="border: 1px solid #e5e7eb; border-radius: 6px; max-height: 45vh; overflow-y: auto;">
                       <div v-for="schema in importer.sqlServer.availableSchemas" :key="'schema-' + schema.schemaName" style="border-bottom: 1px solid #e5e7eb;">
                         <div @click="toggleSqlServerSchemaExpand(schema.schemaName)" style="padding: 10px; background: #f9fafb; cursor: pointer; display: flex; align-items: center; gap: 8px; user-select: none;">
@@ -4092,13 +4382,15 @@ const appConfig = {
                               :model-value="isSchemaFullySelected(schema.schemaName)"
                               density="compact"
                               hide-details
+                              color="primary"
+                              :class="{'checkbox-visible': true}"
                               @update:model-value="toggleSchemaTableSelection(schema.schemaName, { target: { checked: $event } })"
                               :label="'Select all in ' + schema.schemaName"
                             ></v-checkbox>
                           </div>
                           <div v-for="table in (importer.sqlServer.schemaTableLists && importer.sqlServer.schemaTableLists[schema.schemaName]) || []" :key="schema.schemaName + '.' + table.name" style="padding: 6px 30px; border-bottom: 1px solid #f3f4f6;">
                             <div style="display:flex; align-items:center; gap:6px; font-size:0.9em;">
-                              <v-checkbox-btn :value="schema.schemaName + '.' + table.name" v-model="importer.sqlServer.selectedTables" density="compact" hide-details></v-checkbox-btn>
+                              <v-checkbox-btn :value="schema.schemaName + '.' + table.name" v-model="importer.sqlServer.selectedTables" density="compact" hide-details color="primary" :class="{'checkbox-visible': true}"></v-checkbox-btn>
                               <span>{{ table.name }}</span>
                             </div>
                           </div>
@@ -4202,9 +4494,9 @@ const appConfig = {
                 <v-label>Path to markdown tree</v-label>
                 <v-text-field v-model="importer.loadPath" density="compact" variant="outlined" hide-details></v-text-field>
                 <div style="margin-top: 8px; font-size: 0.85em; color: #4b5563;">
-                  <strong>Meilisearch:</strong>
-                  <span :style="{ color: isMeilisearchHealthy ? '#065f46' : '#991b1b', fontWeight: '600' }">{{ meilisearchStatusLabel }}</span>
-                  <span v-if="importer.status?.meilisearchUrl"> ({{ importer.status.meilisearchUrl }})</span>
+                  <strong>Elasticsearch:</strong>
+                  <span :style="{ color: isElasticsearchHealthy ? '#065f46' : '#991b1b', fontWeight: '600' }">{{ elasticsearchStatusLabel }}</span>
+                  <span v-if="importer.status?.elasticsearchUrl"> ({{ importer.status.elasticsearchUrl }})</span>
                 </div>
                 <div class="btn-row" style="margin-top:10px;">
                   <v-btn color="primary" @click="runLoad" :disabled="!canLoadToIndex">Load to Index</v-btn>
@@ -4214,7 +4506,7 @@ const appConfig = {
                 <div class="mini-stack mt-8" v-if="importer.status">
                   <div class="mini-metric"><span>Status</span><v-chip size="x-small" :class="importer.status.status === 'ok' ? 'pill-green' : 'pill-gray'" variant="flat">{{ importer.status.status || 'unknown' }}</v-chip></div>
                   <div class="mini-metric"><span>Indexed Objects</span><strong>{{ importer.status.loadedObjectCount || 0 }}</strong></div>
-                  <div class="mini-metric"><span>Meilisearch</span><v-chip size="x-small" :class="isMeilisearchHealthy ? 'pill-green' : 'pill-red'" variant="flat">{{ meilisearchStatusLabel }}</v-chip></div>
+                  <div class="mini-metric"><span>Elasticsearch</span><v-chip size="x-small" :class="isElasticsearchHealthy ? 'pill-green' : 'pill-red'" variant="flat">{{ elasticsearchStatusLabel }}</v-chip></div>
                   <div class="mini-metric" v-if="importer.status.lastGeneratedPath"><span>Last Generated</span><span class="text-mono text-small">{{ importer.status.lastGeneratedPath }}</span></div>
                 </div>
                 <div v-else class="empty">No status yet — click Refresh Status.</div>
@@ -4412,6 +4704,25 @@ const appConfig = {
       </v-layout>
 
       <div v-if="toast" class="toast">{{ toast }}</div>
+
+      <v-dialog v-model="promptDialog.show" max-width="500" persistent>
+        <v-card>
+          <v-card-title>{{ promptDialog.title }}</v-card-title>
+          <v-card-text>
+            <p v-if="promptDialog.message" style="margin-bottom: 15px;">{{ promptDialog.message }}</p>
+            <template v-for="field in promptDialog.fields" :key="field.key">
+              <v-textarea v-if="field.type === 'textarea'" v-model="field.value" :label="field.label" variant="outlined" density="compact" rows="3"></v-textarea>
+              <v-text-field v-else v-model="field.value" :label="field.label" variant="outlined" density="compact"></v-text-field>
+            </template>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn variant="tonal" @click="cancelCustomPrompt">Cancel</v-btn>
+            <v-btn color="primary" @click="submitCustomPrompt">Submit</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
     </v-app>
   `,
 };

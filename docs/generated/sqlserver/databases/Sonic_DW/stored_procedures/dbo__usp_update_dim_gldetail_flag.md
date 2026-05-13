@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -23,15 +25,50 @@ Metadata auto-extracted from SQL Server.
 -- =============================================
 -- Author:		<Larry Owens>
 -- Create date: <09/15/2011>
--- Description:	<This will update the DetScheduleActiveFlag depending on whether it finds the given dim record for a given conrol in the current month schedule. 
+-- Description:	<This will update the DetScheduleActiveFlag depending on whether it finds the given dim record for a given conrol in the current month schedule.
 --              If it does, the flag is set to true.  If it doesn't, the flag is set to false >
 -- =============================================
 CREATE PROCEDURE [dbo].[usp_update_dim_gldetail_flag]
 AS
 BEGIN
-	-- SET NOCOUNT O
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+
+
+
+
+
+-- Not In Schedule, Set Active Flag to False
+UPDATE T
+SET T.DetScheduleActiveFlag = 0,
+T.DetScheduleEndDate = ISNULL(D.EndDate,'9999-12-31')
+FROM dbo.Dim_GLDetail T (nolock)
+INNER JOIN  wrk.wrkDim_GLDetail D WITH (INDEX (IX_coidcoraidcontrolaccountnumber))
+	ON T.DetCompanyID = D.CompanyID and T.DetCora_Acct_ID = D.Cora_Acct_ID
+WHERE D.InSched IS NULL
+
+
+
+-- In Schedule, Set Active Flag to TRUE
+UPDATE T
+SET T.DetScheduleActiveFlag = 1,
+T.DetScheduleStartDate = ISNULL(D.StartDate,'9999-12-31'), T.DetScheduleEndDate = '9999-12-31'
+FROM dbo.Dim_GLDetail T (nolock)
+INNER JOIN  wrk.wrkDim_GLDetail D WITH (INDEX (IX_coidcoraidcontrolaccountnumber))
+ON T.DetCompanyID = D.CompanyID and
+T.DetCora_Acct_ID = D.Cora_Acct_ID and
+T.DetControl = D.[Control] and
+T.DetAccountNumber = D.AccountNumber
+WHERE D.InSched IS NOT NULL
+
+
+
+END
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

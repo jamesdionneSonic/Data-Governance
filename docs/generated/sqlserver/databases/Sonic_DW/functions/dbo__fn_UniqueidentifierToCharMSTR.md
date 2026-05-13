@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - function
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -21,21 +23,27 @@ Metadata auto-extracted from SQL Server.
 
 ```sql
 
-CREATE FUNCTION [dbo].[fn_UniqueidentifierToCharMSTR](@charid CHAR(36)) 
+CREATE FUNCTION [dbo].[fn_UniqueidentifierToCharMSTR](@charid CHAR(36))
 RETURNS CHAR(32)
-AS 
-BEGIN 
-DECLARE @tpid VARCHAR(32) 
-SET @tpid = SUBSTRING(@charid, 1, 8) 
-SET @tpid = @tpid + SUBSTRING(@charid, 15, 4) 
-SET @tpid = @tpid + SUBSTRING(@charid,  10, 4) 
-SET @tpid = @tpid + SUBSTRING(@charid, 27, 2) 
-SET @tpid = @tpid + SUBSTRING(@charid, 25, 2) 
-SET @tpid = @tpid + SUBSTRING(@charid, 22, 2) 
-SET @tpid = @tpid + SUBSTRING(@charid, 20, 2) 
-SET @tpid = @tpid + SUBSTRING(@charid
+AS
+BEGIN
+DECLARE @tpid VARCHAR(32)
+SET @tpid = SUBSTRING(@charid, 1, 8)
+SET @tpid = @tpid + SUBSTRING(@charid, 15, 4)
+SET @tpid = @tpid + SUBSTRING(@charid,  10, 4)
+SET @tpid = @tpid + SUBSTRING(@charid, 27, 2)
+SET @tpid = @tpid + SUBSTRING(@charid, 25, 2)
+SET @tpid = @tpid + SUBSTRING(@charid, 22, 2)
+SET @tpid = @tpid + SUBSTRING(@charid, 20, 2)
+SET @tpid = @tpid + SUBSTRING(@charid, 35, 2)
+SET @tpid = @tpid + SUBSTRING(@charid, 33, 2)
+SET @tpid = @tpid + SUBSTRING(@charid, 31, 2)
+SET @tpid = @tpid + SUBSTRING(@charid, 29, 2)
+RETURN @tpid
+END
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

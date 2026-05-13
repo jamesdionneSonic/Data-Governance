@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -29,9 +31,185 @@ Metadata auto-extracted from SQL Server.
 
 CREATE   PROC [dbo].[spLoadDimPurchaseMethod]
 (
- @updatedRowCnts  INT OUTP
+ @updatedRowCnts  INT OUTPUT,   --added on 01/29/2021
+ @insertedRowCnts INT OUTPUT    --added on 01/29/2021
+)
+AS
+     BEGIN
+
+	 DECLARE @rundate datetime = GETDATE(); -- Meta_LoadDate for the insert and update records ----added on 01/29/2021
+
+IF OBJECT_ID ('tempdb..#stage') is not null drop table #stage;
+
+CREATE TABLE #stage
+	(
+		PurchaseMethodName varchar(100),
+		IsActive bit,
+		IsSonicActive bit,
+		IsEchoParkActive bit,
+		CreatedByAssociateKey int,
+		ModifiedByAssociateKey int,
+		ETLExecution_ID int,
+		Meta_Loaddate datetime,
+		Meta_RowEffectiveDate datetime,
+		Meta_RowExpiredDate datetime,
+		Meta_RowIsCurrent char(1),
+		Meta_Naturalkey varchar(500),
+		Meta_Src_System_ID int,
+		User_ID varchar(50),
+		Meta_ComputerName varchar(50),
+	);
+INSERT INTO #stage
+
+SELECT   PurchaseMethodName
+		,IsActive
+		,IsSonicActive
+		,IsEchoParkActive
+		,CreatedByAssociateKey
+		,ModifiedByAssociateKey
+		,ETLExecution_ID
+		,Meta_LoadDate
+		,Meta_RowEffectiveDate
+		,Meta_RowExpiredDate
+		,Meta_RowIsCurrent
+		,Meta_NaturalKey
+		,Meta_SrcSysID
+		,User_ID
+		,Meta_ComputerName
+FROM
+(
+MERGE dbo.DimPurchaseMethod TGT
+USING
+(
+SELECT 	PurchaseMethodName
+		,IsActive
+		,RetailActive AS IsSonicActive
+		,EchoParkActive AS IsEchoParkActive
+		,ISNULL(CreatedByAssociateKey,-1) AS CreatedByAssociateKey
+		,ISNULL(ModifiedByAssociateKey,-1) AS ModifiedByAssociateKey
+		,ETLExecution_ID
+		--,Meta_LoadDate
+		,Meta_RowEffectiveDate
+		--,Meta_RowExpiredDate
+		,Meta_NaturalKey
+		--,Meta_RowIsCurrent
+		,Meta_SrcSysID
+		,User_ID
+		,Meta_ComputerName
+  FROM [ETL_Staging].[stage].[DimPurchaseMethodStaging]
+) SRC
+
+	ON TGT.Meta_NaturalKey = SRC.Meta_NaturalKey
+
+	WHEN NOT MATCHED THEN
+	INSERT
+(
+		 PurchaseMethodName
+		,IsActive
+		,IsSonicActive
+		,IsEchoParkActive
+		,CreatedByAssociateKey
+		,ModifiedByAssociateKey
+		,ETLExecution_ID
+		,Meta_LoadDate
+		,Meta_RowEffectiveDate
+		,Meta_RowExpiredDate
+		,Meta_RowIsCurrent
+		,Meta_NaturalKey
+		,Meta_Src_System_ID
+		,User_ID
+		,Meta_ComputerName
+)
+VALUES
+(
+		 SRC.PurchaseMethodName
+		,SRC.IsActive
+		,SRC.IsSonicActive
+		,SRC.IsEchoParkActive
+		,SRC.CreatedByAssociateKey
+		,SRC.ModifiedByAssociateKey
+		,SRC.ETLExecution_ID
+		,@rundate
+		,SRC.Meta_RowEffectiveDate
+		,'9999-12-31 23:59:59'
+		,'Y'
+		,SRC.Meta_NaturalKey
+		,SRC.Meta_SrcSysID
+		,SRC.User_ID
+		,SRC.Meta_ComputerName
+)
+
+WHEN MATCHED AND TGT.Meta_RowIsCurrent = 'Y' AND
+	(  TGT.PurchaseMethodName <> SRC.PurchaseMethodName
+	OR TGT.IsActive <> SRC.IsActive
+	OR TGT.IsEchoParkActive <> SRC.IsEchoParkActive
+	OR TGT.IsSonicActive <> SRC.IsSonicActive
+	--OR TGT.CreatedByAssociateKey <> SRC.CreatedByAssociateKey   --commented on 03/15/2021
+	--OR TGT.ModifiedByAssociateKey <> SRC.ModifiedByAssociateKey  --commented on 03/15/2021
+	)
+THEN UPDATE SET
+	TGT.Meta_RowExpiredDate = SRC.Meta_RowEffectiveDate
+	,TGT.Meta_RowIsCurrent = 'N'
+OUTPUT $Action Action_Out
+		,SRC.PurchaseMethodName
+		,SRC.IsActive
+		,SRC.IsSonicActive
+		,SRC.IsEchoParkActive
+		,SRC.CreatedByAssociateKey
+		,SRC.ModifiedByAssociateKey
+		,SRC.ETLExecution_ID
+		,@rundate AS Meta_LoadDate
+		,SRC.Meta_RowEffectiveDate
+		,'9999-12-31 23:59:59' AS Meta_RowExpiredDate
+		,'Y' AS Meta_RowIsCurrent
+		,SRC.Meta_NaturalKey
+		,SRC.Meta_SrcSysID
+		,SRC.User_ID
+		,SRC.Meta_ComputerName
+) AS MERGE_OUT
+WHERE MERGE_OUT.Action_Out = 'UPDATE'
+
+
+INSERT INTO dbo.DimPurchaseMethod
+	(
+		PurchaseMethodName,
+		IsActive,
+		IsSonicActive,
+		IsEchoParkActive,
+		CreatedByAssociateKey,
+		ModifiedByAssociateKey,
+		ETLExecution_ID,
+		Meta_Loaddate,
+		Meta_RowEffectiveDate,
+		Meta_RowExpiredDate,
+		Meta_RowIsCurrent,
+		Meta_Naturalkey,
+		Meta_Src_System_ID,
+		User_ID,
+		Meta_ComputerName
+	)
+ SELECT PurchaseMethodName
+		,IsActive
+		,IsSonicActive
+		,IsEchoParkActive
+		,CreatedByAssociateKey
+		,ModifiedByAssociateKey
+		,ETLExecution_ID
+		,Meta_Loaddate
+		,Meta_RowEffectiveDate
+		,Meta_RowExpiredDate
+		,Meta_RowIsCurrent
+		,Meta_Naturalkey
+		,Meta_Src_System_ID
+		,User_ID
+		,Meta_ComputerName
+ FROM #stage
+ SELECT @updatedRowCnts = @@ROWCOUNT  ----added on 01/29/2021
+ SELECT @insertedRowCnts = (SELECT COUNT(*)  FROM  dbo.DimPurchaseMethod  WHERE Meta_LoadDate = @rundate) - @updatedRowCnts ----added on 01/29/2021
+END
+ ;
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

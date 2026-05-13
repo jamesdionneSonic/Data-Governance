@@ -1,0 +1,59 @@
+---
+name: FP_Payoff_Early
+database: Sonic_DW
+type: procedure
+schema: dbo
+owner: Data Team
+tags:
+  - procedure
+  - auto-extracted
+depends_on:
+  - Syndicate_Floorplan_Payoffs_Skip
+dependency_count: 1
+parameter_count: 2
+extracted_at: 2026-05-13T11:28:24.843Z
+---
+
+## Overview
+
+Metadata auto-extracted from SQL Server.
+
+- **Type**: Stored Procedure
+- **Schema**: dbo
+
+## Dependencies
+
+This procedure depends on:
+
+- **dbo.Syndicate_Floorplan_Payoffs_Skip** (U )
+
+## Parameters
+
+| Name                   | Type    | Output | Default |
+| ---------------------- | ------- | ------ | ------- |
+| `@user_id`             | varchar | No     | No      |
+| `@payoff_through_date` | date    | No     | No      |
+
+## Definition
+
+```sql
+
+CREATE PROC [dbo].[FP_Payoff_Early] (@user_id VARCHAR(50) = NULL, @payoff_through_date date = NULL)
+as
+IF NOT EXISTS (SELECT * FROM dbo.Syndicate_Floorplan_Payoffs_Skip WHERE FP_Date = convert(DATE,getdate()))
+
+INSERT INTO Syndicate_Floorplan_Payoffs_Skip (FP_Date, Skip, Meta_UserID,PayoffEarlyDate)
+VALUES (CONVERT(DATE,GETDATE()),0,@user_id,@payoff_through_date)
+
+ELSE
+UPDATE dbo.Syndicate_Floorplan_Payoffs_Skip
+SET PayoffEarlyDate = @payoff_through_date
+, Meta_UserID = @user_id
+,Skip = 0
+WHERE FP_Date = CONVERT(DATE,GETDATE())
+
+```
+
+## Governance
+
+- **Last Extracted**: 2026-05-13T11:28:24.843Z

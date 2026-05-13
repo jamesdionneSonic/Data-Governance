@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -31,20 +33,157 @@ Metadata auto-extracted from SQL Server.
 
 
 
--- ================================================    
--- Author:       Umberto Sartori  
+-- ================================================
+-- Author:       Umberto Sartori
 -- Create date:  14/18/2017
 -- Description:  Inserts/Update DimOpportunitySource dimension table
 --
 -- ubs - 4/18/2017 - added source sytem name and ID to target table.
--- ================================================   
+-- ================================================
 CREATE PROCEDURE [dbo].[uspScoresDimOportunitySourceLoad] (
 	@MetaComputerName VARCHAR(50)
 	,@MetaSrcSysID INT
 	,@MetaUserID VARCHAR(50)
-	,@MetaLoadDate
+	,@MetaLoadDate DATETIME
+	,@MetaSourceSystemName VARCHAR(20)
+	,@ETLExecution_ID INT
+	,@insertedRowCnts INT OUTPUT
+	,@updatedRowCnts INT OUTPUT)
+
+AS
+SET NOCOUNT ON;
+
+DECLARE @rowcounts TABLE (MergeAction VARCHAR(20));
+DECLARE @insertedCount INT
+	,@updatedCount INT;
+
+MERGE INTO dbo.DimOpportunitySource AS [TGT]
+USING (
+	SELECT distinct isnull(SrcUpType, 'UNKNOWN') as SrcUpType
+		,isnull(SrcCompanyID, -1) as SrcCompanyID
+		,isnull(SrcSourceID, -1) as SrcSourceID
+		,isnull(SrcSourceDesc, 'UNKNOWN') as SrcSourceDesc
+		,isnull(SrcSubSourceId, -1) as SrcSubSourceID
+		,isnull(SrcSubSourceDesc, 'UNKNOWN') as SrcSubSourceDesc
+		,isnull(SrcSourceGroup, 'UNKNOWN') as SrcSourceGroup
+		,isnull(SrcIsActive, -1) as SrcIsActive
+		,isnull(MetaNaturalKey, 'UNKNOWN') as MetaNaturalKey
+		,MetaSourceSystemName
+		,MetaSourceSystemID
+	FROM ETL_Staging.dbo.[StgDimOpportunitySource]
+	) AS SRC
+	ON SRC.MetaNaturalKey = TGT.Meta_NaturalKey
+		AND TGT.Meta_SourceSystemName in ('SCORESMSCRM', 'EchoPark SCORES DealerContact')
+WHEN MATCHED
+	AND (
+		SRC.SrcUpType <> TGT.SrcUpType
+		OR SRC.SrcCompanyID <> TGT.SrcCompanyID
+		OR SRC.SrcSourceID <> TGT.SrcSourceID
+		OR SRC.SrcSourceDesc <> TGT.SrcSourceDesc
+		OR SRC.SrcSubSourceId <> TGT.SrcSubSourceId
+		OR SRC.SrcSubSourceDesc <> TGT.SrcSubSourceDesc
+		OR SRC.SrcSourceGroup <> TGT.SrcSourceGroup
+		OR SRC.SrcIsActive <> TGT.SrcIsActive
+		)
+	THEN
+		UPDATE
+		SET TGT.SrcUpType = SRC.SrcUpType
+			,TGT.SrcCompanyID = SRC.SrcCompanyID
+			,TGT.SrcSourceID = SRC.SrcSourceID
+			,TGT.SrcSourceDesc = SRC.SrcSourceDesc
+			,TGT.SrcSubSourceId = SRC.SrcSubSourceId
+			,TGT.SrcSubSourceDesc = SRC.SrcSubSourceDesc
+			,TGT.SrcSourceGroup = SRC.SrcSourceGroup
+			,TGT.SrcIsActive = SRC.SrcIsActive
+			,TGT.[Meta_RowLastChangeDate]=@MetaLoadDate
+			,TGT.ETLExecution_ID = @ETLExecution_ID
+WHEN NOT MATCHED
+	THEN
+		INSERT (
+			[SrcUpType]
+			,[SrcCompanyID]
+			,[SrcSourceID]
+			,[SrcSourceDesc]
+			,[SrcSubSourceId]
+			,[SrcSubSourceDesc]
+			,SrcSourceDetails
+			,[SrcSourceGroup]
+			,[SrcIsActive]
+			,[Meta_NaturalKey]
+			,[Meta_SrcSysID]
+			,[User_ID]
+			,[Meta_ComputerName]
+			,[Meta_RowEffectiveDate]
+			,[Meta_RowExpiredDate]
+			,[Meta_RowIsCurrent]
+			,[Meta_SourceSystemName]
+			,[Meta_RowLastChangeDate]
+			,[Meta_AuditKey]
+			,[Meta_AuditScore]
+			,[Meta_Checksum]
+			,[Meta_LoadDate]
+			,[ETLExecution_ID]
+			)
+		VALUES (
+			SRC.[SrcUpType]
+			,SRC.[SrcCompanyID]
+			,SRC.[SrcSourceID]
+			,SRC.[SrcSourceDesc]
+			,SRC.[SrcSubSourceId]
+			,SRC.[SrcSubSourceDesc]
+			,'UNDEFINED'
+			,SRC.[SrcSourceGroup]
+			,SRC.[SrcIsActive]
+			,SRC.[MetaNaturalKey]
+			,SRC.MetaSourceSystemID
+			,@MetaUserID
+			,@MetaComputerName
+			,@MetaLoadDate
+			,NULL
+			,'Y'
+			,SRC.MetaSourceSystemName
+			,@MetaLoadDate
+			,NULL
+			,NULL
+			,NULL
+			,@MetaLoadDate
+			,@ETLExecution_ID
+			)
+
+			OUTPUT $ACTION
+INTO @rowcounts;
+
+SELECT @insertedCount = [INSERT]
+	,@updatedCount = [UPDATE]
+FROM (
+	SELECT MergeAction
+		,1 ROWS
+	FROM @rowcounts
+	) AS p
+PIVOT(COUNT(rows) FOR p.MergeAction IN (
+			[INSERT]
+			,[UPDATE]
+			)) AS pvt
+
+SELECT @insertedRowCnts = isnull(@insertedcount, 0)
+	,@updatedRowCnts = isnull(@updatedCount, 0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

@@ -8,12 +8,15 @@ sensitivity: internal
 tags:
   - view
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+column_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
 
 1- **Type**: View
+
 - **Schema**: dbo
 
 ## Definition
@@ -28,12 +31,25 @@ extracted_at: 2026-05-09T12:34:14.349Z
 ************************************************************************/
 CREATE VIEW dbo.vw_Dim_DealershipEP
 AS
-SELECT        TOP (100) PERCENT e.EntDealerLvl1, e.EntDealerLvl2, e.EntStoreBrand, e.EntDFODRegion, e.EntDFIDRegion, e.EntRegion, e.EntAddressState, e.EntEssCode, e.EntActive, e.EntBrandGroup AS EntStoreBrandGroup, 
-     
+SELECT        TOP (100) PERCENT e.EntDealerLvl1, e.EntDealerLvl2, e.EntStoreBrand, e.EntDFODRegion, e.EntDFIDRegion, e.EntRegion, e.EntAddressState, e.EntEssCode, e.EntActive, e.EntBrandGroup AS EntStoreBrandGroup,
+                         e.EntAccountingPrefix, e.EntCora_Account_ID, e.EntADPCompanyID, e.EntDefaultDlrshpLvl1, e.EntSubRegion, e.EntLineOfBusiness, MAX(d2.EntityKey) AS DealershipLvl2EntityKey, MAX(d1.EntityKey)
+                         AS DealershipLvl1EntityKey, e.EntAddressCity, e.EntMetroArea, e.EntDOCReportFlag, e.EntClass, e.EntEleadID
+FROM            dbo.Dim_Entity AS e LEFT OUTER JOIN
+                             (SELECT        EntityKey, EntDealerLvl2
+                               FROM            dbo.Dim_Entity
+                               WHERE        (EntDefaultDlrshpLvl2 = 1)) AS d2 ON e.EntDealerLvl2 = d2.EntDealerLvl2 LEFT OUTER JOIN
+                             (SELECT        EntityKey, EntDealerLvl1
+                               FROM            dbo.Dim_Entity AS Dim_Entity_1
+                               WHERE        (EntDefaultDlrshpLvl1 = 1)) AS d1 ON e.EntDealerLvl1 = d1.EntDealerLvl1
+WHERE        (e.EntDefaultDlrshpLvl1 = '1') AND (e.EntLineOfBusiness = 'EchoPark') AND (e.EntEntityType = 'Dealership')
+GROUP BY e.EntDealerLvl1, e.EntStoreBrand, e.EntDFODRegion, e.EntDFIDRegion, e.EntRegion, e.EntAddressState, e.EntEssCode, e.EntActive, e.EntBrandGroup, e.EntAccountingPrefix, e.EntCora_Account_ID, e.EntADPCompanyID,
+                         e.EntDealerLvl2, e.EntDefaultDlrshpLvl1, e.EntSubRegion, e.EntLineOfBusiness, e.EntityKey, e.EntAddressCity, e.EntMetroArea, e.EntDOCReportFlag, e.EntClass, e.EntEleadID
+HAVING        (e.EntActive = 'Active')
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z
 - **Data Classification**: To be assigned
 - **Stewardship**: To be assigned

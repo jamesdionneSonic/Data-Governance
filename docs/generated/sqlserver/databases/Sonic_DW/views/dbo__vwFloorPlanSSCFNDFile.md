@@ -8,7 +8,9 @@ sensitivity: internal
 tags:
   - view
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+column_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -42,12 +44,20 @@ select	CDK_Box
 		,case when Prefix = 0 then FP_Account else concat(Prefix,FP_Account) end as FP_FullAccount
 		,SSC_Manual_Amount as FloorplanBalance --Raj Add --12/14/2020 ASM (change ACV to SSC_Manual_Amount)
 FROM	Sonic_DW.[dbo].[Syndicate_Floorplan_Funding] f
-WHERE	
+WHERE
+f. SSC_FND_File_LoadFlag  = 1 --Raj Add --12/14/2020 ASM
+AND f.SSC_Manual_Amount<> 0 --Raj Add --12/14/2020 ASM
+and convert(date,Meta_LoadDate) = convert(date, getdate()) -- today
+
+
+
+
+
 
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z
 - **Data Classification**: To be assigned
 - **Stewardship**: To be assigned

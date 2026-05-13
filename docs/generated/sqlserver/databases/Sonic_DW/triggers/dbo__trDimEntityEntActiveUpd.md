@@ -8,7 +8,8 @@ parent_object: Dim_Entity
 tags:
   - trigger
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -24,19 +25,19 @@ Metadata auto-extracted from SQL Server.
 ```sql
 
 CREATE TRIGGER trDimEntityEntActiveUpd on Dim_Entity
-AFTER UPDATE AS 
+AFTER UPDATE AS
 BEGIN
 UPDATE	rel
 set		rel.IsActive = 0
 		, rel.EndDate = SYSDATETIME()
 		, rel.UpdatedBy = SYSTEM_USER
 		, rel.UpdatedDate = SYSDATETIME()
-FROM	Sonic_DW.dbo.DimEntityRelationship AS rel		
-Where	IsActive = 1 
-		AND EXISTS (SELECT	1 
+FROM	Sonic_DW.dbo.DimEntityRelationship AS rel
+Where	IsActive = 1
+		AND EXISTS (SELECT	1
 					FROM	Sonic_DW.dbo.Dim_Entity AS ent
 					WHERE	EntActive = 'NotActive'
-							AND rel.entityKey = ent.EntityKey 
+							AND rel.entityKey = ent.EntityKey
 					);
 END
 
@@ -44,4 +45,4 @@ END
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

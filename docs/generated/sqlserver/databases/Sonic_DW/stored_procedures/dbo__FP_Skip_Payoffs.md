@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -30,9 +32,12 @@ VALUES (CONVERT(DATE,GETDATE()),1,@user_id,NULL)
 
 ELSE
 UPDATE dbo.Syndicate_Floorplan_Payoffs_Skip
-SET [Skip] = CASE WHEN [Skip] = 1 THEN 0 ELSE 1 END, Meta_UserID = @user_id,PayoffEarlyDate = NUL
+SET [Skip] = CASE WHEN [Skip] = 1 THEN 0 ELSE 1 END, Meta_UserID = @user_id,PayoffEarlyDate = NULL
+WHERE FP_Date = CONVERT(DATE,GETDATE())
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

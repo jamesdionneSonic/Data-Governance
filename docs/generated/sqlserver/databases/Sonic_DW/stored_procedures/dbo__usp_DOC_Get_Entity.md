@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -41,9 +43,36 @@ BEGIN
 				FROM dim_entity
 				WHERE EntDOCReportFlag = 'active'
 					AND EntDefaultDlrshpLvl2 = 1
-					---AND EntLineOfBusiness <> 'EchoPark'---- commented out to get the EchoPark stores- Raj 09
+					---AND EntLineOfBusiness <> 'EchoPark'---- commented out to get the EchoPark stores- Raj 09/04/2018
+				) e
+			WHERE D.DateKey BETWEEN @DateKeyStart
+					AND @DateKeyEnd
+			)
+
+	SELECT ae.EntityKey
+		,ae.EntName
+		,ae.DateKey
+	FROM AllEntities ae
+	JOIN [dbo].[Doc_Projection_Schedule] s ON ae.DocRolloverFlag = s.DocRolloverFlag
+		AND IsWeekend = 'N'
+	WHERE NOT EXISTS (
+			SELECT *
+			FROM Doc_Record dr
+			WHERE ae.EntityKey = dr.EntityKey
+				AND ae.DateKey = dr.DocDateKey
+			)
+	ORDER BY DateKey
+	SET NOCOUNT OFF
+
+	END
+
+
+
+
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

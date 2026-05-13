@@ -8,12 +8,15 @@ sensitivity: internal
 tags:
   - view
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+column_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
 
 1- **Type**: View
+
 - **Schema**: dbo
 
 ## Definition
@@ -33,11 +36,19 @@ CREATE   VIEW [dbo].[vw_Dim_Quarter]
 AS
 SELECT
 	DISTINCT CAST(CAST(FiscalYear as varchar) + CAST(FiscalQuarter as varchar) AS INT) As FiscalQuarterKey
-	, CAST(CAST(FiscalYear - 1 as VarChar) + CAST(FiscalQuarter as varcha
+	, CAST(CAST(FiscalYear - 1 as VarChar) + CAST(FiscalQuarter as varchar) AS INT) As FiscalQuarterKeyLY
+	, CalendarYearQtr
+	, CalendarQuarter
+	, CalendarYear
+	, QuarterDesc
+FROM dbo.vw_Dim_date;
+
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z
 - **Data Classification**: To be assigned
 - **Stewardship**: To be assigned

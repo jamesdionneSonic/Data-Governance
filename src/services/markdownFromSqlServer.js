@@ -18,7 +18,9 @@ class MarkdownGenerator {
       .filter((r) => (r.fromTable === table.id || r.toTable === table.id) && r.confidence >= 0.5)
       .sort((a, b) => b.confidence - a.confidence);
 
-    const dependsOn = relationships.filter((r) => r.toTable === table.id).map((r) => r.fromTable);
+    const dependsOn = relationships
+      .filter((r) => r.fromTable === table.id)
+      .map((r) => r.toTable.split('.').pop());
 
     const frontmatter = {
       name: table.name,
@@ -221,6 +223,7 @@ class MarkdownGenerator {
    * Generate markdown for a view
    */
   generateViewMarkdown(view) {
+    const dependsOn = (view.dependencies || []).map((dep) => dep.referencedObject);
     const frontmatter = {
       name: view.name,
       database: this.metadata.database,
@@ -229,6 +232,7 @@ class MarkdownGenerator {
       owner: 'Data Team',
       sensitivity: 'internal',
       tags: ['view', 'auto-extracted'],
+      depends_on: dependsOn, // ADDED: Wires up the graph
       dependency_count: view.dependencies?.length || 0,
       column_count: view.columns?.length || 0,
       extracted_at: this.metadata.extractedAt,
@@ -296,13 +300,15 @@ class MarkdownGenerator {
    * Generate markdown for a stored procedure
    */
   generateStoredProcedureMarkdown(proc) {
+    const dependsOn = (proc.dependencies || []).map((dep) => dep.referencedObject);
     const frontmatter = {
       name: proc.name,
       database: this.metadata.database,
-      type: 'procedure', // parser-accepted type (not 'stored_procedure')
+      type: 'procedure', // parser-accepted type
       schema: proc.schema,
       owner: 'Data Team',
       tags: ['procedure', 'auto-extracted'],
+      depends_on: dependsOn, // ADDED: Wires up the graph
       dependency_count: proc.dependencies?.length || 0,
       parameter_count: proc.parameters?.length || 0,
       extracted_at: this.metadata.extractedAt,
@@ -368,13 +374,15 @@ class MarkdownGenerator {
    * Generate markdown for a function
    */
   generateFunctionMarkdown(func) {
+    const dependsOn = (func.dependencies || []).map((dep) => dep.referencedObject);
     const frontmatter = {
       name: func.name,
       database: this.metadata.database,
-      type: 'function', // parser-accepted type (not 'user_function' or 'table_function')
+      type: 'function',
       schema: func.schema,
       owner: 'Data Team',
       tags: ['function', 'auto-extracted'],
+      depends_on: dependsOn, // ADDED: Wires up the graph
       dependency_count: func.dependencies?.length || 0,
       parameter_count: func.parameters?.length || 0,
       extracted_at: this.metadata.extractedAt,
@@ -440,14 +448,16 @@ class MarkdownGenerator {
    * Generate markdown for a trigger
    */
   generateTriggerMarkdown(trigger) {
+    const dependsOn = (trigger.dependencies || []).map((dep) => dep.referencedObject);
     const frontmatter = {
       name: trigger.name,
       database: this.metadata.database,
-      type: 'procedure', // Store triggers as 'procedure' type for now (parser doesn't have 'trigger' type)
+      type: 'procedure', // Store triggers as 'procedure'
       schema: trigger.schema,
       owner: 'Data Team',
       parent_object: trigger.parentObject,
       tags: ['trigger', 'auto-extracted'],
+      depends_on: dependsOn, // ADDED: Wires up the graph
       dependency_count: trigger.dependencies?.length || 0,
       extracted_at: this.metadata.extractedAt,
     };

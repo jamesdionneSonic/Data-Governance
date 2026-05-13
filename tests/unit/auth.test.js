@@ -5,7 +5,8 @@
 
 import request from 'supertest';
 import createApp from '../../src/app.js';
-import { generateToken } from '../../src/utils/tokenManager.js';
+import { generateToken, generateRefreshToken } from '../../src/utils/tokenManager.js';
+import { createOrGetUser } from '../../src/services/userService.js';
 
 describe('Authentication Routes', () => {
   let app;
@@ -137,16 +138,39 @@ describe('Authentication Routes', () => {
       expect(response.body.error).toBe('Bad Request');
     });
 
-    it('should accept refresh token', async () => {
+    it('should refresh access token and rotate refresh token', async () => {
+      const user = createOrGetUser({
+        oid: 'refresh-user-123',
+        email: 'refresh@example.com',
+        name: 'Refresh User',
+      });
+      const token = generateRefreshToken(user.id);
+
+      const response = await request(app)
+        .post('/api/v1/auth/refresh')
+        .send({
+          refreshToken: token,
+        })
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(response.body.status).toBe('success');
+      expect(response.body.message).toContain('Token refreshed');
+      expect(response.body.token).toBeDefined();
+      expect(response.body.refreshToken).toBeDefined();
+      expect(response.body.user.email).toBe('refresh@example.com');
+    });
+
+    it('should reject invalid refresh token', async () => {
       const response = await request(app)
         .post('/api/v1/auth/refresh')
         .send({
           refreshToken: 'some-refresh-token',
         })
         .expect('Content-Type', /json/)
-        .expect(200);
+        .expect(401);
 
-      expect(response.body.message).toContain('Token refresh');
+      expect(response.body.error).toBe('Unauthorized');
     });
   });
 });

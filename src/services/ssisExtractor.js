@@ -322,7 +322,8 @@ class SsisMetadataExtractor {
   async extractCatalogInventory(warnings) {
     const { rows, error } = await safeQuery(
       this.pool,
-      `USE SSISDB;
+      `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      USE SSISDB;
        SELECT
          f.folder_id,
          f.name                     AS folder_name,
@@ -370,7 +371,8 @@ class SsisMetadataExtractor {
   async extractParameters(warnings) {
     const { rows, error } = await safeQuery(
       this.pool,
-      `USE SSISDB;
+      `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      USE SSISDB;
        SELECT
          f.name          AS folder_name,
          p.name          AS project_name,
@@ -409,7 +411,8 @@ class SsisMetadataExtractor {
   async extractExecutables(warnings) {
     const { rows, error } = await safeQuery(
       this.pool,
-      `USE SSISDB;
+      `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      USE SSISDB;
        SELECT
          e.executable_id,
          e.package_id,
@@ -507,7 +510,8 @@ class SsisMetadataExtractor {
   async extractExecutionHistory(warnings, { days = 30, maxRows = 5000 } = {}) {
     const { rows, error } = await safeQuery(
       this.pool,
-      `USE SSISDB;
+      `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      USE SSISDB;
        SELECT TOP (@maxRows)
          e.execution_id,
          e.folder_name,
@@ -552,7 +556,8 @@ class SsisMetadataExtractor {
   async extractComponentPhases(warnings, { days = 7, maxRows = 10000 } = {}) {
     const { rows, error } = await safeQuery(
       this.pool,
-      `USE SSISDB;
+      `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      USE SSISDB;
        SELECT TOP (@maxRows)
          ecp.execution_id,
          ecp.package_name,
@@ -584,7 +589,8 @@ class SsisMetadataExtractor {
   async extractDataStatistics(warnings, { days = 7, maxRows = 10000 } = {}) {
     const { rows, error } = await safeQuery(
       this.pool,
-      `USE SSISDB;
+      `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      USE SSISDB;
        SELECT TOP (@maxRows)
          eds.execution_id,
          eds.package_name,
@@ -616,7 +622,8 @@ class SsisMetadataExtractor {
   async extractExecutionParameterValues(warnings, { days = 7, maxRows = 5000 } = {}) {
     const { rows, error } = await safeQuery(
       this.pool,
-      `USE SSISDB;
+      `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      USE SSISDB;
        SELECT TOP (@maxRows)
          epv.execution_id,
          epv.object_type,
@@ -649,7 +656,8 @@ class SsisMetadataExtractor {
     // catalog.event_messages may not exist on older SSIS versions
     const { rows, error } = await safeQuery(
       this.pool,
-      `USE SSISDB;
+      `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      USE SSISDB;
        SELECT TOP (@maxRows)
          em.operation_id       AS execution_id,
          em.event_name,
@@ -683,7 +691,8 @@ class SsisMetadataExtractor {
   async extractValidations(warnings) {
     const { rows, error } = await safeQuery(
       this.pool,
-      `USE SSISDB;
+      `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+       USE SSISDB;
        SELECT
          v.validation_id,
          v.folder_name,
@@ -787,7 +796,8 @@ class SsisMetadataExtractor {
   async extractScaleOutAgents(warnings) {
     const { rows, error } = await safeQuery(
       this.pool,
-      `USE SSISDB;
+      `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      USE SSISDB;
        SELECT
          wa.agent_id,
          wa.agent_name,
@@ -989,7 +999,8 @@ class SsisMetadataExtractor {
 
     const { rows, error } = await safeQuery(
       this.pool,
-      `SELECT TOP (@maxRows)
+      `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      SELECT TOP (@maxRows)
          id,
          event,
          computer,
@@ -1027,7 +1038,8 @@ class SsisMetadataExtractor {
 
     const { rows, error } = await safeQuery(
       this.pool,
-      `SELECT
+      `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      SELECT
          id,
          name,
          description,
@@ -1059,7 +1071,8 @@ class SsisMetadataExtractor {
   async extractPackagePerformanceStats(warnings) {
     const { rows, error } = await safeQuery(
       this.pool,
-      `USE SSISDB;
+      `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      USE SSISDB;
        SELECT
          folder_name,
          project_name,
@@ -1095,7 +1108,8 @@ class SsisMetadataExtractor {
   async extractProjectVersionHistory(warnings) {
     const { rows, error } = await safeQuery(
       this.pool,
-      `USE SSISDB;
+      `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      USE SSISDB;
        SELECT
          ov.object_version_lsn,
          ov.object_id,

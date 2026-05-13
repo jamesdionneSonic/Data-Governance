@@ -8,7 +8,9 @@ sensitivity: internal
 tags:
   - view
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+column_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -31,11 +33,12 @@ FROM            dbo.Dim_Date AS d LEFT OUTER JOIN
                 ON f1.DateEventID = de.DateEventID
                 WHERE IsPowersports = 1 AND IsActive = 1) AS f
                 ON d.DateKey = f.DateKey
-WHERE        (d.FullDate
+WHERE        (d.FullDate >= DATEFROMPARTS(YEAR(GETDATE()) - 4, 1, 1)) AND (d.FullDate <= CAST(GETDATE() AS DATE))
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z
 - **Data Classification**: To be assigned
 - **Stewardship**: To be assigned

@@ -22,7 +22,7 @@ export function parseMarkdownFile(filePath) {
  * @returns {Object} Parsed metadata
  */
 export function parseMarkdownContent(content, source = 'inline-content') {
-  const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+  const frontmatterMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
 
   if (!frontmatterMatch) {
     throw new Error(`No YAML frontmatter found in ${source}`);

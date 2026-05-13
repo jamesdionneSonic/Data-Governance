@@ -7,19 +7,22 @@ owner: Data Team
 tags:
   - function
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
 
 1- **Type**: user_function
+
 - **Schema**: dbo
 
 ## Definition
 
 ```sql
 
-	CREATE FUNCTION dbo.fn_diagramobjects() 
+	CREATE FUNCTION dbo.fn_diagramobjects()
 	RETURNS int
 	WITH EXECUTE AS N'dbo'
 	AS
@@ -30,15 +33,43 @@ extracted_at: 2026-05-09T12:34:14.349Z
 		declare @id_helpdiagramdefinition	int
 		declare @id_creatediagram	int
 		declare @id_renamediagram	int
-		declare @id_alterdiagram 	int 
+		declare @id_alterdiagram 	int
 		declare @id_dropdiagram		int
 		declare @InstalledObjects	int
 
 		select @InstalledObjects = 0
 
-		select 	@id_upgraddiagrams = object_id(N'dbo.sp_upgraddiag
+		select 	@id_upgraddiagrams = object_id(N'dbo.sp_upgraddiagrams'),
+			@id_sysdiagrams = object_id(N'dbo.sysdiagrams'),
+			@id_helpdiagrams = object_id(N'dbo.sp_helpdiagrams'),
+			@id_helpdiagramdefinition = object_id(N'dbo.sp_helpdiagramdefinition'),
+			@id_creatediagram = object_id(N'dbo.sp_creatediagram'),
+			@id_renamediagram = object_id(N'dbo.sp_renamediagram'),
+			@id_alterdiagram = object_id(N'dbo.sp_alterdiagram'),
+			@id_dropdiagram = object_id(N'dbo.sp_dropdiagram')
+
+		if @id_upgraddiagrams is not null
+			select @InstalledObjects = @InstalledObjects + 1
+		if @id_sysdiagrams is not null
+			select @InstalledObjects = @InstalledObjects + 2
+		if @id_helpdiagrams is not null
+			select @InstalledObjects = @InstalledObjects + 4
+		if @id_helpdiagramdefinition is not null
+			select @InstalledObjects = @InstalledObjects + 8
+		if @id_creatediagram is not null
+			select @InstalledObjects = @InstalledObjects + 16
+		if @id_renamediagram is not null
+			select @InstalledObjects = @InstalledObjects + 32
+		if @id_alterdiagram  is not null
+			select @InstalledObjects = @InstalledObjects + 64
+		if @id_dropdiagram is not null
+			select @InstalledObjects = @InstalledObjects + 128
+
+		return @InstalledObjects
+	END
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

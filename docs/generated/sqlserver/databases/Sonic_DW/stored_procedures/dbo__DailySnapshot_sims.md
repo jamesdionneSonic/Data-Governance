@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -44,8 +46,46 @@ BEGIN
 TRUNCATE TABLE dbo.Historical_darpts_Sims
 
 INSERT INTO Historical_darpts_Sims (
+
+	vin
+	,cbs_status
+	,cbs_location
+	,store
+	,stock_no
+	,year
+	,make
+	,model
+	,trim
+	,age
+	,buyer
+	,wherepurchd
+	,purchase_date
+	,on_purchase_log
+	)
+	Select
+	vin
+	,cbs_status
+	,cbs_location
+	,store
+	,stock_no
+	,year
+	,make
+	,model
+	,trim
+	,age
+	,buyer
+	,wherepurchd
+	,purchase_date
+	,onpurchaselog
+FROM darpts.In_Transit_Recon_SimsTab;
+
+SET NOCOUNT OFF;
+
+END
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

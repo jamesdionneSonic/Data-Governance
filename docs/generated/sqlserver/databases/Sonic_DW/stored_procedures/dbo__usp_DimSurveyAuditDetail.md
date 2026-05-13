@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -31,9 +33,25 @@ as
 
 UPDATE	dbo
 SET		dbo.SurveyStartDate = wrk.SurveyStartDate
-	
+		, dbo.SurveySubmitDate = wrk.SurveySubmitDate
+		, dbo.Meta_RowLastChangeDate = getdate()
+FROM	(
+		SELECT	contactid
+				--,wrk.sguid
+				, max(cast(cast(SUBSTRING(wrk.datestarted, 1, 19) AS datetime) at time zone 'Eastern Standard Time' AS datetimeoffset)) AS SurveyStartDate
+				, max(cast(cast(SUBSTRING(wrk.datesubmitted, 1, 19) AS datetime) at time zone 'Eastern Standard Time' AS datetimeoffset)) AS SurveySubmitDate
+		FROM	ETL_Staging.wrk.FactSurveyAuditDetail AS wrk
+		GROUP BY wrk.contactid--, wrk.sguid, wrk.datestarted, wrk.datesubmitted
+		) AS wrk
+		INNER JOIN sonic_dw.dbo.DimSurveyAuditDetail AS dbo
+			ON wrk.contactid = dbo.SubscriberID
+			--AND wrk.sguid = SUBSTRING(dbo.invitelink, CHARINDEX('sguid=',Invitelink, 1)+6, LEN(wrk.sguid))
+--WHERE	dbo.SurveySubmitDate IS NULL ;
+;
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

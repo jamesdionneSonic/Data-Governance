@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -26,8 +28,8 @@ Author: JayCharan
 Create Date: June 28, 2021
 Create Desc: This procedure Merge's audience IDs which we end everyday to Facebook
 */
-CREATE  
-	
+CREATE
+
 
  PROCEDURE [dbo].[usp_FBCustomAudienceBMWBrand] (
 	@MetaSourceSystemName VARCHAR(50)
@@ -43,9 +45,52 @@ BEGIN
 	INSERT INTO dbo.FBCustomAudience (
 		AudienceID
 		,CustomerID
-		,FirstNa
+		,FirstName
+		,LastName
+		,Email
+		,PhoneNumber,
+		ZipCode,
+		City
+		,EntityKey
+		,EntDealerLvl1
+		,TransactionDate
+		,AudienceType
+		,LoadStatus
+		,ErrorCode
+		,MetaDataDate
+		,MetaLoadDate
+		,MetaComputerName
+		,MetaUserId
+		,MetaSourceSystemName
+		,MetaSrcSysID
+		,ETLExecutionID
+		)
+	SELECT S.AudienceID
+		,S.CustomerID
+		,S.FirstName
+		,S.LastName
+		,S.Email
+		,S.PhoneNumber,S.ZipCode,
+		S.City
+		,S.EntityKey
+		,S.EntDealerLvl1
+		,S.TransactionDate
+		,S.AudienceType
+		,S.STATUS
+		,S.ErrorStatus
+		,@MetaDataDate
+		,MetaLoadDate
+		,@MetaComputerName
+		,@MetaUserId
+		,@MetaSourceSystemName
+		,@MetaSourceSystemID
+		,@ETLExecutionID
+	FROM ETL_Staging.[dbo].[StgFBAudienceBMWBrand] AS S;
+END;
+--END of SP
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

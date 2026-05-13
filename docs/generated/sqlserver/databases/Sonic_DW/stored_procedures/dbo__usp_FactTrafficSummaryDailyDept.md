@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -44,9 +46,53 @@ CREATE   PROCEDURE [dbo].[usp_FactTrafficSummaryDailyDept]
 	@ETLExecution_ID INT,
 	@ApptAttemptedConfirmed INT,
 	@ApprApptCreated INT,
-	@ApprApptDue IN
+	@ApprApptDue INT,
+	@ApprApptShown INT,
+	@ApprApptAcquired INT,
+	@ApprApptConfirmed INT,
+	@Acquired INT,
+	@IsAppraisalAppt INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+UPDATE	FactTrafficSummaryDailyDept
+SET		LeadCount = @LeadCount
+		,ShowroomVisits = @ShowroomVisits
+		, Bebacks = @Bebacks
+		, Sold = @Sold
+		, ApptCreated = @ApptCreated
+		, ApptDue = @ApptDue
+		, ApptShown = @ApptShown
+		, ApptSold = @ApptSold
+		, ApptConfirmed = @ApptConfirmed
+		, Demos = @Demos
+		, WriteUps = @WriteUps
+		, TOs = @TOs
+		, Appraisals = @Appraisals
+		, Lost = @Lost
+		, BadLead = @BadLead
+		, BoughtElsewhere = @BoughtElsewhere
+		, Reassigned = @Reassigned
+		, ETLExecution_ID = @ETLExecution_ID
+		, Meta_ComputerName = HOST_NAME()
+		, Meta_UserID = SYSTEM_USER
+		, Meta_RowLastChangeDate = GETDATE()
+		,ApptAttemptedConfirmed = @ApptAttemptedConfirmed
+		,ApprApptCreated = @ApprApptCreated
+		,ApprApptDue = @ApprApptDue
+		,ApprApptShown = @ApprApptShown
+		,ApprApptAcquired = @ApprApptAcquired
+		,ApprApptConfirmed = @ApprApptConfirmed
+		,Acquired = @Acquired
+		,IsAppraisalAppt = @IsAppraisalAppt
+WHERE	FactTrafficSummaryDailyDeptID = @FactTrafficSummaryDailyDeptID
+;
+
+END
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

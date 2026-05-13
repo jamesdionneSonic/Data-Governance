@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -35,14 +37,77 @@ Remarks	: This process sends alert about the last updated/Inserted RowCount For 
 
 IF (
 SELECT COUNT(*)
-FROM SSIS.Audit.Fact_DataAudit 
+FROM SSIS.Audit.Fact_DataAudit
 WHERE ETLExecution_id=@ETLExecutionId
 		) > 0
 BEGIN
-	DECLARE @Profile NVARCHAR(MAX) = 'Sonic ETL Mail Profile' --@Profile 
-		,@ToLine NVARCHAR(MAX) ='amrendra.kumar@
+	DECLARE @Profile NVARCHAR(MAX) = 'Sonic ETL Mail Profile' --@Profile
+		,@ToLine NVARCHAR(MAX) ='amrendra.kumar@sonicautomotive.com;Bedanta.Bordoloi@sonicautomotive.com;Bhramar.Chandrakar@sonicautomotive.com;sailendra.shetty@AffineAnalytics.com;Apoorva.Kumar@AffineAnalytics.com'
+		--'sailendra.shetty@AffineAnalytics.com'
+		--'amrendra.kumar@sonicautomotive.com;Bedanta.Bordoloi@sonicautomotive.com;Bhramar.Chandrakar@sonicautomotive.com;sailendra.shetty@AffineAnalytics.com;Apoorva.Kumar@AffineAnalytics.com'
+		--(select ConfiguredValue from SSIS.Config.SSIS_Configurations where ConfigurationFilter like 'SIMS_Refresh_ETLEmailList')
+		--'amrendra.kumar@sonicautomotive.com;Bedanta.Bordoloi@sonicautomotive.com;Bhramar.Chandrakar@sonicautomotive.com,sailendra.shetty@AffineAnalytics.com;Apoorva.Kumar@AffineAnalytics.com'
+		,@Subject NVARCHAR(MAX) = 'Status of FactActivity Load'
+		,@Body_Line1 NVARCHAR(MAX) = 'FactActivity Load Summary'
+		,@tableHTML NVARCHAR(MAX) = ''
+		,@xmlXML VARCHAR(MAX)
+		,@Body_Line2 VARCHAR(100) = 'Start Time :' + CONVERT(VARCHAR(20), @LoadDate, 100) + ' End Time :' + CONVERT(VARCHAR(20), GETDATE(), 100);
+
+
+		---------------------------------
+		SET @tableHTML =  N'<H3 style="font-family:Calibri;font-size:20px;color:#820000" >' + @Body_Line1 + '</H3>'
+		+N'<H3 style="font-family:Calibri;font-size:20px;color:#820000" >' + @Body_Line2 + '</H3>'
+		+ N'<TABLE style=" font-family: Calibri; font-size: small" >'
+		+ N'<TR bgcolor=#276399 style=" color:#FFFFFF;word-wrap:break-word;">'
+		+ N'<th style="font-family:Calibri;font-size:15px;color:#FFFFFF";><b>Source Rows</b></th>'
+		+ N'<th style="font-family:Calibri;font-size:15px;color:#FFFFFF"><b>Inserted Rows</b></th>'
+		+ N'<th style="font-family:Calibri;font-size:15px;color:#FFFFFF"><b>Updated Rows</b></th>'
+		+ N'<th style="font-family:Calibri;font-size:15px;color:#FFFFFF"><b>UnChanged Rows</b></th>'
+		+ N'</TR>' + CAST((
+					SELECT (
+							SELECT Source_Rows
+							FROM SSIS.Audit.Fact_DataAudit
+							WHERE ETLExecution_id=@ETLExecutionId
+							) AS TD
+						,''
+						,(
+							SELECT TOP 1 Inserted_Rows
+							FROM SSIS.Audit.Fact_DataAudit
+							WHERE ETLExecution_id=@ETLExecutionId
+							) AS TD
+						,''
+						,(
+							SELECT TOP 1 Updated_Rows
+							FROM SSIS.Audit.Fact_DataAudit
+							WHERE ETLExecution_id=@ETLExecutionId
+							) AS TD
+						,''
+						,(
+							SELECT TOP 1 Source_Rows-(Inserted_Rows+Updated_Rows) as UnChanged_Rows
+							FROM SSIS.Audit.Fact_DataAudit
+							WHERE ETLExecution_id=@ETLExecutionId
+							) AS TD
+						,''
+					FOR XML PATH('TR')
+						,TYPE
+					) AS NVARCHAR(MAX))
+
+	SET @tableHTML = @tableHTML + '</TABLE></BODY></HTML>';
+	SET @xmlXML = @tableHTML;
+
+	--select @xmlXML;
+	EXEC msdb.dbo.sp_send_dbmail @profile_name = @Profile
+		,@recipients = @ToLine
+		,@subject = @Subject
+		,@body = @xmlXML
+		,@body_format = 'HTML';
+
+END
+
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

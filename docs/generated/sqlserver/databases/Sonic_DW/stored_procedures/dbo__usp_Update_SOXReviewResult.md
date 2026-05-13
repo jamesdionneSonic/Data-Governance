@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -38,21 +40,58 @@ CREATE PROCEDURE [dbo].[usp_Update_SOXReviewResult]
 
 
 As
-	
-	
+
+
 SET NOCOUNT ON
 
-BEGIN TRY	
+BEGIN TRY
  IF @ControllerReviewed is null
     BEGIN
-    
+
 	UPDATE SoxReviewResult
 
 	SET ReviewDate = GETDATE(),
 		ReviewedBy = @ReviewedBy,
-		ReviewResult = @ReviewResult
+		ReviewResult = @ReviewResult,
+		ReviewComment = @ReviewComment,
+		ControllerReviewed = @ControllerReviewed,
+		ControllerReviewDate = @ControllerReviewDate,
+		TrainingComment = @TrainingComment
+	WHERE
+		ReviewID = @ReviewID
+		and ReviewItemID = @ReviewItemID
+	END
+
+	ELSE BEGIN
+
+	UPDATE SoxReviewResult
+
+	SET ControllerReviewed = @ControllerReviewed,
+		ControllerReviewDate = @ControllerReviewDate,
+		TrainingComment = @TrainingComment
+	WHERE
+		ReviewID = @ReviewID
+		and ReviewItemID = @ReviewItemID
+	END
+END TRY
+
+BEGIN CATCH
+    SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_MESSAGE() AS ErrorMessage
+    RETURN -1
+END CATCH
+
+
+SET NOCOUNT OFF
+
+
+
+
+
+
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

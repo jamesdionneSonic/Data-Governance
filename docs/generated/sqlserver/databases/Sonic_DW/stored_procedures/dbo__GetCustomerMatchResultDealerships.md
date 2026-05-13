@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -24,7 +26,7 @@ Metadata auto-extracted from SQL Server.
 --EXEC GetCustomerMatchResultQueue 16, 1
 
 CREATE PROCEDURE [dbo].[GetCustomerMatchResultDealerships] ( @threshold INT)
-AS 
+AS
 
 --DECLARE @threshold int = 20
 
@@ -34,9 +36,9 @@ AS
 --	MaxScore INT
 --	)
 
---INSERT INTO @Source 
+--INSERT INTO @Source
 
---	SELECT DISTINCT 
+--	SELECT DISTINCT
 --		CMR.ID,
 --		CMR.SourcePersonID,
 --		MaxScore
@@ -45,9 +47,75 @@ AS
 --	JOIN
 --	(	SELECT	SourcePersonID,
 --				MAX(PotentialMatchScore) AS MaxScore
---		FRO
+--		FROM
+--			[Sonic_DW].[dbo].[CustomerMatchResult]
+--		WHERE
+--			ISNULL(Exclude, 0) = 0
+--		GROUP BY
+--			SourcePersonID
+--		HAVING
+--			MAX(PotentialMatchScore) > @threshold
+--	)	AS	SP
+--	ON CMR.SourcePersonID = SP.SourcePersonID
+--	WHERE
+--		MatchPersonID IS NULL
+--	OR	PotentialMatchScore >= @threshold
+--	AND ISNULL(Exclude, 0) = 0
+--	AND CMR.SourcePersonID = SP.SourcePersonID
+--	AND CMR.MatchPersonID IS NULL
+
+--SELECT
+--	CMR.EntityKey AS EntityKey,
+--	DE.EntDealerLvl0 AS StoreName,
+--	COUNT(SRC.ID) AS PendingCount
+--FROM
+--	[Sonic_DW].[dbo].[CustomerMatchResult] CMR
+--	INNER JOIN @Source SRC ON CMR.ID = SRC.ID
+--	INNER JOIN [Sonic_DW].[dbo].DIM_Entity DE ON CMR.EntityKey = DE.EntityKey
+--WHERE
+--	DE.EntActive = 'Active'
+--	AND DE.CurrentPrefixFlag = 'Active'
+--	AND DE.EntADPActive = 'Active'
+--	AND DE.EntDefaultDlrshpLvl1 = 1
+--GROUP BY
+--	CMR.EntityKey, DE.EntDealerLvl0
+--ORDER BY
+--	StoreName, EntityKey, PendingCount
+
+--DECLARE @threshold int = 20;
+--DECLARE @EntityKey Int = 89;
+
+WITH nullMatchID as (
+	SELECT	CMR.ID, CMR.EntityKey, CMR.SourcePersonID
+	FROM	[Sonic_DW].[dbo].[CustomerMatchResult] CMR
+			INNER JOIN (
+				SELECT	SourcePersonID
+				FROM	[Sonic_DW].[dbo].[CustomerMatchResult]
+				WHERE	ISNULL(Exclude, 0) = 0
+						AND ISNULL([Remove],0) = 0
+						AND PotentialMatchScore >= @threshold
+						AND Meta_LoadDate >= DATEADD(DAY, DATEDIFF(DAY, 0, GETDATE())-30, 0)
+				GROUP BY SourcePersonID
+				)	AS	SP ON CMR.SourcePersonID = SP.SourcePersonID
+	WHERE	MatchPersonID IS NULL
+	),
+matchedID as (
+	SELECT	cmr.EntityKey, cmr.ID
+	FROM	SONIC_DW.DBO.CustomerMatchResult cmr
+			inner join nullMatchID as nmid	on  nmid.id = cmr.id
+	WHERE 	ISNULL(CMR.Exclude,0) = 0
+		AND ISNULL(CMR.[Remove],0) = 0
+		AND cmr.Meta_LoadDate >= DATEADD(DAY, DATEDIFF(DAY, 0, GETDATE())-30, 0)
+	)
+select	de.EntityKey
+		, entdealerlvl0 as StoreName
+		,  count(1) as PendingCount
+from	matchedid as m
+		inner join sonic_dw.dbo.dim_entity as de on m.entitykey = de.entitykey
+group by de.entdealerlvl0, de.entitykey
+order by de.entdealerlvl0
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

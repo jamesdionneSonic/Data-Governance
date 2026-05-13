@@ -20,7 +20,7 @@ const GLOSSARY_DIR = path.resolve(dirName, '../../data/glossary');
  */
 function parseGlossaryFile(filePath) {
   const content = readFileSync(filePath, 'utf-8');
-  const fmMatch = content.match(/^---\n([\s\S]*?)\n---/);
+  const fmMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
 
   if (!fmMatch) {
     throw new Error(`No YAML frontmatter in ${filePath}`);

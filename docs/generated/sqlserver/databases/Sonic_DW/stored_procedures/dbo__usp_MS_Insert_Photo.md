@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -40,14 +42,21 @@ BEGIN TRY
 
     INSERT INTO dbo.MSPhoto (MSPhotoLocation,MSPhotoDescription,MSPhotoCreateDate,MSPhotoUserID,MSAnswerID)
     Values(@MSPhotoLocation,@MSPhotoDescription,@MSPhotoCreationDate,@MSUserID,@MSAnswerID)
-    
-    
+
+
 END TRY
 
 BEGIN CATCH
-    SELECT ERROR_NUMBER(
+    SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_MESSAGE() AS ErrorMessage
+    RETURN -1
+END CATCH
+
+SET NOCOUNT OFF
+
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

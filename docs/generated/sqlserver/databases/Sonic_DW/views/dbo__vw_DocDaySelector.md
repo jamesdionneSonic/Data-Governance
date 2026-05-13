@@ -8,12 +8,15 @@ sensitivity: internal
 tags:
   - view
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+column_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
 
 1- **Type**: View
+
 - **Schema**: dbo
 
 ## Definition
@@ -25,11 +28,15 @@ SELECT        DateKey, DocRolloverDate, DocDayDesc, DocDayAsc, CASE DocDayDesc W
 FROM            (SELECT        d .DateKey, d .DocRolloverDate, ROW_NUMBER() OVER (PARTITION BY d .DocRolloverDate
                           ORDER BY d .DateKey DESC) AS DocDayDesc, ROW_NUMBER() OVER (PARTITION BY d .DocRolloverDate
 ORDER BY d .DateKey ASC) AS DocDayAsc
-FROM     
+FROM            dbo.Dim_date AS d INNER JOIN
+                             (SELECT DISTINCT DocDateKey
+                               FROM            dbo.Doc_Record) AS r ON d .DateKey = r.DocDateKey
+WHERE        IsWeekEnd = 'N') AS DocDay
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z
 - **Data Classification**: To be assigned
 - **Stewardship**: To be assigned

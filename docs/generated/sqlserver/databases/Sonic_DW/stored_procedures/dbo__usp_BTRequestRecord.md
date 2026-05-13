@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -37,9 +39,32 @@ SET NOCOUNT ON
 
 BEGIN TRY
 
-DECLARE @BTKey INT = (SELECT BTKey FROM dbo.BT_RequestsRecord WHERE EntityKey = @EntityKey AND DateKey = (CONVERT([varchar](10
+DECLARE @BTKey INT = (SELECT BTKey FROM dbo.BT_RequestsRecord WHERE EntityKey = @EntityKey AND DateKey = (CONVERT([varchar](10),getdate(),(112))))
+
+IF @BTKey IS NULL
+
+INSERT INTO [dbo].[BT_RequestsRecord]
+           ([EntityKey]
+           ,[Login]
+		   ,[GMName])
+     VALUES
+           (@EntityKey
+           ,@MicroStrategyLogin
+		   ,@GMName)
+
+END TRY
+
+BEGIN CATCH
+    SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_MESSAGE() AS ErrorMessage
+    RETURN -1
+END CATCH
+
+SET NOCOUNT OFF
+
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

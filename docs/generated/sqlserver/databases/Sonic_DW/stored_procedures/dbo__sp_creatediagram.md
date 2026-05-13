@@ -7,12 +7,15 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
 
 1- **Type**: Stored Procedure
+
 - **Schema**: dbo
 
 ## Definition
@@ -22,7 +25,7 @@ extracted_at: 2026-05-09T12:34:14.349Z
 	CREATE PROCEDURE dbo.sp_creatediagram
 	(
 		@diagramname 	sysname,
-		@owner_id		int	= null, 	
+		@owner_id		int	= null,
 		@version 		int,
 		@definition 	varbinary(max)
 	)
@@ -30,7 +33,7 @@ extracted_at: 2026-05-09T12:34:14.349Z
 	AS
 	BEGIN
 		set nocount on
-	
+
 		declare @theId int
 		declare @retval int
 		declare @IsDbo	int
@@ -40,12 +43,44 @@ extracted_at: 2026-05-09T12:34:14.349Z
 			RAISERROR (N'E_INVALIDARG', 16, 1);
 			return -1
 		end
-	
+
 		execute as caller;
-		select @theId = DATABASE_PRINCIPAL_ID(); 
-		se
+		select @theId = DATABASE_PRINCIPAL_ID();
+		select @IsDbo = IS_MEMBER(N'db_owner');
+		revert;
+
+		if @owner_id is null
+		begin
+			select @owner_id = @theId;
+		end
+		else
+		begin
+			if @theId <> @owner_id
+			begin
+				if @IsDbo = 0
+				begin
+					RAISERROR (N'E_INVALIDARG', 16, 1);
+					return -1
+				end
+				select @theId = @owner_id
+			end
+		end
+		-- next 2 line only for test, will be removed after define name unique
+		if EXISTS(select diagram_id from dbo.sysdiagrams where principal_id = @theId and name = @diagramname)
+		begin
+			RAISERROR ('The name is already used.', 16, 1);
+			return -2
+		end
+
+		insert into dbo.sysdiagrams(name, principal_id , version, definition)
+				VALUES(@diagramname, @theId, @version, @definition) ;
+
+		select @retval = @@IDENTITY
+		return @retval
+	END
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

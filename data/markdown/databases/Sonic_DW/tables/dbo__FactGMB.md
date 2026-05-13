@@ -1,0 +1,675 @@
+---
+name: FactGMB
+database: Sonic_DW
+type: table
+schema: dbo
+owner: Data Team
+sensitivity: internal
+tags:
+  - core-schema
+depends_on:
+  - CSI_Email_Change_Tracking
+  - Dim_EPOpCodeBucket_Transact
+  - DimFocusCustomer
+  - DimGMBMetric
+  - DimVehicle
+  - DimVehicleBodyStyle
+  - DimVehicleCab
+  - DimVehicleCategory
+  - DimVehicleChassis
+  - DimVehicleCylinders
+  - DimVehicleDMVCategory
+  - DimVehicleDriveType
+  - DimVehicleEngine
+  - DimVehicleExteriorColor
+  - DimVehicleFuelType
+  - DimVehicleHistory
+  - DimVehicleInteriorColor
+  - DimVehicleMake
+  - DimVehicleModel
+  - DimVehicleModelNumber
+  - DimVehicleRestraints
+  - DimVehicleSeries
+  - DimVehicleTransmission
+  - DimVehicleTrim
+  - DimVin
+  - DimVinHistory
+  - Doc_TXN_BulkPermissionAdd
+  - Fact_ReconAging_TXN
+  - Fact_TrafficManagementGoals
+  - FactFireSummary
+  - FactFireSummary_update
+  - Dim_DMSVendor
+  - Dim_GLDetail
+  - Dim_GLDetail_arch
+  - Dim_GLDetail_ToBeDeleted
+  - Dim_Vendor
+  - DimFBAdName
+  - DimFBCampaign
+  - DimGSCAppearance
+  - DimGSCCountry
+  - DimGSCDevice
+  - DimGSCLandingPage
+  - DimGSCSearchQuery
+  - DimGSCSearchType
+  - DimGSCSite
+  - DimMarket
+  - DimRegion
+  - DimRMDepartment
+  - DimRMSource
+  - DimRMStoreNames
+  - DimSurveyAudit
+  - DimTextPerformance
+  - FacebookCustomerExport
+  - Fact_AccountingDetail
+  - Fact_AccountingDetail_arch
+  - Fact_AccountingDetail_ToBeDeleted
+  - Fact_AccountingDetailCurrent
+  - Fact_AccountingSummary
+  - Fact_AdvertisingExpense
+  - Fact_ASI
+  - Fact_CarsImpression
+  - Fact_CarsLeads
+  - Fact_CustomerSatisfactionIndex
+  - Fact_EPTNotification
+  - Fact_GridPenentration
+  - Fact_HROverTime
+  - Fact_HRTurnOver
+  - Fact_Opportunity
+  - Fact_RetailUnits
+  - Fact_SAAR
+  - Fact_StopSaleUsed
+  - Fact_TemplateData
+  - Fact_TradeAppraisal
+  - Fact_TrafficManagement
+  - Fact_TrafficManagementATIM
+  - Fact_WebPageViews
+  - Fact_WebStats
+  - FactCBAMarketTarget
+  - FactFBCampaignDaily
+  - FactFBCampaignMonthly
+  - FactFBOfflineMetrices
+  - DimGMBMetric
+row_count: 0
+size_kb: 0
+column_count: 11
+index_count: 0
+check_constraint_count: 0
+extraction_warnings:
+  - MISSING_VIEW_DATABASE_STATE
+extracted_at: 2026-05-13T11:28:24.843Z
+---
+
+## Overview
+
+Metadata auto-extracted from SQL Server.
+
+- **Type**: table
+- **Schema**: dbo
+- **Row Count**: 0
+- **Size**: 0 KB
+
+## Columns
+
+| Name                      | Type     | Nullable | Identity | Default | Description |
+| ------------------------- | -------- | -------- | -------- | ------- | ----------- |
+| `FactGMBID`               | int      |          | ✓        |         |             |
+| `EntityKey`               | int      |          |          |         |             |
+| `ActivityStartDateKey`    | int      |          |          |         |             |
+| `ActivityEndDateKey`      | int      |          |          |         |             |
+| `DimGMBMetricID`          | int      |          |          |         |             |
+| `MetricValue`             | int      |          |          |         |             |
+| `ETLExecutionID`          | int      |          |          |         |             |
+| `Meta_LoadDate`           | datetime |          |          |         |             |
+| `Meta_RowLastChangedDaTE` | datetime |          |          |         |             |
+| `Meta_ComputerName`       | varchar  |          |          |         |             |
+| `Meta_UserID`             | varchar  |          |          |         |             |
+
+## Extraction Notes
+
+- **MISSING_VIEW_DATABASE_STATE**: Missing VIEW DATABASE STATE permission. Row count and size metrics are unavailable.
+
+## Relationships
+
+### High Confidence (≥ 0.8)
+
+- **column_match**: dbo.CSI_Email_Change_Tracking → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.Dim_EPOpCodeBucket_Transact → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimFocusCustomer → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserId` → `Meta_UserID`
+- **column_match**: dbo.DimGMBMetric → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicle → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleBodyStyle → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleCab → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleCategory → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleChassis → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleCylinders → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleDMVCategory → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleDriveType → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleEngine → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleExteriorColor → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleFuelType → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleHistory → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleInteriorColor → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleMake → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleModel → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleModelNumber → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleRestraints → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleSeries → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleTransmission → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVehicleTrim → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVin → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.DimVinHistory → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.Doc_TXN_BulkPermissionAdd → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.Fact_ReconAging_TXN → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.Fact_TrafficManagementGoals → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactFireSummary → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactFireSummary_update → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactMSCTasks
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactMSCTasksDept
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactTrafficSummary
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactTrafficSummary_06102022
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactTrafficSummary_06132022
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactTrafficSummary_07292023
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactTrafficSummary_20230706
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactTrafficSummary_20230727
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactTrafficSummary_bk02172022
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.Facttrafficsummary_TMR_Export
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.Facttrafficsummary_TMR_Export_06142022
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactTrafficSummary_TMR_Export_1006
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.Facttrafficsummary_TMR_Export_bk02172022
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.Facttrafficsummary_TMR_Export_old 0610
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactTrafficSummary_TMR_Export_zz
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactTrafficSummaryDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactTrafficSummaryDaily_07292023
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactTrafficSummaryDaily_20230706
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactTrafficSummaryDaily_20230727
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactTrafficSummaryDailyDept
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactTrafficSummarySubSource
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactTrafficSummarySubSource_05032024
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactTrafficSummarySubSource_20240404
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactTrafficSummarySubSourcebkp
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactVehicleInventory
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.FactVehiclePriceChangeNotification
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.SalesTranAssociate_Outbound
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.Syndicate_Floorplan_BoA_Dont_Fund
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.Syndicate_Floorplan_BoA_Dont_Fund_Old
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.Syndicate_Floorplan_BoA_Response
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.Syndicate_Floorplan_BoA_Response_Old
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.Syndicate_Floorplan_BoA_Response_Old2
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.Syndicate_Floorplan_BoA_Response_tmp
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.Syndicate_Floorplan_Payoff
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.Syndicate_Floorplan_Payoff_Old
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.Syndicate_Floorplan_Payoffs_Skip
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.Syndicate_Floorplan_Payoffs_Skip_Old
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.Syndicate_Floorplan_Transaction
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.Syndicate_MaxPayoff
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.Syndicate_MaxPayoff_History
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.FactGMB → dbo.Syndicate_MaxPayoff_Old
+  - Confidence: 80%
+  - Evidence: Exact column name match: "meta_userid" in both tables
+  - Column: `Meta_UserID` → `Meta_UserID`
+- **column_match**: dbo.Dim_DMSVendor → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Dim_GLDetail → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Dim_GLDetail_arch → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Dim_GLDetail_ToBeDeleted → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Dim_Vendor → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBAdName → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimGSCAppearance → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimGSCCountry → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimGSCDevice → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimGSCLandingPage → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimGSCSearchQuery → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimGSCSearchType → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimGSCSite → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimMarket → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimRegion → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimRMDepartment → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimRMSource → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimRMStoreNames → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimSurveyAudit → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimTextPerformance → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.FacebookCustomerExport → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_AccountingDetail → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_AccountingDetail_arch → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_AccountingDetail_ToBeDeleted → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_AccountingDetailCurrent → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_AccountingSummary → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_AdvertisingExpense → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_ASI → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_CarsImpression → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_CarsLeads → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_CustomerSatisfactionIndex → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_EPTNotification → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_GridPenentration → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_HROverTime → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_HRTurnOver → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_Opportunity → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_RetailUnits → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_SAAR → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_StopSaleUsed → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_TemplateData → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_TradeAppraisal → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_TrafficManagement → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_TrafficManagementATIM → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_WebPageViews → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Fact_WebStats → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.FactCBAMarketTarget → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.FactFBCampaignDaily → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.FactFBCampaignMonthly → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.FactFBOfflineMetrices → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.FactGMB → dbo.FactGSCAppearanceDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.FactGMB → dbo.FactGSCDevicesCountryDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.FactGMB → dbo.FactGSCPagesDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.FactGMB → dbo.FactGSCQueryDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.FactGMB → dbo.FactRMReviewMetrics
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.FactGMB → dbo.FactRMReviewMonthly
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.FactGMB → dbo.QuartileOpportunityMart
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionId`
+- **column_match**: dbo.FactGMB → dbo.RegionAssociate
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.FactGMB → dbo.StartTotalMORMetrics
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.FactGMB → dbo.wrk_Dim_HFMBrand
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimGMBMetric → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "dimgmbmetricid" in both tables
+  - Column: `DimGMBMetricID` → `DimGMBMetricID`
+
+## Governance
+
+- **Last Extracted**: 2026-05-13T11:28:24.843Z
+- **Data Classification**: To be assigned
+- **Stewardship**: To be assigned
+- **Compliance**: Review for GDPR/HIPAA applicability
+- **Extractor Warnings**: Present (see Extraction Notes)

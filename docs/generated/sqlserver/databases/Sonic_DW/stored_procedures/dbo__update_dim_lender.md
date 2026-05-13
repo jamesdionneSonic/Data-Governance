@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -30,14 +32,48 @@ SET Sonic_Grouping = @sonic_grouping, Meta_RowLastChangedDate = GETDATE(), Meta_
 WHERE LenderKey = @lenderkey
 END
 
-ELSE IF (@scenario = 2)	
+ELSE IF (@scenario = 2)
 
 BEGIN
 
 INSERT INTO Sonic_DW.dbo.Dim_Lender_Additions (Sonic_Grouping,UserID,Meta_LoadDate)
-VALUES 
+VALUES (@sonic_grouping,@userid,GETDATE())
+END
+
+
+ELSE IF (@scenario = 3)
+BEGIN
+
+UPDATE Sonic_DW.dbo.dim_lender
+SET Sonic_Grouping = @sonic_grouping_2, Meta_RowLastChangedDate = GETDATE(), Meta_UserChangeID = @userid
+WHERE Sonic_Grouping = @sonic_grouping
+END
+
+/*Raj please add below- 20221107*/
+ELSE IF (@scenario = 4)
+BEGIN
+
+UPDATE Sonic_DW.dbo.dim_lender
+SET Sonic_Grouping = @sonic_grouping_2, Meta_RowLastChangedDate = GETDATE(), Meta_UserChangeID = @userid
+WHERE name1 = @sonic_grouping
+END
+
+/*Raj please add below- 20230202*/
+UPDATE dl
+SET dl.LenderFICOTierKey = dlm.LenderFICOTierKey, dl.LenderTypeKey = dlm.LenderTypeKey, dl.PreferenceStatus = dlm.PreferenceStatus, dl.Meta_RowLastChangedDate = GETDATE()
+FROM dbo.Dim_Lender dl
+JOIN (
+SELECT Sonic_Grouping,MAX(LenderTypeKey) LenderTypeKey,MAX(LenderFICOTierKey) LenderFICOTierKey,MAX(PreferenceStatus) PreferenceStatus
+FROM dbo.Dim_Lender
+GROUP BY Sonic_Grouping
+HAVING COALESCE(MAX(LenderTypeKey),MAX(LenderFICOTierKey),MAX(PreferenceStatus)) IS not null
+) dlm
+ON dlm.Sonic_Grouping = dl.Sonic_Grouping
+WHERE dl.LenderFICOTierKey IS NULL OR dl.LenderTypeKey IS NULL OR dl.PreferenceStatus IS null
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

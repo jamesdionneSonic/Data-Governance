@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -32,15 +34,41 @@ BEGIN
 			FROM Sonic_DW.dbo.Fact_Service as TGT WITH (NOLOCK)
 			INNER JOIN Sonic_DW.dbo.Dim_Vehicle as SRC WITH (NOLOCK)
 			ON TGT.VIN = SRC.VehVIN
-			WHERE TGT.vehiclekey = -1 
+			WHERE TGT.vehiclekey = -1
 			and TGT.Vin is not null ;
- 
+
 			UPDATE TGT SET
 			NewVehicleKey = SRC.VehicleKey
 			FROM Sonic_DW.dbo.Fact_Service as TGT WITH (NOLOCK)
-			INNER JOIN Sonic_DW.dbo.D
+			INNER JOIN Sonic_DW.dbo.DimVIN as SRC with (nolock)
+			ON TGT.vin = SRC.Vin
+			WHERE TGT.NewVehicleKey = -1
+			and TGT.Vin is not null ;
+
+		COMMIT TRAN
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION;
+
+		DECLARE @ErrorMessage NVARCHAR(4000);
+		DECLARE @ErrorSeverity INT;
+		DECLARE @ErrorState INT;
+
+		SELECT @ErrorMessage = ERROR_MESSAGE()
+			,@ErrorSeverity = ERROR_SEVERITY()
+			,@ErrorState  = ERROR_STATE();
+
+		RAISERROR (
+			@ErrorMessage
+			,-- Message text.
+			@ErrorSeverity
+			,-- Severity.
+			@ErrorState -- State.
+			);
+	END CATCH
+END
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

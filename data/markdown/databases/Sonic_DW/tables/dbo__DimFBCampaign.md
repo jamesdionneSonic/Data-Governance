@@ -1,0 +1,499 @@
+---
+name: DimFBCampaign
+database: Sonic_DW
+type: table
+schema: dbo
+owner: Data Team
+sensitivity: internal
+tags:
+  - core-schema
+depends_on:
+  - Dim_DMSVendor
+  - Dim_GLDetail
+  - Dim_GLDetail_arch
+  - Dim_GLDetail_ToBeDeleted
+  - Dim_Vendor
+  - DimFBAdName
+  - DimFBAdName
+  - DimFBAdName
+row_count: 0
+size_kb: 0
+column_count: 10
+index_count: 1
+check_constraint_count: 0
+extraction_warnings:
+  - MISSING_VIEW_DATABASE_STATE
+extracted_at: 2026-05-13T11:28:24.843Z
+---
+
+## Overview
+
+Metadata auto-extracted from SQL Server.
+
+- **Type**: table
+- **Schema**: dbo
+- **Row Count**: 0
+- **Size**: 0 KB
+
+## Columns
+
+| Name                   | Type     | Nullable | Identity | Default | Description |
+| ---------------------- | -------- | -------- | -------- | ------- | ----------- |
+| `CampaignKey`          | int      |          | ✓        |         |             |
+| `CampaignId`           | bigint   | ✓        |          |         |             |
+| `CampaignName`         | varchar  | ✓        |          |         |             |
+| `CampaignObjective`    | varchar  | ✓        |          |         |             |
+| `MetaLoadDate`         | datetime | ✓        |          |         |             |
+| `MetaComputerName`     | varchar  | ✓        |          |         |             |
+| `MetaUserId`           | varchar  | ✓        |          |         |             |
+| `MetaSourceSystemName` | varchar  | ✓        |          |         |             |
+| `MetaSrcSysID`         | int      | ✓        |          |         |             |
+| `ETLExecutionID`       | int      | ✓        |          |         |             |
+
+## Indexes
+
+- **CI_CampaignId** (CLUSTERED)
+  - Unique: No
+  - Primary Key: No
+  - Key Columns: CampaignId ASC
+
+## Extraction Notes
+
+- **MISSING_VIEW_DATABASE_STATE**: Missing VIEW DATABASE STATE permission. Row count and size metrics are unavailable.
+
+## Relationships
+
+### High Confidence (≥ 0.8)
+
+- **column_match**: dbo.Dim_DMSVendor → dbo.DimFBCampaign
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Dim_GLDetail → dbo.DimFBCampaign
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Dim_GLDetail_arch → dbo.DimFBCampaign
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Dim_GLDetail_ToBeDeleted → dbo.DimFBCampaign
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.Dim_Vendor → dbo.DimFBCampaign
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBAdName → dbo.DimFBCampaign
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCAppearance
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCCountry
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCDevice
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCLandingPage
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCSearchQuery
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCSearchType
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCSite
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimMarket
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimRegion
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimRMDepartment
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimRMSource
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimRMStoreNames
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimSurveyAudit
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimTextPerformance
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.FacebookCustomerExport
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_AccountingDetail
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_AccountingDetail_arch
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_AccountingDetail_ToBeDeleted
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_AccountingDetailCurrent
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_AccountingSummary
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_AdvertisingExpense
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_ASI
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_CarsImpression
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_CarsLeads
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_CustomerSatisfactionIndex
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_EPTNotification
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_GridPenentration
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_HROverTime
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_HRTurnOver
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_Opportunity
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_RetailUnits
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_SAAR
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_StopSaleUsed
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_TemplateData
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_TradeAppraisal
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_TrafficManagement
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_TrafficManagementATIM
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_WebPageViews
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.Fact_WebStats
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactCBAMarketTarget
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactFBCampaignDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactFBCampaignMonthly
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactFBOfflineMetrices
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactGMB
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactGSCAppearanceDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactGSCDevicesCountryDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactGSCPagesDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactGSCQueryDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactRMReviewMetrics
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactRMReviewMonthly
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.QuartileOpportunityMart
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionId`
+- **column_match**: dbo.DimFBCampaign → dbo.RegionAssociate
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.StartTotalMORMetrics
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBCampaign → dbo.wrk_Dim_HFMBrand
+  - Confidence: 80%
+  - Evidence: Exact column name match: "etlexecutionid" in both tables
+  - Column: `ETLExecutionID` → `ETLExecutionID`
+- **column_match**: dbo.DimFBAdName → dbo.DimFBCampaign
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserId`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCAppearance
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCCountry
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCDevice
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCLandingPage
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCSearchQuery
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCSearchType
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCSite
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimRMDepartment
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserId`
+- **column_match**: dbo.DimFBCampaign → dbo.DimRMSource
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserId`
+- **column_match**: dbo.DimFBCampaign → dbo.DimRMStoreNames
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserId`
+- **column_match**: dbo.DimFBCampaign → dbo.FacebookCustomerExport
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserId`
+- **column_match**: dbo.DimFBCampaign → dbo.FactFBCampaignDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserId`
+- **column_match**: dbo.DimFBCampaign → dbo.FactFBCampaignMonthly
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserId`
+- **column_match**: dbo.DimFBCampaign → dbo.FactFBOfflineMetrices
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserId`
+- **column_match**: dbo.DimFBCampaign → dbo.FactGSCAppearanceDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactGSCDevicesCountryDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactGSCPagesDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactGSCQueryDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactRMReviewMetrics
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserId`
+- **column_match**: dbo.DimFBCampaign → dbo.FactRMReviewMonthly
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserId`
+- **column_match**: dbo.DimFBCampaign → dbo.FBAudienceUnsoldShowroom
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserId`
+- **column_match**: dbo.DimFBCampaign → dbo.FBCustomAudience
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserId`
+- **column_match**: dbo.DimFBCampaign → dbo.QuartileOpportunityMart
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metauserid" in both tables
+  - Column: `MetaUserId` → `MetaUserId`
+- **column_match**: dbo.DimFBAdName → dbo.DimFBCampaign
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCAppearance
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCCountry
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCDevice
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCLandingPage
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCSearchQuery
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCSearchType
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimGSCSite
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimRMDepartment
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimRMSource
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.DimRMStoreNames
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactFBCampaignDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactFBCampaignMonthly
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactFBOfflineMetrices
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactGSCAppearanceDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactGSCDevicesCountryDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactGSCPagesDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactGSCQueryDaily
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactRMReviewMetrics
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.FactRMReviewMonthly
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.FBCustomAudience
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysID`
+- **column_match**: dbo.DimFBCampaign → dbo.QuartileOpportunityMart
+  - Confidence: 80%
+  - Evidence: Exact column name match: "metasrcsysid" in both tables
+  - Column: `MetaSrcSysID` → `MetaSrcSysId`
+
+## Governance
+
+- **Last Extracted**: 2026-05-13T11:28:24.843Z
+- **Data Classification**: To be assigned
+- **Stewardship**: To be assigned
+- **Compliance**: Review for GDPR/HIPAA applicability
+- **Extractor Warnings**: Present (see Extraction Notes)

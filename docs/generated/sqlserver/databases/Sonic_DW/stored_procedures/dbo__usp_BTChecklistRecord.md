@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -40,9 +42,51 @@ SET NOCOUNT ON
 BEGIN TRY
 
 --Check to see if a Record exists for selected store and date
-DECLARE
+DECLARE @ChecklistKey INT = (SELECT ChecklistKey FROM dbo.BT_ChecklistRecord WHERE EntityKey = @EntityKey AND FORMAT(CONVERT(date, DateStarted), 'MM-yyyy') = FORMAT(CONVERT(date, GETDATE()), 'MM-yyyy'))
+
+IF @StartFinishFlag = 0
+	BEGIN
+		-- Prevent duplicates
+		IF @ChecklistKey IS NULL
+			BEGIN
+				INSERT INTO [dbo].[BT_ChecklistRecord]
+					([EntityKey]
+					,[Reviewer]
+					,[DateStarted])
+				VALUES
+					(@EntityKey
+					,@Reviewer
+					,GetDate())
+			END
+	END
+
+ELSE IF @StartFinishFlag = 1
+	BEGIN
+		DECLARE @DateCheck Datetime
+		SELECT @DateCheck = (SELECT DateFinished FROM dbo.BT_ChecklistRecord WHERE ChecklistKey = @ChecklistKey)
+
+		-- Check to make sure record exists
+		IF @ChecklistKey IS NOT NULL AND @DateCheck IS NULL
+			BEGIN
+				UPDATE [dbo].[BT_ChecklistRecord]
+				SET [DateFinished] = GetDate()
+				WHERE [ChecklistKey] = @ChecklistKey AND [DateFinished] IS NULL
+			END
+	END
+
+
+END TRY
+
+BEGIN CATCH
+    SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_MESSAGE() AS ErrorMessage
+    RETURN -1
+END CATCH
+
+SET NOCOUNT OFF
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

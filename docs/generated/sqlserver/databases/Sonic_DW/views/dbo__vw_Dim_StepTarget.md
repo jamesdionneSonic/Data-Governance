@@ -8,7 +8,9 @@ sensitivity: internal
 tags:
   - view
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+column_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -23,8 +25,8 @@ Metadata auto-extracted from SQL Server.
 ```sql
 CREATE VIEW [dbo].[vw_Dim_StepTarget]
 AS
-SELECT     TargetKey, LOWER(TargetName) AS TargetName, TargetType, TargetLocation, TargetStepNumber, TargetStepName, TargetSystem, IsFinalDestinationFlag, 
-                      Meta_Src_Sys_ID, Meta_SourceSystemName, Meta_RowEffectiveDate, Meta_RowExpiredDate, Meta_RowIsCurrent, Meta_RowLastChangedDate, ETLExecution_ID, 
+SELECT     TargetKey, LOWER(TargetName) AS TargetName, TargetType, TargetLocation, TargetStepNumber, TargetStepName, TargetSystem, IsFinalDestinationFlag,
+                      Meta_Src_Sys_ID, Meta_SourceSystemName, Meta_RowEffectiveDate, Meta_RowExpiredDate, Meta_RowIsCurrent, Meta_RowLastChangedDate, ETLExecution_ID,
                       User_ID, Meta_ComputerName, Meta_LoadDate
 FROM         dbo.Dim_StepTarget
 
@@ -32,6 +34,6 @@ FROM         dbo.Dim_StepTarget
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z
 - **Data Classification**: To be assigned
 - **Stewardship**: To be assigned

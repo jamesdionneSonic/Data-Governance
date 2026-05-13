@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -39,9 +41,73 @@ BEGIN
 
 TRUNCATE TABLE dbo.Historical_transport_purchases;
 
-INSERT INTO dbo.Historical_transp
+INSERT INTO dbo.Historical_transport_purchases (
+        SnapshotDate,
+        Remove,
+        VIN,
+        Entry,
+        Receiving_Market,
+        Trans_Loc,
+        CBS_Location,
+        Store,
+        Trans_Status,
+        CBS_Status,
+        Status_Rollup,
+        Stock_No,
+        Year,
+        Make,
+        Model,
+        Trim,
+        DT,
+        Age,
+        Days_In_Recon,
+        Rec_Mkt_2,
+        Purch_Dealer,
+        Buyer,
+        Source,
+        Auction,
+        Seller,
+        Purchase_Date,
+        Run_Date,
+        origintype
+    )
+    SELECT
+        CAST(GETDATE() AS DATE) AS SnapshotDate,
+        Remove,
+        VIN,
+        Entry,
+        Receiving_Market,
+        Trans_Loc,
+        CBS_Location,
+        Store,
+        Trans_Status,
+        CBS_Status,
+        Status_Rollup,
+        Stock_No,
+        Year,
+        Make,
+        Model,
+        Trim,
+        DT,
+        Age,
+        Days_In_Recon,
+        Rec_Mkt_2,
+        Purch_Dealer,
+        Buyer,
+        Source,
+        Auction,
+        Seller,
+        Purchase_Date,
+        Run_Date,
+        origintype
+    FROM darpts.Transport_Purchases;
+
+SET NOCOUNT OFF
+END
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

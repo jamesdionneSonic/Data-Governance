@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -37,9 +39,19 @@ AS
 		   ,DLOC = @DLOC
 		   ,Account = @Account
 		   ,BofADealerName = @BofADealerName --Raj add 12/20/2021 ASM
-		WH
+		WHERE EntityKey = @EntityKey
+		AND [StockType] = @StockType
+
+	ELSE
+
+		INSERT INTO Sonic_DW.dbo.syndicate_FPAccounts (EntityKey, EntADPCompanyID, EntDealerLvl1, EntDealerLvl0, EntEssCode, EntBrand, [Syndicate Group], [StockType], [FP Lender], [Group], BofADealerName, BoAlevel_default, State, CIN, DLOC, Account, [PROD Type], FinType)
+SELECT de.[EntityKey], de.[EntADPCompanyID],de.[EntDealerLvl1], de.[EntDealerLvl0],de.[EntEssCode],de.[EntBrand],'SYN' AS [Syndicate Group],@StockType AS [Stock Type],'SYN' AS [FP Lender],@StockType+' Syndicate' AS [Group],@BofADealerName AS BofADealerName, 1 AS BoAlevel_default,de.[EntAddressState] AS [State],@CIN AS CIN, @DLOC AS DLOC, @Account AS Account, @StockType AS [PROD Type],'FP-' + @StockType AS FinType FROM [Dim_Entity] de
+WHERE de.[EntityKey] IN (@entitykey)
+
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

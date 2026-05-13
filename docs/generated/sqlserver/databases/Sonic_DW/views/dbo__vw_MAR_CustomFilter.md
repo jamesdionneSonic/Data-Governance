@@ -8,12 +8,15 @@ sensitivity: internal
 tags:
   - view
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+column_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
 
 1- **Type**: View
+
 - **Schema**: dbo
 
 ## Definition
@@ -28,11 +31,24 @@ WHERE		 FullDate >= DATEADD(month, -1, DATEADD(month, DATEDIFF(month, 0, GETDATE
 UNION
 SELECT       [DateKey], 'MTD' AS DATE_RANGE
 FROM         [Sonic_DW].[dbo].[vw_Dim_date]
-WHERE        Year([FullDate]) = YEAR(GETDATE() -1) AND MONTH([FullDate]) = MONTH(GETDATE() -1) AND FullDate <= CAST(GETDATE() 
+WHERE        Year([FullDate]) = YEAR(GETDATE() -1) AND MONTH([FullDate]) = MONTH(GETDATE() -1) AND FullDate <= CAST(GETDATE() - 1 AS Date)
+UNION
+SELECT       [DateKey], 'YTD' AS DATE_RANGE
+FROM         [Sonic_DW].[dbo].[vw_Dim_date]
+WHERE        Year([FullDate]) = YEAR(GETDATE() - 1) AND FullDate <= CAST(GETDATE() - 1 AS Date)
+UNION
+SELECT       [DateKey], 'L7D' AS DATE_RANGE
+FROM         [Sonic_DW].[dbo].[vw_Dim_date]
+WHERE        [FullDate] >= DATEADD(day, - 8, GETDATE()) AND [FullDate] <= GETDATE() -1
+UNION
+SELECT       [DateKey], 'Custom' AS DATE_RANGE
+FROM         [Sonic_DW].[dbo].[vw_Dim_date]
+WHERE        DateKey > 20190000 AND Year([FullDate]) <= YEAR(GETDATE() - 1)
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z
 - **Data Classification**: To be assigned
 - **Stewardship**: To be assigned

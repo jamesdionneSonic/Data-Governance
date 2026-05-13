@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - function
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -23,30 +25,34 @@ Metadata auto-extracted from SQL Server.
 CREATE FUNCTION [dbo].[fn_ProperCase]
 (
 @InputString varchar(max)
-) 
-RETURNS varchar(max) 
+)
+RETURNS varchar(max)
 AS
 BEGIN
 	IF LEN(@InputString) = 0
 	BEGIN
 		RETURN ''
 	END
-	
+
 	SELECT @InputString = LTRIM(RTRIM(LOWER(@InputString)))
-	
+
 	DECLARE @i int
 	SELECT @i = ASCII('a')
-	
+
 	WHILE @i <= ASCII('z')
 	BEGIN
 		SELECT @InputString = REPLACE(@InputString, ' ' + CHAR(@i), ' ' + CHAR(@i-32))
 		SELECT @i = @i + 1
 	END
 
-	IF LEFT(@InputString, 1) NOT LIKE '%[0-9]%'	
-		SELECT @InputString = CHAR(ASCII(LEF
+	IF LEFT(@InputString, 1) NOT LIKE '%[0-9]%'
+		SELECT @InputString = CHAR(ASCII(LEFT(@InputString, 1)) - 32) + RIGHT(@InputString, LEN(@InputString) - 1)
+
+	RETURN @InputString
+END
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

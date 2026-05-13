@@ -7,12 +7,15 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
 
 1- **Type**: Stored Procedure
+
 - **Schema**: dbo
 
 ## Definition
@@ -22,7 +25,7 @@ extracted_at: 2026-05-09T12:34:14.349Z
 	CREATE PROCEDURE dbo.sp_helpdiagramdefinition
 	(
 		@diagramname 	sysname,
-		@owner_id	int	= null 		
+		@owner_id	int	= null
 	)
 	WITH EXECUTE AS N'dbo'
 	AS
@@ -33,19 +36,33 @@ extracted_at: 2026-05-09T12:34:14.349Z
 		declare @IsDbo 		int
 		declare @DiagId		int
 		declare @UIDFound	int
-	
+
 		if(@diagramname is null)
 		begin
 			RAISERROR (N'E_INVALIDARG', 16, 1);
 			return -1
 		end
-	
+
 		execute as caller;
 		select @theId = DATABASE_PRINCIPAL_ID();
 		select @IsDbo = IS_MEMBER(N'db_owner');
-		if(@owner_id is nul
+		if(@owner_id is null)
+			select @owner_id = @theId;
+		revert;
+
+		select @DiagId = diagram_id, @UIDFound = principal_id from dbo.sysdiagrams where principal_id = @owner_id and name = @diagramname;
+		if(@DiagId IS NULL or (@IsDbo = 0 and @UIDFound <> @theId ))
+		begin
+			RAISERROR ('Diagram does not exist or you do not have permission.', 16, 1);
+			return -3
+		end
+
+		select version, definition FROM dbo.sysdiagrams where diagram_id = @DiagId ;
+		return 0
+	END
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

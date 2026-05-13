@@ -4,8 +4,13 @@
  */
 
 import { createApiRouter } from '../utils/apiRouter.js';
-import { generateToken, generateRefreshToken } from '../utils/tokenManager.js';
-import { createOrGetUser } from '../services/userService.js';
+import {
+  generateToken,
+  generateRefreshToken,
+  refreshAccessToken,
+  verifyToken,
+} from '../utils/tokenManager.js';
+import { createOrGetUser, getUser } from '../services/userService.js';
 import { authenticate } from '../middleware/auth.js';
 import { sendErrorResponse } from '../middleware/errorHandler.js';
 
@@ -101,10 +106,37 @@ router.post('/refresh', (req, res) => {
   }
 
   try {
-    // Implementation would verify refresh token and issue new access token
+    const decoded = verifyToken(refreshToken);
+
+    if (!decoded || decoded.type !== 'refresh' || !decoded.sub) {
+      return sendErrorResponse(res, req, 401, 'Invalid refresh token', {
+        code: 'UNAUTHORIZED',
+      });
+    }
+
+    const user = getUser(decoded.sub);
+
+    if (!user) {
+      return sendErrorResponse(res, req, 401, 'Refresh token user not found', {
+        code: 'UNAUTHORIZED',
+      });
+    }
+
+    const token = refreshAccessToken(refreshToken, user);
+    const nextRefreshToken = generateRefreshToken(user.id);
+
     return res.json({
-      message: 'Token refresh - implement full flow',
-      received: { refreshToken: !!refreshToken },
+      status: 'success',
+      message: 'Token refreshed successfully',
+      token,
+      refreshToken: nextRefreshToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        roles: user.roles,
+        databases: user.databases,
+      },
     });
   } catch (err) {
     return sendErrorResponse(res, req, 401, 'Invalid refresh token', {

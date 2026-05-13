@@ -776,6 +776,45 @@ Reviewers will verify:
 - [ ] BFF contract boundaries and DTO mappings are enforced
 - [ ] IaC standards and reviewed plan are present for infra changes
 
+## Production Database Safety & Zero-Impact Reads
+
+### AI and Human Developer Guardrail
+
+Because this platform extracts metadata from active production systems, **it is strictly prohibited to issue any read query that could place a shared lock on a production table or system catalog.** Every AI agent writing code for this repository, and every human developer reviewing it, must adhere to the **Zero-Impact Read Protocol** tailored specifically to the dialect of the target database.
+
+### Mandatory Dialect Isolation Rules
+
+When writing data extraction queries, the following isolation level standards must be explicitly declared in the code or query string:
+
+1. **Microsoft SQL Server (T-SQL)**
+   - All extraction queries must begin with `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;`
+   - Alternatively, `WITH (NOLOCK)` must be applied to every table and system view (`sys.objects`, `sys.tables`, etc.) in the query.
+2. **PostgreSQL**
+   - Sessions or queries must be explicitly scoped using standard read-only or snapshot isolation techniques depending on driver implementation, prioritizing avoidance of explicit locks.
+   - Example: `BEGIN TRANSACTION ISOLATION LEVEL READ UNCOMMITTED READ ONLY;`
+
+3. **MySQL / MariaDB**
+   - Queries must be prefixed with: `SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;`
+
+4. **Oracle**
+   - Transactions must be set to: `SET TRANSACTION READ ONLY;`
+
+### Implementation Example
+
+```javascript
+// ✓ REQUIRED - Setting the isolation level directly in the query string
+async extractAllColumns() {
+  const query = `
+    SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+    SELECT
+      o.name as object_name,
+      c.name as column_name
+    FROM sys.objects o
+    JOIN sys.columns c ON o.object_id = c.object_id
+  `;
+  // execute query...
+}
+
 ---
 
 ## Summary
@@ -793,3 +832,4 @@ As a contributor, you are responsible for:
 Thank you for contributing to Data Governance! Your adherence to these guidelines ensures we maintain a high-quality, scalable, and maintainable codebase.
 
 For questions or clarifications, please open an issue or reach out to the maintainers.
+```

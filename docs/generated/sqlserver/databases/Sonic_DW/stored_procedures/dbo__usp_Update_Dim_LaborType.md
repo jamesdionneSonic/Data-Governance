@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -22,13 +24,13 @@ Metadata auto-extracted from SQL Server.
 ```sql
 
 
-CREATE PROCEDURE [dbo].[usp_Update_Dim_LaborType] 
+CREATE PROCEDURE [dbo].[usp_Update_Dim_LaborType]
 @LaborTypeKey int,
 @UserName varchar(20),
 @LaborTypeCategory varchar(20),
 @GridName varchar(50)
 --@OffGridFlag bit
-AS 
+AS
 --
 -- ============================================================================
 -- Module:  usp_Update_Dim_LaborType
@@ -36,15 +38,80 @@ AS
 --   Date:  09/29/2011
 --
 -- Description:
---   Update Dim_LaborType 
+--   Update Dim_LaborType
 --
 -- Dependencies:
 --   dbo.Dim_LaborType
 --
 -- Revisions:
--- Date        Name           
+-- Date        Name             Description
+-- ---------------------------------------------------------------------------
+-- 09/29/2011  Roger Williams   Initial creation
+-- Upadated 05/08/2012 CDE, JH
+-- ============================================================================
+--
+-- Sets
+--
+SET NOCOUNT ON
+
+--
+-- Declarations
+--
+
+--
+-- Initializations
+--
+
+--
+-- **************************************
+-- Processing
+-- **************************************
+--
+-- Update Dim_LaborType
+--
+
+declare @lbrCoraAcctID int
+declare @lbrLaborType varchar(50)
+select @lbrCoraAcctID = lbrCoraAcctID,@lbrLaborType=lbrLaborType
+from dim_LaborType where laborTypeKey = @LaborTypeKey
+BEGIN TRY
+	IF EXISTS (SELECT * FROM dbo.Dim_LaborType_transact WHERE lbrCoraAcctID = @lbrCoraAcctID and lbrLaborType = @lbrLaborType)
+		UPDATE dbo.Dim_LaborType_transact
+		SET LbrLaborTypeCategory = @LaborTypeCategory
+		WHERE lbrCoraAcctID = @lbrCoraAcctID and
+			lbrLaborType = @lbrLaborType;
+
+	ELSE
+		INSERT INTO dbo.Dim_LaborType_transact
+		SELECT	@lbrCoraAcctID,
+				@lbrLaborType,
+				@LaborTypeCategory,
+				'TBD',
+				'TBD',
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				NULL;
+
+END TRY
+
+BEGIN CATCH
+    SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_MESSAGE() AS ErrorMessage
+    RETURN -1
+END CATCH
+
+--
+-- Un-Sets
+--
+SET NOCOUNT OFF
+
+RETURN 0
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -29,26 +31,26 @@ Metadata auto-extracted from SQL Server.
 CREATE PROCEDURE [dbo].[usp_Update_SOXReview]
 @ReviewID INT,
 @ReviewCompletedBy VARCHAR(50),
-@ReviewStatusID int	
+@ReviewStatusID int
 
 
 
 As
-	
-	
+
+
 SET NOCOUNT ON
 
-BEGIN TRY	
- 
-	
+BEGIN TRY
+
+
 	UPDATE SoxReview
 
 	SET ReviewCompletedBy = @ReviewCompletedBy,
 		ReviewCompleteDate = Getdate(),
 		ReviewStatusID = @ReviewStatusID
-	WHERE 
+	WHERE
 		ReviewID = @ReviewID
-	
+
 END TRY
 
 BEGIN CATCH
@@ -58,8 +60,17 @@ END CATCH
 
 
 SET NOCOUNT OFF
+
+
+
+
+
+
+
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -44,9 +46,72 @@ SET NOCOUNT ON
 DECLARE @ValidValues VARCHAR(100)
        ,@strSelect VARCHAR(1000)
        ,@ScoreCodeID INT
-       ,@PlaybookSur
+       ,@PlaybookSurveyID INT
+
+BEGIN TRY
+
+    SET @ValidValues = (SELECT v.ValidValues
+                        FROM Sonic_DW.dbo.PlaybookQuestions q
+                        JOIN Sonic_DW.dbo.PlaybookValidValues v
+                            ON q.ValidValuesID = v.ValidValuesID
+                        JOIN Sonic_DW.dbo.PlaybookAnswer a
+                            ON a.QuestionID = q.QuestionID
+                        WHERE a.AnswerId = @AnswerID)
+
+
+    CREATE TABLE #TempScoreCode
+    (ScoreCodeID int)
+
+    IF @QuestionScore is null
+    BEGIN
+		INSERT INTO #TempScoreCode values (1) END
+	ELSE BEGIN
+
+     --Insert Into #TempScoreCode SELECT case when  RTRIM(@QuestionScore) is null then 1 when RTRIM(@QuestionScore) in ( rtrim(@ValidValues)) then 3 else 2 end
+    SET @strSelect = 'Insert into #TempScoreCode SELECT case when ' + RTRIM(@QuestionScore) + ' in ('  + rtrim(@ValidValues)  + ') and ' + RTRIM(@CoachingRequired) + ' = 1 then 4
+					when ' + RTRIM(@QuestionScore) + ' in ('  + rtrim(@ValidValues)  + ') and ' + RTRIM(@CoachingRequired) + ' = 0 then 3
+					else 2 end'
+    EXEC(@strSelect);
+	END
+    SELECT @ScoreCodeID = (SELECT ScoreCodeID FROM #TempScoreCode)
+    SELECT @PlaybookSurveyID = (SELECT PlaybookSurveyID from dbo.PlaybookAnswer where AnswerID = @AnswerID)
+
+    UPDATE dbo.PlaybookAnswer
+    SET QuestionScore = @QuestionScore
+       ,ScoreUserId = @ScoreUserId
+       ,UpdateDate = GETDATE()
+       ,ScoreCodeID = @ScoreCodeID
+       ,AnswerComment = @AnswerComment
+    WHERE AnswerId = @AnswerID
+
+
+--update survey from ready to in progress
+exec usp_UpdateSurveyStatus @PlaybookSurveyID, @ScoreUserID
+    --at the end check to see if all answers are completed if so, update as ready for review
+      --N=2, Y=3
+
+    --separate sp for the approval with Approvaluserid, reviewsignoffid  1, approved; 2, contested
+END TRY
+
+BEGIN CATCH
+    SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_MESSAGE() AS ErrorMessage
+    RETURN -1
+END CATCH
+
+DROP TABLE #TempScoreCode
+
+SET NOCOUNT OFF
+
+
+
+
+
+
+
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

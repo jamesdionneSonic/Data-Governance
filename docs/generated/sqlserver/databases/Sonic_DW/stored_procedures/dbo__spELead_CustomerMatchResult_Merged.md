@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -30,9 +32,62 @@ Metadata auto-extracted from SQL Server.
 --EXEC [dbo].[spELead_CustomerMatchResult_Merged]
 
 
-CREATE PROC 
+CREATE PROC [dbo].[spELead_CustomerMatchResult_Merged]
+AS
+
+BEGIN
+MERGE [Sonic_DW].[dbo].[CustomerMatchResult] TGT
+	USING
+		(
+		SELECT * FROM
+			(
+			SELECT
+			   RowNum = ROW_NUMBER() OVER (PARTITION BY cms.ID ORDER BY cms.ID)
+			  ,cms.ID
+			  ,del.[lKeepPersonID]
+			  ,del.[lDelPersonID]
+			  ,del.[dtMerged]
+			  ,cms.SourcePersonID
+			  ,ISNULL(cms.MatchPersonID,cms.SourcePersonID) AS MatchPersonID
+			  ,cms.EntityKey
+			FROM [ETL_Staging].[stage].[eLeadDupeMergeStaging] del
+			INNER JOIN [Sonic_DW].[dbo].[CustomerMatchResult] cms
+				ON del.lDelPersonID = ISNULL(cms.MatchPersonID,cms.SourcePersonID)
+			WHERE del.lDelPersonID <> -1
+			GROUP BY ID,lKeepPersonID, lDelPersonID, dtMerged,cms.SourcePersonID,ISNULL(cms.MatchPersonID,cms.SourcePersonID),cms.EntityKey
+			--ORDER BY lDelPersonID, ID
+			) mrg
+			WHERE mrg.RowNum = 1
+		)  SRC
+	ON
+		ISNULL(TGT.MatchPersonID,TGT.SourcePersonID) = SRC.[lDelPersonID]
+		AND TGT.ID = SRC.ID
+		AND ISNULL(TGT.MatchPersonID,TGT.SourcePersonID) = SRC.MatchPersonID
+		--AND TGT.SourcePersonID = SRC.SourcePersonID
+		AND TGT.EntityKey = SRC.EntityKey
+		AND ISNULL(TGT.[Remove],0) = 0
+
+
+--WHEN NOT MATCHED THEN
+
+WHEN MATCHED
+
+THEN UPDATE SET
+  		  TGT.[Remove] = 1
+		 ,TGT.[Meta_RowLastChangedDate] = GETDATE()
+		 ,TGT.[Meta_RowLastDMLAction]   = 'U'
+
+      ;
+
+
+END
+
+
+
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -28,22 +30,30 @@ AS
 	MERGE [Sonic_DW].[dbo].[Fact_elead_projections] AS T
 	USING [Sonic_DW].[dbo].[vw_elead_projections_live] AS S
 	ON (T.EntityKey = S.EntityKey AND T.NewUsed = S.NewUsed)
-	WHEN MATCHED THEN 
+	WHEN MATCHED THEN
 	UPDATE SET [FiscalMonthKey] = S.FiscalMonthKey
 				,[Tracking] = S.Tracking
 				,[LeadCountTY] = S.LeadCountTY
 
 	WHEN NOT MATCHED BY TARGET
 
-	THEN INSERT 
+	THEN INSERT
 		([EntityKey]
 		,[FiscalMonthKey]
 		,[NewUsed]
 		,[Tracking]
 		,[LeadCountTY]
-	
+		,[EleadsDMSSold]
+		)
+	VALUES
+		(S.EntityKey
+		,S.FiscalMonthKey
+		,S.NewUsed
+		,S.Tracking
+		,S.LeadCountTY
+		,S.EleadsDMSSold);
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -37,15 +39,64 @@ CREATE PROCEDURE [dbo].[usp_ReconAging]
 ,@SmokeSmell varchar(12)
 ,@LastInspectionDate date
 
- 
- 
+
+
 AS
- 
+
 SET NOCOUNT ON
- 
-/* ========================================================================
+
+/* =========================================================================================
+Author: Austin McNeill
+Create date: 02/18/2025
+Description: Insert records to sonic_dw.dbo.Fact_ReconAging_TXN to store comments about
+recon aging and estimated completion dates.
+========================================================================================= */
+
+BEGIN TRY
+
+---------------------------------------------------------------------------------------------------------------------------------
+-- Update Existing Meta_IsCurrent flags
+---------------------------------------------------------------------------------------------------------------------------------
+
+UPDATE dbo.Fact_ReconAging_TXN
+SET Meta_RowIsCurrent = 0
+WHERE EntityKey = @EntityKey
+and VIN=@VIN
+--and statusname = @StatusName (Testing Purposes)
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+-- Insert New Record
+---------------------------------------------------------------------------------------------------------------------------------
+INSERT INTO dbo.Fact_ReconAging_TXN
+SELECT @Entitykey
+,@VIN
+,cast(@PhaseETA as date)
+,cast(@ReconETA as date)
+,@AgingNotes
+,@Meta_User
+,getdate() --Meta_LoadDate default
+,1 --Meta_RowIsCurrent default
+,@StatusName
+,@BucketJumperNotes
+,@ExteriorCondition
+,@InteriorCondition
+,@StartRun
+,@RoadTest
+,@WashVac
+,@SmokeSmell
+,cast(@LastInspectionDate as date)
+
+END TRY
+
+BEGIN CATCH
+SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_MESSAGE() AS ErrorMessage
+RETURN -1
+END CATCH
+
+SET NOCOUNT OFF
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

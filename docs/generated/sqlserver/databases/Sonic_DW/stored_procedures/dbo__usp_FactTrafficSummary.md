@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -39,13 +41,60 @@ CREATE PROCEDURE [dbo].[usp_FactTrafficSummary]
 	@BadLead int,
 	@BoughtElsewhere int,
 	@Reassigned int,
-	@ETLExecution_ID int,	
+	@ETLExecution_ID int,
 	@ApptAttemptedConfirmed int,
 	@ApprApptCreated int,
 	@ApprApptDue int,
-	@ApprApptShown int
+	@ApprApptShown int,
+	@ApprApptAcquired int,
+	@ApprApptConfirmed int,
+	@Acquired int,
+	@IsAppraisalAppt int
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+update	FactTrafficSummary
+set		LeadCount = @LeadCount
+		,ShowroomVisits = @ShowroomVisits
+		, Bebacks = @Bebacks
+		, Sold = @Sold
+		, ApptCreated = @ApptCreated
+		, ApptDue = @ApptDue
+		, ApptShown = @ApptShown
+		, ApptSold = @ApptSold
+		, ApptConfirmed = @ApptConfirmed
+		, Demos = @Demos
+		, WriteUps = @WriteUps
+		, TOs = @TOs
+		, Appraisals = @Appraisals
+		, Lost = @Lost
+		, BadLead = @BadLead
+		, BoughtElsewhere = @BoughtElsewhere
+		, Reassigned = @Reassigned
+		, ETLExecution_ID = @ETLExecution_ID
+		, Meta_ComputerName = HOST_NAME()
+		, Meta_UserID = SYSTEM_USER
+		, Meta_RowLastChangeDate = GetDate()
+		,ApptAttemptedConfirmed = @ApptAttemptedConfirmed
+		,ApprApptCreated = @ApprApptCreated
+		,ApprApptDue = @ApprApptDue
+		,ApprApptShown = @ApprApptShown
+		,ApprApptAcquired = @ApprApptAcquired
+		,ApprApptConfirmed = @ApprApptConfirmed
+		,Acquired = @Acquired
+		,IsAppraisalAppt = @IsAppraisalAppt
+Where	FactTrafficSummaryID = @FactTrafficSummaryID
+;
+
+END
+
+
+/****** Object:  StoredProcedure [dbo].[usp_FactTrafficSummaryDaily]    Script Date: 7/6/2023 3:19:38 PM ******/
+SET ANSI_NULLS ON
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

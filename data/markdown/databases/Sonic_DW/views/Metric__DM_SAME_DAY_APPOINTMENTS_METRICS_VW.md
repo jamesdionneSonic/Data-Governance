@@ -1,0 +1,81 @@
+---
+name: DM_SAME_DAY_APPOINTMENTS_METRICS_VW
+database: Sonic_DW
+type: view
+schema: Metric
+owner: Data Team
+sensitivity: internal
+tags:
+  - view
+  - auto-extracted
+dependency_count: 5
+column_count: 0
+extracted_at: 2026-05-12T20:14:33.860Z
+---
+
+## Overview
+
+Metadata auto-extracted from SQL Server.
+
+- **Type**: View
+- **Schema**: Metric
+
+## Dependencies
+
+This view depends on:
+
+- **Metric.DIM_DATE_TBL** (U )
+- **Metric.DIM_DEALERSHIP_TBL** (U )
+- **Metric.DIM_METRIC_ATTRIBUTE_TBL** (U )
+- **Metric.DIM_METRIC_TBL** (U )
+- **Metric.EDWH_METRIC_TBL** (U )
+
+## Definition
+
+```sql
+
+CREATE VIEW [Metric].[DM_SAME_DAY_APPOINTMENTS_METRICS_VW]
+AS
+SELECT DEALERSHIP_NAME
+, ENTITY_KEY
+, METRIC_CAPTURE_DATE
+, CAST(CONVERT(varchar(10), CONVERT(datetime, METRIC_CAPTURE_DATE, 126), 112) AS INT) AS METRIC_DATEKEY
+, isnull(ATTRIBUTE_DESC, 'N/A') AS METRIC_BREAKDOWN
+, sum(CASE WHEN BASE_DATA.METRIC_DESC IN ('Same Day Appointments') THEN BASE_DATA.METRIC_VALUE ELSE 0 END) SAME_DAY_APPOINTMENTS
+from
+(select M.DEALERSHIP_ID
+, D.DEALERSHIP_NAME
+, D.ENTITY_KEY
+, M.DIM_METRIC_ID
+, MT.METRIC_DESC
+, MT.METRIC_SOURCE
+, A.ATTRIBUTE_DESC
+, M.METRIC_DATATYPE
+, CAST(M.METRIC_VALUE AS int) AS METRIC_VALUE
+, M.METRIC_CAPTURE_DATE
+, DT.PREVIOUS_YEAR_IND
+, DT.CURRENT_YEAR_IND
+, DT.YTD_IND
+, DT.PREVIOUS_MONTH_IND
+, DT.CURRENT_MONTH_IND
+, DT.CURRENT_MONTH_PREVIOUS_YEAR_IND
+FROM Metric.EDWH_METRIC_TBL AS M
+	inner join Metric.DIM_DEALERSHIP_TBL AS D ON M.DEALERSHIP_ID = D.DEALERSHIP_ID
+	inner JOIN Metric.DIM_METRIC_TBL AS MT ON M.DIM_METRIC_ID = MT.DIM_METRIC_ID
+	left OUTER JOIN Metric.DIM_METRIC_ATTRIBUTE_TBL AS A ON M.DIM_METRIC_ATTRIBUTE_ID = A.DIM_METRIC_ATTRIBUTE_ID
+	inner JOIN Metric.DIM_DATE_TBL AS DT ON M.METRIC_CAPTURE_DATE = DT.FULL_DATE
+WHERE (MT.METRIC_TYPE = 'TURBO_Same_Day_Appointments')) AS BASE_DATA
+GROUP BY DEALERSHIP_NAME
+, ENTITY_KEY
+, METRIC_CAPTURE_DATE
+, ATTRIBUTE_DESC
+
+
+
+```
+
+## Governance
+
+- **Last Extracted**: 2026-05-12T20:14:33.860Z
+- **Data Classification**: To be assigned
+- **Stewardship**: To be assigned

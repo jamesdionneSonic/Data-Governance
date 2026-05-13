@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -28,9 +30,28 @@ AS
 	   ,s.make = @make
 	   ,s.model = @model
 	   ,s.Dealer_CIN = ISNULL(sfa1.CIN, s.Dealer_CIN)
-	   ,s.From_Dealership = ISNULL
+	   ,s.From_Dealership = ISNULL(sfa1.EntDealerLvl1, s.From_Dealership)
+	   ,s.From_Dealership_Line = sfa1.StockType
+	   ,s.AccountID = sfa1.Account
+	   ,s.Transfer_to_CIN = sfa2.CIN
+	   ,s.To_Dealership = sfa2.EntDealerLvl1
+	   ,s.To_Dealership_Line = sfa2.StockType
+	   ,s.Transfer_to_Account = sfa2.Account
+	   ,s.Meta_UserID = @user
+	   ,s.Meta_LastUpdateDate = GETDATE()
+	   ,s.Skip_Response = @skip_response
+	   ,to_entitykey = ISNULL(sfa2.entitykey, s.to_entitykey)
+	   ,from_entitykey = ISNULL(sfa1.entitykey, s.from_entitykey)
+	FROM Sonic_DW.dbo.Syndicate_Floorplan_BoA_Response s
+	LEFT JOIN dbo.Syndicate_FPAccounts sfa1
+		ON CONVERT(INT, sfa1.entitykey) = @from_dealership
+		AND sfa1.StockType = @from_dealership_line
+	LEFT JOIN dbo.Syndicate_FPAccounts sfa2
+		ON CONVERT(INT, sfa2.entitykey) = @to_dealership
+		AND sfa2.StockType = @to_dealership_line
+	WHERE s.ResponseKey = @responsekey
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -35,9 +37,24 @@ BEGIN TRY
 		,MetaSrcSysID
 		,ETLExecutionID
 		)
-    SELECT a.*,@MetaLoadDate, @MetaComputerName,@MetaUserId,@MetaSour
+    SELECT a.*,@MetaLoadDate, @MetaComputerName,@MetaUserId,@MetaSourceSystemName,@MetaSrcSysID,@ETLExecutionID
+	FROM (
+		Select Distinct SourceID from etl_staging.stage.StgRMReviewMonthly (nolock)
+		except
+		Select Distinct Source from dbo.DimRMSource (nolock)
+		) a;
+   COMMIT TRANSACTION
+END TRY
+BEGIN CATCH
+   DECLARE @Message varchar(MAX) = ERROR_MESSAGE(),
+        @Severity int = ERROR_SEVERITY(),
+        @State smallint = ERROR_STATE();
+
+   RAISERROR (@Message, @Severity, @State)
+ ROLLBACK TRANSACTION
+END CATCH
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

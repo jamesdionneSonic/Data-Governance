@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -37,9 +39,80 @@ SET NOCOUNT ON;
 BEGIN TRY
 	BEGIN
 
-	
+	IF (@MonthStartDateKey IS NULL)
+	BEGIN
+		SET @MonthStartDateKey = CONVERT(CHAR(8),DATEADD(DAY,1,EOMONTH(GetDate(),-1)),112)
+	END
+
+	IF (@EntityKey = -1)
+		BEGIN
+
+		INSERT INTO [dbo].[Doc_Budget]
+           ([EntityKey]
+           ,[DateKey]
+           ,[GroupElementSort]
+           ,[GroupElement]
+           ,[GroupSubElement]
+           ,[Amount]
+           ,[StatCount]
+           ,[MetricTypeKey])
+		 SELECT e.EntityKey,
+		  m.StartDateKey,
+		  GroupElementSort,
+		  GroupElement,
+		  GroupSubElement,
+		  0 AS Amount,
+		  0 AS StatCount,
+		  3 AS MetricTypeKey
+		  FROM [Sonic_DW].[dbo].[Dim_DOCMetrics]
+		  CROSS JOIN
+		   (SELECT DISTINCT StartDateKey
+		 FROM [Sonic_DW].[dbo].[Dim_Month]
+		 WHERE StartDateKey >= @MonthStartDateKey
+		 AND EndDateKey <= CONVERT(CHAR(8),DATEADD(yy, DATEDIFF(yy, 0, GETDATE()) + 1, -1), 112)) AS m
+		 CROSS JOIN
+		   (SELECT DISTINCT t1.DealershipLvl1EntityKey AS EntityKey FROM [Sonic_DW].[dbo].[vw_Dim_DealershipEP] t1 LEFT JOIN Doc_Budget t2 ON t1.DealershipLvl1EntityKey = t2.EntityKey WHERE EntDOCReportFlag = 'Active' AND t2.EntityKey IS NULL) AS e
+		END
+
+	ELSE
+		BEGIN
+
+		INSERT INTO [dbo].[Doc_Budget]
+			   ([EntityKey]
+			   ,[DateKey]
+			   ,[GroupElementSort]
+			   ,[GroupElement]
+			   ,[GroupSubElement]
+			   ,[Amount]
+			   ,[StatCount]
+			   ,[MetricTypeKey])
+		 SELECT @EntityKey,
+		  m.StartDateKey,
+		  GroupElementSort,
+		  GroupElement,
+		  GroupSubElement,
+		  0 AS Amount,
+		  0 AS StatCount,
+		  3 AS MetricTypeKey
+		  FROM [Sonic_DW].[dbo].[Dim_DOCMetrics]
+		  CROSS JOIN
+		   (SELECT DISTINCT StartDateKey
+		 FROM [Sonic_DW].[dbo].[Dim_Month]
+		 WHERE StartDateKey >= @MonthStartDateKey
+		 AND EndDateKey <= CONVERT(CHAR(8),DATEADD(yy, DATEDIFF(yy, 0, GETDATE()) + 1, -1), 112)) AS m
+		 END
+
+	END
+END TRY
+
+BEGIN CATCH
+    SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_MESSAGE() AS ErrorMessage
+    RETURN -1
+END CATCH
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

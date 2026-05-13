@@ -8,12 +8,15 @@ sensitivity: internal
 tags:
   - view
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+column_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
 
 1- **Type**: View
+
 - **Schema**: dbo
 
 ## Definition
@@ -26,10 +29,13 @@ SELECT     A.AccountingDateKey, A.AccountMgmtKey, A.EntityKey, SUM(A.StatCount) 
 FROM         dbo.Fact_AccountingDetail AS A INNER JOIN
                       dbo.Dim_AccountMgmt ON A.AccountMgmtKey = dbo.Dim_AccountMgmt.AccountMgmtKey
 WHERE     (dbo.Dim_AccountMgmt.Level4 IN ('Body Shop Cost', 'Parts Cost', 'Service Cost', 'Body Shop Revenue', 'Parts Revenue', 'Service Revenue'))
+GROUP BY A.AccountingDateKey, A.AccountMgmtKey, A.EntityKey
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z
 - **Data Classification**: To be assigned
 - **Stewardship**: To be assigned

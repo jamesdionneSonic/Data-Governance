@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -37,9 +39,81 @@ CREATE PROCEDURE [dbo].[usp_DOC_Permissions]
 
 AS
 
-DECLARE @AvailableSlot INT = (SELECT Min(LOGINKEY) FROM [dbo].[Doc_TXN_Log
+DECLARE @AvailableSlot INT = (SELECT Min(LOGINKEY) FROM [dbo].[Doc_TXN_Login] WHERE MicroStrategyLogin = 'AVAILABLE')
+DECLARE @LoginKeyCheck INT = (SELECT LoginKey FROM [dbo].[Doc_TXN_Login] WHERE MicroStrategyLogin = @MicroStrategyLogin AND EntityKey = @EntityKey)
+
+SET NOCOUNT ON
+
+BEGIN TRY
+
+	IF @RemoveFlag = 1 AND @LoginKey <> -1
+
+		BEGIN
+
+		UPDATE [DBO].[Doc_TXN_Login]
+			SET  MicroStrategyLogin = 'AVAILABLE'
+				,ReviewerFlag = 0
+				,ControllerFlag = 0
+			WHERE LoginKey = @LoginKey
+
+		END
+
+	ELSE
+
+		IF @LoginKey <> -1 OR @LoginKeyCheck IS NOT NULL
+
+			BEGIN
+
+				UPDATE [DBO].[Doc_TXN_Login]
+				SET  MicroStrategyLogin = @MicroStrategyLogin
+					,EntityKey = @EntityKey
+					,ReviewerFlag = @ReviewerFlag
+					,ControllerFlag = @ControllerFlag
+				WHERE LoginKey = @LoginKey
+
+			END
+
+		ELSE
+
+			BEGIN
+
+			IF @AvailableSlot IS NULL
+
+				INSERT INTO [dbo].[Doc_TXN_Login]
+			   ([MicroStrategyLogin]
+			   ,[EntityKey]
+			   ,[ReviewerFlag]
+			   ,[ControllerFlag])
+				VALUES
+			   (@MicroStrategyLogin,
+				@EntityKey,
+				IsNull(@ReviewerFlag,0),
+				IsNull(@ControllerFlag,0))
+
+			ELSE
+
+				UPDATE [DBO].[Doc_TXN_Login]
+				SET  MicroStrategyLogin = @MicroStrategyLogin
+					,EntityKey = @EntityKey
+					,ReviewerFlag = IsNull(@ReviewerFlag,0)
+					,ControllerFlag = IsNull(@ControllerFlag,0)
+				WHERE LoginKey = @AvailableSlot
+
+			END
+
+END TRY
+
+BEGIN CATCH
+    SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_MESSAGE() AS ErrorMessage
+    RETURN -1
+END CATCH
+
+SET NOCOUNT OFF
+
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

@@ -10,21 +10,40 @@
  */
 export function buildLineageGraph(objects) {
   const graph = new Map();
+  const nameIndex = new Map();
 
-  // Initialize graph with all objects
-  for (const objectId of objects.keys()) {
+  // Initialize graph with all objects and build a flexible lookup index
+  for (const [objectId, metadata] of objects) {
     graph.set(objectId, new Set());
+    // Map the raw name (e.g., "Dim_Vehicle") to its exact system ID
+    if (metadata.name) {
+      nameIndex.set(metadata.name.toLowerCase(), objectId);
+    }
   }
 
   // Add edges for dependencies
   for (const [objectId, metadata] of objects) {
     if (metadata.depends_on && Array.isArray(metadata.depends_on)) {
       for (const dependency of metadata.depends_on) {
-        // Parse dependency if it's in format "database.object"
-        const depId = dependency.includes('.') ? dependency : `${metadata.database}.${dependency}`;
+        const depId = dependency;
 
+        // 1. Try exact match
         if (graph.has(depId)) {
           graph.get(objectId).add(depId);
+          continue;
+        }
+
+        // 2. Try the naive database.name match
+        const dbPrefixId = `${metadata.database}.${dependency}`;
+        if (graph.has(dbPrefixId)) {
+          graph.get(objectId).add(dbPrefixId);
+          continue;
+        }
+
+        // 3. Try our smart name index lookup!
+        const lowerDep = dependency.toLowerCase();
+        if (nameIndex.has(lowerDep)) {
+          graph.get(objectId).add(nameIndex.get(lowerDep));
         }
       }
     }

@@ -7,7 +7,9 @@ owner: Data Team
 tags:
   - procedure
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+parameter_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
@@ -36,9 +38,29 @@ BEGIN TRY
 IF @BTID = 1 BEGIN
 
 	--EXECUTE xp_cmdshell 'C:\psexec \\d1-ustrat-02a CMDMGR -n ProdLDAP -u svcEventUser -p k1ck0ff123! -f "\\d1-ustrat-02a\Command Manager\BTOps.scp" -showoutput 2> errorlog.txt'
-	--EXECUTE xp_cmdshell '"C:\Program Files (x86)\MicroStrategy\Command Manager\CMDMGR" -n ProdLDAP -u svcEventUser -p k1ck0ff123! -f "C:\Program Files (x86)\MicroStrategy\Comm
+	--EXECUTE xp_cmdshell '"C:\Program Files (x86)\MicroStrategy\Command Manager\CMDMGR" -n ProdLDAP -u svcEventUser -p k1ck0ff123! -f "C:\Program Files (x86)\MicroStrategy\Command Manager\CmdTest.scp" -showoutput'
+	--EXECUTE xp_cmdshell 'C:\MSBatch\BTOps'
+	EXEC msdb.dbo.sp_start_job N'DBA MorningReport BTOps' ;
+END
+
+--Trigger Database Report
+ELSE IF @BTID = 2 BEGIN
+
+	--EXECUTE xp_cmdshell 'C:\psexec \\d1-ustrat-02a CMDMGR -n ProdLDAP -u svcEventUser -p k1ck0ff123! -f "\\d1-ustrat-02a\Command Manager\BTDB.scp" -showoutput 2> errorlog.txt'
+	--EXECUTE xp_cmdshell 'C:\MSBatch\BTDB'
+	EXEC msdb.dbo.sp_start_job N'DBA MorningReport BTDB' ;
+END
+
+END TRY
+
+BEGIN CATCH
+    SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_MESSAGE() AS ErrorMessage
+    RETURN -1
+END CATCH
+
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z

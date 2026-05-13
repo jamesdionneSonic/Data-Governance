@@ -8,12 +8,15 @@ sensitivity: internal
 tags:
   - view
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+column_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
 
 1- **Type**: View
+
 - **Schema**: dbo
 
 ## Definition
@@ -32,12 +35,122 @@ WITH doc_proj AS (
         SELECT
             [a12].[EntDealerLvl1] AS [EntDealerLvl1],
             [a11].[DOCMonthKey] AS [FiscalMonthKey],
-            SUM(CASE 
-      
+            SUM(CASE
+                    WHEN [a11].[GroupElementSort] = 190 THEN [a11].[Amount]
+                    ELSE 0
+                END) AS [GrossAdSpend],
+            SUM(CASE
+                    WHEN [a11].[GroupElementSort] = 191 THEN [a11].[Amount]
+                    ELSE 0
+                END) AS [Credits]
+        FROM [vw_Doc_Union] AS [a11]
+        JOIN [dbo].[vw_Dim_Entity] AS [a12]
+            ON [a11].[EntityKey] = [a12].[EntityKey]
+        JOIN [dbo].[vw_Dim_date] AS [a13]
+            ON [a11].[DateKey] = [a13].[DateKey]
+        WHERE
+            [a11].[MetricTypeKey] = 4
+            AND [a13].[FullDate] = CONVERT(VARCHAR, GETDATE(), 23)
+            AND [a11].[GroupElementSort] IN (190, 191)
+        GROUP BY
+            [a12].[EntDealerLvl1],
+            [a11].[DOCMonthKey]
+    ) AS [pa12]
+    JOIN [dbo].[vw_Dim_Month] AS [a13]
+        ON [pa12].[FiscalMonthKey] = [a13].[FiscalMonthKey]
+    JOIN [vw_Dim_Dealership] AS [a15]
+        ON [pa12].[EntDealerLvl1] = [a15].[EntDealerLvl1]
+),
+
+ad_actuals AS (
+    SELECT
+        [EntityKey],
+        AdvGrossAdSpendNew / AdvGrossAdSpend AS AdvGrossAdSpendNewPercent,
+        AdvGrossAdSpendUsed / AdvGrossAdSpend AS AdvGrossAdSpendUsedPercent,
+        AdvNetAdSpendNew / AdvNetAdSpend AS AdvNetAdSpendNewPercent,
+        AdvNetAdSpendUsed / AdvNetAdSpend AS AdvNetAdSpendUsedPercent
+    FROM (
+        SELECT DISTINCT
+            [pa14].[EntDealerLvl1] AS [EntDealerLvl1],
+            [a15].[DealershipLvl1EntityKey] AS [EntityKey],
+            [pa14].[AdvGrossAdSpendNew] AS [AdvGrossAdSpendNew],
+            [pa14].[AdvGrossAdSpendUsed] AS [AdvGrossAdSpendUsed],
+            [pa14].[AdvCreditsNew] + [pa14].[AdvGrossAdSpendNew] AS [AdvNetAdSpendNew],
+            [pa14].[AdvCreditsUsed] + [pa14].[AdvGrossAdSpendUsed] AS [AdvNetAdSpendUsed],
+            [pa14].[AdvGrossAdSpendNew] + [pa14].[AdvGrossAdSpendUsed] AS [AdvGrossAdSpend],
+            [pa14].[AdvGrossAdSpendNew] + [pa14].[AdvGrossAdSpendUsed] + [pa14].[AdvCreditsNew] + [pa14].[AdvCreditsUsed] AS [AdvNetAdSpend]
+        FROM (
+            SELECT
+                [a11].[EntDealerLvl1] AS [EntDealerLvl1],
+                SUM(CASE
+                        WHEN ([a13].[NewUsedID] IN (N'N') AND [a12].[Level7] IN ('Advertising Expense - Centralized Spend', 'Advertising Expense - Store Level Spend'))
+                        THEN [a11].[PostingAmount] ELSE 0
+                    END) AS [AdvGrossAdSpendNew],
+                SUM(CASE
+                        WHEN ([a13].[NewUsedID] IN (N'U') AND [a12].[Level7] IN ('Advertising Expense - Centralized Spend', 'Advertising Expense - Store Level Spend'))
+                        THEN [a11].[PostingAmount] ELSE 0
+                    END) AS [AdvGrossAdSpendUsed],
+                SUM(CASE
+                        WHEN ([a12].[Level7] IN ('Advertising Expense - Credits/Rebates') AND [a13].[NewUsedID] IN (N'N'))
+                        THEN [a11].[PostingAmount] ELSE 0
+                    END) AS [AdvCreditsNew],
+                SUM(CASE
+                        WHEN ([a12].[Level7] IN ('Advertising Expense - Credits/Rebates') AND [a13].[NewUsedID] IN (N'U'))
+                        THEN [a11].[PostingAmount] ELSE 0
+                    END) AS [AdvCreditsUsed]
+            FROM [dbo].[vw_Fact_AccountingDetail] AS [a11]
+            JOIN [Dim_AccountMgmt] AS [a12] ON ([a11].[AccountMgmtKey] = [a12].[AccountMgmtKey])
+            JOIN [vw_Dim_Account] AS [a13] ON ([a11].[AccountKey] = [a13].[AccountKey])
+            WHERE
+                ([a11].[AccountingFullDate] BETWEEN DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()) - 4, 0)
+                AND DATEADD(MONTH, DATEDIFF(MONTH, 0, GETDATE()) - 1, -1))
+                AND [a13].[NewUsedID] IN ('N', 'U')
+                AND [a12].[Level7] IN ('Advertising Expense - Centralized Spend', 'Advertising Expense - Store Level Spend', 'Advertising Expense - Credits/Rebates')
+            GROUP BY [a11].[EntDealerLvl1]
+        ) AS [pa14]
+        JOIN [vw_Dim_Dealership] AS [a15] ON ([pa14].[EntDealerLvl1] = [a15].[EntDealerLvl1])
+    ) AS source_percent
+)
+
+SELECT
+    [EntityKey],
+    [NewUsedID],
+    [CalendarYearMonth],
+    column_name AS metric_name,
+    CAST(value AS MONEY) AS value
+FROM
+(
+    SELECT
+        [DealershipLvl1EntityKey] AS [EntityKey],
+        tmnu.NewUsedID,
+        LEFT(d.DocRolloverdate, 6) AS [CalendarYearMonth],
+        (CASE
+            WHEN tmnu.NewUsedID = 'N' THEN AdvGrossAdSpendNewPercent
+            ELSE AdvGrossAdSpendUsedPercent
+         END) * [GrossAdSpend] AS [AdvGrossAdSpend],
+        (CASE
+            WHEN tmnu.NewUsedID = 'N' THEN AdvNetAdSpendNewPercent
+            ELSE AdvNetAdSpendUsedPercent
+         END) * [NetAdSpend] AS [AdvNetAdSpend]
+    FROM [vw_Dim_Dealership_All] da
+    CROSS JOIN [dbo].[DimTrafficManagementNewUsed] tmnu
+    CROSS JOIN Dim_Date d
+    LEFT OUTER JOIN doc_proj dp
+        ON da.DealershipLvl1EntityKey = dp.EntityKey
+        AND LEFT(d.DocRolloverdate, 6) = dp.[FiscalMonthKey]
+    LEFT OUTER JOIN ad_actuals ad
+        ON da.DealershipLvl1EntityKey = ad.EntityKey
+    WHERE tmnu.NewUsedID IN ('N','U')
+        AND d.FullDate = CONVERT(VARCHAR, GETDATE(), 23)
+        AND GrossAdSpend IS NOT NULL
+) AS SourceTable
+UNPIVOT
+    (value FOR column_name IN ([AdvGrossAdSpend], [AdvNetAdSpend])) AS Unpivoted;
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z
 - **Data Classification**: To be assigned
 - **Stewardship**: To be assigned

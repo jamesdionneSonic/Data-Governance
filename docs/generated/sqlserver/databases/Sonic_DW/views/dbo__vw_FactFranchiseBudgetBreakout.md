@@ -8,12 +8,15 @@ sensitivity: internal
 tags:
   - view
   - auto-extracted
-extracted_at: 2026-05-09T12:34:14.349Z
+dependency_count: 0
+column_count: 0
+extracted_at: 2026-05-12T12:28:27.721Z
 ---
 
 ## Overview
 
 1- **Type**: View
+
 - **Schema**: dbo
 
 ## Definition
@@ -21,13 +24,15 @@ extracted_at: 2026-05-09T12:34:14.349Z
 ```sql
 CREATE VIEW dbo.vw_FactFranchiseBudgetBreakout
 AS
-SELECT        FranchiseBudgetBreakoutID, EntityKey, FiscalMonthKey, TotalGrossActual, NewGrossActual, UsedGrossActual, ServiceGrossActual, TotalAdCredits, 
-                         NewGrossActual / NULLIF (NewGrossActual + UsedGrossActual + ServiceGrossActual, 0) AS NewGrossPercent, UsedGrossActual / NULLIF (NewGrossActual + UsedGrossActual + ServiceGrossActual, 0) AS UsedGrossPercent, 
-                         ServiceGrossActual / NULLIF (Ne
+SELECT        FranchiseBudgetBreakoutID, EntityKey, FiscalMonthKey, TotalGrossActual, NewGrossActual, UsedGrossActual, ServiceGrossActual, TotalAdCredits,
+                         NewGrossActual / NULLIF (NewGrossActual + UsedGrossActual + ServiceGrossActual, 0) AS NewGrossPercent, UsedGrossActual / NULLIF (NewGrossActual + UsedGrossActual + ServiceGrossActual, 0) AS UsedGrossPercent,
+                         ServiceGrossActual / NULLIF (NewGrossActual + UsedGrossActual + ServiceGrossActual, 0) AS ServiceGrossPercent, TotalGrossActual + TotalAdCredits AS TotalNetSpend
+FROM            dbo.Fact_FranchiseBudgetBreakout
+
 ```
 
 ## Governance
 
-- **Last Extracted**: 2026-05-09T12:34:14.349Z
+- **Last Extracted**: 2026-05-12T12:28:27.721Z
 - **Data Classification**: To be assigned
 - **Stewardship**: To be assigned
