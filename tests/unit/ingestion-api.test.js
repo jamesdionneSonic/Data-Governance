@@ -3,6 +3,11 @@ import request from 'supertest';
 import createApp from '../../src/app.js';
 import { generateToken } from '../../src/utils/tokenManager.js';
 
+jest.mock('../../src/services/indexService.js', () => ({
+  ...jest.requireActual('../../src/services/indexService.js'),
+  healthCheck: jest.fn().mockResolvedValue(true),
+}));
+
 function createAuthHeader(roles = ['Viewer']) {
   const token = generateToken({
     id: `ingestion-${roles.join('-').toLowerCase()}`,
