@@ -1,0 +1,184 @@
+name: IaC Validate & Plan
+
+on:
+  pull_request:
+    paths:
+      - 'infra/**'
+      - '.github/workflows/iac.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'infra/**'
+      - '.github/workflows/iac.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment for plan'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prod
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: iac-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TF_VERSION: '1.7.5'
+  TF_WORKING_DIR: infra/terraform
+  ENVIRONMENT: ${{ github.event.inputs.environment || 'dev' }}
+
+jobs:
+  validate:
+    name: Validate & Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Format Check
+        id: fmt
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Init (local backend for validation)
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          terraform init \
+            -backend=false \
+            -input=false
+
+      - name: Terraform Validate
+        id: validate
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform validate -no-color
+
+      - name: IaC Security Scan (tfsec)
+        uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          working_directory: infra/terraform
+
+      - name: Post validation result on PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fmtOutcome = '${{ steps.fmt.outcome }}';
+            const validateOutcome = '${{ steps.validate.outcome }}';
+            const icon = (s) => s === 'success' ? '✅' : '❌';
+            const body = [
+              '## IaC Validation Results',
+              '',
+              '| Check | Result |',
+              '|-------|--------|',
+              `| \`terraform fmt\` | ${icon(fmtOutcome)} ${fmtOutcome} |`,
+              `| \`terraform validate\` | ${icon(validateOutcome)} ${validateOutcome} |`,
+            ].join('\n');
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body,
+            });
+
+  plan:
+    name: Terraform Plan (${{ github.event.inputs.environment || 'dev' }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: validate
+    if: |
+      github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Init & Plan
+        id: plan
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          GH_SECRETS_JSON: ${{ toJson(secrets) }}
+        run: |
+          ARM_CLIENT_ID="$(echo "$GH_SECRETS_JSON" | jq -r '.ARM_CLIENT_ID // empty')"
+          ARM_CLIENT_SECRET="$(echo "$GH_SECRETS_JSON" | jq -r '.ARM_CLIENT_SECRET // empty')"
+          ARM_SUBSCRIPTION_ID="$(echo "$GH_SECRETS_JSON" | jq -r '.ARM_SUBSCRIPTION_ID // empty')"
+          ARM_TENANT_ID="$(echo "$GH_SECRETS_JSON" | jq -r '.ARM_TENANT_ID // empty')"
+          TF_VAR_jwt_secret="$(echo "$GH_SECRETS_JSON" | jq -r '.TF_VAR_JWT_SECRET // empty')"
+          TF_VAR_meilisearch_master_key="$(echo "$GH_SECRETS_JSON" | jq -r '.TF_VAR_MEILISEARCH_MASTER_KEY // empty')"
+          TF_VAR_entra_client_id="$(echo "$GH_SECRETS_JSON" | jq -r '.ENTRA_CLIENT_ID // empty')"
+          TF_VAR_entra_client_secret="$(echo "$GH_SECRETS_JSON" | jq -r '.ENTRA_CLIENT_SECRET // empty')"
+          TF_VAR_entra_tenant_id="$(echo "$GH_SECRETS_JSON" | jq -r '.ENTRA_TENANT_ID // empty')"
+
+          if [ -z "$ARM_CLIENT_ID" ] || [ -z "$ARM_TENANT_ID" ] || [ -z "$ARM_SUBSCRIPTION_ID" ] || [ -z "$ARM_CLIENT_SECRET" ]; then
+            echo "Azure secrets are not configured in this repo/environment; skipping terraform plan."
+            exit 0
+          fi
+
+          export ARM_CLIENT_ID
+          export ARM_CLIENT_SECRET
+          export ARM_SUBSCRIPTION_ID
+          export ARM_TENANT_ID
+          export TF_VAR_jwt_secret
+          export TF_VAR_meilisearch_master_key
+          export TF_VAR_entra_client_id
+          export TF_VAR_entra_client_secret
+          export TF_VAR_entra_tenant_id
+
+          terraform plan \
+            -var-file=environments/${{ env.ENVIRONMENT }}.tfvars \
+            -input=false \
+            -no-color \
+            -out=tfplan
+        continue-on-error: true
+
+      - name: Post plan on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const outcome = '${{ steps.plan.outcome }}';
+            const icon = outcome === 'success' ? '✅' : (outcome === 'skipped' ? '⚪' : '❌');
+            const detail = outcome === 'success'
+              ? 'Plan output is available in the job logs.'
+              : 'Plan failed or was skipped; check logs for credential availability and plan output.';
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: [
+                `## Terraform Plan — \`${{ env.ENVIRONMENT }}\` ${icon}`,
+                '',
+                '> **No apply runs in CI.** Review the plan carefully before merging.',
+                '',
+                `Plan outcome: **${outcome}**`,
+                '',
+                detail,
+              ].join('\n'),
+            });
+
+      - name: Fail job if plan failed
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
