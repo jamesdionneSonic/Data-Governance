@@ -1,0 +1,6 @@
+IF DB_ID(N'$(APP_DB_NAME)') IS NULL
+BEGIN
+    DECLARE @sql NVARCHAR(MAX) = N'CREATE DATABASE [' + REPLACE('$(APP_DB_NAME)', ']', ']]') + N']';
+    EXEC(@sql);
+END;
+GO

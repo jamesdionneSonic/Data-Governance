@@ -1,0 +1,475 @@
+openapi: 3.0.3
+info:
+  title: Data Governance API
+  version: 0.6.0
+  description: API documentation for discovery, reporting, and platform operations.
+servers:
+  - url: http://localhost:3000
+    description: Local development
+paths:
+  /health:
+    get:
+      summary: Health status
+      responses:
+        '200':
+          description: Service is healthy
+  /health/performance:
+    get:
+      summary: Performance summary
+      responses:
+        '200':
+          description: Request latency percentiles and route stats
+  /api/v1/auth/login:
+    post:
+      summary: Login and retrieve token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Login success
+  /api/v1/search:
+    get:
+      summary: Search data objects
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: q
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Search response
+        '400':
+          description: Query missing
+  /api/v1/discovery/dashboard:
+    get:
+      summary: Discovery dashboard summary
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Discovery dashboard
+        '503':
+          description: Data not loaded
+  /api/v1/discovery/graph/{objectId}:
+    get:
+      summary: Graph data for an object
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: objectId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: format
+          schema:
+            type: string
+            enum: [cytoscape, d3, mermaid]
+        - in: query
+          name: depth
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+      responses:
+        '200':
+          description: Graph payload
+        '404':
+          description: Object not found
+  /api/v1/reporting/export/catalog.csv:
+    get:
+      summary: Export object catalog as CSV
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: CSV file download
+  /api/v1/reporting/export/catalog.xlsx:
+    get:
+      summary: Export object catalog as Excel-compatible file
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Excel-compatible file download
+  /api/v1/reporting/export/dependency/{objectId}.pdf:
+    get:
+      summary: Export dependency report PDF
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: objectId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: PDF file download
+        '404':
+          description: Object not found
+  /api/v1/reporting/share/visualization/{objectId}:
+    post:
+      summary: Create shareable visualization link
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: objectId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                format:
+                  type: string
+                  enum: [svg, png]
+                ttlMinutes:
+                  type: integer
+      responses:
+        '201':
+          description: Share link created
+  /api/v1/reporting/schedules:
+    get:
+      summary: List report schedules
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Schedule list
+    post:
+      summary: Create report schedule
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [recipient]
+              properties:
+                recipient:
+                  type: string
+                type:
+                  type: string
+                  enum: [catalog, dependency]
+                format:
+                  type: string
+                  enum: [csv, xlsx, pdf]
+                frequency:
+                  type: string
+      responses:
+        '201':
+          description: Schedule created
+  /api/v1/reporting/schedules/{scheduleId}/run:
+    post:
+      summary: Run schedule immediately
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: scheduleId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Schedule executed
+        '404':
+          description: Schedule missing
+  /api/v1/integrations/settings:
+    get:
+      summary: Get integration and notification settings
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Integration settings payload
+  /api/v1/integrations/notifications/{channel}:
+    put:
+      summary: Update notification channel settings
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: channel
+          required: true
+          schema:
+            type: string
+            enum: [email, slack, teams]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                recipients:
+                  type: array
+                  items:
+                    type: string
+                webhookUrl:
+                  type: string
+                channel:
+                  type: string
+                template:
+                  type: string
+      responses:
+        '200':
+          description: Notification settings updated
+        '400':
+          description: Invalid request
+  /api/v1/integrations/notifications/send:
+    post:
+      summary: Simulate notification dispatch
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [channel, eventType]
+              properties:
+                channel:
+                  type: string
+                eventType:
+                  type: string
+                payload:
+                  type: object
+      responses:
+        '200':
+          description: Dispatch result
+        '400':
+          description: Invalid request
+  /api/v1/integrations/webhooks:
+    get:
+      summary: List configured webhooks
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Webhook list
+    post:
+      summary: Register a webhook
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [url]
+              properties:
+                name:
+                  type: string
+                url:
+                  type: string
+                events:
+                  type: array
+                  items:
+                    type: string
+                secret:
+                  type: string
+                maxRetries:
+                  type: integer
+                active:
+                  type: boolean
+      responses:
+        '201':
+          description: Webhook created
+        '400':
+          description: Invalid request
+  /api/v1/integrations/webhooks/{webhookId}:
+    delete:
+      summary: Delete webhook
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: webhookId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Webhook deleted
+        '404':
+          description: Webhook not found
+  /api/v1/integrations/webhooks/{webhookId}/test:
+    post:
+      summary: Dispatch a test webhook event
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: webhookId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                eventType:
+                  type: string
+                payload:
+                  type: object
+      responses:
+        '200':
+          description: Webhook dispatch result
+        '404':
+          description: Webhook missing or inactive
+  /api/v1/integrations/links/{objectId}:
+    get:
+      summary: List external system links for object
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: objectId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Object links list
+    post:
+      summary: Add external system link for object
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: objectId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [type, url]
+              properties:
+                type:
+                  type: string
+                label:
+                  type: string
+                url:
+                  type: string
+      responses:
+        '201':
+          description: Link added
+        '400':
+          description: Invalid request
+  /api/v1/integrations/links/{objectId}/{linkId}:
+    delete:
+      summary: Remove external link
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: objectId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: linkId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Link removed
+        '404':
+          description: Link not found
+  /api/v1/integrations/cicd/impact-analysis:
+    post:
+      summary: Run CI/CD impact analysis
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                objectIds:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Impact analysis result
+  /api/v1/integrations/cicd/compliance-check:
+    post:
+      summary: Run CI/CD compliance validation
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                objectIds:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Compliance validation result
+  /api/v1/integrations/cicd/post-deploy-docs:
+    post:
+      summary: Generate post-deploy documentation summary
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                objectIds:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Post-deploy documentation update summary
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

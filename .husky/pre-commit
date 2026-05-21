@@ -1,0 +1,16 @@
+#!/bin/sh
+# Husky pre-commit hook
+# Runs linting and formatting checks before commit
+
+echo "🔍 Running pre-commit checks..."
+
+# Run lint-staged (linting + formatting)
+npx lint-staged
+
+if [ $? -ne 0 ]; then
+  echo "❌ Pre-commit checks failed. Please fix the errors and try again."
+  exit 1
+fi
+
+echo "✅ Pre-commit checks passed!"
+exit 0
