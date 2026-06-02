@@ -4,8 +4,10 @@
  */
 
 import { readdir, readFile, writeFile } from 'fs/promises';
-import { join, extname } from 'path';
+import { join, extname, isAbsolute } from 'path';
 import yaml from 'yaml';
+
+const CATALOG_MANIFEST_FILE = 'catalog-manifest.json';
 
 /**
  * Parse markdown file and extract metadata
@@ -22,7 +24,8 @@ export async function parseMarkdownFile(filePath) {
  * @returns {Object} Parsed metadata
  */
 export function parseMarkdownContent(content, source = 'inline-content') {
-  const frontmatterMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  const normalizedContent = String(content || '').replace(/^\uFEFF/, '');
+  const frontmatterMatch = normalizedContent.match(/^---\r?\n([\s\S]*?)\r?\n---/);
 
   if (!frontmatterMatch) {
     throw new Error(`No YAML frontmatter found in ${source}`);
@@ -35,7 +38,7 @@ export function parseMarkdownContent(content, source = 'inline-content') {
   } catch (err) {
     metadata = parseFrontmatterLenient(frontmatterContent);
   }
-  const markdownContent = content.substring(frontmatterMatch[0].length).trim();
+  const markdownContent = normalizedContent.substring(frontmatterMatch[0].length).trim();
   const description = extractPlainText(markdownContent);
 
   const required = ['name', 'database', 'type'];
@@ -195,6 +198,11 @@ export function extractPlainText(markdown) {
  * @returns {Array} Array of file paths
  */
 export async function getMarkdownFiles(dirPath) {
+  const manifestFiles = await getManifestMarkdownFiles(dirPath);
+  if (manifestFiles) {
+    return manifestFiles;
+  }
+
   const files = [];
 
   async function walkDir(currentPath) {
@@ -219,6 +227,25 @@ export async function getMarkdownFiles(dirPath) {
   return files;
 }
 
+async function getManifestMarkdownFiles(dirPath) {
+  const manifestPath = join(dirPath, CATALOG_MANIFEST_FILE);
+
+  try {
+    const manifest = JSON.parse(await readFile(manifestPath, 'utf-8'));
+    if (!Array.isArray(manifest.files)) {
+      return null;
+    }
+
+    return manifest.files
+      .map((file) => String(file || '').replace(/\\/g, '/').trim())
+      .filter((file) => file && extname(file) === '.md' && !isAbsolute(file))
+      .filter((file) => !file.split('/').includes('..'))
+      .map((file) => join(dirPath, file));
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Load all markdown files from data directory
  * @param {string} dataPath - Base data directory path
@@ -229,16 +256,24 @@ export async function loadAllMarkdown(dataPath) {
 
   try {
     const mdFiles = await getMarkdownFiles(dataPath);
-    await Promise.all(
-      mdFiles.map(async (filePath) => {
-      try {
-        const metadata = await parseMarkdownFile(filePath);
-        objects.set(metadata.id, metadata);
-      } catch (err) {
-        console.error(`Error parsing ${filePath}:`, err.message);
+    const concurrency = Math.max(1, Number(process.env.MARKDOWN_LOAD_CONCURRENCY) || 64);
+    let nextIndex = 0;
+
+    const workers = Array.from({ length: Math.min(concurrency, mdFiles.length) }, async () => {
+      while (nextIndex < mdFiles.length) {
+        const filePath = mdFiles[nextIndex];
+        nextIndex += 1;
+
+        try {
+          const metadata = await parseMarkdownFile(filePath);
+          objects.set(metadata.id, metadata);
+        } catch (err) {
+          console.error(`Error parsing ${filePath}:`, err.message);
+        }
       }
-      })
-    );
+    });
+
+    await Promise.all(workers);
   } catch (err) {
     console.error(`Error loading markdown files from ${dataPath}:`, err.message);
   }

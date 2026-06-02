@@ -118,6 +118,24 @@ function collectXmlValues(node, keys, results = []) {
   return results;
 }
 
+function collectXmlValuesDeep(node, keys, results = []) {
+  if (!node || typeof node !== 'object') return results;
+  for (const key of Object.keys(node)) {
+    const val = node[key];
+    if (keys.includes(key)) {
+      if (Array.isArray(val)) val.forEach((v) => results.push(v));
+      else results.push(val);
+    }
+
+    if (Array.isArray(val)) {
+      val.forEach((item) => collectXmlValuesDeep(item, keys, results));
+    } else {
+      collectXmlValuesDeep(val, keys, results);
+    }
+  }
+  return results;
+}
+
 function normalizeSsisReference(value) {
   return String(value || '')
     .trim()
@@ -350,12 +368,35 @@ function extractConnectionManagers(packageXml) {
   for (const cm of cmNodes) {
     try {
       const raw = typeof cm === 'object' ? cm : {};
-      const dtsProps = raw['DTS:ConnectionManager'] || raw;
-      const connType = dtsProps['@_DTS:CreationName'] || dtsProps['@_CreationName'] || '';
-      const connName = dtsProps['@_DTS:ObjectName'] || dtsProps['@_ObjectName'] || '';
+      const objectData = raw['DTS:ObjectData'] || raw.ObjectData || {};
+      const inner =
+        collectXmlValues(objectData, [
+          'DTS:ConnectionManager',
+          'connectionManager',
+          'ConnectionManager',
+        ]).find((value) => value && typeof value === 'object') || {};
+      const refId = raw['@_DTS:refId'] || raw['@_refId'] || inner['@_DTS:refId'] || inner['@_refId'] || '';
+      const id = raw['@_DTS:DTSID'] || raw['@_DTSID'] || inner['@_DTS:DTSID'] || inner['@_DTSID'] || '';
+      const refName = String(refId || '').match(/ConnectionManagers\[([^\]]+)\]/i)?.[1] || '';
+      const connType =
+        raw['@_DTS:CreationName'] ||
+        raw['@_CreationName'] ||
+        inner['@_DTS:CreationName'] ||
+        inner['@_CreationName'] ||
+        '';
+      const connName =
+        raw['@_DTS:ObjectName'] ||
+        raw['@_ObjectName'] ||
+        inner['@_DTS:ObjectName'] ||
+        inner['@_ObjectName'] ||
+        refName ||
+        '';
 
       const props = {};
-      const propNodes = collectXmlValues(dtsProps, ['DTS:Property', 'property']);
+      const propNodes = [
+        ...collectXmlValues(raw, ['DTS:Property', 'property']),
+        ...collectXmlValues(inner, ['DTS:Property', 'property']),
+      ];
       for (const p of propNodes) {
         const pName = p?.['@_DTS:Name'] || p?.['@_Name'] || '';
         const pVal = (p && typeof p === 'object' && p['#text'] !== undefined) ? String(p['#text']) : (typeof p !== 'object' ? String(p) : '');
@@ -367,10 +408,10 @@ function extractConnectionManagers(packageXml) {
       );
 
       // Extract Project Parameter References (e.g. @[$Project::MyDbConn])
-      const expressions = collectXmlValues(dtsProps, [
-        'DTS:PropertyExpression',
-        'propertyExpression',
-      ]);
+      const expressions = [
+        ...collectXmlValues(raw, ['DTS:PropertyExpression', 'propertyExpression']),
+        ...collectXmlValues(inner, ['DTS:PropertyExpression', 'propertyExpression']),
+      ];
       const dynamicProps = {};
       for (const exp of expressions) {
         const expName = exp?.['@_DTS:Name'] || exp?.['@_Name'] || '';
@@ -379,13 +420,21 @@ function extractConnectionManagers(packageXml) {
       }
 
       const expressionConnectionString = dynamicProps.ConnectionString || '';
-      const rawConnectionString = props.ConnectionString || '';
+      const rawConnectionString =
+        props.ConnectionString ||
+        inner['@_DTS:ConnectionString'] ||
+        inner['@_ConnectionString'] ||
+        raw['@_DTS:ConnectionString'] ||
+        raw['@_ConnectionString'] ||
+        '';
       const expressionDatabaseName = parseConnectionStringDatabase(expressionConnectionString);
       const rawDatabaseName = parseConnectionStringDatabase(rawConnectionString);
       const expressionServerName = parseConnectionStringServer(expressionConnectionString);
       const rawServerName = parseConnectionStringServer(rawConnectionString);
 
       managers.push({
+        id,
+        refId,
         connName,
         connType,
         hasDynamicExpression: Object.keys(dynamicProps).length > 0,
@@ -443,7 +492,26 @@ function extractDataFlowComponents(packageXml) {
         props.OpenRowset || props.SqlCommandParam || props.ReferenceMetadataSqlCommand || ''
       );
       const splitTable = splitSsisObjectReference(tableRef);
-      const connRef = normalizeSsisReference(props.ConnectionManagerID || '');
+      const connectionNodes = collectXmlValues(c, ['connection', 'DTS:connection']).filter(
+        (value) => value && typeof value === 'object'
+      );
+      const primaryConnection =
+        connectionNodes.find(
+          (conn) =>
+            conn['@_connectionManagerID'] ||
+            conn['@_DTS:connectionManagerID'] ||
+            conn['@_connectionManagerRefId'] ||
+            conn['@_DTS:connectionManagerRefId']
+        ) || {};
+      const connRef = normalizeSsisReference(
+        props.ConnectionManagerID ||
+          props.ConnectionManagerId ||
+          primaryConnection['@_connectionManagerID'] ||
+          primaryConnection['@_DTS:connectionManagerID'] ||
+          primaryConnection['@_connectionManagerRefId'] ||
+          primaryConnection['@_DTS:connectionManagerRefId'] ||
+          ''
+      );
 
       components.push({
         componentType: compType,
@@ -473,7 +541,7 @@ function extractExecuteSqlTasks(packageXml) {
   const tasks = [];
   if (!packageXml) return tasks;
 
-  const execNodes = collectXmlValues(packageXml, ['DTS:Executable', 'Executable']);
+  const execNodes = collectXmlValuesDeep(packageXml, ['DTS:Executable', 'Executable']);
 
   for (const exec of execNodes) {
     try {
@@ -515,7 +583,7 @@ function extractExecutePackageTasks(packageXml) {
   const tasks = [];
   if (!packageXml) return tasks;
 
-  const execNodes = collectXmlValues(packageXml, ['DTS:Executable', 'Executable']);
+  const execNodes = collectXmlValuesDeep(packageXml, ['DTS:Executable', 'Executable']);
 
   for (const exec of execNodes) {
     try {
@@ -525,12 +593,25 @@ function extractExecutePackageTasks(packageXml) {
 
       const taskName = raw['@_DTS:ObjectName'] || raw['@_ObjectName'] || 'ExecutePackageTask';
       const objectData = raw['DTS:ObjectData'] || raw.ObjectData || {};
-      const taskData = objectData.ExecutePackageTask || {};
-      const packageName = normalizePackageTaskName(
+      const taskData =
+        objectData.ExecutePackageTask ||
+        objectData['ExecutePackageTask'] ||
+        collectXmlValues(objectData, ['ExecutePackageTask']).find((value) => value && typeof value === 'object') ||
+        {};
+      const packageNameNode =
         taskData['@_PackageName'] ||
-          taskData['@_DTS:PackageName'] ||
-          taskData.PackageName ||
-          ''
+        taskData['@_DTS:PackageName'] ||
+        taskData.PackageName ||
+        taskData['DTS:PackageName'] ||
+        collectXmlValues(taskData, ['PackageName', 'DTS:PackageName'])[0] ||
+        collectXmlValues(objectData, ['PackageName', 'DTS:PackageName'])[0] ||
+        '';
+      const packageNameText =
+        packageNameNode && typeof packageNameNode === 'object'
+          ? packageNameNode['#text'] || packageNameNode['@_PackageName'] || ''
+          : packageNameNode;
+      const packageName = normalizePackageTaskName(
+        packageNameText
       );
 
       if (packageName) {
@@ -1390,6 +1471,20 @@ export async function extractSsisMetadata(connectionConfig, opts = {}) {
   } finally {
     await extractor.disconnect();
   }
+}
+
+export function parseSsisPackageXmlForLineage(xmlText, options = {}) {
+  const xmlDoc = parsePackageXml(Buffer.from(String(xmlText || ''), 'utf-8'));
+  if (!xmlDoc) return null;
+
+  return {
+    objectName: options.objectName || options.packageName || 'unknown_package.dtsx',
+    projectName: options.projectName || 'unknown_project',
+    connectionManagers: extractConnectionManagers(xmlDoc),
+    dataFlowComponents: extractDataFlowComponents(xmlDoc),
+    sqlTasks: extractExecuteSqlTasks(xmlDoc),
+    packageTasks: extractExecutePackageTasks(xmlDoc),
+  };
 }
 
 export { SsisMetadataExtractor };

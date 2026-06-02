@@ -144,6 +144,7 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
   const maxBridgeDepth = Math.max(1, Number(options.maxBridgeDepth) || 3);
   const focusType = String(focusObj?.type || '').toLowerCase();
   const focusStem = normalizeToken(focusObj?.name || objectId);
+  const focusFamilyStem = normalizeEntityStem(focusObj?.name || objectId);
   const ssisGroupId = 'group:ssis-producers';
   let ssisPackageCount = 0;
 
@@ -163,17 +164,26 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
     const obj = objects.get(id);
     if (!obj) return id;
     if (obj.type === 'package') {
-      return (
+      const packageName =
         obj.packageName ||
         String(obj.name || id)
           .split('.')
-          .pop()
-      );
+          .pop();
+      const packageScope = [obj.folderName || obj.folder_name, obj.projectName || obj.project_name]
+        .filter(Boolean)
+        .join('.');
+      return [packageScope || 'SSIS package', wrapIdentifier(packageName)].filter(Boolean).join('\n');
     }
-    if (obj.schema && obj.name && obj.schema !== 'dbo') {
-      return `${obj.schema}.${obj.name}`;
+    const inferred = inferObjectScope(id, obj);
+    const objectName = obj.name || inferred.name || id;
+    const scope = [inferred.database, inferred.schema && inferred.schema !== 'dbo' ? inferred.schema : null]
+      .filter(Boolean)
+      .join('.');
+
+    if (scope) {
+      return `${scope}\n${wrapIdentifier(objectName)}`;
     }
-    return obj.name || id;
+    return wrapIdentifier(objectName);
   };
 
   const addNode = (id, nodeType, lane, extraData = {}) => {
@@ -234,11 +244,19 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
     const database = String(obj.database || '').toLowerCase();
     const idToken = normalizeToken(id);
     const nameToken = normalizeToken(obj.name);
+    const isSameFamily =
+      focusFamilyStem.length >= 6 &&
+      (idToken.includes(focusFamilyStem) || nameToken.includes(focusFamilyStem));
 
     if (type === 'synonym') return true;
     if (
-      database === 'etl_staging' &&
-      (idToken.includes(focusStem) || nameToken.includes(focusStem))
+      (
+        database === 'etl_staging' ||
+        database === 'stagingdb' ||
+        database === 'vendordata' ||
+        database.includes('staging')
+      ) &&
+      (idToken.includes(focusStem) || nameToken.includes(focusStem) || isSameFamily)
     ) {
       return true;
     }
@@ -290,6 +308,7 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
       if (isPackage(edge.source)) {
         addNode(edge.source, 'ssis-package', -4);
         addEdge(edge.source, targetId, 'loads', ['ssis-load-edge'], 0.9);
+        addPackageCallers(edge.source, depthLeft - 1);
         continue;
       }
 
@@ -302,6 +321,7 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
           ['producer-edge'],
           0.85
         );
+        addBridgeUpstream(edge.source, depthLeft - 1);
         continue;
       }
 
@@ -377,6 +397,9 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
           ['producer-edge'],
           0.9
         );
+        if (isBridgeCandidate(input.source)) {
+          addBridgeUpstream(input.source, maxBridgeDepth);
+        }
         continue;
       }
 
@@ -392,11 +415,72 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
       );
       addBridgeUpstream(input.source, maxBridgeDepth);
     }
+
   }
 
   for (const edge of consumerEdges) {
     addNode(edge.target, 'consumer', 1);
     addEdge(objectId, edge.target, 'used by', ['consumer-edge'], 0.92);
+
+    if (!isProcess(edge.target)) continue;
+
+    const consumerInputs = typedEdges.filter(
+      (candidate) =>
+        candidate.target === edge.target &&
+        candidate.source !== objectId &&
+        ['reads', 'extracts', 'loads', 'calls'].includes(candidate.type)
+    );
+
+    for (const input of consumerInputs) {
+      if (isPackage(input.source)) {
+        addNode(input.source, 'ssis-package', -4);
+        addEdge(
+          input.source,
+          edge.target,
+          input.type === 'calls' ? 'calls' : input.type,
+          ['ssis-load-edge'],
+          0.95
+        );
+        addPackageCallers(input.source, maxBridgeDepth);
+        continue;
+      }
+
+      if (!isBridgeCandidate(input.source)) continue;
+      const inputObj = objects.get(input.source);
+      const inputType = String(inputObj?.type || '').toLowerCase();
+      const lane = inputType === 'synonym' ? -2 : -3;
+      addNode(input.source, 'bridge', lane);
+      addEdge(
+        input.source,
+        edge.target,
+        input.type === 'extracts' ? 'reads' : input.type,
+        ['bridge-edge'],
+        0.9
+      );
+      addBridgeUpstream(input.source, maxBridgeDepth);
+    }
+
+    const processOutputs = typedEdges.filter(
+      (candidate) =>
+        candidate.source === edge.target &&
+        candidate.target !== objectId &&
+        ['loads', 'created_by', 'created_via'].includes(candidate.type)
+    );
+
+    for (const output of processOutputs) {
+      addNode(output.target, 'consumer-output', 2);
+      addEdge(
+        edge.target,
+        output.target,
+        output.type === 'loads' ? 'loads' : output.type,
+        ['consumer-edge'],
+        0.9
+      );
+
+      if (isBridgeCandidate(output.target)) {
+        addBridgeUpstream(output.target, maxBridgeDepth);
+      }
+    }
   }
 
   if (includeSsisGroup && ssisPackageCount > 0) {
@@ -432,6 +516,84 @@ function normalizeToken(value) {
   return String(value || '')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '');
+}
+
+function normalizeEntityStem(value) {
+  let token = normalizeToken(value);
+  token = token
+    .replace(/^(fact|dim|stg|etl|wrk)+/, '')
+    .replace(/^(fact|dim|stg|etl|wrk)+/, '')
+    .replace(/(tbl|table|view|vw)$/, '');
+
+  if (token.startsWith('jma')) {
+    const match = token.match(/^jma[a-z0-9]*?claims?/);
+    if (match?.[0]) return match[0];
+  }
+
+  return token;
+}
+
+function inferObjectScope(id, obj = {}) {
+  const parts = String(id || '').split('.').filter(Boolean);
+  const inferred = {
+    database: obj.database || '',
+    schema: obj.schema || '',
+    name: obj.name || '',
+  };
+
+  if (parts.length >= 4) {
+    inferred.database = inferred.database || parts[1];
+    inferred.schema = inferred.schema || parts[2];
+    inferred.name = inferred.name || parts.slice(3).join('.');
+  } else if (parts.length === 3) {
+    inferred.database = inferred.database || parts[0];
+    inferred.schema = inferred.schema || parts[1];
+    inferred.name = inferred.name || parts[2];
+  } else if (parts.length > 0) {
+    inferred.name = inferred.name || parts[parts.length - 1];
+  }
+
+  return inferred;
+}
+
+function wrapIdentifier(value, maxLineLength = 28) {
+  const text = String(value || '').replace(/\.dtsx$/i, '').trim();
+  if (!text || text.length <= maxLineLength) return text;
+
+  const segments = text.split(/([_.\-\s]+)/).filter(Boolean);
+  const lines = [];
+  let current = '';
+
+  for (const segment of segments) {
+    if (!current) {
+      current = segment;
+      continue;
+    }
+
+    if ((current + segment).length <= maxLineLength) {
+      current += segment;
+      continue;
+    }
+
+    lines.push(current.replace(/[_\-\s.]+$/g, ''));
+    current = segment.replace(/^[_\-\s.]+/g, '');
+  }
+
+  if (current) {
+    lines.push(current.replace(/[_\-\s.]+$/g, ''));
+  }
+
+  return lines
+    .flatMap((line) => {
+      if (line.length <= maxLineLength) return [line];
+      const chunks = [];
+      for (let index = 0; index < line.length; index += maxLineLength) {
+        chunks.push(line.slice(index, index + maxLineLength));
+      }
+      return chunks;
+    })
+    .filter(Boolean)
+    .join('\n');
 }
 
 function dedupeEdges(edges) {

@@ -1,0 +1,22 @@
+{
+  "sqlServerAliasesByDatabase": {
+    "etl_staging": {
+      "L1-5FSQL-01\\INST1": "L1-5FSQL-01",
+      "V1-SQL-03\\INST1": "L1-5FSQL-01",
+      "V1-SQL-03\\INST1,11041": "L1-5FSQL-01"
+    },
+    "sonic_dw": {
+      "L1-5FSQL-01\\INST1": "L1-5FSQL-01",
+      "V1-SQL-03\\INST1": "L1-5FSQL-01",
+      "V1-SQL-03\\INST1,11041": "L1-5FSQL-01"
+    },
+    "stagingdb": {
+      "V1-SQL-03\\INST1": "L1-DWASQL-02,12010",
+      "V1-SQL-03\\INST1,11041": "L1-DWASQL-02,12010"
+    },
+    "vendordata": {
+      "V1-SQL-03\\INST1": "L1-DWASQL-02,12010",
+      "V1-SQL-03\\INST1,11041": "L1-DWASQL-02,12010"
+    }
+  }
+}

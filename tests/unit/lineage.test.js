@@ -5,6 +5,7 @@
 
 import {
   buildLineageGraph,
+  buildTypedLineageEdges,
   getUpstreamDependencies,
   getDownstreamDependents,
   analyzeImpact,
@@ -93,6 +94,61 @@ describe('Lineage Service', () => {
       const graph = buildLineageGraph(testObjects);
       expect(graph.get('db.table5').size).toBe(0);
     });
+
+    it('should resolve SSIS package edges across server aliases by SQL object suffix', () => {
+      const packageId = 'V1-SSIS25-01, 11040.SSISDB.DOWC.DOWC.Dowc_ClaimsFileLoad.dtsx';
+      const procedureId = 'L1-5FSQL-01.ETL_Staging.JMA.Load_Claim_Financial_Transactions';
+      const stagingTableId =
+        'L1-DWASQL-02,12010.StagingDB.JMA.STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL';
+      const ssisObjects = new Map([
+        [
+          packageId,
+          {
+            id: packageId,
+            name: 'DOWC.DOWC.Dowc_ClaimsFileLoad.dtsx',
+            packageName: 'Dowc_ClaimsFileLoad.dtsx',
+            packagePath: 'DOWC.DOWC.Dowc_ClaimsFileLoad.dtsx',
+            database: 'ssisdb',
+            type: 'package',
+            calls: [
+              'V1-SQL-03\\INST1,11041.ETL_Staging.JMA.Load_Claim_Financial_Transactions',
+            ],
+            writes_to: [
+              'V1-SQL-03\\INST1,11041.StagingDb.JMA.STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL',
+            ],
+          },
+        ],
+        [
+          procedureId,
+          {
+            id: procedureId,
+            name: 'Load_Claim_Financial_Transactions',
+            database: 'ETL_Staging',
+            schema: 'JMA',
+            type: 'procedure',
+          },
+        ],
+        [
+          stagingTableId,
+          {
+            id: stagingTableId,
+            name: 'STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL',
+            database: 'StagingDB',
+            schema: 'JMA',
+            type: 'table',
+          },
+        ],
+      ]);
+
+      const typedEdges = buildTypedLineageEdges(ssisObjects);
+
+      expect(typedEdges).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ source: packageId, target: procedureId, type: 'calls' }),
+          expect.objectContaining({ source: packageId, target: stagingTableId, type: 'loads' }),
+        ])
+      );
+    });
   });
 
   describe('Upstream Dependencies', () => {
@@ -119,6 +175,18 @@ describe('Lineage Service', () => {
       // With depth 1, should only get direct dependencies
       expect(upstream).toContain('db.table2');
     });
+
+    it('should not include the focus object when traversing cyclic upstream dependencies', () => {
+      const cyclicObjects = new Map([
+        ['table_a', { name: 'table_a', depends_on: ['table_b'] }],
+        ['table_b', { name: 'table_b', depends_on: ['table_a'] }],
+      ]);
+      const graph = buildLineageGraph(cyclicObjects);
+      const upstream = getUpstreamDependencies('table_a', graph);
+
+      expect(upstream).toContain('table_b');
+      expect(upstream).not.toContain('table_a');
+    });
   });
 
   describe('Downstream Dependents', () => {
@@ -144,6 +212,18 @@ describe('Lineage Service', () => {
 
       // With depth 1, should only get direct dependents
       expect(downstream.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('should not include the focus object when traversing cyclic downstream dependents', () => {
+      const cyclicObjects = new Map([
+        ['table_a', { name: 'table_a', depends_on: ['table_b'] }],
+        ['table_b', { name: 'table_b', depends_on: ['table_a'] }],
+      ]);
+      const graph = buildLineageGraph(cyclicObjects);
+      const downstream = getDownstreamDependents('table_a', graph);
+
+      expect(downstream).toContain('table_b');
+      expect(downstream).not.toContain('table_a');
     });
   });
 

@@ -165,6 +165,14 @@ export default function createApp() {
   app.get('/favicon.ico', (_req, res) => {
     return res.status(204).end();
   });
+  app.use((req, res, next) => {
+    if (req.path === '/' || req.path.endsWith('.js') || req.path.endsWith('.css')) {
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
+    next();
+  });
   app.use(express.static(frontendPath));
 
   app.get('/', (req, res) => {

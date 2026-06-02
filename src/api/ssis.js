@@ -17,6 +17,9 @@ import { createApiRouter } from '../utils/apiRouter.js';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 import { sendErrorResponse } from '../middleware/errorHandler.js';
 import { SsisMetadataExtractor } from '../services/ssisExtractor.js';
+import { loadAllMarkdown } from '../services/markdownService.js';
+import { buildLineageGraph } from '../services/lineageService.js';
+import { initializeCache } from '../utils/cacheInitializer.js';
 
 const router = createApiRouter();
 
@@ -253,13 +256,26 @@ function cleanSsisSegment(value) {
     .trim();
 }
 
+function canonicalizeServerName(value) {
+  const text = cleanSsisSegment(value)
+    .replace(/^tcp:/i, '')
+    .replace(/^np:/i, '')
+    .replace(/^lpc:/i, '')
+    .trim();
+
+  if (!text) return 'unknown_server';
+
+  const [hostName] = text.split('\\');
+  return String(hostName || text).trim();
+}
+
 function parseConnectionStringServer(connectionString = '') {
   const match = String(connectionString).match(/(?:Data Source|Server)\s*=\s*([^;"]+)/i);
   return match ? match[1].trim() : '';
 }
 
 function extractServerNameFromConfig(config = {}) {
-  return cleanSsisSegment(
+  return canonicalizeServerName(
     config.server ||
       config.serverName ||
       config.dataSource ||
@@ -299,9 +315,21 @@ function buildSsisPackageMarkdown(result, packageRow, serverName) {
   const pkg = packageRow.package_name || 'unknown_package';
   const objectName = `${folder}.${project}.${pkg}`;
   const packageId = buildCanonicalPackageId(serverName, folder, project, pkg);
-  const packageEdges = (result.lineageEdges || []).filter(
-    (edge) => String(edge.packageName || '').toLowerCase() === String(pkg).toLowerCase()
+  const packageKeys = new Set(
+    [pkg, objectName, packageId, `${project}.${pkg}`, `${folder}.${project}.${pkg}`]
+      .map((value) => String(value || '').toLowerCase())
+      .filter(Boolean)
   );
+  const packageEdges = (result.lineageEdges || []).filter((edge) => {
+    const edgeKeys = [
+      edge.packageName,
+      edge.from,
+      edge.packageId,
+      edge.packagePath,
+      edge.objectName,
+    ].map((value) => String(value || '').toLowerCase());
+    return edgeKeys.some((key) => packageKeys.has(key));
+  });
   
   // Separate Data Flow Sources (Upstream)
   const upstream = collectResolvedReferences(
@@ -567,6 +595,8 @@ router.post('/extract', authenticate, requireAdmin, async (req, res) => {
   let markdownOutput = null;
   if (opts.generateMarkdownOutput !== false) {
     markdownOutput = persistSsisMarkdown(result, opts.markdownOutputPath);
+    const refreshedObjects = await loadAllMarkdown(markdownOutput.baseOutputPath);
+    initializeCache(refreshedObjects, buildLineageGraph(refreshedObjects));
   }
 
   return res.json({
