@@ -197,12 +197,20 @@ export async function searchObjects(indexName, query, options = {}) {
       query: esQuery,
     });
 
-    // Map Elasticsearch response format back to what your app expects
-    const hits = result.hits.hits.map((hit) => hit._source);
+    // Map Elasticsearch response format back to what your app expects.
+    const hits = (result.hits?.hits || []).map((hit) => ({
+      ...hit._source,
+      score: hit._score || 0,
+      _score: hit._score || 0,
+    }));
+    const total =
+      typeof result.hits?.total === 'number'
+        ? result.hits.total
+        : result.hits?.total?.value || hits.length;
 
     return {
       hits,
-      estimatedTotalHits: result.hits.total.value,
+      estimatedTotalHits: total,
       limit: size,
       offset: from,
     };

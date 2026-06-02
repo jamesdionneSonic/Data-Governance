@@ -213,10 +213,19 @@ export function getTrendingObjects(objects, lineageGraph, limit = 10) {
 export function getCriticalObjects(objects, lineageGraph, limit = 10) {
   const impactCounts = new Map();
 
-  // For each object, count downstream dependents
+  // Count direct downstream dependents in one pass. The previous implementation
+  // rebuilt and traversed the reverse graph once per object, which could block
+  // login/health requests on large catalogs.
   for (const [objectId] of lineageGraph) {
-    const downstream = getDownstreamDependents(objectId, lineageGraph);
-    impactCounts.set(objectId, downstream.length);
+    if (!impactCounts.has(objectId)) {
+      impactCounts.set(objectId, 0);
+    }
+  }
+
+  for (const [, dependencies] of lineageGraph) {
+    for (const dependencyId of dependencies) {
+      impactCounts.set(dependencyId, (impactCounts.get(dependencyId) || 0) + 1);
+    }
   }
 
   // Sort by impact (downstream count)

@@ -3,7 +3,16 @@
  * Tests for parsing and validating markdown files
  */
 
-import { extractPlainText, validateMetadata } from '../../src/services/markdownService.js';
+import { mkdir, mkdtemp, rm, writeFile } from 'fs/promises';
+import { tmpdir } from 'os';
+import { join } from 'path';
+import {
+  extractPlainText,
+  getMarkdownFiles,
+  loadAllMarkdown,
+  parseMarkdownContent,
+  validateMetadata,
+} from '../../src/services/markdownService.js';
 
 describe('Markdown Service', () => {
   describe('Plain Text Extraction', () => {
@@ -120,6 +129,85 @@ describe('Markdown Service', () => {
         const errors = validateMetadata(metadata);
         expect(errors).toEqual([]);
       }
+    });
+  });
+
+  describe('Frontmatter Parsing', () => {
+    it('should parse markdown frontmatter with a leading UTF-8 BOM', () => {
+      const metadata = parseMarkdownContent(
+        '\uFEFF---\nname: claims\ndatabase: VendorData\ntype: table\nowner: data-team\n---\n\nClaims table.',
+        'bom.md'
+      );
+
+      expect(metadata).toEqual(
+        expect.objectContaining({
+          id: 'claims',
+          name: 'claims',
+          database: 'VendorData',
+          type: 'table',
+        })
+      );
+    });
+  });
+
+  describe('Catalog Manifest', () => {
+    let tempDir;
+
+    afterEach(async () => {
+      if (tempDir) {
+        await rm(tempDir, { recursive: true, force: true });
+      }
+      tempDir = null;
+    });
+
+    it('should load only manifest-listed markdown files when a catalog manifest exists', async () => {
+      tempDir = await mkdtemp(join(tmpdir(), 'markdown-manifest-'));
+      await mkdir(join(tempDir, 'servers', 'current'), { recursive: true });
+      await mkdir(join(tempDir, 'servers', 'stale'), { recursive: true });
+
+      await writeFile(
+        join(tempDir, 'servers', 'current', 'claims.md'),
+        [
+          '---',
+          'id: current.claims',
+          'name: claims',
+          'database: VendorData',
+          'type: table',
+          'owner: data-team',
+          '---',
+          '',
+          'Current catalog object.',
+        ].join('\n'),
+        'utf-8'
+      );
+      await writeFile(
+        join(tempDir, 'servers', 'stale', 'claims.md'),
+        [
+          '---',
+          'id: stale.claims',
+          'name: claims',
+          'database: VendorData',
+          'type: table',
+          'owner: data-team',
+          '---',
+          '',
+          'Stale catalog object.',
+        ].join('\n'),
+        'utf-8'
+      );
+      await writeFile(
+        join(tempDir, 'catalog-manifest.json'),
+        JSON.stringify({ files: ['servers/current/claims.md'] }),
+        'utf-8'
+      );
+
+      const files = await getMarkdownFiles(tempDir);
+      const objects = await loadAllMarkdown(tempDir);
+
+      expect(files).toHaveLength(1);
+      expect(files[0]).toContain(join('servers', 'current', 'claims.md'));
+      expect(objects.has('current.claims')).toBe(true);
+      expect(objects.has('stale.claims')).toBe(false);
     });
   });
 

@@ -3,6 +3,8 @@
  * Builds and queries data lineage dependency graphs
  */
 
+const reverseGraphCache = new WeakMap();
+
 /**
  * Build lineage graph from object dependencies
  * @param {Map} objects - Map of object ID -> metadata
@@ -227,6 +229,15 @@ function resolveObjectId(
     deterministicCandidates.push([metadata.server || metadata.serverName, ...tokens].join('.'));
   }
 
+  if (tokens.length >= 4) {
+    deterministicCandidates.push(tokens.slice(1).join('.'));
+    deterministicCandidates.push(tokens.slice(-3).join('.'));
+    deterministicCandidates.push(tokens.slice(-2).join('.'));
+  } else if (tokens.length === 3) {
+    deterministicCandidates.push(tokens.slice(-3).join('.'));
+    deterministicCandidates.push(tokens.slice(-2).join('.'));
+  }
+
   const candidates = [
     ref,
     unwrapped,
@@ -260,6 +271,8 @@ function chooseClosestMatch(candidates, metadata = {}) {
 
   const sourceServer = String(metadata.server || metadata.serverName || '').toLowerCase();
   const sourceDatabase = String(metadata.database || '').toLowerCase();
+  const sourceType = String(metadata.type || '').toLowerCase();
+  const allowsCrossScopeMatch = sourceType === 'package' || sourceDatabase === 'ssisdb';
 
   const scored = list.map((id) => {
     const obj = String(id || '').toLowerCase();
@@ -274,7 +287,7 @@ function chooseClosestMatch(candidates, metadata = {}) {
 
   scored.sort((a, b) => b.score - a.score);
 
-  if ((sourceServer || sourceDatabase) && scored[0]?.score === 0) {
+  if ((sourceServer || sourceDatabase) && scored[0]?.score === 0 && !allowsCrossScopeMatch) {
     return null;
   }
 
@@ -394,6 +407,7 @@ export function getUpstreamDependencies(objectId, graph, maxDepth = 10) {
     const dependencies = graph.get(id) || new Set();
 
     for (const depId of dependencies) {
+      if (depId === objectId) continue;
       upstream.add(depId);
 
       if (depth < maxDepth) {
@@ -413,21 +427,7 @@ export function getUpstreamDependencies(objectId, graph, maxDepth = 10) {
  * @returns {Array} Array of downstream object IDs
  */
 export function getDownstreamDependents(objectId, graph, maxDepth = 10) {
-  // Build reverse graph (dependents -> dependencies)
-  const reverseGraph = new Map();
-
-  for (const [id, deps] of graph) {
-    if (!reverseGraph.has(id)) {
-      reverseGraph.set(id, new Set());
-    }
-
-    for (const depId of deps) {
-      if (!reverseGraph.has(depId)) {
-        reverseGraph.set(depId, new Set());
-      }
-      reverseGraph.get(depId).add(id);
-    }
-  }
+  const reverseGraph = getReverseLineageGraph(graph);
 
   const downstream = new Set();
   const visited = new Set();
@@ -445,6 +445,7 @@ export function getDownstreamDependents(objectId, graph, maxDepth = 10) {
     const dependents = reverseGraph.get(id) || new Set();
 
     for (const depId of dependents) {
+      if (depId === objectId) continue;
       downstream.add(depId);
 
       if (depth < maxDepth) {
@@ -454,6 +455,30 @@ export function getDownstreamDependents(objectId, graph, maxDepth = 10) {
   }
 
   return Array.from(downstream);
+}
+
+export function getReverseLineageGraph(graph) {
+  const cached = reverseGraphCache.get(graph);
+  if (cached) {
+    return cached;
+  }
+
+  const reverseGraph = new Map();
+  for (const [id, deps] of graph) {
+    if (!reverseGraph.has(id)) {
+      reverseGraph.set(id, new Set());
+    }
+
+    for (const depId of deps) {
+      if (!reverseGraph.has(depId)) {
+        reverseGraph.set(depId, new Set());
+      }
+      reverseGraph.get(depId).add(id);
+    }
+  }
+
+  reverseGraphCache.set(graph, reverseGraph);
+  return reverseGraph;
 }
 
 /**
@@ -611,6 +636,7 @@ export default {
   buildLineageGraph,
   getUpstreamDependencies,
   getDownstreamDependents,
+  getReverseLineageGraph,
   analyzeImpact,
   findCircularDependencies,
   getLineageStats,

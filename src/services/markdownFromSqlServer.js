@@ -74,10 +74,45 @@ function normalizeSqlReference(value) {
   return String(value ?? '')
     .trim()
     .replace(/^dbo\./i, '')
+    .replace(/\]\.\[/g, '.')
     .replace(/\[|\]/g, '')
     .replace(/\s+/g, ' ')
     .replace(/^ssis\//i, '')
     .trim();
+}
+
+function stripSqlComments(sqlText) {
+  return String(sqlText || '')
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')
+    .replace(/--[^\r\n]*/g, ' ');
+}
+
+function extractCteNames(definition = '') {
+  const sql = stripSqlComments(definition);
+  const names = new Set();
+  const pattern = /(?:\bWITH|,)\s+([A-Za-z_][A-Za-z0-9_]*)\s+AS\s*\(/gi;
+  let match = pattern.exec(sql);
+  while (match) {
+    names.add(String(match[1] || '').toLowerCase());
+    match = pattern.exec(sql);
+  }
+  return names;
+}
+
+function sqlReferenceTails(value) {
+  const normalized = normalizeSqlReference(value).toLowerCase();
+  if (!normalized) return [];
+  const parts = normalized.split('.').filter(Boolean);
+  return [
+    normalized,
+    parts.length >= 3 ? parts.slice(-3).join('.') : '',
+    parts.length >= 2 ? parts.slice(-2).join('.') : '',
+  ].filter(Boolean);
+}
+
+function referencesSameSqlObject(left, right) {
+  const leftTails = new Set(sqlReferenceTails(left));
+  return sqlReferenceTails(right).some((tail) => leftTails.has(tail));
 }
 
 function normalizeSegment(value, fallback = 'unknown') {
@@ -122,9 +157,19 @@ function isNoiseSqlReference(reference) {
     'and',
     'or',
     'not',
+    'the',
+    'statement',
+    'cte_source',
   ]);
 
   if (noiseTokens.has(value)) return true;
+  const parts = value.split('.').filter(Boolean);
+  if (
+    parts.length === 2 &&
+    ['source', 'target', 'src', 'inserted', 'deleted'].includes(parts[0])
+  ) {
+    return true;
+  }
   if (value.startsWith('#')) return true;
   if (value.startsWith('@')) return true;
   if (value.includes('doc_proj')) return true;
@@ -522,36 +567,48 @@ class MarkdownGenerator {
   }
 
   static extractReadSources(definition = '') {
+    const sql = stripSqlComments(definition);
+    const cteNames = extractCteNames(definition);
     const sources = [];
-    const pattern = /\b(?:FROM|JOIN)\s+((?:\[[^\]]+\]|\w+)(?:\s*\.\s*(?:\[[^\]]+\]|\w+)){0,2})/gi;
-    let match = pattern.exec(definition);
+    const pattern = /\b(?:FROM|JOIN)\s+((?:\[[^\]]+\]|\w+)(?:\s*\.\s*(?:\[[^\]]+\]|\w+)){0,4})/gi;
+    let match = pattern.exec(sql);
     while (match) {
       sources.push(match[1]);
-      match = pattern.exec(definition);
+      match = pattern.exec(sql);
     }
-    return MarkdownGenerator.uniqueObjectReferences(sources);
+    return MarkdownGenerator.uniqueObjectReferences(sources).filter(
+      (source) => !cteNames.has(normalizeSqlReference(source).toLowerCase())
+    );
   }
 
   static extractWriteTargets(definition = '') {
+    const sql = stripSqlComments(definition);
     const targets = [];
-    const pattern = /\b(?:INSERT\s+INTO|MERGE)\s+((?:\[[^\]]+\]|\w+)(?:\s*\.\s*(?:\[[^\]]+\]|\w+)){0,2})/gi;
-    let match = pattern.exec(definition);
+    const pattern = /\b(?:INSERT\s+INTO|MERGE(?:\s+INTO)?)\s+((?:\[[^\]]+\]|\w+)(?:\s*\.\s*(?:\[[^\]]+\]|\w+)){0,4})/gi;
+    let match = pattern.exec(sql);
     while (match) {
       targets.push(match[1]);
-      match = pattern.exec(definition);
+      match = pattern.exec(sql);
     }
     return MarkdownGenerator.uniqueObjectReferences(targets);
   }
 
   static extractProcedureCalls(definition = '') {
+    const sql = stripSqlComments(definition);
     const calls = [];
     const pattern = /\bEXEC(?:UTE)?\s+((?:\[[^\]]+\]|\w+)(?:\s*\.\s*(?:\[[^\]]+\]|\w+)){0,2})/gi;
-    let match = pattern.exec(definition);
+    let match = pattern.exec(sql);
     while (match) {
       calls.push(match[1]);
-      match = pattern.exec(definition);
+      match = pattern.exec(sql);
     }
     return MarkdownGenerator.uniqueObjectReferences(calls);
+  }
+
+  static excludeWriteTargets(references = [], writeTargets = []) {
+    return references.filter(
+      (reference) => !writeTargets.some((target) => referencesSameSqlObject(reference, target))
+    );
   }
 
   /**
@@ -562,12 +619,14 @@ class MarkdownGenerator {
     const readRefs = MarkdownGenerator.extractReadSources(proc.definition);
     const writeRefs = MarkdownGenerator.extractWriteTargets(proc.definition);
     const callRefs = MarkdownGenerator.extractProcedureCalls(proc.definition);
-    const { direct: dependsOn, contextual } = MarkdownGenerator.splitSqlReferences([
+    const { direct: rawDependsOn, contextual } = MarkdownGenerator.splitSqlReferences([
       ...dependencyRefs,
       ...readRefs,
     ]);
-    const { direct: readsFrom } = MarkdownGenerator.splitSqlReferences(readRefs);
     const { direct: writesTo } = MarkdownGenerator.splitSqlReferences(writeRefs);
+    const dependsOn = MarkdownGenerator.excludeWriteTargets(rawDependsOn, writesTo);
+    const { direct: rawReadsFrom } = MarkdownGenerator.splitSqlReferences(readRefs);
+    const readsFrom = MarkdownGenerator.excludeWriteTargets(rawReadsFrom, writesTo);
     const { direct: calls } = MarkdownGenerator.splitSqlReferences(callRefs);
     const frontmatter = {
       id: proc.id,

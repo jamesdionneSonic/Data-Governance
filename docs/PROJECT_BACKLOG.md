@@ -2,8 +2,8 @@
 
 # Data Governance & Dependency Visualization Platform (Markdown-First Edition)
 
-**Version:** 3.1  
-**Last Updated:** May 10, 2026  
+**Version:** 3.2  
+**Last Updated:** June 2, 2026  
 **Architecture**: Markdown-Driven Source of Truth + SQL Operational Store + Meilisearch
 
 ---
@@ -167,15 +167,17 @@ Build all markdown-only stories now. They represent the **entire documentation a
 
 When SQL Server is authorized, the SQL stories plug **on top of** the markdown foundation — they don't replace it. The markdown work done now is never wasted.
 
-**Suggested immediate sequence (no SQL required):**
+**Updated immediate sequence after the June 2, 2026 audit:**
 
-1. **Phase 7a** (Glossary + Semantic Mapping) — highest visible business value, zero SQL
-2. **Phase 7e-001** (Ownership model in YAML) — trivial to extend existing frontmatter, unlocks steward dashboards
-3. **Phase 7b-001/002** (Classification taxonomy + auto-classification rules) — build the rule engine in BFF, write results back to markdown
-4. **Phase 7h-001/002** (Data Products + Contracts as markdown) — marketplace UI reads the index
-5. **Phase 7j** (Trust + Certification in YAML frontmatter) — scoring from existing metadata fields
-6. **Phase 7d** (Metadata enrichment UI + Schema browser) — already have metadata, just need UI
-7. **Phase 7p-001** (Governance Context API) — wraps everything above into a single queryable endpoint
+1. **NEXT-COL-001** Column inventory markdown contract - make every table/view column AI-readable and stable.
+2. **NEXT-COL-002** SQL column usage extraction - capture explicit column reads/writes/joins/filters.
+3. **NEXT-COL-003** Column risk flag extraction - expose `SELECT *`, positional inserts, dynamic SQL, and unresolved contexts.
+4. **NEXT-COL-004** SSIS column mapping extraction - capture data-flow mappings, lookups, derived columns, and dynamic mapping risks.
+5. **NEXT-COL-005** Column lineage resolver - promote only validated column-to-column mappings.
+6. **NEXT-COL-006** Column impact analysis engine - answer add/drop/rename/type/nullability impact questions with evidence.
+7. **NEXT-COL-007** AI/Codex context output - package markdown context so Codex can answer table and column impact questions without reconnecting to production.
+8. **Phase 7a** Glossary + Semantic Mapping - resume broader governance enrichment after impact-analysis foundations are in place.
+9. **Phase 7e-001 / 7b / 7h / 7j / 7d / 7p-001** Ownership, classification, products, trust, schema browser, and governance context API.
 
 ---
 
@@ -218,6 +220,189 @@ The full legacy roadmap has been audited and marked complete based on delivery a
 | PHASE6-001 | ✅ Done |
 | PHASE6-002 | ✅ Done |
 | PHASE6-003 | ✅ Done |
+
+---
+
+## Current Implementation Audit and Next Backlog (June 2, 2026)
+
+This section reflects the current codebase audit after the SQL/SSIS extraction,
+search, lineage, markdown catalog rebuild, and AI-impact-analysis specification
+work. It supersedes the older generic "planned" status for these specific
+lineage/search stabilization items.
+
+### Completed in Current Codebase
+
+| Item ID | Status | Evidence |
+| ------- | ------ | -------- |
+| SEARCH-001: Markdown-backed search fallback | [x] Complete | `src/api/search.js` now supports in-memory markdown fallback behavior, filtered fallback results, no false full-catalog return for no-match queries, and cache refresh on newly extracted assets. Covered by `tests/unit/search-api.test.js`. |
+| SEARCH-002: Catalog cache hydration | [x] Complete | `src/utils/catalogCacheHydrator.js` hydrates the runtime search cache from markdown when Elasticsearch/Meilisearch is unavailable, empty, or stale. |
+| SEARCH-003: Search filter clearing and active filter behavior | [x] Complete | Search API and frontend filtering now keep search text and facets separate enough to clear search and filters predictably. Covered by search API regression tests. |
+| INGEST-001: SQL Server database discovery refresh | [x] Complete | `src/api/ingestion.js` exposes `/api/v1/ingestion/connect-sql-server/databases`; `docker/frontend/app.js` refreshes available database options when server/auth settings change. |
+| SQL-EXTRACT-001: Canonical SQL Server identity handling | [x] Complete | `src/services/sqlServerExtractor.js` canonicalizes named instances, preserves port-qualified linked servers, and emits stable object IDs. Covered by `tests/unit/sql-server-extractor.test.js`. |
+| SQL-EXTRACT-002: SQL read/write extraction cleanup | [x] Complete | `src/services/markdownFromSqlServer.js` and `src/services/sqlServerExtractor.js` distinguish procedure read sources from write targets, including `MERGE` targets and four-part references. Covered by `tests/unit/markdown-from-sql-server.test.js`. |
+| SSIS-EXTRACT-001: Nested SSIS Execute SQL and Execute Package parsing | [x] Complete | `src/services/ssisExtractor.js` deeply scans nested SSIS XML containers and exposes `parseSsisPackageXmlForLineage()` for raw XML rebuilds. |
+| SSIS-EXTRACT-002: SSIS package and SQL bridge lineage | [x] Complete | `scripts/rebuild-catalog-from-raw.mjs` rebuilds markdown from raw SSIS XML, connects parent/child packages, and infers conservative SSIS-backed staging/vendor/ETL bridges. |
+| CATALOG-001: Full raw-to-markdown catalog rebuild | [x] Complete | `scripts/rebuild-catalog-from-raw.mjs` rebuilds SQL and SSIS markdown from `data/analysis/raw`, validates output, and reports generated object counts. |
+| CATALOG-002: Manifest-backed clean catalog loading | [x] Complete | `data/markdown/catalog-manifest.json` is generated during rebuild; `src/services/markdownService.js` loads only manifest-listed markdown files when present so stale locked files do not pollute search or lineage. Covered by `tests/unit/markdown.test.js`. |
+| LINEAGE-001: Centered lineage graph includes SSIS producers and bridge nodes | [x] Complete | `src/services/visualizationService.js` builds focused lineage graphs with SSIS package groups, parent/child package chains, bridge nodes, and table-name wrapping improvements. Covered by `tests/unit/visualization.test.js`. |
+| LINEAGE-002: JMA claims acceptance trace | [x] Complete | Verified chain: SSIS packages -> `StagingDB.JMA.STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL` -> `VendorData.JMA.JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL` -> `ETL_Staging` -> `Sonic_DW.dbo.FACT_JMA_CLAIMS_TBL`. |
+| SPEC-001: AI and column-level impact markdown contract | [x] Complete | `docs/LINEAGE_ENGINE_SPEC.md` now defines the AI-readable column metadata, column usage, column lineage, SSIS mapping, risk flag, and impact-analysis contract. |
+| TEST-001: Focused regression coverage | [x] Complete | Focused suite passes: `tests/unit/markdown-from-sql-server.test.js`, `tests/unit/sql-server-extractor.test.js`, `tests/unit/lineage.test.js`, `tests/unit/search-api.test.js`, `tests/unit/markdown.test.js`, `tests/unit/visualization.test.js`. |
+
+### Known Follow-Up From Current Audit
+
+| Item ID | Status | Notes |
+| ------- | ------ | ----- |
+| CATALOG-CLEAN-001: Physical stale markdown folder removal | [ ] Blocked by local file lock | Windows returned `EPERM` when removing `data/markdown/servers`. The manifest prevents stale files from loading, but a physical clean delete still requires closing whichever process has the folder locked. |
+| RAW-SQL-001: Malformed raw markdown repair | [ ] Open | One raw SQL markdown file under `data/analysis/raw/sqlserver/servers/unknown/databases/StagingDB` has invalid YAML in the `name` field. The rebuild skips it safely, but the raw source should be fixed or regenerated. |
+
+### Next Backlog Items: Column-Level Impact Analysis
+
+These are the next recommended implementation steps. They are ordered to avoid
+making extraction brittle: first capture evidence, then resolve only validated
+facts, then build impact answers.
+
+#### NEXT-COL-001: Column Inventory Markdown Contract
+
+**Story**: Extend generated table/view markdown with complete structured column
+metadata and stable canonical column IDs.
+
+**Status**: [ ] Next  
+**Points**: 5  
+**Priority**: Critical
+
+**Acceptance Criteria**:
+
+- [ ] Table and view markdown includes a structured `columns` YAML array.
+- [ ] Every column has canonical `column_id` in the form `[server].[database].[schema].[object].[column]`.
+- [ ] Column metadata includes type, length, precision, scale, nullable, identity, computed/default details, key/index participation, and extraction evidence when available.
+- [ ] Markdown parser preserves column metadata for API/search/AI context.
+- [ ] Unit tests cover normal, computed, identity, nullable, key, and indexed columns.
+
+**Dependencies**: SQL-EXTRACT-001, CATALOG-001, SPEC-001
+
+---
+
+#### NEXT-COL-002: SQL Column Usage Extraction
+
+**Story**: Extract explicit column usage from SQL definitions for procedures,
+views, functions, and triggers.
+
+**Status**: [ ] Next  
+**Points**: 8  
+**Priority**: Critical
+
+**Acceptance Criteria**:
+
+- [ ] SQL parser emits `column_usage` for select list, joins, filters, group/order by, insert targets, update targets, merge keys, and calculations when parser evidence exists.
+- [ ] Four-part, three-part, two-part, and local references resolve to canonical column IDs only when exact table context is known.
+- [ ] Ambiguous aliases, dynamic SQL, and unresolved table contexts become unresolved column facts, not validated usage.
+- [ ] Unit fixtures cover `INSERT`, `UPDATE`, `MERGE`, `JOIN`, `WHERE`, CTEs, aliases, and linked-server references.
+
+**Dependencies**: NEXT-COL-001
+
+---
+
+#### NEXT-COL-003: Column Risk Flag Extraction
+
+**Story**: Detect patterns that make column impact analysis unsafe or incomplete.
+
+**Status**: [ ] Next  
+**Points**: 4  
+**Priority**: Critical
+
+**Acceptance Criteria**:
+
+- [ ] Extractor flags `select_star`, `insert_without_column_list`, `merge_without_explicit_column_mapping`, `dynamic_sql`, `dynamic_table_name`, `dynamic_column_name`, and unresolved parser contexts.
+- [ ] Risk flags are written to markdown even when no validated column edge exists.
+- [ ] AI/context APIs surface risk flags in impact answers.
+- [ ] Unit tests prove risky patterns are captured rather than hidden.
+
+**Dependencies**: NEXT-COL-002
+
+---
+
+#### NEXT-COL-004: SSIS Column Mapping Extraction
+
+**Story**: Extract SSIS data-flow column mappings, lookup mappings, derived
+columns, and destination external metadata from package XML.
+
+**Status**: [ ] Next  
+**Points**: 8  
+**Priority**: Critical
+
+**Acceptance Criteria**:
+
+- [ ] SSIS package markdown includes structured data-flow mappings with component name, component type, source object, destination object, input column, output column, external metadata column, and evidence text.
+- [ ] Derived column expressions and lookup outputs are captured when present.
+- [ ] Nested containers are scanned consistently with current SSIS task parsing.
+- [ ] Dynamic variables/parameters create unresolved column lineage diagnostics.
+- [ ] Unit fixtures cover direct mapping, renamed mapping, derived column, lookup, and unresolved dynamic mapping.
+
+**Dependencies**: SSIS-EXTRACT-001, NEXT-COL-001
+
+---
+
+#### NEXT-COL-005: Column Lineage Resolver
+
+**Story**: Promote only validated source-column to target-column mappings into
+`column_lineage`, and quarantine ambiguous mappings.
+
+**Status**: [ ] Next  
+**Points**: 8  
+**Priority**: Critical
+
+**Acceptance Criteria**:
+
+- [ ] Resolver validates both source and target canonical column IDs before creating a promoted column edge.
+- [ ] Resolver supports direct, rename, cast, derived, aggregate, lookup, constant, case expression, and calculation transform types.
+- [ ] Resolver rejects fuzzy, name-only, substring, and partial table/column matches.
+- [ ] Unresolved/probable column facts include reason, evidence, and suggested action.
+- [ ] Unit tests prove validated, probable, unresolved, and rejected column mappings are separated.
+
+**Dependencies**: NEXT-COL-002, NEXT-COL-004
+
+---
+
+#### NEXT-COL-006: Column Impact Analysis Engine
+
+**Story**: Given table, column, and change type, return downstream impact,
+severity, evidence, and unresolved risks.
+
+**Status**: [ ] Next  
+**Points**: 8  
+**Priority**: Critical
+
+**Acceptance Criteria**:
+
+- [ ] Supports `add_column`, `drop_column`, `rename_column`, `change_data_type`, `change_length_precision_scale`, `change_nullability`, `change_default`, and `change_key_or_index`.
+- [ ] Returns impacted tables, views, procedures, functions, triggers, SSIS packages, and unresolved risks.
+- [ ] Separates compile-time break, runtime load failure, semantic/reporting risk, data quality risk, and metadata-only impact.
+- [ ] Includes evidence citations back to markdown IDs, SQL snippets, SSIS package/component names, and parser evidence.
+- [ ] Unit tests cover dropped-column and resized-column impact chains.
+
+**Dependencies**: NEXT-COL-005
+
+---
+
+#### NEXT-COL-007: AI/Codex Context Output
+
+**Story**: Provide AI-readable context for table and column impact questions
+using only the markdown catalog.
+
+**Status**: [ ] Next  
+**Points**: 5  
+**Priority**: High
+
+**Acceptance Criteria**:
+
+- [ ] Context output includes table-level upstream/downstream summary.
+- [ ] Context output includes direct column usage summary.
+- [ ] Context output includes downstream blast-radius summary for a named column.
+- [ ] Context output includes unresolved risks and confidence/evidence labels.
+- [ ] Codex can answer "what feeds this table?" and "what breaks if I drop this column?" from markdown context without reconnecting to SQL/SSIS.
+
+**Dependencies**: NEXT-COL-006
 
 ---
 

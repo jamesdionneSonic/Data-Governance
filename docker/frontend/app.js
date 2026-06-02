@@ -155,6 +155,7 @@ const appConfig = {
       currentUser: JSON.parse(localStorage.getItem('dg_user') || 'null'),
       isLoggingOut: false,
       isRefreshingToken: false,
+      authRefreshPromise: null,
       showProfileSecrets: false,
       toast: { show: false, message: '' },
       apiErrors: [],
@@ -170,6 +171,14 @@ const appConfig = {
       graphDashOffset: 0,
       browseQuery: '',
       browseResults: [],
+      browseLoading: false,
+      browseSearchLoading: false,
+      browseSearchSubmitted: false,
+      browseSearchWarning: '',
+      browseSearchEngine: '',
+      browseSearchTotal: null,
+      browseCatalogTotal: null,
+      browseLoadError: '',
       searchFacets: null,
       browseSort: 'relevance',
       selectedFacetFilters: {
@@ -319,6 +328,10 @@ const appConfig = {
           result: null,
           availableDatabases: [],
           discoveringDatabases: false,
+          databaseDiscoveryError: '',
+          databaseDiscoverySignature: '',
+          databaseDiscoveryTimer: null,
+          databaseDiscoveryRequestId: 0,
         },
         // ADD THIS NEW SSIS STATE BLOCK:
         ssis: {
@@ -364,6 +377,10 @@ const appConfig = {
       graphInstance: null,
       blastChartInstance: null,
       importStatusPoller: null,
+      bootstrapInProgress: false,
+      bootstrapPromise: null,
+      browseSearchDebounceTimer: null,
+      browseSearchRequestId: 0,
     };
   },
   computed: {
@@ -643,7 +660,33 @@ const appConfig = {
       ];
     },
     catalogBaseResults() {
+      if (this.browseSearchSubmitted) {
+        return this.browseResults;
+      }
       return this.browseResults.length ? this.browseResults : this.objectList;
+    },
+    hasStaleDemoCatalogState() {
+      return (
+        !this.demoModeEnabled &&
+        (this.isDemoCatalogSnapshot(this.objectList) || this.isDemoCatalogSnapshot(this.browseResults))
+      );
+    },
+    browseCatalogStatusText() {
+      if (this.browseLoading) {
+        return 'Loading markdown catalog...';
+      }
+      if (this.browseSearchLoading) {
+        return 'Searching markdown catalog...';
+      }
+      if (this.browseSearchSubmitted) {
+        const total = this.browseSearchTotal ?? this.catalogBaseResults.length;
+        const engine = this.browseSearchEngine || 'catalog';
+        return `${total} match(es) from ${engine}`;
+      }
+      if (this.browseCatalogTotal !== null) {
+        return `${this.browseCatalogTotal} markdown catalog object(s) loaded`;
+      }
+      return 'Catalog not loaded yet';
     },
     browseFacetOptions() {
       const source = this.catalogBaseResults || [];
@@ -673,6 +716,16 @@ const appConfig = {
       const query = String(this.browseQuery || '')
         .trim()
         .toLowerCase();
+      const normalizeSearchText = (value) =>
+        String(value || '')
+          .toLowerCase()
+          .replace(/[_./\\-]+/g, ' ')
+          .replace(/[^a-z0-9]+/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+      const compactSearchText = (value) => normalizeSearchText(value).replace(/\s+/g, '');
+      const normalizedQuery = normalizeSearchText(query);
+      const compactQuery = compactSearchText(query);
       const selectedTypes = this.selectedFacetFilters.types || [];
       const selectedQuality = this.selectedFacetFilters.quality || [];
       const selectedDatabases = this.selectedFacetFilters.databases || [];
@@ -684,6 +737,41 @@ const appConfig = {
       };
 
       const trustLevel = (item) => String(item?.trust_level || 'unrated').toLowerCase();
+      const searchTerms = normalizedQuery.split(/\s+/).filter(Boolean);
+
+      const matchesQuery = (item) => {
+        if (!query) return true;
+        if (this.browseSearchSubmitted) {
+          return true;
+        }
+
+        const searchableText = [
+          item.id,
+          item.name,
+          item.packageName,
+          item.packagePath,
+          item.database,
+          item.schema,
+          item.type,
+          item.owner,
+          item.sensitivity,
+          item.description,
+          ...(item.tags || []),
+          ...(item.classifications || []),
+        ]
+          .filter((value) => value !== undefined && value !== null)
+          .join(' ')
+          .toLowerCase();
+
+        const normalizedSearchableText = normalizeSearchText(searchableText);
+        const compactSearchableText = compactSearchText(searchableText);
+        const termMatch = searchTerms.every(
+          (term) => normalizedSearchableText.includes(term) || searchableText.includes(term)
+        );
+        const compactMatch = compactQuery && compactSearchableText.includes(compactQuery);
+
+        return termMatch || compactMatch;
+      };
 
       const scoreResult = (item) => {
         const objectId = String(item.id || '').toLowerCase();
@@ -698,6 +786,8 @@ const appConfig = {
         } else {
           if (objectId === query || name === query) score += 120;
           if (objectId.includes(query) || name.includes(query)) score += 40;
+          if (compactSearchText(objectId).includes(compactQuery)) score += 35;
+          if (compactSearchText(name).includes(compactQuery)) score += 35;
           if (owner.includes(query)) score += 18;
           if (description.includes(query)) score += 12;
         }
@@ -720,7 +810,7 @@ const appConfig = {
         const databaseMatch =
           selectedDatabases.length === 0 || selectedDatabases.includes(itemDatabase);
 
-        return typeMatch && qualityMatch && databaseMatch;
+        return typeMatch && qualityMatch && databaseMatch && matchesQuery(item);
       });
 
       const ranked = filtered
@@ -802,6 +892,46 @@ const appConfig = {
       if (status === 'external_or_unresolved') return 'External or Unresolved';
       return value || 'Unresolved';
     },
+    sqlServerDatabaseHint() {
+      const sql = this.importer.sqlServer;
+      if (sql.discoveringDatabases) {
+        return 'Refreshing database list for the current server...';
+      }
+      if (sql.databaseDiscoveryError) {
+        return `Database discovery failed: ${sql.databaseDiscoveryError}. You can type a database name manually.`;
+      }
+      if (!this.hasSqlServerDatabaseDiscoveryInputs()) {
+        return 'Enter server and authentication details to refresh databases, or type a database name manually.';
+      }
+      if (sql.availableDatabases.length > 0) {
+        return `${sql.availableDatabases.length} database(s) found for this server. Start typing to filter.`;
+      }
+      return 'Start typing to filter or enter a database name. The list refreshes when server settings change.';
+    },
+    sqlServerDatabaseHintColor() {
+      const sql = this.importer.sqlServer;
+      if (sql.databaseDiscoveryError) return '#b71c1c';
+      if (sql.discoveringDatabases) return '#2563eb';
+      if (sql.availableDatabases.length > 0) return '#166534';
+      return '#666';
+    },
+  },
+  watch: {
+    browseQuery() {
+      this.queueBrowseSearch();
+    },
+    'importer.sqlServer.server': 'handleSqlServerConnectionChange',
+    'importer.sqlServer.port': 'handleSqlServerConnectionChange',
+    'importer.sqlServer.authentication': 'handleSqlServerConnectionChange',
+    'importer.sqlServer.useIntegratedAuth': 'handleSqlServerConnectionChange',
+    'importer.sqlServer.username': 'handleSqlServerConnectionChange',
+    'importer.sqlServer.password': 'handleSqlServerConnectionChange',
+    'importer.sqlServer.domain': 'handleSqlServerConnectionChange',
+    'importer.sqlServer.clientId': 'handleSqlServerConnectionChange',
+    'importer.sqlServer.clientSecret': 'handleSqlServerConnectionChange',
+    'importer.sqlServer.tenantId': 'handleSqlServerConnectionChange',
+    'importer.sqlServer.encrypt': 'handleSqlServerConnectionChange',
+    'importer.sqlServer.trustServerCertificate': 'handleSqlServerConnectionChange',
   },
   methods: {
     showToast(message) {
@@ -992,14 +1122,81 @@ const appConfig = {
     closeMobileSidebar() {
       this.mobileSidebarOpen = false;
     },
-    setDemoMode(enabled) {
+    setDemoMode(enabled, options = {}) {
+      const shouldReload = options.reload !== false;
       this.demoModeEnabled = enabled;
       localStorage.setItem('dg_demo_mode', enabled ? 'on' : 'off');
       if (enabled && !this.hasRealData) {
         this.useDemoFallback('manual toggle');
       } else {
-        this.bootstrapData();
+        this.clearDemoCatalogState();
+        if (shouldReload) {
+          this.bootstrapData();
+        }
       }
+    },
+    isDemoCatalogSnapshot(items) {
+      if (!Array.isArray(items) || items.length !== demoSnapshot.objects.length) {
+        return false;
+      }
+
+      const demoIds = new Set(demoSnapshot.objects.map((item) => item.id));
+      return items.every((item) => demoIds.has(item?.id));
+    },
+    clearDemoCatalogState() {
+      if (this.isDemoCatalogSnapshot(this.objectList)) {
+        this.objectList = [];
+      }
+      if (this.isDemoCatalogSnapshot(this.browseResults)) {
+        this.browseResults = [];
+      }
+      this.browseSearchSubmitted = false;
+      this.browseSearchWarning = '';
+      this.browseSearchTotal = null;
+      this.browseSearchEngine = '';
+      if (!this.demoModeEnabled || this.hasRealData) {
+        this.discoveryGraph = this.discoveryGraph === demoSnapshot.graph ? null : this.discoveryGraph;
+      }
+    },
+    async refreshSessionToken() {
+      if (this.authRefreshPromise) {
+        return this.authRefreshPromise;
+      }
+
+      const email = this.currentUser?.email || this.email;
+      if (!email) {
+        throw new Error('No user email available for session refresh');
+      }
+
+      this.isRefreshingToken = true;
+      this.authRefreshPromise = fetch('/api/v1/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+        .then(async (response) => {
+          const payload = await response.json();
+          if (!response.ok || !payload.token) {
+            throw new Error(payload?.message || `Session refresh failed (${response.status})`);
+          }
+
+          this.token = payload.token;
+          this.refreshToken = payload.refreshToken || '';
+          this.currentUser = payload.user || this.currentUser;
+          this.demoModeEnabled = false;
+          localStorage.setItem('dg_token', this.token);
+          localStorage.setItem('dg_refresh', this.refreshToken);
+          localStorage.setItem('dg_user', JSON.stringify(this.currentUser));
+          localStorage.setItem('dg_demo_mode', 'off');
+          this.clearDemoCatalogState();
+          return this.token;
+        })
+        .finally(() => {
+          this.isRefreshingToken = false;
+          this.authRefreshPromise = null;
+        });
+
+      return this.authRefreshPromise;
     },
     useDemoFallback(reason) {
       if (!this.demoModeEnabled || this.hasRealData) {
@@ -1011,6 +1208,9 @@ const appConfig = {
       this.activity = demoSnapshot.activity;
       this.objectList = demoSnapshot.objects;
       this.browseResults = demoSnapshot.objects;
+      this.browseCatalogTotal = demoSnapshot.objects.length;
+      this.browseSearchEngine = 'demo';
+      this.browseSearchTotal = demoSnapshot.objects.length;
       this.discoveryGraph = demoSnapshot.graph;
       this.impactData = {
         stats: {
@@ -1046,7 +1246,7 @@ const appConfig = {
         if (loadedCount > 0) {
           this.hasRealData = true;
           if (this.demoModeEnabled) {
-            this.setDemoMode(false);
+            this.setDemoMode(false, { reload: false });
             this.showToast('Real data detected. Demo mode automatically disabled.');
           }
           return;
@@ -1057,7 +1257,7 @@ const appConfig = {
         if (total > 0) {
           this.hasRealData = true;
           if (this.demoModeEnabled) {
-            this.setDemoMode(false);
+            this.setDemoMode(false, { reload: false });
             this.showToast('Discovery data detected. Demo mode automatically disabled.');
           }
         }
@@ -1066,7 +1266,12 @@ const appConfig = {
       }
     },
     async api(path, options = {}) {
-      const { includeAuth = true, trackError = true, ...fetchOptions } = options;
+      const {
+        includeAuth = true,
+        trackError = true,
+        allowAuthRetry = true,
+        ...fetchOptions
+      } = options;
 
       const headers = {
         ...(includeAuth ? this.authHeader : {}),
@@ -1107,6 +1312,25 @@ const appConfig = {
       const isJson = contentType.includes('application/json');
       const payload = isJson ? await response.json() : null;
 
+      if (
+        response.status === 401 &&
+        includeAuth &&
+        allowAuthRetry &&
+        !String(path).includes('/api/v1/auth/login')
+      ) {
+        try {
+          await this.refreshSessionToken();
+          return this.api(path, {
+            includeAuth,
+            trackError,
+            allowAuthRetry: false,
+            ...fetchOptions,
+          });
+        } catch (_refreshErr) {
+          // Fall through to the original 401 so the UI reports the real endpoint that failed.
+        }
+      }
+
       if (!response.ok) {
         const entry = this.normalizeApiError({
           path,
@@ -1143,10 +1367,13 @@ const appConfig = {
         this.token = payload.token;
         this.refreshToken = payload.refreshToken || '';
         this.currentUser = payload.user;
+        this.demoModeEnabled = false;
+        this.clearDemoCatalogState();
 
         localStorage.setItem('dg_token', this.token);
         localStorage.setItem('dg_refresh', this.refreshToken);
         localStorage.setItem('dg_user', JSON.stringify(this.currentUser));
+        localStorage.setItem('dg_demo_mode', 'off');
 
         this.showToast(`Welcome ${this.currentUser?.name || this.currentUser?.email}`);
         await this.bootstrapData();
@@ -1191,28 +1418,98 @@ const appConfig = {
       this.showToast('Logged out. Sign in again to get a fresh token.');
     },
     async bootstrapData() {
+      if (this.bootstrapInProgress && this.bootstrapPromise) {
+        return this.bootstrapPromise;
+      }
+
       // Auto-enable demo mode if no real data or token issues
       if (!this.token || this.token === '') {
-        this.setDemoMode(true);
+        try {
+          await this.refreshSessionToken();
+        } catch (_err) {
+          if (this.demoModeEnabled) {
+            this.setDemoMode(true, { reload: false });
+          } else {
+            this.clearDemoCatalogState();
+            this.showToast('Sign in to load the markdown catalog.');
+          }
+          return;
+        }
+      }
+
+      this.bootstrapInProgress = true;
+      this.bootstrapPromise = (async () => {
+        await this.detectRealDataAvailability();
+        await Promise.allSettled([
+          this.loadProfile(),
+          this.loadHealth(),
+          this.loadImportStatus(true),
+        ]);
+        await this.loadActiveViewData();
+        this.startImportStatusPolling();
+      })();
+
+      try {
+        await this.bootstrapPromise;
+      } finally {
+        this.bootstrapInProgress = false;
+        this.bootstrapPromise = null;
+      }
+    },
+    async loadActiveViewData(view = this.activeView) {
+      if (view === 'browse') {
+        await this.loadBrowse();
+        return;
+      }
+      if (view === 'glossary') {
+        await this.loadGlossary();
+        return;
+      }
+      if (view === 'products') {
+        await this.loadProductsCatalog();
+        return;
+      }
+      if (view === 'governance') {
+        await this.loadGovernanceSummary();
+        return;
+      }
+      if (view === 'discovery') {
+        await nextTick();
+        this.renderGraph();
+        await this.loadDiscovery();
+        return;
+      }
+      if (view === 'reports') {
+        await Promise.allSettled([
+          this.loadSchedules(),
+          this.loadMarketplaceRequests(),
+        ]);
+        this.buildBlastRadiusReport();
+        await nextTick();
+        this.renderBlastRadiusChart();
+        return;
+      }
+      if (view === 'integrations') {
+        await Promise.allSettled([
+          this.loadIntegrations(),
+          this.loadLinks(),
+        ]);
+        return;
+      }
+      if (view === 'import') {
+        await this.loadImportStatus(true);
+        return;
+      }
+      if (view === 'docs') {
+        await this.loadDocsLibrary();
+        return;
+      }
+      if (view === 'admin') {
+        await this.loadAdmin();
         return;
       }
 
-      await this.detectRealDataAvailability();
-      await Promise.allSettled([
-        this.loadProfile(),
-        this.loadHealth(),
-        this.loadOverview(),
-        this.loadBrowse(),
-        this.loadGlossary(),
-        this.loadGovernanceSummary(),
-        this.loadProductsCatalog(),
-        this.loadDiscovery(),
-        this.loadIntegrations(),
-        this.loadMarketplaceRequests(),
-        this.loadImportStatus(),
-        this.loadAdmin(),
-      ]);
-      this.startImportStatusPolling();
+      await this.loadOverview();
     },
     syncMarketplaceFormWithSelection() {
       const selected = this.selectedObjectDetail || {};
@@ -1804,16 +2101,63 @@ const appConfig = {
       await nextTick();
       this.renderBlastRadiusChart();
     },
+    hasBrowseSearchCriteria() {
+      const hasQuery = String(this.browseQuery || '').trim().length > 0;
+      const hasFilters = Object.values(this.selectedFacetFilters || {}).some(
+        (values) => Array.isArray(values) && values.length > 0
+      );
+      return hasQuery || hasFilters;
+    },
+    captureBrowseSearchMetadata(search) {
+      this.browseSearchSubmitted = this.hasBrowseSearchCriteria();
+      this.browseSearchWarning = Array.isArray(search?.warnings) ? search.warnings[0] || '' : '';
+    },
+    queueBrowseSearch() {
+      if (this.browseSearchDebounceTimer) {
+        clearTimeout(this.browseSearchDebounceTimer);
+        this.browseSearchDebounceTimer = null;
+      }
+
+      if (this.activeView !== 'browse') {
+        return;
+      }
+
+      if (!this.hasBrowseSearchCriteria()) {
+        this.browseResults = [];
+        this.browseSearchSubmitted = false;
+        this.browseSearchWarning = '';
+        this.browseSearchEngine = '';
+        this.browseSearchTotal = null;
+        return;
+      }
+
+      this.browseSearchDebounceTimer = setTimeout(() => {
+        this.browseSearchDebounceTimer = null;
+        if (this.activeView === 'browse' && this.hasBrowseSearchCriteria()) {
+          this.runSearch();
+        }
+      }, 350);
+    },
     async loadBrowse() {
+      this.browseLoading = true;
+      this.browseLoadError = '';
       try {
-        const [objects, search, facets] = await Promise.all([
+        if (!this.demoModeEnabled || this.hasRealData) {
+          this.clearDemoCatalogState();
+        }
+
+        const [objects, facets] = await Promise.all([
           this.api('/api/v1/objects?limit=100'),
-          this.api(`/api/v1/search?q=${encodeURIComponent(this.browseQuery)}&limit=50`),
           this.api('/api/v1/search/facets'),
         ]);
 
         this.objectList = objects.data || [];
-        this.browseResults = search.results || [];
+        this.browseCatalogTotal = objects.pagination?.total ?? this.objectList.length;
+        this.browseResults = [];
+        this.browseSearchSubmitted = false;
+        this.browseSearchWarning = '';
+        this.browseSearchEngine = '';
+        this.browseSearchTotal = null;
         this.searchFacets = facets.facets || null;
         await this.loadObjectContext();
       } catch (err) {
@@ -1821,11 +2165,32 @@ const appConfig = {
           this.useDemoFallback('browse APIs unavailable');
           return;
         }
+        this.browseLoadError = err.message;
+        this.clearDemoCatalogState();
         this.showToast(`Browse load issue: ${err.message}`);
+      } finally {
+        this.browseLoading = false;
       }
     },
     async runSearch() {
+      this.browseSearchLoading = true;
+      this.browseLoadError = '';
       try {
+        if (!this.demoModeEnabled || this.hasRealData) {
+          this.clearDemoCatalogState();
+        }
+
+        if (this.browseSearchDebounceTimer) {
+          clearTimeout(this.browseSearchDebounceTimer);
+          this.browseSearchDebounceTimer = null;
+        }
+
+        if (!this.hasBrowseSearchCriteria()) {
+          await this.loadBrowse();
+          return;
+        }
+
+        const requestId = ++this.browseSearchRequestId;
         const database = encodeURIComponent(this.selectedFacetFilters.databases.join(','));
         const type = encodeURIComponent(this.selectedFacetFilters.types.join(','));
         const owner = encodeURIComponent((this.selectedFacetFilters.owners || []).join(','));
@@ -1835,15 +2200,29 @@ const appConfig = {
         const search = await this.api(
           `/api/v1/search?q=${encodeURIComponent(this.browseQuery)}&limit=50&database=${database}&type=${type}&owner=${owner}&sensitivity=${sensitivity}&tags=${tags}&trust_level=${quality}`
         );
+        if (requestId !== this.browseSearchRequestId) {
+          return;
+        }
         this.browseResults = search.results || [];
+        this.browseSearchEngine = search.searchEngine || 'catalog';
+        this.browseSearchTotal = search.pagination?.total ?? this.browseResults.length;
+        this.captureBrowseSearchMetadata(search);
       } catch (err) {
         if (this.demoModeEnabled && !this.hasRealData) {
           this.browseResults = demoSnapshot.objects.filter((item) =>
             item.id.includes(this.browseQuery)
           );
+          this.browseSearchSubmitted = this.hasBrowseSearchCriteria();
+          this.browseSearchWarning = '';
+          this.browseSearchEngine = 'demo';
+          this.browseSearchTotal = this.browseResults.length;
           return;
         }
+        this.browseLoadError = err.message;
+        this.clearDemoCatalogState();
         this.showToast(`Search failed: ${err.message}`);
+      } finally {
+        this.browseSearchLoading = false;
       }
     },
     browseTreeRoots() {
@@ -1873,8 +2252,9 @@ const appConfig = {
       } else {
         this.selectedFacetFilters[group] = [...existing, value];
       }
+      this.queueBrowseSearch();
     },
-    clearBrowseFacets() {
+    async clearBrowseFacets() {
       this.selectedFacetFilters = {
         types: [],
         quality: [],
@@ -1884,6 +2264,25 @@ const appConfig = {
         tags: [],
       };
       this.browseSort = 'relevance';
+      this.browseQuery = '';
+      this.browseResults = [];
+      this.browseSearchSubmitted = false;
+      this.browseSearchWarning = '';
+      this.browseSearchEngine = '';
+      this.browseSearchTotal = null;
+      this.browseLoadError = '';
+      this.browseSearchRequestId += 1;
+
+      if (this.demoModeEnabled && !this.hasRealData) {
+        this.objectList = demoSnapshot.objects;
+        this.browseResults = demoSnapshot.objects;
+        this.browseCatalogTotal = demoSnapshot.objects.length;
+        return;
+      }
+
+      if (this.token) {
+        await this.loadBrowse();
+      }
     },
     formatSettingValue(value) {
       if (typeof value === 'boolean') {
@@ -2270,10 +2669,10 @@ const appConfig = {
                 'font-size': '10px',
                 'font-family': 'ui-sans-serif, system-ui, sans-serif',
                 'font-weight': 700,
-                width: 156,
-                height: 54,
+                width: 184,
+                height: 72,
                 'text-wrap': 'wrap',
-                'text-max-width': '132px',
+                'text-max-width': '158px',
                 'text-valign': 'center',
                 'text-halign': 'center',
                 'border-width': 2.5,
@@ -2313,8 +2712,8 @@ const appConfig = {
                 'background-color': '#052e16',
                 'border-color': '#22c55e',
                 'border-width': 4,
-                width: 172,
-                height: 58,
+                width: 196,
+                height: 76,
                 'font-size': '11px',
                 'font-weight': 'bold',
                 color: '#dcfce7',
@@ -2348,7 +2747,8 @@ const appConfig = {
                 'border-color': '#fb923c',
                 color: '#ffedd5',
                 'border-radius': 12,
-                width: 168,
+                width: 190,
+                height: 72,
               },
             },
             {
@@ -2379,7 +2779,7 @@ const appConfig = {
                 'border-color': '#8b5cf6',
                 'border-width': 3,
                 width: 188,
-                height: 56,
+                height: 72,
                 'font-size': '11px',
                 'font-weight': 'bold',
                 color: '#ede9fe',
@@ -2918,6 +3318,99 @@ const appConfig = {
         this.showToast(`CI/CD checks failed: ${err.message}`);
       }
     },
+    hashText(value) {
+      return String(value || '')
+        .split('')
+        .reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) >>> 0, 0)
+        .toString(36);
+    },
+    normalizeComboboxValue(value) {
+      if (typeof value === 'object' && value !== null) {
+        return value.value || value.title || '';
+      }
+      return value || '';
+    },
+    getSqlServerConnectionSignature() {
+      const sql = this.importer.sqlServer;
+      return JSON.stringify({
+        server: String(sql.server || '').trim().toLowerCase(),
+        port: Number(sql.port) || 1433,
+        authentication: sql.authentication,
+        useIntegratedAuth: Boolean(sql.useIntegratedAuth),
+        username: String(sql.username || '').trim().toLowerCase(),
+        domain: String(sql.domain || '').trim().toLowerCase(),
+        clientId: String(sql.clientId || '').trim().toLowerCase(),
+        tenantId: String(sql.tenantId || '').trim().toLowerCase(),
+        passwordHash: this.hashText(sql.password),
+        clientSecretHash: this.hashText(sql.clientSecret),
+        encrypt: Boolean(sql.encrypt),
+        trustServerCertificate: Boolean(sql.trustServerCertificate),
+      });
+    },
+    hasSqlServerDatabaseDiscoveryInputs() {
+      const sql = this.importer.sqlServer;
+      const auth = sql.authentication;
+      const hasServer = Boolean(String(sql.server || '').trim());
+      if (!hasServer) return false;
+
+      if (auth === 'sql-server') {
+        return Boolean(sql.username && sql.password);
+      }
+
+      if (auth === 'windows' && !sql.useIntegratedAuth) {
+        return Boolean(sql.username && sql.password);
+      }
+
+      if (auth === 'azure-ad') {
+        return Boolean(sql.clientId && sql.clientSecret && sql.tenantId);
+      }
+
+      return true;
+    },
+    clearSqlServerScopeDiscovery() {
+      this.importer.sqlServer.result = null;
+      this.importer.sqlServer.showScopeSelector = false;
+      this.importer.sqlServer.availableSchemas = [];
+      this.importer.sqlServer.selectedSchemas = [];
+      this.importer.sqlServer.selectedTables = [];
+      this.importer.sqlServer.excludeSchemas = [];
+      this.importer.sqlServer.excludeTables = [];
+      this.importer.sqlServer.expandedSchemas = {};
+      this.importer.sqlServer.schemaTableLists = {};
+      this.importer.sqlServer.discoveryTables = [];
+      this.importer.sqlServer.discoveredObjectCount = 0;
+    },
+    clearSqlServerDatabaseDiscovery({ clearDatabase = true } = {}) {
+      if (this.importer.sqlServer.databaseDiscoveryTimer) {
+        clearTimeout(this.importer.sqlServer.databaseDiscoveryTimer);
+        this.importer.sqlServer.databaseDiscoveryTimer = null;
+      }
+
+      this.importer.sqlServer.availableDatabases = [];
+      this.importer.sqlServer.databaseDiscoveryError = '';
+      this.importer.sqlServer.databaseDiscoverySignature = '';
+      if (clearDatabase) {
+        this.importer.sqlServer.database = '';
+      }
+    },
+    handleSqlServerConnectionChange() {
+      const sql = this.importer.sqlServer;
+      const nextSignature = this.getSqlServerConnectionSignature();
+      const signatureChanged = sql.databaseDiscoverySignature !== nextSignature;
+
+      if (signatureChanged) {
+        this.clearSqlServerDatabaseDiscovery({ clearDatabase: true });
+        this.clearSqlServerScopeDiscovery();
+      }
+
+      if (!this.hasSqlServerDatabaseDiscoveryInputs()) {
+        return;
+      }
+
+      sql.databaseDiscoveryTimer = setTimeout(() => {
+        this.discoverSqlServerDatabases({ force: true, silent: true });
+      }, 650);
+    },
     validateSqlServerConnectionInputs() {
       const auth = this.importer.sqlServer.authentication;
       const { useIntegratedAuth } = this.importer.sqlServer;
@@ -2963,10 +3456,7 @@ const appConfig = {
         ...this.importer.sqlServer,
       };
 
-      // THIS IS THE CRITICAL NEW SECTION
-      if (typeof sqlPayload.database === 'object' && sqlPayload.database !== null) {
-        sqlPayload.database = sqlPayload.database.value || sqlPayload.database.title || '';
-      }
+      sqlPayload.database = this.normalizeComboboxValue(sqlPayload.database);
 
       if (auth === 'windows' && useIntegratedAuth) {
         sqlPayload.username = '';
@@ -3078,50 +3568,96 @@ const appConfig = {
         this.importer.sqlServer.connecting = false;
       }
     },
-    async discoverSqlServerDatabases() {
+    buildSqlServerDatabaseDiscoveryPayload() {
+      const sql = this.importer.sqlServer;
+      return {
+        server: sql.server,
+        port: sql.port,
+        authentication: sql.authentication,
+        useIntegratedAuth: sql.useIntegratedAuth,
+        username: sql.username,
+        password: sql.password,
+        domain: sql.domain,
+        clientId: sql.clientId,
+        clientSecret: sql.clientSecret,
+        tenantId: sql.tenantId,
+        encrypt: sql.encrypt,
+        trustServerCertificate: sql.trustServerCertificate,
+      };
+    },
+    async discoverSqlServerDatabases({ force = false, silent = false } = {}) {
+      let requestId = null;
       try {
-        if (!this.importer.sqlServer.server) {
+        if (this.importer.sqlServer.databaseDiscoveryTimer) {
+          clearTimeout(this.importer.sqlServer.databaseDiscoveryTimer);
+          this.importer.sqlServer.databaseDiscoveryTimer = null;
+        }
+
+        if (!this.hasSqlServerDatabaseDiscoveryInputs()) {
+          if (!silent) {
+            this.showToast('Enter server and authentication details before discovering databases.');
+          }
           return;
         }
 
-        if (this.importer.sqlServer.availableDatabases.length > 0) {
+        const signature = this.getSqlServerConnectionSignature();
+        requestId = this.importer.sqlServer.databaseDiscoveryRequestId + 1;
+        this.importer.sqlServer.databaseDiscoveryRequestId = requestId;
+        const alreadyLoaded =
+          this.importer.sqlServer.databaseDiscoverySignature === signature &&
+          this.importer.sqlServer.availableDatabases.length > 0;
+
+        if (alreadyLoaded && !force) {
           return;
         }
 
         this.importer.sqlServer.discoveringDatabases = true;
+        this.importer.sqlServer.databaseDiscoveryError = '';
 
         const payload = await this.api('/api/v1/ingestion/connect-sql-server/databases', {
           method: 'POST',
-          body: JSON.stringify({
-            server: this.importer.sqlServer.server,
-            port: this.importer.sqlServer.port,
-            authentication: this.importer.sqlServer.authentication,
-            useIntegratedAuth: this.importer.sqlServer.useIntegratedAuth,
-            username: this.importer.sqlServer.username,
-            password: this.importer.sqlServer.password,
-            domain: this.importer.sqlServer.domain,
-            clientId: this.importer.sqlServer.clientId,
-            clientSecret: this.importer.sqlServer.clientSecret,
-            tenantId: this.importer.sqlServer.tenantId,
-            encrypt: this.importer.sqlServer.encrypt,
-            trustServerCertificate: this.importer.sqlServer.trustServerCertificate,
-          }),
+          body: JSON.stringify(this.buildSqlServerDatabaseDiscoveryPayload()),
         });
+
+        if (
+          requestId !== this.importer.sqlServer.databaseDiscoveryRequestId ||
+          signature !== this.getSqlServerConnectionSignature()
+        ) {
+          return;
+        }
 
         const databases = (payload?.data?.databases || []).map((db) => ({
           title: db,
           value: db,
         }));
         this.importer.sqlServer.availableDatabases = databases;
+        this.importer.sqlServer.databaseDiscoverySignature = signature;
 
-        if (databases.length > 0) {
+        const currentDatabase = this.normalizeComboboxValue(this.importer.sqlServer.database);
+        const hasCurrentDatabase = databases.some((db) => db.value === currentDatabase);
+        if (currentDatabase && !hasCurrentDatabase) {
+          this.importer.sqlServer.database = '';
+        }
+
+        if (databases.length > 0 && !silent) {
           this.showToast(`Discovered ${databases.length} database(s). Select one to continue.`);
+        } else if (databases.length === 0 && !silent) {
+          this.showToast('No databases were found. You can still type a database name manually.');
         }
       } catch (err) {
-        // Silently handle database discovery errors to avoid spam
+        if (requestId !== this.importer.sqlServer.databaseDiscoveryRequestId) {
+          return;
+        }
+        this.importer.sqlServer.availableDatabases = [];
+        this.importer.sqlServer.databaseDiscoveryError = err.message;
         console.warn('Database discovery failed:', err.message);
+        if (!silent) {
+          this.showToast(`Database discovery failed: ${err.message}`);
+        }
       } finally {
-        this.importer.sqlServer.discoveringDatabases = false;
+        if (requestId === this.importer.sqlServer.databaseDiscoveryRequestId) {
+          this.importer.sqlServer.discoveringDatabases = false;
+        }
       }
     },
 
@@ -3507,39 +4043,7 @@ const appConfig = {
     async onViewChange(view) {
       this.activeView = view;
       this.closeMobileSidebar();
-      if (view === 'browse') {
-        this.loadBrowse();
-      }
-      if (view === 'glossary') {
-        this.loadGlossary();
-      }
-      if (view === 'products') {
-        this.loadProductsCatalog();
-      }
-      if (view === 'governance') {
-        this.loadGovernanceSummary();
-      }
-      if (view === 'discovery') {
-        await nextTick();
-        this.renderGraph();
-        this.loadDiscovery();
-      }
-      if (view === 'reports') {
-        this.loadSchedules();
-        this.buildBlastRadiusReport();
-        this.loadMarketplaceRequests();
-        await nextTick();
-        this.renderBlastRadiusChart();
-      }
-      if (view === 'integrations') {
-        this.loadLinks();
-      }
-      if (view === 'import') {
-        this.loadImportStatus(true);
-      }
-      if (view === 'docs') {
-        await this.loadDocsLibrary();
-      }
+      await this.loadActiveViewData(view);
     },
   },
   async mounted() {
@@ -3591,6 +4095,10 @@ const appConfig = {
     }
   },
   beforeUnmount() {
+    if (this.browseSearchDebounceTimer) {
+      clearTimeout(this.browseSearchDebounceTimer);
+      this.browseSearchDebounceTimer = null;
+    }
     if (this.graphAnimationFrame) {
       cancelAnimationFrame(this.graphAnimationFrame);
       this.graphAnimationFrame = null;
@@ -3986,9 +4494,20 @@ const appConfig = {
                     hide-details
                     @keyup.enter="runSearch"
                   ></v-text-field>
-                  <v-btn color="primary" @click="runSearch">Search</v-btn>
+                  <v-btn color="primary" :loading="browseSearchLoading" @click="runSearch">Search</v-btn>
                 </div>
-                <div class="search-hint">{{ filteredCatalogResults.length }} visible · {{ catalogBaseResults.length }} total candidates</div>
+                <div class="search-hint">
+                  {{ filteredCatalogResults.length }} visible · {{ catalogBaseResults.length }} total candidates · {{ browseCatalogStatusText }}
+                </div>
+                <div v-if="browseSearchWarning" class="search-hint" style="color:#fbbf24;">{{ browseSearchWarning }}</div>
+                <div v-if="browseLoadError" class="search-hint" style="color:#f87171;">Catalog load issue: {{ browseLoadError }}</div>
+                <div
+                  v-if="hasStaleDemoCatalogState"
+                  class="search-hint"
+                  style="color:#fbbf24;font-weight:700;"
+                >
+                  Demo rows were still in this browser session. Click Load Catalog or refresh to reload the markdown catalog.
+                </div>
               </div>
 
               <v-row>
@@ -4068,7 +4587,7 @@ const appConfig = {
                   </div>
 
                   <div style="margin-top:14px;">
-                    <v-btn block size="small" variant="outlined" @click="clearBrowseFacets">Clear Filters</v-btn>
+                    <v-btn block size="small" variant="outlined" @click="clearBrowseFacets">Clear Search &amp; Filters</v-btn>
                   </div>
 
                   <div style="margin-top:14px;" v-if="selectedFacetFilters.types.length || selectedFacetFilters.quality.length || selectedFacetFilters.databases.length">
@@ -4106,8 +4625,8 @@ const appConfig = {
                       {{ filteredCatalogResults.length }} filtered results
                     </span>
                     <div class="btn-row">
-                      <v-btn size="small" variant="outlined" append-icon="mdi-refresh" @click="runSearch">Refresh</v-btn>
-                      <v-btn size="small" variant="outlined" @click="bootstrapData">Load Catalog</v-btn>
+                      <v-btn size="small" variant="outlined" append-icon="mdi-refresh" :loading="browseSearchLoading" @click="runSearch">Refresh</v-btn>
+                      <v-btn size="small" variant="outlined" :loading="browseLoading || bootstrapInProgress" @click="bootstrapData">Load Catalog</v-btn>
                     </div>
                   </div>
 
@@ -4189,8 +4708,12 @@ const appConfig = {
                     <div class="empty-state">
                       <div class="empty-state-icon">&#128269;</div>
                       <h4>No catalog objects found</h4>
-                      <p>Adjust filters or connect to SQL Server to extract metadata and populate your catalog.</p>
-                      <v-btn color="primary" @click="clearBrowseFacets">Clear Filters</v-btn>
+                      <p v-if="browseLoadError">The catalog API did not load: {{ browseLoadError }}</p>
+                      <p v-else-if="hasStaleDemoCatalogState">This browser was holding demo results. Reload the catalog to replace them with markdown data.</p>
+                      <p v-else-if="browseSearchSubmitted">No markdown catalog objects matched this search. Try a broader term or clear filters.</p>
+                      <p v-else>Adjust filters or connect to SQL Server to extract metadata and populate your catalog.</p>
+                      <v-btn color="primary" @click="clearBrowseFacets">Clear Search &amp; Filters</v-btn>
+                      <v-btn style="margin-left:8px;" variant="outlined" :loading="browseLoading || bootstrapInProgress" @click="bootstrapData">Load Catalog</v-btn>
                     </div>
                   </div>
 
@@ -5204,20 +5727,31 @@ const appConfig = {
                   <div class="col-2"><v-label>Port</v-label><v-text-field v-model.number="importer.sqlServer.port" type="number" density="compact" variant="outlined" hide-details></v-text-field></div>
                   <div class="col-3">
                     <v-label>Database</v-label>
-                    <v-combobox
-                      v-model="importer.sqlServer.database"
-                      :items="importer.sqlServer.availableDatabases.length > 0 ? importer.sqlServer.availableDatabases : [{ title: 'No databases found', value: '' }]"
-                      :loading="importer.sqlServer.discoveringDatabases"
-                      item-title="title"
-                      item-value="value"
-                      density="compact"
-                      variant="outlined"
-                      hide-details
-                      @focus="discoverSqlServerDatabases"
-                      placeholder="Type or auto-discover..."
-                    ></v-combobox>
-                    <div v-if="importer.sqlServer.availableDatabases.length === 0 && !importer.sqlServer.discoveringDatabases" style="font-size:0.85em;color:#b71c1c;margin-top:2px;">No databases found for this server. You can type a database name manually.</div>
-                    <div style="font-size:0.85em;color:#666;margin-top:2px;">Start typing to filter or enter a database name.</div>
+                    <div style="display:flex; gap:6px; align-items:flex-start;">
+                      <v-combobox
+                        v-model="importer.sqlServer.database"
+                        :items="importer.sqlServer.availableDatabases"
+                        :loading="importer.sqlServer.discoveringDatabases"
+                        item-title="title"
+                        item-value="value"
+                        density="compact"
+                        variant="outlined"
+                        hide-details
+                        style="flex:1;"
+                        @focus="discoverSqlServerDatabases({ force: false })"
+                        placeholder="Type or auto-discover..."
+                      ></v-combobox>
+                      <v-btn
+                        icon="mdi-refresh"
+                        size="small"
+                        variant="tonal"
+                        :loading="importer.sqlServer.discoveringDatabases"
+                        :disabled="!hasSqlServerDatabaseDiscoveryInputs()"
+                        @click="discoverSqlServerDatabases({ force: true })"
+                        title="Refresh database list"
+                      ></v-btn>
+                    </div>
+                    <div :style="{ fontSize: '0.85em', color: sqlServerDatabaseHintColor, marginTop: '2px' }">{{ sqlServerDatabaseHint }}</div>
                   </div>
                 </div>
                 <div class="form-row" style="margin-bottom: 8px;" v-if="importer.sqlServer.authentication === 'sql-server'">

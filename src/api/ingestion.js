@@ -525,6 +525,12 @@ router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) 
       filesWrittenCount = persisted.filesWritten || 0;
       ingestionState.lastGeneratedPath = persisted.baseOutputPath;
       console.log(`[Markdown] SUCCESS! Wrote ${filesWrittenCount} files to disk.\n`);
+
+      const refreshedObjects = await loadAllMarkdown(persisted.baseOutputPath);
+      initializeCache(refreshedObjects, buildLineageGraph(refreshedObjects));
+      ingestionState.loadedObjectCount = refreshedObjects.size;
+      ingestionState.lastLoadedAt = new Date().toISOString();
+      ingestionState.lastDataPath = persisted.baseOutputPath;
     } catch (markdownErr) {
       console.error('[Markdown] Generation failed:', markdownErr);
       throw markdownErr;
@@ -551,6 +557,7 @@ router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) 
         markdownFiles: metadata.allObjects.length,
         markdownFilesWritten: filesWrittenCount,
         markdownOutputPath: baseOutputPath,
+        catalogObjectsLoaded: ingestionState.loadedObjectCount,
         markdownPreview: [],
         ready: 'Files have been generated and written to disk.',
       },

@@ -156,7 +156,7 @@ function parseSqlObjectReference(reference, defaultServer, defaultDatabase, defa
 }
 
 function fallbackSqlEntities(sqlText) {
-  const text = String(sqlText || '').replace(/[\r\n\t]/g, ' ');
+  const text = stripSqlComments(sqlText).replace(/[\r\n\t]/g, ' ');
   const patterns = [
     /\b(?:FROM|JOIN|INSERT\s+INTO|UPDATE|MERGE\s+INTO)\s+([A-Za-z0-9_[\].]+)/gi,
     /\b(?:EXEC(?:UTE)?)\s+([A-Za-z0-9_[\].]+)/gi,
@@ -170,6 +170,12 @@ function fallbackSqlEntities(sqlText) {
     }
   }
   return [...new Set(refs)];
+}
+
+function stripSqlComments(sqlText) {
+  return String(sqlText || '')
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')
+    .replace(/--[^\r\n]*/g, ' ');
 }
 
 
@@ -238,6 +244,8 @@ const SQL_NOISE_TOKENS = new Set([
   'or',
   'not',
   'the',
+  'statement',
+  'cte_source',
 ]);
 
 class SqlServerMetadataExtractor {
@@ -283,6 +291,13 @@ class SqlServerMetadataExtractor {
     const value = SqlServerMetadataExtractor.normalizeSqlReference(reference).toLowerCase();
     if (!value) return true;
     if (SQL_NOISE_TOKENS.has(value)) return true;
+    const parts = value.split('.').filter(Boolean);
+    if (
+      parts.length === 2 &&
+      ['source', 'target', 'src', 'inserted', 'deleted'].includes(parts[0])
+    ) {
+      return true;
+    }
     if (value.startsWith('#')) return true;
     if (value.startsWith('@')) return true;
     if (value.includes('doc_proj')) return true;
@@ -326,14 +341,28 @@ class SqlServerMetadataExtractor {
   }
 
   static extractServerNameFromConfig(config = {}) {
-    return (
+    const serverName =
       config.server ||
       config.serverName ||
       config.dataSource ||
       config.host ||
       config.connectionString?.match(/(?:Data Source|Server)\s*=\s*([^;]+)/i)?.[1] ||
-      ''
-    );
+      '';
+
+    return SqlServerMetadataExtractor.canonicalizeServerName(serverName);
+  }
+
+  static canonicalizeServerName(value) {
+    const text = SqlServerMetadataExtractor.normalizeSqlReference(value)
+      .replace(/^tcp:/i, '')
+      .replace(/^np:/i, '')
+      .replace(/^lpc:/i, '')
+      .trim();
+
+    if (!text) return '';
+
+    const [hostName] = text.split('\\');
+    return String(hostName || text).trim();
   }
 
   static normalizeSqlReferenceWithServer(
@@ -382,7 +411,7 @@ class SqlServerMetadataExtractor {
   }
 
   static extractSourceClausesFromInsert(definition = '') {
-    const text = String(definition || '').replace(/[\r\n\t]+/g, ' ');
+    const text = stripSqlComments(definition).replace(/[\r\n\t]+/g, ' ');
     const sources = [];
     const insertSelectMatch = text.match(
       /\bINSERT\s+INTO\b[\s\S]*?\bSELECT\b([\s\S]*?)(?=\b(?:INSERT\s+INTO|MERGE\b|UPDATE\b|DELETE\b|;|$))/i
@@ -400,7 +429,7 @@ class SqlServerMetadataExtractor {
   }
 
   static extractTableReferencesFromClause(clause = '', defaultServer = '', defaultDatabase = '') {
-    const normalizedClause = String(clause || '');
+    const normalizedClause = stripSqlComments(clause);
     const refs = [];
     const pattern = /\b(?:FROM|JOIN|USING)\s+((?:\[[^\]]+\]|\w+)(?:\s*\.\s*(?:\[[^\]]+\]|\w+)){0,4}|OPENQUERY\s*\(\s*[^,]+,\s*'(?:''|[^'])*'\s*\))/gi;
     let match = pattern.exec(normalizedClause);
@@ -442,12 +471,13 @@ class SqlServerMetadataExtractor {
 
   static extractWriteTargetsFromDefinition(definition = '', defaultServer = '', defaultDatabase = '') {
     const targets = [];
+    const sql = stripSqlComments(definition);
     const pattern =
       /\b(?:INSERT\s+INTO|MERGE(?:\s+INTO)?)\s+((?:\[[^\]]+\]|\w+)(?:\s*\.\s*(?:\[[^\]]+\]|\w+)){0,4})(?=\s*(?:\(|AS\b|USING\b|WHEN\b|OUTPUT\b|SELECT\b|VALUES\b|SET\b|$))/gi;
-    let match = pattern.exec(definition);
+    let match = pattern.exec(sql);
     while (match) {
       targets.push(match[1]);
-      match = pattern.exec(definition);
+      match = pattern.exec(sql);
     }
     return Array.from(
       new Set(

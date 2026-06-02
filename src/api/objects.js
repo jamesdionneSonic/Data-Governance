@@ -9,6 +9,7 @@ import { sendErrorResponse } from '../middleware/errorHandler.js';
 import { indexObjects } from '../services/indexService.js';
 import { updateMarkdownMetadata } from '../services/markdownService.js';
 import { getObjectsCache, setObjectsCache } from '../services/objectCacheStore.js';
+import { ensureCatalogCacheHydrated } from '../utils/catalogCacheHydrator.js';
 
 const router = createApiRouter();
 export { setObjectsCache };
@@ -18,43 +19,51 @@ export { setObjectsCache };
  * List objects with pagination and filtering
  * Requires authentication
  */
-router.get('/', authenticate, (req, res) => {
-  const { limit = 20, offset = 0, database, type, owner } = req.query;
+router.get('/', authenticate, async (req, res) => {
+  try {
+    await ensureCatalogCacheHydrated();
 
-  const objectCache = getObjectsCache();
-  let results = Array.from(objectCache.values());
+    const { limit = 20, offset = 0, database, type, owner } = req.query;
 
-  if (database) {
-    results = results.filter((item) => item.database === database);
+    const objectCache = getObjectsCache();
+    let results = Array.from(objectCache.values());
+
+    if (database) {
+      results = results.filter((item) => item.database === database);
+    }
+
+    if (type) {
+      results = results.filter((item) => item.type === type);
+    }
+
+    if (owner) {
+      results = results.filter((item) => item.owner === owner);
+    }
+
+    const parsedOffset = parseInt(offset, 10);
+    const parsedLimit = parseInt(limit, 10);
+    const total = results.length;
+    const paged = results.slice(parsedOffset, parsedOffset + parsedLimit);
+
+    return res.json({
+      status: 'success',
+      pagination: {
+        limit: parsedLimit,
+        offset: parsedOffset,
+        total,
+      },
+      filters: {
+        database,
+        type,
+        owner,
+      },
+      data: paged,
+    });
+  } catch (err) {
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'OBJECT_LIST_ERROR',
+    });
   }
-
-  if (type) {
-    results = results.filter((item) => item.type === type);
-  }
-
-  if (owner) {
-    results = results.filter((item) => item.owner === owner);
-  }
-
-  const parsedOffset = parseInt(offset, 10);
-  const parsedLimit = parseInt(limit, 10);
-  const total = results.length;
-  const paged = results.slice(parsedOffset, parsedOffset + parsedLimit);
-
-  return res.json({
-    status: 'success',
-    pagination: {
-      limit: parsedLimit,
-      offset: parsedOffset,
-      total,
-    },
-    filters: {
-      database,
-      type,
-      owner,
-    },
-    data: paged,
-  });
 });
 
 /**
@@ -62,22 +71,30 @@ router.get('/', authenticate, (req, res) => {
  * Get object details
  * Requires authentication and database access
  */
-router.get('/:id', authenticate, (req, res) => {
-  const { id } = req.params;
+router.get('/:id', authenticate, async (req, res) => {
+  try {
+    await ensureCatalogCacheHydrated();
 
-  const objectCache = getObjectsCache();
-  const object = objectCache.get(id);
-  if (!object) {
-    return sendErrorResponse(res, req, 404, `Object '${id}' not found`, {
-      code: 'NOT_FOUND',
+    const { id } = req.params;
+
+    const objectCache = getObjectsCache();
+    const object = objectCache.get(id);
+    if (!object) {
+      return sendErrorResponse(res, req, 404, `Object '${id}' not found`, {
+        code: 'NOT_FOUND',
+      });
+    }
+
+    return res.json({
+      status: 'success',
+      objectId: id,
+      data: object,
+    });
+  } catch (err) {
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'OBJECT_DETAIL_ERROR',
     });
   }
-
-  return res.json({
-    status: 'success',
-    objectId: id,
-    data: object,
-  });
 });
 
 /**

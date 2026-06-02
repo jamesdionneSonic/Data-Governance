@@ -304,7 +304,201 @@ Markdown files must include:
 * `lineage_quality`
 * unresolved/probable diagnostics when present
 
-12. ACCEPTANCE FIXTURES
+12. AI AND COLUMN-LEVEL IMPACT ANALYSIS MARKDOWN CONTRACT
+
+Markdown is not only the application catalog. It is also an AI-readable evidence
+corpus. A Codex-style assistant must be able to answer relationship and impact
+questions from the markdown files without reconnecting to production systems.
+
+The markdown must support questions such as:
+
+* What feeds this table?
+* What does this table feed?
+* Which SSIS packages and SQL processes touch this table?
+* If I add a column here, where else may it need to be added?
+* If I delete, rename, resize, or change the nullability of a column, what could
+  break?
+* Which downstream objects reference this column directly, indirectly, or through
+  unresolved/dynamic logic?
+
+A. Table Column Contract
+
+Table and view markdown must include a `columns` section with stable,
+fully-qualified column IDs:
+
+`[ServerName].[DatabaseName].[SchemaName].[ObjectName].[ColumnName]`
+
+Each column entry must include, when available:
+
+* `name`
+* `column_id`
+* `data_type`
+* `max_length`, `precision`, `scale`
+* `nullable`
+* `identity`
+* `computed`
+* `default`
+* primary key, foreign key, unique key, and indexed participation
+* sensitivity/classification tags
+* extraction evidence source and timestamp
+
+B. Column Usage Contract
+
+Procedure, function, trigger, view, and package markdown must include
+`column_usage` when parser evidence exists. Each usage record must include:
+
+```yaml
+column_usage:
+  - column_id: DW01.Sonic_DW.dbo.FactClaim.ClaimAmount
+    object_id: DW01.Sonic_DW.dbo.FactClaim
+    process_id: ETL01.ETL_Staging.jma.Load_FactClaim
+    usage_type: read
+    usage_context: select_list
+    expression: src.ClaimAmount
+    evidence_type: sql_definition
+    evidence_text: "src.ClaimAmount"
+    source_artifact: stored_procedures/jma__Load_FactClaim.md
+    validation_status: validated
+```
+
+Legal `usage_type` values:
+
+* `read`
+* `write`
+* `join_key`
+* `filter`
+* `group_by`
+* `order_by`
+* `calculation`
+* `insert_target`
+* `update_target`
+* `merge_key`
+* `lookup_key`
+* `lookup_output`
+* `parameter`
+* `dynamic_or_unresolved`
+
+C. Column Lineage Contract
+
+When source-to-target column mapping evidence exists, markdown must include
+`column_lineage` records:
+
+```yaml
+column_lineage:
+  - source_column_id: Vendor01.VendorData.jma.Claims.Amount
+    target_column_id: DW01.Sonic_DW.dbo.FactClaim.ClaimAmount
+    process_id: ETL01.SSISDB.Claims.Claims.LoadClaims.dtsx
+    transform_type: direct
+    expression: Amount
+    evidence_type: ssis_dataflow_mapping
+    evidence_text: "InputColumn=Amount OutputColumn=ClaimAmount"
+    validation_status: validated
+    confidence: 1.0
+```
+
+Legal `transform_type` values:
+
+* `direct`
+* `cast`
+* `rename`
+* `derived`
+* `aggregate`
+* `lookup`
+* `constant`
+* `case_expression`
+* `calculation`
+* `dynamic_or_unresolved`
+
+No parser evidence means no promoted column lineage. Ambiguous column facts must
+be written to `unresolved_column_lineage` with the reason and suggested action.
+
+D. SSIS Column Mapping Contract
+
+SSIS package markdown must preserve data-flow component mappings where available:
+
+* data flow name
+* component name
+* component type
+* source connection manager
+* destination connection manager
+* source object
+* destination object
+* input column name
+* output column name
+* external metadata column name
+* lineage ID or ref ID when present
+* mapping evidence text
+* unresolved variable/parameter diagnostics
+
+The extractor must capture SSIS mappings from data-flow XML, including mappings
+nested inside containers. If a mapping references a dynamic source, destination,
+or expression that cannot be resolved, it must be captured as unresolved column
+lineage, not promoted as a validated mapping.
+
+E. Change Impact Contract
+
+Markdown must contain enough evidence for the impact engine and AI reader to
+classify column-change risk. The following change types must be supported:
+
+* `add_column`
+* `drop_column`
+* `rename_column`
+* `change_data_type`
+* `change_length_precision_scale`
+* `change_nullability`
+* `change_default`
+* `change_key_or_index`
+
+For each impacted object or process, the generated evidence must allow the system
+to explain:
+
+* why the object is impacted,
+* which column usage caused the impact,
+* whether the impact is validated, probable, or unresolved,
+* whether the issue is a compile-time break, runtime load failure, data quality
+  risk, reporting semantic risk, or low-risk metadata-only change,
+* which SSIS package, SQL procedure, view, function, trigger, or table is the
+  next owner to inspect.
+
+F. Risk Flags Required For AI Impact Answers
+
+The extractor must flag patterns that make column impact analysis risky:
+
+* `select_star`
+* `insert_without_column_list`
+* `merge_without_explicit_column_mapping`
+* `dynamic_sql`
+* `dynamic_table_name`
+* `dynamic_column_name`
+* `unresolved_ssis_expression`
+* `unresolved_connection_manager`
+* `implicit_conversion`
+* `computed_column_dependency`
+* `schema_bound_view_dependency`
+* `index_or_constraint_dependency`
+
+These flags must be written to markdown even when no validated column edge can be
+created. AI answers must surface these risks instead of pretending the impact is
+known.
+
+G. AI Answerability Requirement
+
+For every governed table, a human or AI reading only the markdown corpus must be
+able to produce:
+
+* a table-level upstream/downstream summary,
+* a column-level direct usage summary,
+* a downstream blast-radius summary for a named column,
+* a list of unresolved risks that require human review,
+* evidence citations back to markdown object IDs, process IDs, package names,
+  component names, or SQL snippets.
+
+The markdown must prefer stable structured YAML for machine reading and concise
+human-readable sections for review. Long SQL definitions may remain in fenced
+SQL blocks, but extracted column usage and lineage facts must be represented as
+structured metadata.
+
+13. ACCEPTANCE FIXTURES
 
 The refactor must include tests or fixtures for:
 
@@ -318,14 +512,26 @@ The refactor must include tests or fixtures for:
 * Two different servers/databases containing the same schema/table name.
 * Dynamic SQL target that must become unresolved, not a fake edge.
 * Dynamic SSIS connection manager that must become unresolved unless mapped.
+* SQL procedure using explicit column lists for INSERT, UPDATE, MERGE, JOIN, and
+  WHERE usage.
+* SQL procedure using `SELECT *`, which must produce a risk flag.
+* SQL procedure using INSERT without a column list, which must produce a risk
+  flag.
+* SSIS data-flow mapping a source column to a renamed destination column.
+* SSIS derived-column transformation with direct and calculated outputs.
+* A dropped-column impact fixture proving downstream SQL, SSIS, views, indexes,
+  and unresolved risks are reported separately.
 
-13. ACCEPTANCE CRITERIA
+14. ACCEPTANCE CRITERIA
 
 Regex and Parser Update:
 
 * Refactor sqlServerExtractor.js to parse 4-part linked-server names correctly.
 * Enforce server override from linked-server syntax.
 * Emit process-to-data edges from SQL definitions.
+* Extract column usage from explicit SQL references when parser evidence exists.
+* Preserve `SELECT *`, positional inserts, dynamic SQL, and unresolved references
+  as risk flags or unresolved column lineage.
 
 SSIS Refactor:
 
@@ -334,6 +540,10 @@ SSIS Refactor:
 * Infer N-level package chains from ExecutePackageTask behavior.
 * Capture external file/SFTP inputs as external facts and mark receiving targets,
   not file nodes.
+* Extract SSIS data-flow column mappings and derived-column expressions when
+  available.
+* Preserve unresolved SSIS variables, parameters, and dynamic mappings as
+  unresolved column lineage diagnostics.
 
 Resolver Lockdown:
 
@@ -341,6 +551,8 @@ Resolver Lockdown:
 * Remove partial alias matching from final edge promotion.
 * Preserve unresolved and probable facts with diagnostics.
 * Validate every promoted edge against the legal edge matrix.
+* Validate every promoted column edge against canonical source and target column
+  IDs.
 
 Reliability:
 
@@ -349,3 +561,5 @@ Reliability:
   a connection failure.
 * Startup health checks must not wait for full corpus lineage resolution.
 * Tests must assert clean validated edges and useful unresolved diagnostics.
+* Tests must assert AI-answerable markdown for table-level and column-level
+  impact questions.
