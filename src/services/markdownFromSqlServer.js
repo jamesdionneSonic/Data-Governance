@@ -10,6 +10,55 @@ function markdownScalar(value) {
   return JSON.stringify(text);
 }
 
+function appendYamlValue(lines, key, value, indent = '') {
+  if (Array.isArray(value)) {
+    if (value.length === 0) {
+      lines.push(`${indent}${key}: []`);
+      return;
+    }
+
+    lines.push(`${indent}${key}:`);
+    value.forEach((item) => {
+      if (item && typeof item === 'object' && !Array.isArray(item)) {
+        lines.push(`${indent}  -`);
+        for (const [childKey, childValue] of Object.entries(item)) {
+          appendYamlValue(lines, childKey, childValue, `${indent}    `);
+        }
+      } else {
+        lines.push(`${indent}  - ${markdownScalar(item)}`);
+      }
+    });
+    return;
+  }
+
+  if (value && typeof value === 'object') {
+    lines.push(`${indent}${key}:`);
+    for (const [childKey, childValue] of Object.entries(value)) {
+      appendYamlValue(lines, childKey, childValue, `${indent}  `);
+    }
+    return;
+  }
+
+  if (typeof value === 'string') {
+    lines.push(`${indent}${key}: ${markdownScalar(value)}`);
+  } else if (typeof value === 'number') {
+    lines.push(`${indent}${key}: ${value}`);
+  } else if (typeof value === 'boolean') {
+    lines.push(`${indent}${key}: ${value}`);
+  } else if (value === null || value === undefined) {
+    lines.push(`${indent}${key}: null`);
+  }
+}
+
+function renderFrontmatter(frontmatter) {
+  const yamlLines = [];
+  for (const [key, value] of Object.entries(frontmatter)) {
+    appendYamlValue(yamlLines, key, value);
+  }
+
+  return `---\n${yamlLines.join('\n')}\n---\n\n`;
+}
+
 function normalizeSynonymReference(value) {
   return String(value ?? '')
     .trim()
@@ -21,9 +70,98 @@ function normalizeSynonymReference(value) {
     .trim();
 }
 
+function normalizeSqlReference(value) {
+  return String(value ?? '')
+    .trim()
+    .replace(/^dbo\./i, '')
+    .replace(/\[|\]/g, '')
+    .replace(/\s+/g, ' ')
+    .replace(/^ssis\//i, '')
+    .trim();
+}
+
+function normalizeSegment(value, fallback = 'unknown') {
+  const text = String(value ?? '').trim();
+  const safe = text
+    .split('')
+    .map((char) => {
+      const code = char.charCodeAt(0);
+      if ('<>:"/\\|?*'.includes(char) || code <= 0x1f) {
+        return '_';
+      }
+      return char;
+    })
+    .join('')
+    .replace(/\s+/g, '_');
+  return safe || fallback;
+}
+
+function isNoiseSqlReference(reference) {
+  const value = normalizeSqlReference(reference).toLowerCase();
+  if (!value) return true;
+
+  const noiseTokens = new Set([
+    'into',
+    'data',
+    'lower',
+    'upper',
+    'trim',
+    'ltrim',
+    'rtrim',
+    'isnull',
+    'coalesce',
+    'case',
+    'when',
+    'then',
+    'else',
+    'end',
+    'select',
+    'from',
+    'join',
+    'on',
+    'and',
+    'or',
+    'not',
+  ]);
+
+  if (noiseTokens.has(value)) return true;
+  if (value.startsWith('#')) return true;
+  if (value.startsWith('@')) return true;
+  if (value.includes('doc_proj')) return true;
+  if (value.includes('ad_actuals')) return true;
+  if (value.includes('lower(') || value.includes('upper(')) return true;
+  return false;
+}
+
 class MarkdownGenerator {
   constructor(metadata) {
     this.metadata = metadata;
+  }
+
+  static isContextualSqlReference(reference) {
+    return isNoiseSqlReference(reference);
+  }
+
+  static splitSqlReferences(references = []) {
+    const direct = [];
+    const contextual = [];
+    const seen = new Set();
+
+    for (const reference of references) {
+      const normalized = normalizeSqlReference(reference);
+      if (!normalized) continue;
+      const key = normalized.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+
+      if (MarkdownGenerator.isContextualSqlReference(normalized)) {
+        contextual.push(normalized);
+      } else {
+        direct.push(normalized);
+      }
+    }
+
+    return { direct, contextual };
   }
 
   /**
@@ -36,17 +174,68 @@ class MarkdownGenerator {
       .filter((r) => (r.fromTable === table.id || r.toTable === table.id) && r.confidence >= 0.5)
       .sort((a, b) => b.confidence - a.confidence);
 
-    const lineageRelationshipTypes = new Set(['foreign_key', 'etl_pattern', 'many_to_many_bridge']);
-    const dependsOn = Array.from(
+    const directCreators = Array.from(
       new Set(
         relationships
-          .filter((r) => lineageRelationshipTypes.has(r.type))
-          .filter((r) => r.fromTable === table.id)
-          .map((r) => r.toTable.split('.').pop())
+          .filter((r) => r.toTable === table.id)
+          .filter((r) => ['procedure', 'ssis', 'package', 'etl_pattern', 'loads', 'calls'].includes(r.type))
+          .map((r) => r.fromTable)
+          .filter((ref) => !isNoiseSqlReference(ref))
       )
     );
+    const usedBy = Array.from(
+      new Set(
+        relationships
+          .filter((r) => r.fromTable === table.id)
+          .filter((r) => ['procedure', 'view', 'ssis', 'package', 'reads', 'extracts', 'loads', 'calls'].includes(r.type))
+          .map((r) => r.toTable)
+          .filter((ref) => !isNoiseSqlReference(ref))
+      )
+    );
+    const contextualReads = Array.from(
+      new Set(
+        relationships
+          .filter((r) => r.fromTable === table.id || r.toTable === table.id)
+          .filter((r) => ['column_match', 'reference', 'lookup', 'helper', 'contextual_read'].includes(r.type))
+          .map((r) => (r.fromTable === table.id ? r.toTable : r.fromTable))
+          .filter((ref) => !isNoiseSqlReference(ref))
+      )
+    );
+    const createdVia = Array.from(
+      new Set(
+        relationships
+          .filter((r) => r.toTable === table.id)
+          .filter((r) => ['calls', 'ssis', 'package', 'created_via'].includes(r.type))
+          .map((r) => r.fromTable)
+          .filter((ref) => !isNoiseSqlReference(ref))
+      )
+    );
+    let lineageStatus = 'external_or_unresolved';
+    if (directCreators.length > 0) {
+      lineageStatus = 'creator_found';
+    } else if (contextualReads.length > 0 || usedBy.length > 0) {
+      lineageStatus = 'creator_unresolved';
+    }
+    const dependsOn = Array.from(
+      new Set([
+        ...directCreators,
+        ...relationships
+          .filter((r) => r.fromTable === table.id)
+          .filter((r) => ['foreign_key', 'etl_pattern', 'many_to_many_bridge', 'reads', 'extracts'].includes(r.type))
+          .map((r) => r.toTable)
+          .filter((ref) => !isNoiseSqlReference(ref)),
+      ])
+    );
+
+    // Group relationships by confidence before rendering lineage quality.
+    const highConfidence = relationships.filter((r) => r.confidence >= 0.8);
+    const mediumConfidence = relationships.filter((r) => r.confidence >= 0.6 && r.confidence < 0.8);
+    const lowConfidence = relationships.filter((r) => r.confidence < 0.6);
+
     const frontmatter = {
+      id: table.id,
       name: table.name,
+      server: table.serverName || this.metadata.serverName || 'unknown',
       database: this.metadata.database,
       type: table.type,
       schema: table.schema,
@@ -54,6 +243,17 @@ class MarkdownGenerator {
       sensitivity: 'internal', // TODO: Infer from data classification
       tags: MarkdownGenerator.inferTags(table),
       depends_on: dependsOn,
+      created_by: directCreators,
+      created_via: createdVia,
+      used_by: usedBy,
+      contextual_reads: contextualReads,
+      lineage_status: lineageStatus,
+      external_source: Boolean(table.external_source),
+      lineage_quality: {
+        validated_edges: highConfidence.length + mediumConfidence.length,
+        probable_edges: lowConfidence.length,
+        unresolved_facts: 0,
+      },
       row_count: table.rowCount,
       size_kb: table.sizeKb,
       column_count: table.columns?.length || 0,
@@ -63,31 +263,7 @@ class MarkdownGenerator {
       extracted_at: this.metadata.extractedAt,
     };
 
-    // Group relationships by confidence
-    const highConfidence = relationships.filter((r) => r.confidence >= 0.8);
-    const mediumConfidence = relationships.filter((r) => r.confidence >= 0.6 && r.confidence < 0.8);
-    const lowConfidence = relationships.filter((r) => r.confidence < 0.6);
-
-    let markdown = '---\n';
-    const yamlLines = [];
-    for (const [key, value] of Object.entries(frontmatter)) {
-      if (Array.isArray(value)) {
-        if (value.length === 0) {
-          yamlLines.push(`${key}: []`);
-        } else {
-          yamlLines.push(`${key}:`);
-          value.forEach((v) => {
-            yamlLines.push(`  - ${v}`);
-          });
-        }
-      } else if (typeof value === 'string') {
-        yamlLines.push(`${key}: ${value}`);
-      } else if (typeof value === 'number') {
-        yamlLines.push(`${key}: ${value}`);
-      }
-    }
-    markdown += `${yamlLines.join('\n')}\n`;
-    markdown += '---\n\n';
+    let markdown = renderFrontmatter(frontmatter);
 
     // Table description
     markdown += '## Overview\n\n';
@@ -172,7 +348,7 @@ class MarkdownGenerator {
     // Relationships
     if (relationships.length > 0) {
       markdown += '## Relationships\n\n';
-      markdown += '> Note: Only structural lineage types are emitted in frontmatter `depends_on`. Column-match evidence remains below for review.\n\n';
+      markdown += '> Note: Creator, usage, and contextual references are split in frontmatter. Column-match evidence remains below for review.\n\n';
 
       if (highConfidence.length > 0) {
         markdown += '### High Confidence (≥ 0.8)\n\n';
@@ -198,6 +374,13 @@ class MarkdownGenerator {
         markdown += '\n';
       }
     }
+
+    markdown += '## Lineage Tiers\n\n';
+    markdown += `- **Created By**: ${directCreators.length > 0 ? directCreators.join(', ') : 'unresolved'}\n`;
+    markdown += `- **Created Via**: ${createdVia.length > 0 ? createdVia.join(', ') : 'unresolved'}\n`;
+    markdown += `- **Used By**: ${usedBy.length > 0 ? usedBy.join(', ') : 'none found'}\n`;
+    markdown += `- **Contextual Reads**: ${contextualReads.length > 0 ? contextualReads.join(', ') : 'none found'}\n`;
+    markdown += `- **Lineage Status**: ${lineageStatus}\n\n`;
 
     markdown += '## Governance\n\n';
     markdown += `- **Last Extracted**: ${this.metadata.extractedAt}\n`;
@@ -247,9 +430,16 @@ class MarkdownGenerator {
    * Generate markdown for a view
    */
   generateViewMarkdown(view) {
-    const dependsOn = (view.dependencies || []).map((dep) => dep.referencedObject);
+    const rawReferences = [
+      ...(view.dependencies || []).map((dep) => dep.referencedObject),
+      ...(view.reads_from || []),
+    ];
+    const { direct: dependsOn, contextual } = MarkdownGenerator.splitSqlReferences(rawReferences);
+    const usedBy = Array.from(new Set((view.used_by || []).filter((ref) => !isNoiseSqlReference(ref))));
     const frontmatter = {
+      id: view.id,
       name: view.name,
+      server: view.serverName || this.metadata.serverName || 'unknown',
       database: this.metadata.database,
       type: 'view', // parser-accepted type
       schema: view.schema,
@@ -257,30 +447,20 @@ class MarkdownGenerator {
       sensitivity: 'internal',
       tags: ['view', 'auto-extracted'],
       depends_on: dependsOn, // ADDED: Wires up the graph
-      reads_from: this.extractReadSources(view.definition),
+      reads_from: MarkdownGenerator.extractReadSources(view.definition),
+      contextual_reads: contextual,
+      used_by: usedBy,
+      lineage_quality: {
+        validated_edges: dependsOn.length,
+        probable_edges: 0,
+        unresolved_facts: 0,
+      },
       dependency_count: view.dependencies?.length || 0,
       column_count: view.columns?.length || 0,
       extracted_at: this.metadata.extractedAt,
     };
 
-    let markdown = '---\n';
-    const yamlLines = [];
-    for (const [key, value] of Object.entries(frontmatter)) {
-      if (Array.isArray(value)) {
-        if (value.length === 0) {
-          yamlLines.push(`${key}: []`);
-        } else {
-          yamlLines.push(`${key}:`);
-          value.forEach((v) => {
-            yamlLines.push(`  - ${v}`);
-          });
-        }
-      } else {
-        yamlLines.push(`${key}: ${value}`);
-      }
-    }
-    markdown += `${yamlLines.join('\n')}\n`;
-    markdown += '---\n\n';
+    let markdown = renderFrontmatter(frontmatter);
 
     markdown += '## Overview\n\n';
     markdown += view.description || 'Metadata auto-extracted from SQL Server.\n\n';
@@ -324,24 +504,24 @@ class MarkdownGenerator {
   /**
    * Normalize SQL object references for markdown lineage.
    */
-  normalizeObjectReference(reference) {
+  static normalizeObjectReference(reference) {
     return String(reference || '')
       .replace(/\[|\]/g, '')
       .replace(/^dbo\./i, '')
       .trim();
   }
 
-  uniqueObjectReferences(references) {
+  static uniqueObjectReferences(references) {
     return Array.from(
       new Set(
         references
-          .map((reference) => this.normalizeObjectReference(reference))
+          .map((reference) => MarkdownGenerator.normalizeObjectReference(reference))
           .filter((reference) => reference && !reference.startsWith('#') && !reference.startsWith('@'))
       )
     );
   }
 
-  extractReadSources(definition = '') {
+  static extractReadSources(definition = '') {
     const sources = [];
     const pattern = /\b(?:FROM|JOIN)\s+((?:\[[^\]]+\]|\w+)(?:\s*\.\s*(?:\[[^\]]+\]|\w+)){0,2})/gi;
     let match = pattern.exec(definition);
@@ -349,10 +529,10 @@ class MarkdownGenerator {
       sources.push(match[1]);
       match = pattern.exec(definition);
     }
-    return this.uniqueObjectReferences(sources);
+    return MarkdownGenerator.uniqueObjectReferences(sources);
   }
 
-  extractWriteTargets(definition = '') {
+  static extractWriteTargets(definition = '') {
     const targets = [];
     const pattern = /\b(?:INSERT\s+INTO|MERGE)\s+((?:\[[^\]]+\]|\w+)(?:\s*\.\s*(?:\[[^\]]+\]|\w+)){0,2})/gi;
     let match = pattern.exec(definition);
@@ -360,10 +540,10 @@ class MarkdownGenerator {
       targets.push(match[1]);
       match = pattern.exec(definition);
     }
-    return this.uniqueObjectReferences(targets);
+    return MarkdownGenerator.uniqueObjectReferences(targets);
   }
 
-  extractProcedureCalls(definition = '') {
+  static extractProcedureCalls(definition = '') {
     const calls = [];
     const pattern = /\bEXEC(?:UTE)?\s+((?:\[[^\]]+\]|\w+)(?:\s*\.\s*(?:\[[^\]]+\]|\w+)){0,2})/gi;
     let match = pattern.exec(definition);
@@ -371,19 +551,28 @@ class MarkdownGenerator {
       calls.push(match[1]);
       match = pattern.exec(definition);
     }
-    return this.uniqueObjectReferences(calls);
+    return MarkdownGenerator.uniqueObjectReferences(calls);
   }
 
   /**
    * Generate markdown for a stored procedure
    */
   generateStoredProcedureMarkdown(proc) {
-    const dependsOn = (proc.dependencies || []).map((dep) => dep.referencedObject);
-    const readsFrom = this.extractReadSources(proc.definition);
-    const writesTo = this.extractWriteTargets(proc.definition);
-    const calls = this.extractProcedureCalls(proc.definition);
+    const dependencyRefs = (proc.dependencies || []).map((dep) => dep.referencedObject);
+    const readRefs = MarkdownGenerator.extractReadSources(proc.definition);
+    const writeRefs = MarkdownGenerator.extractWriteTargets(proc.definition);
+    const callRefs = MarkdownGenerator.extractProcedureCalls(proc.definition);
+    const { direct: dependsOn, contextual } = MarkdownGenerator.splitSqlReferences([
+      ...dependencyRefs,
+      ...readRefs,
+    ]);
+    const { direct: readsFrom } = MarkdownGenerator.splitSqlReferences(readRefs);
+    const { direct: writesTo } = MarkdownGenerator.splitSqlReferences(writeRefs);
+    const { direct: calls } = MarkdownGenerator.splitSqlReferences(callRefs);
     const frontmatter = {
+      id: proc.id,
       name: proc.name,
+      server: proc.serverName || this.metadata.serverName || 'unknown',
       database: this.metadata.database,
       type: 'procedure', // parser-accepted type
       schema: proc.schema,
@@ -393,29 +582,19 @@ class MarkdownGenerator {
       reads_from: readsFrom,
       writes_to: writesTo,
       calls,
+      created_by: [],
+      contextual_reads: contextual,
+      lineage_quality: {
+        validated_edges: readsFrom.length + writesTo.length + calls.length,
+        probable_edges: 0,
+        unresolved_facts: 0,
+      },
       dependency_count: proc.dependencies?.length || 0,
       parameter_count: proc.parameters?.length || 0,
       extracted_at: this.metadata.extractedAt,
     };
 
-    let markdown = '---\n';
-    const yamlLines = [];
-    for (const [key, value] of Object.entries(frontmatter)) {
-      if (Array.isArray(value)) {
-        if (value.length === 0) {
-          yamlLines.push(`${key}: []`);
-        } else {
-          yamlLines.push(`${key}:`);
-          value.forEach((v) => {
-            yamlLines.push(`  - ${v}`);
-          });
-        }
-      } else {
-        yamlLines.push(`${key}: ${value}`);
-      }
-    }
-    markdown += `${yamlLines.join('\n')}\n`;
-    markdown += '---\n\n';
+    let markdown = renderFrontmatter(frontmatter);
 
     markdown += '## Overview\n\n';
     markdown += proc.description || 'Metadata auto-extracted from SQL Server.\n\n';
@@ -460,36 +639,26 @@ class MarkdownGenerator {
   generateFunctionMarkdown(func) {
     const dependsOn = (func.dependencies || []).map((dep) => dep.referencedObject);
     const frontmatter = {
+      id: func.id,
       name: func.name,
+      server: func.serverName || this.metadata.serverName || 'unknown',
       database: this.metadata.database,
       type: 'function',
       schema: func.schema,
       owner: 'Data Team',
       tags: ['function', 'auto-extracted'],
       depends_on: dependsOn, // ADDED: Wires up the graph
+      lineage_quality: {
+        validated_edges: dependsOn.length,
+        probable_edges: 0,
+        unresolved_facts: 0,
+      },
       dependency_count: func.dependencies?.length || 0,
       parameter_count: func.parameters?.length || 0,
       extracted_at: this.metadata.extractedAt,
     };
 
-    let markdown = '---\n';
-    const yamlLines = [];
-    for (const [key, value] of Object.entries(frontmatter)) {
-      if (Array.isArray(value)) {
-        if (value.length === 0) {
-          yamlLines.push(`${key}: []`);
-        } else {
-          yamlLines.push(`${key}:`);
-          value.forEach((v) => {
-            yamlLines.push(`  - ${v}`);
-          });
-        }
-      } else {
-        yamlLines.push(`${key}: ${value}`);
-      }
-    }
-    markdown += `${yamlLines.join('\n')}\n`;
-    markdown += '---\n\n';
+    let markdown = renderFrontmatter(frontmatter);
 
     markdown += '## Overview\n\n';
     markdown += func.description || 'Metadata auto-extracted from SQL Server.\n\n';
@@ -534,7 +703,9 @@ class MarkdownGenerator {
   generateTriggerMarkdown(trigger) {
     const dependsOn = (trigger.dependencies || []).map((dep) => dep.referencedObject);
     const frontmatter = {
+      id: trigger.id,
       name: trigger.name,
+      server: trigger.serverName || this.metadata.serverName || 'unknown',
       database: this.metadata.database,
       type: 'procedure', // Store triggers as 'procedure'
       schema: trigger.schema,
@@ -542,28 +713,16 @@ class MarkdownGenerator {
       parent_object: trigger.parentObject,
       tags: ['trigger', 'auto-extracted'],
       depends_on: dependsOn, // ADDED: Wires up the graph
+      lineage_quality: {
+        validated_edges: dependsOn.length,
+        probable_edges: 0,
+        unresolved_facts: 0,
+      },
       dependency_count: trigger.dependencies?.length || 0,
       extracted_at: this.metadata.extractedAt,
     };
 
-    let markdown = '---\n';
-    const yamlLines = [];
-    for (const [key, value] of Object.entries(frontmatter)) {
-      if (Array.isArray(value)) {
-        if (value.length === 0) {
-          yamlLines.push(`${key}: []`);
-        } else {
-          yamlLines.push(`${key}:`);
-          value.forEach((v) => {
-            yamlLines.push(`  - ${v}`);
-          });
-        }
-      } else {
-        yamlLines.push(`${key}: ${value}`);
-      }
-    }
-    markdown += `${yamlLines.join('\n')}\n`;
-    markdown += '---\n\n';
+    let markdown = renderFrontmatter(frontmatter);
 
     markdown += '## Overview\n\n';
     markdown += trigger.description || 'Metadata auto-extracted from SQL Server.\n\n';
@@ -598,41 +757,32 @@ class MarkdownGenerator {
    * Generate markdown for a synonym
    */
   generateSynonymMarkdown(synonym) {
-    const dependencies = Array.isArray(synonym.dependencies)
-      ? synonym.dependencies.map((dep) => normalizeSynonymReference(dep.referencedObject || dep))
-      : synonym.baseObjectName
-        ? [normalizeSynonymReference(synonym.baseObjectName)]
-        : [];
+    let dependencies = [];
+    if (Array.isArray(synonym.dependencies)) {
+      dependencies = synonym.dependencies.map((dep) => normalizeSynonymReference(dep.referencedObject || dep));
+    } else if (synonym.baseObjectName) {
+      dependencies = [normalizeSynonymReference(synonym.baseObjectName)];
+    }
 
     const frontmatter = {
+      id: synonym.id,
       name: synonym.name,
+      server: synonym.serverName || this.metadata.serverName || 'unknown',
       database: this.metadata.database,
       type: 'synonym',
       schema: synonym.schema,
       owner: 'Data Team',
       tags: ['synonym', 'auto-extracted'],
       depends_on: dependencies,
+      lineage_quality: {
+        validated_edges: dependencies.length,
+        probable_edges: 0,
+        unresolved_facts: 0,
+      },
       extracted_at: this.metadata.extractedAt,
     };
 
-    let markdown = '---\n';
-    const yamlLines = [];
-    for (const [key, value] of Object.entries(frontmatter)) {
-      if (Array.isArray(value)) {
-        if (value.length === 0) {
-          yamlLines.push(`${key}: []`);
-        } else {
-          yamlLines.push(`${key}:`);
-          value.forEach((v) => {
-            yamlLines.push(`  - ${markdownScalar(v)}`);
-          });
-        }
-      } else {
-        yamlLines.push(`${key}: ${markdownScalar(value)}`);
-      }
-    }
-    markdown += `${yamlLines.join('\n')}\n`;
-    markdown += '---\n\n';
+    let markdown = renderFrontmatter(frontmatter);
 
     markdown += '## Overview\n\n';
     markdown += synonym.description || 'Metadata auto-extracted from SQL Server.\n\n';
@@ -661,7 +811,7 @@ class MarkdownGenerator {
       this.metadata.synonyms.forEach((synonym) => {
         markdowns.push({
           fileName: `${synonym.schema}__${synonym.name}.md`,
-          directory: `databases/${this.metadata.database}/synonyms`,
+          directory: `servers/${normalizeSegment(synonym.serverName || this.metadata.serverName)}/databases/${normalizeSegment(this.metadata.database)}/synonyms`,
           content: this.generateSynonymMarkdown(synonym),
         });
       });
@@ -672,7 +822,7 @@ class MarkdownGenerator {
       this.metadata.tables.forEach((table) => {
         markdowns.push({
           fileName: `${table.schema}__${table.name}.md`,
-          directory: `databases/${this.metadata.database}/tables`,
+          directory: `servers/${normalizeSegment(table.serverName || this.metadata.serverName)}/databases/${normalizeSegment(this.metadata.database)}/tables`,
           content: this.generateTableMarkdown(table),
         });
       });
@@ -683,7 +833,7 @@ class MarkdownGenerator {
       this.metadata.views.forEach((view) => {
         markdowns.push({
           fileName: `${view.schema}__${view.name}.md`,
-          directory: `databases/${this.metadata.database}/views`,
+          directory: `servers/${normalizeSegment(view.serverName || this.metadata.serverName)}/databases/${normalizeSegment(this.metadata.database)}/views`,
           content: this.generateViewMarkdown(view),
         });
       });
@@ -694,7 +844,7 @@ class MarkdownGenerator {
       this.metadata.storedProcedures.forEach((proc) => {
         markdowns.push({
           fileName: `${proc.schema}__${proc.name}.md`,
-          directory: `databases/${this.metadata.database}/stored_procedures`,
+          directory: `servers/${normalizeSegment(proc.serverName || this.metadata.serverName)}/databases/${normalizeSegment(this.metadata.database)}/stored_procedures`,
           content: this.generateStoredProcedureMarkdown(proc),
         });
       });
@@ -705,7 +855,7 @@ class MarkdownGenerator {
       this.metadata.functions.forEach((func) => {
         markdowns.push({
           fileName: `${func.schema}__${func.name}.md`,
-          directory: `databases/${this.metadata.database}/functions`,
+          directory: `servers/${normalizeSegment(func.serverName || this.metadata.serverName)}/databases/${normalizeSegment(this.metadata.database)}/functions`,
           content: this.generateFunctionMarkdown(func),
         });
       });
@@ -716,7 +866,7 @@ class MarkdownGenerator {
       this.metadata.triggers.forEach((trigger) => {
         markdowns.push({
           fileName: `${trigger.schema}__${trigger.name}.md`,
-          directory: `databases/${this.metadata.database}/triggers`,
+          directory: `servers/${normalizeSegment(trigger.serverName || this.metadata.serverName)}/databases/${normalizeSegment(this.metadata.database)}/triggers`,
           content: this.generateTriggerMarkdown(trigger),
         });
       });

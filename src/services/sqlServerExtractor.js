@@ -5,6 +5,173 @@
  */
 
 import mssql from 'mssql';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const { Parser } = require('node-sql-parser');
+
+const parser = new Parser();
+
+
+/**
+ * Extract table references from SQL text using an AST-first strategy.
+ *
+ * Why AST here:
+ * - Regex-based SQL parsing is brittle for T-SQL because nested queries,
+ *   CTEs, derived tables, and vendor-specific hints often defeat simple
+ *   pattern matching.
+ * - `node-sql-parser` gives us a structured parse tree and a built-in
+ *   table reference inventory via `parser.tableList(...)`.
+ *
+ * Fallback behavior:
+ * - If the parser cannot understand the SQL dialect or a T-SQL quirk,
+ *   we return an empty array rather than hallucinating references.
+ * - That keeps lineage conservative and avoids false positives.
+ *
+ * @param {string} sqlText - Raw SQL batch / procedure body / query text.
+ * @param {string} defaultServer - Fallback server name when the AST does not expose one.
+ * @param {string} defaultDatabase - Fallback database name when the AST does not expose one.
+ * @param {string} defaultSchema - Fallback schema name; defaults to dbo.
+ * @returns {Array<{server: string, database: string, schema: string, object: string}>}
+ */
+export function extractTablesFromSQL(sqlText, defaultServer, defaultDatabase, defaultSchema = 'dbo') {
+  // Keep the parser invocation isolated so unsupported dialect quirks do not
+  // impact the rest of the extractor.
+  let tableList = [];
+  try {
+    tableList = parser.tableList(sqlText, { database: 'transactsql' }) || [];
+  } catch (err) {
+    const fallback = fallbackSqlEntities(sqlText);
+    if (fallback.length > 0) {
+      tableList = fallback;
+    } else {
+      console.warn(
+        `Warning: AST tableList extraction failed in extractTablesFromSQL; returning empty table list. Reason: ${String(
+          err?.message || err
+        )}`
+      );
+      return [];
+    }
+  }
+
+  const seen = new Set();
+  const results = [];
+
+  for (const entry of tableList) {
+    const record = parseSqlObjectReference(entry, defaultServer, defaultDatabase, defaultSchema);
+    if (!record.object) continue;
+
+    const key = `${record.server}.${record.database}.${record.schema}.${record.object}`.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    results.push(record);
+  }
+
+  return results;
+}
+
+function parseSqlObjectReference(reference, defaultServer, defaultDatabase, defaultSchema = 'dbo') {
+  const text = String(reference || '').trim();
+  if (!text) {
+    return { server: '', database: '', schema: '', object: '' };
+  }
+
+  if (text.includes('::')) {
+    const parts = text.split('::').map((part) => part.trim()).filter(Boolean);
+    const qualifier = parts.length >= 3 ? parts[1] : '';
+    const objectName = parts.length >= 3 ? parts[2] : parts[3] || '';
+    const qualifierParts = qualifier.split('.').filter(Boolean);
+
+    if (qualifierParts.length >= 3) {
+      return {
+        server: qualifierParts[0],
+        database: qualifierParts[1],
+        schema: qualifierParts[2],
+        object: String(objectName || '').trim(),
+      };
+    }
+
+    if (qualifierParts.length === 2) {
+      return {
+        server: String(defaultServer || '').trim(),
+        database: qualifierParts[0],
+        schema: qualifierParts[1],
+        object: String(objectName || '').trim(),
+      };
+    }
+
+    const schemaName = qualifierParts[0] || (parts.length >= 4 ? parts[2] : defaultSchema);
+    let dbName = defaultDatabase;
+    if (parts.length >= 4 && parts[1] && parts[1] !== 'null') {
+      dbName = parts[1];
+    }
+    return {
+      server: String(defaultServer || '').trim(),
+      database: String(dbName || defaultDatabase || '').trim(),
+      schema: String(schemaName || defaultSchema || 'dbo').trim(),
+      object: String(objectName || '').trim(),
+    };
+  }
+
+  const normalized = String(reference || '')
+    .trim()
+    .replace(/\]\.\[/g, '.')
+    .replace(/\[|\]/g, '')
+    .replace(/\s+/g, ' ');
+  const parts = normalized.split('.').map((part) => part.trim()).filter(Boolean);
+
+  if (parts.length >= 4) {
+    return {
+      server: parts[0],
+      database: parts[1],
+      schema: parts[2],
+      object: parts.slice(3).join('.'),
+    };
+  }
+
+  if (parts.length === 3) {
+    return {
+      server: String(defaultServer || '').trim(),
+      database: parts[0],
+      schema: parts[1],
+      object: parts[2],
+    };
+  }
+
+  if (parts.length === 2) {
+    return {
+      server: String(defaultServer || '').trim(),
+      database: String(defaultDatabase || '').trim(),
+      schema: parts[0],
+      object: parts[1],
+    };
+  }
+
+  return {
+    server: String(defaultServer || '').trim(),
+    database: String(defaultDatabase || '').trim(),
+    schema: String(defaultSchema || 'dbo').trim(),
+    object: parts[0] || '',
+  };
+}
+
+function fallbackSqlEntities(sqlText) {
+  const text = String(sqlText || '').replace(/[\r\n\t]/g, ' ');
+  const patterns = [
+    /\b(?:FROM|JOIN|INSERT\s+INTO|UPDATE|MERGE\s+INTO)\s+([A-Za-z0-9_[\].]+)/gi,
+    /\b(?:EXEC(?:UTE)?)\s+([A-Za-z0-9_[\].]+)/gi,
+  ];
+  const refs = [];
+  for (const pattern of patterns) {
+    let match = pattern.exec(text);
+    while (match) {
+      refs.push(match[1]);
+      match = pattern.exec(text);
+    }
+  }
+  return [...new Set(refs)];
+}
+
 
 /**
  * Standard ETL, Metadata, and Audit columns to exclude from automated lineage detection
@@ -45,7 +212,33 @@ const ConfidenceScores = {
   SELF_JOIN: 0.85, // Hierarchy/parent-child detected
   SOFT_DELETE_PATTERN: 0.6, // is_deleted, status='inactive'
   MANY_TO_MANY_BRIDGE: 0.75, // Composite PK + 2 FKs
+  DIRECT_LOAD: 0.95, // Explicit INSERT/MERGE target discovered in procedure text
 };
+
+const SQL_NOISE_TOKENS = new Set([
+  'into',
+  'data',
+  'lower',
+  'upper',
+  'trim',
+  'ltrim',
+  'rtrim',
+  'isnull',
+  'coalesce',
+  'case',
+  'when',
+  'then',
+  'else',
+  'end',
+  'select',
+  'from',
+  'join',
+  'on',
+  'and',
+  'or',
+  'not',
+  'the',
+]);
 
 class SqlServerMetadataExtractor {
   constructor(connectionConfig, sqlDriver = mssql) {
@@ -53,6 +246,7 @@ class SqlServerMetadataExtractor {
     this.sqlDriver = sqlDriver;
     this.pool = null;
     this.metadata = {
+      serverName: SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
       tables: new Map(),
       views: new Map(),
       synonyms: new Map(),
@@ -72,6 +266,311 @@ class SqlServerMetadataExtractor {
       message.includes('view database state') ||
       message.includes('dm_db_partition_stats')
     );
+  }
+
+  static normalizeSqlReference(value) {
+    return String(value ?? '')
+      .trim()
+      .replace(/^"+|"+$/g, '')
+      .replace(/^'+|'+$/g, '')
+      .replace(/\]\.\[/g, '.')
+      .replace(/\[|\]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  static isNoiseSqlReference(reference) {
+    const value = SqlServerMetadataExtractor.normalizeSqlReference(reference).toLowerCase();
+    if (!value) return true;
+    if (SQL_NOISE_TOKENS.has(value)) return true;
+    if (value.startsWith('#')) return true;
+    if (value.startsWith('@')) return true;
+    if (value.includes('doc_proj')) return true;
+    if (value.includes('ad_actuals')) return true;
+    if (value.includes('lower(') || value.includes('upper(')) return true;
+    return false;
+  }
+
+  static normalizeSqlObjectId(reference) {
+    const normalized = SqlServerMetadataExtractor.normalizeSqlReference(reference);
+    if (!normalized) return '';
+    const parts = normalized.split('.').filter(Boolean);
+    if (parts.length >= 4) {
+      return `${parts[parts.length - 4]}.${parts[parts.length - 3]}.${parts[parts.length - 2]}.${parts[parts.length - 1]}`;
+    }
+    if (parts.length === 3) {
+      return `${parts[0]}.${parts[1]}.${parts[2]}`;
+    }
+    if (parts.length === 2) {
+      return `${parts[0]}.${parts[1]}`;
+    }
+    return normalized;
+  }
+
+  static qualifySqlObjectId(serverName, databaseName, schemaName, objectName) {
+    const server = SqlServerMetadataExtractor.normalizeSqlReference(serverName);
+    const db = SqlServerMetadataExtractor.normalizeSqlReference(databaseName);
+    const schema = SqlServerMetadataExtractor.normalizeSqlReference(schemaName);
+    const obj = SqlServerMetadataExtractor.normalizeSqlReference(objectName);
+
+    if (server && db && schema && obj) {
+      return `${server}.${db}.${schema}.${obj}`;
+    }
+    if (db && schema && obj) {
+      return `${db}.${schema}.${obj}`;
+    }
+    if (schema && obj) {
+      return `${schema}.${obj}`;
+    }
+    return obj || schema || db || server || '';
+  }
+
+  static extractServerNameFromConfig(config = {}) {
+    return (
+      config.server ||
+      config.serverName ||
+      config.dataSource ||
+      config.host ||
+      config.connectionString?.match(/(?:Data Source|Server)\s*=\s*([^;]+)/i)?.[1] ||
+      ''
+    );
+  }
+
+  static normalizeSqlReferenceWithServer(
+    reference,
+    fallbackServer = '',
+    defaultDatabase = '',
+    defaultSchema = 'dbo'
+  ) {
+    const normalized = SqlServerMetadataExtractor.normalizeSqlReference(reference);
+    if (!normalized) return '';
+
+    const parts = normalized.split('.').filter(Boolean);
+    if (parts.length >= 4) {
+      return `${parts[0]}.${parts[1]}.${parts[2]}.${parts[3]}`;
+    }
+    if (parts.length === 3) {
+      const server = SqlServerMetadataExtractor.normalizeSqlReference(fallbackServer);
+      return [server, parts[0], parts[1], parts[2]].filter(Boolean).join('.');
+    }
+    if (parts.length === 2) {
+      const server = SqlServerMetadataExtractor.normalizeSqlReference(fallbackServer);
+      const db = SqlServerMetadataExtractor.normalizeSqlReference(defaultDatabase);
+      return [server, db, parts[0], parts[1]].filter(Boolean).join('.');
+    }
+    if (parts.length === 1) {
+      const server = SqlServerMetadataExtractor.normalizeSqlReference(fallbackServer);
+      const db = SqlServerMetadataExtractor.normalizeSqlReference(defaultDatabase);
+      const schema = SqlServerMetadataExtractor.normalizeSqlReference(defaultSchema);
+      return [server, db, schema, parts[0]].filter(Boolean).join('.');
+    }
+    return normalized;
+  }
+
+  static isFourPartReference(reference) {
+    const normalized = SqlServerMetadataExtractor.normalizeSqlReference(reference);
+    if (!normalized) return false;
+    const parts = normalized.split('.').filter(Boolean);
+    return parts.length >= 4;
+  }
+
+  static extractOpenQueryLiteral(definition = '') {
+    const text = String(definition || '');
+    const match = text.match(/\bOPENQUERY\s*\(\s*([^,]+)\s*,\s*('(?:''|[^'])*')/i);
+    if (!match) return '';
+    return `${String(match[1] || '').trim()}, ${String(match[2] || '').trim()}`.trim();
+  }
+
+  static extractSourceClausesFromInsert(definition = '') {
+    const text = String(definition || '').replace(/[\r\n\t]+/g, ' ');
+    const sources = [];
+    const insertSelectMatch = text.match(
+      /\bINSERT\s+INTO\b[\s\S]*?\bSELECT\b([\s\S]*?)(?=\b(?:INSERT\s+INTO|MERGE\b|UPDATE\b|DELETE\b|;|$))/i
+    );
+    if (insertSelectMatch) {
+      sources.push(insertSelectMatch[1]);
+    }
+    const mergeUsingMatch = text.match(
+      /\bMERGE\b[\s\S]*?\bUSING\b\s+([\s\S]*?)(?=\bON\b|\bWHEN\b|$)/i
+    );
+    if (mergeUsingMatch) {
+      sources.push(mergeUsingMatch[1]);
+    }
+    return sources.filter(Boolean);
+  }
+
+  static extractTableReferencesFromClause(clause = '', defaultServer = '', defaultDatabase = '') {
+    const normalizedClause = String(clause || '');
+    const refs = [];
+    const pattern = /\b(?:FROM|JOIN|USING)\s+((?:\[[^\]]+\]|\w+)(?:\s*\.\s*(?:\[[^\]]+\]|\w+)){0,4}|OPENQUERY\s*\(\s*[^,]+,\s*'(?:''|[^'])*'\s*\))/gi;
+    let match = pattern.exec(normalizedClause);
+    while (match) {
+      refs.push(match[1]);
+      match = pattern.exec(normalizedClause);
+    }
+
+    return Array.from(
+      new Set(
+        refs
+          .map((ref) => {
+            const openQuery = SqlServerMetadataExtractor.extractOpenQueryLiteral(ref);
+            if (openQuery) {
+              return {
+                reference: openQuery,
+                validationFlag: 'REQUIRES_CATALOG_VALIDATION',
+                isOpenQuery: true,
+              };
+            }
+            const normalized = SqlServerMetadataExtractor.normalizeSqlReferenceWithServer(
+              ref,
+              defaultServer,
+              defaultDatabase
+            );
+            return {
+              reference: normalized,
+              validationFlag: SqlServerMetadataExtractor.isFourPartReference(normalized)
+                ? 'REQUIRES_CATALOG_VALIDATION'
+                : '',
+              isOpenQuery: false,
+            };
+          })
+          .filter((item) => item.reference && !SqlServerMetadataExtractor.isNoiseSqlReference(item.reference))
+          .map((item) => JSON.stringify(item))
+      )
+    ).map((item) => JSON.parse(item));
+  }
+
+  static extractWriteTargetsFromDefinition(definition = '', defaultServer = '', defaultDatabase = '') {
+    const targets = [];
+    const pattern =
+      /\b(?:INSERT\s+INTO|MERGE(?:\s+INTO)?)\s+((?:\[[^\]]+\]|\w+)(?:\s*\.\s*(?:\[[^\]]+\]|\w+)){0,4})(?=\s*(?:\(|AS\b|USING\b|WHEN\b|OUTPUT\b|SELECT\b|VALUES\b|SET\b|$))/gi;
+    let match = pattern.exec(definition);
+    while (match) {
+      targets.push(match[1]);
+      match = pattern.exec(definition);
+    }
+    return Array.from(
+      new Set(
+        targets
+          .map((target) =>
+            SqlServerMetadataExtractor.normalizeSqlReferenceWithServer(
+              target,
+              defaultServer,
+              defaultDatabase
+            )
+          )
+          .map((target) => target.replace(/\s+/g, ' '))
+          .map((target) => target.replace(/\bAS\b.*$/i, '').trim())
+          .filter((target) => target && !SqlServerMetadataExtractor.isNoiseSqlReference(target))
+      )
+    );
+  }
+
+  static detectProcedureLoadRelationships(procedures = []) {
+    const relationships = [];
+
+    for (const proc of procedures) {
+      const procServer = SqlServerMetadataExtractor.extractServerNameFromConfig(proc);
+      const procDatabase = proc.database || '';
+      const writes = SqlServerMetadataExtractor.extractWriteTargetsFromDefinition(
+        proc.definition || '',
+        procServer,
+        procDatabase
+      );
+      const procId =
+        proc.id ||
+        SqlServerMetadataExtractor.qualifySqlObjectId(
+          procServer,
+          procDatabase,
+          proc.schema,
+          proc.name
+        );
+
+      for (const target of writes) {
+        relationships.push({
+          id: `${procId}->${target}:loads`,
+          fromTable: procId,
+          toTable: target,
+          source: procId,
+          target,
+          confidence: ConfidenceScores.DIRECT_LOAD,
+          type: 'loads',
+          evidence: `Procedure ${procId} writes to ${target} via INSERT/MERGE`,
+          validationFlags: SqlServerMetadataExtractor.isFourPartReference(target)
+            ? ['REQUIRES_CATALOG_VALIDATION']
+            : [],
+        });
+      }
+
+      const sourceClauses = SqlServerMetadataExtractor.extractSourceClausesFromInsert(
+        proc.definition || ''
+      );
+      if (/\bINSERT\s+INTO\b[\s\S]*?\bVALUES\s*\(/i.test(proc.definition || '')) {
+        relationships.push({
+          id: `${procId}->LITERAL_VALUE:loads`,
+          fromTable: 'LITERAL_VALUE',
+          toTable: procId,
+          source: 'LITERAL_VALUE',
+          target: procId,
+          confidence: ConfidenceScores.DIRECT_LOAD,
+          type: 'loads',
+          evidence: `Procedure ${procId} inserts literal VALUES content`,
+        });
+      }
+      for (const clause of sourceClauses) {
+        const clauseRefs = SqlServerMetadataExtractor.extractTableReferencesFromClause(
+          clause,
+          procServer,
+          procDatabase
+        );
+        if (clauseRefs.length === 0 && /\bVALUES\s*\(/i.test(clause)) {
+          relationships.push({
+            id: `${procId}->LITERAL_VALUE:loads`,
+            fromTable: 'LITERAL_VALUE',
+            toTable: procId,
+            source: 'LITERAL_VALUE',
+            target: procId,
+            confidence: ConfidenceScores.DIRECT_LOAD,
+            type: 'loads',
+            evidence: `Procedure ${procId} loads from literal VALUES content`,
+          });
+          continue;
+        }
+
+        for (const source of clauseRefs) {
+          const validationFlags = [];
+          if (source.validationFlag) validationFlags.push(source.validationFlag);
+          relationships.push({
+            id: `${source.reference}->${procId}:reads`,
+            fromTable: source.reference,
+            toTable: procId,
+            source: source.reference,
+            target: procId,
+            confidence: ConfidenceScores.DIRECT_LOAD,
+            type: 'reads',
+            evidence: `Procedure ${procId} reads from ${source.reference} in INSERT/MERGE source clause`,
+            validationFlags,
+          });
+        }
+      }
+
+      const openQueryLiteral = SqlServerMetadataExtractor.extractOpenQueryLiteral(proc.definition || '');
+      if (openQueryLiteral) {
+        relationships.push({
+          id: `${openQueryLiteral}->${procId}:reads`,
+          fromTable: openQueryLiteral,
+          toTable: procId,
+          source: openQueryLiteral,
+          target: procId,
+          confidence: ConfidenceScores.DIRECT_LOAD,
+          type: 'reads',
+          evidence: `Procedure ${procId} references OPENQUERY source ${openQueryLiteral}`,
+          validationFlags: ['REQUIRES_CATALOG_VALIDATION'],
+        });
+      }
+    }
+
+    return relationships;
   }
 
   /**
@@ -109,14 +608,15 @@ class SqlServerMetadataExtractor {
         SCHEMA_NAME(t.schema_id) as schema_name,
         t.name as table_name,
         t.type as table_type,
-        ep.value as table_description,
-        ps.row_count,
-        ps.reserved_page_count * 8 as size_kb
+        CAST(ep.value AS NVARCHAR(MAX)) as table_description,
+        SUM(ps.row_count) as row_count,
+        SUM(ps.reserved_page_count) * 8 as size_kb
       FROM sys.tables t
       LEFT JOIN sys.extended_properties ep ON ep.major_id = t.object_id 
         AND ep.minor_id = 0 AND ep.class = 1
       LEFT JOIN sys.dm_db_partition_stats ps ON ps.object_id = t.object_id 
         AND ps.index_id IN (0, 1)
+      GROUP BY t.schema_id, t.name, t.type, CAST(ep.value AS NVARCHAR(MAX))
       ORDER BY SCHEMA_NAME(t.schema_id), t.name
     `;
 
@@ -140,7 +640,12 @@ class SqlServerMetadataExtractor {
       });
 
       return filteredRows.map((row) => ({
-        id: `${row.schema_name}.${row.table_name}`,
+        id: SqlServerMetadataExtractor.qualifySqlObjectId(
+          SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
+          this.metadata.database || this.config?.database || '',
+          row.schema_name,
+          row.table_name
+        ),
         name: row.table_name,
         schema: row.schema_name,
         type: String(row.table_type).trim() === 'U' ? 'table' : 'view',
@@ -184,7 +689,12 @@ class SqlServerMetadataExtractor {
       });
 
       return filteredRows.map((row) => ({
-        id: `${row.schema_name}.${row.table_name}`,
+        id: SqlServerMetadataExtractor.qualifySqlObjectId(
+          SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
+          this.metadata.database || this.config?.database || '',
+          row.schema_name,
+          row.table_name
+        ),
         name: row.table_name,
         schema: row.schema_name,
         type: String(row.table_type).trim() === 'U' ? 'table' : 'view',
@@ -211,7 +721,12 @@ class SqlServerMetadataExtractor {
 
     const result = await this.pool.request().query(query);
     const tables = result.recordset.map((row) => ({
-      id: `${row.schema_name}.${row.table_name}`,
+      id: SqlServerMetadataExtractor.qualifySqlObjectId(
+        SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
+        this.metadata.database || this.config?.database || '',
+        row.schema_name,
+        row.table_name
+      ),
       schema: row.schema_name,
       name: row.table_name,
     }));
@@ -654,15 +1169,18 @@ class SqlServerMetadataExtractor {
           SCHEMA_NAME(o1.schema_id) as schema_name,
           o1.name as object_name,
           o1.type as object_type,
+          sed.referenced_server_name as referenced_server_name,
+          sed.referenced_database_name as referenced_database_name,
+          sed.referenced_schema_name as referenced_schema_name,
+          sed.referenced_entity_name as referenced_entity_name,
           SCHEMA_NAME(o2.schema_id) as referenced_schema,
           o2.name as referenced_object,
           o2.type as referenced_type
         FROM sys.sql_expression_dependencies sed
         JOIN sys.objects o1 ON sed.referencing_id = o1.object_id
-        JOIN sys.objects o2 ON sed.referenced_id = o2.object_id
+        LEFT JOIN sys.objects o2 ON sed.referenced_id = o2.object_id
         WHERE o1.is_ms_shipped = 0
-          AND o2.is_ms_shipped = 0
-          AND sed.referenced_database_name IS NULL
+          AND (o2.is_ms_shipped = 0 OR o2.object_id IS NULL)
         ORDER BY SCHEMA_NAME(o1.schema_id), o1.name
       `;
 
@@ -670,21 +1188,44 @@ class SqlServerMetadataExtractor {
       const result = await this.pool.request().query(query);
       const depsByObject = new Map();
       const scopedObjects = new Set(
-        (objects || []).map((obj) => `${obj.schema}.${obj.name}`.toLowerCase())
+        (objects || []).flatMap((obj) => [
+          `${obj.schema}.${obj.name}`.toLowerCase(),
+          String(obj.id || '').toLowerCase(),
+        ])
       );
 
       result.recordset.forEach((row) => {
-        const objKey = `${row.schema_name}.${row.object_name}`;
-        if (scopedObjects.size > 0 && !scopedObjects.has(objKey.toLowerCase())) {
+        const objKey = SqlServerMetadataExtractor.qualifySqlObjectId(
+          SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
+          this.metadata.database || this.config?.database || '',
+          row.schema_name,
+          row.object_name
+        );
+        const schemaObjectKey = `${row.schema_name}.${row.object_name}`.toLowerCase();
+        if (
+          scopedObjects.size > 0 &&
+          !scopedObjects.has(objKey.toLowerCase()) &&
+          !scopedObjects.has(schemaObjectKey)
+        ) {
           return;
         }
         if (!depsByObject.has(objKey)) {
           depsByObject.set(objKey, []);
         }
+        const referencedObject = SqlServerMetadataExtractor.qualifySqlObjectId(
+          row.referenced_server_name ||
+            SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
+          row.referenced_database_name || this.metadata.database || this.config?.database || '',
+          row.referenced_schema || row.referenced_schema_name || 'dbo',
+          row.referenced_object || row.referenced_entity_name
+        );
         depsByObject.get(objKey).push({
           referencedSchema: row.referenced_schema,
-          referencedObject: row.referenced_object,
+          referencedObject,
           referencedType: row.referenced_type,
+          referencedServer: row.referenced_server_name || null,
+          referencedDatabase: row.referenced_database_name || null,
+          referencedEntity: row.referenced_entity_name || null,
         });
       });
 
@@ -734,8 +1275,13 @@ class SqlServerMetadataExtractor {
       
       const columnsByObject = new Map();
 
-      result.recordset.forEach((row) => {
-        const objectId = `${row.schema_name}.${row.object_name}`;
+        result.recordset.forEach((row) => {
+        const objectId = SqlServerMetadataExtractor.qualifySqlObjectId(
+          SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
+          this.metadata.database || this.config?.database || '',
+          row.schema_name,
+          row.object_name
+        );
         const objectKey = objectId.toLowerCase();
         const schemaName = String(row.schema_name || '').toLowerCase();
         
@@ -767,7 +1313,11 @@ class SqlServerMetadataExtractor {
       return columnsByObject;
     } catch (err) {
       console.error('Error extracting all columns:', err.message);
-      throw err;
+      this.metadata.extractionWarnings.push({
+        code: 'COLUMN_EXTRACTION_FAILED',
+        message: err.message,
+      });
+      return new Map();
     }
   }
 
@@ -827,6 +1377,7 @@ class SqlServerMetadataExtractor {
     try {
       const result = await this.pool.request().query(query);
       const selectedSchemas = new Set((scope.schemas || []).map((s) => s.toLowerCase()));
+      const selectedTables = new Set((scope.tables || []).map((t) => t.toLowerCase()));
       const excludeSchemas = new Set((scope.excludeSchemas || []).map((s) => s.toLowerCase()));
       const excludeTables = new Set((scope.excludeTables || []).map((t) => t.toLowerCase()));
 
@@ -834,13 +1385,19 @@ class SqlServerMetadataExtractor {
         .filter((row) => {
           const schemaName = String(row.schema_name || '').toLowerCase();
           const objectId = `${schemaName}.${row.procedure_name}`.toLowerCase();
-          
           if (excludeSchemas.has(schemaName) || excludeTables.has(objectId)) return false;
-          
-          return selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
+          const schemaMatch = selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
+          const tableMatch = selectedTables.size === 0 || selectedTables.has(objectId);
+          return selectedTables.size > 0 ? tableMatch : schemaMatch;
         })
         .map((row) => ({
-          id: `${row.schema_name}.${row.procedure_name}`,
+          id: SqlServerMetadataExtractor.qualifySqlObjectId(
+            SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
+            this.metadata.database || this.config?.database || '',
+            row.schema_name,
+            row.procedure_name
+          ),
+          serverName: SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
           name: row.procedure_name,
           schema: row.schema_name,
           type: 'stored_procedure',
@@ -877,6 +1434,7 @@ class SqlServerMetadataExtractor {
     try {
       const result = await this.pool.request().query(query);
       const selectedSchemas = new Set((scope.schemas || []).map((s) => s.toLowerCase()));
+      const selectedTables = new Set((scope.tables || []).map((t) => t.toLowerCase()));
       const excludeSchemas = new Set((scope.excludeSchemas || []).map((s) => s.toLowerCase()));
       const excludeTables = new Set((scope.excludeTables || []).map((t) => t.toLowerCase()));
 
@@ -885,10 +1443,19 @@ class SqlServerMetadataExtractor {
           const schemaName = String(row.schema_name || '').toLowerCase();
           const objectId = `${schemaName}.${row.synonym_name}`.toLowerCase();
           if (excludeSchemas.has(schemaName) || excludeTables.has(objectId)) return false;
-          return selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
+
+          const schemaMatch = selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
+          const tableMatch = selectedTables.size === 0 || selectedTables.has(objectId);
+          return selectedTables.size > 0 ? tableMatch : schemaMatch;
         })
         .map((row) => ({
-          id: `${row.schema_name}.${row.synonym_name}`,
+          id: SqlServerMetadataExtractor.qualifySqlObjectId(
+            SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
+            this.metadata.database || this.config?.database || '',
+            row.schema_name,
+            row.synonym_name
+          ),
+          serverName: SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
           name: row.synonym_name,
           schema: row.schema_name,
           type: 'synonym',
@@ -928,6 +1495,7 @@ class SqlServerMetadataExtractor {
     try {
       const result = await this.pool.request().query(query);
       const selectedSchemas = new Set((scope.schemas || []).map((s) => s.toLowerCase()));
+      const selectedTables = new Set((scope.tables || []).map((t) => t.toLowerCase()));
       const excludeSchemas = new Set((scope.excludeSchemas || []).map((s) => s.toLowerCase()));
       const excludeTables = new Set((scope.excludeTables || []).map((t) => t.toLowerCase()));
 
@@ -935,13 +1503,19 @@ class SqlServerMetadataExtractor {
         .filter((row) => {
           const schemaName = String(row.schema_name || '').toLowerCase();
           const objectId = `${schemaName}.${row.function_name}`.toLowerCase();
-          
           if (excludeSchemas.has(schemaName) || excludeTables.has(objectId)) return false;
-          
-          return selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
+          const schemaMatch = selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
+          const tableMatch = selectedTables.size === 0 || selectedTables.has(objectId);
+          return selectedTables.size > 0 ? tableMatch : schemaMatch;
         })
         .map((row) => ({
-          id: `${row.schema_name}.${row.function_name}`,
+          id: SqlServerMetadataExtractor.qualifySqlObjectId(
+            SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
+            this.metadata.database || this.config?.database || '',
+            row.schema_name,
+            row.function_name
+          ),
+          serverName: SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
           name: row.function_name,
           schema: row.schema_name,
           type: row.func_type,
@@ -980,6 +1554,7 @@ class SqlServerMetadataExtractor {
     try {
       const result = await this.pool.request().query(query);
       const selectedSchemas = new Set((scope.schemas || []).map((s) => s.toLowerCase()));
+      const selectedTables = new Set((scope.tables || []).map((t) => t.toLowerCase()));
       const excludeSchemas = new Set((scope.excludeSchemas || []).map((s) => s.toLowerCase()));
       const excludeTables = new Set((scope.excludeTables || []).map((t) => t.toLowerCase()));
 
@@ -987,13 +1562,19 @@ class SqlServerMetadataExtractor {
         .filter((row) => {
           const schemaName = String(row.schema_name || '').toLowerCase();
           const objectId = `${schemaName}.${row.trigger_name}`.toLowerCase();
-          
           if (excludeSchemas.has(schemaName) || excludeTables.has(objectId)) return false;
-          
-          return selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
+          const schemaMatch = selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
+          const tableMatch = selectedTables.size === 0 || selectedTables.has(objectId);
+          return selectedTables.size > 0 ? tableMatch : schemaMatch;
         })
         .map((row) => ({
-          id: `${row.schema_name}.${row.trigger_name}`,
+          id: SqlServerMetadataExtractor.qualifySqlObjectId(
+            SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
+            this.metadata.database || this.config?.database || '',
+            row.schema_name,
+            row.trigger_name
+          ),
+          serverName: SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
           name: row.trigger_name,
           schema: row.schema_name,
           type: 'trigger',
@@ -1038,13 +1619,18 @@ class SqlServerMetadataExtractor {
         .filter((row) => {
           const schemaName = String(row.schema_name || '').toLowerCase();
           const objectId = `${schemaName}.${row.view_name}`.toLowerCase();
-          
           if (excludeSchemas.has(schemaName) || excludeTables.has(objectId)) return false;
-          
-          return selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
+          const schemaMatch = selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
+          return schemaMatch;
         })
         .map((row) => ({
-          id: `${row.schema_name}.${row.view_name}`,
+          id: SqlServerMetadataExtractor.qualifySqlObjectId(
+            SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
+            this.metadata.database || this.config?.database || '',
+            row.schema_name,
+            row.view_name
+          ),
+          serverName: SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
           name: row.view_name,
           schema: row.schema_name,
           type: 'view',
@@ -1089,9 +1675,19 @@ class SqlServerMetadataExtractor {
       const result = await this.pool.request().query(query);
       return result.recordset.map((row) => ({
         id: `${row.from_schema}.${row.from_table}.${row.from_column}->${row.to_schema}.${row.to_table}.${row.to_column}`,
-        fromTable: `${row.from_schema}.${row.from_table}`,
+        fromTable: SqlServerMetadataExtractor.qualifySqlObjectId(
+          SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
+          this.metadata.database || this.config?.database || '',
+          row.from_schema,
+          row.from_table
+        ),
         fromColumn: row.from_column,
-        toTable: `${row.to_schema}.${row.to_table}`,
+        toTable: SqlServerMetadataExtractor.qualifySqlObjectId(
+          SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
+          this.metadata.database || this.config?.database || '',
+          row.to_schema,
+          row.to_table
+        ),
         toColumn: row.to_column,
         constraintName: row.constraint_name,
         confidence: row.is_not_trusted ? 0.95 : 1.0,
@@ -1099,7 +1695,11 @@ class SqlServerMetadataExtractor {
       }));
     } catch (err) {
       console.error('Error extracting foreign keys:', err.message);
-      throw err;
+      this.metadata.extractionWarnings.push({
+        code: 'FOREIGN_KEY_EXTRACTION_FAILED',
+        message: err.message,
+      });
+      return [];
     }
   }
 
@@ -1238,7 +1838,16 @@ class SqlServerMetadataExtractor {
     this.metadata.extractionWarnings = [];
 
     // Extract all object types in parallel where possible
-    const [tables, synonyms, views, storedProcedures, functions, triggers, fks, objectInventory] =
+    const [
+      initialTables,
+      synonyms,
+      views,
+      storedProcedures,
+      functions,
+      triggers,
+      fks,
+      objectInventory,
+    ] =
       await Promise.all([
         this.extractTables(database, scope),
         this.extractSynonyms(scope),
@@ -1249,6 +1858,7 @@ class SqlServerMetadataExtractor {
         this.extractForeignKeys(),
         this.extractObjectTypeInventory(scope),
       ]);
+    let tables = initialTables;
 
     console.log(
       `Found ${tables.length} tables, ${synonyms.length} synonyms, ${views.length} views, ${storedProcedures.length} procs, ${functions.length} functions, ${triggers.length} triggers`
@@ -1262,8 +1872,7 @@ class SqlServerMetadataExtractor {
       ...table,
       columns: allColumnsMap.get(table.id) || [],
     }));
-    tables.length = 0;
-    tables.push(...tablesWithColumns);
+    tables = tablesWithColumns;
 
     // Instantly map columns to views in RAM
     const columnsByView = new Map(); // Keep this reference for the view mapping later
@@ -1295,8 +1904,7 @@ class SqlServerMetadataExtractor {
       };
     });
 
-    tables.length = 0;
-    tables.push(...tablesWithGovernanceMetadata);
+    tables = tablesWithGovernanceMetadata;
 
     console.log('Extracting routine parameters...');
     const routineParameters = await this.extractRoutineParameters(scope);
@@ -1313,7 +1921,7 @@ class SqlServerMetadataExtractor {
     // Attach dependencies to objects
     const attachDependencies = (collection) =>
       collection.map((obj) => {
-        const objKey = `${obj.schema}.${obj.name}`;
+        const objKey = obj.id;
         if (objectDependencies.has(objKey)) {
           return {
             ...obj,
@@ -1349,8 +1957,18 @@ class SqlServerMetadataExtractor {
       namingConventions = SqlServerMetadataExtractor.detectNamingConventions(tables);
     }
 
+    const procedureLoads = SqlServerMetadataExtractor.detectProcedureLoadRelationships(
+      storedProceduresWithDependencies
+    );
+
     // Combine and deduplicate
-    const allRelationships = [...fks, ...columnMatches, ...etlPatterns, ...namingConventions];
+    const allRelationships = [
+      ...fks,
+      ...columnMatches,
+      ...etlPatterns,
+      ...namingConventions,
+      ...procedureLoads,
+    ];
     const allObjects = [
       ...tables,
       ...synonyms,
@@ -1373,6 +1991,7 @@ class SqlServerMetadataExtractor {
     });
 
     this.metadata = {
+      serverName: this.metadata.serverName,
       database,
       tables,
       synonyms,

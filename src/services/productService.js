@@ -12,14 +12,20 @@ const fileName = fileURLToPath(import.meta.url);
 const dirName = path.dirname(fileName);
 
 const PRODUCTS_DIR = path.resolve(dirName, '../../data/products');
+const testProducts = new Map();
+
+function isTestRuntime() {
+  return process.env.NODE_ENV === 'test' || Boolean(process.env.JEST_WORKER_ID);
+}
 
 /**
- * Parse a single data product markdown file
+ * Parse data product markdown content.
+ * @param {string} content
  * @param {string} filePath
+ * @param {string} slug
  * @returns {Object}
  */
-function parseProductFile(filePath) {
-  const content = readFileSync(filePath, 'utf-8');
+function parseProductContent(content, filePath, slug) {
   const fmMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
 
   if (!fmMatch) {
@@ -28,7 +34,6 @@ function parseProductFile(filePath) {
 
   const meta = yaml.parse(fmMatch[1]);
   const body = content.substring(fmMatch[0].length).trim();
-  const slug = basename(filePath, '.md');
 
   return {
     slug,
@@ -56,11 +61,21 @@ function parseProductFile(filePath) {
 }
 
 /**
+ * Parse a single data product markdown file
+ * @param {string} filePath
+ * @returns {Object}
+ */
+function parseProductFile(filePath) {
+  const content = readFileSync(filePath, 'utf-8');
+  return parseProductContent(content, filePath, basename(filePath, '.md'));
+}
+
+/**
  * Load all data product markdown files
  * @returns {Array}
  */
 export function loadAllProducts() {
-  const products = [];
+  const productsBySlug = new Map();
 
   let entries;
   try {
@@ -72,14 +87,21 @@ export function loadAllProducts() {
   for (const entry of entries) {
     if (entry.isFile() && extname(entry.name) === '.md') {
       try {
-        products.push(parseProductFile(join(PRODUCTS_DIR, entry.name)));
+        const product = parseProductFile(join(PRODUCTS_DIR, entry.name));
+        productsBySlug.set(product.slug, product);
       } catch (err) {
         console.error(`[productService] Error parsing ${entry.name}:`, err.message);
       }
     }
   }
 
-  return products.sort((a, b) => a.name.localeCompare(b.name));
+  if (isTestRuntime()) {
+    for (const [slug, product] of testProducts.entries()) {
+      productsBySlug.set(slug, product);
+    }
+  }
+
+  return Array.from(productsBySlug.values()).sort((a, b) => a.name.localeCompare(b.name));
 }
 
 /**
@@ -141,6 +163,12 @@ export function saveProduct(slug, productData) {
   const content = `---\n${frontmatter}---\n\n${body}\n`;
 
   const filePath = join(PRODUCTS_DIR, `${slug}.md`);
+  if (isTestRuntime()) {
+    const product = parseProductContent(content, filePath, slug);
+    testProducts.set(slug, product);
+    return product;
+  }
+
   writeFileSync(filePath, content, 'utf-8');
 
   return parseProductFile(filePath);

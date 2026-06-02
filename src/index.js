@@ -3,8 +3,10 @@ import http from 'http';
 import path from 'path';
 
 // Import app factory
-import createApp, { initializeCache } from './app.js';
+import createApp from './app.js';
+import { initializeCache } from './utils/cacheInitializer.js';
 import { loadAllMarkdown } from './services/markdownService.js';
+import { resolveLineageCorpus } from './services/lineageResolver.js';
 import { buildLineageGraph } from './services/lineageService.js';
 
 // Load environment variables
@@ -24,9 +26,27 @@ const app = createApp();
 const envPath = process.env.MARKDOWN_DATA_PATH || 'data/markdown';
 const markdownDataPath = path.resolve(process.cwd(), envPath);
 
-const objects = loadAllMarkdown(markdownDataPath);
-const lineageGraph = buildLineageGraph(objects);
-initializeCache(app, objects, lineageGraph);
+async function initializeMarkdownCacheInBackground() {
+  const startedAt = Date.now();
+
+  try {
+    // Health checks must not wait for corpus-wide lineage reconciliation.
+    if (process.env.RUN_STARTUP_LINEAGE_RESOLUTION === 'true') {
+      await resolveLineageCorpus(markdownDataPath).catch((err) => {
+        console.warn(`Startup lineage resolution skipped after error: ${err.message}`);
+      });
+    }
+
+    const objects = await loadAllMarkdown(markdownDataPath);
+    const lineageGraph = buildLineageGraph(objects);
+    initializeCache(objects, lineageGraph);
+    console.log(
+      `Data cache initialized with ${objects.size} object(s) in ${Date.now() - startedAt}ms`
+    );
+  } catch (err) {
+    console.warn(`Data cache initialization failed: ${err.message}`);
+  }
+}
 
 let activeServer = null;
 let isShuttingDown = false;
@@ -72,6 +92,7 @@ const startServer = (port, attemptsRemaining = MAX_PORT_ATTEMPTS) => {
 
   server.listen(port, () => {
     activeServer = server;
+    initializeMarkdownCacheInBackground();
     console.log(`✓ Data Governance Platform running on port ${port}`);
     console.log(`✓ Environment: ${NODE_ENV}`);
     console.log(`✓ Elasticsearch: ${process.env.ELASTICSEARCH_URL || 'https://localhost:9200'}`);

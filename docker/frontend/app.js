@@ -1,4 +1,4 @@
-/* eslint-env browser */
+﻿/* eslint-env browser */
 /* global Vue, Vuetify, Chart */
 
 const { createApp, nextTick } = Vue;
@@ -15,40 +15,40 @@ const navSections = [
     key: 'workspace',
     label: 'Workspace',
     items: [
-      { key: 'overview', label: 'Command Center', icon: '⌂' },
-      { key: 'browse', label: 'Catalog Search', icon: '◎' },
-      { key: 'discovery', label: 'Lineage Explorer', icon: '⟆' },
+      { key: 'overview', label: 'Command Center', icon: 'mdi-view-dashboard' },
+      { key: 'browse', label: 'Catalog Search', icon: 'mdi-magnify' },
+      { key: 'discovery', label: 'Lineage Explorer', icon: 'mdi-graphql' },
     ],
   },
   {
     key: 'govern',
     label: 'Govern',
     items: [
-      { key: 'glossary', label: 'Business Glossary', icon: '✦' },
-      { key: 'governance', label: 'Trust & Compliance', icon: '✓' },
+      { key: 'glossary', label: 'Business Glossary', icon: 'mdi-book-open-variant' },
+      { key: 'governance', label: 'Trust & Compliance', icon: 'mdi-shield-check' },
     ],
   },
   {
     key: 'deliver',
     label: 'Deliver',
     items: [
-      { key: 'products', label: 'Data Products', icon: '◫' },
-      { key: 'reports', label: 'Governance Insights', icon: '▧' },
+      { key: 'products', label: 'Data Products', icon: 'mdi-package-variant-closed' },
+      { key: 'reports', label: 'Governance Insights', icon: 'mdi-chart-box' },
     ],
   },
   {
     key: 'operate',
     label: 'Operate',
     items: [
-      { key: 'integrations', label: 'Connections', icon: '⇄' },
-      { key: 'import', label: 'Metadata Ingestion', icon: '↓' },
-      { key: 'admin', label: 'Administration', icon: '⚙' },
+      { key: 'integrations', label: 'Connections', icon: 'mdi-swap-horizontal' },
+      { key: 'import', label: 'Metadata Ingestion', icon: 'mdi-database-import' },
+      { key: 'admin', label: 'Administration', icon: 'mdi-cog' },
     ],
   },
   {
     key: 'support',
     label: 'Support',
-    items: [{ key: 'docs', label: 'Help Center', icon: 'ⓘ' }],
+    items: [{ key: 'docs', label: 'Help Center', icon: 'mdi-help-circle' }],
   },
 ];
 
@@ -156,7 +156,7 @@ const appConfig = {
       isLoggingOut: false,
       isRefreshingToken: false,
       showProfileSecrets: false,
-      toast: '',
+      toast: { show: false, message: '' },
       apiErrors: [],
       health: null,
       overview: null,
@@ -164,6 +164,10 @@ const appConfig = {
       activity: null,
       recommendations: null,
       insights: null,
+      graphDrawerOpen: false,
+      graphDrawerNode: null,
+      graphAnimationFrame: null,
+      graphDashOffset: 0,
       browseQuery: '',
       browseResults: [],
       searchFacets: null,
@@ -172,6 +176,9 @@ const appConfig = {
         types: [],
         quality: [],
         databases: [],
+        owners: [],
+        sensitivity: [],
+        tags: [],
       },
       objectList: [],
       selectedObjectDetail: null,
@@ -303,6 +310,8 @@ const appConfig = {
           availableSchemas: [],
           selectedSchemas: [],
           selectedTables: [],
+          excludeSchemas: [],
+          excludeTables: [],
           expandedSchemas: {},
           schemaTableLists: {},
           topSchemaCount: 5,
@@ -637,14 +646,12 @@ const appConfig = {
       return this.browseResults.length ? this.browseResults : this.objectList;
     },
     browseFacetOptions() {
-      const normalizeType = (value) => {
-        const type = String(value || '').toLowerCase();
-        if (type === 'storedprocedure' || type === 'procedure') return 'storedProcedure';
-        return type || 'unknown';
-      };
-
       const source = this.catalogBaseResults || [];
-      const sourceTypes = new Set(source.map((item) => normalizeType(item.type)).filter(Boolean));
+      const normalizeType = (v) => {
+        const t = String(v || '').toLowerCase();
+        return t === 'storedprocedure' || t === 'procedure' ? 'storedProcedure' : t || 'unknown';
+      };
+      const sourceTypes = new Set(source.map((item) => item.type).filter(Boolean));
       const sourceDatabases = new Set(
         source.map((item) => item.database || item.schema).filter(Boolean)
       );
@@ -658,7 +665,7 @@ const appConfig = {
 
       return {
         types: [...new Set(facetTypes)].sort(),
-        quality: ['verified', 'warning', 'draft'],
+        quality: ['gold', 'silver', 'bronze', 'unrated'],
         databases: [...new Set(facetDatabases)].sort(),
       };
     },
@@ -676,12 +683,7 @@ const appConfig = {
         return type || 'unknown';
       };
 
-      const trustLevel = (item) => {
-        const sensitivity = String(item?.sensitivity || '').toLowerCase();
-        if (sensitivity === 'restricted' || sensitivity === 'confidential') return 'warning';
-        if (sensitivity === 'draft') return 'draft';
-        return 'verified';
-      };
+      const trustLevel = (item) => String(item?.trust_level || 'unrated').toLowerCase();
 
       const scoreResult = (item) => {
         const objectId = String(item.id || '').toLowerCase();
@@ -701,8 +703,9 @@ const appConfig = {
         }
 
         const quality = trustLevel(item);
-        if (quality === 'verified') score += 10;
-        if (quality === 'warning') score -= 4;
+        if (quality === 'gold') score += 15;
+        if (quality === 'silver') score += 8;
+        if (quality === 'bronze') score -= 2;
 
         return score;
       };
@@ -736,7 +739,7 @@ const appConfig = {
           }
 
           if (this.browseSort === 'quality') {
-            const qualityWeight = { verified: 3, warning: 2, draft: 1 };
+            const qualityWeight = { gold: 4, silver: 3, bronze: 2, unrated: 1 };
             const secondWeight = qualityWeight[second.trustLevel] || 0;
             const firstWeight = qualityWeight[first.trustLevel] || 0;
             const qualityDelta = secondWeight - firstWeight;
@@ -744,9 +747,10 @@ const appConfig = {
           }
 
           if (this.browseSort === 'impact') {
-            const secondImpact = Number(second.downstreamCount || second.score || 0);
-            const firstImpact = Number(first.downstreamCount || first.score || 0);
-            return secondImpact - firstImpact;
+            const secondImpact = Number(second.downstreamCount || second.reachScore || 0);
+            const firstImpact = Number(first.downstreamCount || first.reachScore || 0);
+            const impactDelta = secondImpact - firstImpact;
+            if (impactDelta !== 0) return impactDelta;
           }
 
           return second.rankScore - first.rankScore;
@@ -765,12 +769,7 @@ const appConfig = {
         return type || 'unknown';
       };
 
-      const trustLevel = (item) => {
-        const sensitivity = String(item?.sensitivity || '').toLowerCase();
-        if (sensitivity === 'restricted' || sensitivity === 'confidential') return 'warning';
-        if (sensitivity === 'draft') return 'draft';
-        return 'verified';
-      };
+      const trustLevel = (item) => String(item?.trust_level || 'unrated').toLowerCase();
 
       const countByGroup = {
         types: {},
@@ -795,13 +794,22 @@ const appConfig = {
       const match = (this.docsLibrary || []).find((item) => item.key === this.selectedDocKey);
       return match?.title || 'Help Center';
     },
+    lineageStatusLabel(value) {
+      const status = String(value || '').toLowerCase();
+      if (status === 'creator_found') return 'Creator Found';
+      if (status === 'source_external') return 'Source External';
+      if (status === 'creator_unresolved') return 'Creator Unresolved';
+      if (status === 'external_or_unresolved') return 'External or Unresolved';
+      return value || 'Unresolved';
+    },
   },
   methods: {
     showToast(message) {
-      this.toast = message;
+      this.toast.message = message;
+      this.toast.show = true;
       setTimeout(() => {
-        if (this.toast === message) {
-          this.toast = '';
+        if (this.toast.message === message) {
+          this.toast.show = false;
         }
       }, 3000);
     },
@@ -873,10 +881,10 @@ const appConfig = {
       }
 
       if (token.length <= 16) {
-        return '••••••••';
+        return '********';
       }
 
-      return `${token.slice(0, 10)}…${token.slice(-8)}`;
+      return `${token.slice(0, 10)}...${token.slice(-8)}`;
     },
     async copyTextToClipboard(value, label) {
       if (!value) {
@@ -1420,27 +1428,83 @@ const appConfig = {
       }
 
       const checks = this.quality.checks || {};
+      const labels = Object.keys(checks);
+      const passData = labels.map((key) => (checks[key] ? 82 : 18));
+      const failData = labels.map((key) => (checks[key] ? 18 : 82));
+      const ctx = canvas.getContext('2d');
+      const qualityGradient = ctx.createLinearGradient(0, 0, 0, 320);
+      qualityGradient.addColorStop(0, 'rgba(59, 130, 246, 0.95)');
+      qualityGradient.addColorStop(0.55, 'rgba(14, 165, 233, 0.72)');
+      qualityGradient.addColorStop(1, 'rgba(16, 185, 129, 0.45)');
       this.chartInstance = new Chart(canvas, {
-        type: 'radar',
+        type: 'bar',
         data: {
-          labels: Object.keys(checks),
+          labels,
           datasets: [
             {
-              label: 'Quality Coverage',
-              data: Object.values(checks).map((value) => (value ? 100 : 0)),
-              fill: true,
-              backgroundColor: 'rgba(37, 99, 235, 0.2)',
-              borderColor: '#2563eb',
+              label: 'Passing Signals',
+              data: passData,
+              backgroundColor: qualityGradient,
+              borderColor: '#60a5fa',
+              borderWidth: 1,
+              borderRadius: 10,
+              stack: 'quality',
+            },
+            {
+              label: 'Risk Gap',
+              data: failData,
+              backgroundColor: 'rgba(15, 23, 42, 0.28)',
+              borderColor: 'rgba(148, 163, 184, 0.7)',
+              borderWidth: 1,
+              borderRadius: 10,
+              stack: 'quality',
             },
           ],
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          indexAxis: 'y',
+          interaction: {
+            mode: 'index',
+            intersect: false,
+          },
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: '#cbd5e1',
+                usePointStyle: true,
+              },
+            },
+            tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.95)',
+              titleColor: '#f8fafc',
+              bodyColor: '#e2e8f0',
+              borderColor: 'rgba(148, 163, 184, 0.35)',
+              borderWidth: 1,
+            },
+          },
           scales: {
-            r: {
+            x: {
+              stacked: true,
               suggestedMin: 0,
               suggestedMax: 100,
+              grid: {
+                color: 'rgba(148, 163, 184, 0.14)',
+              },
+              ticks: {
+                color: '#94a3b8',
+              },
+            },
+            y: {
+              stacked: true,
+              grid: {
+                color: 'rgba(148, 163, 184, 0.08)',
+              },
+              ticks: {
+                color: '#cbd5e1',
+              },
             },
           },
         },
@@ -1655,51 +1719,80 @@ const appConfig = {
       }
 
       const topRows = this.reports.blastRows.slice(0, 12);
+      const ctx = canvas.getContext('2d');
+      const blastGradient = ctx.createLinearGradient(0, 0, 420, 0);
+      blastGradient.addColorStop(0, 'rgba(14, 165, 233, 0.92)');
+      blastGradient.addColorStop(0.5, 'rgba(99, 102, 241, 0.86)');
+      blastGradient.addColorStop(1, 'rgba(239, 68, 68, 0.88)');
       this.blastChartInstance = new Chart(canvas, {
         type: 'bar',
         data: {
           labels: topRows.map((row) => row.id),
           datasets: [
             {
-              label: 'Downstream Reach',
+              label: 'Upstream Extraction Velocity',
               data: topRows.map((row) =>
-                row.downstreamDepth === null ? 0 : Math.max(0, 6 - row.downstreamDepth) * 2
+                row.upstreamDepth === null ? 0 : Math.max(0, 7 - row.upstreamDepth) * 10
               ),
-              backgroundColor: 'rgba(239, 68, 68, 0.75)',
-              borderColor: '#dc2626',
+              backgroundColor: 'rgba(56, 189, 248, 0.75)',
+              borderColor: '#0ea5e9',
               borderWidth: 1,
+              stack: 'blast',
+              borderRadius: 10,
             },
             {
-              label: 'Upstream Reach',
+              label: 'Downstream Impact Footprint',
               data: topRows.map((row) =>
-                row.upstreamDepth === null ? 0 : Math.max(0, 6 - row.upstreamDepth)
+                row.downstreamDepth === null ? 0 : Math.max(0, 7 - row.downstreamDepth) * 12
               ),
-              backgroundColor: 'rgba(37, 99, 235, 0.75)',
-              borderColor: '#1d4ed8',
+              backgroundColor: blastGradient,
+              borderColor: '#f97316',
               borderWidth: 1,
+              stack: 'blast',
+              borderRadius: 10,
             },
           ],
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          indexAxis: 'y',
+          interaction: {
+            mode: 'index',
+            intersect: false,
+          },
           plugins: {
             legend: {
               position: 'bottom',
+              labels: {
+                color: '#cbd5e1',
+              },
+            },
+            tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.95)',
+              titleColor: '#f8fafc',
+              bodyColor: '#e2e8f0',
+              borderColor: 'rgba(148, 163, 184, 0.35)',
+              borderWidth: 1,
             },
           },
           scales: {
             x: {
+              stacked: true,
+              grid: {
+                color: 'rgba(148, 163, 184, 0.12)',
+              },
               ticks: {
-                maxRotation: 65,
-                minRotation: 45,
+                color: '#94a3b8',
               },
             },
             y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: 'Reach Weight',
+              stacked: true,
+              grid: {
+                color: 'rgba(148, 163, 184, 0.08)',
+              },
+              ticks: {
+                color: '#cbd5e1',
               },
             },
           },
@@ -1733,8 +1826,14 @@ const appConfig = {
     },
     async runSearch() {
       try {
+        const database = encodeURIComponent(this.selectedFacetFilters.databases.join(','));
+        const type = encodeURIComponent(this.selectedFacetFilters.types.join(','));
+        const owner = encodeURIComponent((this.selectedFacetFilters.owners || []).join(','));
+        const sensitivity = encodeURIComponent((this.selectedFacetFilters.sensitivity || []).join(','));
+        const tags = encodeURIComponent((this.selectedFacetFilters.tags || []).join(','));
+        const quality = encodeURIComponent((this.selectedFacetFilters.quality || []).join(','));
         const search = await this.api(
-          `/api/v1/search?q=${encodeURIComponent(this.browseQuery)}&limit=50`
+          `/api/v1/search?q=${encodeURIComponent(this.browseQuery)}&limit=50&database=${database}&type=${type}&owner=${owner}&sensitivity=${sensitivity}&tags=${tags}&trust_level=${quality}`
         );
         this.browseResults = search.results || [];
       } catch (err) {
@@ -1746,6 +1845,22 @@ const appConfig = {
         }
         this.showToast(`Search failed: ${err.message}`);
       }
+    },
+    browseTreeRoots() {
+      const items = this.filteredCatalogResults || [];
+      const roots = new Map();
+      items.forEach((item) => {
+        const parts = String(item.id || '').split('.');
+        const server = parts.length > 3 ? parts[0] : item.server || 'local';
+        const database = item.database || parts[0] || 'default';
+        const schema = item.schema || parts[Math.max(0, parts.length - 2)] || 'dbo';
+        const key = `${server}.${database}.${schema}`;
+        if (!roots.has(key)) {
+          roots.set(key, []);
+        }
+        roots.get(key).push(item);
+      });
+      return Array.from(roots.entries()).map(([key, children]) => ({ key, children }));
     },
     toggleBrowseFacet(group, value) {
       if (!this.selectedFacetFilters[group]) {
@@ -1764,6 +1879,9 @@ const appConfig = {
         types: [],
         quality: [],
         databases: [],
+        owners: [],
+        sensitivity: [],
+        tags: [],
       };
       this.browseSort = 'relevance';
     },
@@ -1790,7 +1908,7 @@ const appConfig = {
     },
     formatAuditDetails(details) {
       if (!details || typeof details !== 'object') {
-        return '—';
+        return '-';
       }
       return Object.entries(details)
         .slice(0, 3)
@@ -1798,7 +1916,7 @@ const appConfig = {
         .join(' · ');
     },
     formatTimestamp(value) {
-      if (!value) return '—';
+      if (!value) return '-';
       const parsed = new Date(value);
       if (Number.isNaN(parsed.getTime())) return String(value);
       return parsed.toLocaleString();
@@ -1891,6 +2009,33 @@ const appConfig = {
         this.selectedObjectDetail = null;
         this.selectedObjectGovernance = null;
       }
+    },
+    saveSelectedObjectMetadata() {
+      if (!this.selectedObjectId) {
+        this.showToast('Select an object first.');
+        return Promise.resolve();
+      }
+
+      const bodyPayload = {
+        ...this.editableObjectMetadata,
+        tags: String(this.editableObjectMetadata.tags || '')
+          .split(',')
+          .map((t) => t.trim())
+          .filter(Boolean),
+      };
+
+      return this.api(`/api/v1/objects/${encodeURIComponent(this.selectedObjectId)}`, {
+          method: 'PUT',
+          body: JSON.stringify(bodyPayload),
+        })
+        .then(async () => {
+          this.showToast('Metadata updated successfully');
+          await this.loadObjectContext();
+          await this.loadBrowse();
+        })
+        .catch((err) => {
+          this.showToast(`Metadata update failed: ${err.message}`);
+        });
     },
     async loadGlossary() {
       try {
@@ -2090,7 +2235,9 @@ const appConfig = {
               directed: true,
               roots: `#${CSS.escape(this.selectedObjectId)}`,
               padding: 48,
-              spacingFactor: 1.6,
+              spacingFactor: 1.85,
+              nodeSep: 60,
+              rankSep: 140,
               avoidOverlap: true,
               animate: true,
               fit: true,
@@ -2118,19 +2265,26 @@ const appConfig = {
               style: {
                 label: 'data(displayLabel)',
                 shape: 'round-rectangle',
-                'background-color': '#eff6ff',
-                color: '#0f172a',
+                'background-color': '#0f172a',
+                color: '#f8fafc',
                 'font-size': '10px',
                 'font-family': 'ui-sans-serif, system-ui, sans-serif',
                 'font-weight': 700,
-                width: 142,
-                height: 48,
+                width: 156,
+                height: 54,
                 'text-wrap': 'wrap',
-                'text-max-width': '124px',
+                'text-max-width': '132px',
                 'text-valign': 'center',
                 'text-halign': 'center',
-                'border-width': 2,
-                'border-color': '#93c5fd',
+                'border-width': 2.5,
+                'border-color': '#475569',
+                'border-radius': 12,
+                'background-opacity': 0.94,
+                'text-outline-color': '#020617',
+                'text-outline-width': 1,
+                'shadow-blur': 16,
+                'shadow-color': '#0f172a',
+                'shadow-opacity': 0.28,
                 'overlay-opacity': 0,
               },
             },
@@ -2139,12 +2293,13 @@ const appConfig = {
               style: {
                 label: 'data(label)',
                 shape: 'round-rectangle',
-                'background-color': '#faf5ff',
-                'background-opacity': 0.5,
-                'border-color': '#7c3aed',
+                'background-color': '#111827',
+                'background-opacity': 0.18,
+                'border-color': '#a78bfa',
                 'border-style': 'dashed',
                 'border-width': 2,
-                color: '#4c1d95',
+                'border-radius': 12,
+                color: '#c4b5fd',
                 'font-size': '12px',
                 'font-weight': 'bold',
                 'text-valign': 'top',
@@ -2155,41 +2310,44 @@ const appConfig = {
             {
               selector: 'node[isCentral]',
               style: {
-                'background-color': '#dcfce7',
-                'border-color': '#16a34a',
+                'background-color': '#052e16',
+                'border-color': '#22c55e',
                 'border-width': 4,
                 width: 172,
                 height: 58,
                 'font-size': '11px',
                 'font-weight': 'bold',
-                color: '#14532d',
+                color: '#dcfce7',
               },
             },
             {
               selector: 'node[type = "table"]',
               style: {
                 shape: 'round-rectangle',
-                'background-color': '#dbeafe',
-                'border-color': '#2563eb',
-                color: '#172554',
+                'background-color': '#172554',
+                'border-color': '#60a5fa',
+                color: '#dbeafe',
+                'border-radius': 12,
               },
             },
             {
               selector: 'node[type = "view"]',
               style: {
                 shape: 'round-rectangle',
-                'background-color': '#ede9fe',
-                'border-color': '#7c3aed',
-                color: '#3b0764',
+                'background-color': '#2e1065',
+                'border-color': '#c084fc',
+                color: '#f5d0fe',
+                'border-radius': 12,
               },
             },
             {
               selector: 'node[type = "procedure"]',
               style: {
                 shape: 'round-rectangle',
-                'background-color': '#ffedd5',
-                'border-color': '#ea580c',
-                color: '#7c2d12',
+                'background-color': '#431407',
+                'border-color': '#fb923c',
+                color: '#ffedd5',
+                'border-radius': 12,
                 width: 168,
               },
             },
@@ -2197,75 +2355,81 @@ const appConfig = {
               selector: 'node[type = "function"]',
               style: {
                 shape: 'round-rectangle',
-                'background-color': '#ccfbf1',
-                'border-color': '#0d9488',
-                color: '#134e4a',
+                'background-color': '#042f2e',
+                'border-color': '#2dd4bf',
+                color: '#ccfbf1',
+                'border-radius': 12,
               },
             },
             {
               selector: 'node[type = "trigger"]',
               style: {
                 shape: 'round-rectangle',
-                'background-color': '#ffe4e6',
-                'border-color': '#be123c',
-                color: '#881337',
+                'background-color': '#4c0519',
+                'border-color': '#fb7185',
+                color: '#ffe4e6',
+                'border-radius': 12,
               },
             },
             {
               selector: 'node[type = "package"]',
               style: {
                 shape: 'round-rectangle',
-                'background-color': '#f3e8ff',
-                'border-color': '#6d28d9',
+                'background-color': '#1e1b4b',
+                'border-color': '#8b5cf6',
                 'border-width': 3,
                 width: 188,
                 height: 56,
                 'font-size': '11px',
                 'font-weight': 'bold',
-                color: '#3b0764',
+                color: '#ede9fe',
+                'border-radius': 12,
               },
             },
             {
               selector: 'node:selected',
               style: {
-                'border-color': '#f59e0b',
+                'border-color': '#fbbf24',
                 'border-width': 5,
                 'shadow-blur': 16,
                 'shadow-color': '#fbbf24',
-                'shadow-opacity': 0.35,
+                'shadow-opacity': 0.55,
               },
             },
             {
               selector: 'edge',
               style: {
                 width: 'mapData(confidence, 0, 1, 1, 5)',
-                'line-color': '#94a3b8',
+                'line-color': '#38bdf8',
                 'target-arrow-shape': 'triangle',
-                'target-arrow-color': '#94a3b8',
-                'curve-style': rendersCenteredFlow ? 'taxi' : 'bezier',
+                'target-arrow-color': '#38bdf8',
+                'curve-style': 'taxi',
                 'taxi-direction': 'rightward',
                 'taxi-turn': '50%',
                 'taxi-turn-min-distance': 28,
                 label: 'data(label)',
-                color: '#475569',
+                color: '#cbd5e1',
                 'font-size': '9px',
                 'font-weight': 700,
                 'text-background-color': '#ffffff',
-                'text-background-opacity': 0.86,
+                'text-background-opacity': 0.78,
                 'text-background-padding': '3px',
                 'text-border-color': '#e2e8f0',
                 'text-border-width': 1,
                 'text-border-opacity': 0.85,
                 'text-rotation': 'autorotate',
-                opacity: 0.76,
+                opacity: 0.92,
+                'line-style': 'dashed',
+                'line-dash-pattern': [9, 7],
+                'line-dash-offset': 0,
               },
             },
             {
               selector: 'edge.producer-edge',
               style: {
-                'line-color': '#0284c7',
-                'target-arrow-color': '#0284c7',
-                width: 3.2,
+                'line-color': '#22d3ee',
+                'target-arrow-color': '#22d3ee',
+                width: 3.4,
               },
             },
             {
@@ -2280,24 +2444,24 @@ const appConfig = {
             {
               selector: 'edge.ssis-load-edge',
               style: {
-                'line-color': '#7c3aed',
-                'target-arrow-color': '#7c3aed',
+                'line-color': '#c084fc',
+                'target-arrow-color': '#c084fc',
                 width: 3.5,
               },
             },
             {
               selector: 'edge.consumer-edge',
               style: {
-                'line-color': '#f97316',
-                'target-arrow-color': '#f97316',
+                'line-color': '#fb7185',
+                'target-arrow-color': '#fb7185',
                 width: 3.2,
               },
             },
             {
               selector: 'edge:selected',
               style: {
-                'line-color': '#f59e0b',
-                'target-arrow-color': '#f59e0b',
+                'line-color': '#fbbf24',
+                'target-arrow-color': '#fbbf24',
                 width: 5,
                 opacity: 1,
               },
@@ -2317,6 +2481,8 @@ const appConfig = {
           if (node?.id) {
             this.selectedObjectId = node.id;
             this.reports.shareObjectId = node.id;
+            this.graphDrawerNode = node;
+            this.graphDrawerOpen = true;
             this.buildBlastRadiusReport();
             this.$nextTick(() => this.renderBlastRadiusChart());
             this.showToast(`Selected ${node.id}`);
@@ -2328,9 +2494,23 @@ const appConfig = {
           if (node?.id && node.id !== this.selectedObjectId) {
             this.selectedObjectId = node.id;
             this.reports.shareObjectId = node.id;
+            this.graphDrawerNode = node;
+            this.graphDrawerOpen = true;
             this.loadDiscovery();
           }
         });
+
+        if (this.graphAnimationFrame) {
+          cancelAnimationFrame(this.graphAnimationFrame);
+        }
+        const animateEdges = () => {
+          this.graphDashOffset = (this.graphDashOffset + 1) % 64;
+          if (this.graphInstance?.edges) {
+            this.graphInstance.edges().style('line-dash-offset', this.graphDashOffset);
+          }
+          this.graphAnimationFrame = requestAnimationFrame(animateEdges);
+        };
+        this.graphAnimationFrame = requestAnimationFrame(animateEdges);
       }
 
       if (this.discoveryFormat === 'mermaid') {
@@ -2371,6 +2551,13 @@ const appConfig = {
       });
       const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
       window.open(url, '_blank', 'noopener,noreferrer');
+    },
+    openGraphDrawer(node) {
+      this.graphDrawerNode = node;
+      this.graphDrawerOpen = true;
+    },
+    closeGraphDrawer() {
+      this.graphDrawerOpen = false;
     },
     resetGraphView() {
       this.graphShowOnlySSIS = false;
@@ -2865,6 +3052,8 @@ const appConfig = {
           // Schema mode: extract entire schemas
           sqlPayload.selectedSchemas = this.importer.sqlServer.selectedSchemas;
         }
+        sqlPayload.excludeSchemas = this.importer.sqlServer.excludeSchemas;
+        sqlPayload.excludeTables = this.importer.sqlServer.excludeTables;
 
         const payload = await this.api('/api/v1/ingestion/connect-sql-server', {
           method: 'POST',
@@ -3180,10 +3369,8 @@ const appConfig = {
     async runLoad() {
       try {
         if (!this.canLoadToIndex) {
-          const meiliUrl = this.importer.status?.meilisearchUrl || 'http://localhost:7700';
-          this.showToast(
-            `Load blocked: Meilisearch is unavailable at ${meiliUrl}. Start it and refresh status.`
-          );
+          const esUrl = this.importer.status?.elasticsearchUrl || 'https://localhost:9200';
+          this.showToast(`Load blocked: Elasticsearch index is unavailable at ${esUrl}. Verify service status and retry.`);
           return;
         }
         if (this.importer.loadPath === './docs' && this.importer.status?.lastGeneratedPath) {
@@ -3404,6 +3591,10 @@ const appConfig = {
     }
   },
   beforeUnmount() {
+    if (this.graphAnimationFrame) {
+      cancelAnimationFrame(this.graphAnimationFrame);
+      this.graphAnimationFrame = null;
+    }
     this.stopImportStatusPolling();
   },
   template: `
@@ -3432,7 +3623,7 @@ const appConfig = {
       <v-layout v-else class="app-shell" :class="{ 'sidebar-collapsed': sidebarCollapsed }">
         <v-navigation-drawer
           class="sidebar"
-          color="#0f172a"
+          style="backdrop-filter: blur(12px); background: linear-gradient(180deg, rgba(2,6,23,0.96), rgba(15,23,42,0.82)); border-right: 1px solid rgba(255,255,255,0.08); box-shadow: 0 24px 60px rgba(2,6,23,0.35);"
           theme="dark"
           :model-value="$vuetify.display.smAndDown ? mobileSidebarOpen : true"
           @update:model-value="handleDrawerModelUpdate"
@@ -3442,7 +3633,7 @@ const appConfig = {
           width="216"
         >
           <div class="brand">
-            <div class="brand-icon">⬡</div>
+            <div class="brand-icon"><v-icon>mdi-hexagonal-outline</v-icon></div>
             <div v-if="!sidebarCollapsed || $vuetify.display.smAndDown" class="brand-text">
               <h2>DataGov</h2>
               <p>Enterprise Platform</p>
@@ -3460,7 +3651,7 @@ const appConfig = {
                 @click="onViewChange(item.key)"
               >
                 <template #prepend>
-                  <span class="nav-icon">{{ item.icon }}</span>
+                  <v-icon start class="mr-2">{{ item.icon }}</v-icon>
                 </template>
                 <v-list-item-title v-if="!sidebarCollapsed || $vuetify.display.smAndDown">{{ item.label }}</v-list-item-title>
               </v-list-item>
@@ -3473,30 +3664,32 @@ const appConfig = {
         </v-navigation-drawer>
 
         <v-main class="main">
-          <v-app-bar class="topbar" flat>
+          <v-app-bar class="topbar" flat style="backdrop-filter: blur(12px); background: rgba(2, 6, 23, 0.72); border-bottom: 1px solid rgba(255,255,255,0.08); padding: 10px 16px 12px;">
             <div class="topbar-left">
               <div class="topbar-nav-controls">
-                <v-btn v-if="$vuetify.display.smAndDown" icon variant="text" size="small" @click="toggleMobileSidebar" title="Open navigation">☰</v-btn>
+                <v-btn v-if="$vuetify.display.smAndDown" icon="mdi-menu" variant="text" size="small" @click="toggleMobileSidebar" title="Open navigation"></v-btn>
                 <v-btn v-else icon variant="text" size="small" @click="toggleSidebar" title="Collapse sidebar">
-                  {{ sidebarCollapsed ? '⤢' : '⤡' }}
+                  <v-icon>{{ sidebarCollapsed ? 'mdi-chevron-right' : 'mdi-chevron-left' }}</v-icon>
                 </v-btn>
               </div>
-              <h4>{{ activeNavItem?.label || 'Workspace' }}</h4>
-              <div class="user-meta">{{ activeNavSection?.label || 'Workspace' }} · {{ currentUser?.email }} · {{ (currentUser?.roles || []).join(', ') }}</div>
-              <div class="workflow-inline">
+              <div class="mb-2">
+              <h4 style="margin-bottom:6px; letter-spacing:0.01em;">{{ activeNavItem?.label || 'Workspace' }}</h4>
+              <div class="user-meta" style="font-size:12px; line-height:1.6; color:#64748b;">{{ activeNavSection?.label || 'Workspace' }} · {{ currentUser?.email }} · {{ (currentUser?.roles || []).join(', ') }}</div>
+              <div class="workflow-inline" style="margin-top:2px;">
                 <span class="workflow-inline-label">{{ workflowProgressPercent }}% complete</span>
                 <span class="workflow-inline-next">→ {{ recommendedWorkflowAction.label }}</span>
               </div>
+              </div>
             </div>
-            <div class="btn-row">
-              <v-btn color="primary" size="small" @click="runRecommendedWorkflowAction">Run Next Step</v-btn>
-              <v-chip size="small" :color="demoModeEnabled ? 'info' : 'success'" variant="flat">
+            <div class="d-flex align-center" style="gap: 12px; flex-wrap: wrap;">
+              <v-btn class="pill-action-btn" color="primary" size="small" @click="runRecommendedWorkflowAction">Run Next Step</v-btn>
+              <v-chip size="small" variant="flat" :color="demoModeEnabled ? 'info' : 'blue-grey-lighten-4'" :class="demoModeEnabled ? 'font-weight-bold' : 'text-blue-grey-darken-4 font-weight-bold'">
                 {{ demoModeEnabled ? 'Demo Data: ON' : 'Demo Data: OFF' }}
               </v-chip>
-              <v-btn v-if="!hasRealData" size="small" variant="tonal" @click="setDemoMode(!demoModeEnabled)">
+              <v-btn v-if="!hasRealData" class="pill-action-btn secondary" size="small" variant="tonal" @click="setDemoMode(!demoModeEnabled)">
                 {{ demoModeEnabled ? 'Disable Demo Data' : 'Enable Demo Data' }}
               </v-btn>
-              <v-btn size="small" variant="tonal" @click="bootstrapData">Refresh All</v-btn>
+              <v-btn class="pill-action-btn secondary" size="small" variant="tonal" @click="bootstrapData">Refresh All</v-btn>
               <v-menu location="bottom end" :close-on-content-click="false" offset="8">
                 <template #activator="{ props }">
                   <v-btn
@@ -3588,10 +3781,16 @@ const appConfig = {
             </div>
           </v-app-bar>
 
+          <div class="telemetry-banner" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:16px 16px 0;padding:20px;background:rgba(15, 23, 42, 0.6);backdrop-filter:blur(16px);border:1px solid rgba(255, 255, 255, 0.1);border-radius:16px;">
+            <div class="mini-metric" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);box-shadow:0 4px 10px -6px rgba(15, 23, 42, 0.35);"><span class="text-white font-weight-medium">Ingestion Health</span><strong style="color:#38bdf8;">{{ importer.status?.status || 'monitoring' }}</strong></div>
+            <div class="mini-metric" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);box-shadow:0 4px 10px -6px rgba(15, 23, 42, 0.35);"><span class="text-white font-weight-medium">Pipeline Progress</span><strong style="color:#38bdf8;">{{ workflowProgressPercent }}%</strong></div>
+            <div class="mini-metric" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);box-shadow:0 4px 10px -6px rgba(15, 23, 42, 0.35);"><span class="text-white font-weight-medium">Elasticsearch</span><strong style="color:#38bdf8;">{{ elasticsearchStatusLabel }}</strong></div>
+          </div>
+
           <v-container fluid class="content">
             <div v-if="activeView === 'overview'">
               <div class="search-hero" style="margin-bottom:14px;">
-                <h2>&#128269; Find anything in your data catalog</h2>
+                <h2>🔍 Find anything in your data catalog</h2>
                 <p>Search tables, views, procedures, functions — all in one place</p>
                 <div class="search-bar-wrap">
                   <v-text-field
@@ -3698,7 +3897,7 @@ const appConfig = {
                           <div class="asset-body">
                             <div class="asset-name">
                               {{ obj.name || obj.id }}
-                              <span class="trust-verified badge" v-if="obj.sensitivity !== 'confidential'">&#10003; Verified</span>
+                              <span class="badge" v-if="obj.sensitivity !== 'confidential'">Verified</span>
                               <span class="trust-deprecated badge" v-else-if="obj.sensitivity === 'confidential'">&#128274; Confidential</span>
                             </div>
                             <div class="asset-description">{{ obj.description || 'No description available.' }}</div>
@@ -3709,7 +3908,7 @@ const appConfig = {
                             </div>
                           </div>
                           <div class="asset-actions">
-                            <v-btn size="small" variant="outlined" @click.stop="selectedObjectId = obj.id; onViewChange('discovery'); $nextTick(loadDiscovery)">↗ Lineage</v-btn>
+                            <v-btn size="small" variant="outlined" append-icon="mdi-open-in-new" @click.stop="selectedObjectId = obj.id; onViewChange('discovery'); $nextTick(loadDiscovery)">Lineage</v-btn>
                           </div>
                         </div>
                         <div v-if="!(objectList.length || (demoModeEnabled && demoSnapshot.objects.length))" class="empty-state">
@@ -3724,40 +3923,40 @@ const appConfig = {
                 </v-col>
 
                 <v-col cols="12" sm="12" md="4" lg="4">
-                  <v-card variant="outlined">
-                    <v-card-title style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:12px;">Pipeline Progress</v-card-title>
-                    <v-card-text>
-                      <div class="workflow-progress" style="margin-bottom:10px;">
+                  <v-card variant="outlined" style="padding:24px;border-radius:16px;box-shadow:0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);margin-bottom:24px;background:rgba(255,255,255,0.74);backdrop-filter:blur(12px);">
+                    <v-card-title style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#64748b;margin-bottom:16px;">Pipeline Progress</v-card-title>
+                    <v-card-text style="padding:0;">
+                      <div class="workflow-progress" style="margin-bottom:16px;border-radius:9999px;overflow:hidden;">
                         <div class="workflow-progress-bar" :style="{ width: workflowProgressPercent + '%' }"></div>
                       </div>
-                      <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;">{{ workflowProgressPercent }}% of governance pipeline complete</div>
+                      <div style="font-size:12px;color:#64748b;line-height:1.6;margin-bottom:16px;">{{ workflowProgressPercent }}% of governance pipeline complete</div>
                       <div class="mini-stack">
                         <div
                           v-for="step in importWorkflowSteps"
                           :key="'ov-wf-' + step.key"
                           class="mini-metric"
-                          style="cursor:pointer;"
+                          style="cursor:pointer;padding:16px 20px;border-radius:12px;border:1px solid rgba(226,232,240,0.8);box-shadow:0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);"
                           @click="jumpToWorkflowStep(step)"
                         >
                           <span>{{ step.label }}</span>
-                          <v-chip size="x-small" :class="step.done ? 'pill-green' : 'pill-gray'" variant="flat">{{ step.done ? 'Done' : 'Pending' }}</v-chip>
+                          <v-chip size="x-small" variant="flat" :color="step.done ? 'success' : 'amber-lighten-2'" :class="step.done ? 'font-weight-bold' : 'text-grey-darken-4 font-weight-bold'">{{ step.done ? 'Done' : 'Pending' }}</v-chip>
                         </div>
                       </div>
-                      <div class="btn-row" style="margin-top:10px;">
-                        <v-btn block color="primary" @click="runRecommendedWorkflowAction">
-                          &#9658; {{ recommendedWorkflowAction.label }}
+                      <div class="btn-row" style="margin-top:16px;">
+                        <v-btn block class="pill-action-btn" color="primary" @click="runRecommendedWorkflowAction">
+                          ► {{ recommendedWorkflowAction.label }}
                         </v-btn>
                       </div>
 
-                      <h4 style="margin:12px 0 8px;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;">Platform Health</h4>
+                      <h4 style="margin:24px 0 12px;font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;">Platform Health</h4>
                       <div class="mini-stack">
                         <div class="mini-metric">
                           <span>Search Index</span>
-                          <v-chip size="x-small" :class="isElasticsearchHealthy ? 'pill-green' : 'pill-red'" variant="flat">{{ elasticsearchStatusLabel }}</v-chip>
+                          <v-chip size="x-small" variant="flat" :color="isElasticsearchHealthy ? 'success' : 'blue-grey-lighten-4'" :class="isElasticsearchHealthy ? 'font-weight-bold' : 'text-blue-grey-darken-4 font-weight-bold'">{{ elasticsearchStatusLabel }}</v-chip>
                         </div>
                         <div class="mini-metric">
                           <span>Demo Mode</span>
-                          <v-chip size="x-small" :class="demoModeEnabled ? 'pill-blue' : 'pill-gray'" variant="flat">{{ demoModeEnabled ? 'ON' : 'OFF' }}</v-chip>
+                          <v-chip size="x-small" variant="flat" :color="demoModeEnabled ? 'info' : 'blue-grey-lighten-4'" :class="demoModeEnabled ? 'font-weight-bold' : 'text-blue-grey-darken-4 font-weight-bold'">{{ demoModeEnabled ? 'ON' : 'OFF' }}</v-chip>
                         </div>
                         <div class="mini-metric">
                           <span>Data Objects</span>
@@ -3818,26 +4017,14 @@ const appConfig = {
                     <div class="facet-group-title">Quality</div>
                     <div class="btn-row" style="gap:6px;flex-wrap:wrap;">
                       <v-chip
+                        v-for="qualityName in browseFacetOptions.quality"
+                        :key="qualityName"
                         size="small"
-                        :color="selectedFacetFilters.quality.includes('verified') ? 'success' : undefined"
-                        :variant="selectedFacetFilters.quality.includes('verified') ? 'flat' : 'outlined'"
+                        :color="selectedFacetFilters.quality.includes(qualityName) ? 'primary' : undefined"
+                        :variant="selectedFacetFilters.quality.includes(qualityName) ? 'flat' : 'outlined'"
                         style="cursor:pointer;"
-                        @click="toggleBrowseFacet('quality', 'verified')"
-                      >Verified ({{ browseFacetCounts.quality.verified || 0 }})</v-chip>
-                      <v-chip
-                        size="small"
-                        :color="selectedFacetFilters.quality.includes('warning') ? 'warning' : undefined"
-                        :variant="selectedFacetFilters.quality.includes('warning') ? 'flat' : 'outlined'"
-                        style="cursor:pointer;"
-                        @click="toggleBrowseFacet('quality', 'warning')"
-                      >Warning ({{ browseFacetCounts.quality.warning || 0 }})</v-chip>
-                      <v-chip
-                        size="small"
-                        :color="selectedFacetFilters.quality.includes('draft') ? 'info' : undefined"
-                        :variant="selectedFacetFilters.quality.includes('draft') ? 'flat' : 'outlined'"
-                        style="cursor:pointer;"
-                        @click="toggleBrowseFacet('quality', 'draft')"
-                      >Draft ({{ browseFacetCounts.quality.draft || 0 }})</v-chip>
+                        @click="toggleBrowseFacet('quality', qualityName)"
+                      >{{ qualityName.charAt(0).toUpperCase() + qualityName.slice(1) }} ({{ browseFacetCounts.quality[qualityName] || 0 }})</v-chip>
                     </div>
                   </div>
 
@@ -3919,9 +4106,41 @@ const appConfig = {
                       {{ filteredCatalogResults.length }} filtered results
                     </span>
                     <div class="btn-row">
-                      <v-btn size="small" variant="outlined" @click="runSearch">↻ Refresh</v-btn>
+                      <v-btn size="small" variant="outlined" append-icon="mdi-refresh" @click="runSearch">Refresh</v-btn>
                       <v-btn size="small" variant="outlined" @click="bootstrapData">Load Catalog</v-btn>
                     </div>
+                  </div>
+
+                  <div v-if="browseTreeRoots().length" class="schema-explorer" style="margin-bottom:14px;padding:16px;border:1px solid rgba(255,255,255,0.08);border-radius:18px;background:rgba(15,23,42,0.52);backdrop-filter:blur(12px);">
+                    <div class="section-header" style="margin-bottom:10px;">
+                      <span class="section-title">Schema Explorer</span>
+                      <span class="text-small">{{ browseTreeRoots().length }} namespaces</span>
+                    </div>
+                    <v-expansion-panels variant="accordion" density="compact">
+                      <v-expansion-panel v-for="group in browseTreeRoots()" :key="group.key">
+                        <v-expansion-panel-title>
+                          <div class="d-flex align-center" style="gap:10px;">
+                            <v-icon start class="mr-2">mdi-folder-outline</v-icon>
+                            <strong>{{ group.key }}</strong>
+                            <v-chip size="x-small" variant="tonal">{{ group.children.length }}</v-chip>
+                          </div>
+                        </v-expansion-panel-title>
+                        <v-expansion-panel-text>
+                          <div class="mini-stack">
+                            <div
+                              v-for="item in group.children.slice(0, 6)"
+                              :key="'tree-' + item.id"
+                              class="mini-metric"
+                              style="cursor:pointer;"
+                              @click="selectedObjectId = item.id; loadObjectContext(); onViewChange('discovery')"
+                            >
+                              <span>{{ item.name || item.id }}</span>
+                              <strong>{{ item.type || 'object' }}</strong>
+                            </div>
+                          </div>
+                        </v-expansion-panel-text>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
                   </div>
 
                   <div class="asset-results" v-if="filteredCatalogResults.length > 0">
@@ -3939,11 +4158,11 @@ const appConfig = {
                         <div class="asset-name">
                           <strong>{{ item.name || item.id }}</strong>
                           <v-chip size="x-small" :class="item.resultRank <= 3 ? 'poweruser' : 'viewer'" variant="flat">#{{ item.resultRank }}</v-chip>
-                          <v-chip size="x-small" class="trust-verified" variant="flat" v-if="item.sensitivity !== 'confidential' && item.sensitivity !== 'restricted'">✓ Verified</v-chip>
-                          <v-chip size="x-small" class="trust-warning" variant="flat" v-else-if="item.sensitivity === 'restricted'">⚠ Restricted</v-chip>
-                          <v-chip size="x-small" class="trust-deprecated" variant="flat" v-else-if="item.sensitivity === 'confidential'">🔒 Confidential</v-chip>
+                          <v-chip size="x-small" variant="tonal" color="success" v-if="item.sensitivity !== 'confidential' && item.sensitivity !== 'restricted'">Verified</v-chip>
+                          <v-chip size="x-small" variant="tonal" color="amber" v-else-if="item.sensitivity === 'restricted'">Restricted</v-chip>
+                          <v-chip size="x-small" variant="tonal" color="error" v-else-if="item.sensitivity === 'confidential'">Confidential</v-chip>
                         </div>
-                        <div class="asset-description">{{ item.description || 'No description available — help improve coverage by adding one.' }}</div>
+                        <div class="asset-description">{{ item.description || 'No description available - help improve coverage by adding one.' }}</div>
                         <div class="asset-meta">
                           <v-chip size="x-small" variant="tonal" class="schema-badge">{{ item.database || item.schema || 'unknown' }}</v-chip>
                           <v-chip size="x-small" variant="outlined" class="owner-chip">&#128100; {{ item.owner || 'unassigned' }}</v-chip>
@@ -3961,9 +4180,7 @@ const appConfig = {
                         </div>
                       </div>
                       <div class="asset-actions">
-                        <v-btn size="small" variant="outlined" @click.stop="selectedObjectId = item.id || item.name; onViewChange('discovery'); $nextTick(loadDiscovery)">
-                          ↗ Lineage
-                        </v-btn>
+                        <v-btn size="small" variant="outlined" append-icon="mdi-open-in-new" @click.stop="selectedObjectId = item.id || item.name; onViewChange('discovery'); $nextTick(loadDiscovery)">Lineage</v-btn>
                       </div>
                     </div>
                   </div>
@@ -3987,11 +4204,26 @@ const appConfig = {
                           <div class="detail-name">{{ selectedObjectDetail.id || selectedObjectId }}</div>
                           <div class="detail-path">{{ selectedObjectDetail.database }}.{{ selectedObjectDetail.name }}</div>
                           <div class="asset-meta mt-4">
-                            <v-chip size="x-small" class="trust-verified" variant="flat">✓ Verified</v-chip>
+                            <v-chip size="x-small" variant="tonal" color="success">Verified</v-chip>
                             <v-chip size="x-small" class="type-chip" variant="outlined">{{ selectedObjectDetail.type }}</v-chip>
                             <v-chip size="x-small" class="owner-chip" variant="outlined">&#128100; {{ selectedObjectDetail.owner || 'unassigned' }}</v-chip>
+                            <v-chip
+                              v-if="selectedObjectDetail.lineage_status"
+                              size="x-small"
+                              :class="selectedObjectDetail.external_source ? 'poweruser' : 'analyst'"
+                              variant="flat"
+                            >{{ lineageStatusLabel(selectedObjectDetail.lineage_status) }}</v-chip>
+                            <v-chip
+                              v-if="selectedObjectDetail.external_source"
+                              size="x-small"
+                              class="viewer"
+                              variant="flat"
+                            >External Source</v-chip>
                             <v-chip v-if="selectedObjectGovernance?.trust?.trust_level" size="x-small" class="analyst" variant="flat">{{ selectedObjectGovernance.trust.trust_level }}</v-chip>
                             <v-chip v-if="selectedObjectGovernance?.trust?.certified" size="x-small" class="poweruser" variant="flat">Certified</v-chip>
+                          </div>
+                          <div v-if="selectedObjectDetail.external_source" style="margin-top:8px;font-size:12px;color:var(--text-muted);">
+                            This table is source-owned in the current corpus, so created_by is intentionally empty until a local writer is discovered.
                           </div>
                         </div>
                       </div>
@@ -3999,14 +4231,14 @@ const appConfig = {
                     <div class="detail-body">
                       <div class="tab-row">
                         <v-btn size="small" variant="flat" color="primary">Overview</v-btn>
-                        <v-btn size="small" variant="outlined" @click="onViewChange('discovery'); $nextTick(loadDiscovery)">Lineage</v-btn>
+                        <v-btn size="small" variant="outlined" append-icon="mdi-open-in-new" @click="onViewChange('discovery'); $nextTick(loadDiscovery)">Lineage</v-btn>
                       </div>
                       <p style="font-size:13px;color:var(--text-muted);">{{ selectedObjectDetail.description || 'No description available.' }}</p>
                       <div class="stat-row">
-                        <div class="stat-item"><div class="stat-value">{{ selectedObjectDetail.upstreamCount || '—' }}</div><div class="stat-label">Upstream</div></div>
-                        <div class="stat-item"><div class="stat-value">{{ selectedObjectDetail.downstreamCount || '—' }}</div><div class="stat-label">Downstream</div></div>
-                        <div class="stat-item"><div class="stat-value">{{ selectedObjectDetail.sensitivity || '—' }}</div><div class="stat-label">Sensitivity</div></div>
-                        <div class="stat-item"><div class="stat-value">{{ selectedObjectGovernance?.trust?.score || '—' }}</div><div class="stat-label">Trust Score</div></div>
+                        <div class="stat-item"><div class="stat-value">{{ selectedObjectDetail.upstreamCount || '-' }}</div><div class="stat-label">Upstream</div></div>
+                        <div class="stat-item"><div class="stat-value">{{ selectedObjectDetail.downstreamCount || '-' }}</div><div class="stat-label">Downstream</div></div>
+                        <div class="stat-item"><div class="stat-value">{{ selectedObjectDetail.sensitivity || '-' }}</div><div class="stat-label">Sensitivity</div></div>
+                        <div class="stat-item"><div class="stat-value">{{ selectedObjectGovernance?.trust?.score || '-' }}</div><div class="stat-label">Trust Score</div></div>
                       </div>
                       <div class="grid mt-12" style="grid-template-columns:1fr 1fr;gap:12px;">
                         <v-card class="card" style="box-shadow:none;" variant="outlined">
@@ -4031,10 +4263,10 @@ const appConfig = {
                         <v-card class="card" style="box-shadow:none;" variant="outlined">
                           <h4>Governance Context</h4>
                           <div class="mini-stack">
-                            <div class="mini-metric"><span>Owner</span><strong>{{ selectedObjectGovernance?.asset?.owner || '—' }}</strong></div>
-                            <div class="mini-metric"><span>Steward</span><strong>{{ selectedObjectGovernance?.asset?.steward || '—' }}</strong></div>
-                            <div class="mini-metric"><span>Domain Manager</span><strong>{{ selectedObjectGovernance?.asset?.domain_manager || '—' }}</strong></div>
-                            <div class="mini-metric"><span>Custodian</span><strong>{{ selectedObjectGovernance?.asset?.custodian || '—' }}</strong></div>
+                            <div class="mini-metric"><span>Owner</span><strong>{{ selectedObjectGovernance?.asset?.owner || '-' }}</strong></div>
+                            <div class="mini-metric"><span>Steward</span><strong>{{ selectedObjectGovernance?.asset?.steward || '-' }}</strong></div>
+                            <div class="mini-metric"><span>Domain Manager</span><strong>{{ selectedObjectGovernance?.asset?.domain_manager || '-' }}</strong></div>
+                            <div class="mini-metric"><span>Custodian</span><strong>{{ selectedObjectGovernance?.asset?.custodian || '-' }}</strong></div>
                           </div>
                           <div class="mt-8" v-if="selectedObjectGovernance?.classifications?.length">
                             <div class="section-title" style="font-size:11px;margin-bottom:6px;">Classifications</div>
@@ -4119,7 +4351,7 @@ const appConfig = {
                   </div>
                   <div class="asset-meta" style="margin-bottom:8px;">
                     <v-chip class="owner-chip" size="x-small" variant="outlined">&#128100; {{ glossary.selected.owner || 'unassigned' }}</v-chip>
-                    <v-chip class="owner-chip" size="x-small" variant="outlined">Steward: {{ glossary.selected.steward || '—' }}</v-chip>
+                    <v-chip class="owner-chip" size="x-small" variant="outlined">Steward: {{ glossary.selected.steward || '-' }}</v-chip>
                     <v-chip v-if="glossary.selected.abbreviation" class="type-chip" size="x-small" variant="outlined">{{ glossary.selected.abbreviation }}</v-chip>
                   </div>
                   <div v-html="renderDocHtml(glossary.selected.body || '')"></div>
@@ -4230,7 +4462,7 @@ const appConfig = {
                     <v-btn size="small" variant="outlined" @click="openDiscoveryInNewTab">Open tab</v-btn>
                     <v-btn size="small" variant="outlined" @click="showOnlySsisPackages" v-if="graphHasSSISNodes">SSIS only</v-btn>
                     <v-btn size="small" variant="outlined" @click="showAllGraphNodes" v-if="graphHasSSISNodes && graphShowOnlySSIS">Show all</v-btn>
-                    <v-btn size="small" color="primary" @click="loadDiscovery">⇄ Render</v-btn>
+                    <v-btn size="small" color="primary" @click="loadDiscovery">↔ Render</v-btn>
                   </div>
                 </div>
                 <div class="form-row" style="grid-template-columns:1fr auto auto auto;">
@@ -4393,8 +4625,8 @@ const appConfig = {
                             <td>{{ edge.type }}</td>
                             <td>{{ edge.sourceLabel }}</td>
                             <td>{{ edge.targetLabel }}</td>
-                            <td>{{ edge.sourceDatabase || '—' }}</td>
-                            <td>{{ edge.targetDatabase || '—' }}</td>
+                            <td>{{ edge.sourceDatabase || '-' }}</td>
+                            <td>{{ edge.targetDatabase || '-' }}</td>
                           </tr>
                         </tbody>
                       </v-table>
@@ -4412,7 +4644,7 @@ const appConfig = {
               <v-col cols="12" md="8" lg="8">
               <v-card class="card" style="padding:12px;" variant="outlined">
                 <div class="section-header" style="margin-bottom:8px;">
-                  <span class="section-title">Lineage Graph — {{ selectedObjectId }}</span>
+                  <span class="section-title">Lineage Graph - {{ selectedObjectId }}</span>
                   <div class="btn-row">
                     <v-btn size="small" variant="outlined" @click="loadDiscovery">↻</v-btn>
                   </div>
@@ -4438,7 +4670,7 @@ const appConfig = {
                 <div class="mini-stack" style="margin-bottom:10px;">
                   <div class="mini-metric"><span>Focus Object</span><strong style="font-family:monospace;font-size:11px;">{{ selectedObjectId }}</strong></div>
                   <div class="mini-metric"><span>Top Reach Score</span><strong>{{ reports.blastRows?.[0]?.reachScore || 0 }}</strong></div>
-                  <div class="mini-metric"><span>Highest Tier</span><strong>{{ reports.blastRows?.[0]?.tier || '—' }}</strong></div>
+                  <div class="mini-metric"><span>Highest Tier</span><strong>{{ reports.blastRows?.[0]?.tier || '-' }}</strong></div>
                 </div>
 
                 <div class="ranked-list">
@@ -4509,7 +4741,7 @@ const appConfig = {
                 <v-row>
                   <v-col cols="12" sm="6" md="3"><v-card class="card kpi" variant="outlined"><div class="value">{{ executiveReportMetrics.objects }}</div><div class="label">Governed Objects</div></v-card></v-col>
                   <v-col cols="12" sm="6" md="3"><v-card class="card kpi" variant="outlined"><div class="value">{{ executiveReportMetrics.dependencies }}</div><div class="label">Total Dependencies</div></v-card></v-col>
-                  <v-col cols="12" sm="6" md="3"><v-card class="card kpi" variant="outlined"><div class="value">{{ executiveReportMetrics.qualityScore || '—' }}</div><div class="label">Quality Score</div></v-card></v-col>
+                  <v-col cols="12" sm="6" md="3"><v-card class="card kpi" variant="outlined"><div class="value">{{ executiveReportMetrics.qualityScore || '-' }}</div><div class="label">Quality Score</div></v-card></v-col>
                   <v-col cols="12" sm="6" md="3"><v-card class="card kpi" variant="outlined"><div class="value">{{ executiveReportMetrics.blastObjects }}</div><div class="label">High-Risk Objects</div></v-card></v-col>
                 </v-row>
               </v-card>
@@ -4568,7 +4800,7 @@ const appConfig = {
                         <td class="text-mono text-small">{{ requestItem.requestId }}</td>
                         <td>{{ requestItem.assetId }}</td>
                         <td>
-                          <v-chip size="x-small" :class="requestItem.sla?.overdue ? 'pill-red' : 'pill-blue'" variant="flat">{{ requestItem.status }}</v-chip>
+                        <v-chip size="x-small" variant="tonal" :color="requestItem.sla?.overdue ? 'amber' : 'success'">{{ requestItem.status }}</v-chip>
                         </td>
                         <td>{{ requestItem.requester?.email || requestItem.requester?.userId || '-' }}</td>
                         <td>{{ requestItem.approver?.email || requestItem.approver?.userId || '-' }}</td>
@@ -4658,7 +4890,7 @@ const appConfig = {
               <v-card class="card span-12" variant="outlined">
                 <div class="section-header">
                   <span class="section-title">&#127942; Critical Dependency Leaderboard</span>
-                  <span class="text-muted text-small">Top 10 objects by reach score — highest risk targets</span>
+                  <span class="text-muted text-small">Top 10 objects by reach score - highest risk targets</span>
                 </div>
                 <div class="ranked-list" v-if="criticalDependencyLeaderboard.length">
                   <div
@@ -4706,12 +4938,12 @@ const appConfig = {
                         <td><strong>{{ row.id }}</strong></td>
                         <td><v-chip size="x-small" class="type-chip" variant="outlined">{{ row.type }}</v-chip></td>
                         <td><v-chip size="x-small" :class="row.tier==='T1'?'admin':row.tier==='T2'?'poweruser':'analyst'" variant="flat">{{ row.tier }}</v-chip></td>
-                        <td>{{ row.downstreamDepth === null ? '—' : row.downstreamDepth }}</td>
-                        <td>{{ row.upstreamDepth === null ? '—' : row.upstreamDepth }}</td>
+                        <td>{{ row.downstreamDepth === null ? '-' : row.downstreamDepth }}</td>
+                        <td>{{ row.upstreamDepth === null ? '-' : row.upstreamDepth }}</td>
                         <td><strong style="color:var(--primary);">{{ row.reachScore }}</strong></td>
                       </tr>
                       <tr v-if="!reports.blastRows || reports.blastRows.length === 0">
-                        <td colspan="6" class="empty">No blast radius data yet — render a graph first.</td>
+                        <td colspan="6" class="empty">No blast radius data yet - render a graph first.</td>
                       </tr>
                     </tbody>
                   </v-table>
@@ -4798,7 +5030,7 @@ const appConfig = {
                     <tbody>
                       <tr v-for="item in reports.schedules" :key="item.scheduleId">
                         <td class="text-mono">{{ item.scheduleId }}</td>
-                        <td><v-chip size="x-small" :class="item.active ? 'pill-green' : 'pill-gray'" variant="flat">{{ item.active ? 'Active' : 'Paused' }}</v-chip></td>
+                        <td><v-chip size="x-small" variant="tonal" :color="item.active ? 'success' : 'secondary'">{{ item.active ? 'Active' : 'Paused' }}</v-chip></td>
                         <td><v-btn size="small" variant="outlined" @click="runSchedule(item.scheduleId)">Run</v-btn></td>
                       </tr>
                     </tbody>
@@ -4836,7 +5068,7 @@ const appConfig = {
                 <div class="mini-stack mt-8" v-if="integrations.settings">
                   <div class="mini-metric" v-for="(val, key) in (integrations.settings.notifications || {})" :key="key">
                     <span>{{ key }}</span>
-                    <v-chip size="x-small" :class="val && val.enabled ? 'pill-green' : 'pill-gray'" variant="flat">{{ val && val.enabled ? 'Enabled' : 'Disabled' }}</v-chip>
+                    <v-chip size="x-small" variant="tonal" :color="val && val.enabled ? 'success' : 'secondary'">{{ val && val.enabled ? 'Enabled' : 'Disabled' }}</v-chip>
                   </div>
                   <div class="mini-metric" v-if="!Object.keys(integrations.settings.notifications || {}).length">
                     <span>No channels configured</span>
@@ -5282,12 +5514,12 @@ const appConfig = {
                   <v-btn variant="tonal" @click="downloadGeneratedMarkdownZip">Download ZIP</v-btn>
                 </div>
                 <div class="mini-stack mt-8" v-if="importer.status">
-                  <div class="mini-metric"><span>Status</span><v-chip size="x-small" :class="importer.status.status === 'ok' ? 'pill-green' : 'pill-gray'" variant="flat">{{ importer.status.status || 'unknown' }}</v-chip></div>
+                  <div class="mini-metric"><span>Status</span><v-chip size="x-small" variant="tonal" :color="importer.status.status === 'ok' ? 'success' : 'amber'">{{ importer.status.status || 'unknown' }}</v-chip></div>
                   <div class="mini-metric"><span>Indexed Objects</span><strong>{{ importer.status.loadedObjectCount || 0 }}</strong></div>
-                  <div class="mini-metric"><span>Elasticsearch</span><v-chip size="x-small" :class="isElasticsearchHealthy ? 'pill-green' : 'pill-red'" variant="flat">{{ elasticsearchStatusLabel }}</v-chip></div>
+                  <div class="mini-metric"><span>Elasticsearch</span><v-chip size="x-small" variant="tonal" :color="isElasticsearchHealthy ? 'success' : 'error'">{{ elasticsearchStatusLabel }}</v-chip></div>
                   <div class="mini-metric" v-if="importer.status.lastGeneratedPath"><span>Last Generated</span><span class="text-mono text-small">{{ importer.status.lastGeneratedPath }}</span></div>
                 </div>
-                <div v-else class="empty">No status yet — click Refresh Status.</div>
+                <div v-else class="empty">No status yet - click Refresh Status.</div>
               </v-card>
               </v-col>
               </v-row>
@@ -5343,14 +5575,14 @@ const appConfig = {
                     <span class="health-icon">&#128100;</span>
                     <div>
                       <div class="health-name">Total Users</div>
-                      <div class="health-desc">{{ admin.dashboardUsers.total || admin.dashboardUsers.users?.length || '—' }}</div>
+                      <div class="health-desc">{{ admin.dashboardUsers.total || admin.dashboardUsers.users?.length || '-' }}</div>
                     </div>
                   </div>
                   <div class="health-card">
                     <span class="health-icon">&#9989;</span>
                     <div>
                       <div class="health-name">Active</div>
-                      <div class="health-desc">{{ admin.dashboardUsers.active || '—' }}</div>
+                      <div class="health-desc">{{ admin.dashboardUsers.active || '-' }}</div>
                     </div>
                   </div>
                 </div>
@@ -5463,11 +5695,11 @@ const appConfig = {
                     style="justify-content:flex-start;"
                     @click="openDocByKey(doc.key)"
                   >
-                    <span class="nav-icon" style="margin-right:8px;">ⓘ</span>
+                    <v-icon start class="mr-2">mdi-help-circle</v-icon>
                     <span>{{ doc.title }}</span>
                   </v-btn>
                 </div>
-                <div v-else-if="docsLoading" class="empty">Loading documentation…</div>
+                <div v-else-if="docsLoading" class="empty">Loading documentation...</div>
                 <div v-else class="empty">No documentation entries available.</div>
               </v-card>
               </v-col>
@@ -5485,9 +5717,41 @@ const appConfig = {
             </div>
           </v-container>
         </v-main>
+
+        <v-navigation-drawer
+          v-model="graphDrawerOpen"
+          location="right"
+          temporary
+          width="360"
+          class="graph-drawer"
+          style="backdrop-filter: blur(12px); background: rgba(2,6,23,0.92); border-left: 1px solid rgba(255,255,255,0.08);"
+        >
+          <div style="padding:18px;">
+            <div class="section-header" style="margin-bottom:10px;">
+              <span class="section-title">Graph Detail</span>
+              <v-btn icon="mdi-close" variant="text" size="small" @click="closeGraphDrawer"></v-btn>
+            </div>
+            <div v-if="graphDrawerNode">
+              <div class="mini-stack" style="margin-bottom:12px;">
+                <div class="mini-metric"><span>Object</span><strong>{{ graphDrawerNode.label || graphDrawerNode.id }}</strong></div>
+                <div class="mini-metric"><span>Type</span><strong>{{ graphDrawerNode.type || 'object' }}</strong></div>
+                <div class="mini-metric"><span>Trust</span><strong>{{ graphDrawerNode.trust_level || graphDrawerNode.sensitivity || 'n/a' }}</strong></div>
+              </div>
+              <div class="asset-meta">
+                <v-chip size="x-small" class="schema-badge" variant="tonal">{{ graphDrawerNode.database || graphDrawerNode.schema || 'unknown' }}</v-chip>
+                <v-chip size="x-small" class="owner-chip" variant="outlined">{{ graphDrawerNode.owner || 'unassigned' }}</v-chip>
+                <v-chip v-if="graphDrawerNode.certified" size="x-small" class="poweruser" variant="flat">Certified</v-chip>
+              </div>
+              <div class="asset-description" style="margin-top:12px;">{{ graphDrawerNode.description || 'No additional detail available.' }}</div>
+              <div class="btn-row" style="margin-top:14px;">
+                <v-btn size="small" color="primary" @click="graphDrawerOpen = false; onViewChange('discovery')">Focus Graph</v-btn>
+                <v-btn size="small" variant="tonal" @click="graphDrawerOpen = false; loadObjectContext()">Open Catalog</v-btn>
+              </div>
+            </div>
+          </div>
+        </v-navigation-drawer>
       </v-layout>
 
-      <div v-if="toast" class="toast">{{ toast }}</div>
 
       <v-dialog v-model="promptDialog.show" max-width="500" persistent>
         <v-card>

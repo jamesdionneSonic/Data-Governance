@@ -8,7 +8,6 @@
 
 import { computeTrustScore } from './trustService.js';
 import { classifyAsset } from './classificationService.js';
-import { searchTerms } from './glossaryService.js';
 
 /**
  * Resolve upstream and downstream assets from a lineage graph Map
@@ -41,30 +40,6 @@ function resolveLineage(assetId, lineageGraph) {
 }
 
 /**
- * Find glossary terms that are mentioned in the asset description or tags
- * @param {Object} asset
- * @returns {Array} Matched glossary terms (slug + term only)
- */
-function findRelatedGlossaryTerms(asset) {
-  const searchText = [asset.name || '', asset.description || '', ...(asset.tags || [])].join(' ');
-
-  // Search for each word in the asset context
-  const words = searchText.split(/\s+/).filter((w) => w.length > 4);
-  const matches = new Map();
-
-  for (const word of words) {
-    const results = searchTerms(word);
-    for (const term of results) {
-      if (!matches.has(term.slug)) {
-        matches.set(term.slug, { slug: term.slug, term: term.term, domain: term.domain });
-      }
-    }
-  }
-
-  return Array.from(matches.values()).slice(0, 5); // cap at 5
-}
-
-/**
  * Build the full governance context for a single asset
  *
  * @param {string} assetId - e.g. "sales.orders"
@@ -82,7 +57,6 @@ export function buildGovernanceContext(assetId, assets, lineageGraph) {
   const trust = computeTrustScore(asset);
   const classifications = classifyAsset(asset);
   const lineage = resolveLineage(assetId, lineageGraph);
-  const glossaryLinks = findRelatedGlossaryTerms(asset);
 
   return {
     asset_id: assetId,
@@ -104,7 +78,7 @@ export function buildGovernanceContext(assetId, assets, lineageGraph) {
     trust,
     classifications,
     lineage,
-    glossary_links: glossaryLinks,
+    glossary_links: [],
     generated_at: new Date().toISOString(),
   };
 }

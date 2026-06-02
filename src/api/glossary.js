@@ -21,10 +21,10 @@ const router = createApiRouter();
  * List all glossary terms, optionally filtered by domain or search query
  * Query params: domain, q, status
  */
-router.get('/', authenticate, (req, res) => {
+router.get('/', authenticate, async (req, res) => {
   const { domain, q, status } = req.query;
 
-  let terms = q ? searchTerms(q) : loadAllTerms();
+  let terms = q ? await searchTerms(q) : await loadAllTerms();
 
   if (domain) {
     terms = terms.filter((t) => t.domain.toLowerCase() === domain.toLowerCase());
@@ -56,8 +56,8 @@ router.get('/', authenticate, (req, res) => {
  * GET /api/v1/glossary/domains
  * List all unique domains represented in the glossary
  */
-router.get('/domains', authenticate, (_req, res) => {
-  const domains = getGlossaryDomains();
+router.get('/domains', authenticate, async (_req, res) => {
+  const domains = await getGlossaryDomains();
   return res.json({ status: 'success', domains });
 });
 
@@ -65,8 +65,8 @@ router.get('/domains', authenticate, (_req, res) => {
  * GET /api/v1/glossary/:slug
  * Get a single glossary term by slug (filename without .md)
  */
-router.get('/:slug', authenticate, (req, res) => {
-  const term = getTermBySlug(req.params.slug);
+router.get('/:slug', authenticate, async (req, res) => {
+  const term = await getTermBySlug(req.params.slug);
 
   if (!term) {
     return sendErrorResponse(res, req, 404, `Glossary term '${req.params.slug}' not found`, {
@@ -82,7 +82,7 @@ router.get('/:slug', authenticate, (req, res) => {
  * Create a new glossary term
  * Body: { term, domain, status, owner, steward, abbreviation, related_terms, tags, definition }
  */
-router.post('/', authenticate, (req, res) => {
+router.post('/', authenticate, async (req, res) => {
   const { term, domain, definition } = req.body;
 
   if (!term) {
@@ -103,7 +103,7 @@ router.post('/', authenticate, (req, res) => {
     .replace(/^-|-$/g, '');
 
   // Check for duplicate
-  const existing = getTermBySlug(slug);
+    const existing = await getTermBySlug(slug);
   if (existing) {
     return sendErrorResponse(res, req, 409, `Term '${term}' already exists (slug: ${slug})`, {
       code: 'CONFLICT',
@@ -111,7 +111,7 @@ router.post('/', authenticate, (req, res) => {
   }
 
   try {
-    const saved = saveTerm(slug, {
+    const saved = await saveTerm(slug, {
       ...req.body,
       domain: domain || 'General',
     });
@@ -128,9 +128,9 @@ router.post('/', authenticate, (req, res) => {
  * PUT /api/v1/glossary/:slug
  * Update an existing glossary term
  */
-router.put('/:slug', authenticate, (req, res) => {
+router.put('/:slug', authenticate, async (req, res) => {
   const { slug } = req.params;
-  const existing = getTermBySlug(slug);
+  const existing = await getTermBySlug(slug);
 
   if (!existing) {
     return sendErrorResponse(res, req, 404, `Glossary term '${slug}' not found`, {
@@ -139,7 +139,7 @@ router.put('/:slug', authenticate, (req, res) => {
   }
 
   try {
-    const updated = saveTerm(slug, {
+    const updated = await saveTerm(slug, {
       ...existing,
       ...req.body,
     });

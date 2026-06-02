@@ -1,6 +1,6 @@
 /**
  * SSIS Metadata Extractor
- * ─────────────────────────────────────────────────────────────────────────────
+ * -----------------------------------------------------------------------------
  * Extracts every available piece of metadata from a SQL Server SSIS 2019/2022
  * installation and maps it into the data-governance data-lineage model.
  */
@@ -8,9 +8,9 @@
 import mssql from 'mssql';
 import { XMLParser } from 'fast-xml-parser';
 
-// ─────────────────────────────────────────────────────────────────────────────
+// -----------------------------------------------------------------------------
 // Constants
-// ─────────────────────────────────────────────────────────────────────────────
+// -----------------------------------------------------------------------------
 
 const COMPONENT_ROLES = {
   // Sources
@@ -63,9 +63,9 @@ const COMPONENT_ROLES = {
   'Microsoft.BalancedDataDistributor': 'TRANSFORM',
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
+// -----------------------------------------------------------------------------
 // Helpers
-// ─────────────────────────────────────────────────────────────────────────────
+// -----------------------------------------------------------------------------
 
 async function safeQuery(pool, sql, params = {}) {
   try {
@@ -111,6 +111,7 @@ function collectXmlValues(node, keys, results = []) {
       const val = node[key];
       if (Array.isArray(val)) val.forEach((v) => results.push(v));
       else results.push(val);
+      continue; // Do not traverse inside a matched container element
     }
     collectXmlValues(node[key], keys, results);
   }
@@ -218,33 +219,111 @@ function parseConnectionStringDatabase(connectionString = '') {
   return match ? match[1].trim() : '';
 }
 
-function qualifyTableReference(databaseName, schemaName, objectName) {
-  const schema = normalizeSsisReference(schemaName);
-  const obj = normalizeSsisReference(objectName);
-  const db = normalizeSsisReference(databaseName);
-
-  if (schema && obj) {
-    return `${schema}.${obj}`.replace(/\[|\]/g, '').replace(/^dbo\./i, '');
-  }
-
-  if (schema) {
-    return schema.replace(/\[|\]/g, '').replace(/^dbo\./i, '');
-  }
-
-  if (obj) {
-    return obj.replace(/\[|\]/g, '').replace(/^dbo\./i, '');
-  }
-
-  return db.replace(/\[|\]/g, '').replace(/^dbo\./i, '');
+function parseConnectionStringServer(connectionString = '') {
+  const match = String(connectionString).match(/(?:Data Source|Server)\s*=\s*([^;"]+)/i);
+  return match ? match[1].trim() : '';
 }
 
-function combineConnectionAndTable(databaseName, tableReference) {
-  const parsed = splitSchemaObjectReference(tableReference);
-  return qualifyTableReference('', parsed.schemaName, parsed.objectName);
+function cleanSsisSegment(value) {
+  return String(value || '')
+    .trim()
+    .replace(/^"+|"+$/g, '')
+    .replace(/^'+|'+$/g, '')
+    .replace(/\]\.\[/g, '.')
+    .replace(/\[|\]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
-function buildSsisReference(databaseName, schemaName, objectName) {
-  return qualifyTableReference(databaseName, schemaName, objectName);
+function buildCanonicalSqlId(serverName, databaseName, schemaName, objectName) {
+  const server = cleanSsisSegment(serverName);
+  const db = cleanSsisSegment(databaseName);
+  const schema = cleanSsisSegment(schemaName || 'dbo');
+  const obj = cleanSsisSegment(objectName);
+
+  if (!server || !db || !schema || !obj) return '';
+  return `${server}.${db}.${schema}.${obj}`;
+}
+
+function buildCanonicalPackageId(serverName, folderName, projectName, packageName) {
+  const server = cleanSsisSegment(serverName);
+  const folder = cleanSsisSegment(folderName);
+  const project = cleanSsisSegment(projectName);
+  const pkg = cleanSsisSegment(packageName);
+
+  if (!server || !folder || !project || !pkg) return '';
+  return `${server}.SSISDB.${folder}.${project}.${pkg}`;
+}
+
+function splitSsisTableReference(reference) {
+  const cleaned = cleanSsisSegment(reference);
+  const parts = cleaned.split('.').filter(Boolean);
+
+  if (parts.length >= 4) {
+    return {
+      serverName: parts[0],
+      databaseName: parts[1],
+      schemaName: parts[2],
+      objectName: parts.slice(3).join('.'),
+    };
+  }
+
+  if (parts.length === 3) {
+    return {
+      serverName: '',
+      databaseName: parts[0],
+      schemaName: parts[1],
+      objectName: parts[2],
+    };
+  }
+
+  if (parts.length === 2) {
+    return {
+      serverName: '',
+      databaseName: '',
+      schemaName: parts[0],
+      objectName: parts[1],
+    };
+  }
+
+  return {
+    serverName: '',
+    databaseName: '',
+    schemaName: '',
+    objectName: parts[0] || '',
+  };
+}
+
+function qualifyTableReference(serverName, databaseName, schemaName, objectName) {
+  return buildCanonicalSqlId(serverName, databaseName, schemaName, objectName);
+}
+
+function combineConnectionAndTable(connection, tableReference, fallbackServer = '') {
+  const parsed = splitSsisTableReference(tableReference);
+  const rawConnectionString = connection?.rawConnectionString || connection?.filePath || '';
+  const server =
+    parsed.serverName ||
+    connection?.serverName ||
+    parseConnectionStringServer(rawConnectionString) ||
+    fallbackServer;
+  const database =
+    parsed.databaseName ||
+    connection?.databaseName ||
+    parseConnectionStringDatabase(rawConnectionString);
+  const schema = parsed.schemaName || connection?.schemaName || 'dbo';
+  const object = parsed.objectName || connection?.tableName || '';
+  return buildCanonicalSqlId(server, database, schema, object);
+}
+
+function buildSsisReference(connection, schemaName, objectName, fallbackServer = '') {
+  const parsed = splitSsisTableReference(objectName);
+  const rawConnectionString = connection?.rawConnectionString || connection?.filePath || '';
+  return buildCanonicalSqlId(
+    parsed.serverName || connection?.serverName || parseConnectionStringServer(rawConnectionString) || fallbackServer,
+    parsed.databaseName || connection?.databaseName || parseConnectionStringDatabase(rawConnectionString),
+    parsed.schemaName || schemaName || 'dbo',
+    parsed.objectName || objectName
+  );
 }
 
 function decodeXmlEntities(value) {
@@ -279,7 +358,7 @@ function extractConnectionManagers(packageXml) {
       const propNodes = collectXmlValues(dtsProps, ['DTS:Property', 'property']);
       for (const p of propNodes) {
         const pName = p?.['@_DTS:Name'] || p?.['@_Name'] || '';
-        const pVal = p?.['#text'] || p || '';
+        const pVal = (p && typeof p === 'object' && p['#text'] !== undefined) ? String(p['#text']) : (typeof p !== 'object' ? String(p) : '');
         if (pName) props[pName] = String(pVal);
       }
 
@@ -300,23 +379,34 @@ function extractConnectionManagers(packageXml) {
       }
 
       const expressionConnectionString = dynamicProps.ConnectionString || '';
+      const rawConnectionString = props.ConnectionString || '';
       const expressionDatabaseName = parseConnectionStringDatabase(expressionConnectionString);
+      const rawDatabaseName = parseConnectionStringDatabase(rawConnectionString);
+      const expressionServerName = parseConnectionStringServer(expressionConnectionString);
+      const rawServerName = parseConnectionStringServer(rawConnectionString);
 
       managers.push({
         connName,
         connType,
-        serverName: props.ServerName || props.DataSource || '',
+        hasDynamicExpression: Object.keys(dynamicProps).length > 0,
+        dynamicVariables: Object.entries(dynamicProps)
+          .flatMap(([, expr]) => {
+            const matches = String(expr || '').match(/@\[\$[A-Za-z0-9_]+::([A-Za-z0-9_]+)\]/g) || [];
+            return matches.map((m) => m.replace(/^@\[\$[A-Za-z0-9_]+::/, '').replace(/\]$/, ''));
+          }),
+        serverName: props.ServerName || props.DataSource || expressionServerName || rawServerName || '',
         databaseName:
           props.DatabaseName ||
           props.InitialCatalog ||
           expressionDatabaseName ||
+          rawDatabaseName ||
           inferred.databaseName ||
           '',
         schemaName: inferred.schemaName || '',
         tableName: inferred.objectName || '',
         fullName: inferred.fullName || '',
-        filePath: props.ConnectionString || props.FileName || '',
-        rawConnectionString: props.ConnectionString || '',
+        filePath: rawConnectionString || props.FileName || '',
+        rawConnectionString,
         expressionConnectionString,
         dynamicExpressions: dynamicProps,
       });
@@ -437,7 +527,10 @@ function extractExecutePackageTasks(packageXml) {
       const objectData = raw['DTS:ObjectData'] || raw.ObjectData || {};
       const taskData = objectData.ExecutePackageTask || {};
       const packageName = normalizePackageTaskName(
-        taskData.PackageName || taskData['DTS:PackageName'] || ''
+        taskData['@_PackageName'] ||
+          taskData['@_DTS:PackageName'] ||
+          taskData.PackageName ||
+          ''
       );
 
       if (packageName) {
@@ -462,9 +555,9 @@ function normalizePackageTaskName(value) {
   return packageName.toLowerCase().endsWith('.dtsx') ? packageName : `${packageName}.dtsx`;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// -----------------------------------------------------------------------------
 // Main Extractor Class
-// ─────────────────────────────────────────────────────────────────────────────
+// -----------------------------------------------------------------------------
 
 class SsisMetadataExtractor {
   constructor(connectionConfig, sqlDriver = mssql) {
@@ -579,8 +672,8 @@ class SsisMetadataExtractor {
         pathModule = pathImport;
         const fs = fsModule.default || fsModule;
         const path = pathModule.default || pathModule;
-        rawXmlDumpDir = path.resolve('C:/projects/Data Governence/data/markdown/ssis_raw_xml');
-        rawXmlAnalysisDir = path.resolve('C:/projects/Data Governence/data/analysis/raw/ssis/xml');
+        rawXmlDumpDir = path.resolve(process.cwd(), 'data/markdown/ssis_raw_xml');
+        rawXmlAnalysisDir = path.resolve(process.cwd(), 'data/analysis/raw/ssis/xml');
         if (!fs.existsSync(rawXmlDumpDir)) {
           fs.mkdirSync(rawXmlDumpDir, { recursive: true });
         }
@@ -745,8 +838,8 @@ class SsisMetadataExtractor {
                       'Matched explicit SSISDB Catalog Parameter override inside Package loop';
                   }
                 }
-                if (!dbName && cm.connectionString) {
-                  const dbMatch = cm.connectionString.match(
+                if (!dbName && cm.rawConnectionString) {
+                  const dbMatch = cm.rawConnectionString.match(
                     /(?:Initial Catalog|Database)\s*=\s*([^;"]+)/i
                   );
                   if (dbMatch) {
@@ -755,7 +848,11 @@ class SsisMetadataExtractor {
                       'Extracted directly from package-level ConnectionManager ConnectionString property';
                   }
                 }
-                cm.databaseName = dbName || cm.connName || 'unknown_db';
+                cm.databaseName = dbName || cm.databaseName || cm.connName || 'unknown_db';
+                cm.serverName =
+                  cm.serverName ||
+                  parseConnectionStringServer(cm.rawConnectionString) ||
+                  parseConnectionStringServer(cm.expressionConnectionString);
                 this.extractionDiagnostics.push(
                   `    Package level connection in [${zipEntry.entryName}]: Name="${cm.connName}" -> Derived DB: "${cm.databaseName}" (${choiceReason || 'Defaulted to Connection Name / Unknown'})`
                 );
@@ -816,7 +913,7 @@ class SsisMetadataExtractor {
     try {
       const fs = await import('fs');
       const path = await import('path');
-      const logDir = path.resolve('C:/projects/Data Governence/data/markdown');
+      const logDir = path.resolve(process.cwd(), 'data/markdown');
       if (fs.existsSync(logDir)) {
         fs.writeFileSync(
           path.join(logDir, 'ssis_lineage_troubleshoot.txt'),
@@ -849,13 +946,48 @@ class SsisMetadataExtractor {
     return { jobs: jobRows, ssisSteps: stepRows };
   }
 
-  // ───────────────────────────────────────────────────────────────────────────
+  // ---------------------------------------------------------------------------
   // Lineage Edge Builder (Contains Priorities 1, 2, and 5)
-  // ───────────────────────────────────────────────────────────────────────────
+  // ---------------------------------------------------------------------------
 
   // eslint-disable-next-line class-methods-use-this
-  buildLineageEdges(_catalog, xmlMeta, agentData, _parameters, _environments) {
+  buildLineageEdges(catalog = [], xmlMeta = [], agentData = {}, _parameters, _environments) {
     const edges = [];
+    const hostServer = cleanSsisSegment(
+      this.config.server ||
+        this.config.serverName ||
+        parseConnectionStringServer(this.config.connectionString) ||
+        'unknown_server'
+    );
+    const catalogByPackage = new Map();
+    const catalogByProjectPackage = new Map();
+
+    for (const row of catalog || []) {
+      const packageName = cleanSsisSegment(row.package_name || '');
+      const projectName = cleanSsisSegment(row.project_name || '');
+      if (!packageName) continue;
+      catalogByPackage.set(packageName.toLowerCase(), row);
+      if (projectName) {
+        catalogByProjectPackage.set(`${projectName}.${packageName}`.toLowerCase(), row);
+      }
+    }
+
+    const packageIdFromCatalogRow = (row, fallbackProject = '', fallbackPackage = '') =>
+      buildCanonicalPackageId(
+        hostServer,
+        row?.folder_name || 'unknown_folder',
+        row?.project_name || fallbackProject || 'unknown_project',
+        row?.package_name || fallbackPackage
+      );
+
+    const resolvePackageId = (packageName, projectName = '') => {
+      const cleanedPackage = cleanSsisSegment(packageName);
+      const cleanedProject = cleanSsisSegment(projectName);
+      const row =
+        catalogByProjectPackage.get(`${cleanedProject}.${cleanedPackage}`.toLowerCase()) ||
+        catalogByPackage.get(cleanedPackage.toLowerCase());
+      return packageIdFromCatalogRow(row, cleanedProject, cleanedPackage);
+    };
 
     // --- Priority 1: SQL Agent Job Mapping ---
     const jobEdges = [];
@@ -865,14 +997,23 @@ class SsisMetadataExtractor {
       const job = jobsById.get(step.job_id);
       if (!job || !job.enabled) continue;
 
-      const match = step.command.match(/\\(?:Projects|Packages)\\.*?\\([^\\]+\.dtsx)/i);
+      const command = String(step.command || '');
+      const catalogPathMatch = command.match(/\\SSISDB\\([^\\]+)\\([^\\]+)\\([^\\"]+\.dtsx)/i);
+      const legacyMatch = command.match(/\\(?:Projects|Packages)\\.*?\\([^\\]+\.dtsx)/i);
+      const match = catalogPathMatch || legacyMatch;
       if (match) {
-        const [, pkgName] = match;
+        const pkgName = catalogPathMatch ? match[3] : match[1];
+        const targetPackageId = catalogPathMatch
+          ? buildCanonicalPackageId(hostServer, match[1], match[2], match[3])
+          : resolvePackageId(pkgName);
         jobEdges.push({
           from: `AGENT_JOB/${job.job_name}`,
-          to: `SSIS/${pkgName}`,
+          to: targetPackageId,
           via: `AgentStep/${step.step_name}`,
           edgeType: 'TRIGGERS',
+          validation_status: targetPackageId ? 'validated' : 'unresolved',
+          evidence_type: 'sql_agent_job_step',
+          evidence_text: command,
           confidence: 1.0,
         });
       }
@@ -924,130 +1065,196 @@ class SsisMetadataExtractor {
     };
 
     // --- Process XML Packages ---
-    for (const xmlPkg of xmlMeta) {
+    for (const xmlPkg of xmlMeta || []) {
       const { connectionManagers, dataFlowComponents, objectName, sqlTasks, packageTasks } = xmlPkg;
+      const packageId = resolvePackageId(objectName, xmlPkg.projectName);
 
       const connMap = new Map();
       const connArray = [];
+      const addConnAlias = (alias, cm) => {
+        const normalizedAlias = normalizeSsisReference(alias);
+        if (normalizedAlias) connMap.set(normalizedAlias, cm);
+      };
 
-      for (const cm of connectionManagers) {
-        if (cm.connName) connMap.set(cm.connName, cm);
-        if (cm.id) connMap.set(cm.id, cm);
-        if (cm.refId) connMap.set(cm.refId, cm);
+      for (const cm of connectionManagers || []) {
+        addConnAlias(cm.connName, cm);
+        addConnAlias(cm.id, cm);
+        addConnAlias(cm.refId, cm);
+        addConnAlias(`Project.ConnectionManagers[${cm.connName}]`, cm);
         connArray.push(cm);
       }
 
-      // --- THE DBA BRUTE-FORCE RESOLVER ---
-      const resolveDatabaseName = (connId) => {
-        if (!connId) return 'unknown_db';
-
-        // Attempt 1: Standard Dictionary Lookup
+      const resolveConnection = (connId) => {
+        if (!connId) return null;
         const normalizedConnId = normalizeSsisReference(connId);
-        const cm =
+        let cm =
           connMap.get(normalizedConnId) ||
-          connMap.get(connId) ||
           connArray.find(
             (c) =>
-              c.id === normalizedConnId ||
-              c.refId === normalizedConnId ||
-              c.connName === normalizedConnId
+              normalizeSsisReference(c.id) === normalizedConnId ||
+              normalizeSsisReference(c.refId) === normalizedConnId ||
+              normalizeSsisReference(c.connName) === normalizedConnId
           );
-        if (cm && cm.databaseName && cm.databaseName !== 'unknown_db') {
-          return cm.databaseName;
+
+        if (!cm) {
+          const bracketMatch = String(connId || '').match(/ConnectionManagers\[([^\]]+)\]/i);
+          if (bracketMatch) {
+            cm = connMap.get(normalizeSsisReference(bracketMatch[1])) || null;
+          }
         }
 
-        if (cm && cm.expressionConnectionString) {
-          const exprDb = parseConnectionStringDatabase(cm.expressionConnectionString);
-          if (exprDb) return exprDb;
-        }
-
-        if (cm && cm.rawConnectionString) {
-          const rawDb = parseConnectionStringDatabase(cm.rawConnectionString);
-          if (rawDb) return rawDb;
-        }
-
-        // Attempt 2: Rip the name straight out of the SSIS Reference String
-        // Example: If SSIS says connectionManagerID="Project.ConnectionManagers[Sonic_DW]"
-        // We bypass the dictionary completely and just use "Sonic_DW"
-        const bracketMatch = normalizedConnId.match(/\[([^\]]+)\]/);
-        if (bracketMatch) {
-          const [, bracketName] = bracketMatch;
-          return bracketName.trim();
-        }
-
-        // Attempt 3: If it's a raw string name without brackets, just use it
-        if (!normalizedConnId.includes('{') && !normalizedConnId.includes('[')) {
-          return normalizedConnId.trim();
-        }
-
-        return 'unknown_db';
+        return cm || null;
       };
 
       const sources = dataFlowComponents.filter((c) => c.role === 'SOURCE');
       const destinations = dataFlowComponents.filter((c) => c.role === 'DESTINATION');
 
+      for (const cm of connectionManagers || []) {
+        if (!cm.hasDynamicExpression) continue;
+        const variableName = (cm.dynamicVariables || [])[0] || 'UNKNOWN_VARIABLE';
+        edges.push({
+          from: packageId,
+          to: 'UNRESOLVED_DYNAMIC_EDGE',
+          via: `ConnectionManager/${cm.connName || cm.connType || 'unknown'}`,
+          edgeType: 'UNRESOLVED_DYNAMIC_EDGE',
+          validation_status: 'unresolved',
+          evidence_type: 'ssis_dynamic_connection',
+          evidence_text: cm.expressionConnectionString || JSON.stringify(cm.dynamicExpressions || {}),
+          confidence: 0.0,
+          packageName: objectName,
+          variableName,
+        });
+      }
+
       for (const src of sources) {
-        const srcDb = resolveDatabaseName(src.connectionManagerId);
+        const srcConnection = resolveConnection(src.connectionManagerId);
 
         const sourceTables = [];
         if (src.tableName) {
-          sourceTables.push(combineConnectionAndTable(srcDb, src.tableName));
+          sourceTables.push(combineConnectionAndTable(srcConnection, src.tableName, hostServer));
         } else if (src.tableDatabaseName && src.tableObjectName) {
-          sourceTables.push(qualifyTableReference(srcDb, src.tableSchemaName, src.tableObjectName));
+          sourceTables.push(
+            qualifyTableReference(
+              srcConnection?.serverName || hostServer,
+              src.tableDatabaseName || srcConnection?.databaseName,
+              src.tableSchemaName,
+              src.tableObjectName
+            )
+          );
         } else if (src.tableSchemaName && src.tableObjectName) {
-          sourceTables.push(qualifyTableReference(srcDb, src.tableSchemaName, src.tableObjectName));
+          sourceTables.push(
+            qualifyTableReference(
+              srcConnection?.serverName || hostServer,
+              srcConnection?.databaseName,
+              src.tableSchemaName,
+              src.tableObjectName
+            )
+          );
         } else if (src.sqlCommand) {
           const { reads } = parseSqlEntities(src.sqlCommand);
-          sourceTables.push(...reads.map((ref) => combineConnectionAndTable(srcDb, ref)));
+          sourceTables.push(...reads.map((ref) => combineConnectionAndTable(srcConnection, ref, hostServer)));
         }
-        if (sourceTables.length === 0) sourceTables.push('unknown_table');
+        if (sourceTables.length === 0) {
+          edges.push({
+            from: packageId,
+            to: 'UNRESOLVED_DYNAMIC_EDGE',
+            via: `${packageId}/Source/${src.componentName}`,
+            edgeType: 'UNRESOLVED_DYNAMIC_EDGE',
+            validation_status: 'unresolved',
+            evidence_type: 'ssis_source_unresolved',
+            evidence_text: src.sqlCommand || src.tableName || '',
+            confidence: 0.0,
+            packageName: objectName,
+          });
+        }
+
+        for (const sTable of sourceTables.filter(Boolean)) {
+          edges.push({
+            from: packageId,
+            to: sTable,
+            via: `${packageId}/Source/${src.componentName}`,
+            edgeType: 'READS_FROM',
+            validation_status: 'validated',
+            evidence_type: 'ssis_dataflow_source',
+            evidence_text: src.sqlCommand || src.tableName || '',
+            confidence: 0.9,
+            packageName: objectName,
+          });
+        }
 
         for (const dst of destinations) {
-          const dstDb = resolveDatabaseName(dst.connectionManagerId);
+          const dstConnection = resolveConnection(dst.connectionManagerId);
           let dstTable = 'unknown_table';
           if (dst.tableName) {
-            dstTable = combineConnectionAndTable(dstDb, dst.tableName);
+            dstTable = combineConnectionAndTable(dstConnection, dst.tableName, hostServer);
           } else if (dst.tableDatabaseName && dst.tableObjectName) {
             dstTable = qualifyTableReference(
-              dstDb || dst.tableDatabaseName,
+              dstConnection?.serverName || hostServer,
+              dst.tableDatabaseName || dstConnection?.databaseName,
               dst.tableSchemaName,
               dst.tableObjectName
             );
           } else if (dst.tableSchemaName && dst.tableObjectName) {
-            dstTable = qualifyTableReference(dstDb, dst.tableSchemaName, dst.tableObjectName);
+            dstTable = qualifyTableReference(
+              dstConnection?.serverName || hostServer,
+              dstConnection?.databaseName,
+              dst.tableSchemaName,
+              dst.tableObjectName
+            );
           }
-          dstTable = dstTable.replace(/\[|\]/g, '').replace(/^dbo\./i, '');
 
-          for (const sTable of sourceTables) {
+          if (!dstTable || dstTable === 'unknown_table') {
             edges.push({
-              from: normalizeSsisReference(sTable),
-              to: normalizeSsisReference(dstTable),
-              via: `SSIS/${objectName}`,
-              edgeType: 'ETL',
-              confidence: 0.85,
+              from: packageId,
+              to: 'UNRESOLVED_DYNAMIC_EDGE',
+              via: `${packageId}/Destination/${dst.componentName}`,
+              edgeType: 'UNRESOLVED_DYNAMIC_EDGE',
+              validation_status: 'unresolved',
+              evidence_type: 'ssis_destination_unresolved',
+              evidence_text: dst.sqlCommand || dst.tableName || '',
+              confidence: 0.0,
               packageName: objectName,
             });
+            continue;
           }
+
+          edges.push({
+            from: packageId,
+            to: dstTable,
+            via: `${packageId}/Destination/${dst.componentName}`,
+            edgeType: 'WRITES_TO',
+            validation_status: 'validated',
+            evidence_type: 'ssis_dataflow_destination',
+            evidence_text: dst.sqlCommand || dst.tableName || '',
+            confidence: 0.95,
+            packageName: objectName,
+          });
         }
 
         if (src.sqlCommand) {
           const { calls, writes } = parseSqlEntities(src.sqlCommand);
           for (const sp of calls) {
             edges.push({
-              from: `SSIS/${objectName}`,
-              to: buildSsisReference(srcDb, '', sp),
-              via: `SSIS/${objectName}/Source/${src.componentName}`,
+              from: packageId,
+              to: buildSsisReference(srcConnection, 'dbo', sp, hostServer),
+              via: `${packageId}/Source/${src.componentName}`,
               edgeType: 'CALLS',
+              validation_status: 'validated',
+              evidence_type: 'ssis_source_sql_command_call',
+              evidence_text: src.sqlCommand,
               confidence: 0.95,
               packageName: objectName,
             });
           }
           for (const target of writes) {
             edges.push({
-              from: `SSIS/${objectName}`,
-              to: buildSsisReference(srcDb, '', target),
-              via: `SSIS/${objectName}/Source/${src.componentName}`,
+              from: packageId,
+              to: buildSsisReference(srcConnection, 'dbo', target, hostServer),
+              via: `${packageId}/Source/${src.componentName}`,
               edgeType: 'WRITES_TO',
+              validation_status: 'validated',
+              evidence_type: 'ssis_source_sql_command_write',
+              evidence_text: src.sqlCommand,
               confidence: 0.9,
               packageName: objectName,
             });
@@ -1056,16 +1263,34 @@ class SsisMetadataExtractor {
       }
 
       for (const task of sqlTasks || []) {
-        const db = resolveDatabaseName(task.connectionManagerId);
+        const taskConnection = resolveConnection(task.connectionManagerId);
+        if (!taskConnection || String(task.connectionManagerId || '').includes('@')) {
+          edges.push({
+            from: packageId,
+            to: 'UNRESOLVED_DYNAMIC_EDGE',
+            via: `${packageId}/Task/${task.taskName}`,
+            edgeType: 'UNRESOLVED_DYNAMIC_EDGE',
+            validation_status: 'unresolved',
+            evidence_type: 'ssis_execute_sql_dynamic_connection',
+            evidence_text: task.sqlStatement || '',
+            confidence: 0.0,
+            packageName: objectName,
+            variableName: String(task.connectionManagerId || '').match(/@\[\$[A-Za-z0-9_]+::([A-Za-z0-9_]+)\]/)?.[1] || 'UNKNOWN_VARIABLE',
+          });
+          continue;
+        }
 
         const { calls, writes } = parseSqlEntities(task.sqlStatement);
 
         for (const sp of calls) {
           edges.push({
-            from: `SSIS/${objectName}`,
-            to: buildSsisReference(db, '', sp),
-            via: `SSIS/${objectName}/Task/${task.taskName}`,
+            from: packageId,
+            to: buildSsisReference(taskConnection, 'dbo', sp, hostServer),
+            via: `${packageId}/Task/${task.taskName}`,
             edgeType: 'CALLS',
+            validation_status: 'validated',
+            evidence_type: 'ssis_execute_sql_call',
+            evidence_text: task.sqlStatement,
             confidence: 0.95,
             packageName: objectName,
           });
@@ -1073,10 +1298,13 @@ class SsisMetadataExtractor {
 
         for (const target of writes) {
           edges.push({
-            from: `SSIS/${objectName}`,
-            to: buildSsisReference(db, '', normalizeSsisReference(target)),
-            via: `SSIS/${objectName}/Task/${task.taskName}`,
+            from: packageId,
+            to: buildSsisReference(taskConnection, 'dbo', target, hostServer),
+            via: `${packageId}/Task/${task.taskName}`,
             edgeType: 'WRITES_TO',
+            validation_status: 'validated',
+            evidence_type: 'ssis_execute_sql_write',
+            evidence_text: task.sqlStatement,
             confidence: 0.9,
             packageName: objectName,
           });
@@ -1084,11 +1312,15 @@ class SsisMetadataExtractor {
       }
 
       for (const task of packageTasks || []) {
+        const targetPackageId = resolvePackageId(task.packageName, xmlPkg.projectName);
         edges.push({
-          from: `SSIS/${objectName}`,
-          to: `SSIS/${task.packageName}`,
-          via: `SSIS/${objectName}/Task/${task.taskName}`,
+          from: packageId,
+          to: targetPackageId,
+          via: `${packageId}/Task/${task.taskName}`,
           edgeType: 'CALLS',
+          validation_status: targetPackageId ? 'validated' : 'unresolved',
+          evidence_type: 'ssis_execute_package_task',
+          evidence_text: task.packageName,
           confidence: 0.95,
           packageName: objectName,
         });
@@ -1107,8 +1339,19 @@ class SsisMetadataExtractor {
       parameters: [],
       executables: [],
       environments: { variables: [] },
+      executionHistory: [],
+      componentPhases: [],
+      dataStatistics: [],
+      executionParameterValues: [],
+      eventMessages: [],
+      validations: [],
       xmlMetadata: [],
+      scaleOut: { workers: [], tasks: [] },
       agentJobs: { jobs: [], ssisSteps: [] },
+      legacyLog: [],
+      msdbPackages: [],
+      performanceStats: [],
+      projectVersionHistory: [],
       lineageEdges: [],
       warnings,
     };

@@ -15,6 +15,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "perf:load": "node scripts/perf-load-test.js",
+    "lineage:brain": "node src/services/lineageBrain/runLineageBrain.js",
     "lint": "eslint src tests --fix",
     "format": "prettier --write 'src/**/*.js' 'tests/**/*.js'",
     "check-framework": "node scripts/check-framework.js",
@@ -45,6 +46,7 @@
     "marked": "^11.1.1",
     "morgan": "^1.10.0",
     "mssql": "^12.5.2",
+    "node-sql-parser": "^5.4.0",
     "uuid": "^9.0.1",
     "yaml": "^2.3.4"
   },

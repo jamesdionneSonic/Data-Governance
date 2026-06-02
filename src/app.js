@@ -14,46 +14,27 @@ import performanceMonitor from './middleware/performanceMonitor.js';
 // Import routes
 import healthRoutes from './api/health.js';
 import authRoutes from './api/auth.js';
-import objectsRoutes, { setObjectsCache } from './api/objects.js';
-import lineageRoutes from './api/lineage.js';
-import searchRoutes, { setSearchCache } from './api/search.js';
-import adminRoutes, { setAdminCache } from './api/admin.js';
-import dashboardRoutes, { setDashboardCache } from './api/dashboard.js';
-import reportingRoutes, { setReportingCache } from './api/reporting.js';
+import objectsRoutes from './api/objects.js';
+import searchRoutes from './api/search.js';
+import adminRoutes from './api/admin.js';
+import dashboardRoutes from './api/dashboard.js';
+import reportingRoutes from './api/reporting.js';
 import ingestionRoutes from './api/ingestion.js';
-import discoveryRoutes, { setDiscoveryCache } from './api/discovery.js';
-import integrationsRoutes, { setIntegrationCache } from './api/integrations.js';
+import discoveryRoutes from './api/discovery.js';
+import integrationsRoutes from './api/integrations.js';
 import docsRoutes from './api/docs.js';
 import ssisRoutes from './api/ssis.js';
-import marketplaceRoutes, { setMarketplaceCache } from './api/marketplace.js';
+import marketplaceRoutes from './api/marketplace.js';
 import dataProductsRoutes from './api/dataProducts.js';
 import glossaryRoutes from './api/glossary.js';
-import classificationRoutes, { setClassificationCache } from './api/classification.js';
-import governanceRoutes, { setGovernanceCache } from './api/governance.js';
+import classificationRoutes from './api/classification.js';
+import governanceRoutes from './api/governance.js';
 import productsRoutes from './api/products.js';
 
 // Import utilities and config
 import { validateEntraConfig } from './utils/entraConfig.js';
 
-/**
- * Initialize caches with loaded data
- * Called by index.js after loading markdown
- * @param {express.Application} app - Express app instance
- * @param {Map} objects - Object metadata map
- * @param {Map} lineageGraph - Lineage graph
- */
-export function initializeCache(app, objects, lineageGraph) {
-  setObjectsCache(objects);
-  setSearchCache(objects);
-  setDiscoveryCache(objects, lineageGraph);
-  setAdminCache(objects);
-  setDashboardCache(objects);
-  setReportingCache(objects, lineageGraph);
-  setIntegrationCache(objects, lineageGraph);
-  setMarketplaceCache(objects);
-  setClassificationCache(objects);
-  setGovernanceCache(objects, lineageGraph);
-}
+export { initializeCache } from './utils/cacheInitializer.js';
 
 /**
  * Create and configure Express application
@@ -122,7 +103,6 @@ export default function createApp() {
   // Protected routes
   apiRouter.use('/search', searchRoutes);
   apiRouter.use('/objects', objectsRoutes);
-  apiRouter.use('/lineage', lineageRoutes);
   apiRouter.use('/admin', adminRoutes);
   apiRouter.use('/dashboard', dashboardRoutes);
   apiRouter.use('/reporting', reportingRoutes);
@@ -137,6 +117,8 @@ export default function createApp() {
   apiRouter.use('/classification', classificationRoutes);
   apiRouter.use('/governance', governanceRoutes);
   apiRouter.use('/products', productsRoutes);
+  apiRouter.use('/discovery', discoveryRoutes);
+  apiRouter.use('/lineage', discoveryRoutes);
 
   // API info endpoint
   apiRouter.get('/', (req, res) => {
@@ -180,6 +162,9 @@ export default function createApp() {
   app.use('/api/v1', apiRouter);
 
   // Frontend static assets and root page
+  app.get('/favicon.ico', (_req, res) => {
+    return res.status(204).end();
+  });
   app.use(express.static(frontendPath));
 
   app.get('/', (req, res) => {
