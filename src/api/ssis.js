@@ -95,7 +95,14 @@ async function buildConnectionConfig(payload) {
   } else if (authentication === 'windows') {
     if (!username && !password) {
       try {
-        const nativeModule = await import('mssql/msnodesqlv8.js');
+        let nativeModule;
+        try {
+          nativeModule = await import('mssql/msnodesqlv8.js');
+        } catch (_driverLoadErr) {
+          throw new Error(
+            'Windows integrated auth requires msnodesqlv8 on a Windows host. Use SQL auth or NTLM in Linux/Docker.'
+          );
+        }
         sqlDriver = nativeModule.default;
         connConfig.options.trustedConnection = true;
         connConfig.driver = 'msnodesqlv8';
@@ -109,7 +116,7 @@ async function buildConnectionConfig(payload) {
             body: {
               error: 'Bad Request',
               message:
-                'Windows integrated auth requires msnodesqlv8 driver. Provide username/password for NTLM instead.',
+                'Windows integrated auth requires msnodesqlv8 on a Windows host. Provide username/password for NTLM instead.',
             },
           },
         };
@@ -236,6 +243,43 @@ function normalizeSsisReference(value) {
   return cleaned;
 }
 
+function cleanSsisSegment(value) {
+  return String(value || '')
+    .trim()
+    .replace(/^"+|"+$/g, '')
+    .replace(/^'+|'+$/g, '')
+    .replace(/\[|\]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function parseConnectionStringServer(connectionString = '') {
+  const match = String(connectionString).match(/(?:Data Source|Server)\s*=\s*([^;"]+)/i);
+  return match ? match[1].trim() : '';
+}
+
+function extractServerNameFromConfig(config = {}) {
+  return cleanSsisSegment(
+    config.server ||
+      config.serverName ||
+      config.dataSource ||
+      parseConnectionStringServer(config.connectionString) ||
+      'unknown_server'
+  );
+}
+
+function buildCanonicalPackageId(serverName, folderName, projectName, packageName) {
+  return [
+    cleanSsisSegment(serverName),
+    'SSISDB',
+    cleanSsisSegment(folderName),
+    cleanSsisSegment(projectName),
+    cleanSsisSegment(packageName),
+  ]
+    .filter(Boolean)
+    .join('.');
+}
+
 function collectResolvedReferences(packageEdges, predicate, mapper) {
   return [
     ...new Set(
@@ -249,11 +293,12 @@ function collectResolvedReferences(packageEdges, predicate, mapper) {
   ];
 }
 
-function buildSsisPackageMarkdown(result, packageRow) {
+function buildSsisPackageMarkdown(result, packageRow, serverName) {
   const folder = packageRow.folder_name || 'unknown_folder';
   const project = packageRow.project_name || 'unknown_project';
   const pkg = packageRow.package_name || 'unknown_package';
   const objectName = `${folder}.${project}.${pkg}`;
+  const packageId = buildCanonicalPackageId(serverName, folder, project, pkg);
   const packageEdges = (result.lineageEdges || []).filter(
     (edge) => String(edge.packageName || '').toLowerCase() === String(pkg).toLowerCase()
   );
@@ -261,8 +306,12 @@ function buildSsisPackageMarkdown(result, packageRow) {
   // Separate Data Flow Sources (Upstream)
   const upstream = collectResolvedReferences(
     packageEdges,
-    (edge) => edge.edgeType === 'ETL' || edge.edgeType === 'LOOKUP',
-    (edge) => edge.from
+    (edge) =>
+      edge.edgeType === 'READS_FROM' ||
+      edge.edgeType === 'LOOKUP' ||
+      edge.edgeType === 'USES_LOOKUP' ||
+      edge.edgeType === 'EXTRACTS',
+    (edge) => edge.to
   );
 
   // Map Stored Procedure Calls from Control Flow
@@ -275,14 +324,18 @@ function buildSsisPackageMarkdown(result, packageRow) {
   // Map Data Flow Targets + Direct SQL Writes from Control Flow
   const writesTo = collectResolvedReferences(
     packageEdges,
-    (edge) => edge.edgeType === 'WRITES_TO' || edge.edgeType === 'ETL',
+    (edge) => edge.edgeType === 'WRITES_TO',
     (edge) => edge.to
   );
 
   const warnings = (result.warnings || []).slice(0, 15);
 
 return `---
+id: ${packageId}
 name: ${objectName}
+server: ${serverName}
+folder_name: ${folder}
+project_name: ${project}
 package_name: ${pkg}
 package_path: ${folder}.${project}.${pkg}
 database: ssisdb
@@ -291,8 +344,13 @@ owner: ssis-platform
 sensitivity: internal
 tags: ['ssis', 'catalog', 'lineage']
 depends_on: ${toYamlArray(upstream)}
+reads_from: ${toYamlArray(upstream)}
 writes_to: ${toYamlArray(writesTo)}
 calls: ${toYamlArray(calls)}
+lineage_quality:
+  validated_edges: ${packageEdges.filter((edge) => edge.validation_status === 'validated').length}
+  probable_edges: ${packageEdges.filter((edge) => edge.validation_status === 'probable').length}
+  unresolved_facts: ${packageEdges.filter((edge) => edge.validation_status === 'unresolved' || edge.edgeType === 'UNRESOLVED_DYNAMIC_EDGE').length}
 description: SSIS package metadata extracted from folder ${folder}, project ${project}, package ${pkg}.
 ---
 
@@ -316,7 +374,7 @@ ${warnings.length > 0 ? warnings.map((warning) => `- ${warning}`).join('\n') : '
 `;
 }
 
-function buildSsisLineageMarkdown(result) {
+function buildSsisLineageMarkdown(result, serverName) {
   const edges = result.lineageEdges || [];
   const topEdges = edges.slice(0, 500);
   const lines = topEdges.map(
@@ -325,6 +383,7 @@ function buildSsisLineageMarkdown(result) {
   );
   return `---
 name: ssis_catalog_lineage
+server: ${serverName}
 database: ssisdb
 type: dataset
 owner: ssis-platform
@@ -351,10 +410,12 @@ function persistSsisMarkdown(result, outputPath) {
   // FIX: Output directly to the live production folder alongside SQL Server tables
   const defaultBasePath = './data/markdown';
   const baseOutputPath = resolve(process.cwd(), outputPath || defaultBasePath);
+  const serverName = extractServerNameFromConfig(result.connectionConfig || {});
   
-  // Group them neatly inside the markdown folder
-  const packageDir = join(baseOutputPath, 'ssis_packages');
-  const summaryDir = join(baseOutputPath, 'ssis_summaries');
+  // Group by server so package IDs cannot collide across SSIS hosts.
+  const serverDir = join(baseOutputPath, 'servers', sanitizePathSegment(serverName));
+  const packageDir = join(serverDir, 'ssis_packages');
+  const summaryDir = join(serverDir, 'ssis_summaries');
   
   mkdirSync(packageDir, { recursive: true });
   mkdirSync(summaryDir, { recursive: true });
@@ -368,13 +429,13 @@ function persistSsisMarkdown(result, outputPath) {
     const folderPath = join(packageDir, folder, project);
     mkdirSync(folderPath, { recursive: true });
     const filePath = join(folderPath, `${pkg}.md`);
-    writeFileSync(filePath, buildSsisPackageMarkdown(result, packageRow), 'utf-8');
+    writeFileSync(filePath, buildSsisPackageMarkdown(result, packageRow, serverName), 'utf-8');
     filesWritten += 1;
   });
 
   writeFileSync(
     join(summaryDir, 'ssis_catalog_lineage.md'),
-    buildSsisLineageMarkdown(result),
+    buildSsisLineageMarkdown(result, serverName),
     'utf-8'
   );
   filesWritten += 1;
@@ -492,6 +553,7 @@ router.post('/extract', authenticate, requireAdmin, async (req, res) => {
     result = await extractor.extractAll({
       extractXml: opts.extractXml !== false,
     });
+    result.connectionConfig = connConfig;
   } catch (err) {
     return sendErrorResponse(res, req, 500, err.message, {
       code: 'SSIS_EXTRACTION_FAILED',

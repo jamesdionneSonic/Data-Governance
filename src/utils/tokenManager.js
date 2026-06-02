@@ -85,7 +85,7 @@ export function extractToken(authHeader) {
 /**
  * Refresh expired token
  * @param {string} refreshToken - Refresh token
- * @param {Object} user - User object
+ * @param {Object} user - Full user context to preserve claims
  * @returns {string} New JWT token
  */
 export function refreshAccessToken(refreshToken, user) {
@@ -93,6 +93,16 @@ export function refreshAccessToken(refreshToken, user) {
 
   if (!decoded || decoded.type !== 'refresh') {
     throw new Error('Invalid refresh token');
+  }
+
+  const userId = decoded.sub;
+
+  if (!userId) {
+    throw new Error('Invalid refresh token');
+  }
+
+  if (!user || user.id !== decoded.sub) {
+    throw new Error('User context mismatch');
   }
 
   return generateToken(user);

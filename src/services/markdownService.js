@@ -3,15 +3,15 @@
  * Parses markdown files and extracts object metadata
  */
 
-import { readFileSync, readdirSync, writeFileSync } from 'fs';
+import { readdir, readFile, writeFile } from 'fs/promises';
 import { join, extname } from 'path';
 import yaml from 'yaml';
 
 /**
  * Parse markdown file and extract metadata
  */
-export function parseMarkdownFile(filePath) {
-  const content = readFileSync(filePath, 'utf-8');
+export async function parseMarkdownFile(filePath) {
+  const content = await readFile(filePath, 'utf-8');
   return parseMarkdownContent(content, filePath);
 }
 
@@ -46,8 +46,10 @@ export function parseMarkdownContent(content, source = 'inline-content') {
   }
 
   return {
-    id: `${metadata.database}.${metadata.name}`,
+    id: buildCanonicalObjectId(metadata),
     name: metadata.name,
+    server: metadata.server || metadata.serverName || metadata.server_name || null,
+    schema: metadata.schema || null,
     packageName: metadata.package_name || metadata.packageName || null,
     packagePath: metadata.package_path || metadata.packagePath || null,
     database: metadata.database,
@@ -62,6 +64,12 @@ export function parseMarkdownContent(content, source = 'inline-content') {
     reads_from: metadata.reads_from || metadata.lineage?.reads_from || [],
     writes_to: metadata.writes_to || metadata.lineage?.writes_to || [],
     calls: metadata.calls || metadata.lineage?.calls || [],
+    created_by: metadata.created_by || metadata.lineage?.created_by || [],
+    created_via: metadata.created_via || metadata.lineage?.created_via || [],
+    used_by: metadata.used_by || metadata.lineage?.used_by || [],
+    contextual_reads: metadata.contextual_reads || metadata.lineage?.contextual_reads || [],
+    lineage_status: metadata.lineage_status || metadata.lineage?.lineage_status || '',
+    external_source: metadata.external_source ?? metadata.lineage?.external_source ?? false,
     called_by: metadata.called_by || metadata.lineage?.called_by || [],
     description: metadata.description || description,
     certified: metadata.certified === true,
@@ -74,12 +82,48 @@ export function parseMarkdownContent(content, source = 'inline-content') {
   };
 }
 
+function buildCanonicalObjectId(metadata) {
+  if (metadata.id) {
+    return String(metadata.id).trim();
+  }
+
+  const server = String(metadata.server || metadata.serverName || metadata.server_name || '').trim();
+  const database = String(metadata.database || '').trim();
+  const schema = String(metadata.schema || '').trim();
+  const name = String(metadata.name || '').trim();
+
+  if (metadata.type === 'package') {
+    const packageName = String(metadata.package_name || metadata.packageName || name || '').trim();
+    const packagePath = String(metadata.package_path || metadata.packagePath || '').trim();
+    const pathParts = packagePath ? packagePath.replace(/\\/g, '/').split('/').filter(Boolean) : [];
+    const folderName = String(metadata.folder_name || metadata.folderName || pathParts[0] || '').trim();
+    const projectName = String(metadata.project_name || metadata.projectName || pathParts[1] || '').trim();
+    const packageSegment = String(
+      metadata.package_base_name ||
+        metadata.packageBaseName ||
+        packageName.replace(/\.dtsx$/i, '') ||
+        name.replace(/\.dtsx$/i, '')
+    ).trim();
+    return [server, 'SSISDB', folderName, projectName, packageSegment].filter(Boolean).join('.');
+  }
+
+  if (server && database && schema && name) {
+    return `${server}.${database}.${schema}.${name}`;
+  }
+
+  if (database && schema && name) {
+    return `${database}.${schema}.${name}`;
+  }
+
+  return name;
+}
+
 function parseFrontmatterLenient(frontmatterContent) {
   const metadata = {};
   let currentKey = null;
 
   const lines = String(frontmatterContent || '').split(/\r?\n/);
-  for (let rawLine of lines) {
+  for (const rawLine of lines) {
     const line = rawLine.trimEnd();
     if (!line || line.startsWith('#')) continue;
 
@@ -150,26 +194,28 @@ export function extractPlainText(markdown) {
  * @param {string} dirPath - Directory path
  * @returns {Array} Array of file paths
  */
-export function getMarkdownFiles(dirPath) {
+export async function getMarkdownFiles(dirPath) {
   const files = [];
 
-  function walkDir(currentPath) {
+  async function walkDir(currentPath) {
     try {
-      const entries = readdirSync(currentPath, { withFileTypes: true });
-      for (const entry of entries) {
-        const fullPath = join(currentPath, entry.name);
-        if (entry.isDirectory()) {
-          walkDir(fullPath);
-        } else if (entry.isFile() && extname(entry.name) === '.md') {
-          files.push(fullPath);
-        }
-      }
+      const entries = await readdir(currentPath, { withFileTypes: true });
+      await Promise.all(
+        entries.map(async (entry) => {
+          const fullPath = join(currentPath, entry.name);
+          if (entry.isDirectory()) {
+            await walkDir(fullPath);
+          } else if (entry.isFile() && extname(entry.name) === '.md') {
+            files.push(fullPath);
+          }
+        })
+      );
     } catch (err) {
       console.error(`Error reading directory ${currentPath}:`, err.message);
     }
   }
 
-  walkDir(dirPath);
+  await walkDir(dirPath);
   return files;
 }
 
@@ -178,19 +224,21 @@ export function getMarkdownFiles(dirPath) {
  * @param {string} dataPath - Base data directory path
  * @returns {Map} Map of object ID -> metadata
  */
-export function loadAllMarkdown(dataPath) {
+export async function loadAllMarkdown(dataPath) {
   const objects = new Map();
 
   try {
-    const mdFiles = getMarkdownFiles(dataPath);
-    for (const filePath of mdFiles) {
+    const mdFiles = await getMarkdownFiles(dataPath);
+    await Promise.all(
+      mdFiles.map(async (filePath) => {
       try {
-        const metadata = parseMarkdownFile(filePath);
+        const metadata = await parseMarkdownFile(filePath);
         objects.set(metadata.id, metadata);
       } catch (err) {
         console.error(`Error parsing ${filePath}:`, err.message);
       }
-    }
+      })
+    );
   } catch (err) {
     console.error(`Error loading markdown files from ${dataPath}:`, err.message);
   }
@@ -205,9 +253,9 @@ export function loadAllMarkdown(dataPath) {
  * @param {Object} updates - Frontmatter fields to merge
  * @returns {Object} Parsed updated metadata
  */
-export function updateMarkdownMetadata(filePath, updates) {
-  const content = readFileSync(filePath, 'utf-8');
-  const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+export async function updateMarkdownMetadata(filePath, updates) {
+  const content = await readFile(filePath, 'utf-8');
+  const frontmatterMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
 
   if (!frontmatterMatch) {
     throw new Error(`No YAML frontmatter found in ${filePath}`);
@@ -228,7 +276,7 @@ export function updateMarkdownMetadata(filePath, updates) {
   const body = content.substring(frontmatterMatch[0].length).trimStart();
   const newContent = `---\n${yaml.stringify(merged)}---\n${body}`;
 
-  writeFileSync(filePath, newContent, 'utf-8');
+  await writeFile(filePath, newContent, 'utf-8');
 
   return parseMarkdownFile(filePath);
 }
@@ -266,6 +314,21 @@ export function validateMetadata(metadata) {
 
   if (metadata.depends_on && !Array.isArray(metadata.depends_on)) {
     errors.push('depends_on must be an array');
+  }
+  if (metadata.created_by && !Array.isArray(metadata.created_by)) {
+    errors.push('created_by must be an array');
+  }
+  if (metadata.created_via && !Array.isArray(metadata.created_via)) {
+    errors.push('created_via must be an array');
+  }
+  if (metadata.used_by && !Array.isArray(metadata.used_by)) {
+    errors.push('used_by must be an array');
+  }
+  if (metadata.contextual_reads && !Array.isArray(metadata.contextual_reads)) {
+    errors.push('contextual_reads must be an array');
+  }
+  if (metadata.external_source !== undefined && typeof metadata.external_source !== 'boolean') {
+    errors.push('external_source must be a boolean');
   }
 
   return errors;

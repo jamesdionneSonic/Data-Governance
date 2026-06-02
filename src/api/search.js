@@ -25,8 +25,9 @@ export function setSearchCache(objects) {
 function enrichSearchItem(item) {
   const cacheKey = item.id || `${item.database || ''}.${item.name || ''}`;
   const cached = enrichmentCache.get(cacheKey);
+  const liveObj = objectCache.get(item.id) || {};
   if (cached) {
-    return { ...item, ...cached };
+    return { ...item, ...cached, downstreamCount: liveObj.downstreamCount || 0 };
   }
 
   const trust = computeTrustScore(item);
@@ -38,7 +39,7 @@ function enrichSearchItem(item) {
   };
 
   enrichmentCache.set(cacheKey, enriched);
-  return { ...item, ...enriched };
+  return { ...item, ...enriched, downstreamCount: liveObj.downstreamCount || 0 };
 }
 
 /**
@@ -58,7 +59,7 @@ function enrichSearchItem(item) {
  */
 router.get('/', authenticate, async (req, res) => {
   try {
-    const { q = '', limit = 20, offset = 0, database, type, owner, sensitivity, tags } = req.query;
+    const { q = '', limit = 20, offset = 0, database, type, owner, sensitivity, tags, trust_level } = req.query;
 
     const query = q.toLowerCase().trim();
     const parsedLimit = parseInt(limit, 10);
@@ -77,6 +78,7 @@ router.get('/', authenticate, async (req, res) => {
         owner: owner || null,
         sensitivity: sensitivity || null,
         tags: tags || null,
+        trust_level: trust_level || null,
       });
 
       const cached = searchCache.get(cacheKey);
@@ -89,23 +91,15 @@ router.get('/', authenticate, async (req, res) => {
         const esResponse = await searchObjects('objects', query, {
           limit: parsedLimit,
           offset: parsedOffset,
+          database,
+          type,
+          owner,
+          sensitivity,
+          tags,
+          trust_level,
         });
         results = esResponse.hits;
         totalHits = esResponse.estimatedTotalHits;
-
-        if (database) results = results.filter((item) => item.database === database);
-        if (type) results = results.filter((item) => item.type === type);
-        if (owner) results = results.filter((item) => item.owner === owner);
-        if (sensitivity) results = results.filter((item) => item.sensitivity === sensitivity);
-        if (tags) {
-          const requestedTags = tags
-            .split(',')
-            .map((tag) => tag.trim())
-            .filter(Boolean);
-          results = results.filter((item) =>
-            requestedTags.every((tag) => (item.tags || []).includes(tag))
-          );
-        }
 
         searchCache.set(cacheKey, { results, totalHits });
       }
@@ -114,17 +108,47 @@ router.get('/', authenticate, async (req, res) => {
       results = Array.from(objectCache.values());
 
       // Apply facet filters to the RAM results
-      if (database) results = results.filter((item) => item.database === database);
-      if (type) results = results.filter((item) => item.type === type);
-      if (owner) results = results.filter((item) => item.owner === owner);
-      if (sensitivity) results = results.filter((item) => item.sensitivity === sensitivity);
-      if (tags) {
-        const requestedTags = tags
+      if (database) {
+        const allowedDbs = database.split(',').map((s) => s.trim().toLowerCase()).filter(Boolean);
+        results = results.filter((item) =>
+          allowedDbs.includes(String(item.database || '').toLowerCase())
+        );
+      }
+      if (type) {
+        const allowedTypes = type.split(',').map((s) => s.trim().toLowerCase()).filter(Boolean);
+        results = results.filter((item) =>
+          allowedTypes.includes(String(item.type || '').toLowerCase())
+        );
+      }
+      if (owner) {
+        const allowedOwners = owner.split(',').map((s) => s.trim().toLowerCase()).filter(Boolean);
+        results = results.filter((item) =>
+          allowedOwners.includes(String(item.owner || '').toLowerCase())
+        );
+      }
+      if (sensitivity) {
+        const allowedSensitivity = sensitivity
           .split(',')
-          .map((tag) => tag.trim())
+          .map((s) => s.trim().toLowerCase())
           .filter(Boolean);
         results = results.filter((item) =>
-          requestedTags.every((tag) => (item.tags || []).includes(tag))
+          allowedSensitivity.includes(String(item.sensitivity || '').toLowerCase())
+        );
+      }
+      if (tags) {
+        const requestedTags = tags.split(',').map((t) => t.trim().toLowerCase()).filter(Boolean);
+        results = results.filter((item) => {
+          const itemTags = (item.tags || []).map((t) => String(t).toLowerCase());
+          return requestedTags.every((tag) => itemTags.includes(tag));
+        });
+      }
+      if (trust_level) {
+        const requestedLevels = String(trust_level)
+          .split(',')
+          .map((s) => s.trim().toLowerCase())
+          .filter(Boolean);
+        results = results.filter((item) =>
+          requestedLevels.includes(String(item.trust_level || '').toLowerCase())
         );
       }
 

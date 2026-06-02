@@ -3,8 +3,9 @@
  * API endpoints for uploading and processing markdown files
  */
 
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { join, resolve } from 'path';
+import { existsSync } from 'fs';
+import { mkdir, writeFile } from 'fs/promises';
+import { join, resolve, relative, isAbsolute } from 'path';
 import { ZipArchive } from 'archiver';
 import { createApiRouter } from '../utils/apiRouter.js';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
@@ -15,10 +16,10 @@ import {
   loadAllMarkdown,
   validateMetadata,
 } from '../services/markdownService.js';
+import { resolveLineageCorpus } from '../services/lineageResolver.js';
 import { buildLineageGraph } from '../services/lineageService.js';
 import { indexObjects, createIndex, healthCheck } from '../services/indexService.js';
-// eslint-disable-next-line import/no-cycle
-import { initializeCache } from '../app.js';
+import { initializeCache } from '../utils/cacheInitializer.js';
 
 const router = createApiRouter();
 const ingestionState = {
@@ -42,13 +43,26 @@ function sanitizePathSegment(value) {
     .slice(0, 128);
 }
 
-function persistGeneratedMarkdown(markdowns, database, outputPath) {
+function resolveDataBoundaryPath(inputPath, fallbackRelativePath = 'data/markdown') {
+  const dataRoot = resolve(process.cwd(), 'data');
+  const requestedPath = String(inputPath || fallbackRelativePath);
+  const resolvedPath = resolve(process.cwd(), requestedPath);
+  const boundaryCheck = relative(dataRoot, resolvedPath);
+
+  if (!boundaryCheck || boundaryCheck.startsWith('..') || isAbsolute(boundaryCheck)) {
+    throw new Error(`Invalid dataPath outside data boundary: ${requestedPath}`);
+  }
+
+  return resolvedPath;
+}
+
+async function persistGeneratedMarkdown(markdowns, database, outputPath) {
   const defaultBasePath = './data/markdown';
   const baseOutputPath = resolve(process.cwd(), outputPath || defaultBasePath);
   const analysisBasePath = resolve(process.cwd(), './data/analysis/raw/sqlserver');
   const safeDatabase = sanitizePathSegment(database);
 
-  markdowns.forEach((markdown) => {
+  for (const markdown of markdowns) {
     const normalizedDirectory = String(markdown.directory || '').replace(/^[/\\]+/, '');
     const targetDirectory = resolve(baseOutputPath, normalizedDirectory);
     const analysisDirectory = resolve(analysisBasePath, normalizedDirectory);
@@ -56,11 +70,11 @@ function persistGeneratedMarkdown(markdowns, database, outputPath) {
     const targetPath = join(targetDirectory, fileName);
     const analysisTargetPath = join(analysisDirectory, fileName);
 
-    mkdirSync(targetDirectory, { recursive: true });
-    mkdirSync(analysisDirectory, { recursive: true });
-    writeFileSync(targetPath, markdown.content || '', 'utf-8');
-    writeFileSync(analysisTargetPath, markdown.content || '', 'utf-8');
-  });
+    await mkdir(targetDirectory, { recursive: true });
+    await mkdir(analysisDirectory, { recursive: true });
+    await writeFile(targetPath, markdown.content || '', 'utf-8');
+    await writeFile(analysisTargetPath, markdown.content || '', 'utf-8');
+  }
 
   return {
     baseOutputPath,
@@ -137,7 +151,14 @@ async function buildSqlConnectionContext(payload) {
   } else if (authentication === 'windows') {
     if (!username && !password) {
       try {
-        const nativeDriverModule = await import('mssql/msnodesqlv8.js');
+        let nativeDriverModule;
+        try {
+          nativeDriverModule = await import('mssql/msnodesqlv8.js');
+        } catch (_driverLoadErr) {
+          throw new Error(
+            'Windows integrated auth requires msnodesqlv8 on a Windows host. Use SQL Server auth or NTLM on Linux/Docker.'
+          );
+        }
         sqlDriver = nativeDriverModule.default;
 
         connConfig.options.trustedConnection = true;
@@ -226,7 +247,7 @@ async function buildSqlConnectionContext(payload) {
  * Parse and validate a markdown file
  * Requires authentication
  */
-router.post('/parse', authenticate, (req, res) => {
+router.post('/parse', authenticate, async (req, res) => {
   try {
     const { filePath } = req.body;
 
@@ -236,7 +257,7 @@ router.post('/parse', authenticate, (req, res) => {
       });
     }
 
-    const metadata = parseMarkdownFile(filePath);
+    const metadata = await parseMarkdownFile(filePath);
     const errors = validateMetadata(metadata);
 
     if (errors.length > 0) {
@@ -303,10 +324,22 @@ router.post('/parse-content', authenticate, (req, res) => {
 router.post('/load', authenticate, requireAdmin, async (req, res) => {
   try {
     const { dataPath = './data/markdown' } = req.body;
+    const safeDataPath = resolveDataBoundaryPath(dataPath);
     const indexName = 'objects';
 
+    if (!existsSync(safeDataPath)) {
+      return sendErrorResponse(res, req, 400, 'No markdown files found', {
+        code: 'NO_DATA',
+        errorLabel: 'No Data',
+      });
+    }
+
+    if (req.body.resolveLineage === true) {
+      await resolveLineageCorpus(safeDataPath);
+    }
+
     // Load markdown files
-    const objects = loadAllMarkdown(dataPath);
+    const objects = await loadAllMarkdown(safeDataPath);
 
     if (objects.size === 0) {
       return sendErrorResponse(res, req, 400, 'No markdown files found', {
@@ -326,12 +359,12 @@ router.post('/load', authenticate, requireAdmin, async (req, res) => {
     const lineageGraph = buildLineageGraph(objects);
 
     // FIX: Hot-reload all live memory caches without restarting the server!
-    initializeCache(req.app, objects, lineageGraph);
+    initializeCache(objects, lineageGraph);
 
     ingestionState.loadedObjectCount = objects.size;
     ingestionState.indexName = indexName;
     ingestionState.lastLoadedAt = new Date().toISOString();
-    ingestionState.lastDataPath = dataPath;
+    ingestionState.lastDataPath = safeDataPath;
 
     return res.json({
       status: 'success',
@@ -344,6 +377,13 @@ router.post('/load', authenticate, requireAdmin, async (req, res) => {
     });
   } catch (err) {
     const lowerMessage = String(err?.message || '').toLowerCase();
+    if (lowerMessage.includes('invalid datapath')) {
+      return sendErrorResponse(res, req, 400, 'No markdown files found', {
+        code: 'NO_DATA',
+        errorLabel: 'No Data',
+      });
+    }
+
     if (lowerMessage.includes('fetch failed') || lowerMessage.includes('connect')) {
       return sendErrorResponse(
         res,
@@ -370,11 +410,18 @@ router.post('/load', authenticate, requireAdmin, async (req, res) => {
  * Validate markdown files without indexing
  * Requires admin role
  */
-router.post('/validate', authenticate, requireAdmin, (req, res) => {
+router.post('/validate', authenticate, requireAdmin, async (req, res) => {
   try {
     const { dataPath = './data/markdown' } = req.body;
+    const safeDataPath = resolveDataBoundaryPath(dataPath);
 
-    const objects = loadAllMarkdown(dataPath);
+    if (req.body.resolveLineage === true) {
+      await resolveLineageCorpus(safeDataPath).catch((err) => {
+        console.error('Lineage resolver failed during validation:', err.message);
+      });
+    }
+
+    const objects = await loadAllMarkdown(safeDataPath);
     const results = {
       valid: 0,
       invalid: 0,
@@ -396,7 +443,7 @@ router.post('/validate', authenticate, requireAdmin, (req, res) => {
     }
 
     ingestionState.lastValidatedAt = new Date().toISOString();
-    ingestionState.lastDataPath = dataPath;
+    ingestionState.lastDataPath = safeDataPath;
 
     return res.json({
       status: 'success',
@@ -466,27 +513,27 @@ router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) 
     // 1. DETERMINE OUTPUT PATH
     const defaultBasePath = './data/markdown';
     const baseOutputPath = resolve(process.cwd(), outputPath || defaultBasePath);
+    let filesWrittenCount = 0;
 
-    // 2. KICK OFF BACKGROUND JOB FOR DISK I/O
-    setTimeout(() => {
-      try {
-        console.log(
-          `\n[Background Job] Starting markdown generation for ${metadata.allObjects.length} objects...`
-        );
-        const generator = new MarkdownGenerator(metadata);
-        const markdowns = generator.generateAllMarkdowns();
-        const persisted = persistGeneratedMarkdown(markdowns, database, outputPath);
-        ingestionState.lastGeneratedPath = persisted.baseOutputPath;
-        console.log(`[Background Job] SUCCESS! Wrote ${persisted.filesWritten} files to disk.\n`);
-      } catch (err) {
-        console.error('[Background Job] Markdown generation failed:', err);
-      }
-    }, 100);
+    // 2. Generate and persist markdown before responding so the disk I/O
+    // completes deterministically for downstream validation/indexing.
+    try {
+      console.log(`\n[Markdown] Starting generation for ${metadata.allObjects.length} objects...`);
+      const generator = new MarkdownGenerator(metadata);
+      const markdowns = generator.generateAllMarkdowns();
+      const persisted = await persistGeneratedMarkdown(markdowns, database, outputPath);
+      filesWrittenCount = persisted.filesWritten || 0;
+      ingestionState.lastGeneratedPath = persisted.baseOutputPath;
+      console.log(`[Markdown] SUCCESS! Wrote ${filesWrittenCount} files to disk.\n`);
+    } catch (markdownErr) {
+      console.error('[Markdown] Generation failed:', markdownErr);
+      throw markdownErr;
+    }
 
-    // 3. SEND RESPONSE TO UI IMMEDIATELY
+    // 3. SEND RESPONSE TO UI AFTER MARKDOWN IS WRITTEN
     return res.json({
       status: 'success',
-      message: `Extracted metadata from ${metadata.database}. Generating files in background...`,
+      message: `Extracted metadata from ${metadata.database}. Markdown generation completed.`,
       data: {
         tablesExtracted: metadata.tables.length,
         viewsExtracted: metadata.views.length,
@@ -502,16 +549,24 @@ router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) 
         selectedSchemas,
         selectedTables,
         markdownFiles: metadata.allObjects.length,
-        markdownFilesWritten: 'Processing in background...',
+        markdownFilesWritten: filesWrittenCount,
         markdownOutputPath: baseOutputPath,
         markdownPreview: [],
-        ready:
-          'Files are generating in the background. Watch your terminal for completion before loading the index.',
+        ready: 'Files have been generated and written to disk.',
       },
     });
   } catch (err) {
+    const message = String(err?.message || '');
+    const lowerMessage = message.toLowerCase();
+    const isConnectionError =
+      lowerMessage.includes('login failed') ||
+      lowerMessage.includes('failed to connect') ||
+      lowerMessage.includes('connection') ||
+      lowerMessage.includes('network') ||
+      lowerMessage.includes('timeout');
+
     return sendErrorResponse(res, req, 500, err.message, {
-      code: 'SQL_SERVER_CONNECTION_ERROR',
+      code: isConnectionError ? 'SQL_SERVER_CONNECTION_ERROR' : 'SQL_SERVER_EXTRACTION_ERROR',
     });
   } finally {
     if (extractor) {
@@ -664,8 +719,8 @@ router.post('/connect-sql-server/discover', authenticate, requireAdmin, async (r
  */
 router.get('/export-zip', authenticate, requireAdmin, (req, res) => {
   try {
-    const requestedPath = String(req.query.dataPath || './docs/generated/sqlserver');
-    const resolvedPath = resolve(process.cwd(), requestedPath);
+    const requestedPath = String(req.query.dataPath || './data/markdown');
+    const resolvedPath = resolveDataBoundaryPath(requestedPath);
 
     if (!existsSync(resolvedPath)) {
       return sendErrorResponse(res, req, 404, `Directory not found: ${resolvedPath}`, {
@@ -694,6 +749,12 @@ router.get('/export-zip', authenticate, requireAdmin, (req, res) => {
 
     return undefined;
   } catch (err) {
+    if (String(err?.message || '').toLowerCase().includes('invalid datapath')) {
+      return sendErrorResponse(res, req, 404, 'Directory not found', {
+        code: 'NOT_FOUND',
+      });
+    }
+
     return sendErrorResponse(res, req, 500, err.message, {
       code: 'ZIP_EXPORT_ERROR',
     });

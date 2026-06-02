@@ -19,85 +19,107 @@ import {
 export function buildCytoscapeGraph(objectId, lineageGraph, objects, depth = 2) {
   const nodes = [];
   const edges = [];
-  const seen = new Set();
+  const seenNodes = new Set();
+  const seenEdges = new Set();
+  const typedEdges = buildTypedLineageEdges(objects);
+  const renderEdges = typedEdges.length > 0 ? typedEdges : buildFallbackLineageEdges(lineageGraph);
+  const frontier = [{ id: objectId, depth: 0 }];
+  const visited = new Set([objectId]);
+  const edgeLabelByType = {
+    depends_on: 'depends_on',
+    reads: 'reads',
+    extracts: 'extracts',
+    loads: 'loads',
+    calls: 'calls',
+    created_by: 'created_by',
+    created_via: 'created_via',
+    contextual_read: 'contextual_read',
+    used_by: 'used_by',
+  };
 
-  // Add central node (Level 0)
-  const centralObj = objects.get(objectId);
-  if (centralObj) {
+  const addNode = (id, nodeType, level) => {
+    if (!id || seenNodes.has(id)) return;
+    const obj = objects.get(id);
+    if (!obj) return;
     nodes.push({
       data: {
-        id: objectId,
-        label: centralObj.name,
-        database: centralObj.database,
-        type: centralObj.type,
-        sensitivity: centralObj.sensitivity,
-        nodeType: 'central',
-        level: 0,
+        id,
+        label: obj.name || id,
+        database: obj.database,
+        type: obj.type,
+        sensitivity: obj.sensitivity,
+        nodeType,
+        level,
       },
-      classes: ['central', `type-${centralObj.type}`, `sensitivity-${centralObj.sensitivity}`],
+      classes: [nodeType, `type-${obj.type}`, `sensitivity-${obj.sensitivity}`],
     });
-    seen.add(objectId);
-  }
+    seenNodes.add(id);
+  };
 
-  // Add upstream dependencies (Level -1)
-  const upstream = getUpstreamDependencies(objectId, lineageGraph, depth);
-  for (const depId of upstream) {
-    const depObj = objects.get(depId);
-    if (depObj && !seen.has(depId)) {
-      nodes.push({
-        data: {
-          id: depId,
-          label: depObj.name,
-          database: depObj.database,
-          type: depObj.type,
-          sensitivity: depObj.sensitivity,
-          nodeType: 'upstream',
-          level: -1,
-        },
-        // We add the 'upstream' class here so the frontend can color it blue
-        classes: ['upstream', `type-${depObj.type}`, `sensitivity-${depObj.sensitivity}`],
-      });
-      edges.push({
-        data: {
-          id: `${depId}-${objectId}`,
-          source: depId,
-          target: objectId,
-          label: 'depends_on',
-        },
-        classes: ['dependency'],
-      });
-      seen.add(depId);
-    }
-  }
+  const addEdge = (source, target, label, classes) => {
+    if (!source || !target || source === target) return;
+    const key = `${source}->${target}:${label}`;
+    if (seenEdges.has(key)) return;
+    edges.push({
+      data: {
+        id: key.replace(/[^a-zA-Z0-9_-]/g, '_'),
+        source,
+        target,
+        label,
+      },
+      classes,
+    });
+    seenEdges.add(key);
+  };
 
-  // Add downstream dependents (Level 1)
-  const downstream = getDownstreamDependents(objectId, lineageGraph, depth);
-  for (const depId of downstream) {
-    const depObj = objects.get(depId);
-    if (depObj && !seen.has(depId)) {
-      nodes.push({
-        data: {
-          id: depId,
-          label: depObj.name,
-          database: depObj.database,
-          type: depObj.type,
-          sensitivity: depObj.sensitivity,
-          nodeType: 'downstream',
-          level: 1,
-        },
-        // We add the 'downstream' class here so the frontend can color it orange
-        classes: ['downstream', `type-${depObj.type}`, `sensitivity-${depObj.sensitivity}`],
-      });
-      edges.push({
-        data: {
-          id: `${objectId}-${depId}`,
-          source: objectId,
-          target: depId,
-          label: 'used_by',
-        },
-        classes: ['dependent'],
-      });
-      seen.add(depId);
+  const edgeNeighbors = (id) =>
+    renderEdges
+      .filter((edge) => edge.source === id || edge.target === id)
+      .map((edge) => ({
+        nextId: edge.source === id ? edge.target : edge.source,
+        edge,
+        direction: edge.source === id ? 'outgoing' : 'incoming',
+      }));
+
+  addNode(objectId, 'central', 0);
+
+  while (frontier.length > 0) {
+    const current = frontier.shift();
+    if (!current || current.depth >= depth) continue;
+
+    const neighbors = edgeNeighbors(current.id);
+    for (const { nextId, edge, direction } of neighbors) {
+      const nextDepth = current.depth + 1;
+      const obj = objects.get(nextId);
+      if (!obj) continue;
+
+      const objType = String(obj.type || '').toLowerCase();
+      const isTransformProcess = ['procedure', 'function', 'package'].includes(objType);
+      let nodeType = 'downstream';
+      if (nextId === objectId) {
+        nodeType = 'central';
+      } else if (isTransformProcess) {
+        nodeType = objType;
+      } else if (direction === 'incoming') {
+        nodeType = 'upstream';
+      }
+      addNode(nextId, nodeType, direction === 'incoming' ? -nextDepth : nextDepth);
+
+      const edgeClass =
+        edge.type === 'loads' || edge.type === 'reads' || edge.type === 'extracts'
+          ? 'producer-edge'
+          : 'consumer-edge';
+      addEdge(
+        direction === 'incoming' ? nextId : current.id,
+        direction === 'incoming' ? current.id : nextId,
+        edgeLabelByType[edge.type] || edge.type || 'lineage',
+        [edgeClass]
+      );
+
+      if (!visited.has(nextId)) {
+        visited.add(nextId);
+        frontier.push({ id: nextId, depth: nextDepth });
+      }
     }
   }
 
@@ -227,7 +249,9 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
   const directOutgoing = typedEdges.filter((edge) => edge.source === objectId);
   const producerEdges = dedupeEdges(
     isDataFocus
-      ? directIncoming.filter((edge) => edge.type === 'loads')
+      ? directIncoming.filter((edge) =>
+          ['loads', 'reads', 'extracts', 'created_by', 'created_via'].includes(edge.type)
+        )
       : directIncoming.filter((edge) => ['reads', 'extracts', 'loads', 'calls'].includes(edge.type))
   );
   const fallbackProducerEdges =
@@ -252,9 +276,11 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
   }
 
   addNode(objectId, 'central', 0);
+  const bridgeVisited = new Set();
 
   const addBridgeUpstream = (targetId, depthLeft) => {
-    if (depthLeft <= 0) return;
+    if (bridgeVisited.has(targetId) || depthLeft <= 0) return;
+    bridgeVisited.add(targetId);
 
     const incoming = typedEdges.filter((edge) => edge.target === targetId);
     for (const edge of incoming) {
@@ -340,9 +366,22 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
         continue;
       }
 
-      if (!isBridgeCandidate(input.source)) continue;
       const inputObj = objects.get(input.source);
-      const lane = String(inputObj?.type || '').toLowerCase() === 'synonym' ? -2 : -3;
+      const inputType = String(inputObj?.type || '').toLowerCase();
+      if (['table', 'view'].includes(inputType)) {
+        addNode(input.source, 'producer', -1);
+        addEdge(
+          input.source,
+          edge.source,
+          input.type === 'extracts' ? 'reads' : input.type,
+          ['producer-edge'],
+          0.9
+        );
+        continue;
+      }
+
+      if (!isBridgeCandidate(input.source)) continue;
+      const lane = inputType === 'synonym' ? -2 : -3;
       addNode(input.source, 'bridge', lane);
       addEdge(
         input.source,
@@ -415,6 +454,23 @@ function dedupeEdges(edges) {
   return Array.from(byPair.values());
 }
 
+function buildFallbackLineageEdges(lineageGraph = new Map()) {
+  const edges = [];
+  const seen = new Set();
+
+  for (const [target, dependencies] of lineageGraph.entries()) {
+    for (const source of dependencies || []) {
+      if (!source || !target || source === target) continue;
+      const key = `${source}->${target}`;
+      if (seen.has(key)) continue;
+      edges.push({ source, target, type: 'depends_on' });
+      seen.add(key);
+    }
+  }
+
+  return edges;
+}
+
 /**
  * Build D3.js force-directed graph format
  * https://d3js.org/
@@ -478,7 +534,7 @@ export function buildD3Graph(objectId, lineageGraph, objects, depth = 2) {
  * https://mermaid.js.org/
  */
 export function buildMermaidDiagram(objectId, lineageGraph, objects, depth = 2) {
-  let diagram = 'flowchart LR\n';
+  let diagram = 'graph TD\n';
 
   const centralObj = objects.get(objectId);
 

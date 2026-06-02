@@ -20,6 +20,8 @@ Welcome to the Data Governance project! This document outlines the best practice
 10. [Submission Process](#submission-process)
 
 ---
+#### Data lineage rules
+Whenever you are asked to modify data extraction, graph resolution, or SSIS parsing, you MUST strictly adhere to the rules defined in docs/LINEAGE_ENGINE_SPEC.md.
 
 ## Architecture & Design Principles
 

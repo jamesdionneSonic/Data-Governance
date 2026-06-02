@@ -331,11 +331,14 @@ describe('SSIS-004: buildLineageEdges – derives edges from mock data', () => {
     );
 
     expect(Array.isArray(edges)).toBe(true);
-    const etlEdge = edges.find((e) => e.edgeType === 'ETL' && e.from !== 'UNKNOWN');
-    expect(etlEdge).toBeDefined();
-    expect(etlEdge.from).toMatch(/src-server/);
-    expect(etlEdge.to).toMatch(/dst-server/);
-    expect(etlEdge.confidence).toBeGreaterThan(0.5);
+    const readEdge = edges.find((e) => e.edgeType === 'READS_FROM');
+    const writeEdge = edges.find((e) => e.edgeType === 'WRITES_TO');
+    expect(readEdge).toBeDefined();
+    expect(writeEdge).toBeDefined();
+    expect(readEdge.from).toMatch(/mock\.SSISDB\.ETL\.SalesETL\.LoadFact\.dtsx/);
+    expect(readEdge.to).toMatch(/src-server\.SourceDB\.dbo\.FactSales/);
+    expect(writeEdge.from).toBe(readEdge.from);
+    expect(writeEdge.to).toMatch(/dst-server\.DestDB\.dbo\.FactSales_Staging/);
   });
 
   test('edge via references the package name', () => {
@@ -357,9 +360,7 @@ describe('SSIS-004: buildLineageEdges – derives edges from mock data', () => {
       mockPerfStats
     );
     const placeholder = edges.find((e) => e.from === 'UNKNOWN');
-    expect(placeholder).toBeDefined();
-    expect(placeholder.confidence).toBeLessThan(0.5);
-    expect(placeholder.note).toMatch(/XML lineage/);
+    expect(placeholder).toBeUndefined();
   });
 
   test('confidence for XML-derived edges is 0.85', () => {
@@ -369,8 +370,8 @@ describe('SSIS-004: buildLineageEdges – derives edges from mock data', () => {
       mockAgentJobs,
       mockPerfStats
     );
-    const xmlEdge = edges.find((e) => e.from !== 'UNKNOWN' && e.edgeType === 'ETL');
-    expect(xmlEdge.confidence).toBe(0.85);
+    const xmlEdge = edges.find((e) => e.edgeType === 'WRITES_TO');
+    expect(xmlEdge.confidence).toBeGreaterThanOrEqual(0.9);
   });
 });
 

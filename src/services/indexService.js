@@ -77,12 +77,22 @@ export async function indexObjects(indexName, objects) {
         tags: obj.tags || [],
         description: obj.description,
         depends_on: obj.depends_on || [],
+        trust_level: obj.trust_level || null,
       },
     ]);
 
     const bulkResponse = await c.bulk({ refresh: true, operations });
     if (bulkResponse.errors) {
-      console.error('Bulk insert had errors');
+      const bulkErrors = (bulkResponse.items || [])
+        .flatMap((item) => Object.values(item || {}))
+        .filter((entry) => entry && (entry.error || entry.status >= 400))
+        .map((entry) => ({
+          status: entry.status || null,
+          error: entry.error || null,
+        }));
+      throw new Error(
+        `Bulk insert failed with partial errors: ${JSON.stringify(bulkErrors.length ? bulkErrors : bulkResponse, null, 2)}`
+      );
     }
     return bulkResponse;
   } catch (err) {
@@ -108,6 +118,53 @@ export async function searchObjects(indexName, query, options = {}) {
   try {
     const from = options.offset || 0;
     const size = options.limit || 20;
+    const filters = [];
+
+    if (options.database) {
+      const dbs = String(options.database)
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+      if (dbs.length > 0) filters.push({ terms: { 'database.keyword': dbs } });
+    }
+    if (options.type) {
+      const types = String(options.type)
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+      if (types.length > 0) filters.push({ terms: { 'type.keyword': types } });
+    }
+    if (options.owner) {
+      const owners = String(options.owner)
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+      if (owners.length > 0) filters.push({ terms: { 'owner.keyword': owners } });
+    }
+    if (options.sensitivity) {
+      const sensitivities = String(options.sensitivity)
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+      if (sensitivities.length > 0) {
+        filters.push({ terms: { 'sensitivity.keyword': sensitivities } });
+      }
+    }
+    if (options.trust_level) {
+      const levels = String(options.trust_level).split(',').map((s) => s.trim().toLowerCase()).filter(Boolean);
+      if (levels.length > 0) filters.push({ terms: { 'trust_level.keyword': levels } });
+    }
+    if (options.tags) {
+      const requestedTags = String(options.tags)
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean);
+      if (requestedTags.length > 0) {
+        requestedTags.forEach((tag) => {
+          filters.push({ term: { 'tags.keyword': tag } });
+        });
+      }
+    }
 
     const esQuery = {
       bool: {
@@ -129,6 +186,7 @@ export async function searchObjects(indexName, query, options = {}) {
           },
         ],
         minimum_should_match: 1,
+        filter: filters,
       },
     };
 

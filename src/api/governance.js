@@ -32,7 +32,7 @@ export function setGovernanceCache(assets, lineageGraph) {
  * Full governance context for a single asset
  * assetId: database.objectname (e.g. sales.orders)
  */
-router.get('/context/:assetId', authenticate, (req, res) => {
+router.get('/context/:assetId', authenticate, async (req, res) => {
   const { assetId } = req.params;
 
   if (!assetCache) {
@@ -41,7 +41,7 @@ router.get('/context/:assetId', authenticate, (req, res) => {
     });
   }
 
-  const context = buildGovernanceContext(assetId, assetCache, lineageGraphCache);
+  const context = await buildGovernanceContext(assetId, assetCache, lineageGraphCache);
 
   if (!context) {
     return sendErrorResponse(res, req, 404, `Asset '${assetId}' not found`, {

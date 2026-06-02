@@ -12,12 +12,17 @@ export function buildLineageGraph(objects) {
   const graph = new Map();
   const nameIndex = buildNameIndex(objects);
   const referenceIndex = buildReferenceIndex(objects);
+  const lowerObjects = buildLowerObjectIndex(objects);
 
   // Initialize graph with all objects and build a flexible lookup index
   for (const [objectId, metadata] of objects) {
     graph.set(objectId, new Set());
     if (metadata.name) {
-      nameIndex.set(metadata.name.toLowerCase(), objectId);
+      const key = metadata.name.toLowerCase();
+      if (!nameIndex.has(key)) {
+        nameIndex.set(key, new Set());
+      }
+      nameIndex.get(key).add(objectId);
     }
   }
 
@@ -25,10 +30,38 @@ export function buildLineageGraph(objects) {
   for (const [objectId, metadata] of objects) {
     if (metadata.depends_on && Array.isArray(metadata.depends_on)) {
       for (const dependency of metadata.depends_on) {
-        const depId = resolveObjectId(dependency, metadata, objects, nameIndex, referenceIndex);
+        const depId = resolveObjectId(
+          dependency,
+          metadata,
+          objects,
+          nameIndex,
+          referenceIndex,
+          lowerObjects
+        );
         if (depId) {
           graph.get(objectId).add(depId);
         }
+      }
+    }
+
+    const creatorEdges = [
+      ...(Array.isArray(metadata.created_by) ? metadata.created_by : []),
+      ...(Array.isArray(metadata.created_via) ? metadata.created_via : []),
+      ...(Array.isArray(metadata.contextual_reads) ? metadata.contextual_reads : []),
+      ...(Array.isArray(metadata.reads_from) ? metadata.reads_from : []),
+    ];
+
+    for (const creator of creatorEdges) {
+      const creatorId = resolveObjectId(
+        creator,
+        metadata,
+        objects,
+        nameIndex,
+        referenceIndex,
+        lowerObjects
+      );
+      if (creatorId) {
+        graph.get(objectId).add(creatorId);
       }
     }
 
@@ -36,12 +69,23 @@ export function buildLineageGraph(objects) {
     const forwardEdges = [
       ...(Array.isArray(metadata.writes_to) ? metadata.writes_to : []),
       ...(Array.isArray(metadata.calls) ? metadata.calls : []),
+      ...(Array.isArray(metadata.used_by) ? metadata.used_by : []),
     ];
 
     if (forwardEdges.length > 0) {
       for (const target of forwardEdges) {
-        const targetId = resolveObjectId(target, metadata, objects, nameIndex, referenceIndex);
-        if (targetId && graph.has(targetId)) {
+        const targetId = resolveObjectId(
+          target,
+          metadata,
+          objects,
+          nameIndex,
+          referenceIndex,
+          lowerObjects
+        );
+        if (targetId) {
+          if (!graph.has(targetId)) {
+            graph.set(targetId, new Set());
+          }
           graph.get(targetId).add(objectId);
         }
       }
@@ -51,22 +95,38 @@ export function buildLineageGraph(objects) {
   return graph;
 }
 
+function buildLowerObjectIndex(objects) {
+  return new Map(
+    Array.from(objects.entries()).map(([id, meta]) => [
+      String(id || '').toLowerCase(),
+      { id, meta },
+    ])
+  );
+}
+
 function buildNameIndex(objects) {
   const nameIndex = new Map();
   for (const [objectId, metadata] of objects) {
-    if (metadata.name) {
-      nameIndex.set(metadata.name.toLowerCase(), objectId);
+    const normalizedObjectId = objectId.toLowerCase();
+    const keys = [
+      metadata.name,
+      metadata.packageName,
+      metadata.packagePath,
+      metadata.schema && metadata.name ? `${metadata.schema}.${metadata.name}` : null,
+      metadata.database && metadata.schema && metadata.name
+        ? `${metadata.database}.${metadata.schema}.${metadata.name}`
+        : null,
+      metadata.database && metadata.name ? `${metadata.database}.${metadata.name}` : null,
+      normalizedObjectId,
+    ].filter(Boolean);
+
+    for (const key of keys) {
+      const normalized = key.toLowerCase();
+      if (!nameIndex.has(normalized)) {
+        nameIndex.set(normalized, new Set());
+      }
+      nameIndex.get(normalized).add(objectId);
     }
-    if (metadata.packageName) {
-      nameIndex.set(metadata.packageName.toLowerCase(), objectId);
-    }
-    if (metadata.packagePath) {
-      nameIndex.set(metadata.packagePath.toLowerCase(), objectId);
-    }
-    if (metadata.schema && metadata.name) {
-      nameIndex.set(`${metadata.schema}.${metadata.name}`.toLowerCase(), objectId);
-    }
-    nameIndex.set(objectId.toLowerCase(), objectId);
   }
   return nameIndex;
 }
@@ -80,6 +140,9 @@ function buildReferenceIndex(objects) {
       metadata.packageName,
       metadata.packagePath,
       metadata.database && metadata.name ? `${metadata.database}.${metadata.name}` : null,
+      metadata.database && metadata.schema && metadata.name
+        ? `${metadata.database}.${metadata.schema}.${metadata.name}`
+        : null,
       metadata.database && metadata.packageName
         ? `${metadata.database}.${metadata.packageName}`
         : null,
@@ -87,15 +150,15 @@ function buildReferenceIndex(objects) {
         ? `${metadata.database}.${metadata.packagePath}`
         : null,
       metadata.schema && metadata.name ? `${metadata.schema}.${metadata.name}` : null,
-      metadata.database && metadata.schema && metadata.name
-        ? `${metadata.database}.${metadata.schema}.${metadata.name}`
-        : null,
     ]);
 
     for (const reference of references) {
       const normalized = normalizeReference(reference);
       if (normalized) {
-        referenceIndex.set(normalized, objectId);
+        if (!referenceIndex.has(normalized)) {
+          referenceIndex.set(normalized, new Set());
+        }
+        referenceIndex.get(normalized).add(objectId);
       }
     }
   }
@@ -124,43 +187,98 @@ function normalizeReference(reference) {
   return cleaned;
 }
 
-function resolveObjectId(reference, metadata, objects, nameIndex, referenceIndex) {
+function resolveObjectId(
+  reference,
+  metadata,
+  objects,
+  nameIndex,
+  referenceIndex,
+  lowerObjects = buildLowerObjectIndex(objects)
+) {
   const ref = String(reference || '').trim();
   if (!ref) return null;
 
   const unwrapped = normalizeReference(ref);
   const lowerRef = unwrapped.toLowerCase();
   const tokens = unwrapped.split('.').filter(Boolean);
-  const tail = tokens[tokens.length - 1] || '';
-  const coreTail = tokens.length > 1 ? tokens.slice(-2).join('.') : tail;
   const strippedTail = unwrapped.replace(/^unknown_db\./i, '');
+  const deterministicCandidates = [];
+
+  if (tokens.length === 1 && metadata.database) {
+    deterministicCandidates.push(`${metadata.database}.${unwrapped}`);
+    if (metadata.schema) {
+      deterministicCandidates.push(`${metadata.database}.${metadata.schema}.${unwrapped}`);
+    }
+    if (metadata.server || metadata.serverName) {
+      deterministicCandidates.push(
+        [metadata.server || metadata.serverName, metadata.database, metadata.schema, unwrapped]
+          .filter(Boolean)
+          .join('.')
+      );
+    }
+  } else if (tokens.length === 2 && metadata.database) {
+    deterministicCandidates.push(`${metadata.database}.${unwrapped}`);
+    if (metadata.server || metadata.serverName) {
+      deterministicCandidates.push(
+        [metadata.server || metadata.serverName, metadata.database, ...tokens].filter(Boolean).join('.')
+      );
+    }
+  } else if (tokens.length === 3 && (metadata.server || metadata.serverName)) {
+    deterministicCandidates.push([metadata.server || metadata.serverName, ...tokens].join('.'));
+  }
 
   const candidates = [
     ref,
     unwrapped,
     strippedTail,
-    tail,
-    coreTail,
-    `${metadata.database}.${ref}`,
-    `${metadata.database}.${unwrapped}`,
-    `${metadata.database}.${strippedTail}`,
-    metadata.schema ? `${metadata.database}.${metadata.schema}.${tail}` : null,
-    metadata.database && metadata.schema
-      ? `${metadata.database}.${metadata.schema}.${coreTail}`
-      : null,
+    ...deterministicCandidates,
   ].filter(Boolean);
 
   for (const candidate of candidates) {
-    if (objects.has(candidate)) return candidate;
-    const indexed = nameIndex.get(candidate.toLowerCase());
-    if (indexed) return indexed;
+    const lowerCandidate = String(candidate || '').toLowerCase();
+    if (lowerObjects.has(lowerCandidate)) return lowerObjects.get(lowerCandidate).id;
+    const indexed = nameIndex.get(lowerCandidate);
+    const scopedIndexed = chooseClosestMatch(indexed, metadata);
+    if (scopedIndexed) return scopedIndexed;
     const refIndexed = referenceIndex.get(normalizeReference(candidate).toLowerCase());
-    if (refIndexed) return refIndexed;
+    const scopedRefIndexed = chooseClosestMatch(refIndexed, metadata);
+    if (scopedRefIndexed) return scopedRefIndexed;
   }
 
-  if (referenceIndex.has(lowerRef)) return referenceIndex.get(lowerRef);
+  if (referenceIndex.has(lowerRef)) {
+    const scoped = chooseClosestMatch(referenceIndex.get(lowerRef), metadata);
+    if (scoped) return scoped;
+  }
 
   return null;
+}
+
+function chooseClosestMatch(candidates, metadata = {}) {
+  if (!candidates) return null;
+  const list = Array.isArray(candidates) ? candidates : Array.from(candidates);
+  if (list.length === 0) return null;
+
+  const sourceServer = String(metadata.server || metadata.serverName || '').toLowerCase();
+  const sourceDatabase = String(metadata.database || '').toLowerCase();
+
+  const scored = list.map((id) => {
+    const obj = String(id || '').toLowerCase();
+    const parts = obj.split('.').filter(Boolean);
+    const candidateServer = parts.length > 3 ? parts[0] : '';
+    const candidateDatabase = parts.length > 3 ? parts[1] : parts.length > 2 ? parts[0] : '';
+    let score = 0;
+    if (sourceServer && candidateServer && sourceServer === candidateServer) score += 2;
+    if (sourceDatabase && candidateDatabase && sourceDatabase === candidateDatabase) score += 1;
+    return { id, score };
+  });
+
+  scored.sort((a, b) => b.score - a.score);
+
+  if ((sourceServer || sourceDatabase) && scored[0]?.score === 0) {
+    return null;
+  }
+
+  return scored[0]?.id || null;
 }
 
 /**
@@ -172,11 +290,19 @@ export function buildTypedLineageEdges(objects) {
   const edges = [];
   const nameIndex = buildNameIndex(objects);
   const referenceIndex = buildReferenceIndex(objects);
+  const lowerObjects = buildLowerObjectIndex(objects);
 
   const pushResolvedEdges = (objectId, metadata, references, direction, type) => {
     if (!Array.isArray(references)) return;
     for (const reference of references) {
-      const resolvedId = resolveObjectId(reference, metadata, objects, nameIndex, referenceIndex);
+      const resolvedId = resolveObjectId(
+        reference,
+        metadata,
+        objects,
+        nameIndex,
+        referenceIndex,
+        lowerObjects
+      );
       if (!resolvedId || resolvedId === objectId) continue;
 
       edges.push({
@@ -193,6 +319,10 @@ export function buildTypedLineageEdges(objects) {
     pushResolvedEdges(objectId, metadata, metadata.depends_on, 'incoming', 'extracts');
     pushResolvedEdges(objectId, metadata, metadata.writes_to, 'outgoing', 'loads');
     pushResolvedEdges(objectId, metadata, metadata.calls, 'outgoing', 'calls');
+    pushResolvedEdges(objectId, metadata, metadata.created_by, 'incoming', 'created_by');
+    pushResolvedEdges(objectId, metadata, metadata.created_via, 'incoming', 'created_via');
+    pushResolvedEdges(objectId, metadata, metadata.contextual_reads, 'incoming', 'contextual_read');
+    pushResolvedEdges(objectId, metadata, metadata.used_by, 'outgoing', 'used_by');
   }
 
   return edges;

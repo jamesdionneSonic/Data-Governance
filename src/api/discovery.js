@@ -21,6 +21,7 @@ import {
   buildImpactVisualization,
   buildDependencyMatrix,
 } from '../services/visualizationService.js';
+import { getUpstreamDependencies, getDownstreamDependents } from '../services/lineageService.js';
 import { createTtlCache } from '../utils/ttlCache.js';
 
 const router = createApiRouter();
@@ -184,6 +185,74 @@ router.get('/activity', authenticate, (req, res) => {
   } catch (err) {
     return sendErrorResponse(res, req, 500, err.message, {
       code: 'ACTIVITY_ERROR',
+    });
+  }
+});
+
+/**
+ * GET /api/v1/lineage/:objectId/upstream
+ * Legacy lineage alias for direct/up-to-depth upstream dependencies.
+ * Requires authentication
+ */
+router.get('/:objectId/upstream', authenticate, (req, res) => {
+  try {
+    const { objectId } = req.params;
+    const { depth = 2 } = req.query;
+
+    if (!cachedObjects.has(objectId)) {
+      return sendErrorResponse(res, req, 404, `Object not found: ${objectId}`, {
+        code: 'NOT_FOUND',
+      });
+    }
+
+    const parsedDepth = parseInt(depth, 10);
+    const effectiveDepth = Number.isFinite(parsedDepth) ? parsedDepth : 2;
+    const upstreamIds = getOrSetCache(`lineage:upstream:${objectId}:${effectiveDepth}`, () =>
+      getUpstreamDependencies(objectId, cachedLineageGraph, effectiveDepth)
+    );
+
+    return res.json({
+      status: 'success',
+      message: 'Upstream lineage retrieved',
+      data: upstreamIds.map((id) => ({ id, ...cachedObjects.get(id) })),
+    });
+  } catch (err) {
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'LINEAGE_UPSTREAM_ERROR',
+    });
+  }
+});
+
+/**
+ * GET /api/v1/lineage/:objectId/downstream
+ * Legacy lineage alias for direct/up-to-depth downstream dependents.
+ * Requires authentication
+ */
+router.get('/:objectId/downstream', authenticate, (req, res) => {
+  try {
+    const { objectId } = req.params;
+    const { depth = 2 } = req.query;
+
+    if (!cachedObjects.has(objectId)) {
+      return sendErrorResponse(res, req, 404, `Object not found: ${objectId}`, {
+        code: 'NOT_FOUND',
+      });
+    }
+
+    const parsedDepth = parseInt(depth, 10);
+    const effectiveDepth = Number.isFinite(parsedDepth) ? parsedDepth : 2;
+    const downstreamIds = getOrSetCache(`lineage:downstream:${objectId}:${effectiveDepth}`, () =>
+      getDownstreamDependents(objectId, cachedLineageGraph, effectiveDepth)
+    );
+
+    return res.json({
+      status: 'success',
+      message: 'Downstream lineage retrieved',
+      data: downstreamIds.map((id) => ({ id, ...cachedObjects.get(id) })),
+    });
+  } catch (err) {
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'LINEAGE_DOWNSTREAM_ERROR',
     });
   }
 });

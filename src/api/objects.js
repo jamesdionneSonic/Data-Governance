@@ -6,14 +6,12 @@
 import { createApiRouter } from '../utils/apiRouter.js';
 import { authenticate } from '../middleware/auth.js';
 import { sendErrorResponse } from '../middleware/errorHandler.js';
+import { indexObjects } from '../services/indexService.js';
 import { updateMarkdownMetadata } from '../services/markdownService.js';
+import { getObjectsCache, setObjectsCache } from '../services/objectCacheStore.js';
 
 const router = createApiRouter();
-let objectCache = new Map();
-
-export function setObjectsCache(objects) {
-  objectCache = objects || new Map();
-}
+export { setObjectsCache };
 
 /**
  * GET /api/v1/objects
@@ -23,6 +21,7 @@ export function setObjectsCache(objects) {
 router.get('/', authenticate, (req, res) => {
   const { limit = 20, offset = 0, database, type, owner } = req.query;
 
+  const objectCache = getObjectsCache();
   let results = Array.from(objectCache.values());
 
   if (database) {
@@ -66,6 +65,7 @@ router.get('/', authenticate, (req, res) => {
 router.get('/:id', authenticate, (req, res) => {
   const { id } = req.params;
 
+  const objectCache = getObjectsCache();
   const object = objectCache.get(id);
   if (!object) {
     return sendErrorResponse(res, req, 404, `Object '${id}' not found`, {
@@ -85,8 +85,9 @@ router.get('/:id', authenticate, (req, res) => {
  * Update editable markdown-backed metadata fields
  * Requires authentication and PowerUser/Admin role
  */
-router.put('/:id', authenticate, (req, res) => {
+router.put('/:id', authenticate, async (req, res) => {
   const { id } = req.params;
+  const objectCache = getObjectsCache();
   const object = objectCache.get(id);
 
   if (!object) {
@@ -121,8 +122,15 @@ router.put('/:id', authenticate, (req, res) => {
   );
 
   try {
-    const updated = updateMarkdownMetadata(object.filePath, updates);
+    const updated = await updateMarkdownMetadata(object.filePath, updates);
     objectCache.set(id, updated);
+    await indexObjects('objects', [updated]).catch(() => {});
+    const { loadAllMarkdown } = await import('../services/markdownService.js');
+    const { buildLineageGraph } = await import('../services/lineageService.js');
+    const { initializeCache } = await import('../utils/cacheInitializer.js');
+    const freshObjects = await loadAllMarkdown(process.env.MARKDOWN_DATA_PATH || './data/markdown');
+    const freshGraph = buildLineageGraph(freshObjects);
+    initializeCache(freshObjects, freshGraph);
     return res.json({
       status: 'success',
       message: 'Object metadata updated',

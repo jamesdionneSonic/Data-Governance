@@ -26,6 +26,17 @@ build/
 *.log
 playwright-report/
 test-results/
+test-results.txt
+
+# Local audit archive for files intentionally removed from repo tracking
+Audit/
+
+# Generated reports, prompt dumps, and repository snapshots
+coverage/
+docs/generated/
+ai_context.txt
+generated_*prompts.txt
+repomix-*.xml
 
 # Ignore generated catalog data from SQL Server
 /data/

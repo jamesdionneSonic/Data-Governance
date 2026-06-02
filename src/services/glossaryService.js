@@ -3,7 +3,7 @@
  * Reads and serves business glossary terms from data/glossary/*.md
  */
 
-import { readFileSync, readdirSync, writeFileSync } from 'fs';
+import { readdir, readFile, writeFile } from 'fs/promises';
 import path, { join, extname, basename } from 'path';
 import yaml from 'yaml';
 import { fileURLToPath } from 'url';
@@ -18,8 +18,8 @@ const GLOSSARY_DIR = path.resolve(dirName, '../../data/glossary');
  * @param {string} filePath
  * @returns {Object} Parsed glossary term
  */
-function parseGlossaryFile(filePath) {
-  const content = readFileSync(filePath, 'utf-8');
+async function parseGlossaryFile(filePath) {
+  const content = await readFile(filePath, 'utf-8');
   const fmMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
 
   if (!fmMatch) {
@@ -52,25 +52,25 @@ function parseGlossaryFile(filePath) {
  * Load all glossary terms from GLOSSARY_DIR
  * @returns {Array} Array of glossary term objects
  */
-export function loadAllTerms() {
+export async function loadAllTerms() {
   const terms = [];
 
-  let entries;
   try {
-    entries = readdirSync(GLOSSARY_DIR, { withFileTypes: true });
+    const entries = await readdir(GLOSSARY_DIR, { withFileTypes: true });
+    await Promise.all(
+      entries.map(async (entry) => {
+        if (entry.isFile() && extname(entry.name) === '.md') {
+          try {
+            const fullPath = join(GLOSSARY_DIR, entry.name);
+            terms.push(await parseGlossaryFile(fullPath));
+          } catch (err) {
+            console.error(`[glossaryService] Error parsing ${entry.name}:`, err.message);
+          }
+        }
+      })
+    );
   } catch {
     return [];
-  }
-
-  for (const entry of entries) {
-    if (entry.isFile() && extname(entry.name) === '.md') {
-      try {
-        const fullPath = join(GLOSSARY_DIR, entry.name);
-        terms.push(parseGlossaryFile(fullPath));
-      } catch (err) {
-        console.error(`[glossaryService] Error parsing ${entry.name}:`, err.message);
-      }
-    }
   }
 
   return terms.sort((a, b) => a.term.localeCompare(b.term));
@@ -81,10 +81,10 @@ export function loadAllTerms() {
  * @param {string} slug
  * @returns {Object|null}
  */
-export function getTermBySlug(slug) {
+export async function getTermBySlug(slug) {
   const filePath = join(GLOSSARY_DIR, `${slug}.md`);
   try {
-    return parseGlossaryFile(filePath);
+    return await parseGlossaryFile(filePath);
   } catch {
     return null;
   }
@@ -94,8 +94,8 @@ export function getTermBySlug(slug) {
  * Get all unique domains in the glossary
  * @returns {string[]}
  */
-export function getGlossaryDomains() {
-  const terms = loadAllTerms();
+export async function getGlossaryDomains() {
+  const terms = await loadAllTerms();
   const domains = [...new Set(terms.map((t) => t.domain))];
   return domains.sort();
 }
@@ -105,10 +105,11 @@ export function getGlossaryDomains() {
  * @param {string} query
  * @returns {Array}
  */
-export function searchTerms(query) {
+export async function searchTerms(query) {
   if (!query) return loadAllTerms();
   const q = query.toLowerCase();
-  return loadAllTerms().filter(
+  const terms = await loadAllTerms();
+  return terms.filter(
     (t) =>
       t.term.toLowerCase().includes(q) ||
       t.body.toLowerCase().includes(q) ||
@@ -122,7 +123,7 @@ export function searchTerms(query) {
  * @param {string} slug
  * @param {Object} termData
  */
-export function saveTerm(slug, termData) {
+export async function saveTerm(slug, termData) {
   const frontmatter = yaml.stringify({
     term: termData.term,
     domain: termData.domain || 'General',
@@ -141,7 +142,7 @@ export function saveTerm(slug, termData) {
   const content = `---\n${frontmatter}---\n\n${body}\n`;
 
   const filePath = join(GLOSSARY_DIR, `${slug}.md`);
-  writeFileSync(filePath, content, 'utf-8');
+  await writeFile(filePath, content, 'utf-8');
 
   return parseGlossaryFile(filePath);
 }
