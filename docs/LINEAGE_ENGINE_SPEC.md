@@ -412,6 +412,19 @@ Legal `transform_type` values:
 No parser evidence means no promoted column lineage. Ambiguous column facts must
 be written to `unresolved_column_lineage` with the reason and suggested action.
 
+The column lineage resolver must follow these promotion rules:
+
+* promote only records where both source and target resolve to known canonical
+  `column_id` values,
+* allow SSIS object references only when they match a canonical object ID, a
+  fully qualified `database.schema.object` reference, or an exact
+  package-scoped source/target reference from `reads_from` or `writes_to`,
+* reject name-only, substring, fuzzy, and ambiguous matches,
+* separate non-promoted facts with `validation_status` values of `probable`,
+  `unresolved`, or `rejected`,
+* include `reason`, `evidence_type`, `evidence_text`, `confidence`, and
+  `suggested_action` for every non-promoted fact.
+
 D. SSIS Column Mapping Contract
 
 SSIS package markdown must preserve data-flow component mappings where available:
@@ -434,6 +447,88 @@ The extractor must capture SSIS mappings from data-flow XML, including mappings
 nested inside containers. If a mapping references a dynamic source, destination,
 or expression that cannot be resolved, it must be captured as unresolved column
 lineage, not promoted as a validated mapping.
+
+SSIS package markdown must write validated package-level mapping evidence as
+`ssis_column_mappings`:
+
+```yaml
+ssis_column_mappings:
+  - package_id: SSIS01.SSISDB.ETL.Claims.LoadClaims.dtsx
+    data_flow_name: "DFT - Load Claims"
+    component_name: "OLE DB Destination"
+    component_type: Microsoft.OLEDBDestination
+    source_component: "Flat File Source"
+    destination_component: "OLE DB Destination"
+    source_object: "Flat File Source"
+    destination_object: StagingDB.JMA.STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL
+    input_column: ClaimDebitCreditCode
+    output_column: CLAIM_DEBIT_CREDIT_CODE
+    external_metadata_column: CLAIM_DEBIT_CREDIT_CODE
+    transform_type: rename
+    expression: ClaimDebitCreditCode
+    evidence_type: ssis_dataflow_column_mapping
+    evidence_text: "InputColumn=ClaimDebitCreditCode; ExternalColumn=CLAIM_DEBIT_CREDIT_CODE"
+    validation_status: validated
+```
+
+Large packages must not quarantine valid mappings just because the parent
+package frontmatter would become too large. The package markdown may embed a
+small preview of `ssis_column_mappings`, but the complete mapping set must be
+written to markdown sidecar datasets referenced by
+`ssis_column_mapping_sidecars`:
+
+```yaml
+ssis_column_mapping_summary:
+  total_mappings: 425
+  embedded_mappings: 25
+  sidecar_mappings: 425
+  sidecar_chunks: 2
+  truncated: false
+ssis_column_mapping_sidecars:
+  - id: SSIS01.SSISDB.ETL.Claims.LoadClaims.dtsx.ssis_column_mappings.chunk_001
+    chunk_number: 1
+    records: 250
+```
+
+Sidecar markdown datasets must include the parent `package_id`, the same
+`reads_from` and `writes_to` scope candidates, and full `ssis_column_mappings`
+records. The column lineage resolver must attach sidecar mappings back to the
+parent package ID so impact analysis cites the SSIS package, not the sidecar, as
+the process.
+
+Non-SQL SSIS endpoints such as flat files, Excel files, raw files, XML,
+SharePoint, Access, FTP/SFTP files, and recordsets must be represented as
+external-source markdown datasets when SSIS provides component or column
+metadata. These objects must use `external_source: true`, stable column IDs, and
+`ssis_external_component` extraction evidence so they can participate in
+column-level lineage without pretending to be SQL tables.
+
+Unresolved SSIS column facts must be written to
+`unresolved_ssis_column_mappings`:
+
+```yaml
+unresolved_ssis_column_mappings:
+  - package_id: SSIS01.SSISDB.ETL.Claims.LoadClaims.dtsx
+    component_name: DynamicClaimsConnection
+    component_type: connection_manager
+    reason: dynamic_connection_manager
+    evidence_type: ssis_dynamic_connection
+    evidence_text: "@[User::ClaimsConnectionString]"
+    variable_names:
+      - ClaimsConnectionString
+    validation_status: unresolved
+```
+
+Dynamic connection managers must first be resolved from package variables,
+project/package parameters, environment variables, and literal SSIS
+expressions. A dynamic connection manager should remain in
+`unresolved_ssis_column_mappings` only when the unresolved value can affect SQL
+lineage or object identity. File-path-only external endpoints and
+credential-only expressions must not be counted as failed SSIS column mappings.
+Raw rebuilds that do not have live SSISDB runtime metadata may use scoped
+`ssisProjectParameterOverrides` from the lineage alias configuration. Overrides
+must be scoped by folder/project, folder/project/package, or an explicit flat
+key so a runtime value cannot leak into unrelated packages.
 
 E. Change Impact Contract
 
@@ -460,6 +555,17 @@ to explain:
 * which SSIS package, SQL procedure, view, function, trigger, or table is the
   next owner to inspect.
 
+Impact records must classify impact using these stable `impact_type` values:
+
+* `compile_time_break`
+* `runtime_load_failure`
+* `semantic_reporting_risk`
+* `data_quality_risk`
+* `metadata_only`
+
+Each impact response must include `severity`, `validation_status`,
+`evidence_type`, `evidence_text`, and the affected markdown object or process ID.
+
 F. Risk Flags Required For AI Impact Answers
 
 The extractor must flag patterns that make column impact analysis risky:
@@ -481,6 +587,27 @@ These flags must be written to markdown even when no validated column edge can b
 created. AI answers must surface these risks instead of pretending the impact is
 known.
 
+SQL object markdown must write risk facts as structured `column_risk_flags`
+records:
+
+```yaml
+column_risk_flags:
+  - process_id: DW01.Sonic_DW.etl.LoadFactClaim
+    flag_type: select_star
+    severity: high
+    usage_context: select_list
+    object_id: DW01.Sonic_DW.dbo.FactClaim
+    evidence_type: sql_definition
+    evidence_text: "SELECT src.* FROM staging.Claims AS src"
+    reason: "SELECT * hides column-level dependencies from explicit parser evidence."
+    suggested_action: "Replace star expansion with an explicit column list."
+    validation_status: risk_flag
+```
+
+Risk flags are not promoted lineage edges. They are evidence-backed warnings
+that downstream impact answers must display when the extractor cannot prove
+complete column coverage.
+
 G. AI Answerability Requirement
 
 For every governed table, a human or AI reading only the markdown corpus must be
@@ -497,6 +624,23 @@ The markdown must prefer stable structured YAML for machine reading and concise
 human-readable sections for review. Long SQL definitions may remain in fenced
 SQL blocks, but extracted column usage and lineage facts must be represented as
 structured metadata.
+
+The Codex/AI context output must be generated from the markdown catalog only and
+must include both structured JSON and rendered markdown. The rendered markdown
+must contain these sections:
+
+* `Focus`
+* `Table-Level Upstream`
+* `Table-Level Downstream`
+* `Direct Column Usage`
+* `Column Lineage`
+* `Downstream Blast Radius`
+* `Unresolved Risks`
+
+The context API must accept object ID, column name or column ID, and change type.
+It must return evidence labels (`validation_status`, `confidence`,
+`evidence_type`, and `evidence_text`) so Codex can distinguish validated impact
+from unresolved risk without reconnecting to SQL Server or SSIS.
 
 13. ACCEPTANCE FIXTURES
 
@@ -563,3 +707,60 @@ Reliability:
 * Tests must assert clean validated edges and useful unresolved diagnostics.
 * Tests must assert AI-answerable markdown for table-level and column-level
   impact questions.
+
+15. CONFLUENCE LINEAGE REPOSITORY CONTRACT
+
+The markdown catalog must be publishable to a Confluence page tree so humans and
+Codex-style assistants can answer lineage questions from the generated corpus.
+The Confluence repository is a distribution channel for the markdown source of
+truth; it must not become a competing hand-edited source.
+
+A. Repository Root
+
+The default Confluence root is:
+
+* Base URL: `https://sonicautomotive.atlassian.net/wiki`
+* Space key: `TDE`
+* Parent page ID: `2221670415`
+* Root page title: `Sonic Data Lineage`
+
+B. Export Artifacts
+
+Each export must build:
+
+* generated summary pages for README, rebuild report, catalog manifest, source
+  inventory, confidence guide, and object index,
+* fast object locator pages that resolve object names and aliases to exact
+  quick-context pages from Confluence page bodies,
+* fast lineage quick-context pages that expose searchable object aliases,
+  direct upstream/downstream lineage, confidence, risk counts, and shard pointers
+  from Confluence page bodies,
+* Rovo-readable catalog shard pages containing many compact AI-readable object
+  contexts,
+* a machine-readable object index attachment,
+* an export summary attachment,
+* a zipped markdown catalog attachment,
+* a `confluence-export-manifest.json` with file hashes, page titles, attachment
+  names, labels, and publish flags.
+
+C. Publishing Safety
+
+Generated Confluence pages must be prefixed with `[AUTO]`. The sync process must
+support dry-run mode, hash-aware publishing, and environment-variable secrets.
+The default AI-facing corpus must be object locator pages, quick-context pages,
+and catalog shard pages, not one page per object. Object locator pages must make
+ambiguous name searches fast by mapping names/aliases to exact quick-context
+page titles. Quick-context pages must support table-level lineage answers from
+page bodies. Shards must map object IDs to shard page titles/files and include
+enough structured context for Rovo/Codex to answer column-impact questions from
+page bodies. Shards must split by both object count and estimated page size so
+wide tables do not produce oversized Confluence pages. Live publishing must
+require `CONFLUENCE_EMAIL` and `CONFLUENCE_API_TOKEN`.
+
+D. Codex/MCP Boundary
+
+The app publisher does not require MCP. The app writes and maintains the
+Confluence repository through Confluence API credentials. Codex uses a separate
+read-only Confluence MCP to search/read those pages and attachments. The MCP
+must be configured outside the app and should be read-only until the publishing
+workflow is proven stable.

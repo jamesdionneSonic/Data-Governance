@@ -3,27 +3,39 @@
  * Parses markdown files and extracts object metadata
  */
 
-import { readdir, readFile, writeFile } from 'fs/promises';
+import { access, open, readdir, readFile, writeFile } from 'fs/promises';
 import { join, extname, isAbsolute } from 'path';
 import yaml from 'yaml';
 
 const CATALOG_MANIFEST_FILE = 'catalog-manifest.json';
+const FRONTMATTER_READ_CHUNK_BYTES = 64 * 1024;
+const MAX_FRONTMATTER_READ_BYTES = 8 * 1024 * 1024;
 
 /**
  * Parse markdown file and extract metadata
  */
-export async function parseMarkdownFile(filePath) {
+export async function parseMarkdownFile(filePath, options = {}) {
   const content = await readFile(filePath, 'utf-8');
-  return parseMarkdownContent(content, filePath);
+  return parseMarkdownContent(content, filePath, options);
+}
+
+/**
+ * Parse only frontmatter metadata from a markdown file.
+ * This keeps validation fast for large generated lineage markdown files.
+ */
+export async function parseMarkdownMetadataFile(filePath) {
+  const content = await readMarkdownFrontmatter(filePath);
+  return parseMarkdownContent(content, filePath, { includeDescription: false });
 }
 
 /**
  * Parse markdown content string and extract metadata
  * @param {string} content - Markdown content including YAML frontmatter
  * @param {string} source - Source label (file name or path)
+ * @param {Object} options - Parser options
  * @returns {Object} Parsed metadata
  */
-export function parseMarkdownContent(content, source = 'inline-content') {
+export function parseMarkdownContent(content, source = 'inline-content', options = {}) {
   const normalizedContent = String(content || '').replace(/^\uFEFF/, '');
   const frontmatterMatch = normalizedContent.match(/^---\r?\n([\s\S]*?)\r?\n---/);
 
@@ -39,7 +51,8 @@ export function parseMarkdownContent(content, source = 'inline-content') {
     metadata = parseFrontmatterLenient(frontmatterContent);
   }
   const markdownContent = normalizedContent.substring(frontmatterMatch[0].length).trim();
-  const description = extractPlainText(markdownContent);
+  const description =
+    options.includeDescription === false ? '' : extractPlainText(markdownContent);
 
   const required = ['name', 'database', 'type'];
   for (const field of required) {
@@ -63,6 +76,7 @@ export function parseMarkdownContent(content, source = 'inline-content') {
     custodian: metadata.custodian || null,
     sensitivity: metadata.sensitivity || 'public',
     tags: metadata.tags || [],
+    columns: Array.isArray(metadata.columns) ? metadata.columns : [],
     depends_on: metadata.depends_on || [],
     reads_from: metadata.reads_from || metadata.lineage?.reads_from || [],
     writes_to: metadata.writes_to || metadata.lineage?.writes_to || [],
@@ -71,6 +85,44 @@ export function parseMarkdownContent(content, source = 'inline-content') {
     created_via: metadata.created_via || metadata.lineage?.created_via || [],
     used_by: metadata.used_by || metadata.lineage?.used_by || [],
     contextual_reads: metadata.contextual_reads || metadata.lineage?.contextual_reads || [],
+    column_usage: Array.isArray(metadata.column_usage) ? metadata.column_usage : [],
+    unresolved_column_usage: Array.isArray(metadata.unresolved_column_usage)
+      ? metadata.unresolved_column_usage
+      : [],
+    column_risk_flags: Array.isArray(metadata.column_risk_flags)
+      ? metadata.column_risk_flags
+      : [],
+    column_lineage: Array.isArray(metadata.column_lineage) ? metadata.column_lineage : [],
+    unresolved_column_lineage: Array.isArray(metadata.unresolved_column_lineage)
+      ? metadata.unresolved_column_lineage
+      : [],
+    ssis_column_mappings: Array.isArray(metadata.ssis_column_mappings)
+      ? metadata.ssis_column_mappings
+      : [],
+    ssis_column_mapping_summary:
+      metadata.ssis_column_mapping_summary &&
+      typeof metadata.ssis_column_mapping_summary === 'object' &&
+      !Array.isArray(metadata.ssis_column_mapping_summary)
+        ? metadata.ssis_column_mapping_summary
+        : null,
+    ssis_column_mapping_sidecars: Array.isArray(metadata.ssis_column_mapping_sidecars)
+      ? metadata.ssis_column_mapping_sidecars
+      : [],
+    unresolved_ssis_column_mappings: Array.isArray(metadata.unresolved_ssis_column_mappings)
+      ? metadata.unresolved_ssis_column_mappings
+      : [],
+    lineage_quality:
+      metadata.lineage_quality &&
+      typeof metadata.lineage_quality === 'object' &&
+      !Array.isArray(metadata.lineage_quality)
+        ? metadata.lineage_quality
+        : null,
+    catalog_confidence:
+      metadata.catalog_confidence &&
+      typeof metadata.catalog_confidence === 'object' &&
+      !Array.isArray(metadata.catalog_confidence)
+        ? metadata.catalog_confidence
+        : null,
     lineage_status: metadata.lineage_status || metadata.lineage?.lineage_status || '',
     external_source: metadata.external_source ?? metadata.lineage?.external_source ?? false,
     called_by: metadata.called_by || metadata.lineage?.called_by || [],
@@ -192,6 +244,47 @@ export function extractPlainText(markdown) {
   return text.substring(0, 500).trim();
 }
 
+async function readMarkdownFrontmatter(filePath) {
+  const chunks = [];
+  const buffer = Buffer.alloc(FRONTMATTER_READ_CHUNK_BYTES);
+  let bytesReadTotal = 0;
+  let fileHandle;
+
+  try {
+    fileHandle = await open(filePath, 'r');
+
+    while (bytesReadTotal < MAX_FRONTMATTER_READ_BYTES) {
+      const { bytesRead } = await fileHandle.read(
+        buffer,
+        0,
+        buffer.length,
+        bytesReadTotal
+      );
+
+      if (bytesRead === 0) break;
+
+      chunks.push(Buffer.from(buffer.subarray(0, bytesRead)));
+      bytesReadTotal += bytesRead;
+
+      const content = Buffer.concat(chunks).toString('utf-8').replace(/^\uFEFF/, '');
+      if (!content.startsWith('---')) {
+        return content;
+      }
+
+      const frontmatterMatch = content.match(/^---\r?\n[\s\S]*?\r?\n---/);
+      if (frontmatterMatch) {
+        return frontmatterMatch[0];
+      }
+    }
+  } finally {
+    if (fileHandle) {
+      await fileHandle.close();
+    }
+  }
+
+  return readFile(filePath, 'utf-8');
+}
+
 /**
  * Read all markdown files from directory
  * @param {string} dirPath - Directory path
@@ -246,6 +339,62 @@ async function getManifestMarkdownFiles(dirPath) {
   }
 }
 
+export async function validateMarkdownManifest(dataPath) {
+  const manifestPath = join(dataPath, CATALOG_MANIFEST_FILE);
+  let manifest;
+
+  try {
+    manifest = JSON.parse(await readFile(manifestPath, 'utf-8'));
+  } catch {
+    return null;
+  }
+
+  if (!Array.isArray(manifest.files)) {
+    return null;
+  }
+
+  const manifestFiles = manifest.files
+    .map((file) => String(file || '').replace(/\\/g, '/').trim())
+    .filter((file) => file && extname(file) === '.md' && !isAbsolute(file))
+    .filter((file) => !file.split('/').includes('..'));
+
+  const results = {
+    valid: 0,
+    invalid: 0,
+    errors: [],
+    mode: 'manifest',
+    manifestBacked: true,
+    deepValidation: false,
+  };
+  const concurrency = Math.max(1, Number(process.env.MARKDOWN_LOAD_CONCURRENCY) || 64);
+  let nextIndex = 0;
+
+  const workers = Array.from(
+    { length: Math.min(concurrency, manifestFiles.length) },
+    async () => {
+      while (nextIndex < manifestFiles.length) {
+        const manifestFile = manifestFiles[nextIndex];
+        nextIndex += 1;
+
+        const filePath = join(dataPath, manifestFile);
+        try {
+          await access(filePath);
+          results.valid += 1;
+        } catch (err) {
+          results.invalid += 1;
+          results.errors.push({
+            id: manifestFile,
+            errors: [err.message],
+          });
+        }
+      }
+    }
+  );
+
+  await Promise.all(workers);
+  return results;
+}
+
 /**
  * Load all markdown files from data directory
  * @param {string} dataPath - Base data directory path
@@ -279,6 +428,49 @@ export async function loadAllMarkdown(dataPath) {
   }
 
   return objects;
+}
+
+export async function validateMarkdownCatalog(dataPath) {
+  const results = {
+    valid: 0,
+    invalid: 0,
+    errors: [],
+  };
+
+  const mdFiles = await getMarkdownFiles(dataPath);
+  const concurrency = Math.max(1, Number(process.env.MARKDOWN_LOAD_CONCURRENCY) || 64);
+  let nextIndex = 0;
+
+  const workers = Array.from({ length: Math.min(concurrency, mdFiles.length) }, async () => {
+    while (nextIndex < mdFiles.length) {
+      const filePath = mdFiles[nextIndex];
+      nextIndex += 1;
+
+      try {
+        const metadata = await parseMarkdownMetadataFile(filePath);
+        const errors = validateMetadata(metadata);
+
+        if (errors.length === 0) {
+          results.valid += 1;
+        } else {
+          results.invalid += 1;
+          results.errors.push({
+            id: metadata.id || filePath,
+            errors,
+          });
+        }
+      } catch (err) {
+        results.invalid += 1;
+        results.errors.push({
+          id: filePath,
+          errors: [err.message],
+        });
+      }
+    }
+  });
+
+  await Promise.all(workers);
+  return results;
 }
 
 /**
@@ -350,6 +542,72 @@ export function validateMetadata(metadata) {
   if (metadata.depends_on && !Array.isArray(metadata.depends_on)) {
     errors.push('depends_on must be an array');
   }
+  if (metadata.columns && !Array.isArray(metadata.columns)) {
+    errors.push('columns must be an array');
+  }
+  if (Array.isArray(metadata.columns)) {
+    metadata.columns.forEach((column, index) => {
+      if (!column || typeof column !== 'object') {
+        errors.push(`columns[${index}] must be an object`);
+        return;
+      }
+      if (!column.name) {
+        errors.push(`columns[${index}] missing name`);
+      }
+      if (!column.column_id) {
+        errors.push(`columns[${index}] missing column_id`);
+      }
+    });
+  }
+  if (metadata.column_usage && !Array.isArray(metadata.column_usage)) {
+    errors.push('column_usage must be an array');
+  }
+  if (metadata.unresolved_column_usage && !Array.isArray(metadata.unresolved_column_usage)) {
+    errors.push('unresolved_column_usage must be an array');
+  }
+  if (metadata.column_risk_flags && !Array.isArray(metadata.column_risk_flags)) {
+    errors.push('column_risk_flags must be an array');
+  }
+  if (metadata.column_lineage && !Array.isArray(metadata.column_lineage)) {
+    errors.push('column_lineage must be an array');
+  }
+  if (metadata.unresolved_column_lineage && !Array.isArray(metadata.unresolved_column_lineage)) {
+    errors.push('unresolved_column_lineage must be an array');
+  }
+  if (metadata.ssis_column_mappings && !Array.isArray(metadata.ssis_column_mappings)) {
+    errors.push('ssis_column_mappings must be an array');
+  }
+  if (
+    metadata.ssis_column_mapping_summary &&
+    (typeof metadata.ssis_column_mapping_summary !== 'object' ||
+      Array.isArray(metadata.ssis_column_mapping_summary))
+  ) {
+    errors.push('ssis_column_mapping_summary must be an object');
+  }
+  if (
+    metadata.ssis_column_mapping_sidecars &&
+    !Array.isArray(metadata.ssis_column_mapping_sidecars)
+  ) {
+    errors.push('ssis_column_mapping_sidecars must be an array');
+  }
+  if (
+    metadata.unresolved_ssis_column_mappings &&
+    !Array.isArray(metadata.unresolved_ssis_column_mappings)
+  ) {
+    errors.push('unresolved_ssis_column_mappings must be an array');
+  }
+  if (
+    metadata.lineage_quality &&
+    (typeof metadata.lineage_quality !== 'object' || Array.isArray(metadata.lineage_quality))
+  ) {
+    errors.push('lineage_quality must be an object');
+  }
+  if (
+    metadata.catalog_confidence &&
+    (typeof metadata.catalog_confidence !== 'object' || Array.isArray(metadata.catalog_confidence))
+  ) {
+    errors.push('catalog_confidence must be an object');
+  }
   if (metadata.created_by && !Array.isArray(metadata.created_by)) {
     errors.push('created_by must be an array');
   }
@@ -371,10 +629,13 @@ export function validateMetadata(metadata) {
 
 export default {
   parseMarkdownFile,
+  parseMarkdownMetadataFile,
   parseMarkdownContent,
   extractPlainText,
   getMarkdownFiles,
   loadAllMarkdown,
+  validateMarkdownCatalog,
+  validateMarkdownManifest,
   updateMarkdownMetadata,
   validateMetadata,
 };

@@ -22,6 +22,7 @@ import {
   buildDependencyMatrix,
 } from '../services/visualizationService.js';
 import { getUpstreamDependencies, getDownstreamDependents } from '../services/lineageService.js';
+import { buildCodexColumnContext } from '../services/codexContextService.js';
 import { createTtlCache } from '../utils/ttlCache.js';
 
 const router = createApiRouter();
@@ -350,6 +351,50 @@ router.get('/impact/:objectId', authenticate, (req, res) => {
   } catch (err) {
     return sendErrorResponse(res, req, 500, err.message, {
       code: 'IMPACT_ERROR',
+    });
+  }
+});
+
+/**
+ * GET /api/v1/discovery/codex-context/:objectId?column=ColumnName&change_type=drop_column
+ * Build markdown-only context for AI/Codex impact questions
+ * Requires authentication
+ */
+router.get('/codex-context/:objectId', authenticate, (req, res) => {
+  try {
+    const { objectId } = req.params;
+    const columnName = req.query.column || req.query.column_name || req.query.columnName;
+    const changeType = req.query.change_type || req.query.changeType || 'drop_column';
+
+    if (!cachedObjects.has(objectId)) {
+      return sendErrorResponse(res, req, 404, `Object not found: ${objectId}`, {
+        code: 'NOT_FOUND',
+      });
+    }
+
+    if (!columnName) {
+      return sendErrorResponse(res, req, 400, 'column query parameter is required', {
+        code: 'BAD_REQUEST',
+      });
+    }
+
+    const cacheKey = `codex-context:${objectId}:${columnName}:${changeType}`;
+    const context = getOrSetCache(cacheKey, () =>
+      buildCodexColumnContext(cachedObjects, cachedLineageGraph, {
+        object_id: objectId,
+        column_name: columnName,
+        change_type: changeType,
+      })
+    );
+
+    return res.json({
+      status: 'success',
+      message: 'Codex context retrieved',
+      data: context,
+    });
+  } catch (err) {
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'CODEX_CONTEXT_ERROR',
     });
   }
 });

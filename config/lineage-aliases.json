@@ -1,4 +1,32 @@
 {
+  "ssisProjectParameterOverrides": {
+    "StagingSonicSSIS.LOAD": {
+      "eLeadDW_ServerName": "10.125.6.23\\dwhdb"
+    }
+  },
+  "ssisProjectConnectionOverrides": {
+    "StagingSonicSSIS.COPY": {
+      "dbSourceDW": {
+        "serverName": "cor-sql-02",
+        "databaseName": "eLeadDW"
+      },
+      "dbTargetDW": {
+        "serverName": "L1-5FSQL-01",
+        "databaseName": "ETL_Staging"
+      }
+    }
+  },
+  "rebuildConfidenceGates": {
+    "maxInvalidObjects": 0,
+    "maxMissingConfidenceObjects": 0,
+    "maxLowNeedsReviewRatio": 0.05,
+    "minAverageConfidence": 0.72,
+    "maxUnresolvedFactRatio": 0.5,
+    "maxSsisEdgeDropRatio": 0.1,
+    "maxNewSourceLowNeedsReviewRatio": 0.2,
+    "minNewSourceAverageConfidence": 0.75,
+    "minNewSourceObjectsForGate": 10
+  },
   "sqlServerAliasesByDatabase": {
     "etl_staging": {
       "L1-5FSQL-01\\INST1": "L1-5FSQL-01",

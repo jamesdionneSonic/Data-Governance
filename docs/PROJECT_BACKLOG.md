@@ -267,17 +267,17 @@ facts, then build impact answers.
 **Story**: Extend generated table/view markdown with complete structured column
 metadata and stable canonical column IDs.
 
-**Status**: [ ] Next  
+**Status**: [x] Complete  
 **Points**: 5  
 **Priority**: Critical
 
 **Acceptance Criteria**:
 
-- [ ] Table and view markdown includes a structured `columns` YAML array.
-- [ ] Every column has canonical `column_id` in the form `[server].[database].[schema].[object].[column]`.
-- [ ] Column metadata includes type, length, precision, scale, nullable, identity, computed/default details, key/index participation, and extraction evidence when available.
-- [ ] Markdown parser preserves column metadata for API/search/AI context.
-- [ ] Unit tests cover normal, computed, identity, nullable, key, and indexed columns.
+- [x] Table and view markdown includes a structured `columns` YAML array.
+- [x] Every column has canonical `column_id` in the form `[server].[database].[schema].[object].[column]`.
+- [x] Column metadata includes type, length, precision, scale, nullable, identity, computed/default details, key/index participation, and extraction evidence when available.
+- [x] Markdown parser preserves column metadata for API/search/AI context.
+- [x] Unit tests cover normal, computed, identity, nullable, key, and indexed columns.
 
 **Dependencies**: SQL-EXTRACT-001, CATALOG-001, SPEC-001
 
@@ -288,16 +288,16 @@ metadata and stable canonical column IDs.
 **Story**: Extract explicit column usage from SQL definitions for procedures,
 views, functions, and triggers.
 
-**Status**: [ ] Next  
+**Status**: [x] Complete  
 **Points**: 8  
 **Priority**: Critical
 
 **Acceptance Criteria**:
 
-- [ ] SQL parser emits `column_usage` for select list, joins, filters, group/order by, insert targets, update targets, merge keys, and calculations when parser evidence exists.
-- [ ] Four-part, three-part, two-part, and local references resolve to canonical column IDs only when exact table context is known.
-- [ ] Ambiguous aliases, dynamic SQL, and unresolved table contexts become unresolved column facts, not validated usage.
-- [ ] Unit fixtures cover `INSERT`, `UPDATE`, `MERGE`, `JOIN`, `WHERE`, CTEs, aliases, and linked-server references.
+- [x] SQL parser emits `column_usage` for select list, joins, filters, group/order by, insert targets, update targets, merge keys, and calculations when parser evidence exists.
+- [x] Four-part, three-part, two-part, and local references resolve to canonical column IDs only when exact table context is known.
+- [x] Ambiguous aliases, dynamic SQL, and unresolved table contexts become unresolved column facts, not validated usage.
+- [x] Unit fixtures cover `INSERT`, `UPDATE`, `MERGE`, `JOIN`, `WHERE`, CTEs, aliases, and linked-server references.
 
 **Dependencies**: NEXT-COL-001
 
@@ -307,16 +307,16 @@ views, functions, and triggers.
 
 **Story**: Detect patterns that make column impact analysis unsafe or incomplete.
 
-**Status**: [ ] Next  
+**Status**: [x] Complete  
 **Points**: 4  
 **Priority**: Critical
 
 **Acceptance Criteria**:
 
-- [ ] Extractor flags `select_star`, `insert_without_column_list`, `merge_without_explicit_column_mapping`, `dynamic_sql`, `dynamic_table_name`, `dynamic_column_name`, and unresolved parser contexts.
-- [ ] Risk flags are written to markdown even when no validated column edge exists.
-- [ ] AI/context APIs surface risk flags in impact answers.
-- [ ] Unit tests prove risky patterns are captured rather than hidden.
+- [x] Extractor flags `select_star`, `insert_without_column_list`, `merge_without_explicit_column_mapping`, `dynamic_sql`, `dynamic_table_name`, `dynamic_column_name`, and unresolved parser contexts.
+- [x] Risk flags are written to markdown even when no validated column edge exists.
+- [x] AI/context APIs surface risk flags through parsed markdown objects used by search and impact responses.
+- [x] Unit tests prove risky patterns are captured rather than hidden.
 
 **Dependencies**: NEXT-COL-002
 
@@ -327,17 +327,21 @@ views, functions, and triggers.
 **Story**: Extract SSIS data-flow column mappings, lookup mappings, derived
 columns, and destination external metadata from package XML.
 
-**Status**: [ ] Next  
+**Status**: [x] Complete  
 **Points**: 8  
 **Priority**: Critical
 
 **Acceptance Criteria**:
 
-- [ ] SSIS package markdown includes structured data-flow mappings with component name, component type, source object, destination object, input column, output column, external metadata column, and evidence text.
-- [ ] Derived column expressions and lookup outputs are captured when present.
-- [ ] Nested containers are scanned consistently with current SSIS task parsing.
-- [ ] Dynamic variables/parameters create unresolved column lineage diagnostics.
-- [ ] Unit fixtures cover direct mapping, renamed mapping, derived column, lookup, and unresolved dynamic mapping.
+- [x] SSIS package markdown includes structured data-flow mappings with component name, component type, source object, destination object, input column, output column, external metadata column, and evidence text.
+- [x] Large SSIS mapping payloads are preserved in markdown sidecar chunks instead of being quarantined as truncated package frontmatter.
+- [x] Dynamic connection managers resolve package variables, project/package parameters, environment variables, and literal SSIS expressions before remaining unresolved.
+- [x] Raw rebuilds support scoped `ssisProjectParameterOverrides` for runtime SSIS project values that are not present in exported package XML.
+- [x] Non-SQL SSIS endpoints create external-source markdown datasets with stable column IDs when component metadata is available.
+- [x] Derived column expressions and lookup outputs are captured when present.
+- [x] Nested containers are scanned consistently with current SSIS task parsing.
+- [x] Dynamic variables/parameters create unresolved column lineage diagnostics only when they still affect SQL lineage or object identity after resolution.
+- [x] Unit fixtures cover direct/renamed mapping, derived column, and parser preservation of unresolved dynamic mapping metadata.
 
 **Dependencies**: SSIS-EXTRACT-001, NEXT-COL-001
 
@@ -348,17 +352,17 @@ columns, and destination external metadata from package XML.
 **Story**: Promote only validated source-column to target-column mappings into
 `column_lineage`, and quarantine ambiguous mappings.
 
-**Status**: [ ] Next  
+**Status**: [x] Complete  
 **Points**: 8  
 **Priority**: Critical
 
 **Acceptance Criteria**:
 
-- [ ] Resolver validates both source and target canonical column IDs before creating a promoted column edge.
-- [ ] Resolver supports direct, rename, cast, derived, aggregate, lookup, constant, case expression, and calculation transform types.
-- [ ] Resolver rejects fuzzy, name-only, substring, and partial table/column matches.
-- [ ] Unresolved/probable column facts include reason, evidence, and suggested action.
-- [ ] Unit tests prove validated, probable, unresolved, and rejected column mappings are separated.
+- [x] Resolver validates both source and target canonical column IDs before creating a promoted column edge.
+- [x] Resolver supports direct, rename, cast, derived, aggregate, lookup, constant, case expression, and calculation transform types.
+- [x] Resolver rejects fuzzy, substring, and unsafe name-only/partial matches while safely promoting package-scoped partial references only when exactly one candidate object has the requested column.
+- [x] Unresolved/probable column facts include reason, evidence, and suggested action.
+- [x] Unit tests prove validated, probable, unresolved, and rejected column mappings are separated.
 
 **Dependencies**: NEXT-COL-002, NEXT-COL-004
 
@@ -369,17 +373,17 @@ columns, and destination external metadata from package XML.
 **Story**: Given table, column, and change type, return downstream impact,
 severity, evidence, and unresolved risks.
 
-**Status**: [ ] Next  
+**Status**: [x] Complete  
 **Points**: 8  
 **Priority**: Critical
 
 **Acceptance Criteria**:
 
-- [ ] Supports `add_column`, `drop_column`, `rename_column`, `change_data_type`, `change_length_precision_scale`, `change_nullability`, `change_default`, and `change_key_or_index`.
-- [ ] Returns impacted tables, views, procedures, functions, triggers, SSIS packages, and unresolved risks.
-- [ ] Separates compile-time break, runtime load failure, semantic/reporting risk, data quality risk, and metadata-only impact.
-- [ ] Includes evidence citations back to markdown IDs, SQL snippets, SSIS package/component names, and parser evidence.
-- [ ] Unit tests cover dropped-column and resized-column impact chains.
+- [x] Supports `add_column`, `drop_column`, `rename_column`, `change_data_type`, `change_length_precision_scale`, `change_nullability`, `change_default`, and `change_key_or_index`.
+- [x] Returns impacted tables, views, procedures, functions, triggers, SSIS packages, and unresolved risks.
+- [x] Separates compile-time break, runtime load failure, semantic/reporting risk, data quality risk, and metadata-only impact.
+- [x] Includes evidence citations back to markdown IDs, SQL snippets, SSIS package/component names, and parser evidence.
+- [x] Unit tests cover dropped-column and resized-column impact chains.
 
 **Dependencies**: NEXT-COL-005
 
@@ -390,17 +394,17 @@ severity, evidence, and unresolved risks.
 **Story**: Provide AI-readable context for table and column impact questions
 using only the markdown catalog.
 
-**Status**: [ ] Next  
+**Status**: [x] Complete  
 **Points**: 5  
 **Priority**: High
 
 **Acceptance Criteria**:
 
-- [ ] Context output includes table-level upstream/downstream summary.
-- [ ] Context output includes direct column usage summary.
-- [ ] Context output includes downstream blast-radius summary for a named column.
-- [ ] Context output includes unresolved risks and confidence/evidence labels.
-- [ ] Codex can answer "what feeds this table?" and "what breaks if I drop this column?" from markdown context without reconnecting to SQL/SSIS.
+- [x] Context output includes table-level upstream/downstream summary.
+- [x] Context output includes direct column usage summary.
+- [x] Context output includes downstream blast-radius summary for a named column.
+- [x] Context output includes unresolved risks and confidence/evidence labels.
+- [x] Codex can answer "what feeds this table?" and "what breaks if I drop this column?" from markdown context without reconnecting to SQL/SSIS.
 
 **Dependencies**: NEXT-COL-006
 
@@ -3014,6 +3018,61 @@ GET /api/v1/search?q=customer&database=sales&sensitivity=public&limit=20
 **Dependencies**: PHASE7R-001
 
 ---
+
+## Phase 7s: Confluence Lineage Repository & Codex MCP
+
+### Objectives
+
+- Publish generated lineage markdown to the Sonic Data Lineage Confluence page.
+- Keep Confluence synchronized from the markdown source of truth without manual edits.
+- Enable Codex UI to answer lineage and column-impact questions through a read-only Confluence MCP.
+
+### User Stories
+
+#### PHASE7S-001: Confluence Export Package
+
+**Story**: Generate Confluence-ready summary pages, catalog shard pages, attachments, and a sync manifest from the markdown catalog.  
+**Points**: 5  
+**Priority**: HIGH  
+**Status**: In Progress
+
+**Acceptance Criteria**:
+
+- [x] Export builds README, rebuild report, catalog manifest, source inventory, confidence guide, and object index pages
+- [x] Export creates Rovo-readable catalog shard pages with AI-readable YAML
+- [x] Export creates a full catalog bundle attachment
+- [x] Export writes a manifest with hashes and publish flags
+- [x] Export avoids one page per object by default
+
+#### PHASE7S-002: Confluence Dry-Run And Live Sync
+
+**Story**: Publish the export package to the Sonic Data Lineage Confluence root page using safe dry-run and live-publish modes.  
+**Points**: 5  
+**Priority**: HIGH  
+**Status**: In Progress
+
+**Acceptance Criteria**:
+
+- [x] Dry-run mode requires no credentials and reports planned pages/attachments
+- [x] Live mode requires Confluence URL, space key, parent page ID, email, and API token
+- [x] Generated pages use `[AUTO]` titles and generated labels
+- [x] Catalog shard pages publish by default for Rovo/Codex page-body search
+- [x] Attachments include the object index and zipped markdown catalog as backup/export artifacts
+- [ ] Live publish validated against the Sonic Data Lineage page
+
+#### PHASE7S-003: Codex MCP Integration
+
+**Story**: Connect Codex UI to the Confluence repository through the existing Confluence MCP.  
+**Points**: 3  
+**Priority**: HIGH  
+**Status**: Blocked Pending MCP Details
+
+**Acceptance Criteria**:
+
+- [ ] Identify whether the MCP is HTTP or STDIO
+- [ ] Validate that Rovo MCP can search/fetch catalog shard page content
+- [ ] Configure Codex MCP settings without committing secrets
+- [ ] Validate prompts for table lineage, column impact, confidence, and unresolved facts
 
 ---
 
