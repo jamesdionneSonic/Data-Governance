@@ -111,6 +111,51 @@ describe('Markdown Service', () => {
       expect(errors.some((e) => e.includes('depends_on'))).toBe(true);
     });
 
+    it('should fail if columns is not array', () => {
+      const metadata = { ...validMetadata, columns: 'not-an-array' };
+      const errors = validateMetadata(metadata);
+      expect(errors.some((e) => e.includes('columns'))).toBe(true);
+    });
+
+    it('should require column entries to include name and column_id', () => {
+      const metadata = { ...validMetadata, columns: [{ name: 'ClaimID' }] };
+      const errors = validateMetadata(metadata);
+      expect(errors.some((e) => e.includes('column_id'))).toBe(true);
+    });
+
+    it('should fail if column usage fields are not arrays', () => {
+      const metadata = {
+        ...validMetadata,
+        column_usage: 'not-an-array',
+        unresolved_column_usage: 'not-an-array',
+        column_risk_flags: 'not-an-array',
+        column_lineage: 'not-an-array',
+        unresolved_column_lineage: 'not-an-array',
+        ssis_column_mappings: 'not-an-array',
+        ssis_column_mapping_summary: 'not-an-object',
+        ssis_column_mapping_sidecars: 'not-an-array',
+        unresolved_ssis_column_mappings: 'not-an-array',
+        lineage_quality: 'not-an-object',
+        catalog_confidence: 'not-an-object',
+      };
+      const errors = validateMetadata(metadata);
+      expect(errors).toEqual(
+        expect.arrayContaining([
+          'column_usage must be an array',
+          'unresolved_column_usage must be an array',
+          'column_risk_flags must be an array',
+          'column_lineage must be an array',
+          'unresolved_column_lineage must be an array',
+          'ssis_column_mappings must be an array',
+          'ssis_column_mapping_summary must be an object',
+          'ssis_column_mapping_sidecars must be an array',
+          'unresolved_ssis_column_mappings must be an array',
+          'lineage_quality must be an object',
+          'catalog_confidence must be an object',
+        ])
+      );
+    });
+
     it('should accept valid types', () => {
       const validTypes = ['table', 'procedure', 'function', 'view', 'package', 'dataset'];
 
@@ -145,6 +190,217 @@ describe('Markdown Service', () => {
           name: 'claims',
           database: 'VendorData',
           type: 'table',
+        })
+      );
+    });
+
+    it('should preserve structured column metadata from YAML frontmatter', () => {
+      const metadata = parseMarkdownContent(
+        [
+          '---',
+          'id: DW01.Sonic_DW.dbo.FactClaim',
+          'name: FactClaim',
+          'database: Sonic_DW',
+          'schema: dbo',
+          'type: table',
+          'owner: data-team',
+          'columns:',
+          '  - name: ClaimID',
+          '    column_id: DW01.Sonic_DW.dbo.FactClaim.ClaimID',
+          '    data_type: bigint',
+          '    nullable: false',
+          '---',
+          '',
+          'Fact claim table.',
+        ].join('\n'),
+        'columns.md'
+      );
+
+      expect(metadata.columns).toEqual([
+        expect.objectContaining({
+          name: 'ClaimID',
+          column_id: 'DW01.Sonic_DW.dbo.FactClaim.ClaimID',
+          data_type: 'bigint',
+          nullable: false,
+        }),
+      ]);
+    });
+
+    it('should preserve column usage and unresolved column usage metadata', () => {
+      const metadata = parseMarkdownContent(
+        [
+          '---',
+          'id: DW01.Sonic_DW.etl.LoadFactClaim',
+          'name: LoadFactClaim',
+          'database: Sonic_DW',
+          'schema: etl',
+          'type: procedure',
+          'owner: data-team',
+          'column_usage:',
+          '  - column_id: DW01.Sonic_DW.dbo.FactClaim.ClaimID',
+          '    object_id: DW01.Sonic_DW.dbo.FactClaim',
+          '    process_id: DW01.Sonic_DW.etl.LoadFactClaim',
+          '    usage_type: insert_target',
+          '    usage_context: insert_column_list',
+          '    validation_status: validated',
+          'unresolved_column_usage:',
+          '  - alias: missing',
+          '    column_name: ClaimID',
+          '    reason: alias_not_resolved_to_known_table_or_view',
+          '    validation_status: unresolved',
+          'column_risk_flags:',
+          '  - process_id: DW01.Sonic_DW.etl.LoadFactClaim',
+          '    flag_type: select_star',
+          '    severity: high',
+          '    usage_context: select_list',
+          '    validation_status: risk_flag',
+          'column_lineage:',
+          '  - source_column_id: DW01.Sonic_DW.staging.Claims.ClaimID',
+          '    target_column_id: DW01.Sonic_DW.dbo.FactClaim.ClaimID',
+          '    process_id: DW01.Sonic_DW.etl.LoadFactClaim',
+          '    transform_type: direct',
+          '    validation_status: validated',
+          'unresolved_column_lineage:',
+          '  - process_id: DW01.Sonic_DW.etl.LoadFactClaim',
+          '    target_column_id: DW01.Sonic_DW.dbo.FactClaim.ClaimAmount',
+          '    reason: multiple_source_columns_share_target_context',
+          '    validation_status: probable',
+          '---',
+          '',
+          'Load fact claim procedure.',
+        ].join('\n'),
+        'column-usage.md'
+      );
+
+      expect(metadata.column_usage).toEqual([
+        expect.objectContaining({
+          column_id: 'DW01.Sonic_DW.dbo.FactClaim.ClaimID',
+          usage_type: 'insert_target',
+        }),
+      ]);
+      expect(metadata.unresolved_column_usage).toEqual([
+        expect.objectContaining({
+          alias: 'missing',
+          reason: 'alias_not_resolved_to_known_table_or_view',
+        }),
+      ]);
+      expect(metadata.column_risk_flags).toEqual([
+        expect.objectContaining({
+          flag_type: 'select_star',
+          severity: 'high',
+          validation_status: 'risk_flag',
+        }),
+      ]);
+      expect(metadata.column_lineage).toEqual([
+        expect.objectContaining({
+          source_column_id: 'DW01.Sonic_DW.staging.Claims.ClaimID',
+          target_column_id: 'DW01.Sonic_DW.dbo.FactClaim.ClaimID',
+          validation_status: 'validated',
+        }),
+      ]);
+      expect(metadata.unresolved_column_lineage).toEqual([
+        expect.objectContaining({
+          target_column_id: 'DW01.Sonic_DW.dbo.FactClaim.ClaimAmount',
+          reason: 'multiple_source_columns_share_target_context',
+          validation_status: 'probable',
+        }),
+      ]);
+    });
+
+    it('should preserve SSIS column mappings and unresolved SSIS mapping metadata', () => {
+      const metadata = parseMarkdownContent(
+        [
+          '---',
+          'id: SSIS01.SSISDB.ETL.Claims.LoadClaims.dtsx',
+          'name: ETL.Claims.LoadClaims.dtsx',
+          'database: ssisdb',
+          'type: package',
+          'owner: ssis-platform',
+          'ssis_column_mapping_summary:',
+          '  total_mappings: 125',
+          '  embedded_mappings: 25',
+          '  sidecar_mappings: 125',
+          '  sidecar_chunks: 1',
+          '  truncated: false',
+          'ssis_column_mapping_sidecars:',
+          '  - id: SSIS01.SSISDB.ETL.Claims.LoadClaims.dtsx.ssis_column_mappings.chunk_001',
+          '    chunk_number: 1',
+          '    records: 125',
+          'ssis_column_mappings:',
+          '  - package_id: SSIS01.SSISDB.ETL.Claims.LoadClaims.dtsx',
+          '    component_name: OLE DB Destination',
+          '    component_type: Microsoft.OLEDBDestination',
+          '    source_component: OLE DB Source',
+          '    destination_component: OLE DB Destination',
+          '    source_object: dbo.SourceClaims',
+          '    destination_object: dbo.TargetClaims',
+          '    input_column: ClaimID',
+          '    output_column: CLAIM_ID',
+          '    external_metadata_column: CLAIM_ID',
+          '    transform_type: rename',
+          '    validation_status: validated',
+          'unresolved_ssis_column_mappings:',
+          '  - component_name: DynamicConn',
+          '    reason: dynamic_connection_manager',
+          '    validation_status: unresolved',
+          'lineage_quality:',
+          '  validated_edges: 12',
+          '  probable_edges: 1',
+          '  unresolved_facts: 2',
+          'catalog_confidence:',
+          '  overall_score: 0.91',
+          '  edge_correctness_score: 0.98',
+          '  coverage_score: 0.82',
+          '  column_lineage_score: 0.88',
+          '  unresolved_risk_score: 0.12',
+          '  confidence_label: high',
+          '  warnings:',
+          '    - unresolved_lineage_facts_present',
+          '---',
+          '',
+          'SSIS package.',
+        ].join('\n'),
+        'ssis-column-mapping.md'
+      );
+
+      expect(metadata.ssis_column_mappings).toEqual([
+        expect.objectContaining({
+          component_name: 'OLE DB Destination',
+          input_column: 'ClaimID',
+          output_column: 'CLAIM_ID',
+          transform_type: 'rename',
+        }),
+      ]);
+      expect(metadata.ssis_column_mapping_summary).toEqual({
+        total_mappings: 125,
+        embedded_mappings: 25,
+        sidecar_mappings: 125,
+        sidecar_chunks: 1,
+        truncated: false,
+      });
+      expect(metadata.ssis_column_mapping_sidecars).toEqual([
+        expect.objectContaining({
+          id: 'SSIS01.SSISDB.ETL.Claims.LoadClaims.dtsx.ssis_column_mappings.chunk_001',
+          chunk_number: 1,
+          records: 125,
+        }),
+      ]);
+      expect(metadata.unresolved_ssis_column_mappings).toEqual([
+        expect.objectContaining({
+          component_name: 'DynamicConn',
+          reason: 'dynamic_connection_manager',
+        }),
+      ]);
+      expect(metadata.lineage_quality).toEqual({
+        validated_edges: 12,
+        probable_edges: 1,
+        unresolved_facts: 2,
+      });
+      expect(metadata.catalog_confidence).toEqual(
+        expect.objectContaining({
+          overall_score: 0.91,
+          confidence_label: 'high',
+          warnings: ['unresolved_lineage_facts_present'],
         })
       );
     });

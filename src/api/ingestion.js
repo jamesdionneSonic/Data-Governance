@@ -14,6 +14,8 @@ import {
   parseMarkdownFile,
   parseMarkdownContent,
   loadAllMarkdown,
+  validateMarkdownCatalog,
+  validateMarkdownManifest,
   validateMetadata,
 } from '../services/markdownService.js';
 import { resolveLineageCorpus } from '../services/lineageResolver.js';
@@ -421,26 +423,9 @@ router.post('/validate', authenticate, requireAdmin, async (req, res) => {
       });
     }
 
-    const objects = await loadAllMarkdown(safeDataPath);
-    const results = {
-      valid: 0,
-      invalid: 0,
-      errors: [],
-    };
-
-    for (const metadata of objects.values()) {
-      const errors = validateMetadata(metadata);
-
-      if (errors.length === 0) {
-        results.valid += 1;
-      } else {
-        results.invalid += 1;
-        results.errors.push({
-          id: metadata.id,
-          errors,
-        });
-      }
-    }
+    const quickManifestResults =
+      req.body.deep === true ? null : await validateMarkdownManifest(safeDataPath);
+    const results = quickManifestResults || (await validateMarkdownCatalog(safeDataPath));
 
     ingestionState.lastValidatedAt = new Date().toISOString();
     ingestionState.lastDataPath = safeDataPath;

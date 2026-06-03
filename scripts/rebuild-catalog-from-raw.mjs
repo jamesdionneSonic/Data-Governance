@@ -1,12 +1,19 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import { pathToFileURL } from 'url';
 import yaml from 'yaml';
 import MarkdownGenerator from '../src/services/markdownFromSqlServer.js';
 import {
   SsisMetadataExtractor,
+  buildSsisExternalObjectId,
   parseSsisPackageXmlForLineage,
 } from '../src/services/ssisExtractor.js';
-import { loadAllMarkdown, validateMetadata } from '../src/services/markdownService.js';
+import {
+  getMarkdownFiles,
+  parseMarkdownFile,
+  validateMetadata,
+} from '../src/services/markdownService.js';
+import { resolveColumnLineage } from '../src/services/columnLineageResolver.js';
 
 const ROOT = process.cwd();
 const RAW_SQL_ROOT = path.join(ROOT, 'data', 'analysis', 'raw', 'sqlserver', 'servers');
@@ -14,7 +21,26 @@ const RAW_SSIS_XML_ROOT = path.join(ROOT, 'data', 'analysis', 'raw', 'ssis', 'xm
 const OUTPUT_ROOT = path.join(ROOT, 'data', 'markdown');
 const OUTPUT_SERVERS_ROOT = path.join(OUTPUT_ROOT, 'servers');
 const CATALOG_MANIFEST_PATH = path.join(OUTPUT_ROOT, 'catalog-manifest.json');
+const REBUILD_REPORT_JSON_PATH = path.join(OUTPUT_ROOT, 'rebuild-report.json');
+const REBUILD_REPORT_MARKDOWN_PATH = path.join(OUTPUT_ROOT, 'rebuild-report.md');
 const ALIAS_CONFIG_PATH = path.join(ROOT, 'config', 'lineage-aliases.json');
+const SSIS_COLUMN_MAPPING_EMBED_LIMIT = 25;
+const SSIS_COLUMN_MAPPING_CHUNK_SIZE = 250;
+const COLUMN_LINEAGE_EMBED_LIMIT = 200;
+const UNRESOLVED_COLUMN_LINEAGE_EMBED_LIMIT = 75;
+const DEBUG_REBUILD = process.env.REBUILD_DEBUG === '1';
+const ENFORCE_REBUILD_GATES = process.argv.includes('--enforce-gates');
+const DEFAULT_REBUILD_GATES = {
+  maxInvalidObjects: 0,
+  maxMissingConfidenceObjects: 0,
+  maxLowNeedsReviewRatio: 0.05,
+  minAverageConfidence: 0.72,
+  maxUnresolvedFactRatio: 0.5,
+  maxSsisEdgeDropRatio: 0.1,
+  maxNewSourceLowNeedsReviewRatio: 0.2,
+  minNewSourceAverageConfidence: 0.75,
+  minNewSourceObjectsForGate: 10,
+};
 
 const SQL_OBJECT_DIRS = new Set([
   'tables',
@@ -32,6 +58,16 @@ const DB_CASE = new Map([
   ['vendordata', 'VendorData'],
   ['ssisdb', 'SSISDB'],
 ]);
+
+const EXTERNAL_SSIS_COMPONENT_PATTERNS = [
+  /FlatFile/i,
+  /Excel/i,
+  /Raw/i,
+  /XML/i,
+  /SharePoint/i,
+  /Access/i,
+  /Recordset/i,
+];
 
 function markdownScalar(value) {
   const text = String(value ?? '');
@@ -89,6 +125,12 @@ function renderFrontmatter(frontmatter) {
     appendYamlValue(lines, key, value);
   }
   return `---\n${lines.join('\n')}\n---\n\n`;
+}
+
+function logRebuildPhase(message) {
+  if (DEBUG_REBUILD) {
+    console.error(`[rebuild] ${message}`);
+  }
 }
 
 function sanitizePathSegment(value, fallback = 'unknown') {
@@ -224,6 +266,44 @@ function unique(values = []) {
   return out;
 }
 
+function uniqueStructuredRecords(records = []) {
+  const seen = new Set();
+  const out = [];
+  for (const record of records) {
+    if (!record || typeof record !== 'object') continue;
+    const key = [
+      record.source_column_id || '',
+      record.target_column_id || '',
+      record.column_id || record.object_id || '',
+      record.process_id || '',
+      record.package_id || '',
+      record.validation_status || '',
+      record.transform_type || '',
+      record.flag_type || '',
+      record.usage_type || '',
+      record.usage_context || '',
+      record.expression || record.evidence_text || '',
+      record.reason || '',
+      record.alias || '',
+      record.column_name || '',
+    ]
+      .map((value) => String(value || '').toLowerCase())
+      .join('|');
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(record);
+  }
+  return out;
+}
+
+function chunkArray(values = [], size = 100) {
+  const chunks = [];
+  for (let index = 0; index < values.length; index += size) {
+    chunks.push(values.slice(index, index + size));
+  }
+  return chunks;
+}
+
 function isDirectSqlReference(reference) {
   return MarkdownGenerator.splitSqlReferences([reference]).direct.length > 0;
 }
@@ -239,6 +319,176 @@ function splitSqlReference(reference) {
 
 function makeSqlId(server, database, schema, name) {
   return [server, canonicalDatabase(database), schema || 'dbo', name].filter(Boolean).join('.');
+}
+
+function normalizeColumnInventory(record) {
+  const columns = Array.isArray(record.metadata?.columns) ? record.metadata.columns : [];
+  const sourceColumns = columns.length > 0 ? columns : parseMarkdownColumns(record.body, record);
+  return sourceColumns
+    .filter((column) => column && typeof column === 'object' && column.name)
+    .map((column, index) => {
+      const dataType = column.data_type || column.dataType || '';
+      return {
+        name: column.name,
+        column_id: column.column_id || `${record.id}.${column.name}`,
+        ordinal: column.ordinal ?? index + 1,
+        data_type: dataType,
+        max_length: column.max_length ?? column.maxLength ?? null,
+        precision: column.precision ?? null,
+        scale: column.scale ?? null,
+        nullable: Boolean(column.nullable ?? column.isNullable ?? false),
+        identity: Boolean(column.identity ?? column.isIdentity ?? false),
+        computed: Boolean(column.computed ?? column.isComputed ?? false),
+        computed_definition: column.computed_definition || column.computedDefinition || null,
+        default: column.default ?? column.defaultValue ?? null,
+        description: column.description || '',
+        primary_key: Boolean(column.primary_key ?? column.primaryKey ?? false),
+        unique_keys: Array.isArray(column.unique_keys) ? column.unique_keys : [],
+        foreign_keys: Array.isArray(column.foreign_keys) ? column.foreign_keys : [],
+        referenced_by_foreign_keys: Array.isArray(column.referenced_by_foreign_keys)
+          ? column.referenced_by_foreign_keys
+          : [],
+        indexes: Array.isArray(column.indexes) ? column.indexes : [],
+        sensitivity: column.sensitivity || 'internal',
+        classification_tags: Array.isArray(column.classification_tags)
+          ? column.classification_tags
+          : [],
+        extraction_evidence: column.extraction_evidence || {
+          source: 'raw_markdown_columns_table',
+          extracted_at: record.metadata?.extracted_at || record.metadata?.extractedAt || null,
+        },
+      };
+    });
+}
+
+function parseMarkdownColumns(body, record) {
+  const sectionMatch = String(body || '').match(/## Columns\s*\r?\n([\s\S]*?)(?=\r?\n## |\s*$)/i);
+  if (!sectionMatch) return [];
+
+  const rows = sectionMatch[1]
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith('|') && !/^\|\s*-+/.test(line));
+
+  if (rows.length < 2) return [];
+  const headers = splitMarkdownTableRow(rows[0]).map((header) => header.toLowerCase());
+  const dataRows = rows.slice(1);
+  const columnIndex = (name) => headers.findIndex((header) => header === name);
+  const nameIndex = columnIndex('name');
+  const typeIndex = columnIndex('type');
+  const nullableIndex = columnIndex('nullable');
+  const identityIndex = columnIndex('identity');
+  const defaultIndex = columnIndex('default');
+  const descriptionIndex = columnIndex('description');
+
+  if (nameIndex < 0) return [];
+
+  return dataRows
+    .map((row, index) => {
+      const cells = splitMarkdownTableRow(row);
+      const name = cleanMarkdownCell(cells[nameIndex]);
+      if (!name) return null;
+      return {
+        name,
+        ordinal: index + 1,
+        data_type: cleanMarkdownCell(cells[typeIndex]),
+        nullable: markdownCellTruthy(cells[nullableIndex]),
+        identity: markdownCellTruthy(cells[identityIndex]),
+        default: cleanMarkdownCell(cells[defaultIndex]) || null,
+        description: cleanMarkdownCell(cells[descriptionIndex]),
+      };
+    })
+    .filter(Boolean);
+}
+
+function splitMarkdownTableRow(row) {
+  return String(row || '')
+    .replace(/^\|/, '')
+    .replace(/\|$/, '')
+    .split('|')
+    .map((cell) => cell.trim());
+}
+
+function cleanMarkdownCell(value) {
+  return String(value || '')
+    .trim()
+    .replace(/^`|`$/g, '')
+    .replace(/&nbsp;/gi, ' ')
+    .trim();
+}
+
+function markdownCellTruthy(value) {
+  const cleaned = cleanMarkdownCell(value).toLowerCase();
+  return cleaned === 'yes' || cleaned === 'true' || cleaned === '1' || cleaned.includes('✓') || cleaned.includes('œ“');
+}
+
+function sqlRecordForColumnUsage(record) {
+  return {
+    id: record.id,
+    serverName: record.server,
+    database: record.database,
+    schema: record.schema,
+    name: record.name,
+    type: record.type,
+    columns: Array.isArray(record.columns) ? record.columns : [],
+  };
+}
+
+function buildColumnUsageMetadata(records) {
+  const sqlObjects = Array.from(records.values()).map(sqlRecordForColumnUsage);
+  return {
+    serverName: '',
+    database: '',
+    tables: sqlObjects.filter((record) => record.type === 'table'),
+    views: sqlObjects.filter((record) => record.type === 'view'),
+  };
+}
+
+function extractColumnUsageForRecord(record, columnUsageMetadata) {
+  const existingColumnUsage = Array.isArray(record.metadata.column_usage)
+    ? record.metadata.column_usage
+    : [];
+  const existingUnresolved = Array.isArray(record.metadata.unresolved_column_usage)
+    ? record.metadata.unresolved_column_usage
+    : [];
+  const existingRiskFlags = Array.isArray(record.metadata.column_risk_flags)
+    ? record.metadata.column_risk_flags
+    : [];
+
+  if (!record.definition) {
+    return {
+      column_usage: existingColumnUsage,
+      unresolved_column_usage: existingUnresolved,
+      column_risk_flags: existingRiskFlags,
+    };
+  }
+
+  const generated = MarkdownGenerator.extractSqlColumnUsage(
+    record.definition,
+    {
+      id: record.id,
+      serverName: record.server,
+      database: record.database,
+      schema: record.schema,
+      name: record.name,
+    },
+    columnUsageMetadata
+  );
+
+  return {
+    column_usage: uniqueStructuredRecords([
+      ...existingColumnUsage,
+      ...(generated.column_usage || []),
+    ]),
+    unresolved_column_usage: uniqueStructuredRecords([
+      ...existingUnresolved,
+      ...(generated.unresolved_column_usage || []),
+    ]),
+    column_risk_flags: uniqueStructuredRecords([
+      ...existingRiskFlags,
+      ...(generated.column_risk_flags || []),
+    ]),
+  };
 }
 
 function buildReferenceIndex(records) {
@@ -307,12 +557,14 @@ function qualifyReference(reference, context, aliases, referenceIndex) {
 
   if (!name) return '';
   const qualified = makeSqlId(server, database, schema, name);
-  const lookupKeys = [
-    qualified,
-    `${database}.${schema}.${name}`,
-    `${schema}.${name}`,
-    name,
-  ];
+  let lookupKeys;
+  if (parts.length >= 4) {
+    lookupKeys = [qualified, `${database}.${schema}.${name}`];
+  } else if (parts.length === 3) {
+    lookupKeys = [qualified, `${database}.${schema}.${name}`];
+  } else {
+    lookupKeys = [qualified, `${schema}.${name}`, name];
+  }
 
   for (const key of lookupKeys) {
     const resolved = chooseIndexedReference(referenceIndex.get(key.toLowerCase()), {
@@ -526,6 +778,11 @@ function buildSsisMarkdown(result, packageRow, server, aliases, referenceIndex) 
   const project = packageRow.project_name || 'unknown_project';
   const pkg = packageRow.package_name || 'unknown_package.dtsx';
   const id = packageId(server, folder, project, pkg);
+  const packageXmlMetadata = (result.xmlMetadata || []).find((metadata) =>
+    [metadata.objectName, metadata.packageName, `${project}.${metadata.objectName}`, `${folder}.${project}.${metadata.objectName}`]
+      .map((value) => String(value || '').toLowerCase())
+      .includes(String(pkg || '').toLowerCase())
+  );
   const keys = new Set(
     [pkg, id, `${project}.${pkg}`, `${folder}.${project}.${pkg}`]
       .map((value) => String(value || '').toLowerCase())
@@ -548,6 +805,83 @@ function buildSsisMarkdown(result, packageRow, server, aliases, referenceIndex) 
   const readsFrom = refsFor(['READS_FROM', 'LOOKUP', 'USES_LOOKUP', 'EXTRACTS']);
   const writesTo = refsFor(['WRITES_TO']);
   const calls = refsFor(['CALLS']);
+  const ssisColumnMappings = Array.isArray(packageXmlMetadata?.ssisColumnMappings)
+    ? packageXmlMetadata.ssisColumnMappings
+    : [];
+  const mappingPriority = (mapping) => {
+    const evidenceType = String(mapping.evidence_type || '').toLowerCase();
+    if (evidenceType === 'ssis_dataflow_column_mapping') return 0;
+    if (evidenceType === 'ssis_lookup_output') return 1;
+    if (evidenceType === 'ssis_derived_column_expression') return 2;
+    return 3;
+  };
+  const sortedSsisColumnMappings = [...ssisColumnMappings].sort(
+    (left, right) => mappingPriority(left) - mappingPriority(right)
+  );
+  const embeddedSsisColumnMappings = sortedSsisColumnMappings.slice(
+    0,
+    SSIS_COLUMN_MAPPING_EMBED_LIMIT
+  );
+  const sidecarChunks = chunkArray(sortedSsisColumnMappings, SSIS_COLUMN_MAPPING_CHUNK_SIZE);
+  const sidecars = sidecarChunks.map((chunk, index) => {
+    const chunkNumber = index + 1;
+    const chunkLabel = String(chunkNumber).padStart(3, '0');
+    const sidecarId = `${id}.ssis_column_mappings.chunk_${chunkLabel}`;
+    const sidecarFrontmatter = {
+      id: sidecarId,
+      name: `${folder}.${project}.${pkg}.column_mappings.chunk_${chunkLabel}`,
+      server,
+      folder_name: folder,
+      project_name: project,
+      package_name: pkg,
+      package_id: id,
+      package_path: `${folder}.${project}.${pkg}`,
+      database: 'ssisdb',
+      schema: 'externalized_column_mappings',
+      type: 'dataset',
+      owner: 'ssis-platform',
+      sensitivity: 'internal',
+      tags: ['ssis', 'column-lineage', 'mapping-sidecar'],
+      depends_on: [id],
+      reads_from: readsFrom,
+      writes_to: writesTo,
+      ssis_column_mapping_summary: {
+        total_mappings: sortedSsisColumnMappings.length,
+        chunk_number: chunkNumber,
+        chunk_count: sidecarChunks.length,
+        chunk_mappings: chunk.length,
+      },
+      ssis_column_mappings: chunk,
+      unresolved_ssis_column_mappings: [],
+      description: `Complete SSIS column mapping chunk ${chunkLabel} for ${folder}.${project}.${pkg}.`,
+    };
+    const sidecarBody = `# SSIS Column Mapping Chunk ${chunkLabel}
+
+## Package
+- Package ID: ${id}
+- Package Path: ${folder}.${project}.${pkg}
+- Chunk: ${chunkNumber} of ${sidecarChunks.length}
+- Mapping Records: ${chunk.length}
+
+This sidecar preserves complete SSIS column mapping evidence without forcing every
+mapping into the parent package frontmatter.
+`;
+    return {
+      id: sidecarId,
+      frontmatter: sidecarFrontmatter,
+      body: sidecarBody,
+      content: `${renderFrontmatter(sidecarFrontmatter)}${sidecarBody}`,
+      chunkNumber,
+      recordCount: chunk.length,
+    };
+  });
+  const unresolvedSsisColumnMappings = [
+    ...(Array.isArray(
+    packageXmlMetadata?.unresolvedSsisColumnMappings
+  )
+      ? packageXmlMetadata.unresolvedSsisColumnMappings
+      : []),
+  ];
 
   const frontmatter = {
     id,
@@ -566,6 +900,20 @@ function buildSsisMarkdown(result, packageRow, server, aliases, referenceIndex) 
     reads_from: readsFrom,
     writes_to: writesTo,
     calls,
+    ssis_column_mapping_summary: {
+      total_mappings: ssisColumnMappings.length,
+      embedded_mappings: embeddedSsisColumnMappings.length,
+      sidecar_mappings: sortedSsisColumnMappings.length,
+      sidecar_chunks: sidecars.length,
+      truncated: false,
+    },
+    ssis_column_mapping_sidecars: sidecars.map((sidecar) => ({
+      id: sidecar.id,
+      chunk_number: sidecar.chunkNumber,
+      records: sidecar.recordCount,
+    })),
+    ssis_column_mappings: embeddedSsisColumnMappings,
+    unresolved_ssis_column_mappings: unresolvedSsisColumnMappings,
     lineage_quality: {
       validated_edges: packageEdges.filter((edge) => edge.validation_status === 'validated').length,
       probable_edges: packageEdges.filter((edge) => edge.validation_status === 'probable').length,
@@ -586,6 +934,8 @@ function buildSsisMarkdown(result, packageRow, server, aliases, referenceIndex) 
 
 ## Runtime Summary
 - Detected lineage edges: ${packageEdges.length}
+- SSIS column mappings: ${embeddedSsisColumnMappings.length} embedded; ${sortedSsisColumnMappings.length} preserved in ${sidecars.length} sidecar chunk(s)
+- Unresolved SSIS column mappings: ${unresolvedSsisColumnMappings.length}
 - Upstream entities: ${readsFrom.length}
 - SPs Called: ${calls.length}
 - Target entities: ${writesTo.length}
@@ -595,35 +945,393 @@ function buildSsisMarkdown(result, packageRow, server, aliases, referenceIndex) 
 - Generated by scripts/rebuild-catalog-from-raw.mjs from raw SSIS XML.
 `;
 
-  return { id, frontmatter, content: `${renderFrontmatter(frontmatter)}${body}` };
+  return { id, frontmatter, body, content: `${renderFrontmatter(frontmatter)}${body}`, sidecars };
 }
 
 function buildSsisSummary(result, server) {
-  const lines = (result.lineageEdges || []).slice(0, 500).map((edge) => {
+  const lineageEdges = result.lineageEdges || [];
+  const lineageQuality = {
+    validated_edges: lineageEdges.filter(
+      (edge) => edge.validation_status === 'validated' || edge.confidence === 'high'
+    ).length,
+    probable_edges: lineageEdges.filter(
+      (edge) => edge.validation_status === 'probable' || edge.confidence === 'medium'
+    ).length,
+    unresolved_facts: lineageEdges.filter(
+      (edge) => edge.validation_status === 'unresolved' || edge.edgeType === 'UNRESOLVED_DYNAMIC_EDGE'
+    ).length,
+  };
+  const frontmatter = {
+    name: 'ssis_catalog_lineage',
+    server,
+    database: 'ssisdb',
+    type: 'dataset',
+    owner: 'ssis-platform',
+    sensitivity: 'internal',
+    tags: ['ssis', 'lineage', 'operational'],
+    depends_on: [],
+    lineage_quality: lineageQuality,
+    description: 'Consolidated SSIS lineage edges rebuilt from raw SSIS XML.',
+  };
+  frontmatter.catalog_confidence = buildCatalogConfidence(frontmatter);
+
+  const lines = lineageEdges.slice(0, 500).map((edge) => {
     return `- ${edge.from || 'UNKNOWN'} -> ${edge.to || 'UNKNOWN'} (type=${edge.edgeType || 'ETL'}, confidence=${edge.confidence ?? 'n/a'}, via=${edge.via || 'n/a'})`;
   });
-  return `---
-name: ssis_catalog_lineage
-server: ${server}
-database: ssisdb
-type: dataset
-owner: ssis-platform
-sensitivity: internal
-tags: ['ssis', 'lineage', 'operational']
-depends_on: []
-description: Consolidated SSIS lineage edges rebuilt from raw SSIS XML.
----
-
-# SSIS Catalog Lineage Summary
+  const body = `# SSIS Catalog Lineage Summary
 
 ## Overview
 - Extracted At: ${result.extractedAt}
 - SSISDB Present: ${result.ssisdbPresent ? 'Yes' : 'No'}
-- Total Edges: ${(result.lineageEdges || []).length}
+- Total Edges: ${lineageEdges.length}
 
 ## Top Lineage Edges
 ${lines.length ? lines.join('\n') : '- No edges generated.'}
 `;
+
+  return `${renderFrontmatter(frontmatter)}${body}`;
+}
+
+function isExternalSsisComponent(component = {}) {
+  const type = String(component.componentType || '');
+  return EXTERNAL_SSIS_COMPONENT_PATTERNS.some((pattern) => pattern.test(type));
+}
+
+function columnsFromSsisComponent(component = {}, objectId = '', role = 'source') {
+  const candidates =
+    role === 'destination'
+      ? [
+          ...(component.externalMetadataColumns || []),
+          ...(component.inputColumns || []),
+          ...(component.outputColumns || []),
+        ]
+      : [
+          ...(component.outputColumns || []),
+          ...(component.externalMetadataColumns || []),
+          ...(component.inputColumns || []),
+        ];
+  const seen = new Set();
+  const columns = [];
+
+  for (const column of candidates) {
+    const name = cleanSegment(column?.name || column?.cachedName || '');
+    if (!name) continue;
+    const key = name.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    columns.push({
+      name,
+      column_id: `${objectId}.${name}`,
+      ordinal: columns.length + 1,
+      data_type: column.dataType || 'external',
+      max_length: column.length || null,
+      nullable: true,
+      sensitivity: 'internal',
+      extraction_evidence: {
+        source: 'ssis_external_component_metadata',
+        component_name: component.componentName || '',
+        component_type: component.componentType || '',
+      },
+    });
+  }
+
+  return columns;
+}
+
+function buildExternalSsisRecords(result, server) {
+  const records = [];
+
+  for (const pkg of result.xmlMetadata || []) {
+    const folder = pkg.folderName || 'unknown_folder';
+    const project = pkg.projectName || 'unknown_project';
+    const packageName = pkg.packageName || pkg.objectName || 'unknown_package.dtsx';
+    const packageObjectId = packageId(server, folder, project, packageName);
+
+    for (const component of pkg.dataFlowComponents || []) {
+      if (!isExternalSsisComponent(component)) continue;
+      if (component.role !== 'SOURCE' && component.role !== 'DESTINATION') continue;
+
+      const externalId = buildSsisExternalObjectId({
+        serverName: server,
+        folderName: folder,
+        projectName: project,
+        packageName,
+        componentName: component.componentName,
+        role: component.role.toLowerCase(),
+        reference: component.tableName || component.sqlCommand || '',
+      });
+      const name = `${folder}.${project}.${packageName}.${component.componentName}`;
+      const role = component.role === 'DESTINATION' ? 'destination' : 'source';
+      const columns = columnsFromSsisComponent(component, externalId, role);
+      const frontmatter = {
+        id: externalId,
+        name,
+        server,
+        database: 'ssisdb',
+        schema: 'external_sources',
+        type: 'dataset',
+        owner: 'ssis-platform',
+        sensitivity: 'internal',
+        tags: ['ssis', 'external-source', role],
+        external_source: true,
+        depends_on: [],
+        created_via: role === 'destination' ? [packageObjectId] : [],
+        used_by: role === 'source' ? [packageObjectId] : [],
+        columns,
+        extraction_evidence: {
+          source: 'ssis_external_component',
+          package_id: packageObjectId,
+          component_name: component.componentName || '',
+          component_type: component.componentType || '',
+          role: component.role,
+          table_name: component.tableName || '',
+          sql_command: component.sqlCommand || '',
+        },
+        description: `External SSIS ${role} component ${component.componentName || 'unknown'} from ${name}.`,
+      };
+      const body = `# External SSIS ${role === 'source' ? 'Source' : 'Destination'} ${component.componentName || 'unknown'}
+
+## Package
+- Package ID: ${packageObjectId}
+- Package Path: ${folder}.${project}.${packageName}
+- Component Type: ${component.componentType || 'unknown'}
+- Role: ${component.role}
+
+This object represents a non-SQL SSIS endpoint so column lineage can retain
+validated edges for flat files, Excel files, XML, SharePoint, raw files, and
+other external components.
+`;
+
+      records.push({
+        id: externalId,
+        type: 'dataset',
+        frontmatter,
+        body,
+        server,
+        database: 'ssisdb',
+        schema: 'external_sources',
+        name,
+        outputPath: path.join(
+          OUTPUT_SERVERS_ROOT,
+          sanitizePathSegment(server),
+          'ssis_external_sources',
+          sanitizePathSegment(folder),
+          sanitizePathSegment(project),
+          sanitizePathSegment(packageName),
+          `${sanitizePathSegment(component.componentName || 'external_component')}.md`
+        ),
+      });
+    }
+  }
+
+  return records;
+}
+
+function referenceMatchesCandidate(candidateId = '', reference = '') {
+  const candidate = cleanSegment(candidateId).toLowerCase();
+  const hint = cleanSegment(reference).toLowerCase();
+  if (!candidate || !hint) return false;
+  if (candidate === hint || candidate.endsWith(`.${hint}`)) return true;
+
+  const candidateParts = candidate.split('.').filter(Boolean);
+  const hintParts = hint.split('.').filter(Boolean);
+  if (hintParts.length === 1) {
+    return candidateParts[candidateParts.length - 1] === hintParts[0];
+  }
+  if (hintParts.length === 2) {
+    return (
+      candidateParts.slice(-2).join('.') === hint ||
+      candidateParts.slice(-3).join('.').endsWith(`.${hint}`)
+    );
+  }
+  if (hintParts.length === 3) {
+    return candidateParts.slice(-3).join('.') === hint;
+  }
+  return false;
+}
+
+function resolveUniqueCandidateReference(candidates = [], reference = '') {
+  const uniqueCandidates = unique(candidates);
+  const matches = uniqueCandidates.filter((candidate) =>
+    referenceMatchesCandidate(candidate, reference)
+  );
+  return matches.length === 1 ? matches[0] : '';
+}
+
+function addSsisEndpointColumn(endpoint, columnName, mapping = {}, role = 'source') {
+  const name = cleanSegment(columnName);
+  if (!name) return;
+  const key = name.toLowerCase();
+  if (endpoint.columnNames.has(key)) return;
+  endpoint.columnNames.add(key);
+  endpoint.columns.push({
+    name,
+    column_id: `${endpoint.id}.${name}`,
+    ordinal: endpoint.columns.length + 1,
+    data_type: 'ssis_observed',
+    nullable: true,
+    sensitivity: 'internal',
+    extraction_evidence: {
+      source: 'ssis_sql_endpoint_column_mapping',
+      package_id: mapping.package_id || mapping.packageId || '',
+      component_name: mapping.component_name || '',
+      component_type: mapping.component_type || '',
+      role,
+      evidence_text: mapping.evidence_text || '',
+    },
+  });
+}
+
+function ensureSsisSqlEndpoint(endpoints, endpointId, packageIdValue, role) {
+  const normalizedId = String(endpointId || '').toLowerCase();
+  if (!normalizedId) return null;
+
+  const parsed = parseSqlId(endpointId);
+  if (!parsed?.name || !parsed.database || !parsed.schema) return null;
+
+  if (!endpoints.has(normalizedId)) {
+    endpoints.set(normalizedId, {
+      id: endpointId,
+      server: parsed.server || 'unknown',
+      database: parsed.database,
+      schema: parsed.schema,
+      name: parsed.name,
+      role,
+      columns: [],
+      columnNames: new Set(),
+      usedBy: [],
+      createdVia: [],
+      packages: [],
+      mappings: 0,
+    });
+  }
+
+  const endpoint = endpoints.get(normalizedId);
+  endpoint.role = endpoint.role === role ? role : 'source_and_target';
+  endpoint.packages = unique([...endpoint.packages, packageIdValue]);
+  if (role === 'source') {
+    endpoint.usedBy = unique([...endpoint.usedBy, packageIdValue]);
+  } else {
+    endpoint.createdVia = unique([...endpoint.createdVia, packageIdValue]);
+  }
+  endpoint.mappings += 1;
+  return endpoint;
+}
+
+function buildSsisSqlEndpointRecords(records) {
+  const endpoints = new Map();
+  const packageRecords = Array.from(records.values()).filter((record) => {
+    const frontmatter = record?.frontmatter || {};
+    return (
+      Array.isArray(frontmatter.ssis_column_mappings) &&
+      frontmatter.ssis_column_mappings.length > 0 &&
+      (frontmatter.type === 'package' || frontmatter.type === 'dataset')
+    );
+  });
+
+  for (const record of packageRecords) {
+    const frontmatter = record.frontmatter || {};
+    const packageIdValue = frontmatter.package_id || frontmatter.id || record.id;
+    const sourceCandidates = unique([
+      ...(frontmatter.reads_from || []),
+      ...(frontmatter.depends_on || []),
+    ]);
+    const targetCandidates = unique(frontmatter.writes_to || []);
+
+    for (const mapping of frontmatter.ssis_column_mappings || []) {
+      if (mapping.validation_status && mapping.validation_status !== 'validated') continue;
+
+      const sourceId = resolveUniqueCandidateReference(
+        sourceCandidates,
+        mapping.source_object || mapping.sourceObject || ''
+      );
+      if (sourceId && !records.has(sourceId.toLowerCase())) {
+        const endpoint = ensureSsisSqlEndpoint(endpoints, sourceId, packageIdValue, 'source');
+        if (endpoint) {
+          addSsisEndpointColumn(
+            endpoint,
+            mapping.input_column || mapping.source_column || mapping.output_column,
+            mapping,
+            'source'
+          );
+        }
+      }
+
+      const targetId = resolveUniqueCandidateReference(
+        targetCandidates,
+        mapping.destination_object || mapping.target_object || mapping.targetObject || ''
+      );
+      if (targetId && !records.has(targetId.toLowerCase())) {
+        const endpoint = ensureSsisSqlEndpoint(endpoints, targetId, packageIdValue, 'destination');
+        if (endpoint) {
+          addSsisEndpointColumn(
+            endpoint,
+            mapping.external_metadata_column || mapping.output_column || mapping.target_column,
+            mapping,
+            'destination'
+          );
+        }
+      }
+    }
+  }
+
+  return Array.from(endpoints.values()).map((endpoint) => {
+    const roleTags =
+      endpoint.role === 'source_and_target'
+        ? ['source', 'destination']
+        : [endpoint.role === 'destination' ? 'destination' : 'source'];
+    const frontmatter = {
+      id: endpoint.id,
+      name: endpoint.name,
+      server: endpoint.server,
+      database: endpoint.database,
+      schema: endpoint.schema,
+      type: 'table',
+      owner: 'ssis-platform',
+      sensitivity: 'internal',
+      tags: ['ssis', 'ssis-sql-endpoint', ...roleTags],
+      external_source: true,
+      depends_on: [],
+      created_via: endpoint.createdVia,
+      used_by: endpoint.usedBy,
+      columns: endpoint.columns,
+      lineage_quality: {
+        validated_edges: endpoint.createdVia.length + endpoint.usedBy.length,
+        probable_edges: 0,
+        unresolved_facts: 0,
+      },
+      extraction_evidence: {
+        source: 'ssis_sql_endpoint_from_package_mapping',
+        package_ids: endpoint.packages,
+        observed_mapping_count: endpoint.mappings,
+        note:
+          'This object was inferred from SSIS package metadata because the SQL endpoint was not present in the raw SQL extraction.',
+      },
+      description: `SQL endpoint ${endpoint.id} observed in SSIS mappings but not present in raw SQL extraction.`,
+    };
+    const body = `# SSIS-Observed SQL Endpoint ${endpoint.id}
+
+## Extraction Evidence
+- Source: SSIS package column mappings
+- Packages: ${endpoint.packages.length}
+- Observed Columns: ${endpoint.columns.length}
+
+This markdown record preserves SSIS-observed SQL endpoint evidence so object and
+column impact analysis can remain connected until a full SQL extraction for this
+source is available.
+`;
+
+    return {
+      id: endpoint.id,
+      type: 'table',
+      frontmatter,
+      body,
+      server: endpoint.server,
+      database: endpoint.database,
+      schema: endpoint.schema,
+      name: endpoint.name,
+    };
+  });
 }
 
 async function loadSqlRawObjects(aliases) {
@@ -681,6 +1389,12 @@ async function loadSqlRawObjects(aliases) {
 
 function rewriteSqlLineage(records, aliases) {
   const referenceIndex = buildReferenceIndex(records);
+
+  for (const record of records.values()) {
+    record.columns = normalizeColumnInventory(record);
+  }
+
+  const columnUsageMetadata = buildColumnUsageMetadata(records);
 
   for (const record of records.values()) {
     const context = {
@@ -741,6 +1455,8 @@ function rewriteSqlLineage(records, aliases) {
       );
     }
 
+    const columnUsage = extractColumnUsageForRecord(record, columnUsageMetadata);
+
     record.frontmatter = {
       id: record.id,
       name: record.name,
@@ -769,6 +1485,10 @@ function rewriteSqlLineage(records, aliases) {
       row_count: record.metadata.row_count || 0,
       size_kb: record.metadata.size_kb || 0,
       column_count: record.metadata.column_count || 0,
+      columns: record.columns,
+      column_usage: columnUsage.column_usage,
+      unresolved_column_usage: columnUsage.unresolved_column_usage,
+      column_risk_flags: columnUsage.column_risk_flags,
       index_count: record.metadata.index_count || 0,
       check_constraint_count: record.metadata.check_constraint_count || 0,
       extraction_warnings: Array.isArray(record.metadata.extraction_warnings)
@@ -833,6 +1553,11 @@ async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog
         objectName: packageName,
         packageName,
         projectName: project,
+        folderName: folder,
+        serverName: server,
+        packageId: packageId(server, folder, project, packageName),
+        parameterOverrides: aliases.ssisProjectParameterOverrides || {},
+        connectionOverrides: aliases.ssisProjectConnectionOverrides || {},
       });
       if (parsed) xmlMetadata.push(parsed);
     } catch (err) {
@@ -841,7 +1566,11 @@ async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog
     }
   }
 
-  const extractor = new SsisMetadataExtractor({ server });
+  const extractor = new SsisMetadataExtractor({
+    server,
+    ssisProjectParameterOverrides: aliases.ssisProjectParameterOverrides || {},
+    ssisProjectConnectionOverrides: aliases.ssisProjectConnectionOverrides || {},
+  });
   const result = {
     extractedAt: new Date().toISOString(),
     ssisdbPresent: true,
@@ -858,12 +1587,45 @@ async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog
       id: md.id,
       type: 'package',
       frontmatter: md.frontmatter,
-      content: md.content,
+      body: md.body,
       server,
       database: 'ssisdb',
       schema: '',
       name: md.frontmatter.package_name,
     });
+
+    for (const sidecar of md.sidecars || []) {
+      const sidecarOutputPath = path.join(
+        OUTPUT_SERVERS_ROOT,
+        sanitizePathSegment(server),
+        'ssis_packages',
+        sanitizePathSegment(md.frontmatter.folder_name),
+        sanitizePathSegment(md.frontmatter.project_name),
+        `${sanitizePathSegment(md.frontmatter.package_name)}.column_mappings.chunk_${String(sidecar.chunkNumber).padStart(3, '0')}.md`
+      );
+      records.set(sidecar.id.toLowerCase(), {
+        id: sidecar.id,
+        type: 'dataset',
+        frontmatter: sidecar.frontmatter,
+        body: sidecar.body,
+        content: sidecar.content,
+        server,
+        database: 'ssisdb',
+        schema: 'externalized_column_mappings',
+        name: sidecar.frontmatter.name,
+        outputPath: sidecarOutputPath,
+      });
+    }
+  }
+
+  for (const externalRecord of buildExternalSsisRecords(result, server)) {
+    records.set(externalRecord.id.toLowerCase(), externalRecord);
+  }
+
+  let ssisSqlEndpointRecords = 0;
+  for (const endpointRecord of buildSsisSqlEndpointRecords(records)) {
+    records.set(endpointRecord.id.toLowerCase(), endpointRecord);
+    ssisSqlEndpointRecords += 1;
   }
 
   for (const md of markdowns) {
@@ -882,6 +1644,7 @@ async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog
     result,
     packageCount: catalog.length,
     edgeCount: result.lineageEdges.length,
+    ssisSqlEndpointRecords,
     skipped,
   };
 }
@@ -959,6 +1722,787 @@ function applySsisBridgeInferences(records) {
   return inferred;
 }
 
+function groupByProcessId(entries = []) {
+  const grouped = new Map();
+  for (const entry of entries) {
+    const processId = String(entry.process_id || entry.package_id || '').trim();
+    if (!processId) continue;
+    const key = processId.toLowerCase();
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key).push(entry);
+  }
+  return grouped;
+}
+
+function attachColumnLineageGroup(record, field, entries, limit, overflowMessage) {
+  const uniqueEntries = uniqueStructuredRecords(entries);
+  const embedded = uniqueEntries.slice(0, limit);
+  if (embedded.length > 0) {
+    record.frontmatter[field] = embedded;
+  }
+
+  if (uniqueEntries.length <= embedded.length) {
+    return embedded.length;
+  }
+
+  const diagnostic = {
+    process_id: record.id,
+    reason: `${field}_payload_truncated`,
+    evidence_type: 'column_lineage_resolution_summary',
+    evidence_text: overflowMessage(uniqueEntries.length, embedded.length),
+    total_records: uniqueEntries.length,
+    embedded_records: embedded.length,
+    validation_status: 'unresolved',
+    suggested_action:
+      'Use the rebuild summary or a dedicated column-lineage export before relying on the truncated markdown payload.',
+  };
+
+  record.frontmatter.unresolved_column_lineage = uniqueStructuredRecords([
+    ...(record.frontmatter.unresolved_column_lineage || []),
+    diagnostic,
+  ]);
+  return embedded.length;
+}
+
+function applyColumnLineageResolution(records) {
+  const objects = new Map();
+  const recordsById = new Map();
+
+  for (const record of records.values()) {
+    if (!record?.frontmatter) continue;
+    const objectId = record.id || record.frontmatter.id;
+    if (!record.frontmatter.id) record.frontmatter.id = objectId;
+    objects.set(objectId, record.frontmatter);
+    recordsById.set(String(objectId || '').toLowerCase(), record);
+    delete record.frontmatter.column_lineage;
+    delete record.frontmatter.unresolved_column_lineage;
+  }
+
+  const resolution = resolveColumnLineage(objects, {
+    includeSqlUsage: false,
+    maxSqlColumnLineageDiagnosticsPerObject: 40,
+  });
+  const validatedByProcess = groupByProcessId(resolution.validated);
+  const nonPromotedByProcess = groupByProcessId([
+    ...resolution.probable,
+    ...resolution.unresolved,
+    ...resolution.rejected,
+  ]);
+
+  let embeddedValidated = 0;
+  let embeddedNonPromoted = 0;
+
+  for (const [processKey, entries] of validatedByProcess.entries()) {
+    const record = recordsById.get(processKey);
+    if (!record) continue;
+    embeddedValidated += attachColumnLineageGroup(
+      record,
+      'column_lineage',
+      entries,
+      COLUMN_LINEAGE_EMBED_LIMIT,
+      (total, embedded) =>
+        `Embedded ${embedded} of ${total} validated column lineage records in object markdown.`
+    );
+  }
+
+  for (const [processKey, entries] of nonPromotedByProcess.entries()) {
+    const record = recordsById.get(processKey);
+    if (!record) continue;
+    embeddedNonPromoted += attachColumnLineageGroup(
+      record,
+      'unresolved_column_lineage',
+      entries,
+      UNRESOLVED_COLUMN_LINEAGE_EMBED_LIMIT,
+      (total, embedded) =>
+        `Embedded ${embedded} of ${total} probable/unresolved/rejected column lineage diagnostics in object markdown.`
+    );
+  }
+
+  return {
+    validated: resolution.validated.length,
+    probable: resolution.probable.length,
+    unresolved: resolution.unresolved.length,
+    rejected: resolution.rejected.length,
+    embeddedValidated,
+    embeddedNonPromoted,
+  };
+}
+
+function score(value) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return 0;
+  return Number(Math.max(0, Math.min(1, numeric)).toFixed(3));
+}
+
+function roundMetric(value) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return 0;
+  return Number(numeric.toFixed(3));
+}
+
+function countArray(value) {
+  return Array.isArray(value) ? value.length : 0;
+}
+
+function uniqueEdgeCount(frontmatter = {}) {
+  const edgeRefs = [
+    ...(frontmatter.depends_on || []),
+    ...(frontmatter.reads_from || []),
+    ...(frontmatter.writes_to || []),
+    ...(frontmatter.calls || []),
+    ...(frontmatter.created_by || []),
+    ...(frontmatter.created_via || []),
+    ...(frontmatter.used_by || []),
+  ];
+  return new Set(edgeRefs.map((ref) => String(ref || '').trim()).filter(Boolean)).size;
+}
+
+function averageConfidence(records = []) {
+  const values = records
+    .map((record) => Number(record?.confidence ?? 1))
+    .filter((value) => Number.isFinite(value));
+  if (values.length === 0) return 1;
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function confidenceLabel(overallScore, coverageScore, unresolvedRiskScore) {
+  if (unresolvedRiskScore >= 0.6 || coverageScore < 0.35) return 'needs_review';
+  if (overallScore >= 0.95) return 'very_high';
+  if (overallScore >= 0.85) return 'high';
+  if (overallScore >= 0.7) return 'medium';
+  if (overallScore >= 0.5) return 'low';
+  return 'needs_review';
+}
+
+function confidenceWarnings(frontmatter = {}, evidence = {}) {
+  const warnings = [];
+  const packageName = String(frontmatter.package_name || frontmatter.name || '');
+
+  if (evidence.direct_edge_count === 0 && evidence.unresolved_edge_facts === 0) {
+    warnings.push('no_direct_lineage_edges');
+  }
+  if (evidence.unresolved_edge_facts > 0) warnings.push('unresolved_lineage_facts_present');
+  if (evidence.unresolved_column_lineage > 0) warnings.push('unresolved_column_lineage_present');
+  if (evidence.unresolved_column_usage > 0) warnings.push('unresolved_column_usage_present');
+  if (evidence.column_risk_flags > 0) warnings.push('column_risk_flags_present');
+  if (/copy/i.test(packageName) && evidence.unresolved_edge_facts > 0) {
+    warnings.push('generic_copy_package_partial_coverage');
+  }
+  if (
+    (frontmatter.column_risk_flags || []).some((flag) =>
+      /dynamic/i.test(String(flag?.flag_type || flag?.reason || flag?.evidence_type || ''))
+    )
+  ) {
+    warnings.push('dynamic_sql_or_dynamic_reference_present');
+  }
+
+  return unique(warnings);
+}
+
+function buildCatalogConfidence(frontmatter = {}) {
+  const lineageQuality = frontmatter.lineage_quality || {};
+  const directEdgeCount = uniqueEdgeCount(frontmatter);
+  const validatedEdges = Math.max(Number(lineageQuality.validated_edges || 0), directEdgeCount);
+  const probableEdges = Number(lineageQuality.probable_edges || 0);
+  const unresolvedEdgeFacts =
+    Number(lineageQuality.unresolved_facts || 0) +
+    countArray(frontmatter.unresolved_ssis_column_mappings);
+  const promotedEdgeFacts = validatedEdges + probableEdges;
+  const edgeEvidenceTotal = promotedEdgeFacts + unresolvedEdgeFacts;
+
+  const columnLineage = countArray(frontmatter.column_lineage);
+  const unresolvedColumnLineage = countArray(frontmatter.unresolved_column_lineage);
+  const columnUsage = countArray(frontmatter.column_usage);
+  const unresolvedColumnUsage = countArray(frontmatter.unresolved_column_usage);
+  const columnRiskFlags = countArray(frontmatter.column_risk_flags);
+  const columnEvidenceTotal =
+    columnLineage + unresolvedColumnLineage + columnUsage + unresolvedColumnUsage + columnRiskFlags;
+
+  const edgeCorrectnessScore =
+    promotedEdgeFacts > 0
+      ? score((validatedEdges + probableEdges * 0.85) / promotedEdgeFacts)
+      : unresolvedEdgeFacts > 0
+        ? 0.25
+        : 1;
+  const coverageScore =
+    edgeEvidenceTotal > 0
+      ? score((validatedEdges + probableEdges * 0.75) / edgeEvidenceTotal)
+      : directEdgeCount > 0
+        ? 0.85
+        : 0.7;
+  const columnLineageScore =
+    columnEvidenceTotal > 0
+      ? score(
+          averageConfidence(frontmatter.column_lineage || []) *
+            (columnLineage + columnUsage * 0.6) /
+            columnEvidenceTotal
+        )
+      : countArray(frontmatter.columns) > 0
+        ? 0.75
+        : 0.9;
+  const unresolvedRiskScore = score(
+    (unresolvedEdgeFacts + unresolvedColumnLineage + unresolvedColumnUsage + columnRiskFlags) /
+      Math.max(
+        1,
+        edgeEvidenceTotal +
+          columnEvidenceTotal +
+          countArray(frontmatter.columns) +
+          countArray(frontmatter.ssis_column_mappings)
+      )
+  );
+  const overallScore = score(
+    edgeCorrectnessScore * 0.35 +
+      coverageScore * 0.35 +
+      columnLineageScore * 0.2 +
+      (1 - unresolvedRiskScore) * 0.1
+  );
+  const evidenceCounts = {
+    direct_edge_count: directEdgeCount,
+    validated_edges: validatedEdges,
+    probable_edges: probableEdges,
+    unresolved_edge_facts: unresolvedEdgeFacts,
+    column_lineage: columnLineage,
+    unresolved_column_lineage: unresolvedColumnLineage,
+    column_usage: columnUsage,
+    unresolved_column_usage: unresolvedColumnUsage,
+    column_risk_flags: columnRiskFlags,
+    ssis_column_mappings: countArray(frontmatter.ssis_column_mappings),
+    unresolved_ssis_column_mappings: countArray(frontmatter.unresolved_ssis_column_mappings),
+  };
+
+  return {
+    overall_score: overallScore,
+    edge_correctness_score: edgeCorrectnessScore,
+    coverage_score: coverageScore,
+    column_lineage_score: columnLineageScore,
+    unresolved_risk_score: unresolvedRiskScore,
+    confidence_label: confidenceLabel(overallScore, coverageScore, unresolvedRiskScore),
+    evidence_counts: evidenceCounts,
+    warnings: confidenceWarnings(frontmatter, evidenceCounts),
+    scoring_version: 'catalog-confidence-v1',
+  };
+}
+
+function applyCatalogConfidence(records) {
+  const summary = {
+    scoredObjects: 0,
+    veryHigh: 0,
+    high: 0,
+    medium: 0,
+    low: 0,
+    needsReview: 0,
+  };
+
+  for (const record of records.values()) {
+    if (!record?.frontmatter) continue;
+    record.frontmatter.catalog_confidence = buildCatalogConfidence(record.frontmatter);
+    summary.scoredObjects += 1;
+    const label = record.frontmatter.catalog_confidence.confidence_label;
+    if (label === 'very_high') summary.veryHigh += 1;
+    else if (label === 'high') summary.high += 1;
+    else if (label === 'medium') summary.medium += 1;
+    else if (label === 'low') summary.low += 1;
+    else summary.needsReview += 1;
+  }
+
+  return summary;
+}
+
+function average(values = []) {
+  const finiteValues = values.map(Number).filter((value) => Number.isFinite(value));
+  if (finiteValues.length === 0) return 0;
+  return score(finiteValues.reduce((sum, value) => sum + value, 0) / finiteValues.length);
+}
+
+function ratio(part, total) {
+  const denominator = Number(total);
+  if (!Number.isFinite(denominator) || denominator <= 0) return 0;
+  return score(Number(part || 0) / denominator);
+}
+
+function recordConfidence(record = {}) {
+  return record.frontmatter?.catalog_confidence || null;
+}
+
+function recordObjectId(record = {}) {
+  return record.id || record.frontmatter?.id || '';
+}
+
+function recordSourceKey(record = {}) {
+  const frontmatter = record.frontmatter || {};
+  const server = frontmatter.server || record.server || 'unknown';
+  const database = frontmatter.database || record.database || 'unknown';
+  return `${server}.${database}`;
+}
+
+function unresolvedFactCount(record = {}) {
+  const frontmatter = record.frontmatter || {};
+  const lineageQuality = frontmatter.lineage_quality || {};
+  return (
+    Number(lineageQuality.unresolved_facts || 0) +
+    countArray(frontmatter.unresolved_column_lineage) +
+    countArray(frontmatter.unresolved_column_usage) +
+    countArray(frontmatter.unresolved_ssis_column_mappings)
+  );
+}
+
+function summarizeConfidence(recordList = []) {
+  const summary = {
+    total_objects: recordList.length,
+    scored_objects: 0,
+    missing_confidence_objects: 0,
+    distribution: {
+      very_high: 0,
+      high: 0,
+      medium: 0,
+      low: 0,
+      needs_review: 0,
+      missing: 0,
+    },
+    average_scores: {
+      overall: 0,
+      edge_correctness: 0,
+      coverage: 0,
+      column_lineage: 0,
+      unresolved_risk: 0,
+    },
+    low_or_needs_review_objects: 0,
+    low_or_needs_review_ratio: 0,
+  };
+  const overallScores = [];
+  const edgeScores = [];
+  const coverageScores = [];
+  const columnScores = [];
+  const riskScores = [];
+
+  for (const record of recordList) {
+    const confidence = recordConfidence(record);
+    if (!confidence) {
+      summary.missing_confidence_objects += 1;
+      summary.distribution.missing += 1;
+      continue;
+    }
+
+    summary.scored_objects += 1;
+    const label = confidence.confidence_label || 'missing';
+    if (Object.hasOwn(summary.distribution, label)) {
+      summary.distribution[label] += 1;
+    } else {
+      summary.distribution.missing += 1;
+    }
+
+    if (label === 'low' || label === 'needs_review') {
+      summary.low_or_needs_review_objects += 1;
+    }
+
+    overallScores.push(confidence.overall_score);
+    edgeScores.push(confidence.edge_correctness_score);
+    coverageScores.push(confidence.coverage_score);
+    columnScores.push(confidence.column_lineage_score);
+    riskScores.push(confidence.unresolved_risk_score);
+  }
+
+  summary.average_scores = {
+    overall: average(overallScores),
+    edge_correctness: average(edgeScores),
+    coverage: average(coverageScores),
+    column_lineage: average(columnScores),
+    unresolved_risk: average(riskScores),
+  };
+  summary.low_or_needs_review_ratio = ratio(
+    summary.low_or_needs_review_objects,
+    summary.scored_objects
+  );
+  return summary;
+}
+
+function summarizeSources(recordList = []) {
+  const grouped = new Map();
+  for (const record of recordList) {
+    const key = recordSourceKey(record);
+    if (!grouped.has(key)) {
+      grouped.set(key, {
+        source_key: key,
+        object_count: 0,
+        scored_objects: 0,
+        low_or_needs_review_objects: 0,
+        unresolved_facts: 0,
+        score_total: 0,
+      });
+    }
+
+    const source = grouped.get(key);
+    source.object_count += 1;
+    source.unresolved_facts += unresolvedFactCount(record);
+    const confidence = recordConfidence(record);
+    if (!confidence) continue;
+    source.scored_objects += 1;
+    source.score_total += Number(confidence.overall_score || 0);
+    if (
+      confidence.confidence_label === 'low' ||
+      confidence.confidence_label === 'needs_review'
+    ) {
+      source.low_or_needs_review_objects += 1;
+    }
+  }
+
+  return Array.from(grouped.values())
+    .map((source) => ({
+      source_key: source.source_key,
+      object_count: source.object_count,
+      scored_objects: source.scored_objects,
+      average_confidence: average([
+        source.scored_objects > 0 ? source.score_total / source.scored_objects : 0,
+      ]),
+      low_or_needs_review_objects: source.low_or_needs_review_objects,
+      low_or_needs_review_ratio: ratio(
+        source.low_or_needs_review_objects,
+        source.scored_objects
+      ),
+      unresolved_facts: source.unresolved_facts,
+    }))
+    .sort((left, right) => left.source_key.localeCompare(right.source_key));
+}
+
+function packageConfidenceIndex(recordList = []) {
+  const index = {};
+  for (const record of recordList) {
+    if (record.frontmatter?.type !== 'package') continue;
+    const confidence = recordConfidence(record);
+    if (!confidence) continue;
+    const id = recordObjectId(record);
+    index[id] = {
+      id,
+      name: record.frontmatter.name || record.frontmatter.package_name || id,
+      score: Number(confidence.overall_score || 0),
+      label: confidence.confidence_label || 'unknown',
+      unresolved_facts: unresolvedFactCount(record),
+      reads: countArray(record.frontmatter.reads_from),
+      writes: countArray(record.frontmatter.writes_to),
+      validated_edges: Number(record.frontmatter.lineage_quality?.validated_edges || 0),
+    };
+  }
+  return index;
+}
+
+function objectConfidenceRows(recordList = []) {
+  return recordList
+    .map((record) => {
+      const confidence = recordConfidence(record);
+      return {
+        id: recordObjectId(record),
+        name: record.frontmatter?.name || record.name || recordObjectId(record),
+        type: record.frontmatter?.type || record.type || 'unknown',
+        source_key: recordSourceKey(record),
+        score: confidence ? Number(confidence.overall_score || 0) : null,
+        label: confidence?.confidence_label || 'missing',
+        unresolved_facts: unresolvedFactCount(record),
+      };
+    })
+    .sort((left, right) => {
+      const leftScore = left.score ?? -1;
+      const rightScore = right.score ?? -1;
+      return leftScore - rightScore || right.unresolved_facts - left.unresolved_facts;
+    });
+}
+
+function comparePackageConfidence(currentIndex = {}, previousIndex = {}) {
+  return Object.values(currentIndex)
+    .map((current) => {
+      const previous = previousIndex[current.id];
+      if (!previous || !Number.isFinite(Number(previous.score))) return null;
+      const previousScore = Number(previous.score);
+      return {
+        id: current.id,
+        name: current.name,
+        previous_score: score(previousScore),
+        current_score: score(current.score),
+        delta: roundMetric(current.score - previousScore),
+        previous_label: previous.label || 'unknown',
+        current_label: current.label || 'unknown',
+        current_unresolved_facts: current.unresolved_facts,
+      };
+    })
+    .filter(Boolean)
+    .filter((entry) => entry.delta < 0)
+    .sort((left, right) => left.delta - right.delta)
+    .slice(0, 25);
+}
+
+function edgeDelta(current, previous) {
+  const currentValue = Number(current || 0);
+  const previousValue = Number(previous || 0);
+  return {
+    current: currentValue,
+    previous: Number.isFinite(previousValue) ? previousValue : 0,
+    delta: currentValue - (Number.isFinite(previousValue) ? previousValue : 0),
+    delta_ratio:
+      Number.isFinite(previousValue) && previousValue > 0
+        ? roundMetric((currentValue - previousValue) / previousValue)
+        : null,
+  };
+}
+
+function evaluateRebuildGates(report, thresholds = DEFAULT_REBUILD_GATES) {
+  thresholds = { ...DEFAULT_REBUILD_GATES, ...thresholds };
+  const checks = [];
+  const addCheck = (name, passed, severity, details = {}) => {
+    checks.push({
+      name,
+      passed: Boolean(passed),
+      severity,
+      ...details,
+    });
+  };
+
+  addCheck('invalid_objects', report.validation.invalid_objects <= thresholds.maxInvalidObjects, 'fail', {
+    current: report.validation.invalid_objects,
+    max: thresholds.maxInvalidObjects,
+  });
+  addCheck(
+    'missing_confidence_objects',
+    report.confidence.missing_confidence_objects <= thresholds.maxMissingConfidenceObjects,
+    'fail',
+    {
+      current: report.confidence.missing_confidence_objects,
+      max: thresholds.maxMissingConfidenceObjects,
+    }
+  );
+  addCheck(
+    'low_needs_review_ratio',
+    report.confidence.low_or_needs_review_ratio <= thresholds.maxLowNeedsReviewRatio,
+    'warn',
+    {
+      current: report.confidence.low_or_needs_review_ratio,
+      max: thresholds.maxLowNeedsReviewRatio,
+    }
+  );
+  addCheck(
+    'average_confidence',
+    report.confidence.average_scores.overall >= thresholds.minAverageConfidence,
+    'warn',
+    {
+      current: report.confidence.average_scores.overall,
+      min: thresholds.minAverageConfidence,
+    }
+  );
+  addCheck(
+    'unresolved_fact_ratio',
+    report.metrics.unresolved_fact_ratio <= thresholds.maxUnresolvedFactRatio,
+    'warn',
+    {
+      current: report.metrics.unresolved_fact_ratio,
+      max: thresholds.maxUnresolvedFactRatio,
+    }
+  );
+
+  const ssisEdgeDeltaRatio = report.edge_deltas.ssis_edges.delta_ratio;
+  addCheck(
+    'ssis_edge_drop',
+    ssisEdgeDeltaRatio === null || ssisEdgeDeltaRatio >= -thresholds.maxSsisEdgeDropRatio,
+    'fail',
+    {
+      current: ssisEdgeDeltaRatio,
+      min: -thresholds.maxSsisEdgeDropRatio,
+    }
+  );
+
+  for (const source of report.new_data_sources) {
+    if (source.object_count < thresholds.minNewSourceObjectsForGate) continue;
+    addCheck(
+      `new_source_average_confidence:${source.source_key}`,
+      source.average_confidence >= thresholds.minNewSourceAverageConfidence,
+      'warn',
+      {
+        source_key: source.source_key,
+        current: source.average_confidence,
+        min: thresholds.minNewSourceAverageConfidence,
+      }
+    );
+    addCheck(
+      `new_source_low_needs_review_ratio:${source.source_key}`,
+      source.low_or_needs_review_ratio <= thresholds.maxNewSourceLowNeedsReviewRatio,
+      'warn',
+      {
+        source_key: source.source_key,
+        current: source.low_or_needs_review_ratio,
+        max: thresholds.maxNewSourceLowNeedsReviewRatio,
+      }
+    );
+  }
+
+  const failed = checks.filter((check) => !check.passed && check.severity === 'fail');
+  const warnings = checks.filter((check) => !check.passed && check.severity !== 'fail');
+  return {
+    status: failed.length > 0 ? 'failed' : warnings.length > 0 ? 'warning' : 'passed',
+    enforceable: ENFORCE_REBUILD_GATES,
+    thresholds,
+    failed,
+    warnings,
+    checks,
+  };
+}
+
+function buildRebuildReport({ summary, recordList, previousReport = null, thresholds = {} }) {
+  const mergedThresholds = { ...DEFAULT_REBUILD_GATES, ...thresholds };
+  const confidence = summarizeConfidence(recordList);
+  const rows = objectConfidenceRows(recordList);
+  const sourceSummary = summarizeSources(recordList);
+  const currentPackageIndex = packageConfidenceIndex(recordList);
+  const previousPackageIndex = previousReport?.package_confidence_index || {};
+  const previousSources = new Set(
+    (previousReport?.source_summary || []).map((source) => source.source_key)
+  );
+  const totalUnresolvedFacts = recordList.reduce(
+    (sum, record) => sum + unresolvedFactCount(record),
+    0
+  );
+  const totalDirectEdgeRefs = recordList.reduce(
+    (sum, record) => sum + uniqueEdgeCount(record.frontmatter || {}),
+    0
+  );
+  const totalColumnLineageRecords = recordList.reduce(
+    (sum, record) => sum + countArray(record.frontmatter?.column_lineage),
+    0
+  );
+  const report = {
+    generated_at: new Date().toISOString(),
+    generator: 'scripts/rebuild-catalog-from-raw.mjs',
+    report_version: 'rebuild-report-v1',
+    validation: {
+      loaded_objects: summary.loadedObjects,
+      invalid_objects: summary.invalidObjects,
+      invalid_sample: summary.invalidSample,
+    },
+    confidence,
+    metrics: {
+      sql_objects: summary.sqlObjects,
+      ssis_packages: summary.ssisPackages,
+      ssis_edges: summary.ssisEdges,
+      direct_edge_refs: totalDirectEdgeRefs,
+      column_lineage_records: totalColumnLineageRecords,
+      unresolved_facts: totalUnresolvedFacts,
+      unresolved_fact_ratio: ratio(
+        totalUnresolvedFacts,
+        totalUnresolvedFacts + totalDirectEdgeRefs + totalColumnLineageRecords
+      ),
+      ssis_sql_endpoint_records: summary.ssisSqlEndpointRecords || 0,
+    },
+    edge_deltas: {
+      ssis_edges: edgeDelta(summary.ssisEdges, previousReport?.metrics?.ssis_edges),
+      direct_edge_refs: edgeDelta(
+        totalDirectEdgeRefs,
+        previousReport?.metrics?.direct_edge_refs
+      ),
+      column_lineage_records: edgeDelta(
+        totalColumnLineageRecords,
+        previousReport?.metrics?.column_lineage_records
+      ),
+    },
+    low_or_needs_review_top: rows
+      .filter((row) => row.label === 'low' || row.label === 'needs_review')
+      .slice(0, 50),
+    top_unresolved_objects: rows
+      .filter((row) => row.unresolved_facts > 0)
+      .sort((left, right) => right.unresolved_facts - left.unresolved_facts)
+      .slice(0, 50),
+    package_confidence_regressions: comparePackageConfidence(
+      currentPackageIndex,
+      previousPackageIndex
+    ),
+    new_data_sources:
+      previousSources.size === 0
+        ? []
+        : sourceSummary.filter((source) => !previousSources.has(source.source_key)),
+    source_summary: sourceSummary,
+    package_confidence_index: currentPackageIndex,
+  };
+
+  report.gates = evaluateRebuildGates(report, mergedThresholds);
+  return report;
+}
+
+function renderRebuildReportMarkdown(report) {
+  const lines = [
+    '# Catalog Rebuild Report',
+    '',
+    `- Generated At: ${report.generated_at}`,
+    `- Gate Status: ${report.gates.status}`,
+    `- Loaded Objects: ${report.validation.loaded_objects}`,
+    `- Invalid Objects: ${report.validation.invalid_objects}`,
+    '',
+    '## Confidence Distribution',
+    '',
+    `- Very High: ${report.confidence.distribution.very_high}`,
+    `- High: ${report.confidence.distribution.high}`,
+    `- Medium: ${report.confidence.distribution.medium}`,
+    `- Low: ${report.confidence.distribution.low}`,
+    `- Needs Review: ${report.confidence.distribution.needs_review}`,
+    `- Missing Confidence: ${report.confidence.distribution.missing}`,
+    `- Low/Needs Review Objects: ${report.confidence.low_or_needs_review_objects}`,
+    `- Average Overall Confidence: ${report.confidence.average_scores.overall}`,
+    `- Average Edge Correctness: ${report.confidence.average_scores.edge_correctness}`,
+    `- Average Column Lineage: ${report.confidence.average_scores.column_lineage}`,
+    '',
+    '## Unresolved Facts',
+    '',
+    `- Total Unresolved Facts: ${report.metrics.unresolved_facts}`,
+    `- Unresolved Fact Ratio: ${report.metrics.unresolved_fact_ratio}`,
+    '',
+    '## Edge Deltas',
+    '',
+    `- SSIS Edges: ${report.edge_deltas.ssis_edges.current} (${report.edge_deltas.ssis_edges.delta >= 0 ? '+' : ''}${report.edge_deltas.ssis_edges.delta})`,
+    `- Direct Edge Refs: ${report.edge_deltas.direct_edge_refs.current} (${report.edge_deltas.direct_edge_refs.delta >= 0 ? '+' : ''}${report.edge_deltas.direct_edge_refs.delta})`,
+    `- Column Lineage Records: ${report.edge_deltas.column_lineage_records.current} (${report.edge_deltas.column_lineage_records.delta >= 0 ? '+' : ''}${report.edge_deltas.column_lineage_records.delta})`,
+    '',
+    '## Top Packages Losing Confidence',
+    '',
+  ];
+
+  if (report.package_confidence_regressions.length === 0) {
+    lines.push('- No package confidence regressions detected.');
+  } else {
+    for (const pkg of report.package_confidence_regressions.slice(0, 10)) {
+      lines.push(
+        `- ${pkg.name}: ${pkg.previous_score} -> ${pkg.current_score} (${pkg.delta})`
+      );
+    }
+  }
+
+  lines.push('', '## Gate Warnings And Failures', '');
+  const gateIssues = [...report.gates.failed, ...report.gates.warnings];
+  if (gateIssues.length === 0) {
+    lines.push('- No gate failures or warnings.');
+  } else {
+    for (const issue of gateIssues) {
+      lines.push(`- ${issue.severity.toUpperCase()} ${issue.name}: ${JSON.stringify(issue)}`);
+    }
+  }
+
+  lines.push('', '## New Data Source Onboarding Gate', '');
+  if (report.new_data_sources.length === 0) {
+    lines.push('- No new data sources detected against the previous report baseline.');
+  } else {
+    for (const source of report.new_data_sources.slice(0, 25)) {
+      lines.push(
+        `- ${source.source_key}: objects=${source.object_count}, avg=${source.average_confidence}, low_or_needs_review=${source.low_or_needs_review_ratio}`
+      );
+    }
+  }
+
+  return `${lines.join('\n')}\n`;
+}
+
+async function writeRebuildReport(report) {
+  await fs.mkdir(OUTPUT_ROOT, { recursive: true });
+  await fs.writeFile(REBUILD_REPORT_JSON_PATH, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  await fs.writeFile(REBUILD_REPORT_MARKDOWN_PATH, renderRebuildReportMarkdown(report), 'utf8');
+  return {
+    json: REBUILD_REPORT_JSON_PATH,
+    markdown: REBUILD_REPORT_MARKDOWN_PATH,
+  };
+}
+
 async function backupExistingServers() {
   if (process.argv.includes('--in-place')) {
     return null;
@@ -1007,7 +2551,9 @@ async function writeRecords(records, ssisSummary) {
 
   for (const record of records.values()) {
     let outputPath;
-    if (record.type === 'package') {
+    if (record.outputPath) {
+      outputPath = record.outputPath;
+    } else if (record.type === 'package') {
       outputPath = path.join(
         OUTPUT_SERVERS_ROOT,
         sanitizePathSegment(record.server),
@@ -1027,7 +2573,7 @@ async function writeRecords(records, ssisSummary) {
       );
     }
 
-    const content = record.content || `${renderFrontmatter(record.frontmatter)}${record.body || ''}`;
+    const content = `${renderFrontmatter(record.frontmatter)}${record.body || ''}`;
     await fs.mkdir(path.dirname(outputPath), { recursive: true });
     await fs.writeFile(outputPath, content, 'utf8');
     generatedFiles.push(manifestPath(outputPath));
@@ -1058,36 +2604,123 @@ async function writeRecords(records, ssisSummary) {
 }
 
 async function validateOutput() {
-  const objects = await loadAllMarkdown(OUTPUT_ROOT);
+  const files = await getMarkdownFiles(OUTPUT_ROOT);
   const invalid = [];
-  for (const object of objects.values()) {
-    const errors = validateMetadata(object);
-    if (errors.length > 0) {
-      invalid.push({ id: object.id, errors });
+
+  for (const filePath of files) {
+    try {
+      const object = await parseMarkdownFile(filePath);
+      const errors = validateMetadata(object);
+      if (errors.length > 0) {
+        invalid.push({ id: object.id, errors });
+      }
+    } catch (err) {
+      invalid.push({ id: filePath, errors: [err.message] });
     }
   }
-  return { objectCount: objects.size, invalid };
+
+  return { objectCount: files.length, invalid };
 }
 
 async function main() {
   const aliases = await readJsonIfExists(ALIAS_CONFIG_PATH, {});
+  const previousRebuildReport = await readJsonIfExists(REBUILD_REPORT_JSON_PATH, null);
   const existingSsisCatalog = await loadExistingSsisCatalog();
   const backupPath = await backupExistingServers();
+  logRebuildPhase('loading raw SQL metadata');
   const { records, skipped: skippedSql } = await loadSqlRawObjects(aliases);
+  logRebuildPhase(`loaded ${records.size} SQL objects`);
+  logRebuildPhase('rewriting SQL lineage');
   const referenceIndex = rewriteSqlLineage(records, aliases);
   applyForwardSqlEdges(records, referenceIndex);
+  logRebuildPhase('rebuilding SSIS metadata');
   const ssisSummary = await rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog);
+  logRebuildPhase('applying SSIS bridge inferences');
   const inferredSsisBridges = applySsisBridgeInferences(records);
+  logRebuildPhase('resolving column lineage');
+  const columnLineageResolution = applyColumnLineageResolution(records);
+  logRebuildPhase('scoring catalog confidence');
+  const catalogConfidenceSummary = applyCatalogConfidence(records);
+  logRebuildPhase('writing markdown records');
   const writeSummary = await writeRecords(records, ssisSummary);
+  logRebuildPhase('validating generated markdown');
   const validation = await validateOutput();
+  const recordList = Array.from(records.values());
+  const columnInventoryObjects = recordList.filter(
+    (record) => (record.frontmatter?.columns || []).length > 0
+  );
+  const columnUsageObjects = recordList.filter(
+    (record) => (record.frontmatter?.column_usage || []).length > 0
+  );
+  const unresolvedColumnUsageObjects = recordList.filter(
+    (record) => (record.frontmatter?.unresolved_column_usage || []).length > 0
+  );
+  const columnRiskFlagObjects = recordList.filter(
+    (record) => (record.frontmatter?.column_risk_flags || []).length > 0
+  );
+  const columnLineageObjects = recordList.filter(
+    (record) => (record.frontmatter?.column_lineage || []).length > 0
+  );
+  const unresolvedColumnLineageObjects = recordList.filter(
+    (record) => (record.frontmatter?.unresolved_column_lineage || []).length > 0
+  );
+  const ssisColumnMappingObjects = recordList.filter(
+    (record) => (record.frontmatter?.ssis_column_mappings || []).length > 0
+  );
+  const unresolvedSsisColumnMappingObjects = recordList.filter(
+    (record) => (record.frontmatter?.unresolved_ssis_column_mappings || []).length > 0
+  );
 
   const summary = {
     backupPath,
-    sqlObjects: Array.from(records.values()).filter((record) => record.type !== 'package').length,
+    sqlObjects: recordList.filter((record) => record.type !== 'package').length,
     ssisPackages: ssisSummary.packageCount,
     ssisEdges: ssisSummary.edgeCount,
+    columnInventoryObjects: columnInventoryObjects.length,
+    columnInventoryColumns: columnInventoryObjects.reduce(
+      (sum, record) => sum + (record.frontmatter?.columns || []).length,
+      0
+    ),
+    columnUsageObjects: columnUsageObjects.length,
+    columnUsageRecords: columnUsageObjects.reduce(
+      (sum, record) => sum + (record.frontmatter?.column_usage || []).length,
+      0
+    ),
+    unresolvedColumnUsageObjects: unresolvedColumnUsageObjects.length,
+    unresolvedColumnUsageRecords: unresolvedColumnUsageObjects.reduce(
+      (sum, record) => sum + (record.frontmatter?.unresolved_column_usage || []).length,
+      0
+    ),
+    columnRiskFlagObjects: columnRiskFlagObjects.length,
+    columnRiskFlags: columnRiskFlagObjects.reduce(
+      (sum, record) => sum + (record.frontmatter?.column_risk_flags || []).length,
+      0
+    ),
+    columnLineageObjects: columnLineageObjects.length,
+    columnLineageRecords: columnLineageObjects.reduce(
+      (sum, record) => sum + (record.frontmatter?.column_lineage || []).length,
+      0
+    ),
+    unresolvedColumnLineageObjects: unresolvedColumnLineageObjects.length,
+    unresolvedColumnLineageRecords: unresolvedColumnLineageObjects.reduce(
+      (sum, record) => sum + (record.frontmatter?.unresolved_column_lineage || []).length,
+      0
+    ),
+    columnLineageResolution,
+    catalogConfidenceSummary,
+    ssisColumnMappingObjects: ssisColumnMappingObjects.length,
+    ssisColumnMappings: ssisColumnMappingObjects.reduce(
+      (sum, record) => sum + (record.frontmatter?.ssis_column_mappings || []).length,
+      0
+    ),
+    unresolvedSsisColumnMappingObjects: unresolvedSsisColumnMappingObjects.length,
+    unresolvedSsisColumnMappings: unresolvedSsisColumnMappingObjects.reduce(
+      (sum, record) => sum + (record.frontmatter?.unresolved_ssis_column_mappings || []).length,
+      0
+    ),
     skippedSql,
     skippedSsis: ssisSummary.skipped,
+    ssisSqlEndpointRecords: ssisSummary.ssisSqlEndpointRecords,
     inferredSsisBridges,
     filesWritten: writeSummary.filesWritten,
     manifestFiles: writeSummary.manifestFiles,
@@ -1096,10 +2729,47 @@ async function main() {
     invalidSample: validation.invalid.slice(0, 10),
   };
 
+  const rebuildReport = buildRebuildReport({
+    summary,
+    recordList,
+    previousReport: previousRebuildReport,
+    thresholds: aliases.rebuildConfidenceGates || {},
+  });
+  const reportPaths = await writeRebuildReport(rebuildReport);
+  summary.rebuildReport = {
+    gateStatus: rebuildReport.gates.status,
+    json: reportPaths.json,
+    markdown: reportPaths.markdown,
+    unresolvedFacts: rebuildReport.metrics.unresolved_facts,
+    lowOrNeedsReviewObjects: rebuildReport.confidence.low_or_needs_review_objects,
+    ssisEdgeDelta: rebuildReport.edge_deltas.ssis_edges.delta,
+    packageConfidenceRegressions: rebuildReport.package_confidence_regressions.length,
+    newDataSources: rebuildReport.new_data_sources.length,
+  };
+
   console.log(JSON.stringify(summary, null, 2));
   if (validation.invalid.length > 0) {
     process.exitCode = 1;
   }
+  if (ENFORCE_REBUILD_GATES && rebuildReport.gates.status === 'failed') {
+    process.exitCode = 1;
+  }
 }
 
-await main();
+export {
+  buildCatalogConfidence,
+  buildRebuildReport,
+  buildSsisSqlEndpointRecords,
+  evaluateRebuildGates,
+  renderRebuildReportMarkdown,
+  summarizeConfidence,
+  summarizeSources,
+};
+
+const isDirectRun =
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+
+if (isDirectRun) {
+  await main();
+}

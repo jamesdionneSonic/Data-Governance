@@ -10,7 +10,10 @@
  *   – that XML parsing errors do not throw
  */
 
-import { SsisMetadataExtractor } from '../../src/services/ssisExtractor.js';
+import {
+  SsisMetadataExtractor,
+  parseSsisPackageXmlForLineage,
+} from '../../src/services/ssisExtractor.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Mock helpers
@@ -418,6 +421,449 @@ describe('SSIS-005: Sensitive value masking', () => {
     if (sensitiveVar) {
       expect(sensitiveVar.variable_value).toBe('***SENSITIVE***');
     }
+  });
+});
+
+describe('SSIS-007: package XML column mappings', () => {
+  test('extracts direct destination mappings and derived column expressions', () => {
+    const sourceLineage =
+      'Package\\DFT\\OLE DB Source.Outputs[OLE DB Source Output].Columns[ClaimID]';
+    const externalColumn =
+      'Package\\DFT\\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CLAIM_ID]';
+    const xml = `
+      <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts">
+        <pipeline>
+          <components>
+            <component componentClassID="Microsoft.OLEDBSource" name="OLE DB Source">
+              <properties>
+                <property name="SqlCommand">SELECT ClaimID FROM dbo.SourceClaims WHERE IsActive = 1</property>
+              </properties>
+              <outputs>
+                <output name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn name="ClaimID" lineageId="${sourceLineage}" />
+                  </outputColumns>
+                </output>
+              </outputs>
+            </component>
+            <component componentClassID="Microsoft.DerivedColumn" name="Derived Column">
+              <outputs>
+                <output name="Derived Column Output">
+                  <outputColumns>
+                    <outputColumn name="ClaimKey" lineageId="Package\\DFT\\Derived Column.Outputs[Derived Column Output].Columns[ClaimKey]">
+                      <properties>
+                        <property name="Expression">[ClaimID] + 100</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                </output>
+              </outputs>
+            </component>
+            <component componentClassID="Microsoft.Lookup" name="Lookup Dealer">
+              <properties>
+                <property name="SqlCommandParam">dbo.DimDealer</property>
+              </properties>
+              <outputs>
+                <output name="Lookup Match Output">
+                  <outputColumns>
+                    <outputColumn
+                      name="DealerKey"
+                      lineageId="Package\\DFT\\Lookup Dealer.Outputs[Lookup Match Output].Columns[DealerKey]"
+                      externalMetadataColumnId="Package\\DFT\\Lookup Dealer.Outputs[Lookup Match Output].ExternalColumns[DealerKey]" />
+                  </outputColumns>
+                  <externalMetadataColumns>
+                    <externalMetadataColumn
+                      refId="Package\\DFT\\Lookup Dealer.Outputs[Lookup Match Output].ExternalColumns[DealerKey]"
+                      name="DealerKey" />
+                  </externalMetadataColumns>
+                </output>
+              </outputs>
+            </component>
+            <component componentClassID="Microsoft.OLEDBDestination" name="OLE DB Destination">
+              <properties>
+                <property name="OpenRowset">dbo.TargetClaims</property>
+              </properties>
+              <inputs>
+                <input name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      cachedName="ClaimID"
+                      lineageId="${sourceLineage}"
+                      externalMetadataColumnId="${externalColumn}" />
+                  </inputColumns>
+                  <externalMetadataColumns>
+                    <externalMetadataColumn refId="${externalColumn}" name="CLAIM_ID" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+            </component>
+          </components>
+        </pipeline>
+      </DTS:Executable>
+    `;
+
+    const parsed = parseSsisPackageXmlForLineage(xml, {
+      serverName: 'SSIS01',
+      folderName: 'ETL',
+      projectName: 'Claims',
+      packageName: 'LoadClaims.dtsx',
+    });
+
+    expect(parsed.ssisColumnMappings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          component_name: 'OLE DB Destination',
+          source_component: 'OLE DB Source',
+          destination_component: 'OLE DB Destination',
+          source_object: 'dbo.SourceClaims',
+          destination_object: 'dbo.TargetClaims',
+          input_column: 'ClaimID',
+          output_column: 'CLAIM_ID',
+          external_metadata_column: 'CLAIM_ID',
+          transform_type: 'rename',
+          validation_status: 'validated',
+        }),
+        expect.objectContaining({
+          component_name: 'Derived Column',
+          output_column: 'ClaimKey',
+          input_column: 'ClaimID',
+          transform_type: 'derived',
+          expression: '[ClaimID] + 100',
+          evidence_type: 'ssis_derived_column_expression',
+        }),
+        expect.objectContaining({
+          component_name: 'Lookup Dealer',
+          source_object: 'dbo.DimDealer',
+          output_column: 'DealerKey',
+          transform_type: 'lookup',
+          evidence_type: 'ssis_lookup_output',
+        }),
+      ])
+    );
+  });
+
+  test('resolves dynamic connection strings from package variables', () => {
+    const xml = `
+      <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts">
+        <DTS:ConnectionManagers>
+          <DTS:ConnectionManager
+            DTS:ObjectName="DynamicClaims"
+            DTS:refId="Package.ConnectionManagers[DynamicClaims]">
+            <DTS:ObjectData>
+              <DTS:ConnectionManager>
+                <DTS:PropertyExpression DTS:Name="ConnectionString">"Data Source=" + @[User::SqlServer] + ";Initial Catalog=" + @[User::SqlDatabase] + ";Provider=SQLNCLI11.1;"</DTS:PropertyExpression>
+              </DTS:ConnectionManager>
+            </DTS:ObjectData>
+          </DTS:ConnectionManager>
+        </DTS:ConnectionManagers>
+        <DTS:Variables>
+          <DTS:Variable DTS:ObjectName="SqlServer" DTS:Namespace="User">
+            <DTS:VariableValue DTS:DataType="8">SQL01</DTS:VariableValue>
+          </DTS:Variable>
+          <DTS:Variable DTS:ObjectName="SqlDatabase" DTS:Namespace="User">
+            <DTS:VariableValue DTS:DataType="8">ClaimsDB</DTS:VariableValue>
+          </DTS:Variable>
+        </DTS:Variables>
+        <pipeline>
+          <components>
+            <component componentClassID="Microsoft.OLEDBSource" name="OLE DB Source">
+              <connections>
+                <connection connectionManagerID="Package.ConnectionManagers[DynamicClaims]" />
+              </connections>
+              <properties>
+                <property name="OpenRowset">dbo.SourceClaims</property>
+              </properties>
+            </component>
+          </components>
+        </pipeline>
+      </DTS:Executable>
+    `;
+
+    const parsed = parseSsisPackageXmlForLineage(xml, {
+      serverName: 'SSIS01',
+      folderName: 'ETL',
+      projectName: 'Claims',
+      packageName: 'LoadClaims.dtsx',
+    });
+    const connection = parsed.connectionManagers.find((cm) => cm.connName === 'DynamicClaims');
+
+    expect(connection).toEqual(
+      expect.objectContaining({
+        serverName: 'SQL01',
+        databaseName: 'ClaimsDB',
+        dynamicResolved: true,
+      })
+    );
+    expect(parsed.unresolvedSsisColumnMappings).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          reason: 'dynamic_connection_manager',
+        }),
+      ])
+    );
+
+    const extractor = new SsisMetadataExtractor({ server: 'SSIS01' });
+    const edges = extractor.buildLineageEdges(
+      [
+        {
+          folder_name: 'ETL',
+          project_name: 'Claims',
+          package_name: 'LoadClaims.dtsx',
+        },
+      ],
+      [parsed],
+      { jobs: [], ssisSteps: [] },
+      [],
+      {}
+    );
+    expect(edges).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          edgeType: 'READS_FROM',
+          to: 'SQL01.ClaimsDB.dbo.SourceClaims',
+          validation_status: 'validated',
+        }),
+      ])
+    );
+  });
+
+  test('resolves project connection-manager refs when SSIS only stores external GUIDs on components', () => {
+    const xml = `
+      <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts">
+        <pipeline>
+          <components>
+            <component componentClassID="Microsoft.OLEDBSource" name="OLE DB Source">
+              <connections>
+                <connection
+                  connectionManagerID="{AFF3712B-399E-4D45-AA9F-F12680D253EB}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[dbSourceDW]" />
+              </connections>
+              <properties>
+                <property name="OpenRowset">dbo.SourceClaims</property>
+              </properties>
+            </component>
+            <component componentClassID="Microsoft.OLEDBDestination" name="OLE DB Destination">
+              <connections>
+                <connection
+                  connectionManagerID="{D30EAED8-2997-4E0E-ABBD-50EF8210B31E}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[dbTargetDW]" />
+              </connections>
+              <properties>
+                <property name="OpenRowset">dbo.TargetClaims</property>
+              </properties>
+            </component>
+          </components>
+        </pipeline>
+      </DTS:Executable>
+    `;
+
+    const parsed = parseSsisPackageXmlForLineage(xml, {
+      serverName: 'SSIS01',
+      folderName: 'ETL',
+      projectName: 'CopyProject',
+      packageName: 'Copy.dtsx',
+    });
+    expect(parsed.dataFlowComponents.find((component) => component.role === 'SOURCE')).toEqual(
+      expect.objectContaining({
+        connectionManagerId: expect.stringContaining('dbsourcedw'),
+      })
+    );
+
+    const extractor = new SsisMetadataExtractor({
+      server: 'SSIS01',
+      ssisProjectConnectionOverrides: {
+        'ETL.CopyProject': {
+          dbSourceDW: {
+            serverName: 'src-server',
+            databaseName: 'SourceDB',
+          },
+          dbTargetDW: {
+            serverName: 'dst-server',
+            databaseName: 'TargetDB',
+          },
+        },
+      },
+    });
+    const edges = extractor.buildLineageEdges(
+      [
+        {
+          folder_name: 'ETL',
+          project_name: 'CopyProject',
+          package_name: 'Copy.dtsx',
+        },
+      ],
+      [parsed],
+      { jobs: [], ssisSteps: [] },
+      [],
+      {}
+    );
+
+    expect(edges).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          edgeType: 'READS_FROM',
+          to: 'src-server.SourceDB.dbo.SourceClaims',
+          validation_status: 'validated',
+        }),
+        expect.objectContaining({
+          edgeType: 'WRITES_TO',
+          to: 'dst-server.TargetDB.dbo.TargetClaims',
+          validation_status: 'validated',
+        }),
+      ])
+    );
+    expect(edges.filter((edge) => edge.edgeType === 'WRITES_TO')).toHaveLength(1);
+  });
+
+  test('resolves project parameters through SSISDB environment references', () => {
+    const xml = `
+      <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts">
+        <DTS:ConnectionManagers>
+          <DTS:ConnectionManager
+            DTS:ObjectName="eLeadDW"
+            DTS:refId="Package.ConnectionManagers[eLeadDW]">
+            <DTS:ObjectData>
+              <DTS:ConnectionManager DTS:ConnectionString="Data Source=DESIGNTIME;Initial Catalog=eLeadDW;Provider=SQLNCLI11.1;">
+                <DTS:PropertyExpression DTS:Name="ServerName">@[$Project::eLeadDW_ServerName]</DTS:PropertyExpression>
+              </DTS:ConnectionManager>
+            </DTS:ObjectData>
+          </DTS:ConnectionManager>
+        </DTS:ConnectionManagers>
+      </DTS:Executable>
+    `;
+
+    const parsed = parseSsisPackageXmlForLineage(xml, {
+      serverName: 'SSIS01',
+      folderName: 'StagingSonicSSIS',
+      projectName: 'LOAD',
+      packageName: 'LOAD_LOCAL.dtsx',
+      parameters: [
+        {
+          folder_name: 'StagingSonicSSIS',
+          project_name: 'LOAD',
+          parameter_name: 'eLeadDW_ServerName',
+          referenced_variable_name: 'eLeadDW_ServerName',
+        },
+      ],
+      environments: {
+        references: [
+          {
+            folder_name: 'StagingSonicSSIS',
+            project_name: 'LOAD',
+            environment_folder_name: 'StagingSonicSSIS',
+            environment_name: 'Prod',
+          },
+        ],
+        variables: [
+          {
+            folder_name: 'StagingSonicSSIS',
+            environment_name: 'Prod',
+            variable_name: 'eLeadDW_ServerName',
+            variable_value: '10.125.6.23\\dwhdb',
+          },
+        ],
+      },
+    });
+    const connection = parsed.connectionManagers.find((cm) => cm.connName === 'eLeadDW');
+
+    expect(connection).toEqual(
+      expect.objectContaining({
+        serverName: '10.125.6.23\\dwhdb',
+        databaseName: 'eLeadDW',
+        dynamicResolved: true,
+      })
+    );
+    expect(parsed.unresolvedSsisColumnMappings).toEqual([]);
+  });
+
+  test('resolves project parameters from raw rebuild override config', () => {
+    const xml = `
+      <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts">
+        <DTS:ConnectionManagers>
+          <DTS:ConnectionManager
+            DTS:ObjectName="eLeadDW"
+            DTS:refId="Package.ConnectionManagers[eLeadDW]">
+            <DTS:ObjectData>
+              <DTS:ConnectionManager DTS:ConnectionString="Data Source=DESIGNTIME;Initial Catalog=eLeadDW;Provider=SQLNCLI11.1;">
+                <DTS:PropertyExpression DTS:Name="ServerName">@[$Project::eLeadDW_ServerName]</DTS:PropertyExpression>
+              </DTS:ConnectionManager>
+            </DTS:ObjectData>
+          </DTS:ConnectionManager>
+        </DTS:ConnectionManagers>
+      </DTS:Executable>
+    `;
+
+    const parsed = parseSsisPackageXmlForLineage(xml, {
+      serverName: 'SSIS01',
+      folderName: 'StagingSonicSSIS',
+      projectName: 'LOAD',
+      packageName: 'LOAD_LOCAL.dtsx',
+      parameterOverrides: {
+        'StagingSonicSSIS.LOAD': {
+          eLeadDW_ServerName: '10.125.6.23\\dwhdb',
+        },
+      },
+    });
+    const connection = parsed.connectionManagers.find((cm) => cm.connName === 'eLeadDW');
+
+    expect(connection).toEqual(
+      expect.objectContaining({
+        serverName: '10.125.6.23\\dwhdb',
+        databaseName: 'eLeadDW',
+        dynamicResolved: true,
+      })
+    );
+    expect(parsed.unresolvedSsisColumnMappings).toEqual([]);
+  });
+
+  test('creates validated lineage edges for external SSIS source components', () => {
+    const extractor = new SsisMetadataExtractor({ server: 'SSIS01' });
+    const edges = extractor.buildLineageEdges(
+      [
+        {
+          folder_name: 'ETL',
+          project_name: 'Claims',
+          package_name: 'LoadExternalClaims.dtsx',
+        },
+      ],
+      [
+        {
+          objectName: 'LoadExternalClaims.dtsx',
+          packageName: 'LoadExternalClaims.dtsx',
+          folderName: 'ETL',
+          projectName: 'Claims',
+          connectionManagers: [],
+          dataFlowComponents: [
+            {
+              componentName: 'Flat File Source',
+              componentType: 'Microsoft.FlatFileSource',
+              role: 'SOURCE',
+              tableName: '',
+              sqlCommand: '',
+              connectionManagerId: '',
+              outputColumns: [{ name: 'ClaimID' }],
+            },
+          ],
+          sqlTasks: [],
+          packageTasks: [],
+        },
+      ],
+      { jobs: [], ssisSteps: [] },
+      [],
+      {}
+    );
+
+    expect(edges).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          edgeType: 'READS_FROM',
+          evidence_type: 'ssis_external_source_component',
+          target_external_source: true,
+          to: expect.stringContaining('SSIS01.SSISDB.external_sources.ETL.Claims.LoadExternalClaims.Flat_File_Source'),
+          validation_status: 'validated',
+        }),
+      ])
+    );
   });
 });
 

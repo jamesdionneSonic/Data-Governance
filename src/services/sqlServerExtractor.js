@@ -78,15 +78,17 @@ function parseSqlObjectReference(reference, defaultServer, defaultDatabase, defa
 
   if (text.includes('::')) {
     const parts = text.split('::').map((part) => part.trim()).filter(Boolean);
-    const qualifier = parts.length >= 3 ? parts[1] : '';
-    const objectName = parts.length >= 3 ? parts[2] : parts[3] || '';
+    const [, qualifierCandidate = '', objectNameCandidate = '', fallbackObjectName = ''] = parts;
+    const qualifier = parts.length >= 3 ? qualifierCandidate : '';
+    const objectName = parts.length >= 3 ? objectNameCandidate : fallbackObjectName;
     const qualifierParts = qualifier.split('.').filter(Boolean);
+    const [firstQualifier, secondQualifier, thirdQualifier] = qualifierParts;
 
     if (qualifierParts.length >= 3) {
       return {
-        server: qualifierParts[0],
-        database: qualifierParts[1],
-        schema: qualifierParts[2],
+        server: firstQualifier,
+        database: secondQualifier,
+        schema: thirdQualifier,
         object: String(objectName || '').trim(),
       };
     }
@@ -94,16 +96,17 @@ function parseSqlObjectReference(reference, defaultServer, defaultDatabase, defa
     if (qualifierParts.length === 2) {
       return {
         server: String(defaultServer || '').trim(),
-        database: qualifierParts[0],
-        schema: qualifierParts[1],
+        database: firstQualifier,
+        schema: secondQualifier,
         object: String(objectName || '').trim(),
       };
     }
 
-    const schemaName = qualifierParts[0] || (parts.length >= 4 ? parts[2] : defaultSchema);
+    const [, dbNameCandidate, schemaNameCandidate] = parts;
+    const schemaName = firstQualifier || (parts.length >= 4 ? schemaNameCandidate : defaultSchema);
     let dbName = defaultDatabase;
-    if (parts.length >= 4 && parts[1] && parts[1] !== 'null') {
-      dbName = parts[1];
+    if (parts.length >= 4 && dbNameCandidate && dbNameCandidate !== 'null') {
+      dbName = dbNameCandidate;
     }
     return {
       server: String(defaultServer || '').trim(),
@@ -950,14 +953,28 @@ class SqlServerMetadataExtractor {
       const indexesByTable = new Map();
 
       result.recordset.forEach((row) => {
-        const tableId = `${row.schema_name}.${row.table_name}`;
-        const tableKey = tableId.toLowerCase();
+        const tableId = SqlServerMetadataExtractor.qualifySqlObjectId(
+          SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
+          this.metadata.database || this.config?.database || '',
+          row.schema_name,
+          row.table_name
+        );
+        const schemaTableId = `${row.schema_name}.${row.table_name}`;
+        const tableKey = schemaTableId.toLowerCase();
+        const objectKey = tableId.toLowerCase();
         const schemaName = String(row.schema_name || '').toLowerCase();
         
-        if (excludeSchemas.has(schemaName) || excludeTables.has(tableKey)) return;
+        if (
+          excludeSchemas.has(schemaName) ||
+          excludeTables.has(tableKey) ||
+          excludeTables.has(objectKey)
+        ) return;
 
         const schemaMatch = selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
-        const tableMatch = selectedTables.size === 0 || selectedTables.has(tableKey);
+        const tableMatch =
+          selectedTables.size === 0 ||
+          selectedTables.has(tableKey) ||
+          selectedTables.has(objectKey);
 
         if (!schemaMatch || !tableMatch) return;
 
@@ -1068,14 +1085,28 @@ class SqlServerMetadataExtractor {
       };
 
       keyConstraints.recordset.forEach((row) => {
-        const tableId = `${row.schema_name}.${row.table_name}`;
-        const tableKey = tableId.toLowerCase();
+        const tableId = SqlServerMetadataExtractor.qualifySqlObjectId(
+          SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
+          this.metadata.database || this.config?.database || '',
+          row.schema_name,
+          row.table_name
+        );
+        const schemaTableId = `${row.schema_name}.${row.table_name}`;
+        const tableKey = schemaTableId.toLowerCase();
+        const objectKey = tableId.toLowerCase();
         const schemaName = String(row.schema_name || '').toLowerCase();
         
-        if (excludeSchemas.has(schemaName) || excludeTables.has(tableKey)) return;
+        if (
+          excludeSchemas.has(schemaName) ||
+          excludeTables.has(tableKey) ||
+          excludeTables.has(objectKey)
+        ) return;
 
         const schemaMatch = selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
-        const tableMatch = selectedTables.size === 0 || selectedTables.has(tableKey);
+        const tableMatch =
+          selectedTables.size === 0 ||
+          selectedTables.has(tableKey) ||
+          selectedTables.has(objectKey);
 
         if (!schemaMatch || !tableMatch) return;
 
@@ -1096,14 +1127,28 @@ class SqlServerMetadataExtractor {
       });
 
       checkConstraints.recordset.forEach((row) => {
-        const tableId = `${row.schema_name}.${row.table_name}`;
-        const tableKey = tableId.toLowerCase();
+        const tableId = SqlServerMetadataExtractor.qualifySqlObjectId(
+          SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
+          this.metadata.database || this.config?.database || '',
+          row.schema_name,
+          row.table_name
+        );
+        const schemaTableId = `${row.schema_name}.${row.table_name}`;
+        const tableKey = schemaTableId.toLowerCase();
+        const objectKey = tableId.toLowerCase();
         const schemaName = String(row.schema_name || '').toLowerCase();
         
-        if (excludeSchemas.has(schemaName) || excludeTables.has(tableKey)) return;
+        if (
+          excludeSchemas.has(schemaName) ||
+          excludeTables.has(tableKey) ||
+          excludeTables.has(objectKey)
+        ) return;
 
         const schemaMatch = selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
-        const tableMatch = selectedTables.size === 0 || selectedTables.has(tableKey);
+        const tableMatch =
+          selectedTables.size === 0 ||
+          selectedTables.has(tableKey) ||
+          selectedTables.has(objectKey);
 
         if (!schemaMatch || !tableMatch) return;
 
@@ -1276,9 +1321,12 @@ class SqlServerMetadataExtractor {
       SELECT 
         SCHEMA_NAME(o.schema_id) as schema_name,
         o.name as object_name,
+        c.column_id,
         c.name as column_name,
         t.name as data_type,
         c.max_length,
+        c.precision,
+        c.scale,
         c.is_nullable,
         c.is_identity,
         c.is_computed,
@@ -1313,13 +1361,21 @@ class SqlServerMetadataExtractor {
           row.object_name
         );
         const objectKey = objectId.toLowerCase();
+        const schemaTableKey = `${row.schema_name}.${row.object_name}`.toLowerCase();
         const schemaName = String(row.schema_name || '').toLowerCase();
         
-        if (excludeSchemas.has(schemaName) || excludeTables.has(objectKey)) return;
+        if (
+          excludeSchemas.has(schemaName) ||
+          excludeTables.has(objectKey) ||
+          excludeTables.has(schemaTableKey)
+        ) return;
 
         // Only keep objects that are in the user's selected scope
         const schemaMatch = selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
-        const tableMatch = selectedTables.size === 0 || selectedTables.has(objectKey);
+        const tableMatch =
+          selectedTables.size === 0 ||
+          selectedTables.has(objectKey) ||
+          selectedTables.has(schemaTableKey);
 
         if (!schemaMatch || !tableMatch) return;
 
@@ -1329,8 +1385,11 @@ class SqlServerMetadataExtractor {
 
         columnsByObject.get(objectId).push({
           name: row.column_name,
+          ordinal: row.column_id,
           dataType: row.data_type,
           maxLength: row.max_length,
+          precision: row.precision,
+          scale: row.scale,
           isNullable: row.is_nullable,
           isIdentity: row.is_identity,
           isComputed: row.is_computed,

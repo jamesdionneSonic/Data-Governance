@@ -63,6 +63,16 @@ const COMPONENT_ROLES = {
   'Microsoft.BalancedDataDistributor': 'TRANSFORM',
 };
 
+const EXTERNAL_COMPONENT_TYPE_PATTERNS = [
+  /FlatFile/i,
+  /Excel/i,
+  /Raw/i,
+  /XML/i,
+  /SharePoint/i,
+  /Access/i,
+  /Recordset/i,
+];
+
 // -----------------------------------------------------------------------------
 // Helpers
 // -----------------------------------------------------------------------------
@@ -242,6 +252,11 @@ function parseConnectionStringServer(connectionString = '') {
   return match ? match[1].trim() : '';
 }
 
+function parseConnectionStringSchema(connectionString = '') {
+  const match = String(connectionString).match(/(?:Schema)\s*=\s*([^;"]+)/i);
+  return match ? match[1].trim() : '';
+}
+
 function cleanSsisSegment(value) {
   return String(value || '')
     .trim()
@@ -271,6 +286,39 @@ function buildCanonicalPackageId(serverName, folderName, projectName, packageNam
 
   if (!server || !folder || !project || !pkg) return '';
   return `${server}.SSISDB.${folder}.${project}.${pkg}`;
+}
+
+function sanitizeSsisIdSegment(value, fallback = 'unknown') {
+  const cleaned = cleanSsisSegment(value || fallback)
+    .replace(/\.dtsx$/i, '')
+    .replace(/[^A-Za-z0-9_-]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+  return cleaned || fallback;
+}
+
+export function buildSsisExternalObjectId({
+  serverName = '',
+  folderName = '',
+  projectName = '',
+  packageName = '',
+  componentName = '',
+  role = '',
+  reference = '',
+} = {}) {
+  return [
+    cleanSsisSegment(serverName) || 'unknown_server',
+    'SSISDB',
+    'external_sources',
+    sanitizeSsisIdSegment(folderName, 'unknown_folder'),
+    sanitizeSsisIdSegment(projectName, 'unknown_project'),
+    sanitizeSsisIdSegment(packageName, 'unknown_package'),
+    sanitizeSsisIdSegment(componentName || reference || role, 'unknown_component'),
+  ].join('.');
+}
+
+function isExternalSsisComponent(component = {}) {
+  const type = String(component.componentType || '');
+  return EXTERNAL_COMPONENT_TYPE_PATTERNS.some((pattern) => pattern.test(type));
 }
 
 function splitSsisTableReference(reference) {
@@ -310,6 +358,31 @@ function splitSsisTableReference(reference) {
     schemaName: '',
     objectName: parts[0] || '',
   };
+}
+
+function looksLikeSqlCommand(value) {
+  return /\b(SELECT|INSERT|UPDATE|DELETE|MERGE|EXEC(?:UTE)?|WITH)\b/i.test(
+    String(value || '')
+  );
+}
+
+function extractSsisSqlTableReferences(sql = '', clauses = ['FROM', 'JOIN']) {
+  const text = String(sql || '');
+  const clausePattern = clauses.join('|');
+  const pattern = new RegExp(
+    `\\b(?:${clausePattern})\\b\\s+((?:\\[[^\\]]+\\]|[A-Za-z0-9_.$#-]+)(?:\\s*\\.\\s*(?:\\[[^\\]]+\\]|[A-Za-z0-9_.$#-]+)){0,3})`,
+    'gi'
+  );
+  const refs = [];
+  let match = pattern.exec(text);
+  while (match) {
+    const ref = cleanSsisSegment(match[1]).replace(/\s*\.\s*/g, '.');
+    if (ref && !/^(SELECT|VALUES|OPENQUERY|OPENDATASOURCE)$/i.test(ref)) {
+      refs.push(ref);
+    }
+    match = pattern.exec(text);
+  }
+  return Array.from(new Set(refs));
 }
 
 function qualifyTableReference(serverName, databaseName, schemaName, objectName) {
@@ -353,6 +426,568 @@ function decodeXmlEntities(value) {
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&amp;/g, '&');
+}
+
+function xmlAttr(node, names = []) {
+  if (!node || typeof node !== 'object') return '';
+  for (const name of names) {
+    if (node[name] !== undefined && node[name] !== null) return String(node[name]);
+  }
+  return '';
+}
+
+function columnNameFromSsisRef(value) {
+  const text = String(value || '');
+  const match = text.match(/\.(?:Columns|ExternalColumns)\[([^\]]+)\]/i);
+  return match ? cleanSsisSegment(match[1]) : '';
+}
+
+function componentNameFromSsisRef(value) {
+  const text = String(value || '');
+  const match = text.match(/\\([^\\]+)\.(?:Inputs|Outputs)\[/i);
+  return match ? cleanSsisSegment(match[1]) : '';
+}
+
+function compactEvidence(value, maxLength = 300) {
+  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+}
+
+function compactSsisRecord(record) {
+  const compact = {};
+  for (const [key, value] of Object.entries(record || {})) {
+    if (value === null || value === undefined || value === '') continue;
+    if (Array.isArray(value) && value.length === 0) continue;
+    compact[key] = value;
+  }
+  return compact;
+}
+
+function collectColumnNodes(container, nodeNames) {
+  return collectXmlValues(container, nodeNames).filter(
+    (value) => value && typeof value === 'object'
+  );
+}
+
+function extractColumnProperties(columnNode) {
+  const props = {};
+  const propNodes = collectXmlValues(columnNode, ['property', 'DTS:property']);
+  for (const p of propNodes) {
+    const pName = p?.['@_name'] || p?.['@_DTS:Name'] || p?.['@_Name'] || '';
+    const pVal = p?.['#text'] !== undefined ? String(p['#text']) : '';
+    if (pName) props[pName] = pVal;
+  }
+  return props;
+}
+
+function valueFromXmlNode(node) {
+  if (node === null || node === undefined) return '';
+  if (typeof node !== 'object') return String(node);
+  if (node['#text'] !== undefined) return String(node['#text']);
+  const child = node['DTS:VariableValue'] || node.VariableValue;
+  if (Array.isArray(child)) return valueFromXmlNode(child[0]);
+  if (child !== undefined) return valueFromXmlNode(child);
+  return '';
+}
+
+function extractPackageVariables(packageXml) {
+  const variables = [];
+  for (const node of collectXmlValuesDeep(packageXml, ['DTS:Variable', 'Variable'])) {
+    if (!node || typeof node !== 'object') continue;
+    const name = xmlAttr(node, ['@_DTS:ObjectName', '@_ObjectName', '@_name']);
+    const namespace = xmlAttr(node, ['@_DTS:Namespace', '@_Namespace']) || 'User';
+    if (!name) continue;
+    variables.push({
+      name: cleanSsisSegment(name),
+      namespace: cleanSsisSegment(namespace),
+      value: valueFromXmlNode(node),
+      expression: xmlAttr(node, ['@_DTS:Expression', '@_Expression']),
+    });
+  }
+  return variables;
+}
+
+function normalizeSsisVariableKey(value) {
+  return cleanSsisSegment(value)
+    .replace(/^@\[\$?/, '')
+    .replace(/\]$/, '')
+    .replace(/^\$/, '')
+    .toLowerCase();
+}
+
+function addSsisValue(map, key, value, { force = false } = {}) {
+  const cleanedKey = normalizeSsisVariableKey(key);
+  const cleanedValue = String(value ?? '').trim();
+  if (!cleanedKey || cleanedValue === '' || cleanedValue === '***SENSITIVE***') return;
+  if (force || !map.has(cleanedKey)) map.set(cleanedKey, cleanedValue);
+}
+
+function ssisScopeKey(...parts) {
+  return parts
+    .map((part) => cleanSsisSegment(part))
+    .filter(Boolean)
+    .join('.');
+}
+
+function packageStem(packageName = '') {
+  return cleanSsisSegment(packageName).replace(/\.dtsx$/i, '');
+}
+
+function buildSsisScopeCandidates(context = {}) {
+  const folder = context.folderName || '';
+  const project = context.projectName || '';
+  const pkg = context.packageName || '';
+  const pkgStem = packageStem(pkg);
+  return [
+    ssisScopeKey(folder, project, pkg),
+    ssisScopeKey(folder, project, pkgStem),
+    ssisScopeKey(folder, project),
+    ssisScopeKey(project, pkg),
+    ssisScopeKey(project, pkgStem),
+    ssisScopeKey(project),
+    '*',
+  ].filter(Boolean);
+}
+
+function applySsisParameterOverrideValue(values, parameterName, value) {
+  addSsisValue(values, parameterName, value, { force: true });
+  addSsisValue(values, `Project::${parameterName}`, value, { force: true });
+  addSsisValue(values, `Package::${parameterName}`, value, { force: true });
+  addSsisValue(values, `User::${parameterName}`, value, { force: true });
+}
+
+function applySsisParameterOverrides(values, parameterOverrides = {}, context = {}) {
+  if (!parameterOverrides || typeof parameterOverrides !== 'object') return;
+
+  const scopeCandidates = buildSsisScopeCandidates(context);
+  const scopeCandidateKeys = new Set(scopeCandidates.map((scope) => scope.toLowerCase()));
+
+  for (const [scope, scopedOverrides] of Object.entries(parameterOverrides)) {
+    if (
+      scopedOverrides &&
+      typeof scopedOverrides === 'object' &&
+      !Array.isArray(scopedOverrides) &&
+      scopeCandidateKeys.has(scope.toLowerCase())
+    ) {
+      for (const [parameterName, value] of Object.entries(scopedOverrides)) {
+        applySsisParameterOverrideValue(values, parameterName, value);
+      }
+    }
+  }
+
+  for (const [flatKey, value] of Object.entries(parameterOverrides)) {
+    if (value && typeof value === 'object') continue;
+    const matchedScope = scopeCandidates
+      .sort((left, right) => right.length - left.length)
+      .find((scope) => flatKey.toLowerCase().startsWith(`${scope.toLowerCase()}.`));
+    if (!matchedScope) continue;
+    const parameterName = flatKey.slice(matchedScope.length + 1);
+    if (parameterName) applySsisParameterOverrideValue(values, parameterName, value);
+  }
+}
+
+function mergeScopedSsisConfig(scopedConfig = {}, context = {}) {
+  if (!scopedConfig || typeof scopedConfig !== 'object') return {};
+
+  const scopeCandidates = buildSsisScopeCandidates(context);
+  const merged = {};
+
+  for (const scope of [...scopeCandidates].reverse()) {
+    const match = Object.entries(scopedConfig).find(
+      ([candidate]) => cleanSsisSegment(candidate).toLowerCase() === scope.toLowerCase()
+    );
+    if (match && match[1] && typeof match[1] === 'object' && !Array.isArray(match[1])) {
+      Object.assign(merged, match[1]);
+    }
+  }
+
+  return merged;
+}
+
+function connectionManagerNameFromRef(value = '') {
+  const raw = cleanSsisSegment(value);
+  const bracketMatch = raw.match(/ConnectionManagers\[([^\]]+)\]/i);
+  if (bracketMatch) return cleanSsisSegment(bracketMatch[1]);
+
+  const normalized = normalizeSsisReference(value);
+  const collapsedMatch = normalized.match(/connectionmanagers([a-z0-9_.-]+)$/i);
+  if (collapsedMatch) return cleanSsisSegment(collapsedMatch[1]);
+
+  return cleanSsisSegment(raw.replace(/:external$/i, ''));
+}
+
+function getCaseInsensitiveProperty(object = {}, key = '') {
+  const match = Object.entries(object || {}).find(
+    ([candidate]) => cleanSsisSegment(candidate).toLowerCase() === cleanSsisSegment(key).toLowerCase()
+  );
+  return match ? match[1] : undefined;
+}
+
+function connectionOverrideForRef(connId = '', overrides = {}, context = {}) {
+  const connectionName = connectionManagerNameFromRef(connId);
+  if (!connectionName || !overrides || typeof overrides !== 'object') return null;
+
+  const scoped = mergeScopedSsisConfig(overrides, context);
+  const nested =
+    getCaseInsensitiveProperty(scoped.connectionManagers || {}, connectionName) ||
+    getCaseInsensitiveProperty(scoped.ConnectionManagers || {}, connectionName) ||
+    getCaseInsensitiveProperty(scoped, connectionName);
+
+  let override = {};
+  if (typeof nested === 'string') {
+    override.connectionString = nested;
+  } else if (nested && typeof nested === 'object' && !Array.isArray(nested)) {
+    override = { ...nested };
+  }
+
+  const prefix = `${connectionName}.`;
+  for (const [key, value] of Object.entries(scoped)) {
+    if (!key.toLowerCase().startsWith(prefix.toLowerCase())) continue;
+    override[key.slice(prefix.length)] = value;
+  }
+
+  if (Object.keys(override).length === 0) return null;
+
+  const connectionString =
+    override.connectionString ||
+    override.ConnectionString ||
+    override.rawConnectionString ||
+    override.RawConnectionString ||
+    '';
+  const serverName =
+    override.serverName ||
+    override.ServerName ||
+    override.dataSource ||
+    override.DataSource ||
+    parseConnectionStringServer(connectionString) ||
+    '';
+  const databaseName =
+    override.databaseName ||
+    override.DatabaseName ||
+    override.initialCatalog ||
+    override.InitialCatalog ||
+    parseConnectionStringDatabase(connectionString) ||
+    '';
+  const schemaName =
+    override.schemaName ||
+    override.SchemaName ||
+    parseConnectionStringSchema(connectionString) ||
+    '';
+
+  return compactSsisRecord({
+    id: connId,
+    refId: connId,
+    connName: connectionName,
+    connType: 'configured_connection_manager',
+    serverName,
+    databaseName,
+    schemaName,
+    rawConnectionString: connectionString,
+    filePath: connectionString,
+    dynamicResolved: true,
+    dynamicResolutionEvidence: 'configured_ssis_connection_override',
+  });
+}
+
+function sameSsisText(left, right) {
+  return cleanSsisSegment(left).toLowerCase() === cleanSsisSegment(right).toLowerCase();
+}
+
+function environmentValueForParameter(row, environments = {}, context = {}) {
+  const variableName = row.referenced_variable_name || row.referencedVariableName || '';
+  if (!variableName) return '';
+
+  const variables = (environments.variables || []).filter((variable) =>
+    sameSsisText(variable.variable_name || variable.variableName || variable.name, variableName)
+  );
+  if (variables.length === 0) return '';
+
+  const rowProject = row.project_name || row.projectName || context.projectName || '';
+  const rowFolder = row.folder_name || row.folderName || context.folderName || '';
+  const references = (environments.references || []).filter((reference) => {
+    const projectMatches =
+      !rowProject || sameSsisText(reference.project_name || reference.projectName, rowProject);
+    const folderMatches =
+      !rowFolder || sameSsisText(reference.folder_name || reference.folderName, rowFolder);
+    return projectMatches && folderMatches;
+  });
+
+  if (references.length > 0) {
+    const scoped = variables.filter((variable) =>
+      references.some((reference) => {
+        const envNameMatches = sameSsisText(
+          variable.environment_name || variable.environmentName,
+          reference.environment_name || reference.environmentName
+        );
+        const envFolder =
+          reference.environment_folder_name ||
+          reference.environmentFolderName ||
+          reference.folder_name ||
+          reference.folderName;
+        const envFolderMatches =
+          !envFolder ||
+          !variable.folder_name ||
+          sameSsisText(variable.folder_name || variable.folderName, envFolder);
+        return envNameMatches && envFolderMatches;
+      })
+    );
+    if (scoped.length > 0) {
+      return scoped[0].variable_value ?? scoped[0].variableValue ?? scoped[0].value ?? '';
+    }
+  }
+
+  if (variables.length === 1) {
+    return variables[0].variable_value ?? variables[0].variableValue ?? variables[0].value ?? '';
+  }
+
+  return '';
+}
+
+function buildSsisValueMap({
+  parameters = [],
+  environments = {},
+  packageVariables = [],
+  parameterOverrides = {},
+  folderName = '',
+  projectName = '',
+  packageName = '',
+  hostServer = '',
+} = {}) {
+  const values = new Map();
+
+  for (const variable of packageVariables || []) {
+    const ns = variable.namespace || 'User';
+    addSsisValue(values, `${ns}::${variable.name}`, variable.value);
+    addSsisValue(values, variable.name, variable.value);
+  }
+
+  for (const row of parameters || []) {
+    const rowFolder = cleanSsisSegment(row.folder_name || row.folderName || '');
+    const rowProject = cleanSsisSegment(row.project_name || row.projectName || '');
+    const rowPackage = cleanSsisSegment(row.package_name || row.packageName || '');
+    if (rowFolder && folderName && rowFolder.toLowerCase() !== cleanSsisSegment(folderName).toLowerCase()) {
+      continue;
+    }
+    if (rowProject && projectName && rowProject.toLowerCase() !== cleanSsisSegment(projectName).toLowerCase()) {
+      continue;
+    }
+    if (
+      rowPackage &&
+      packageName &&
+      rowPackage.toLowerCase() !== cleanSsisSegment(packageName).toLowerCase()
+    ) {
+      continue;
+    }
+    const parameterName = row.parameter_name || row.parameterName || row.referenced_variable_name;
+    const environmentValue = environmentValueForParameter(row, environments, {
+      folderName,
+      projectName,
+      packageName,
+    });
+    const value = environmentValue || (row.default_value ?? row.design_default_value ?? row.value ?? '');
+    addSsisValue(values, parameterName, value);
+    addSsisValue(values, `Project::${parameterName}`, value);
+    addSsisValue(values, `Package::${parameterName}`, value);
+    addSsisValue(values, `User::${parameterName}`, value);
+  }
+
+  for (const row of environments?.variables || []) {
+    const variableName = row.variable_name || row.variableName || row.name;
+    const value = row.variable_value ?? row.variableValue ?? row.value ?? '';
+    addSsisValue(values, variableName, value);
+    addSsisValue(values, `Project::${variableName}`, value);
+    addSsisValue(values, `Package::${variableName}`, value);
+    addSsisValue(values, `User::${variableName}`, value);
+  }
+
+  addSsisValue(values, 'System::MachineName', hostServer);
+  addSsisValue(values, 'MachineName', hostServer);
+  applySsisParameterOverrides(values, parameterOverrides, { folderName, projectName, packageName });
+  return values;
+}
+
+function resolveSsisExpressionValue(expression, valueMap) {
+  const text = decodeXmlEntities(expression || '').trim();
+  if (!text) return '';
+  if (parseConnectionStringDatabase(text) || parseConnectionStringServer(text)) return text;
+
+  const direct = valueMap.get(normalizeSsisVariableKey(text));
+  if (direct) return direct;
+
+  const normalizedExpression = text.replace(/\(DT_[A-Z0-9_]+,\s*\d+\)\s*/gi, '');
+  const tokenPattern = /"([^"]*)"|'([^']*)'|@\[\$?([A-Za-z0-9_]+)::([A-Za-z0-9_]+)\]/g;
+  let output = '';
+  let tokenCount = 0;
+  let unresolved = false;
+  let match = tokenPattern.exec(normalizedExpression);
+
+  while (match) {
+    tokenCount += 1;
+    if (match[1] !== undefined || match[2] !== undefined) {
+      output += match[1] ?? match[2] ?? '';
+    } else {
+      const namespace = match[3];
+      const name = match[4];
+      const value =
+        valueMap.get(normalizeSsisVariableKey(`${namespace}::${name}`)) ||
+        valueMap.get(normalizeSsisVariableKey(name));
+      if (value === undefined) {
+        unresolved = true;
+      } else {
+        output += value;
+      }
+    }
+    match = tokenPattern.exec(normalizedExpression);
+  }
+
+  if (!tokenCount || unresolved) return '';
+  return output.trim();
+}
+
+function resolveConnectionManagers(connectionManagers = [], context = {}) {
+  const valueMap = buildSsisValueMap(context);
+  return connectionManagers.map((cm) => {
+    const dynamicExpressions = cm.dynamicExpressions || {};
+    const expressionConnectionString = dynamicExpressions.ConnectionString || cm.expressionConnectionString || '';
+    const resolvedConnectionString = resolveSsisExpressionValue(expressionConnectionString, valueMap);
+    const resolvedServerName =
+      parseConnectionStringServer(resolvedConnectionString) ||
+      resolveSsisExpressionValue(dynamicExpressions.ServerName || dynamicExpressions.DataSource, valueMap);
+    const resolvedDatabaseName =
+      parseConnectionStringDatabase(resolvedConnectionString) ||
+      resolveSsisExpressionValue(
+        dynamicExpressions.InitialCatalog ||
+          dynamicExpressions.DatabaseName ||
+          dynamicExpressions.Database,
+        valueMap
+      );
+    const resolvedSchemaName =
+      parseConnectionStringSchema(resolvedConnectionString) ||
+      resolveSsisExpressionValue(dynamicExpressions.SchemaName, valueMap);
+    const resolvedFilePath =
+      resolvedConnectionString ||
+      resolveSsisExpressionValue(
+        dynamicExpressions.ConnectionString ||
+          dynamicExpressions.FileName ||
+          dynamicExpressions.ExcelFilePath ||
+          dynamicExpressions.FilePath ||
+          dynamicExpressions.ServerName ||
+          '',
+        valueMap
+      );
+
+    const dynamicResolved = Boolean(
+      cm.dynamicResolved ||
+        (cm.hasDynamicExpression &&
+          (resolvedConnectionString || resolvedServerName || resolvedDatabaseName || resolvedFilePath))
+    );
+
+    return {
+      ...cm,
+      serverName: resolvedServerName || cm.serverName,
+      databaseName: resolvedDatabaseName || cm.databaseName,
+      schemaName: resolvedSchemaName || cm.schemaName,
+      rawConnectionString: resolvedConnectionString || cm.rawConnectionString,
+      resolvedConnectionString,
+      filePath: resolvedFilePath || cm.filePath,
+      dynamicResolved,
+      dynamicResolutionEvidence: dynamicResolved
+        ? compactEvidence(
+            expressionConnectionString ||
+              cm.dynamicResolutionEvidence ||
+              JSON.stringify(dynamicExpressions)
+          )
+        : cm.dynamicResolutionEvidence,
+    };
+  });
+}
+
+function shouldQuarantineDynamicConnection(cm = {}) {
+  if (!cm.hasDynamicExpression || cm.dynamicResolved) return false;
+  const dynamicExpressions = cm.dynamicExpressions || {};
+  const keys = Object.keys(dynamicExpressions).map((key) => key.toLowerCase());
+  const evidence = `${cm.connName || ''} ${cm.connType || ''} ${JSON.stringify(dynamicExpressions)} ${
+    cm.expressionConnectionString || ''
+  }`;
+
+  if (
+    keys.length > 0 &&
+    keys.every((key) => /password|user(name)?|token|secret|credential/.test(key))
+  ) {
+    return false;
+  }
+
+  if (
+    !parseConnectionStringServer(cm.expressionConnectionString) &&
+    !parseConnectionStringDatabase(cm.expressionConnectionString) &&
+    /(file|flat|excel|ftp|sftp|csv|xlsx|xls|txt|path|directory|folder)/i.test(evidence)
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+function normalizeSsisColumnNode(columnNode, direction) {
+  const name = xmlAttr(columnNode, ['@_name', '@_DTS:Name', '@_cachedName', '@_DTS:cachedName']);
+  const cachedName = xmlAttr(columnNode, ['@_cachedName', '@_DTS:cachedName']);
+  const refId = xmlAttr(columnNode, ['@_refId', '@_DTS:refId']);
+  const lineageId = xmlAttr(columnNode, ['@_lineageId', '@_DTS:lineageId']);
+  const externalMetadataColumnId = xmlAttr(columnNode, [
+    '@_externalMetadataColumnId',
+    '@_DTS:externalMetadataColumnId',
+  ]);
+  const props = extractColumnProperties(columnNode);
+
+  return {
+    name: cleanSsisSegment(name || cachedName || columnNameFromSsisRef(refId)),
+    cachedName: cleanSsisSegment(cachedName),
+    refId,
+    lineageId,
+    externalMetadataColumnId,
+    dataType: xmlAttr(columnNode, ['@_dataType', '@_DTS:dataType', '@_cachedDataType']),
+    length: xmlAttr(columnNode, ['@_length', '@_DTS:length', '@_cachedLength']),
+    direction,
+    expression: props.Expression || props.FriendlyExpression || '',
+    friendlyExpression: props.FriendlyExpression || '',
+  };
+}
+
+function mapExternalColumns(componentNode) {
+  const columns = new Map();
+  for (const node of collectColumnNodes(componentNode, [
+    'externalMetadataColumn',
+    'DTS:externalMetadataColumn',
+  ])) {
+    const refId = xmlAttr(node, ['@_refId', '@_DTS:refId']);
+    const name = cleanSsisSegment(
+      xmlAttr(node, ['@_name', '@_DTS:Name']) || columnNameFromSsisRef(refId)
+    );
+    if (!refId && !name) continue;
+    const record = {
+      refId,
+      name,
+      dataType: xmlAttr(node, ['@_dataType', '@_DTS:dataType']),
+      length: xmlAttr(node, ['@_length', '@_DTS:length']),
+    };
+    if (refId) columns.set(refId.toLowerCase(), record);
+    if (name) columns.set(name.toLowerCase(), record);
+  }
+  return columns;
+}
+
+function findExpressionColumnReferences(expression) {
+  const refs = [];
+  const pattern = /\[([^\]]+)\]/g;
+  let match = pattern.exec(String(expression || ''));
+  while (match) {
+    const name = cleanSsisSegment(match[1]);
+    if (name && !/^(User|System|Project)::/i.test(name) && !refs.includes(name)) {
+      refs.push(name);
+    }
+    match = pattern.exec(String(expression || ''));
+  }
+  return refs;
 }
 
 function extractConnectionManagers(packageXml) {
@@ -440,8 +1075,8 @@ function extractConnectionManagers(packageXml) {
         hasDynamicExpression: Object.keys(dynamicProps).length > 0,
         dynamicVariables: Object.entries(dynamicProps)
           .flatMap(([, expr]) => {
-            const matches = String(expr || '').match(/@\[\$[A-Za-z0-9_]+::([A-Za-z0-9_]+)\]/g) || [];
-            return matches.map((m) => m.replace(/^@\[\$[A-Za-z0-9_]+::/, '').replace(/\]$/, ''));
+            const matches = String(expr || '').match(/@\[\$?[A-Za-z0-9_]+::([A-Za-z0-9_]+)\]/g) || [];
+            return matches.map((m) => m.replace(/^@\[\$?[A-Za-z0-9_]+::/, '').replace(/\]$/, ''));
           }),
         serverName: props.ServerName || props.DataSource || expressionServerName || rawServerName || '',
         databaseName:
@@ -488,10 +1123,24 @@ function extractDataFlowComponents(packageXml) {
         if (pName) props[pName] = pVal;
       }
 
-      const tableRef = normalizeSsisReference(
-        props.OpenRowset || props.SqlCommandParam || props.ReferenceMetadataSqlCommand || ''
+      const tableRefCandidate = cleanSsisSegment(props.OpenRowset || props.TableName || '');
+      const tableRef = looksLikeSqlCommand(tableRefCandidate) ? '' : tableRefCandidate;
+      const splitTable = splitSsisTableReference(tableRef);
+      const externalColumnMap = mapExternalColumns(c);
+      const inputColumns = collectColumnNodes(c, ['inputColumn', 'DTS:inputColumn']).map((node) =>
+        normalizeSsisColumnNode(node, 'input')
       );
-      const splitTable = splitSsisObjectReference(tableRef);
+      const outputColumns = collectColumnNodes(c, ['outputColumn', 'DTS:outputColumn']).map((node) =>
+        normalizeSsisColumnNode(node, 'output')
+      );
+      const externalMetadataColumns = Array.from(
+        new Map(
+          Array.from(externalColumnMap.values()).map((column) => [
+            String(column.refId || column.name || '').toLowerCase(),
+            column,
+          ])
+        ).values()
+      );
       const connectionNodes = collectXmlValues(c, ['connection', 'DTS:connection']).filter(
         (value) => value && typeof value === 'object'
       );
@@ -506,10 +1155,10 @@ function extractDataFlowComponents(packageXml) {
       const connRef = normalizeSsisReference(
         props.ConnectionManagerID ||
           props.ConnectionManagerId ||
-          primaryConnection['@_connectionManagerID'] ||
-          primaryConnection['@_DTS:connectionManagerID'] ||
           primaryConnection['@_connectionManagerRefId'] ||
           primaryConnection['@_DTS:connectionManagerRefId'] ||
+          primaryConnection['@_connectionManagerID'] ||
+          primaryConnection['@_DTS:connectionManagerID'] ||
           ''
       );
 
@@ -517,7 +1166,11 @@ function extractDataFlowComponents(packageXml) {
         componentType: compType,
         componentName: compName,
         role,
-        sqlCommand: props.SqlCommand || props.OpenRowset || '',
+        sqlCommand:
+          props.SqlCommand ||
+          props.SqlCommandParam ||
+          props.ReferenceMetadataSqlCommand ||
+          (looksLikeSqlCommand(props.OpenRowset) ? props.OpenRowset : ''),
         tableName: tableRef,
         tableDatabaseName: splitTable.databaseName || '',
         tableSchemaName: splitTable.schemaName || '',
@@ -526,15 +1179,216 @@ function extractDataFlowComponents(packageXml) {
         lookupConnectionManagerId: normalizeSsisReference(
           props.ReferenceMetadataConnectionManagerID || ''
         ),
-        lookupTable: normalizeSsisReference(
-          props.SqlCommandParam || props.ReferenceMetadataSqlCommand || ''
+        lookupTable: cleanSsisSegment(
+          looksLikeSqlCommand(props.SqlCommandParam || props.ReferenceMetadataSqlCommand)
+            ? extractSsisSqlTableReferences(
+                props.SqlCommandParam || props.ReferenceMetadataSqlCommand,
+                ['FROM', 'JOIN']
+              )[0] || ''
+            : props.SqlCommandParam || props.ReferenceMetadataSqlCommand || ''
         ),
+        inputColumns,
+        outputColumns,
+        externalMetadataColumns,
+        derivedColumns: outputColumns
+          .filter((column) => column.expression)
+          .map((column) => ({
+            output_column: column.name,
+            expression: column.expression,
+            source_columns: findExpressionColumnReferences(column.expression),
+          })),
       });
     } catch (_e) {
       // skip
     }
   }
   return components;
+}
+
+function componentTableName(component) {
+  const explicitRef = [
+    component?.tableDatabaseName,
+    component?.tableSchemaName,
+    component?.tableObjectName,
+  ]
+    .filter(Boolean)
+    .join('.');
+  const sqlRefs = extractSsisSqlTableReferences(component?.sqlCommand || '', ['FROM', 'JOIN']);
+  return cleanSsisSegment(
+    component?.tableName ||
+      component?.lookupTable ||
+      explicitRef ||
+      sqlRefs[0] ||
+      ''
+  );
+}
+
+function transformTypeForMapping(inputColumn, externalColumn) {
+  const input = cleanSsisSegment(inputColumn || '').toLowerCase();
+  const external = cleanSsisSegment(externalColumn || '').toLowerCase();
+  if (!input || !external) return 'dynamic_or_unresolved';
+  return input === external ? 'direct' : 'rename';
+}
+
+function extractSsisColumnMappingsFromComponents(components = [], options = {}) {
+  const mappings = [];
+  const unresolved = [];
+  const componentByName = new Map();
+  const packageId = options.packageId || '';
+
+  for (const component of components) {
+    if (component?.componentName) {
+      componentByName.set(component.componentName.toLowerCase(), component);
+    }
+  }
+
+  const addMapping = (record) => {
+    const key = [
+      record.component_name,
+      record.source_component || '',
+      record.destination_component || '',
+      record.input_column || '',
+      record.output_column || '',
+      record.external_metadata_column || '',
+      record.expression || '',
+    ]
+      .map((value) => String(value || '').toLowerCase())
+      .join('|');
+    if (mappings.some((existing) => existing._key === key)) return;
+    mappings.push({ ...compactSsisRecord(record), _key: key });
+  };
+
+  const addUnresolved = (record) => {
+    const key = [
+      record.component_name,
+      record.reason,
+      record.evidence_text,
+      record.input_column || '',
+      record.output_column || '',
+    ]
+      .map((value) => String(value || '').toLowerCase())
+      .join('|');
+    if (unresolved.some((existing) => existing._key === key)) return;
+    unresolved.push({ ...compactSsisRecord(record), _key: key });
+  };
+
+  for (const component of components) {
+    if (component.role === 'DESTINATION') {
+      for (const inputColumn of component.inputColumns || []) {
+        const externalName =
+          columnNameFromSsisRef(inputColumn.externalMetadataColumnId) || inputColumn.name;
+        const sourceComponentName = componentNameFromSsisRef(inputColumn.lineageId);
+        const sourceComponent = componentByName.get(sourceComponentName.toLowerCase());
+        const sourceColumn = columnNameFromSsisRef(inputColumn.lineageId) || inputColumn.cachedName || inputColumn.name;
+
+        if (!externalName || !sourceColumn) {
+          addUnresolved({
+            package_id: packageId,
+            component_name: component.componentName,
+            component_type: component.componentType,
+            reason: 'destination_column_mapping_incomplete',
+            input_column: inputColumn.name,
+            output_column: externalName,
+            evidence_type: 'ssis_dataflow_column_mapping',
+            evidence_text: compactEvidence(
+              `${inputColumn.lineageId || ''} -> ${inputColumn.externalMetadataColumnId || ''}`
+            ),
+            validation_status: 'unresolved',
+          });
+          continue;
+        }
+
+        addMapping({
+          package_id: packageId,
+          data_flow_name: '',
+          component_name: component.componentName,
+          component_type: component.componentType,
+          source_component: sourceComponentName || null,
+          destination_component: component.componentName,
+          source_object: componentTableName(sourceComponent) || sourceComponentName || null,
+          destination_object: componentTableName(component) || null,
+          input_column: sourceColumn,
+          output_column: externalName,
+          external_metadata_column: externalName,
+          transform_type: transformTypeForMapping(sourceColumn, externalName),
+          expression: inputColumn.cachedName || sourceColumn,
+          evidence_type: 'ssis_dataflow_column_mapping',
+          evidence_text: compactEvidence(
+            `InputColumn=${inputColumn.cachedName || inputColumn.name}; Lineage=${inputColumn.lineageId}; ExternalColumn=${externalName}`
+          ),
+          validation_status: 'validated',
+        });
+      }
+    }
+
+    if (component.role === 'LOOKUP') {
+      for (const outputColumn of component.outputColumns || []) {
+        addMapping({
+          package_id: packageId,
+          data_flow_name: '',
+          component_name: component.componentName,
+          component_type: component.componentType,
+          source_component: component.componentName,
+          destination_component: null,
+          source_object: component.lookupTable || componentTableName(component) || null,
+          destination_object: null,
+          input_column: null,
+          output_column: outputColumn.name,
+          external_metadata_column: columnNameFromSsisRef(outputColumn.externalMetadataColumnId) || null,
+          transform_type: 'lookup',
+          expression: outputColumn.expression || outputColumn.name,
+          evidence_type: 'ssis_lookup_output',
+          evidence_text: compactEvidence(outputColumn.lineageId || outputColumn.refId || outputColumn.name),
+          validation_status: 'validated',
+        });
+      }
+    }
+
+    for (const derivedColumn of component.derivedColumns || []) {
+      addMapping({
+        package_id: packageId,
+        data_flow_name: '',
+        component_name: component.componentName,
+        component_type: component.componentType,
+        source_component: component.componentName,
+        destination_component: null,
+        source_object: componentTableName(component) || null,
+        destination_object: null,
+        input_column: derivedColumn.source_columns?.[0] || null,
+        output_column: derivedColumn.output_column,
+        external_metadata_column: null,
+        transform_type: derivedColumn.source_columns?.length ? 'derived' : 'constant',
+        expression: derivedColumn.expression,
+        evidence_type: 'ssis_derived_column_expression',
+        evidence_text: compactEvidence(
+          `DerivedColumn=${derivedColumn.output_column}; Expression=${derivedColumn.expression}`
+        ),
+        validation_status: 'validated',
+      });
+    }
+  }
+
+  return {
+    ssisColumnMappings: mappings.map(({ _key, ...record }) => record),
+    unresolvedSsisColumnMappings: unresolved.map(({ _key, ...record }) => record),
+  };
+}
+
+function buildUnresolvedSsisMappings(connectionManagers = [], packageId = '') {
+  return (connectionManagers || [])
+    .filter((cm) => shouldQuarantineDynamicConnection(cm))
+    .map((cm) => ({
+      package_id: packageId,
+      component_name: cm.connName || cm.connType || 'unknown_connection_manager',
+      component_type: 'connection_manager',
+      reason: 'dynamic_connection_manager',
+      evidence_type: 'ssis_dynamic_connection',
+      evidence_text: compactEvidence(
+        cm.expressionConnectionString || JSON.stringify(cm.dynamicExpressions || {})
+      ),
+      variable_names: cm.dynamicVariables || [],
+      validation_status: 'unresolved',
+    }));
 }
 
 function extractExecuteSqlTasks(packageXml) {
@@ -692,8 +1546,11 @@ class SsisMetadataExtractor {
       `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
       USE SSISDB;
        SELECT
+         f.name          AS folder_name,
+         p.project_id,
          p.name          AS project_name,
          pkg.name        AS package_name,
+         par.object_name,
          par.object_type,
          par.parameter_name,
          par.design_default_value,
@@ -701,8 +1558,11 @@ class SsisMetadataExtractor {
          par.value_type,
          par.referenced_variable_name
        FROM catalog.object_parameters par
-       JOIN catalog.packages pkg ON par.project_id = pkg.project_id AND (par.object_name = pkg.name OR par.object_type = 20)
-       JOIN catalog.projects  p   ON pkg.project_id = p.project_id`
+       JOIN catalog.projects  p   ON par.project_id = p.project_id
+       JOIN catalog.folders   f   ON p.folder_id = f.folder_id
+       LEFT JOIN catalog.packages pkg
+         ON par.project_id = pkg.project_id
+        AND par.object_name = pkg.name`
     );
     if (error) warnings.push(`parameters: ${error}`);
     return rows;
@@ -713,17 +1573,36 @@ class SsisMetadataExtractor {
       this.pool,
       `USE SSISDB;
        SELECT
+         f.name               AS folder_name,
+         e.environment_id,
          e.name               AS environment_name,
          v.name               AS variable_name,
          CASE WHEN v.sensitive = 1 THEN '***SENSITIVE***' ELSE CAST(v.value AS nvarchar(max)) END AS variable_value
        FROM catalog.environment_variables v
-       JOIN catalog.environments  e ON v.environment_id = e.environment_id`
+       JOIN catalog.environments  e ON v.environment_id = e.environment_id
+       JOIN catalog.folders       f ON e.folder_id = f.folder_id`
     );
     if (varErr) warnings.push(`environment_variables: ${varErr}`);
-    return { variables: varRows };
+
+    const { rows: refRows, error: refErr } = await safeQuery(
+      this.pool,
+      `USE SSISDB;
+       SELECT
+         f.name AS folder_name,
+         p.name AS project_name,
+         r.reference_id,
+         r.reference_type,
+         r.environment_folder_name,
+         r.environment_name
+       FROM catalog.environment_references r
+       JOIN catalog.projects p ON r.project_id = p.project_id
+       JOIN catalog.folders f ON p.folder_id = f.folder_id`
+    );
+    if (refErr) warnings.push(`environment_references: ${refErr}`);
+    return { variables: varRows, references: refRows };
   }
 
-  async extractPackageXmlMetadata(warnings) {
+  async extractPackageXmlMetadata(warnings, parameters = [], environments = {}) {
     const xmlResults = [];
     const dumpRawXml = true;
     let rawXmlDumpDir = null;
@@ -905,6 +1784,7 @@ class SsisMetadataExtractor {
             const xmlDoc = parsePackageXml(xmlBuffer);
 
             if (xmlDoc) {
+              const packageVariables = extractPackageVariables(xmlDoc);
               const pkgConnections = extractConnectionManagers(xmlDoc) || [];
 
               for (const cm of pkgConnections) {
@@ -940,6 +1820,29 @@ class SsisMetadataExtractor {
               }
 
               const dataFlowComponents = extractDataFlowComponents(xmlDoc) || [];
+              const livePackageId = buildCanonicalPackageId(
+                this.config.server || '',
+                proj.folder_name,
+                proj.project_name,
+                zipEntry.entryName
+              );
+              const resolvedConnectionManagers = resolveConnectionManagers(
+                [...pkgConnections, ...projectConnections],
+                {
+                  parameters,
+                  environments,
+                  parameterOverrides: this.config.ssisProjectParameterOverrides || {},
+                  packageVariables,
+                  folderName: proj.folder_name,
+                  projectName: proj.project_name,
+                  packageName: zipEntry.entryName,
+                  hostServer: this.config.server || '',
+                }
+              );
+              const columnMappingResult =
+                extractSsisColumnMappingsFromComponents(dataFlowComponents, {
+                  packageId: livePackageId,
+                }) || {};
 
               // --- ADVANCED STRUCTURAL ANALYSIS FALLBACK LAYER ---
               // If we have data flow components that maps to an unknown connection object name,
@@ -969,9 +1872,17 @@ class SsisMetadataExtractor {
 
               xmlResults.push({
                 objectName: zipEntry.entryName,
+                packageName: zipEntry.entryName,
+                folderName: proj.folder_name,
                 projectName: proj.project_name,
-                connectionManagers: [...pkgConnections, ...projectConnections],
+                packageVariables,
+                connectionManagers: resolvedConnectionManagers,
                 dataFlowComponents,
+                ssisColumnMappings: columnMappingResult.ssisColumnMappings || [],
+                unresolvedSsisColumnMappings: [
+                  ...(columnMappingResult.unresolvedSsisColumnMappings || []),
+                  ...buildUnresolvedSsisMappings(resolvedConnectionManagers, livePackageId),
+                ],
                 sqlTasks: extractExecuteSqlTasks(xmlDoc),
                 packageTasks: extractExecutePackageTasks(xmlDoc),
               });
@@ -1147,8 +2058,33 @@ class SsisMetadataExtractor {
 
     // --- Process XML Packages ---
     for (const xmlPkg of xmlMeta || []) {
-      const { connectionManagers, dataFlowComponents, objectName, sqlTasks, packageTasks } = xmlPkg;
+      const {
+        connectionManagers: rawConnectionManagers,
+        dataFlowComponents,
+        objectName,
+        sqlTasks,
+        packageTasks,
+      } = xmlPkg;
+      const connectionManagers = resolveConnectionManagers(rawConnectionManagers || [], {
+        parameters: _parameters || [],
+        environments: _environments || {},
+        parameterOverrides: this.config.ssisProjectParameterOverrides || {},
+        packageVariables: xmlPkg.packageVariables || [],
+        folderName: xmlPkg.folderName || '',
+        projectName: xmlPkg.projectName || '',
+        packageName: xmlPkg.packageName || objectName || '',
+        hostServer,
+      });
       const packageId = resolvePackageId(objectName, xmlPkg.projectName);
+      const catalogRow =
+        catalogByProjectPackage.get(`${cleanSsisSegment(xmlPkg.projectName)}.${cleanSsisSegment(objectName)}`.toLowerCase()) ||
+        catalogByPackage.get(cleanSsisSegment(objectName).toLowerCase()) ||
+        {};
+      const packageContext = {
+        folderName: xmlPkg.folderName || catalogRow.folder_name || '',
+        projectName: xmlPkg.projectName || catalogRow.project_name || '',
+        packageName: xmlPkg.packageName || objectName || catalogRow.package_name || '',
+      };
 
       const connMap = new Map();
       const connArray = [];
@@ -1184,14 +2120,22 @@ class SsisMetadataExtractor {
           }
         }
 
-        return cm || null;
+        return (
+          cm ||
+          connectionOverrideForRef(
+            connId,
+            this.config.ssisProjectConnectionOverrides || {},
+            packageContext
+          ) ||
+          null
+        );
       };
 
       const sources = dataFlowComponents.filter((c) => c.role === 'SOURCE');
       const destinations = dataFlowComponents.filter((c) => c.role === 'DESTINATION');
 
       for (const cm of connectionManagers || []) {
-        if (!cm.hasDynamicExpression) continue;
+        if (!shouldQuarantineDynamicConnection(cm)) continue;
         const variableName = (cm.dynamicVariables || [])[0] || 'UNKNOWN_VARIABLE';
         edges.push({
           from: packageId,
@@ -1209,9 +2153,22 @@ class SsisMetadataExtractor {
 
       for (const src of sources) {
         const srcConnection = resolveConnection(src.connectionManagerId);
+        const srcExternalId = isExternalSsisComponent(src)
+          ? buildSsisExternalObjectId({
+              serverName: hostServer,
+              folderName: xmlPkg.folderName || catalogRow.folder_name,
+              projectName: xmlPkg.projectName || catalogRow.project_name,
+              packageName: xmlPkg.packageName || objectName,
+              componentName: src.componentName,
+              role: 'source',
+              reference: srcConnection?.filePath || src.tableName || src.sqlCommand,
+            })
+          : '';
 
         const sourceTables = [];
-        if (src.tableName) {
+        if (srcExternalId) {
+          sourceTables.push(srcExternalId);
+        } else if (src.tableName) {
           sourceTables.push(combineConnectionAndTable(srcConnection, src.tableName, hostServer));
         } else if (src.tableDatabaseName && src.tableObjectName) {
           sourceTables.push(
@@ -1250,65 +2207,20 @@ class SsisMetadataExtractor {
         }
 
         for (const sTable of sourceTables.filter(Boolean)) {
+          const externalEdge = srcExternalId && sTable === srcExternalId;
           edges.push({
             from: packageId,
             to: sTable,
             via: `${packageId}/Source/${src.componentName}`,
             edgeType: 'READS_FROM',
             validation_status: 'validated',
-            evidence_type: 'ssis_dataflow_source',
+            evidence_type: externalEdge ? 'ssis_external_source_component' : 'ssis_dataflow_source',
             evidence_text: src.sqlCommand || src.tableName || '',
-            confidence: 0.9,
+            confidence: externalEdge ? 0.85 : 0.9,
             packageName: objectName,
-          });
-        }
-
-        for (const dst of destinations) {
-          const dstConnection = resolveConnection(dst.connectionManagerId);
-          let dstTable = 'unknown_table';
-          if (dst.tableName) {
-            dstTable = combineConnectionAndTable(dstConnection, dst.tableName, hostServer);
-          } else if (dst.tableDatabaseName && dst.tableObjectName) {
-            dstTable = qualifyTableReference(
-              dstConnection?.serverName || hostServer,
-              dst.tableDatabaseName || dstConnection?.databaseName,
-              dst.tableSchemaName,
-              dst.tableObjectName
-            );
-          } else if (dst.tableSchemaName && dst.tableObjectName) {
-            dstTable = qualifyTableReference(
-              dstConnection?.serverName || hostServer,
-              dstConnection?.databaseName,
-              dst.tableSchemaName,
-              dst.tableObjectName
-            );
-          }
-
-          if (!dstTable || dstTable === 'unknown_table') {
-            edges.push({
-              from: packageId,
-              to: 'UNRESOLVED_DYNAMIC_EDGE',
-              via: `${packageId}/Destination/${dst.componentName}`,
-              edgeType: 'UNRESOLVED_DYNAMIC_EDGE',
-              validation_status: 'unresolved',
-              evidence_type: 'ssis_destination_unresolved',
-              evidence_text: dst.sqlCommand || dst.tableName || '',
-              confidence: 0.0,
-              packageName: objectName,
-            });
-            continue;
-          }
-
-          edges.push({
-            from: packageId,
-            to: dstTable,
-            via: `${packageId}/Destination/${dst.componentName}`,
-            edgeType: 'WRITES_TO',
-            validation_status: 'validated',
-            evidence_type: 'ssis_dataflow_destination',
-            evidence_text: dst.sqlCommand || dst.tableName || '',
-            confidence: 0.95,
-            packageName: objectName,
+            target_external_source: Boolean(externalEdge),
+            componentName: src.componentName,
+            componentType: src.componentType,
           });
         }
 
@@ -1341,6 +2253,71 @@ class SsisMetadataExtractor {
             });
           }
         }
+      }
+
+      for (const dst of destinations) {
+        const dstConnection = resolveConnection(dst.connectionManagerId);
+        const dstExternalId = isExternalSsisComponent(dst)
+          ? buildSsisExternalObjectId({
+              serverName: hostServer,
+              folderName: xmlPkg.folderName || catalogRow.folder_name,
+              projectName: xmlPkg.projectName || catalogRow.project_name,
+              packageName: xmlPkg.packageName || objectName,
+              componentName: dst.componentName,
+              role: 'destination',
+              reference: dstConnection?.filePath || dst.tableName || dst.sqlCommand,
+            })
+          : '';
+        let dstTable = 'unknown_table';
+        if (dstExternalId) {
+          dstTable = dstExternalId;
+        } else if (dst.tableName) {
+          dstTable = combineConnectionAndTable(dstConnection, dst.tableName, hostServer);
+        } else if (dst.tableDatabaseName && dst.tableObjectName) {
+          dstTable = qualifyTableReference(
+            dstConnection?.serverName || hostServer,
+            dst.tableDatabaseName || dstConnection?.databaseName,
+            dst.tableSchemaName,
+            dst.tableObjectName
+          );
+        } else if (dst.tableSchemaName && dst.tableObjectName) {
+          dstTable = qualifyTableReference(
+            dstConnection?.serverName || hostServer,
+            dstConnection?.databaseName,
+            dst.tableSchemaName,
+            dst.tableObjectName
+          );
+        }
+
+        if (!dstTable || dstTable === 'unknown_table') {
+          edges.push({
+            from: packageId,
+            to: 'UNRESOLVED_DYNAMIC_EDGE',
+            via: `${packageId}/Destination/${dst.componentName}`,
+            edgeType: 'UNRESOLVED_DYNAMIC_EDGE',
+            validation_status: 'unresolved',
+            evidence_type: 'ssis_destination_unresolved',
+            evidence_text: dst.sqlCommand || dst.tableName || '',
+            confidence: 0.0,
+            packageName: objectName,
+          });
+          continue;
+        }
+
+        edges.push({
+          from: packageId,
+          to: dstTable,
+          via: `${packageId}/Destination/${dst.componentName}`,
+          edgeType: 'WRITES_TO',
+          validation_status: 'validated',
+          evidence_type: dstExternalId ? 'ssis_external_destination_component' : 'ssis_dataflow_destination',
+          evidence_text: dst.sqlCommand || dst.tableName || '',
+          confidence: dstExternalId ? 0.85 : 0.95,
+          packageName: objectName,
+          target_external_source: Boolean(dstExternalId),
+          componentName: dst.componentName,
+          componentType: dst.componentType,
+        });
       }
 
       for (const task of sqlTasks || []) {
@@ -1445,7 +2422,11 @@ class SsisMetadataExtractor {
       result.parameters = await this.extractParameters(warnings);
       result.environments = await this.extractEnvironments(warnings);
       if (opts.extractXml !== false) {
-        result.xmlMetadata = await this.extractPackageXmlMetadata(warnings);
+        result.xmlMetadata = await this.extractPackageXmlMetadata(
+          warnings,
+          result.parameters,
+          result.environments
+        );
       }
     }
 
@@ -1476,12 +2457,43 @@ export async function extractSsisMetadata(connectionConfig, opts = {}) {
 export function parseSsisPackageXmlForLineage(xmlText, options = {}) {
   const xmlDoc = parsePackageXml(Buffer.from(String(xmlText || ''), 'utf-8'));
   if (!xmlDoc) return null;
+  const packageVariables = extractPackageVariables(xmlDoc);
+  const connectionManagers = resolveConnectionManagers(extractConnectionManagers(xmlDoc), {
+    parameters: options.parameters || [],
+    environments: options.environments || {},
+    parameterOverrides: options.parameterOverrides || options.ssisProjectParameterOverrides || {},
+    packageVariables,
+    folderName: options.folderName || '',
+    projectName: options.projectName || '',
+    packageName: options.packageName || options.objectName || '',
+    hostServer: options.serverName || '',
+  });
+  const dataFlowComponents = extractDataFlowComponents(xmlDoc);
+  const packageId =
+    options.packageId ||
+    buildCanonicalPackageId(
+      options.serverName || '',
+      options.folderName || '',
+      options.projectName || '',
+      options.packageName || options.objectName || ''
+    );
+  const columnMappingResult = extractSsisColumnMappingsFromComponents(dataFlowComponents, {
+    packageId,
+  });
 
   return {
     objectName: options.objectName || options.packageName || 'unknown_package.dtsx',
+    packageName: options.packageName || options.objectName || 'unknown_package.dtsx',
+    folderName: options.folderName || 'unknown_folder',
     projectName: options.projectName || 'unknown_project',
-    connectionManagers: extractConnectionManagers(xmlDoc),
-    dataFlowComponents: extractDataFlowComponents(xmlDoc),
+    packageVariables,
+    connectionManagers,
+    dataFlowComponents,
+    ssisColumnMappings: columnMappingResult.ssisColumnMappings || [],
+    unresolvedSsisColumnMappings: [
+      ...(columnMappingResult.unresolvedSsisColumnMappings || []),
+      ...buildUnresolvedSsisMappings(connectionManagers, packageId),
+    ],
     sqlTasks: extractExecuteSqlTasks(xmlDoc),
     packageTasks: extractExecutePackageTasks(xmlDoc),
   };

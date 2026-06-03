@@ -131,6 +131,151 @@ function normalizeSegment(value, fallback = 'unknown') {
   return safe || fallback;
 }
 
+function toBoolean(value) {
+  return value === true || value === 1 || value === '1' || String(value).toLowerCase() === 'true';
+}
+
+function canonicalColumnId(objectId, columnName) {
+  return `${objectId}.${String(columnName || '').trim()}`;
+}
+
+function columnNameKey(value) {
+  return String(value || '').toLowerCase();
+}
+
+const SQL_IDENTIFIER_PATTERN = String.raw`(?:\[[^\]]+\]|[A-Za-z_][A-Za-z0-9_$#@]*)`;
+const SQL_OBJECT_REFERENCE_PATTERN = String.raw`${SQL_IDENTIFIER_PATTERN}(?:\s*\.\s*${SQL_IDENTIFIER_PATTERN}){0,4}`;
+const RESERVED_SQL_ALIASES = new Set([
+  'where',
+  'join',
+  'inner',
+  'left',
+  'right',
+  'full',
+  'cross',
+  'outer',
+  'on',
+  'group',
+  'order',
+  'having',
+  'union',
+  'where',
+  'set',
+  'when',
+  'then',
+  'else',
+  'end',
+  'values',
+]);
+
+function cleanSqlName(value) {
+  return String(value || '')
+    .trim()
+    .replace(/^\[|\]$/g, '')
+    .replace(/^"+|"+$/g, '')
+    .replace(/^'+|'+$/g, '')
+    .trim();
+}
+
+function sqlNameKey(value) {
+  return cleanSqlName(value).toLowerCase();
+}
+
+function splitSqlObjectParts(reference) {
+  return normalizeSqlReference(reference)
+    .split('.')
+    .map(cleanSqlName)
+    .filter(Boolean);
+}
+
+function splitCommaAware(value) {
+  const parts = [];
+  let current = '';
+  let depth = 0;
+  let quote = '';
+
+  for (const char of String(value || '')) {
+    if (quote) {
+      current += char;
+      if (char === quote) quote = '';
+      continue;
+    }
+    if (char === "'" || char === '"') {
+      quote = char;
+      current += char;
+      continue;
+    }
+    if (char === '(') depth += 1;
+    if (char === ')' && depth > 0) depth -= 1;
+    if (char === ',' && depth === 0) {
+      if (current.trim()) parts.push(current.trim());
+      current = '';
+      continue;
+    }
+    current += char;
+  }
+
+  if (current.trim()) parts.push(current.trim());
+  return parts;
+}
+
+function stripColumnAlias(expression) {
+  return String(expression || '')
+    .replace(/\s+AS\s+(?:\[[^\]]+\]|[A-Za-z_][A-Za-z0-9_$#@]*)\s*$/i, '')
+    .replace(/\s+(?:\[[^\]]+\]|[A-Za-z_][A-Za-z0-9_$#@]*)\s*$/i, '')
+    .trim();
+}
+
+function expressionLooksCalculated(expression) {
+  const text = String(expression || '');
+  if (/\b(CASE|CAST|CONVERT|COALESCE|ISNULL|NULLIF|ROUND|SUM|AVG|MIN|MAX|COUNT|DATEADD|DATEDIFF)\b/i.test(text)) {
+    return true;
+  }
+  return /[+\-*/]/.test(text.replace(/\[[^\]]+\]/g, ''));
+}
+
+function compactSqlEvidence(value, maxLength = 500) {
+  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength)}...`;
+}
+
+function sqlEvidenceWindow(sql, startIndex, matchText, maxLength = 500) {
+  const source = String(sql || '');
+  const start = Math.max(0, startIndex - 120);
+  const end = Math.min(source.length, startIndex + String(matchText || '').length + 240);
+  return compactSqlEvidence(source.slice(start, end), maxLength);
+}
+
+function containsSelectStarExpression(expression) {
+  const cleaned = String(expression || '').trim();
+  if (cleaned === '*') return true;
+  const qualifiedStarPattern = new RegExp(
+    `(?:^|[\\s,(])${SQL_IDENTIFIER_PATTERN}\\s*\\.\\s*\\*(?:$|[\\s,)])`,
+    'i'
+  );
+  return qualifiedStarPattern.test(cleaned);
+}
+
+function findColumnTokens(expression) {
+  const tokens = [];
+  const pattern = new RegExp(`(${SQL_IDENTIFIER_PATTERN})\\s*\\.\\s*(${SQL_IDENTIFIER_PATTERN}|\\*)`, 'gi');
+  let match = pattern.exec(expression || '');
+  while (match) {
+    const alias = cleanSqlName(match[1]);
+    const column = cleanSqlName(match[2]);
+    if (alias && column && column !== '*') {
+      tokens.push({
+        alias,
+        column,
+        evidence: match[0],
+      });
+    }
+    match = pattern.exec(expression || '');
+  }
+  return tokens;
+}
+
 function isNoiseSqlReference(reference) {
   const value = normalizeSqlReference(reference).toLowerCase();
   if (!value) return true;
@@ -181,6 +326,585 @@ function isNoiseSqlReference(reference) {
 class MarkdownGenerator {
   constructor(metadata) {
     this.metadata = metadata;
+  }
+
+  static buildColumnInventory(object, metadata = {}) {
+    const { id: objectId } = object;
+    const relationships = metadata.relationships || [];
+    const primaryKeyColumns = new Set(
+      (object.primaryKey?.columns || []).map((column) => columnNameKey(column.name))
+    );
+
+    return (object.columns || []).map((column) => {
+      const { name } = column;
+      const nameKey = columnNameKey(name);
+      const uniqueKeys = (object.uniqueConstraints || [])
+        .filter((constraint) =>
+          (constraint.columns || []).some((constraintColumn) => columnNameKey(constraintColumn.name) === nameKey)
+        )
+        .map((constraint) => constraint.name)
+        .filter(Boolean);
+      const indexes = MarkdownGenerator.buildColumnIndexParticipation(object.indexes || [], name);
+      const foreignKeys = relationships
+        .filter(
+          (rel) =>
+            rel.type === 'explicit_fk' &&
+            rel.fromTable === objectId &&
+            columnNameKey(rel.fromColumn) === nameKey
+        )
+        .map((rel) => ({
+          constraint_name: rel.constraintName || '',
+          references_object_id: rel.toTable,
+          references_column_id: canonicalColumnId(rel.toTable, rel.toColumn),
+          references_column: rel.toColumn,
+        }));
+      const referencedByForeignKeys = relationships
+        .filter(
+          (rel) =>
+            rel.type === 'explicit_fk' &&
+            rel.toTable === objectId &&
+            columnNameKey(rel.toColumn) === nameKey
+        )
+        .map((rel) => ({
+          constraint_name: rel.constraintName || '',
+          referencing_object_id: rel.fromTable,
+          referencing_column_id: canonicalColumnId(rel.fromTable, rel.fromColumn),
+          referencing_column: rel.fromColumn,
+        }));
+
+      return {
+        name,
+        column_id: canonicalColumnId(objectId, name),
+        ordinal: column.ordinal ?? null,
+        data_type: column.dataType || '',
+        max_length: column.maxLength ?? null,
+        precision: column.precision ?? null,
+        scale: column.scale ?? null,
+        nullable: toBoolean(column.isNullable),
+        identity: toBoolean(column.isIdentity),
+        computed: toBoolean(column.isComputed),
+        computed_definition: column.computedDefinition || null,
+        default: column.defaultValue || null,
+        description: column.description || '',
+        primary_key: primaryKeyColumns.has(nameKey),
+        unique_keys: uniqueKeys,
+        foreign_keys: foreignKeys,
+        referenced_by_foreign_keys: referencedByForeignKeys,
+        indexes,
+        sensitivity: column.sensitivity || 'internal',
+        classification_tags: Array.isArray(column.classificationTags) ? column.classificationTags : [],
+        extraction_evidence: {
+          source: 'sys.columns',
+          extracted_at: metadata.extractedAt || null,
+        },
+      };
+    });
+  }
+
+  static buildColumnIndexParticipation(indexes, columnName) {
+    const nameKey = columnNameKey(columnName);
+    const participation = [];
+
+    for (const index of indexes || []) {
+      for (const keyColumn of index.keyColumns || []) {
+        if (columnNameKey(keyColumn.name) !== nameKey) continue;
+        participation.push({
+          name: index.name,
+          type: index.type,
+          role: 'key',
+          key_ordinal: keyColumn.keyOrdinal ?? null,
+          sort: keyColumn.sort || null,
+          unique: toBoolean(index.isUnique),
+          primary_key: toBoolean(index.isPrimaryKey),
+        });
+      }
+
+      for (const includedColumn of index.includedColumns || []) {
+        if (columnNameKey(includedColumn) !== nameKey) continue;
+        participation.push({
+          name: index.name,
+          type: index.type,
+          role: 'included',
+          key_ordinal: null,
+          sort: null,
+          unique: toBoolean(index.isUnique),
+          primary_key: toBoolean(index.isPrimaryKey),
+        });
+      }
+    }
+
+    return participation;
+  }
+
+  static buildSqlObjectLookup(metadata = {}) {
+    const lookup = new Map();
+    const add = (key, object) => {
+      const normalized = String(key || '').toLowerCase();
+      if (!normalized || lookup.has(normalized)) return;
+      lookup.set(normalized, object);
+    };
+
+    for (const object of [...(metadata.tables || []), ...(metadata.views || [])]) {
+      if (!object?.id) continue;
+      const server = object.serverName || metadata.serverName || '';
+      const database = object.database || metadata.database || '';
+      const schema = object.schema || 'dbo';
+      const name = object.name || '';
+      add(object.id, object);
+      add([server, database, schema, name].filter(Boolean).join('.'), object);
+      add([database, schema, name].filter(Boolean).join('.'), object);
+      add([schema, name].filter(Boolean).join('.'), object);
+    }
+
+    return lookup;
+  }
+
+  static resolveSqlObjectReference(reference, context, lookup) {
+    const parts = splitSqlObjectParts(reference);
+    if (parts.length === 0) return null;
+
+    const candidates = [];
+    if (parts.length >= 4) {
+      candidates.push(parts.join('.'));
+    } else if (parts.length === 3) {
+      candidates.push([context.server, ...parts].filter(Boolean).join('.'));
+      candidates.push(parts.join('.'));
+    } else if (parts.length === 2) {
+      candidates.push([context.server, context.database, ...parts].filter(Boolean).join('.'));
+      candidates.push(parts.join('.'));
+    } else {
+      candidates.push([context.server, context.database, context.schema || 'dbo', parts[0]].filter(Boolean).join('.'));
+      if (context.schema !== 'dbo') {
+        candidates.push([context.server, context.database, 'dbo', parts[0]].filter(Boolean).join('.'));
+      }
+    }
+
+    for (const candidate of candidates) {
+      const resolved = lookup.get(candidate.toLowerCase());
+      if (resolved) return resolved;
+    }
+    return null;
+  }
+
+  static buildSqlAliasMap(sql, context, lookup) {
+    const aliases = new Map();
+    const cteNames = extractCteNames(sql);
+    const addAlias = (alias, object) => {
+      const key = sqlNameKey(alias);
+      if (!key || RESERVED_SQL_ALIASES.has(key) || !object) return;
+      aliases.set(key, object);
+    };
+    const addObjectReference = (reference, alias) => {
+      const parts = splitSqlObjectParts(reference);
+      const objectName = parts[parts.length - 1] || '';
+      if (cteNames.has(objectName.toLowerCase())) return;
+      const object = MarkdownGenerator.resolveSqlObjectReference(reference, context, lookup);
+      if (!object) return;
+      addAlias(alias || objectName, object);
+      addAlias(objectName, object);
+    };
+
+    const fromJoinPattern = new RegExp(
+      `\\b(?:FROM|JOIN)\\s+(${SQL_OBJECT_REFERENCE_PATTERN})(?:\\s+(?:AS\\s+)?(${SQL_IDENTIFIER_PATTERN}))?`,
+      'gi'
+    );
+    let match = fromJoinPattern.exec(sql);
+    while (match) {
+      addObjectReference(match[1], match[2]);
+      match = fromJoinPattern.exec(sql);
+    }
+
+    const mergePattern = new RegExp(
+      `\\bMERGE(?:\\s+INTO)?\\s+(${SQL_OBJECT_REFERENCE_PATTERN})(?:\\s+(?:AS\\s+)?(${SQL_IDENTIFIER_PATTERN}))?`,
+      'gi'
+    );
+    match = mergePattern.exec(sql);
+    while (match) {
+      addObjectReference(match[1], match[2]);
+      match = mergePattern.exec(sql);
+    }
+
+    const usingPattern = new RegExp(
+      `\\bUSING\\s+(${SQL_OBJECT_REFERENCE_PATTERN})(?:\\s+(?:AS\\s+)?(${SQL_IDENTIFIER_PATTERN}))?`,
+      'gi'
+    );
+    match = usingPattern.exec(sql);
+    while (match) {
+      addObjectReference(match[1], match[2]);
+      match = usingPattern.exec(sql);
+    }
+
+    return aliases;
+  }
+
+  static columnInventoryForObject(object) {
+    const columns = object?.columns || [];
+    return new Map(columns.map((column) => [columnNameKey(column.name), column]));
+  }
+
+  static buildColumnUsageRecord(object, columnName, process, usageType, usageContext, expression) {
+    const inventory = MarkdownGenerator.columnInventoryForObject(object);
+    const column = inventory.get(columnNameKey(columnName));
+    if (!object || !column) return null;
+    const evidence = compactSqlEvidence(expression);
+    return {
+      column_id: canonicalColumnId(object.id, column.name),
+      object_id: object.id,
+      process_id: process.id,
+      column_name: column.name,
+      usage_type: usageType,
+      usage_context: usageContext,
+      expression: evidence,
+      evidence_type: 'sql_definition',
+      evidence_text: evidence,
+      source_artifact: process.id,
+      validation_status: 'validated',
+    };
+  }
+
+  static extractSqlColumnUsage(definition = '', process = {}, metadata = {}) {
+    const sql = stripSqlComments(definition);
+    const context = {
+      server: process.serverName || metadata.serverName || '',
+      database: process.database || metadata.database || '',
+      schema: process.schema || 'dbo',
+    };
+    const lookup = MarkdownGenerator.buildSqlObjectLookup(metadata);
+    const aliases = MarkdownGenerator.buildSqlAliasMap(sql, context, lookup);
+    const usage = [];
+    const unresolved = [];
+    const riskFlags = [];
+    const seen = new Set();
+    const unresolvedSeen = new Set();
+    const riskSeen = new Set();
+
+    const addRiskFlag = (flagType, payload = {}) => {
+      const evidence = compactSqlEvidence(payload.evidence_text || payload.expression || '');
+      const record = {
+        process_id: process.id,
+        flag_type: flagType,
+        severity: payload.severity || 'medium',
+        usage_context: payload.usage_context || 'sql_definition',
+        object_id: payload.object_id || null,
+        evidence_type: payload.evidence_type || 'sql_definition',
+        evidence_text: evidence,
+        reason: payload.reason || '',
+        suggested_action: payload.suggested_action || '',
+        validation_status: 'risk_flag',
+      };
+      const key = [
+        record.process_id,
+        record.flag_type,
+        record.usage_context,
+        record.object_id || '',
+        record.evidence_text,
+        record.reason,
+      ]
+        .map((value) => String(value || '').toLowerCase())
+        .join('|');
+      if (riskSeen.has(key)) return;
+      riskSeen.add(key);
+      riskFlags.push(record);
+    };
+
+    const addUnresolved = (payload) => {
+      const record = {
+        ...payload,
+        expression: compactSqlEvidence(payload.expression),
+        evidence_text: compactSqlEvidence(payload.evidence_text || payload.expression),
+      };
+      const key = [
+        record.process_id,
+        record.alias || '',
+        record.column_name || '',
+        record.usage_type || '',
+        record.usage_context || '',
+        record.evidence_text || '',
+        record.reason || '',
+      ]
+        .map((value) => String(value || '').toLowerCase())
+        .join('|');
+      if (unresolvedSeen.has(key)) return;
+      unresolvedSeen.add(key);
+      if (unresolved.length >= 1000) return;
+      unresolved.push(record);
+    };
+
+    const addUsage = (object, columnName, usageType, usageContext, expression) => {
+      const record = MarkdownGenerator.buildColumnUsageRecord(
+        object,
+        columnName,
+        process,
+        usageType,
+        usageContext,
+        expression
+      );
+      if (!record) {
+        addUnresolved({
+          process_id: process.id,
+          column_name: columnName,
+          usage_type: usageType,
+          usage_context: usageContext,
+          expression: String(expression || '').trim(),
+          evidence_type: 'sql_definition',
+          evidence_text: String(expression || '').trim(),
+          reason: object ? 'column_not_found_on_resolved_object' : 'object_context_unresolved',
+          validation_status: 'unresolved',
+        });
+        return;
+      }
+
+      const key = [
+        record.column_id,
+        record.usage_type,
+        record.usage_context,
+        record.expression.toLowerCase(),
+      ].join('|');
+      if (seen.has(key)) return;
+      seen.add(key);
+      usage.push(record);
+    };
+
+    const addTokenUsage = (token, usageType, usageContext, expression) => {
+      const object = aliases.get(sqlNameKey(token.alias));
+      if (!object) {
+        addUnresolved({
+          process_id: process.id,
+          alias: token.alias,
+          column_name: token.column,
+          usage_type: usageType,
+          usage_context: usageContext,
+          expression: String(expression || token.evidence || '').trim(),
+          evidence_type: 'sql_definition',
+          evidence_text: String(token.evidence || expression || '').trim(),
+          reason: 'alias_not_resolved_to_known_table_or_view',
+          validation_status: 'unresolved',
+        });
+        return;
+      }
+      addUsage(object, token.column, usageType, usageContext, expression || token.evidence);
+    };
+
+    const addTokensFromExpression = (expression, usageType, usageContext) => {
+      for (const token of findColumnTokens(expression)) {
+        addTokenUsage(token, usageType, usageContext, expression);
+      }
+    };
+
+    const selectPattern = /\bSELECT\b\s+(?:DISTINCT\s+)?([\s\S]*?)\bFROM\b/gi;
+    let match = selectPattern.exec(sql);
+    while (match) {
+      for (const expression of splitCommaAware(match[1])) {
+        const cleaned = stripColumnAlias(expression);
+        if (containsSelectStarExpression(cleaned)) {
+          addRiskFlag('select_star', {
+            severity: 'high',
+            usage_context: 'select_list',
+            evidence_text: cleaned,
+            reason: 'SELECT * or alias.* hides column-level dependencies from explicit parser evidence.',
+            suggested_action: 'Replace star expansion with an explicit column list before relying on column impact answers.',
+          });
+        }
+        const usageType = expressionLooksCalculated(cleaned) ? 'calculation' : 'read';
+        addTokensFromExpression(cleaned, usageType, 'select_list');
+      }
+      match = selectPattern.exec(sql);
+    }
+
+    const insertWithoutColumnPattern = new RegExp(
+      `\\bINSERT\\s+(?:INTO\\s+)?(${SQL_OBJECT_REFERENCE_PATTERN})(?:\\s+WITH\\s*\\([^)]*\\))?\\s+(SELECT|VALUES|EXEC(?:UTE)?|WITH)\\b`,
+      'gi'
+    );
+    match = insertWithoutColumnPattern.exec(sql);
+    while (match) {
+      const target = MarkdownGenerator.resolveSqlObjectReference(match[1], context, lookup);
+      addRiskFlag('insert_without_column_list', {
+        severity: 'high',
+        usage_context: 'insert_target',
+        object_id: target?.id || null,
+        evidence_text: sqlEvidenceWindow(sql, match.index, match[0]),
+        reason: 'INSERT target columns are positional because no explicit column list was found.',
+        suggested_action: 'Add an explicit INSERT column list so source-to-target column impact can be validated.',
+      });
+      match = insertWithoutColumnPattern.exec(sql);
+    }
+
+    const insertPattern = new RegExp(
+      `\\bINSERT\\s+INTO\\s+(${SQL_OBJECT_REFERENCE_PATTERN})\\s*\\(([^)]*)\\)`,
+      'gi'
+    );
+    match = insertPattern.exec(sql);
+    while (match) {
+      const target = MarkdownGenerator.resolveSqlObjectReference(match[1], context, lookup);
+      for (const columnName of splitCommaAware(match[2]).map(cleanSqlName).filter(Boolean)) {
+        addUsage(target, columnName, 'insert_target', 'insert_column_list', columnName);
+      }
+      match = insertPattern.exec(sql);
+    }
+
+    const updatePattern = new RegExp(
+      `\\bUPDATE\\s+(${SQL_OBJECT_REFERENCE_PATTERN})\\s+SET\\s+([\\s\\S]*?)(?=\\bFROM\\b|\\bWHERE\\b|;|$)`,
+      'gi'
+    );
+    match = updatePattern.exec(sql);
+    while (match) {
+      const target =
+        aliases.get(sqlNameKey(match[1])) ||
+        MarkdownGenerator.resolveSqlObjectReference(match[1], context, lookup);
+      for (const assignment of splitCommaAware(match[2])) {
+        const [left, right = ''] = assignment.split('=');
+        const leftTokens = findColumnTokens(left);
+        if (leftTokens.length > 0) {
+          leftTokens.forEach((token) => addTokenUsage(token, 'update_target', 'set_clause', left));
+        } else {
+          addUsage(target, cleanSqlName(left), 'update_target', 'set_clause', left);
+        }
+        addTokensFromExpression(right, 'read', 'set_clause');
+      }
+      match = updatePattern.exec(sql);
+    }
+
+    const mergePattern = new RegExp(
+      `\\bMERGE(?:\\s+INTO)?\\s+(${SQL_OBJECT_REFERENCE_PATTERN})(?:\\s+(?:AS\\s+)?(${SQL_IDENTIFIER_PATTERN}))?[\\s\\S]*?\\bON\\b\\s+([\\s\\S]*?)(?=\\bWHEN\\b|;|$)`,
+      'gi'
+    );
+    match = mergePattern.exec(sql);
+    while (match) {
+      addTokensFromExpression(match[3], 'merge_key', 'merge_on');
+      match = mergePattern.exec(sql);
+    }
+
+    const mergeUpdatePattern = /\bWHEN\s+MATCHED\b[\s\S]*?\bUPDATE\s+SET\s+([\s\S]*?)(?=\bWHEN\b|;|$)/gi;
+    match = mergeUpdatePattern.exec(sql);
+    while (match) {
+      for (const assignment of splitCommaAware(match[1])) {
+        const [left, right = ''] = assignment.split('=');
+        findColumnTokens(left).forEach((token) =>
+          addTokenUsage(token, 'update_target', 'merge_update_set', left)
+        );
+        addTokensFromExpression(right, 'read', 'merge_update_set');
+      }
+      match = mergeUpdatePattern.exec(sql);
+    }
+
+    const mergeInsertPattern = /\bWHEN\s+NOT\s+MATCHED\b[\s\S]*?\bINSERT\s*\(([^)]*)\)/gi;
+    const mergeTargetMatch = new RegExp(
+      `\\bMERGE(?:\\s+INTO)?\\s+(${SQL_OBJECT_REFERENCE_PATTERN})(?:\\s+(?:AS\\s+)?(${SQL_IDENTIFIER_PATTERN}))?`,
+      'i'
+    ).exec(sql);
+    const mergeTarget = mergeTargetMatch
+      ? MarkdownGenerator.resolveSqlObjectReference(mergeTargetMatch[1], context, lookup)
+      : null;
+    const mergeWithoutExplicitInsertPattern =
+      /\bMERGE\b[\s\S]*?\bWHEN\s+NOT\s+MATCHED\b[\s\S]*?\bINSERT\s+(?!\()/gi;
+    match = mergeWithoutExplicitInsertPattern.exec(sql);
+    while (match) {
+      addRiskFlag('merge_without_explicit_column_mapping', {
+        severity: 'high',
+        usage_context: 'merge_insert',
+        object_id: mergeTarget?.id || null,
+        evidence_text: sqlEvidenceWindow(sql, match.index, match[0]),
+        reason: 'MERGE INSERT branch does not expose an explicit target column mapping.',
+        suggested_action: 'Add an explicit MERGE INSERT column list and VALUES mapping.',
+      });
+      match = mergeWithoutExplicitInsertPattern.exec(sql);
+    }
+    match = mergeInsertPattern.exec(sql);
+    while (match) {
+      for (const columnName of splitCommaAware(match[1]).map(cleanSqlName).filter(Boolean)) {
+        addUsage(mergeTarget, columnName, 'insert_target', 'merge_insert_column_list', columnName);
+      }
+      match = mergeInsertPattern.exec(sql);
+    }
+
+    const joinOnPattern = /\bON\b\s+([\s\S]*?)(?=\b(?:INNER|LEFT|RIGHT|FULL|CROSS)?\s*JOIN\b|\bWHERE\b|\bGROUP\s+BY\b|\bORDER\s+BY\b|\bHAVING\b|\bWHEN\b|;|$)/gi;
+    match = joinOnPattern.exec(sql);
+    while (match) {
+      addTokensFromExpression(match[1], 'join_key', 'join_on');
+      match = joinOnPattern.exec(sql);
+    }
+
+    const wherePattern = /\bWHERE\b\s+([\s\S]*?)(?=\bGROUP\s+BY\b|\bORDER\s+BY\b|\bHAVING\b|\bUNION\b|;|$)/gi;
+    match = wherePattern.exec(sql);
+    while (match) {
+      addTokensFromExpression(match[1], 'filter', 'where');
+      match = wherePattern.exec(sql);
+    }
+
+    const groupByPattern = /\bGROUP\s+BY\b\s+([\s\S]*?)(?=\bORDER\s+BY\b|\bHAVING\b|;|$)/gi;
+    match = groupByPattern.exec(sql);
+    while (match) {
+      splitCommaAware(match[1]).forEach((expression) =>
+        addTokensFromExpression(expression, 'group_by', 'group_by')
+      );
+      match = groupByPattern.exec(sql);
+    }
+
+    const orderByPattern = /\bORDER\s+BY\b\s+([\s\S]*?)(?=;|$)/gi;
+    match = orderByPattern.exec(sql);
+    while (match) {
+      splitCommaAware(match[1]).forEach((expression) =>
+        addTokensFromExpression(expression, 'order_by', 'order_by')
+      );
+      match = orderByPattern.exec(sql);
+    }
+
+    const dynamicSqlPattern = /\bsp_executesql\b|\bEXEC(?:UTE)?\s*\(\s*@|\bEXEC(?:UTE)?\s+@[A-Za-z_][A-Za-z0-9_]*/gi;
+    match = dynamicSqlPattern.exec(sql);
+    while (match) {
+      addRiskFlag('dynamic_sql', {
+        severity: 'high',
+        usage_context: 'dynamic_sql',
+        evidence_text: sqlEvidenceWindow(sql, match.index, match[0]),
+        reason: 'Dynamic SQL can hide table and column dependencies from static parsing.',
+        suggested_action: 'Capture runtime-expanded SQL or document the dynamic targets explicitly.',
+      });
+      match = dynamicSqlPattern.exec(sql);
+    }
+
+    const dynamicTablePattern =
+      /\b(?:FROM|JOIN|INTO|UPDATE|MERGE)\b[\s\S]{0,200}\+\s*(?:QUOTENAME\s*\()?\s*@[A-Za-z_][A-Za-z0-9_]*/gi;
+    match = dynamicTablePattern.exec(sql);
+    while (match) {
+      addRiskFlag('dynamic_table_name', {
+        severity: 'high',
+        usage_context: 'dynamic_table_name',
+        evidence_text: sqlEvidenceWindow(sql, match.index, match[0]),
+        reason: 'A table/object name appears to be assembled dynamically.',
+        suggested_action: 'Document allowed runtime table names or add runtime SQL capture evidence.',
+      });
+      match = dynamicTablePattern.exec(sql);
+    }
+
+    const dynamicColumnPattern =
+      /\b(?:SELECT|ORDER\s+BY|GROUP\s+BY|SET)\b[\s\S]{0,200}\+\s*(?:QUOTENAME\s*\()?\s*@[A-Za-z_][A-Za-z0-9_]*/gi;
+    match = dynamicColumnPattern.exec(sql);
+    while (match) {
+      addRiskFlag('dynamic_column_name', {
+        severity: 'high',
+        usage_context: 'dynamic_column_name',
+        evidence_text: sqlEvidenceWindow(sql, match.index, match[0]),
+        reason: 'A column list or column expression appears to be assembled dynamically.',
+        suggested_action: 'Document allowed runtime columns or add runtime SQL capture evidence.',
+      });
+      match = dynamicColumnPattern.exec(sql);
+    }
+
+    if (unresolved.length > 0) {
+      addRiskFlag('unresolved_parser_context', {
+        severity: 'medium',
+        usage_context: 'column_resolution',
+        evidence_text: unresolved[0]?.evidence_text || unresolved[0]?.expression || '',
+        reason: `${unresolved.length} column usage record(s) could not be validated to a known object/column.`,
+        suggested_action: 'Review unresolved_column_usage before treating column impact answers as complete.',
+      });
+    }
+
+    return {
+      column_usage: usage,
+      unresolved_column_usage: unresolved,
+      column_risk_flags: riskFlags,
+    };
   }
 
   static isContextualSqlReference(reference) {
@@ -302,6 +1026,7 @@ class MarkdownGenerator {
       row_count: table.rowCount,
       size_kb: table.sizeKb,
       column_count: table.columns?.length || 0,
+      columns: MarkdownGenerator.buildColumnInventory(table, this.metadata),
       index_count: table.indexes?.length || 0,
       check_constraint_count: table.checkConstraints?.length || 0,
       extraction_warnings: extractionWarnings.map((warning) => warning.code),
@@ -481,6 +1206,7 @@ class MarkdownGenerator {
     ];
     const { direct: dependsOn, contextual } = MarkdownGenerator.splitSqlReferences(rawReferences);
     const usedBy = Array.from(new Set((view.used_by || []).filter((ref) => !isNoiseSqlReference(ref))));
+    const columnUsage = MarkdownGenerator.extractSqlColumnUsage(view.definition, view, this.metadata);
     const frontmatter = {
       id: view.id,
       name: view.name,
@@ -502,6 +1228,10 @@ class MarkdownGenerator {
       },
       dependency_count: view.dependencies?.length || 0,
       column_count: view.columns?.length || 0,
+      columns: MarkdownGenerator.buildColumnInventory(view, this.metadata),
+      column_usage: columnUsage.column_usage,
+      unresolved_column_usage: columnUsage.unresolved_column_usage,
+      column_risk_flags: columnUsage.column_risk_flags,
       extracted_at: this.metadata.extractedAt,
     };
 
@@ -628,6 +1358,7 @@ class MarkdownGenerator {
     const { direct: rawReadsFrom } = MarkdownGenerator.splitSqlReferences(readRefs);
     const readsFrom = MarkdownGenerator.excludeWriteTargets(rawReadsFrom, writesTo);
     const { direct: calls } = MarkdownGenerator.splitSqlReferences(callRefs);
+    const columnUsage = MarkdownGenerator.extractSqlColumnUsage(proc.definition, proc, this.metadata);
     const frontmatter = {
       id: proc.id,
       name: proc.name,
@@ -650,6 +1381,9 @@ class MarkdownGenerator {
       },
       dependency_count: proc.dependencies?.length || 0,
       parameter_count: proc.parameters?.length || 0,
+      column_usage: columnUsage.column_usage,
+      unresolved_column_usage: columnUsage.unresolved_column_usage,
+      column_risk_flags: columnUsage.column_risk_flags,
       extracted_at: this.metadata.extractedAt,
     };
 
@@ -697,6 +1431,7 @@ class MarkdownGenerator {
    */
   generateFunctionMarkdown(func) {
     const dependsOn = (func.dependencies || []).map((dep) => dep.referencedObject);
+    const columnUsage = MarkdownGenerator.extractSqlColumnUsage(func.definition, func, this.metadata);
     const frontmatter = {
       id: func.id,
       name: func.name,
@@ -714,6 +1449,9 @@ class MarkdownGenerator {
       },
       dependency_count: func.dependencies?.length || 0,
       parameter_count: func.parameters?.length || 0,
+      column_usage: columnUsage.column_usage,
+      unresolved_column_usage: columnUsage.unresolved_column_usage,
+      column_risk_flags: columnUsage.column_risk_flags,
       extracted_at: this.metadata.extractedAt,
     };
 
@@ -761,6 +1499,7 @@ class MarkdownGenerator {
    */
   generateTriggerMarkdown(trigger) {
     const dependsOn = (trigger.dependencies || []).map((dep) => dep.referencedObject);
+    const columnUsage = MarkdownGenerator.extractSqlColumnUsage(trigger.definition, trigger, this.metadata);
     const frontmatter = {
       id: trigger.id,
       name: trigger.name,
@@ -778,6 +1517,9 @@ class MarkdownGenerator {
         unresolved_facts: 0,
       },
       dependency_count: trigger.dependencies?.length || 0,
+      column_usage: columnUsage.column_usage,
+      unresolved_column_usage: columnUsage.unresolved_column_usage,
+      column_risk_flags: columnUsage.column_risk_flags,
       extracted_at: this.metadata.extractedAt,
     };
 
