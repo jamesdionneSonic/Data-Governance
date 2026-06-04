@@ -152,6 +152,7 @@ describe('Rebuild confidence report and SSIS endpoint gates', () => {
       ssisPackages: 1,
       ssisEdges: 10,
       ssisSqlEndpointRecords: 0,
+      quarantinedSqlRawCount: 3,
     };
     const previousReport = {
       metrics: {
@@ -183,6 +184,7 @@ describe('Rebuild confidence report and SSIS endpoint gates', () => {
     expect(report.confidence.distribution.low).toBe(1);
     expect(report.confidence.low_or_needs_review_objects).toBe(1);
     expect(report.edge_deltas.ssis_edges.delta).toBe(-2);
+    expect(report.metrics.quarantined_sql_raw_records).toBe(3);
     expect(report.package_confidence_regressions).toEqual(
       expect.arrayContaining([
         expect.objectContaining({

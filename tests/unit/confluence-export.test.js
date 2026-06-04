@@ -95,6 +95,20 @@ describe('Confluence Export Service', () => {
   test('builds summary pages, shard pages, attachments, and manifest', async () => {
     const markdownRoot = await seedCatalog();
     const outputRoot = join(tempRoot, 'confluence-export');
+    const staleRunFile = join(
+      outputRoot,
+      'runs',
+      'old-run',
+      'shards',
+      '001__unknown__Sonic_DW.md'
+    );
+    const staleRootFile = join(outputRoot, 'shards', '001__unknown__Sonic_DW.md');
+
+    await mkdir(join(outputRoot, 'runs', 'old-run', 'shards'), { recursive: true });
+    await mkdir(join(outputRoot, 'shards'), { recursive: true });
+    await writeFile(staleRunFile, 'unknown.Sonic_DW stale run page', 'utf8');
+    await writeFile(staleRootFile, 'unknown.Sonic_DW stale root page', 'utf8');
+    await writeFile(join(outputRoot, 'confluence-export-manifest.json'), '{"stale":true}', 'utf8');
 
     const result = await buildConfluenceExport({
       markdownRoot,
@@ -103,6 +117,9 @@ describe('Confluence Export Service', () => {
       confluenceBaseUrl: 'https://sonicautomotive.atlassian.net/wiki',
       spaceKey: 'TDE',
     });
+
+    await expect(readFile(staleRunFile, 'utf8')).rejects.toThrow();
+    await expect(readFile(staleRootFile, 'utf8')).rejects.toThrow();
 
     expect(result.manifest.pages.map((page) => page.title)).toEqual(
       expect.arrayContaining([

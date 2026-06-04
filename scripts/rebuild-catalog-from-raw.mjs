@@ -57,6 +57,8 @@ const SQL_OBJECT_DIRS = new Set([
   'triggers',
   'synonyms',
 ]);
+const RAW_SCAN_SKIP_DIRS = new Set(['_quarantine', '_runtime', '_drafts', '_rebuild_backups']);
+const QUARANTINED_SQL_SAMPLE_LIMIT = 25;
 
 const DB_CASE = new Map([
   ['etl_staging', 'ETL_Staging'],
@@ -207,6 +209,18 @@ function canonicalServer(value, database = '', aliases = {}) {
   return String(hostName || cleaned).trim();
 }
 
+function isUnknownServer(value) {
+  const cleaned = cleanSegment(value).toLowerCase();
+  return !cleaned || cleaned === 'unknown' || cleaned === 'unknown_server';
+}
+
+function recordSqlRawQuarantine(quarantined, record) {
+  quarantined.count += 1;
+  if (quarantined.sample.length < QUARANTINED_SQL_SAMPLE_LIMIT) {
+    quarantined.sample.push(record);
+  }
+}
+
 function parseMarkdownFileContent(content, filePath) {
   const normalized = String(content || '').replace(/^\uFEFF/, '');
   const match = normalized.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -279,6 +293,7 @@ async function listFiles(root, predicate = () => true) {
     for (const entry of entries) {
       const fullPath = path.join(current, entry.name);
       if (entry.isDirectory()) {
+        if (RAW_SCAN_SKIP_DIRS.has(entry.name)) continue;
         await walk(fullPath);
       } else if (entry.isFile() && predicate(fullPath)) {
         results.push(fullPath);
@@ -1717,6 +1732,7 @@ async function loadSqlRawObjects(aliases) {
     (filePath) => filePath.toLowerCase().endsWith('.md')
   );
   const candidates = new Map();
+  const quarantined = { count: 0, sample: [] };
   let skipped = 0;
 
   for (const filePath of files) {
@@ -1731,10 +1747,24 @@ async function loadSqlRawObjects(aliases) {
     try {
       const { metadata, body } = parseMarkdownFileContent(await fs.readFile(filePath, 'utf8'), filePath);
       const database = canonicalDatabase(metadata.database || relParts[dbIndex + 1]);
-      const server = canonicalServer(metadata.server || relParts[0], database, aliases);
+      const serverInput = !isUnknownServer(metadata.server) ? metadata.server : relParts[0];
+      const server = canonicalServer(serverInput, database, aliases);
       const schema = cleanSegment(metadata.schema || path.basename(filePath, '.md').split('__')[0] || 'dbo');
       const name = cleanSegment(metadata.name || path.basename(filePath, '.md').split('__').slice(1).join('__'));
       const type = typeFromDirectory(kind);
+      if (isUnknownServer(server)) {
+        recordSqlRawQuarantine(quarantined, {
+          reason: 'unknown_sql_server',
+          sourcePath: path.relative(ROOT, filePath),
+          pathServer: relParts[0] || '',
+          metadataServer: metadata.server || '',
+          database,
+          schema,
+          name,
+          type,
+        });
+        continue;
+      }
       const id = makeSqlId(server, database, schema, name);
       const markdownColumns =
         Array.isArray(metadata.columns) && metadata.columns.length > 0
@@ -1765,7 +1795,7 @@ async function loadSqlRawObjects(aliases) {
     }
   }
 
-  return { records: candidates, skipped };
+  return { records: candidates, skipped, quarantined };
 }
 
 function rewriteSqlLineage(records, aliases) {
@@ -2919,6 +2949,7 @@ function buildRebuildReport({ summary, recordList, previousReport = null, thresh
         totalUnresolvedFacts + totalDirectEdgeRefs + totalColumnLineageRecords
       ),
       ssis_sql_endpoint_records: summary.ssisSqlEndpointRecords || 0,
+      quarantined_sql_raw_records: summary.quarantinedSqlRawCount || 0,
     },
     edge_deltas: {
       ssis_edges: edgeDelta(summary.ssisEdges, previousReport?.metrics?.ssis_edges),
@@ -2972,6 +3003,7 @@ function renderRebuildReportMarkdown(report) {
     '',
     `- Total Unresolved Facts: ${report.metrics.unresolved_facts}`,
     `- Unresolved Fact Ratio: ${report.metrics.unresolved_fact_ratio}`,
+    `- Quarantined SQL Raw Records: ${report.metrics.quarantined_sql_raw_records}`,
     '',
     '## Edge Deltas',
     '',
@@ -3315,7 +3347,7 @@ async function main() {
     ? { mode: 'dry_run', path: null }
     : await backupExistingServers();
   logRebuildPhase('loading raw SQL metadata');
-  const { records, skipped: skippedSql } = await loadSqlRawObjects(aliases);
+  const { records, skipped: skippedSql, quarantined: quarantinedSqlRaw } = await loadSqlRawObjects(aliases);
   recordMemory('sql_raw_loaded');
   logRebuildPhase(`loaded ${records.size} SQL objects`);
   logRebuildPhase('rewriting SQL lineage');
@@ -3378,6 +3410,8 @@ async function main() {
     unresolvedSsisColumnMappingObjects: recordMetrics.unresolvedSsisColumnMappingObjects,
     unresolvedSsisColumnMappings: recordMetrics.unresolvedSsisColumnMappings,
     skippedSql,
+    quarantinedSqlRawCount: quarantinedSqlRaw.count,
+    quarantinedSqlRawSample: quarantinedSqlRaw.sample,
     skippedSsis: ssisSummary.skipped,
     ssisSqlEndpointRecords: ssisSummary.ssisSqlEndpointRecords,
     inferredSsisBridges,
