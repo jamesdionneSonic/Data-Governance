@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-import { readFile, stat } from 'fs/promises';
+import { readdir, readFile, stat } from 'fs/promises';
 import path from 'path';
 
 const DEFAULT_EXPORT_ROOT = './data/confluence/export';
@@ -12,6 +12,25 @@ const REQUIRED_ATTACHMENTS = new Set([
   'confluence-export-summary.json',
   'lineage-catalog.zip',
 ]);
+const FORBIDDEN_CONTENT_PATTERNS = [/unknown\.Sonic_DW/i];
+
+async function listFilesRecursive(root, current = '') {
+  const directory = path.join(root, current);
+  const entries = await readdir(directory, { withFileTypes: true });
+  const files = [];
+
+  for (const entry of entries) {
+    const relativePath = path.join(current, entry.name).replace(/\\/g, '/');
+    if (entry.isDirectory()) {
+      // eslint-disable-next-line no-await-in-loop
+      files.push(...(await listFilesRecursive(root, relativePath)));
+    } else if (entry.isFile()) {
+      files.push(relativePath);
+    }
+  }
+
+  return files;
+}
 
 function pageGroups(manifest) {
   return [
@@ -45,6 +64,23 @@ function pageGroups(manifest) {
 
 async function fileSize(root, relativePath) {
   return (await stat(path.join(root, relativePath))).size;
+}
+
+function manifestFiles(manifest) {
+  const files = new Set([MANIFEST_FILE_NAME]);
+  for (const group of pageGroups(manifest)) {
+    for (const record of group.records) {
+      if (record.file) files.add(String(record.file).replace(/\\/g, '/'));
+    }
+  }
+  for (const attachment of manifest.attachments || []) {
+    if (attachment.file) files.add(String(attachment.file).replace(/\\/g, '/'));
+  }
+  return files;
+}
+
+function isTextFile(file) {
+  return /\.(csv|json|md|txt)$/i.test(file);
 }
 
 const exportRoot = path.resolve(
@@ -96,6 +132,27 @@ for (const attachment of manifest.attachments || []) {
 
 for (const required of REQUIRED_ATTACHMENTS) {
   if (!attachmentNames.has(required)) failures.push(`required attachment missing: ${required}`);
+}
+
+const expectedFiles = manifestFiles(manifest);
+const generatedFiles = await listFilesRecursive(exportRoot);
+const unexpectedFiles = generatedFiles.filter((file) => !expectedFiles.has(file));
+if (unexpectedFiles.length > 0) {
+  failures.push(
+    `unexpected generated files remain in export root: ${unexpectedFiles.slice(0, 10).join(', ')}${
+      unexpectedFiles.length > 10 ? ` and ${unexpectedFiles.length - 10} more` : ''
+    }`
+  );
+}
+
+for (const file of generatedFiles.filter(isTextFile)) {
+  const content = await readFile(path.join(exportRoot, file), 'utf8');
+  for (const pattern of FORBIDDEN_CONTENT_PATTERNS) {
+    if (pattern.test(content)) {
+      failures.push(`forbidden content ${pattern} found in ${file}`);
+      break;
+    }
+  }
 }
 
 if ((manifest.object_pages || []).length > 250) {

@@ -11,6 +11,7 @@ function numberArg(name, fallback) {
 
 const result = await buildConfluenceExport({
   shardObjectLimit: numberArg('--shard-object-limit', undefined),
+  cleanOutput: !process.argv.includes('--no-clean'),
 });
 
 console.log(

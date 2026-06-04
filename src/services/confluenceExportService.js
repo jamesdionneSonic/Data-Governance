@@ -1104,7 +1104,7 @@ async function writeExportCsvFile(outputRoot, relativePath, headers, rows = []) 
 async function resetExportRoot(outputRoot) {
   await mkdir(outputRoot, { recursive: true });
   await Promise.all(
-    ['pages', 'shards', 'attachments', 'object-context'].map((entry) =>
+    ['pages', 'shards', 'attachments', 'object-context', 'runs', MANIFEST_FILE_NAME].map((entry) =>
       removeGeneratedPathWithRetry(path.join(outputRoot, entry))
     )
   );
@@ -1754,7 +1754,7 @@ export async function buildConfluenceExport(options = {}) {
       DEFAULT_CONFLUENCE_PARENT_PAGE_ID,
   };
 
-  if (options.cleanOutput === true) {
+  if (options.cleanOutput !== false) {
     await resetExportRoot(outputRoot);
   } else {
     await mkdir(outputRoot, { recursive: true });
