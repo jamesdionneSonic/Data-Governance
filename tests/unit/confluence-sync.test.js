@@ -138,7 +138,7 @@ describe('Confluence Sync Service', () => {
     );
     expect(result.pages[3].title).toBe('[AUTO] Catalog Shard 001 - DW01 Sonic_DW table');
     expect(result.attachments).toHaveLength(1);
-    expect(result.warnings[0]).toContain('Legacy object pages');
+    expect(result.warnings).toEqual([]);
   });
 
   test('renders markdown to Confluence storage HTML with generated notice', () => {

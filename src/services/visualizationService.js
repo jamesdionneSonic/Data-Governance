@@ -9,20 +9,34 @@ import {
   getDownstreamDependents,
   analyzeImpact,
   getTypedLineageNeighborhood,
+  getTypedLineageEdgesForNode,
   buildTypedLineageEdges,
+  indexTypedLineageEdges,
 } from './lineageService.js';
+
+const DEFAULT_DEPENDENCY_MATRIX_MAX_OBJECTS = 500;
+const DEFAULT_IMPACT_VISUALIZATION_MAX_PER_LEVEL = 250;
+
+function boundedPositiveInteger(value, fallback) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 1) return fallback;
+  return Math.floor(parsed);
+}
 
 /**
  * Build Cytoscape.js graph format
  * https://js.cytoscape.org/
  */
-export function buildCytoscapeGraph(objectId, lineageGraph, objects, depth = 2) {
+export function buildCytoscapeGraph(objectId, lineageGraph, objects, depth = 2, options = {}) {
   const nodes = [];
   const edges = [];
   const seenNodes = new Set();
   const seenEdges = new Set();
-  const typedEdges = buildTypedLineageEdges(objects);
-  const renderEdges = typedEdges.length > 0 ? typedEdges : buildFallbackLineageEdges(lineageGraph);
+  const typedEdges = resolveTypedEdgeSource(options.typedEdges, objects);
+  const renderEdges =
+    (Array.isArray(typedEdges) ? typedEdges.length : typedEdges.edgeCount) > 0
+      ? typedEdges
+      : indexTypedLineageEdges(buildFallbackLineageEdges(lineageGraph));
   const frontier = [{ id: objectId, depth: 0 }];
   const visited = new Set([objectId]);
   const edgeLabelByType = {
@@ -73,8 +87,7 @@ export function buildCytoscapeGraph(objectId, lineageGraph, objects, depth = 2) 
   };
 
   const edgeNeighbors = (id) =>
-    renderEdges
-      .filter((edge) => edge.source === id || edge.target === id)
+    getTypedLineageEdgesForNode(renderEdges, id, 'both')
       .map((edge) => ({
         nextId: edge.source === id ? edge.target : edge.source,
         edge,
@@ -134,7 +147,7 @@ export function buildCytoscapeGraph(objectId, lineageGraph, objects, depth = 2) 
  */
 export function buildCenteredLineageGraph(objectId, objects, options = {}) {
   const focusObj = objects.get(objectId);
-  const typedEdges = buildTypedLineageEdges(objects);
+  const typedEdges = resolveTypedEdgeSource(options.typedEdges, objects);
   const nodes = [];
   const edges = [];
   const seenNodes = new Set();
@@ -263,8 +276,8 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
     return false;
   };
 
-  const directIncoming = typedEdges.filter((edge) => edge.target === objectId);
-  const directOutgoing = typedEdges.filter((edge) => edge.source === objectId);
+  const directIncoming = getTypedLineageEdgesForNode(typedEdges, objectId, 'incoming');
+  const directOutgoing = getTypedLineageEdgesForNode(typedEdges, objectId, 'outgoing');
   const producerEdges = dedupeEdges(
     isDataFocus
       ? directIncoming.filter((edge) =>
@@ -300,7 +313,7 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
     if (bridgeVisited.has(targetId) || depthLeft <= 0) return;
     bridgeVisited.add(targetId);
 
-    const incoming = typedEdges.filter((edge) => edge.target === targetId);
+    const incoming = getTypedLineageEdgesForNode(typedEdges, targetId, 'incoming');
     for (const edge of incoming) {
       const sourceObj = objects.get(edge.source);
       if (!sourceObj || edge.source === objectId) continue;
@@ -343,8 +356,8 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
   const addPackageCallers = (packageId, depthLeft) => {
     if (depthLeft <= 0) return;
 
-    const callers = typedEdges.filter(
-      (edge) => edge.target === packageId && edge.type === 'calls' && isPackage(edge.source)
+    const callers = getTypedLineageEdgesForNode(typedEdges, packageId, 'incoming').filter(
+      (edge) => edge.type === 'calls' && isPackage(edge.source)
     );
 
     for (const caller of callers) {
@@ -365,9 +378,8 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
       0.98
     );
 
-    const producerInputs = typedEdges.filter(
+    const producerInputs = getTypedLineageEdgesForNode(typedEdges, edge.source, 'incoming').filter(
       (candidate) =>
-        candidate.target === edge.source &&
         candidate.source !== objectId &&
         ['reads', 'extracts', 'loads', 'calls'].includes(candidate.type)
     );
@@ -424,9 +436,8 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
 
     if (!isProcess(edge.target)) continue;
 
-    const consumerInputs = typedEdges.filter(
+    const consumerInputs = getTypedLineageEdgesForNode(typedEdges, edge.target, 'incoming').filter(
       (candidate) =>
-        candidate.target === edge.target &&
         candidate.source !== objectId &&
         ['reads', 'extracts', 'loads', 'calls'].includes(candidate.type)
     );
@@ -460,9 +471,8 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
       addBridgeUpstream(input.source, maxBridgeDepth);
     }
 
-    const processOutputs = typedEdges.filter(
+    const processOutputs = getTypedLineageEdgesForNode(typedEdges, edge.target, 'outgoing').filter(
       (candidate) =>
-        candidate.source === edge.target &&
         candidate.target !== objectId &&
         ['loads', 'created_by', 'created_via'].includes(candidate.type)
     );
@@ -516,6 +526,12 @@ function normalizeToken(value) {
   return String(value || '')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '');
+}
+
+function resolveTypedEdgeSource(edgeSource, objects) {
+  if (edgeSource?.byNode instanceof Map) return edgeSource;
+  if (Array.isArray(edgeSource)) return edgeSource;
+  return indexTypedLineageEdges(buildTypedLineageEdges(objects));
 }
 
 function normalizeEntityStem(value) {
@@ -695,7 +711,7 @@ export function buildD3Graph(objectId, lineageGraph, objects, depth = 2) {
  * Build Mermaid diagram markup
  * https://mermaid.js.org/
  */
-export function buildMermaidDiagram(objectId, lineageGraph, objects, depth = 2) {
+export function buildMermaidDiagram(objectId, lineageGraph, objects, depth = 2, options = {}) {
   let diagram = 'graph TD\n';
 
   const centralObj = objects.get(objectId);
@@ -724,7 +740,9 @@ export function buildMermaidDiagram(objectId, lineageGraph, objects, depth = 2) 
 
   diagram += `  ${safeNodeId(objectId)}["${nodeLabel(centralObj, objectId)}"]:::central\n`;
 
-  const typedNeighborhood = getTypedLineageNeighborhood(objectId, objects, depth);
+  const typedNeighborhood = getTypedLineageNeighborhood(objectId, objects, depth, {
+    typedEdges: options.typedEdges,
+  });
 
   if (typedNeighborhood.edges.length > 0) {
     const MAX_MERMAID_NODES = 40;
@@ -817,31 +835,57 @@ export function buildMermaidDiagram(objectId, lineageGraph, objects, depth = 2) 
   return diagram;
 }
 
-export function buildImpactVisualization(objectId, lineageGraph, objects) {
+export function buildImpactVisualization(objectId, lineageGraph, objects, options = {}) {
   const impact = analyzeImpact(objectId, lineageGraph, objects);
+  const maxPerLevel = boundedPositiveInteger(
+    options.maxPerLevel || process.env.IMPACT_VISUALIZATION_MAX_PER_LEVEL,
+    DEFAULT_IMPACT_VISUALIZATION_MAX_PER_LEVEL
+  );
+  const direct = impact.direct.slice(0, maxPerLevel);
+  const twoHops = impact.twoHops.slice(0, maxPerLevel);
+  const threeOrMore = impact.threeOrMore.slice(0, maxPerLevel);
 
   return {
     source: { id: objectId, ...objects.get(objectId) },
     impact,
     levels: {
-      direct: impact.direct.map((id) => ({ id, ...objects.get(id) })),
-      twoHops: impact.twoHops.map((id) => ({ id, ...objects.get(id) })),
-      threeOrMore: impact.threeOrMore.map((id) => ({ id, ...objects.get(id) })),
+      direct: direct.map((id) => ({ id, ...objects.get(id) })),
+      twoHops: twoHops.map((id) => ({ id, ...objects.get(id) })),
+      threeOrMore: threeOrMore.map((id) => ({ id, ...objects.get(id) })),
     },
     stats: {
       directCount: impact.direct.length,
       twoHopsCount: impact.twoHops.length,
       threeOrMoreCount: impact.threeOrMore.length,
       totalAffected: impact.totalAffected,
+      renderedDirectCount: direct.length,
+      renderedTwoHopsCount: twoHops.length,
+      renderedThreeOrMoreCount: threeOrMore.length,
+      maxPerLevel,
+      truncated:
+        impact.direct.length > direct.length ||
+        impact.twoHops.length > twoHops.length ||
+        impact.threeOrMore.length > threeOrMore.length,
     },
   };
 }
 
-export function buildDependencyMatrix(database, objects, lineageGraph) {
-  const dbObjects = Array.from(objects.values()).filter((obj) => obj.database === database);
+export function buildDependencyMatrix(database, objects, lineageGraph, options = {}) {
+  const allDbObjects = Array.from(objects.values()).filter((obj) => obj.database === database);
+  const maxObjects = boundedPositiveInteger(
+    options.maxObjects || process.env.DEPENDENCY_MATRIX_MAX_OBJECTS,
+    DEFAULT_DEPENDENCY_MATRIX_MAX_OBJECTS
+  );
+  const truncated = allDbObjects.length > maxObjects;
+  const dbObjects = truncated ? allDbObjects.slice(0, maxObjects) : allDbObjects;
 
   const matrix = {
     database,
+    objectCount: allDbObjects.length,
+    renderedObjectCount: dbObjects.length,
+    maxObjects,
+    truncated,
+    omittedObjects: truncated ? allDbObjects.length - dbObjects.length : 0,
     rows: dbObjects.map((obj) => obj.name),
     columns: dbObjects.map((obj) => obj.name),
     data: [],
@@ -849,11 +893,11 @@ export function buildDependencyMatrix(database, objects, lineageGraph) {
 
   for (let i = 0; i < dbObjects.length; i += 1) {
     const rowObj = dbObjects[i];
+    const deps = lineageGraph.get(rowObj.id) || new Set();
     const row = [];
 
     for (let j = 0; j < dbObjects.length; j += 1) {
       const colObj = dbObjects[j];
-      const deps = lineageGraph.get(rowObj.id) || new Set();
       const value = deps.has(colObj.id) ? 1 : 0;
       row.push(value);
     }

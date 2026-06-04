@@ -17,8 +17,7 @@ import { createApiRouter } from '../utils/apiRouter.js';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 import { sendErrorResponse } from '../middleware/errorHandler.js';
 import { SsisMetadataExtractor } from '../services/ssisExtractor.js';
-import { loadAllMarkdown } from '../services/markdownService.js';
-import { buildLineageGraph } from '../services/lineageService.js';
+import { loadRuntimeCatalog } from '../services/catalogRuntimeService.js';
 import { initializeCache } from '../utils/cacheInitializer.js';
 
 const router = createApiRouter();
@@ -595,8 +594,8 @@ router.post('/extract', authenticate, requireAdmin, async (req, res) => {
   let markdownOutput = null;
   if (opts.generateMarkdownOutput !== false) {
     markdownOutput = persistSsisMarkdown(result, opts.markdownOutputPath);
-    const refreshedObjects = await loadAllMarkdown(markdownOutput.baseOutputPath);
-    initializeCache(refreshedObjects, buildLineageGraph(refreshedObjects));
+    const runtimeCatalog = await loadRuntimeCatalog(markdownOutput.baseOutputPath, { rebuild: true });
+    initializeCache(runtimeCatalog.objects, runtimeCatalog.lineageGraph, runtimeCatalog);
   }
 
   return res.json({

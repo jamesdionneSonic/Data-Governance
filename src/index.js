@@ -5,9 +5,8 @@ import path from 'path';
 // Import app factory
 import createApp from './app.js';
 import { initializeCache } from './utils/cacheInitializer.js';
-import { loadAllMarkdown } from './services/markdownService.js';
 import { resolveLineageCorpus } from './services/lineageResolver.js';
-import { buildLineageGraph } from './services/lineageService.js';
+import { loadRuntimeCatalog } from './services/catalogRuntimeService.js';
 
 // Load environment variables
 dotenv.config();
@@ -37,11 +36,12 @@ async function initializeMarkdownCacheInBackground() {
       });
     }
 
-    const objects = await loadAllMarkdown(markdownDataPath);
-    const lineageGraph = buildLineageGraph(objects);
-    initializeCache(objects, lineageGraph);
+    const runtimeCatalog = await loadRuntimeCatalog(markdownDataPath);
+    initializeCache(runtimeCatalog.objects, runtimeCatalog.lineageGraph, runtimeCatalog);
     console.log(
-      `Data cache initialized with ${objects.size} object(s) in ${Date.now() - startedAt}ms`
+      `Data cache initialized with ${runtimeCatalog.objects.size} summary object(s) in ${
+        Date.now() - startedAt
+      }ms`
     );
   } catch (err) {
     console.warn(`Data cache initialization failed: ${err.message}`);

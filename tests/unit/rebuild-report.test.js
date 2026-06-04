@@ -42,7 +42,7 @@ describe('Rebuild confidence report and SSIS endpoint gates', () => {
       ],
     ]);
 
-    const endpointRecords = buildSsisSqlEndpointRecords(records);
+    const endpointRecords = Array.from(buildSsisSqlEndpointRecords(records));
     expect(endpointRecords).toHaveLength(2);
     expect(endpointRecords).toEqual(
       expect.arrayContaining([

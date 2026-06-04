@@ -24,6 +24,7 @@ import {
 import { getUpstreamDependencies, getDownstreamDependents } from '../services/lineageService.js';
 import { buildCodexColumnContext } from '../services/codexContextService.js';
 import { createTtlCache } from '../utils/ttlCache.js';
+import { getTypedLineageEdgeIndex } from '../services/catalogRuntimeStore.js';
 
 const router = createApiRouter();
 
@@ -293,6 +294,7 @@ router.get('/graph/:objectId', authenticate, (req, res) => {
       effectiveDepth = 4;
     }
     const graphCacheKey = `graph:${objectId}:${normalizedFormat}:${effectiveDepth}`;
+    const typedEdges = getTypedLineageEdgeIndex();
 
     const graphData = getOrSetCache(graphCacheKey, () => {
       switch (normalizedFormat) {
@@ -300,14 +302,23 @@ router.get('/graph/:objectId', authenticate, (req, res) => {
           return buildCenteredLineageGraph(objectId, cachedObjects, {
             maxBridgeDepth: effectiveDepth,
             groupSsis: true,
+            typedEdges,
           });
         case 'd3':
           return buildD3Graph(objectId, cachedLineageGraph, cachedObjects, effectiveDepth);
         case 'mermaid':
-          return buildMermaidDiagram(objectId, cachedLineageGraph, cachedObjects, effectiveDepth);
+          return buildMermaidDiagram(objectId, cachedLineageGraph, cachedObjects, effectiveDepth, {
+            typedEdges,
+          });
         case 'cytoscape':
         default:
-          return buildCytoscapeGraph(objectId, cachedLineageGraph, cachedObjects, effectiveDepth);
+          return buildCytoscapeGraph(
+            objectId,
+            cachedLineageGraph,
+            cachedObjects,
+            effectiveDepth,
+            { typedEdges }
+          );
       }
     });
 
@@ -420,6 +431,7 @@ router.get('/audit/:objectId', authenticate, (req, res) => {
     const centeredGraph = buildCenteredLineageGraph(objectId, cachedObjects, {
       maxBridgeDepth: effectiveDepth,
       groupSsis: true,
+      typedEdges: getTypedLineageEdgeIndex(),
     });
 
     const auditEdges = centeredGraph.edges.map((edge) => {

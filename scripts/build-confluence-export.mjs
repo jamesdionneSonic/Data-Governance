@@ -22,6 +22,7 @@ console.log(
       objectLocatorPages: result.manifest.object_locator_pages.length,
       quickContextPages: result.manifest.quick_context_pages.length,
       shardPages: result.manifest.shard_pages.length,
+      governedAssetPages: result.manifest.object_pages.length,
       attachments: result.manifest.attachments.length,
       objects: result.manifest.stats.objects,
     },

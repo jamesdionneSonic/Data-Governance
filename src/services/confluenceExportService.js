@@ -4,15 +4,18 @@
  */
 
 import { createHash } from 'crypto';
+import { once } from 'events';
+import { createReadStream, createWriteStream } from 'fs';
 import { mkdir, readFile, rm, writeFile } from 'fs/promises';
 import path from 'path';
+import { Readable } from 'stream';
 import { setTimeout as delay } from 'timers/promises';
 import yaml from 'yaml';
-import AdmZip from 'adm-zip';
+import { ZipArchive } from 'archiver';
 
-import { getMarkdownFiles, loadAllMarkdown } from './markdownService.js';
+import { loadRuntimeCatalog } from './catalogRuntimeService.js';
+import { getMarkdownFiles } from './markdownService.js';
 import {
-  buildLineageGraph,
   getDownstreamDependents,
   getUpstreamDependencies,
 } from './lineageService.js';
@@ -22,6 +25,8 @@ const DEFAULT_EXPORT_ROOT = './data/confluence/export';
 const DEFAULT_CONFLUENCE_BASE_URL = 'https://sonicautomotive.atlassian.net/wiki';
 const DEFAULT_CONFLUENCE_SPACE_KEY = 'TDE';
 const DEFAULT_CONFLUENCE_PARENT_PAGE_ID = '2221670415';
+const DEFAULT_CATALOG_REPO_REMOTE =
+  'https://sonicapplicationdevelopment@dev.azure.com/sonicapplicationdevelopment/Data%20Warehouse/_git/Sonic-data-lineage';
 const DEFAULT_SHARD_OBJECT_LIMIT = 150;
 const DEFAULT_SHARD_MAX_BYTES = 250_000;
 const MANIFEST_FILE_NAME = 'confluence-export-manifest.json';
@@ -33,6 +38,30 @@ const DEFAULT_QUICK_CONTEXT_MAX_BYTES = 180_000;
 const QUICK_CONTEXT_NEIGHBOR_LIMIT = 15;
 const DEFAULT_OBJECT_LOCATOR_OBJECT_LIMIT = 500;
 const DEFAULT_OBJECT_LOCATOR_MAX_BYTES = 120_000;
+const DEFAULT_GOVERNED_OBJECT_PAGE_LIMIT = 100;
+const GOVERNED_ASSET_COLUMN_PREVIEW_LIMIT = 25;
+const CONTEXT_PAGE_ENTRY_OVERHEAD_BYTES = 300;
+const SHARD_PAGE_ENTRY_OVERHEAD_BYTES = 250;
+const OBJECT_REGISTRY_HEADERS = [
+  'object_id',
+  'system',
+  'database',
+  'schema',
+  'name',
+  'type',
+  'owner',
+  'steward',
+  'domain',
+  'criticality',
+  'classification',
+  'upstream_count',
+  'downstream_count',
+  'confidence',
+  'confidence_label',
+  'refresh_timestamp',
+  'quick_context_page',
+  'shard_page',
+];
 
 function nowIso() {
   return new Date().toISOString();
@@ -40,6 +69,26 @@ function nowIso() {
 
 function sha256(content) {
   return createHash('sha256').update(content).digest('hex');
+}
+
+async function hashFile(filePath) {
+  const hash = createHash('sha256');
+  let bytes = 0;
+
+  await new Promise((resolve, reject) => {
+    const stream = createReadStream(filePath);
+    stream.on('data', (chunk) => {
+      hash.update(chunk);
+      bytes += chunk.length;
+    });
+    stream.on('error', reject);
+    stream.on('end', resolve);
+  });
+
+  return {
+    hash: hash.digest('hex'),
+    bytes,
+  };
 }
 
 function normalizePathForManifest(filePath) {
@@ -69,6 +118,14 @@ function ensureArray(value) {
   return Array.isArray(value) ? value : [];
 }
 
+function countField(object, arrayField, countFieldName) {
+  const countValue = object?.[countFieldName];
+  if (typeof countValue === 'number' && Number.isFinite(countValue)) {
+    return countValue;
+  }
+  return ensureArray(object?.[arrayField]).length;
+}
+
 function confidenceLabel(object = {}) {
   return object.catalog_confidence?.confidence_label || 'missing';
 }
@@ -76,6 +133,43 @@ function confidenceLabel(object = {}) {
 function confidenceScore(object = {}) {
   const score = object.catalog_confidence?.overall_score;
   return typeof score === 'number' ? score : null;
+}
+
+function compactDisplayValue(value, fallback = '') {
+  return String(value ?? fallback).replace(/\s+/g, ' ').trim();
+}
+
+function csvCell(value) {
+  const text = compactDisplayValue(value);
+  if (/[",\r\n]/.test(text)) return `"${text.replace(/"/g, '""')}"`;
+  return text;
+}
+
+function csvTable(headers, rows) {
+  return [
+    headers.map(csvCell).join(','),
+    ...rows.map((row) => headers.map((header) => csvCell(row[header])).join(',')),
+  ].join('\n');
+}
+
+function catalogRepoUrl() {
+  return process.env.CATALOG_REPO_REMOTE || DEFAULT_CATALOG_REPO_REMOTE;
+}
+
+function aiRerouteBlock() {
+  return [
+    '## AI / Automation Routing',
+    '',
+    'This Confluence page is for human navigation, search, and governance review.',
+    '',
+    'AI assistants and automation should use the DevOps lineage catalog first:',
+    '',
+    `- Repository: ${catalogRepoUrl()}`,
+    '- Registry: `registry/object-registry.jsonl` or `registry/object-registry.csv`',
+    '- Targeted context packs: use the `context_pack_path` from the registry row',
+    '- Confluence should be used for human explanation, not full-corpus machine retrieval',
+    '',
+  ].join('\n');
 }
 
 function confidenceDistribution(objects) {
@@ -139,6 +233,61 @@ function summarizeObject(object, id, shard = null) {
   };
 }
 
+function objectDomain(object = {}) {
+  return (
+    compactDisplayValue(object.domain || object.data_domain || object.business_domain) ||
+    compactDisplayValue(object.domain_manager) ||
+    compactDisplayValue(object.database) ||
+    'unknown'
+  );
+}
+
+function objectClassification(object = {}) {
+  return compactDisplayValue(object.classification || object.sensitivity, 'public') || 'public';
+}
+
+function objectCriticality(object = {}) {
+  const name = compactDisplayValue(object.name).toLowerCase();
+  const tags = ensureArray(object.tags).join('|').toLowerCase();
+  if (object.certified === true) return 'certified';
+  if (/(executive|regulatory|kpi|metric|scorecard|dashboard)/i.test(`${name}|${tags}`)) {
+    return 'critical_reporting';
+  }
+  if (/^(dim|fact)[a-z0-9_]/i.test(name) || /(dimension|fact)/i.test(tags)) {
+    return 'dimensional_model';
+  }
+  if (objectClassification(object) !== 'public') return 'classified';
+  if (compactDisplayValue(object.steward || object.domain_manager || object.custodian)) {
+    return 'governed';
+  }
+  return 'standard';
+}
+
+function buildObjectRegistryRow({ entry, graph, generatedAt, quickContext, shard }) {
+  const object = entry.object;
+  const id = entry.id;
+  return {
+    object_id: id,
+    system: compactDisplayValue(object.server, 'unknown'),
+    database: compactDisplayValue(object.database, 'unknown'),
+    schema: compactDisplayValue(object.schema),
+    name: compactDisplayValue(object.name, id),
+    type: compactDisplayValue(object.type, 'object'),
+    owner: compactDisplayValue(object.owner, 'unknown'),
+    steward: compactDisplayValue(object.steward || object.domain_manager || object.custodian),
+    domain: objectDomain(object),
+    criticality: objectCriticality(object),
+    classification: objectClassification(object),
+    upstream_count: getUpstreamDependencies(id, graph, 1).length,
+    downstream_count: getDownstreamDependents(id, graph, 1).length,
+    confidence: confidenceScore(object),
+    confidence_label: confidenceLabel(object),
+    refresh_timestamp: generatedAt,
+    quick_context_page: quickContext?.title || '',
+    shard_page: shard?.title || '',
+  };
+}
+
 function markdownTable(headers, rows) {
   const header = `| ${headers.join(' | ')} |`;
   const separator = `| ${headers.map(() => '---').join(' | ')} |`;
@@ -162,6 +311,8 @@ function renderReadmePage({ generatedAt, rootPageUrl, summary }) {
     '- Use the rebuild report to check confidence, unresolved facts, and edge deltas.',
     '- Use catalog shard pages for Rovo/Codex-readable lineage context.',
     '- Use the attached catalog bundle as a backup/export artifact, not as the primary Rovo corpus.',
+    '',
+    aiRerouteBlock(),
     '',
     '## Generated Assets',
     '',
@@ -249,12 +400,131 @@ function renderSourceInventoryPage({ objects, generatedAt }) {
   ].join('\n');
 }
 
+function renderGovernancePortalPage({
+  objectRows,
+  registryRows,
+  governedAssetDefinitions,
+  generatedAt,
+}) {
+  const certifiedRows = registryRows
+    .filter((row) => row.criticality === 'certified')
+    .slice(0, 25);
+  const criticalRows = registryRows
+    .filter((row) => ['critical_reporting', 'dimensional_model', 'classified'].includes(row.criticality))
+    .slice(0, 25);
+  const stewardRows = registryRows
+    .filter((row) => row.steward)
+    .slice(0, 25);
+
+  return [
+    '# Governance Portal',
+    '',
+    `Generated at: ${generatedAt}`,
+    '',
+    aiRerouteBlock(),
+    '',
+    '## Layered Repository Design',
+    '',
+    markdownTable(
+      ['Layer', 'Purpose', 'Primary Artifact'],
+      [
+        [
+          'Authoritative object registry',
+          'One machine-readable row per object for search, automation, and AI lookup.',
+          'catalog-object-registry.json / catalog-object-registry.csv',
+        ],
+        [
+          'Human governance portal',
+          'Curated navigation for domains, systems, confidence, stewardship, known risks, and rebuild health.',
+          'README, Governance Portal, Source System Inventory, Confidence Guide, Latest Rebuild Report',
+        ],
+        [
+          'Search-optimized index pages',
+          'Compact Confluence pages that answer what an object is and where to go next.',
+          'Object Locator and Lineage Quick Context pages',
+        ],
+        [
+          'Governed asset detail pages',
+          'Dedicated detail pages only for certified, critical, classified, reporting, dimensional, or stewarded assets.',
+          `${governedAssetDefinitions.length} governed asset pages`,
+        ],
+        [
+          'Machine-readable attachments',
+          'JSON/CSV manifests for tools and AI agents; Confluence pages remain explanatory evidence.',
+          'Registry, export summary, object index, catalog bundle',
+        ],
+      ]
+    ),
+    '',
+    '## Certified Assets',
+    '',
+    certifiedRows.length
+      ? markdownTable(
+          ['Object ID', 'Type', 'Domain', 'Confidence', 'Quick Context'],
+          certifiedRows.map((row) => [
+            `\`${row.object_id}\``,
+            row.type,
+            row.domain,
+            `${row.confidence_label}${row.confidence === null ? '' : ` (${row.confidence})`}`,
+            row.quick_context_page,
+          ])
+        )
+      : '- No certified assets were found in the current registry.',
+    '',
+    '## Critical Or Classified Assets',
+    '',
+    criticalRows.length
+      ? markdownTable(
+          ['Object ID', 'Type', 'Criticality', 'Classification', 'Steward'],
+          criticalRows.map((row) => [
+            `\`${row.object_id}\``,
+            row.type,
+            row.criticality,
+            row.classification,
+            row.steward || row.owner,
+          ])
+        )
+      : '- No critical/classified assets were found in the current registry.',
+    '',
+    '## Stewardship Coverage',
+    '',
+    stewardRows.length
+      ? markdownTable(
+          ['Object ID', 'Domain', 'Owner', 'Steward', 'Confidence'],
+          stewardRows.map((row) => [
+            `\`${row.object_id}\``,
+            row.domain,
+            row.owner,
+            row.steward,
+            row.confidence_label,
+          ])
+        )
+      : '- No stewarded assets were found in the current registry.',
+    '',
+    '## Repository Scale',
+    '',
+    markdownTable(
+      ['Metric', 'Count'],
+      [
+        ['Objects in authoritative registry', objectRows.length],
+        ['Governed detail pages', governedAssetDefinitions.length],
+        ['Certified registry rows', certifiedRows.length],
+        ['Critical/classified preview rows', criticalRows.length],
+        ['Stewarded preview rows', stewardRows.length],
+      ]
+    ),
+    '',
+  ].join('\n');
+}
+
 function renderObjectIndexPage({ objectRows, generatedAt }) {
   const previewRows = objectRows.slice(0, OBJECT_INDEX_PREVIEW_LIMIT);
   return [
     '# Object Index',
     '',
     `Generated at: ${generatedAt}`,
+    '',
+    aiRerouteBlock(),
     '',
     `Total objects: ${objectRows.length}`,
     '',
@@ -272,6 +542,133 @@ function renderObjectIndexPage({ objectRows, generatedAt }) {
         row.downstream_edges,
       ])
     ),
+    '',
+  ].join('\n');
+}
+
+function groupRegistryRowsByDatabase(registryRows) {
+  const groups = new Map();
+  for (const row of registryRows) {
+    const database = compactDisplayValue(row.database, 'unknown') || 'unknown';
+    if (!groups.has(database)) groups.set(database, []);
+    groups.get(database).push(row);
+  }
+
+  return Array.from(groups.entries()).sort(([left], [right]) => left.localeCompare(right));
+}
+
+function buildDatabasePageEntries(databaseGroups) {
+  const titleCounts = new Map();
+  for (const [database] of databaseGroups) {
+    const titleKey = `[auto] database - ${database}`.toLowerCase();
+    titleCounts.set(titleKey, (titleCounts.get(titleKey) || 0) + 1);
+  }
+
+  return databaseGroups.map(([database, rows]) => {
+    const titleKey = `[auto] database - ${database}`.toLowerCase();
+    const hasCaseInsensitiveTitleConflict = titleCounts.get(titleKey) > 1;
+    const hash = sha256(database).slice(0, 8);
+
+    return {
+      database,
+      rows,
+      title: hasCaseInsensitiveTitleConflict
+        ? `[AUTO] Database - ${database} [db ${hash}]`.slice(0, 240)
+        : `[AUTO] Database - ${database}`.slice(0, 240),
+      fileSegment: hasCaseInsensitiveTitleConflict
+        ? `${safeSegment(database)}--${hash}`
+        : safeSegment(database),
+      hasCaseInsensitiveTitleConflict,
+    };
+  });
+}
+
+function countRowsByField(rows, fieldName) {
+  const counts = new Map();
+  for (const row of rows) {
+    const value = compactDisplayValue(row[fieldName], 'unknown') || 'unknown';
+    counts.set(value, (counts.get(value) || 0) + 1);
+  }
+  return Array.from(counts.entries())
+    .map(([name, count]) => ({ name, count }))
+    .sort((left, right) => right.count - left.count || left.name.localeCompare(right.name));
+}
+
+function renderDatabasesIndexPage({ databasePageEntries, generatedAt }) {
+  return [
+    '# Databases',
+    '',
+    `Generated at: ${generatedAt}`,
+    '',
+    aiRerouteBlock(),
+    '',
+    'Start here when you know the source database or warehouse area. Each database page gives human navigation, counts, and high-impact objects; the DevOps registry remains the complete machine-readable index.',
+    '',
+    markdownTable(
+      ['Database', 'Objects', 'Primary Types', 'Page'],
+      databasePageEntries.map(({ database, rows, title }) => [
+        database,
+        rows.length,
+        countRowsByField(rows, 'type')
+          .slice(0, 5)
+          .map((item) => `${item.name}: ${item.count}`)
+          .join(', '),
+        title,
+      ])
+    ),
+    '',
+  ].join('\n');
+}
+
+function renderDatabasePage({ database, rows, generatedAt }) {
+  const topRows = rows
+    .slice()
+    .sort(
+      (left, right) =>
+        Number(right.downstream_count || 0) - Number(left.downstream_count || 0) ||
+        String(left.object_id).localeCompare(String(right.object_id))
+    )
+    .slice(0, 250);
+
+  return [
+    `# Database: ${database}`,
+    '',
+    `Generated at: ${generatedAt}`,
+    '',
+    aiRerouteBlock(),
+    '',
+    '## Counts By Type',
+    '',
+    markdownTable(
+      ['Type', 'Objects'],
+      countRowsByField(rows, 'type').map((item) => [item.name, item.count])
+    ),
+    '',
+    '## Counts By Schema',
+    '',
+    markdownTable(
+      ['Schema', 'Objects'],
+      countRowsByField(rows, 'schema')
+        .slice(0, 100)
+        .map((item) => [item.name, item.count])
+    ),
+    '',
+    '## Highest Impact Objects',
+    '',
+    markdownTable(
+      ['Object ID', 'Type', 'Schema', 'Downstream', 'Confidence', 'Quick Context'],
+      topRows.map((row) => [
+        `\`${row.object_id}\``,
+        row.type,
+        row.schema,
+        row.downstream_count,
+        row.confidence_label,
+        row.quick_context_page,
+      ])
+    ),
+    rows.length > topRows.length
+      ? `\nOnly the top ${topRows.length} high-impact objects are listed here. Use the DevOps registry for the complete database inventory.`
+      : '',
     '',
   ].join('\n');
 }
@@ -313,14 +710,25 @@ function buildQuickContextRecord({ object, id, graph, markdownRoot, shard }) {
     direct_downstream_count: allDownstream.length,
     direct_downstream: allDownstream.slice(0, QUICK_CONTEXT_NEIGHBOR_LIMIT),
     direct_downstream_truncated: allDownstream.length > QUICK_CONTEXT_NEIGHBOR_LIMIT,
-    column_count: columns.length,
-    column_usage_count: ensureArray(object.column_usage).length,
-    column_lineage_count: ensureArray(object.column_lineage).length,
-    unresolved_column_usage_count: ensureArray(object.unresolved_column_usage).length,
-    unresolved_column_lineage_count: ensureArray(object.unresolved_column_lineage).length,
-    unresolved_ssis_column_mapping_count: ensureArray(object.unresolved_ssis_column_mappings)
-      .length,
-    risk_flag_count: ensureArray(object.column_risk_flags).length,
+    column_count: countField(object, 'columns', 'column_count'),
+    column_usage_count: countField(object, 'column_usage', 'column_usage_count'),
+    column_lineage_count: countField(object, 'column_lineage', 'column_lineage_count'),
+    unresolved_column_usage_count: countField(
+      object,
+      'unresolved_column_usage',
+      'unresolved_column_usage_count'
+    ),
+    unresolved_column_lineage_count: countField(
+      object,
+      'unresolved_column_lineage',
+      'unresolved_column_lineage_count'
+    ),
+    unresolved_ssis_column_mapping_count: countField(
+      object,
+      'unresolved_ssis_column_mappings',
+      'unresolved_ssis_column_mapping_count'
+    ),
+    risk_flag_count: countField(object, 'column_risk_flags', 'column_risk_flag_count'),
     shard_title: shard?.title || '',
     shard_file: shard?.file || '',
     source_markdown_path: relativeSourcePath(markdownRoot, object.filePath),
@@ -353,6 +761,8 @@ function renderQuickContextPage({ page, graph, markdownRoot, shardLookup, genera
     `- Range: ${quickContextRange(page.entries)}`,
     '',
     '## How To Use This Page',
+    '',
+    aiRerouteBlock(),
     '',
     '- Search by object name, schema-qualified name, or fully-qualified object ID.',
     '- Use direct_upstream and direct_downstream for table/package lineage answers.',
@@ -423,6 +833,8 @@ function renderObjectLocatorPage({ page, quickContextLookup, shardLookup, genera
     `- Range: ${objectLocatorRange(page.entries)}`,
     '',
     '## How To Use This Page',
+    '',
+    aiRerouteBlock(),
     '',
     '- Search by object name, schema-qualified name, or fully-qualified object ID.',
     '- Pick the best canonical object ID when duplicate names exist.',
@@ -542,21 +954,34 @@ function buildShardObjectContext({ object, id, graph, markdownRoot }) {
     downstream,
     downstream_truncated: allDownstream.length > downstream.length,
     source_markdown_path: relativeSourcePath(markdownRoot, object.filePath),
-    column_count: columns.length,
+    column_count: countField(object, 'columns', 'column_count'),
     columns: columns.map((column) => ({
       name: column.name,
       column_id: column.column_id,
       data_type: column.data_type || '',
       nullable: column.nullable ?? null,
     })),
-    column_usage_count: ensureArray(object.column_usage).length,
-    column_lineage_count: ensureArray(object.column_lineage).length,
-    unresolved_column_usage_count: ensureArray(object.unresolved_column_usage).length,
-    unresolved_column_lineage_count: ensureArray(object.unresolved_column_lineage).length,
-    unresolved_ssis_column_mapping_count: ensureArray(object.unresolved_ssis_column_mappings)
-      .length,
+    column_usage_count: countField(object, 'column_usage', 'column_usage_count'),
+    column_lineage_count: countField(object, 'column_lineage', 'column_lineage_count'),
+    unresolved_column_usage_count: countField(
+      object,
+      'unresolved_column_usage',
+      'unresolved_column_usage_count'
+    ),
+    unresolved_column_lineage_count: countField(
+      object,
+      'unresolved_column_lineage',
+      'unresolved_column_lineage_count'
+    ),
+    unresolved_ssis_column_mapping_count: countField(
+      object,
+      'unresolved_ssis_column_mappings',
+      'unresolved_ssis_column_mapping_count'
+    ),
     risk_flags: compactRiskFlags(object),
-    risk_flags_truncated: ensureArray(object.column_risk_flags).length > SHARD_RISK_PREVIEW_LIMIT,
+    risk_flags_truncated:
+      countField(object, 'column_risk_flags', 'column_risk_flag_count') >
+      SHARD_RISK_PREVIEW_LIMIT,
   };
 }
 
@@ -572,6 +997,8 @@ function renderShardPage({ shard, graph, markdownRoot, generatedAt }) {
     `- Group: ${shard.group.server} / ${shard.group.database} / ${shard.group.type}`,
     '',
     '## How To Read This Shard',
+    '',
+    aiRerouteBlock(),
     '',
     '- Search this page for a fully-qualified object ID or column name.',
     '- Use `upstream` and `downstream` for graph traversal.',
@@ -624,6 +1051,56 @@ async function writeExportFile(outputRoot, relativePath, content) {
   };
 }
 
+function* jsonArrayChunks(items = []) {
+  yield '[\n';
+  for (let index = 0; index < items.length; index += 1) {
+    const comma = index === items.length - 1 ? '' : ',';
+    yield `  ${JSON.stringify(items[index])}${comma}\n`;
+  }
+  yield ']\n';
+}
+
+async function writeExportJsonArrayFile(outputRoot, relativePath, items = []) {
+  const fullPath = path.join(outputRoot, relativePath);
+  await mkdir(path.dirname(fullPath), { recursive: true });
+
+  const stream = createWriteStream(fullPath, { encoding: 'utf8' });
+  const hash = createHash('sha256');
+  let bytes = 0;
+
+  const writeChunk = async (chunk) => {
+    hash.update(chunk);
+    bytes += Buffer.byteLength(chunk);
+    if (!stream.write(chunk)) {
+      await once(stream, 'drain');
+    }
+  };
+
+  try {
+    for (const chunk of jsonArrayChunks(items)) {
+      await writeChunk(chunk);
+    }
+    await new Promise((resolve, reject) => {
+      stream.once('finish', resolve);
+      stream.once('error', reject);
+      stream.end();
+    });
+  } catch (err) {
+    stream.destroy();
+    throw err;
+  }
+
+  return {
+    file: normalizePathForManifest(relativePath),
+    hash: hash.digest('hex'),
+    bytes,
+  };
+}
+
+async function writeExportCsvFile(outputRoot, relativePath, headers, rows = []) {
+  return writeExportFile(outputRoot, relativePath, `${csvTable(headers, rows)}\n`);
+}
+
 async function resetExportRoot(outputRoot) {
   await mkdir(outputRoot, { recursive: true });
   await Promise.all(
@@ -668,6 +1145,7 @@ function pageRecord(title, fileInfo, extra = {}) {
     content_type: 'page',
     labels: ['data-lineage', 'generated', 'lineage-catalog', ...(extra.labels || [])],
     publish: extra.publish !== false,
+    ...(extra.parentTitle ? { parent_title: extra.parentTitle } : {}),
     ...fileInfo,
   };
 }
@@ -769,8 +1247,8 @@ function buildShardDefinitions(entries, options) {
       });
       return {
         ...entry,
-        context,
-        estimatedBytes: Buffer.byteLength(yaml.stringify(context), 'utf8') + 100,
+        estimatedBytes:
+          Buffer.byteLength(yaml.stringify(context), 'utf8') + SHARD_PAGE_ENTRY_OVERHEAD_BYTES,
       };
     });
     const chunks = [];
@@ -873,7 +1351,8 @@ function buildQuickContextDefinitions(entries, options) {
       });
       return {
         ...entry,
-        estimatedBytes: Buffer.byteLength(yaml.stringify(context), 'utf8') + 120,
+        estimatedBytes:
+          Buffer.byteLength(yaml.stringify(context), 'utf8') + CONTEXT_PAGE_ENTRY_OVERHEAD_BYTES,
       };
     })
     .sort((left, right) => quickContextSortKey(left).localeCompare(quickContextSortKey(right)));
@@ -947,7 +1426,8 @@ function buildObjectLocatorDefinitions(entries, options) {
       });
       return {
         ...entry,
-        estimatedBytes: Buffer.byteLength(yaml.stringify(record), 'utf8') + 120,
+        estimatedBytes:
+          Buffer.byteLength(yaml.stringify(record), 'utf8') + CONTEXT_PAGE_ENTRY_OVERHEAD_BYTES,
       };
     })
     .sort((left, right) => quickContextSortKey(left).localeCompare(quickContextSortKey(right)));
@@ -988,32 +1468,222 @@ function buildObjectLocatorDefinitions(entries, options) {
   return pages;
 }
 
-async function createCatalogZip({ markdownRoot, outputRoot, artifactRoot, generatedAt, objectIndex }) {
-  const zip = new AdmZip();
-  const markdownFiles = await getMarkdownFiles(markdownRoot);
+function governedAssetReasons(object = {}) {
+  const idName = `${object.id || ''}|${object.name || ''}`.toLowerCase();
+  const tags = ensureArray(object.tags).join('|').toLowerCase();
+  const reasons = [];
 
-  for (const filePath of markdownFiles) {
-    zip.addLocalFile(filePath, path.join('markdown', path.dirname(relativeTo(markdownRoot, filePath))));
+  if (/(temp|tmp|backup|bak|chunk|sidecar)/i.test(idName) || tags.includes('mapping-sidecar')) {
+    return reasons;
   }
 
-  const catalogManifest = await readTextIfExists(path.join(markdownRoot, 'catalog-manifest.json'));
-  const rebuildReport = await readTextIfExists(path.join(markdownRoot, 'rebuild-report.json'));
-  zip.addFile('catalog-object-index.json', Buffer.from(JSON.stringify(objectIndex, null, 2)));
-  zip.addFile('export-generated-at.txt', Buffer.from(`${generatedAt}\n`));
-  if (catalogManifest) zip.addFile('catalog-manifest.json', Buffer.from(catalogManifest));
-  if (rebuildReport) zip.addFile('rebuild-report.json', Buffer.from(rebuildReport));
+  if (object.certified === true) reasons.push('certified');
+  if (compactDisplayValue(object.steward || object.domain_manager || object.custodian)) {
+    reasons.push('named_steward');
+  }
+  if (objectClassification(object) !== 'public') reasons.push('classified');
+  if (/^(dim|fact)[a-z0-9_]/i.test(compactDisplayValue(object.name))) {
+    reasons.push('dimension_or_fact');
+  }
+  if (/(executive|regulatory|kpi|metric|scorecard|dashboard)/i.test(`${idName}|${tags}`)) {
+    reasons.push('reporting_or_regulatory');
+  }
+  if (countField(object, 'column_risk_flags', 'column_risk_flag_count') > 0) {
+    reasons.push('known_risk');
+  }
 
+  return reasons;
+}
+
+function governedAssetScore(entry) {
+  const reasons = governedAssetReasons(entry.object);
+  const confidence = confidenceScore(entry.object) ?? 0;
+  return reasons.length * 100 + confidence;
+}
+
+function buildGovernedAssetTitle(number, entry) {
+  const object = entry.object;
+  return `[AUTO] Governed Asset ${String(number).padStart(3, '0')} - ${titleSegment(
+    object.name || entry.id
+  )}`.slice(0, 240);
+}
+
+function buildGovernedAssetDefinitions(entries, options) {
+  const { artifactRoot, limit, quickContextLookup, shardLookup } = options;
+  const effectiveLimit = Math.max(0, Number(limit) || DEFAULT_GOVERNED_OBJECT_PAGE_LIMIT);
+  if (effectiveLimit === 0) return [];
+
+  return entries
+    .filter((entry) => governedAssetReasons(entry.object).length > 0)
+    .sort((left, right) => {
+      const scoreDelta = governedAssetScore(right) - governedAssetScore(left);
+      if (scoreDelta !== 0) return scoreDelta;
+      return quickContextSortKey(left).localeCompare(quickContextSortKey(right));
+    })
+    .slice(0, effectiveLimit)
+    .map((entry, index) => {
+      const number = index + 1;
+      return {
+        number,
+        title: buildGovernedAssetTitle(number, entry),
+        file: normalizePathForManifest(
+          path.join(
+            artifactRoot,
+            'governed-assets',
+            `${String(number).padStart(3, '0')}__${safeSegment(entry.object.name || entry.id)}.md`
+          )
+        ),
+        entry,
+        quickContext: quickContextLookup.get(entry.id),
+        shard: shardLookup.get(entry.id),
+        reasons: governedAssetReasons(entry.object),
+      };
+    });
+}
+
+function renderGovernedAssetPage({ definition, graph, markdownRoot, generatedAt }) {
+  const { entry, quickContext, shard, reasons } = definition;
+  const object = entry.object;
+  const id = entry.id;
+  const columns = ensureArray(object.columns).slice(0, GOVERNED_ASSET_COLUMN_PREVIEW_LIMIT);
+  const allUpstream = getUpstreamDependencies(id, graph, 1);
+  const allDownstream = getDownstreamDependents(id, graph, 1);
+  const registryRow = buildObjectRegistryRow({
+    entry,
+    graph,
+    generatedAt,
+    quickContext,
+    shard,
+  });
+
+  return [
+    `# ${definition.title.replace(/^\[AUTO\]\s*/, '')}`,
+    '',
+    `Generated at: ${generatedAt}`,
+    '',
+    aiRerouteBlock(),
+    '',
+    '## Registry Row',
+    '',
+    '```yaml',
+    yaml.stringify(registryRow).trim(),
+    '```',
+    '',
+    '## Governance Scope',
+    '',
+    markdownTable(
+      ['Field', 'Value'],
+      [
+        ['Detail page reason', reasons.join(', ')],
+        ['Owner', registryRow.owner],
+        ['Steward', registryRow.steward || ''],
+        ['Domain', registryRow.domain],
+        ['Classification', registryRow.classification],
+        ['Criticality', registryRow.criticality],
+        ['Confidence', `${registryRow.confidence_label}${registryRow.confidence === null ? '' : ` (${registryRow.confidence})`}`],
+        ['Source markdown', relativeSourcePath(markdownRoot, object.filePath)],
+        ['Quick context page', quickContext?.title || ''],
+        ['Catalog shard page', shard?.title || ''],
+      ]
+    ),
+    '',
+    '## Lineage Summary',
+    '',
+    markdownTable(
+      ['Direction', 'Count', 'Preview'],
+      [
+        ['Upstream', allUpstream.length, allUpstream.slice(0, 10).join(', ')],
+        ['Downstream', allDownstream.length, allDownstream.slice(0, 10).join(', ')],
+      ]
+    ),
+    '',
+    '## Column Preview',
+    '',
+    columns.length
+      ? markdownTable(
+          ['Column', 'Type', 'Nullable'],
+          columns.map((column) => [
+            column.name || '',
+            column.data_type || '',
+            column.nullable ?? '',
+          ])
+        )
+      : '- No column preview is available in the runtime summary.',
+    '',
+    countField(object, 'columns', 'column_count') > columns.length
+      ? `Additional columns are available in the catalog shard or source markdown. Preview shown: ${columns.length}.`
+      : '',
+    '',
+  ]
+    .filter((line) => line !== '')
+    .join('\n');
+}
+
+async function createCatalogZip({
+  markdownRoot,
+  outputRoot,
+  artifactRoot,
+  generatedAt,
+  objectIndex,
+  objectRegistry,
+}) {
+  const markdownFiles = await getMarkdownFiles(markdownRoot);
   const relativePath = normalizePathForManifest(
     path.join(artifactRoot, 'attachments', 'lineage-catalog.zip')
   );
   const fullPath = path.join(outputRoot, relativePath);
   await mkdir(path.dirname(fullPath), { recursive: true });
-  zip.writeZip(fullPath);
-  const buffer = await readFile(fullPath);
+  const catalogManifest = await readTextIfExists(path.join(markdownRoot, 'catalog-manifest.json'));
+  const rebuildReport = await readTextIfExists(path.join(markdownRoot, 'rebuild-report.json'));
+
+  await new Promise((resolve, reject) => {
+    const output = createWriteStream(fullPath);
+    const archive = new ZipArchive({ zlib: { level: 9 } });
+
+    output.on('close', resolve);
+    output.on('error', reject);
+    archive.on('error', reject);
+    archive.on('warning', (err) => {
+      if (err.code === 'ENOENT') {
+        reject(err);
+        return;
+      }
+      console.warn(`Confluence export zip warning: ${err.message}`);
+    });
+
+    archive.pipe(output);
+
+    for (const filePath of markdownFiles) {
+      archive.file(filePath, {
+        name: normalizePathForManifest(path.join('markdown', relativeTo(markdownRoot, filePath))),
+      });
+    }
+
+    archive.append(Readable.from(jsonArrayChunks(objectIndex)), {
+      name: 'catalog-object-index.json',
+    });
+    archive.append(Readable.from(jsonArrayChunks(objectRegistry)), {
+      name: 'catalog-object-registry.json',
+    });
+    archive.append(
+      `${csvTable(OBJECT_REGISTRY_HEADERS, objectRegistry)}\n`,
+      { name: 'catalog-object-registry.csv' }
+    );
+    archive.append(`${generatedAt}\n`, { name: 'export-generated-at.txt' });
+    if (catalogManifest) archive.append(catalogManifest, { name: 'catalog-manifest.json' });
+    if (rebuildReport) archive.append(rebuildReport, { name: 'rebuild-report.json' });
+
+    const finalizeResult = archive.finalize();
+    if (finalizeResult && typeof finalizeResult.catch === 'function') {
+      finalizeResult.catch(reject);
+    }
+  });
+
+  const zipHash = await hashFile(fullPath);
   return {
     file: normalizePathForManifest(relativePath),
-    hash: sha256(buffer),
-    bytes: buffer.length,
+    hash: zipHash.hash,
+    bytes: zipHash.bytes,
   };
 }
 
@@ -1063,6 +1733,9 @@ export async function buildConfluenceExport(options = {}) {
   const objectLocatorMaxBytes =
     options.objectLocatorMaxBytes ??
     Number(process.env.CONFLUENCE_OBJECT_LOCATOR_MAX_BYTES || DEFAULT_OBJECT_LOCATOR_MAX_BYTES);
+  const governedObjectPageLimit =
+    options.governedObjectPageLimit ??
+    Number(process.env.CONFLUENCE_GOVERNED_OBJECT_PAGE_LIMIT || DEFAULT_GOVERNED_OBJECT_PAGE_LIMIT);
   const generatedAt = nowIso();
   const runId =
     options.runId ||
@@ -1087,8 +1760,9 @@ export async function buildConfluenceExport(options = {}) {
     await mkdir(outputRoot, { recursive: true });
   }
 
-  const objects = await loadAllMarkdown(markdownRoot);
-  const graph = buildLineageGraph(objects);
+  const runtimeCatalog = await loadRuntimeCatalog(markdownRoot, { autoRebuild: true });
+  const objects = runtimeCatalog.objects;
+  const graph = runtimeCatalog.lineageGraph;
   const objectEntries = sortedObjectEntries(objects);
   const shardDefinitions = buildShardDefinitions(objectEntries, {
     artifactRoot,
@@ -1117,6 +1791,23 @@ export async function buildConfluenceExport(options = {}) {
   const objectRows = objectEntries.map((entry) =>
     summarizeObject(entry.object, entry.id, shardLookup.get(entry.id))
   );
+  const registryRows = objectEntries.map((entry) =>
+    buildObjectRegistryRow({
+      entry,
+      graph,
+      generatedAt,
+      quickContext: quickContextLookup.get(entry.id),
+      shard: shardLookup.get(entry.id),
+    })
+  );
+  const governedAssetDefinitions = buildGovernedAssetDefinitions(objectEntries, {
+    artifactRoot,
+    limit: governedObjectPageLimit,
+    quickContextLookup,
+    shardLookup,
+  });
+  const databaseGroups = groupRegistryRowsByDatabase(registryRows);
+  const databasePageEntries = buildDatabasePageEntries(databaseGroups);
   const manifestJson = await readJsonIfExists(path.join(markdownRoot, 'catalog-manifest.json'), {
     files: [],
   });
@@ -1125,11 +1816,12 @@ export async function buildConfluenceExport(options = {}) {
     ''
   );
   const exportSummary = {
-    summaryPageCount: 6,
+    summaryPageCount: 8 + databasePageEntries.length,
     objectLocatorPageCount: objectLocatorDefinitions.length,
     quickContextPageCount: quickContextDefinitions.length,
     shardPageCount: shardDefinitions.length,
-    attachmentCount: 3,
+    governedAssetPageCount: governedAssetDefinitions.length,
+    attachmentCount: 5,
     objectCount: objects.size,
   };
 
@@ -1173,6 +1865,8 @@ export async function buildConfluenceExport(options = {}) {
       object_locator_pages: objectLocatorDefinitions.length,
       quick_context_pages: quickContextDefinitions.length,
       shard_pages: shardDefinitions.length,
+      database_pages: databasePageEntries.length + 1,
+      governed_asset_pages: governedAssetDefinitions.length,
       confidence_distribution: confidenceDistribution(objects),
       by_type: groupCounts(objects, 'type'),
       by_database: groupCounts(objects, 'database'),
@@ -1199,6 +1893,18 @@ export async function buildConfluenceExport(options = {}) {
       labels: ['rebuild-report'],
     },
     {
+      title: '[AUTO] Governance Portal',
+      relativePath: path.join(artifactRoot, 'pages', 'governance-portal.md'),
+      content: () =>
+        renderGovernancePortalPage({
+          objectRows,
+          registryRows,
+          governedAssetDefinitions,
+          generatedAt,
+        }),
+      labels: ['governance-portal'],
+    },
+    {
       title: '[AUTO] Catalog Manifest',
       relativePath: path.join(artifactRoot, 'pages', 'catalog-manifest.md'),
       content: () => renderCatalogManifestPage({ manifestJson, generatedAt }),
@@ -1222,11 +1928,27 @@ export async function buildConfluenceExport(options = {}) {
       content: () => renderObjectIndexPage({ objectRows, generatedAt }),
       labels: ['object-index'],
     },
+    {
+      title: '[AUTO] Databases',
+      relativePath: path.join(artifactRoot, 'pages', 'databases.md'),
+      content: () => renderDatabasesIndexPage({ databasePageEntries, generatedAt }),
+      labels: ['database-index'],
+    },
+    ...databasePageEntries.map(({ database, rows, title, fileSegment }) => ({
+      title,
+      relativePath: path.join(artifactRoot, 'pages', 'databases', `${fileSegment}.md`),
+      content: () => renderDatabasePage({ database, rows, generatedAt }),
+      labels: ['database', safeSegment(database).toLowerCase()],
+      parentTitle: '[AUTO] Databases',
+    })),
   ];
 
   const pageRecords = await mapWithConcurrency(pageDefinitions, 8, async (definition) => {
     const fileInfo = await writeExportFile(outputRoot, definition.relativePath, definition.content());
-    return pageRecord(definition.title, fileInfo, { labels: definition.labels });
+    return pageRecord(definition.title, fileInfo, {
+      labels: definition.labels,
+      parentTitle: definition.parentTitle,
+    });
   });
   manifest.pages.push(...pageRecords);
 
@@ -1270,15 +1992,56 @@ export async function buildConfluenceExport(options = {}) {
   });
   manifest.shard_pages.push(...shardRecords);
 
-  const objectIndexFile = await writeExportFile(
+  const governedAssetRecords = await mapWithConcurrency(
+    governedAssetDefinitions,
+    8,
+    async (definition) => {
+      const fileInfo = await writeExportFile(
+        outputRoot,
+        definition.file,
+        renderGovernedAssetPage({ definition, graph, markdownRoot, generatedAt })
+      );
+      return pageRecord(definition.title, fileInfo, {
+        labels: ['governed-asset', ...definition.reasons],
+      });
+    }
+  );
+  manifest.object_pages.push(...governedAssetRecords);
+
+  const objectIndexFile = await writeExportJsonArrayFile(
     outputRoot,
     path.join(artifactRoot, 'attachments', 'catalog-object-index.json'),
-    `${JSON.stringify(objectRows, null, 2)}\n`
+    objectRows
   );
   manifest.attachments.push(
     attachmentRecord('catalog-object-index.json', objectIndexFile, {
       contentType: 'application/json',
       labels: ['object-index'],
+    })
+  );
+
+  const objectRegistryJsonFile = await writeExportJsonArrayFile(
+    outputRoot,
+    path.join(artifactRoot, 'attachments', 'catalog-object-registry.json'),
+    registryRows
+  );
+  manifest.attachments.push(
+    attachmentRecord('catalog-object-registry.json', objectRegistryJsonFile, {
+      contentType: 'application/json',
+      labels: ['object-registry', 'machine-readable'],
+    })
+  );
+
+  const objectRegistryCsvFile = await writeExportCsvFile(
+    outputRoot,
+    path.join(artifactRoot, 'attachments', 'catalog-object-registry.csv'),
+    OBJECT_REGISTRY_HEADERS,
+    registryRows
+  );
+  manifest.attachments.push(
+    attachmentRecord('catalog-object-registry.csv', objectRegistryCsvFile, {
+      contentType: 'text/csv',
+      labels: ['object-registry', 'machine-readable'],
     })
   );
 
@@ -1289,6 +2052,8 @@ export async function buildConfluenceExport(options = {}) {
     object_locator_pages: manifest.object_locator_pages.length,
     quick_context_pages: manifest.quick_context_pages.length,
     shard_pages: manifest.shard_pages.length,
+    governed_asset_pages: manifest.object_pages.length,
+    registry_rows: registryRows.length,
     source_markdown_root: manifest.source_markdown_root,
   };
   const exportSummaryFile = await writeExportFile(
@@ -1309,6 +2074,7 @@ export async function buildConfluenceExport(options = {}) {
     artifactRoot,
     generatedAt,
     objectIndex: objectRows,
+    objectRegistry: registryRows,
   });
   manifest.attachments.push(
     attachmentRecord('lineage-catalog.zip', zipInfo, {

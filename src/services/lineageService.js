@@ -299,15 +299,23 @@ function chooseClosestMatch(candidates, metadata = {}) {
  * @param {Map} objects - Map of object ID -> metadata
  * @returns {Array} Edges with source, target, and relationship type
  */
-export function buildTypedLineageEdges(objects) {
+export function buildTypedLineageEdges(objects, options = {}) {
   const edges = [];
   const nameIndex = buildNameIndex(objects);
   const referenceIndex = buildReferenceIndex(objects);
   const lowerObjects = buildLowerObjectIndex(objects);
+  const seenEdges = options.dedupe ? new Set() : null;
+  const edgeLimits = options.maxEdgesPerObjectByType || {};
 
   const pushResolvedEdges = (objectId, metadata, references, direction, type) => {
     if (!Array.isArray(references)) return;
+    const maxEdges = Number(edgeLimits[type]);
+    const hasLimit = Number.isFinite(maxEdges) && maxEdges >= 0;
+    let pushed = 0;
+
     for (const reference of references) {
+      if (hasLimit && pushed >= maxEdges) break;
+
       const resolvedId = resolveObjectId(
         reference,
         metadata,
@@ -318,11 +326,17 @@ export function buildTypedLineageEdges(objects) {
       );
       if (!resolvedId || resolvedId === objectId) continue;
 
-      edges.push({
+      const edge = {
         source: direction === 'incoming' ? resolvedId : objectId,
         target: direction === 'incoming' ? objectId : resolvedId,
         type,
-      });
+      };
+      const key = `${edge.source}->${edge.target}:${edge.type}`;
+      if (seenEdges?.has(key)) continue;
+
+      edges.push(edge);
+      seenEdges?.add(key);
+      pushed += 1;
     }
   };
 
@@ -341,11 +355,65 @@ export function buildTypedLineageEdges(objects) {
   return edges;
 }
 
+export function indexTypedLineageEdges(edges = []) {
+  const indexedEdges = Array.isArray(edges) ? edges : [];
+  const incoming = new Map();
+  const outgoing = new Map();
+  const byNode = new Map();
+
+  const push = (map, key, edge) => {
+    if (!map.has(key)) map.set(key, []);
+    map.get(key).push(edge);
+  };
+
+  for (const edge of indexedEdges) {
+    if (!edge?.source || !edge?.target) continue;
+    push(outgoing, edge.source, edge);
+    push(incoming, edge.target, edge);
+    push(byNode, edge.source, edge);
+    if (edge.target !== edge.source) {
+      push(byNode, edge.target, edge);
+    }
+  }
+
+  return {
+    edgeCount: indexedEdges.length,
+    edges: indexedEdges,
+    incoming,
+    outgoing,
+    byNode,
+  };
+}
+
+export function getTypedLineageEdgesForNode(edgeSource, objectId, direction = 'both') {
+  if (!objectId) return [];
+
+  if (edgeSource?.incoming instanceof Map || edgeSource?.outgoing instanceof Map) {
+    if (direction === 'incoming') return edgeSource.incoming.get(objectId) || [];
+    if (direction === 'outgoing') return edgeSource.outgoing.get(objectId) || [];
+    return edgeSource.byNode?.get(objectId) || [
+      ...(edgeSource.incoming?.get(objectId) || []),
+      ...(edgeSource.outgoing?.get(objectId) || []),
+    ];
+  }
+
+  const edges = Array.isArray(edgeSource) ? edgeSource : [];
+  if (direction === 'incoming') return edges.filter((edge) => edge.target === objectId);
+  if (direction === 'outgoing') return edges.filter((edge) => edge.source === objectId);
+  return edges.filter((edge) => edge.source === objectId || edge.target === objectId);
+}
+
+export function getAllTypedLineageEdges(edgeSource) {
+  if (Array.isArray(edgeSource)) return edgeSource;
+  if (Array.isArray(edgeSource?.edges)) return edgeSource.edges;
+  return [];
+}
+
 /**
  * Return typed edges near a focus object.
  */
-export function getTypedLineageNeighborhood(objectId, objects, maxDepth = 2) {
-  const edges = buildTypedLineageEdges(objects);
+export function getTypedLineageNeighborhood(objectId, objects, maxDepth = 2, options = {}) {
+  const edges = options.typedEdges || buildTypedLineageEdges(objects);
   const includedNodes = new Set([objectId]);
   const includedEdges = [];
   let frontier = new Set([objectId]);
@@ -353,17 +421,17 @@ export function getTypedLineageNeighborhood(objectId, objects, maxDepth = 2) {
   for (let depth = 0; depth < maxDepth; depth += 1) {
     const nextFrontier = new Set();
 
-    for (const edge of edges) {
-      if (!frontier.has(edge.source) && !frontier.has(edge.target)) continue;
-
-      includedEdges.push(edge);
-      if (!includedNodes.has(edge.source)) {
-        includedNodes.add(edge.source);
-        nextFrontier.add(edge.source);
-      }
-      if (!includedNodes.has(edge.target)) {
-        includedNodes.add(edge.target);
-        nextFrontier.add(edge.target);
+    for (const frontierId of frontier) {
+      for (const edge of getTypedLineageEdgesForNode(edges, frontierId, 'both')) {
+        includedEdges.push(edge);
+        if (!includedNodes.has(edge.source)) {
+          includedNodes.add(edge.source);
+          nextFrontier.add(edge.source);
+        }
+        if (!includedNodes.has(edge.target)) {
+          includedNodes.add(edge.target);
+          nextFrontier.add(edge.target);
+        }
       }
     }
 
@@ -634,6 +702,10 @@ export function getLineageStats(graph) {
 
 export default {
   buildLineageGraph,
+  buildTypedLineageEdges,
+  getAllTypedLineageEdges,
+  getTypedLineageEdgesForNode,
+  indexTypedLineageEdges,
   getUpstreamDependencies,
   getDownstreamDependents,
   getReverseLineageGraph,

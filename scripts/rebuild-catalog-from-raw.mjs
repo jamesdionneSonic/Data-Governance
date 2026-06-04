@@ -10,7 +10,7 @@ import {
 } from '../src/services/ssisExtractor.js';
 import {
   getMarkdownFiles,
-  parseMarkdownFile,
+  parseMarkdownMetadataFile,
   validateMetadata,
 } from '../src/services/markdownService.js';
 import { resolveColumnLineage } from '../src/services/columnLineageResolver.js';
@@ -28,8 +28,15 @@ const SSIS_COLUMN_MAPPING_EMBED_LIMIT = 25;
 const SSIS_COLUMN_MAPPING_CHUNK_SIZE = 250;
 const COLUMN_LINEAGE_EMBED_LIMIT = 200;
 const UNRESOLVED_COLUMN_LINEAGE_EMBED_LIMIT = 75;
+const MARKDOWN_FRONTMATTER_READ_CHUNK_BYTES = 64 * 1024;
+const MARKDOWN_FRONTMATTER_MAX_READ_BYTES = 8 * 1024 * 1024;
+const SSIS_READ_EDGE_TYPES = new Set(['READS_FROM', 'LOOKUP', 'USES_LOOKUP', 'EXTRACTS']);
+const SSIS_WRITE_EDGE_TYPES = new Set(['WRITES_TO']);
+const SSIS_CALL_EDGE_TYPES = new Set(['CALLS']);
 const DEBUG_REBUILD = process.env.REBUILD_DEBUG === '1';
 const ENFORCE_REBUILD_GATES = process.argv.includes('--enforce-gates');
+const DRY_RUN_REBUILD = process.argv.includes('--dry-run');
+const SSIS_REBUILD_LIMIT = readPositiveIntegerOption('--ssis-limit', 'REBUILD_SSIS_LIMIT');
 const DEFAULT_REBUILD_GATES = {
   maxInvalidObjects: 0,
   maxMissingConfidenceObjects: 0,
@@ -68,6 +75,29 @@ const EXTERNAL_SSIS_COMPONENT_PATTERNS = [
   /Access/i,
   /Recordset/i,
 ];
+
+function readPositiveIntegerOption(flagName, envName = '') {
+  const equalsPrefix = `${flagName}=`;
+  const equalsArg = process.argv.find((arg) => arg.startsWith(equalsPrefix));
+  const flagIndex = process.argv.indexOf(flagName);
+  const rawValue =
+    equalsArg?.slice(equalsPrefix.length) ||
+    (flagIndex >= 0 ? process.argv[flagIndex + 1] : '') ||
+    (envName ? process.env[envName] : '');
+  const value = Number(rawValue);
+  return Number.isInteger(value) && value > 0 ? value : 0;
+}
+
+function memoryUsageMb() {
+  const usage = process.memoryUsage();
+  return {
+    rss: Math.round(usage.rss / 1024 / 1024),
+    heapTotal: Math.round(usage.heapTotal / 1024 / 1024),
+    heapUsed: Math.round(usage.heapUsed / 1024 / 1024),
+    external: Math.round(usage.external / 1024 / 1024),
+    arrayBuffers: Math.round(usage.arrayBuffers / 1024 / 1024),
+  };
+}
 
 function markdownScalar(value) {
   const text = String(value ?? '');
@@ -193,6 +223,40 @@ function parseMarkdownFileContent(content, filePath) {
   return { metadata, body };
 }
 
+async function readMarkdownBodyContent(filePath) {
+  const { body } = parseMarkdownFileContent(await fs.readFile(filePath, 'utf8'), filePath);
+  return body;
+}
+
+async function readMarkdownFrontmatterContent(filePath) {
+  const chunks = [];
+  const buffer = Buffer.alloc(MARKDOWN_FRONTMATTER_READ_CHUNK_BYTES);
+  let bytesReadTotal = 0;
+  let handle;
+
+  try {
+    handle = await fs.open(filePath, 'r');
+
+    while (bytesReadTotal < MARKDOWN_FRONTMATTER_MAX_READ_BYTES) {
+      const { bytesRead } = await handle.read(buffer, 0, buffer.length, bytesReadTotal);
+      if (bytesRead === 0) break;
+
+      chunks.push(Buffer.from(buffer.subarray(0, bytesRead)));
+      bytesReadTotal += bytesRead;
+
+      const content = Buffer.concat(chunks).toString('utf8').replace(/^\uFEFF/, '');
+      if (!content.startsWith('---')) return content;
+
+      const match = content.match(/^---\r?\n[\s\S]*?\r?\n---/);
+      if (match) return match[0];
+    }
+  } finally {
+    if (handle) await handle.close();
+  }
+
+  return fs.readFile(filePath, 'utf8');
+}
+
 async function readJsonIfExists(filePath, fallback = {}) {
   try {
     return JSON.parse(await fs.readFile(filePath, 'utf8'));
@@ -266,42 +330,78 @@ function unique(values = []) {
   return out;
 }
 
+function pushUniqueText(values, value) {
+  const out = Array.isArray(values) ? values : [];
+  const text = String(value || '').trim();
+  if (!text) return out;
+  const key = text.toLowerCase();
+
+  for (const existing of out) {
+    if (String(existing || '').trim().toLowerCase() === key) return out;
+  }
+
+  out.push(text);
+  return out;
+}
+
+function mergeUniqueTextGroups(...groups) {
+  const out = [];
+
+  for (const group of groups) {
+    for (const value of group || []) {
+      pushUniqueText(out, value);
+    }
+  }
+
+  return out;
+}
+
 function uniqueStructuredRecords(records = []) {
   const seen = new Set();
   const out = [];
+
   for (const record of records) {
-    if (!record || typeof record !== 'object') continue;
-    const key = [
-      record.source_column_id || '',
-      record.target_column_id || '',
-      record.column_id || record.object_id || '',
-      record.process_id || '',
-      record.package_id || '',
-      record.validation_status || '',
-      record.transform_type || '',
-      record.flag_type || '',
-      record.usage_type || '',
-      record.usage_context || '',
-      record.expression || record.evidence_text || '',
-      record.reason || '',
-      record.alias || '',
-      record.column_name || '',
-    ]
-      .map((value) => String(value || '').toLowerCase())
-      .join('|');
-    if (seen.has(key)) continue;
-    seen.add(key);
-    out.push(record);
+    addUniqueStructuredRecord(out, seen, record);
   }
   return out;
 }
 
-function chunkArray(values = [], size = 100) {
-  const chunks = [];
-  for (let index = 0; index < values.length; index += size) {
-    chunks.push(values.slice(index, index + size));
+function mergeUniqueStructuredRecords(...recordGroups) {
+  const seen = new Set();
+  const out = [];
+
+  for (const records of recordGroups) {
+    for (const record of records || []) {
+      addUniqueStructuredRecord(out, seen, record);
+    }
   }
-  return chunks;
+  return out;
+}
+
+function structuredRecordKeyPart(value) {
+  return String(value || '').toLowerCase();
+}
+
+function addUniqueStructuredRecord(out, seen, record) {
+  if (!record || typeof record !== 'object') return;
+  const key =
+    `${structuredRecordKeyPart(record.source_column_id)}|` +
+    `${structuredRecordKeyPart(record.target_column_id)}|` +
+    `${structuredRecordKeyPart(record.column_id || record.object_id)}|` +
+    `${structuredRecordKeyPart(record.process_id)}|` +
+    `${structuredRecordKeyPart(record.package_id)}|` +
+    `${structuredRecordKeyPart(record.validation_status)}|` +
+    `${structuredRecordKeyPart(record.transform_type)}|` +
+    `${structuredRecordKeyPart(record.flag_type)}|` +
+    `${structuredRecordKeyPart(record.usage_type)}|` +
+    `${structuredRecordKeyPart(record.usage_context)}|` +
+    `${structuredRecordKeyPart(record.expression || record.evidence_text)}|` +
+    `${structuredRecordKeyPart(record.reason)}|` +
+    `${structuredRecordKeyPart(record.alias)}|` +
+    structuredRecordKeyPart(record.column_name);
+  if (seen.has(key)) return;
+  seen.add(key);
+  out.push(record);
 }
 
 function isDirectSqlReference(reference) {
@@ -312,53 +412,124 @@ function stripAliasSuffix(reference) {
   return String(reference || '').replace(/\s+(?:AS\s+)?[A-Za-z_][A-Za-z0-9_]*$/i, '').trim();
 }
 
+function splitDotSegments(value) {
+  const text = String(value || '');
+  const parts = [];
+  let start = 0;
+
+  for (let index = 0; index < text.length; index += 1) {
+    if (text[index] !== '.') continue;
+    if (index > start) parts.push(text.slice(start, index));
+    start = index + 1;
+  }
+
+  if (start < text.length) parts.push(text.slice(start));
+  return parts;
+}
+
+function appendDotSegment(out, value) {
+  const text = String(value || '');
+  if (!text) return out;
+  return out ? `${out}.${text}` : text;
+}
+
+function joinDotSegments(parts, start = 0, end = parts.length) {
+  let out = '';
+  for (let index = start; index < end; index += 1) {
+    out = appendDotSegment(out, parts[index]);
+  }
+  return out;
+}
+
+function fixedDotSegment(value) {
+  return String(value ?? '');
+}
+
+function scoreReferenceContext(value, contextServer, contextDatabase) {
+  const text = String(value || '');
+  const firstDot = text.indexOf('.');
+  if (firstDot < 0) {
+    return text.toLowerCase() === contextServer ? 3 : 0;
+  }
+
+  let score = 0;
+  if (text.slice(0, firstDot).toLowerCase() === contextServer) score += 3;
+  const secondStart = firstDot + 1;
+  const secondDot = text.indexOf('.', secondStart);
+  const secondSegment =
+    secondDot < 0 ? text.slice(secondStart) : text.slice(secondStart, secondDot);
+  if (secondSegment.toLowerCase() === contextDatabase) score += 2;
+  return score;
+}
+
+function tailDotSegmentsMatch(parts, suffixParts) {
+  if (parts.length < suffixParts.length) return false;
+  const offset = parts.length - suffixParts.length;
+  for (let index = 0; index < suffixParts.length; index += 1) {
+    if (parts[offset + index] !== suffixParts[index]) return false;
+  }
+  return true;
+}
+
 function splitSqlReference(reference) {
   const cleaned = cleanSegment(stripAliasSuffix(reference));
-  return cleaned.split('.').filter(Boolean);
+  return splitDotSegments(cleaned);
 }
 
 function makeSqlId(server, database, schema, name) {
-  return [server, canonicalDatabase(database), schema || 'dbo', name].filter(Boolean).join('.');
+  let id = '';
+  id = appendDotSegment(id, server);
+  id = appendDotSegment(id, canonicalDatabase(database));
+  id = appendDotSegment(id, schema || 'dbo');
+  id = appendDotSegment(id, name);
+  return id;
 }
 
 function normalizeColumnInventory(record) {
   const columns = Array.isArray(record.metadata?.columns) ? record.metadata.columns : [];
-  const sourceColumns = columns.length > 0 ? columns : parseMarkdownColumns(record.body, record);
-  return sourceColumns
-    .filter((column) => column && typeof column === 'object' && column.name)
-    .map((column, index) => {
-      const dataType = column.data_type || column.dataType || '';
-      return {
-        name: column.name,
-        column_id: column.column_id || `${record.id}.${column.name}`,
-        ordinal: column.ordinal ?? index + 1,
-        data_type: dataType,
-        max_length: column.max_length ?? column.maxLength ?? null,
-        precision: column.precision ?? null,
-        scale: column.scale ?? null,
-        nullable: Boolean(column.nullable ?? column.isNullable ?? false),
-        identity: Boolean(column.identity ?? column.isIdentity ?? false),
-        computed: Boolean(column.computed ?? column.isComputed ?? false),
-        computed_definition: column.computed_definition || column.computedDefinition || null,
-        default: column.default ?? column.defaultValue ?? null,
-        description: column.description || '',
-        primary_key: Boolean(column.primary_key ?? column.primaryKey ?? false),
-        unique_keys: Array.isArray(column.unique_keys) ? column.unique_keys : [],
-        foreign_keys: Array.isArray(column.foreign_keys) ? column.foreign_keys : [],
-        referenced_by_foreign_keys: Array.isArray(column.referenced_by_foreign_keys)
-          ? column.referenced_by_foreign_keys
-          : [],
-        indexes: Array.isArray(column.indexes) ? column.indexes : [],
-        sensitivity: column.sensitivity || 'internal',
-        classification_tags: Array.isArray(column.classification_tags)
-          ? column.classification_tags
-          : [],
-        extraction_evidence: column.extraction_evidence || {
-          source: 'raw_markdown_columns_table',
-          extracted_at: record.metadata?.extracted_at || record.metadata?.extractedAt || null,
-        },
-      };
+  const sourceColumns = columns.length > 0
+    ? columns
+    : Array.isArray(record.markdownColumns)
+      ? record.markdownColumns
+      : [];
+  const normalized = [];
+
+  for (const column of sourceColumns) {
+    if (!column || typeof column !== 'object' || !column.name) continue;
+    const dataType = column.data_type || column.dataType || '';
+    normalized.push({
+      name: column.name,
+      column_id: column.column_id || `${record.id}.${column.name}`,
+      ordinal: column.ordinal ?? normalized.length + 1,
+      data_type: dataType,
+      max_length: column.max_length ?? column.maxLength ?? null,
+      precision: column.precision ?? null,
+      scale: column.scale ?? null,
+      nullable: Boolean(column.nullable ?? column.isNullable ?? false),
+      identity: Boolean(column.identity ?? column.isIdentity ?? false),
+      computed: Boolean(column.computed ?? column.isComputed ?? false),
+      computed_definition: column.computed_definition || column.computedDefinition || null,
+      default: column.default ?? column.defaultValue ?? null,
+      description: column.description || '',
+      primary_key: Boolean(column.primary_key ?? column.primaryKey ?? false),
+      unique_keys: Array.isArray(column.unique_keys) ? column.unique_keys : [],
+      foreign_keys: Array.isArray(column.foreign_keys) ? column.foreign_keys : [],
+      referenced_by_foreign_keys: Array.isArray(column.referenced_by_foreign_keys)
+        ? column.referenced_by_foreign_keys
+        : [],
+      indexes: Array.isArray(column.indexes) ? column.indexes : [],
+      sensitivity: column.sensitivity || 'internal',
+      classification_tags: Array.isArray(column.classification_tags)
+        ? column.classification_tags
+        : [],
+      extraction_evidence: column.extraction_evidence || {
+        source: 'raw_markdown_columns_table',
+        extracted_at: record.metadata?.extracted_at || record.metadata?.extractedAt || null,
+      },
     });
+  }
+
+  return normalized;
 }
 
 function parseMarkdownColumns(body, record) {
@@ -435,13 +606,29 @@ function sqlRecordForColumnUsage(record) {
 }
 
 function buildColumnUsageMetadata(records) {
-  const sqlObjects = Array.from(records.values()).map(sqlRecordForColumnUsage);
+  const tables = [];
+  const views = [];
+
+  for (const record of records.values()) {
+    const sqlRecord = sqlRecordForColumnUsage(record);
+    if (sqlRecord.type === 'table') {
+      tables.push(sqlRecord);
+    } else if (sqlRecord.type === 'view') {
+      views.push(sqlRecord);
+    }
+  }
+
   return {
     serverName: '',
     database: '',
-    tables: sqlObjects.filter((record) => record.type === 'table'),
-    views: sqlObjects.filter((record) => record.type === 'view'),
+    tables,
+    views,
   };
+}
+
+function clearColumnUsageMetadata(columnUsageMetadata = {}) {
+  if (Array.isArray(columnUsageMetadata.tables)) columnUsageMetadata.tables.length = 0;
+  if (Array.isArray(columnUsageMetadata.views)) columnUsageMetadata.views.length = 0;
 }
 
 function extractColumnUsageForRecord(record, columnUsageMetadata) {
@@ -476,18 +663,12 @@ function extractColumnUsageForRecord(record, columnUsageMetadata) {
   );
 
   return {
-    column_usage: uniqueStructuredRecords([
-      ...existingColumnUsage,
-      ...(generated.column_usage || []),
-    ]),
-    unresolved_column_usage: uniqueStructuredRecords([
-      ...existingUnresolved,
-      ...(generated.unresolved_column_usage || []),
-    ]),
-    column_risk_flags: uniqueStructuredRecords([
-      ...existingRiskFlags,
-      ...(generated.column_risk_flags || []),
-    ]),
+    column_usage: mergeUniqueStructuredRecords(existingColumnUsage, generated.column_usage),
+    unresolved_column_usage: mergeUniqueStructuredRecords(
+      existingUnresolved,
+      generated.unresolved_column_usage
+    ),
+    column_risk_flags: mergeUniqueStructuredRecords(existingRiskFlags, generated.column_risk_flags),
   };
 }
 
@@ -513,20 +694,20 @@ function buildReferenceIndex(records) {
 
 function chooseIndexedReference(candidates, context) {
   if (!candidates || candidates.size === 0) return '';
-  const list = Array.from(candidates);
-  if (list.length === 1) return list[0];
   const contextServer = String(context.server || '').toLowerCase();
   const contextDatabase = String(context.database || '').toLowerCase();
+  let bestId = '';
+  let bestScore = -1;
 
-  const scored = list.map((id) => {
-    const parts = id.split('.');
-    let score = 0;
-    if (parts[0]?.toLowerCase() === contextServer) score += 3;
-    if (parts[1]?.toLowerCase() === contextDatabase) score += 2;
-    return { id, score };
-  });
-  scored.sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
-  return scored[0]?.id || '';
+  for (const id of candidates) {
+    const score = scoreReferenceContext(id, contextServer, contextDatabase);
+    if (!bestId || score > bestScore || (score === bestScore && id.localeCompare(bestId) < 0)) {
+      bestId = id;
+      bestScore = score;
+    }
+  }
+
+  return bestId;
 }
 
 function qualifyReference(reference, context, aliases, referenceIndex) {
@@ -542,7 +723,7 @@ function qualifyReference(reference, context, aliases, referenceIndex) {
     server = canonicalServer(parts[0], parts[1], aliases);
     database = canonicalDatabase(parts[1]);
     schema = parts[2];
-    name = parts.slice(3).join('.');
+    name = joinDotSegments(parts, 3);
   } else if (parts.length === 3) {
     database = canonicalDatabase(parts[0]);
     server = canonicalServer(context.server, database, aliases);
@@ -578,12 +759,15 @@ function qualifyReference(reference, context, aliases, referenceIndex) {
 }
 
 function normalizeReferenceList(references, context, aliases, referenceIndex) {
-  return unique(
-    references
-      .filter(isDirectSqlReference)
-      .map((ref) => qualifyReference(ref, context, aliases, referenceIndex))
-      .filter(isDirectSqlReference)
-  );
+  const normalized = [];
+
+  for (const ref of references) {
+    if (!isDirectSqlReference(ref)) continue;
+    const qualified = qualifyReference(ref, context, aliases, referenceIndex);
+    if (isDirectSqlReference(qualified)) normalized.push(qualified);
+  }
+
+  return unique(normalized);
 }
 
 function extractPackageIdentityFromXml(xmlText, fallbackPackageName) {
@@ -615,8 +799,7 @@ function inferSsisFileParts(filePath, xmlText, existingCatalog = new Map()) {
   if (baseLower.endsWith(`_${packageStemLower}`)) {
     project = withoutExt.slice(0, -packageStem.length - 1);
   } else {
-    const parts = withoutExt.split('_').filter(Boolean);
-    project = parts[0] || 'unknown_project';
+    project = firstNonEmptyUnderscoreSegment(withoutExt) || 'unknown_project';
   }
   const folder = project;
   return { folder, project, packageName };
@@ -633,7 +816,10 @@ async function loadExistingSsisCatalog() {
 
   for (const filePath of files) {
     try {
-      const { metadata } = parseMarkdownFileContent(await fs.readFile(filePath, 'utf8'), filePath);
+      const { metadata } = parseMarkdownFileContent(
+        await readMarkdownFrontmatterContent(filePath),
+        filePath
+      );
       const packageName = metadata.package_name || metadata.packageName;
       if (!packageName) continue;
       const key = String(packageName).toLowerCase();
@@ -657,8 +843,10 @@ function chooseExistingPackageCatalogRow(packageName, rawBaseName, existingCatal
   if (candidates.length === 0) return null;
   const rawToken = cleanPackageToken(rawBaseName);
   const packageToken = cleanPackageToken(packageName);
+  let bestCandidate = candidates[0];
+  let bestScore = -1;
 
-  const scored = candidates.map((candidate) => {
+  for (const candidate of candidates) {
     const folderToken = cleanPackageToken(candidate.folder_name);
     const projectToken = cleanPackageToken(candidate.project_name);
     const pathToken = cleanPackageToken(candidate.package_path);
@@ -669,11 +857,13 @@ function chooseExistingPackageCatalogRow(packageName, rawBaseName, existingCatal
     if (candidate.folder_name && candidate.folder_name !== 'unknown_folder') score += 1;
     if (candidate.project_name && candidate.project_name !== 'unknown_project') score += 1;
     if (candidate.package_name && candidate.package_name !== 'Package.dtsx') score += 1;
-    return { candidate, score };
-  });
+    if (score > bestScore) {
+      bestCandidate = candidate;
+      bestScore = score;
+    }
+  }
 
-  scored.sort((a, b) => b.score - a.score);
-  return scored[0]?.candidate || candidates[0];
+  return bestCandidate;
 }
 
 function cleanPackageToken(value) {
@@ -683,49 +873,69 @@ function cleanPackageToken(value) {
     .toLowerCase();
 }
 
+function firstNonEmptyUnderscoreSegment(value) {
+  const text = String(value || '');
+  let start = 0;
+
+  for (let index = 0; index <= text.length; index += 1) {
+    if (index < text.length && text[index] !== '_') continue;
+    if (index > start) return text.slice(start, index);
+    start = index + 1;
+  }
+
+  return '';
+}
+
 function packageId(server, folder, project, pkg) {
-  return [server, 'SSISDB', folder, project, pkg].join('.');
+  return `${fixedDotSegment(server)}.SSISDB.${fixedDotSegment(folder)}.${fixedDotSegment(
+    project
+  )}.${fixedDotSegment(pkg)}`;
 }
 
 function parseSqlId(id) {
-  const parts = String(id || '').split('.').filter(Boolean);
+  const parts = splitDotSegments(id);
   if (parts.length < 4) return null;
   return {
     server: parts[0],
     database: parts[1],
     schema: parts[2],
-    name: parts.slice(3).join('.'),
+    name: joinDotSegments(parts, 3),
   };
 }
 
+const LINEAGE_TOKEN_STOP_WORDS = new Set([
+  'tbl',
+  'table',
+  'view',
+  'vw',
+  'stg',
+  'stage',
+  'staging',
+  'etl',
+  'wrk',
+  'merge',
+  'load',
+  'insert',
+  'update',
+  'delete',
+  'fact',
+  'dim',
+  'dbo',
+]);
+
 function lineageTokens(value) {
   const withCamelBreaks = String(value || '').replace(/([a-z])([A-Z])/g, '$1_$2');
-  const stop = new Set([
-    'tbl',
-    'table',
-    'view',
-    'vw',
-    'stg',
-    'stage',
-    'staging',
-    'etl',
-    'wrk',
-    'merge',
-    'load',
-    'insert',
-    'update',
-    'delete',
-    'fact',
-    'dim',
-    'dbo',
-  ]);
-  return new Set(
-    withCamelBreaks
-      .toLowerCase()
-      .split(/[^a-z0-9]+/g)
-      .map((token) => (token.length > 3 && token.endsWith('s') ? token.slice(0, -1) : token))
-      .filter((token) => token.length > 2 && !stop.has(token))
-  );
+  const tokens = new Set();
+
+  for (const rawToken of withCamelBreaks.toLowerCase().split(/[^a-z0-9]+/g)) {
+    const token =
+      rawToken.length > 3 && rawToken.endsWith('s') ? rawToken.slice(0, -1) : rawToken;
+    if (token.length > 2 && !LINEAGE_TOKEN_STOP_WORDS.has(token)) {
+      tokens.add(token);
+    }
+  }
+
+  return tokens;
 }
 
 function intersectionSize(left, right) {
@@ -752,7 +962,7 @@ function lineageRolePenalty(name, intentTokens) {
 function normalizeSsisReference(value, aliases, referenceIndex) {
   const cleaned = cleanSegment(value);
   if (!cleaned || cleaned === 'UNKNOWN' || cleaned === 'UNRESOLVED_DYNAMIC_EDGE') return '';
-  const parts = cleaned.split('.').filter(Boolean);
+  const parts = splitDotSegments(cleaned);
 
   if (parts.length >= 5 && parts[1]?.toLowerCase() === 'ssisdb') {
     return cleaned;
@@ -762,7 +972,7 @@ function normalizeSsisReference(value, aliases, referenceIndex) {
     const database = canonicalDatabase(parts[1]);
     const server = canonicalServer(parts[0], database, aliases);
     const schema = parts[2] || 'dbo';
-    const name = parts.slice(3).join('.');
+    const name = joinDotSegments(parts, 3);
     return qualifyReference(makeSqlId(server, database, schema, name), {
       server,
       database,
@@ -773,38 +983,178 @@ function normalizeSsisReference(value, aliases, referenceIndex) {
   return cleaned;
 }
 
-function buildSsisMarkdown(result, packageRow, server, aliases, referenceIndex) {
+function lowerSsisLookupKey(value) {
+  return String(value || '').toLowerCase();
+}
+
+function addLowerSsisLookupKey(set, rawKey) {
+  const key = lowerSsisLookupKey(rawKey);
+  if (key) set.add(key);
+}
+
+function lowerSsisLookupKeySet(values = []) {
+  const keys = new Set();
+  for (const value of values) {
+    addLowerSsisLookupKey(keys, value);
+  }
+  return keys;
+}
+
+function hasLowerSsisLookupKey(keys, values = []) {
+  for (const value of values) {
+    const key = lowerSsisLookupKey(value);
+    if (key && keys.has(key)) return true;
+  }
+  return false;
+}
+
+function pushLookupValue(map, key, value) {
+  if (!key || !value) return;
+  if (!map.has(key)) map.set(key, []);
+  map.get(key).push(value);
+}
+
+function pushLowerLookupValue(map, rawKey, value) {
+  const key = lowerSsisLookupKey(rawKey);
+  pushLookupValue(map, key, value);
+}
+
+function setLowerLookupValue(map, rawKey, value) {
+  const key = lowerSsisLookupKey(rawKey);
+  if (!key || !value || map.has(key)) return;
+  map.set(key, value);
+}
+
+function buildSsisMarkdownIndexes(lineageEdges = [], xmlMetadata = []) {
+  const edgesByKey = new Map();
+  const xmlMetadataByKey = new Map();
+
+  for (const edge of lineageEdges) {
+    pushLowerLookupValue(edgesByKey, edge.packageName, edge);
+    pushLowerLookupValue(edgesByKey, edge.from, edge);
+    pushLowerLookupValue(edgesByKey, edge.packageId, edge);
+    pushLowerLookupValue(edgesByKey, edge.packagePath, edge);
+    pushLowerLookupValue(edgesByKey, edge.objectName, edge);
+  }
+
+  for (const metadata of xmlMetadata) {
+    const folder = metadata.folderName || metadata.folder_name;
+    const project = metadata.projectName || metadata.project_name;
+    setLowerLookupValue(xmlMetadataByKey, metadata.objectName, metadata);
+    setLowerLookupValue(xmlMetadataByKey, metadata.packageName, metadata);
+    if (project && metadata.objectName) {
+      setLowerLookupValue(xmlMetadataByKey, `${project}.${metadata.objectName}`, metadata);
+    }
+    if (folder && project && metadata.objectName) {
+      setLowerLookupValue(
+        xmlMetadataByKey,
+        `${folder}.${project}.${metadata.objectName}`,
+        metadata
+      );
+    }
+  }
+
+  return { edgesByKey, xmlMetadataByKey };
+}
+
+function indexedSsisEdges(indexes, keys) {
+  if (!(indexes?.edgesByKey instanceof Map)) return null;
+  const edges = [];
+  const seen = new Set();
+
+  for (const key of keys) {
+    for (const edge of indexes.edgesByKey.get(key) || []) {
+      if (seen.has(edge)) continue;
+      seen.add(edge);
+      edges.push(edge);
+    }
+  }
+
+  return edges.length > 0 ? edges : null;
+}
+
+function indexedSsisXmlMetadata(indexes, keys) {
+  if (!(indexes?.xmlMetadataByKey instanceof Map)) return null;
+  for (const key of keys) {
+    const metadata = indexes.xmlMetadataByKey.get(key);
+    if (metadata) return metadata;
+  }
+  return null;
+}
+
+function summarizeSsisPackageEdges(packageEdges, aliases, referenceIndex) {
+  const readsFrom = [];
+  const writesTo = [];
+  const calls = [];
+  const lineageQuality = {
+    validated_edges: 0,
+    probable_edges: 0,
+    unresolved_facts: 0,
+  };
+
+  for (const edge of packageEdges) {
+    if (edge.validation_status === 'validated') lineageQuality.validated_edges += 1;
+    if (edge.validation_status === 'probable') lineageQuality.probable_edges += 1;
+    if (
+      edge.validation_status === 'unresolved' ||
+      edge.edgeType === 'UNRESOLVED_DYNAMIC_EDGE'
+    ) {
+      lineageQuality.unresolved_facts += 1;
+    }
+
+    const normalizedRef = normalizeSsisReference(edge.to, aliases, referenceIndex);
+    if (!normalizedRef) continue;
+
+    if (SSIS_READ_EDGE_TYPES.has(edge.edgeType)) pushUniqueText(readsFrom, normalizedRef);
+    if (SSIS_WRITE_EDGE_TYPES.has(edge.edgeType)) pushUniqueText(writesTo, normalizedRef);
+    if (SSIS_CALL_EDGE_TYPES.has(edge.edgeType)) pushUniqueText(calls, normalizedRef);
+  }
+
+  return {
+    readsFrom,
+    writesTo,
+    calls,
+    lineageQuality,
+  };
+}
+
+function buildSsisMarkdown(result, packageRow, server, aliases, referenceIndex, indexes = {}) {
   const folder = packageRow.folder_name || 'unknown_folder';
   const project = packageRow.project_name || 'unknown_project';
   const pkg = packageRow.package_name || 'unknown_package.dtsx';
   const id = packageId(server, folder, project, pkg);
-  const packageXmlMetadata = (result.xmlMetadata || []).find((metadata) =>
-    [metadata.objectName, metadata.packageName, `${project}.${metadata.objectName}`, `${folder}.${project}.${metadata.objectName}`]
-      .map((value) => String(value || '').toLowerCase())
-      .includes(String(pkg || '').toLowerCase())
-  );
-  const keys = new Set(
-    [pkg, id, `${project}.${pkg}`, `${folder}.${project}.${pkg}`]
-      .map((value) => String(value || '').toLowerCase())
-      .filter(Boolean)
-  );
-  const packageEdges = (result.lineageEdges || []).filter((edge) =>
-    [edge.packageName, edge.from, edge.packageId, edge.packagePath, edge.objectName]
-      .map((value) => String(value || '').toLowerCase())
-      .some((key) => keys.has(key))
-  );
-
-  const refsFor = (edgeTypes) =>
-    unique(
-      packageEdges
-        .filter((edge) => edgeTypes.includes(edge.edgeType))
-        .map((edge) => normalizeSsisReference(edge.to, aliases, referenceIndex))
-        .filter(Boolean)
+  const keys = lowerSsisLookupKeySet([
+    pkg,
+    id,
+    `${project}.${pkg}`,
+    `${folder}.${project}.${pkg}`,
+  ]);
+  const packageXmlMetadata =
+    indexedSsisXmlMetadata(indexes, keys) ||
+    (result.xmlMetadata || []).find((metadata) =>
+      hasLowerSsisLookupKey(keys, [
+        metadata.objectName,
+        metadata.packageName,
+        `${project}.${metadata.objectName}`,
+        `${folder}.${project}.${metadata.objectName}`,
+      ])
+    );
+  const packageEdges =
+    indexedSsisEdges(indexes, keys) ||
+    (result.lineageEdges || []).filter((edge) =>
+      hasLowerSsisLookupKey(keys, [
+        edge.packageName,
+        edge.from,
+        edge.packageId,
+        edge.packagePath,
+        edge.objectName,
+      ])
     );
 
-  const readsFrom = refsFor(['READS_FROM', 'LOOKUP', 'USES_LOOKUP', 'EXTRACTS']);
-  const writesTo = refsFor(['WRITES_TO']);
-  const calls = refsFor(['CALLS']);
+  const edgeSummary = summarizeSsisPackageEdges(packageEdges, aliases, referenceIndex);
+  const readsFrom = edgeSummary.readsFrom;
+  const writesTo = edgeSummary.writesTo;
+  const calls = edgeSummary.calls;
   const ssisColumnMappings = Array.isArray(packageXmlMetadata?.ssisColumnMappings)
     ? packageXmlMetadata.ssisColumnMappings
     : [];
@@ -822,9 +1172,21 @@ function buildSsisMarkdown(result, packageRow, server, aliases, referenceIndex) 
     0,
     SSIS_COLUMN_MAPPING_EMBED_LIMIT
   );
-  const sidecarChunks = chunkArray(sortedSsisColumnMappings, SSIS_COLUMN_MAPPING_CHUNK_SIZE);
-  const sidecars = sidecarChunks.map((chunk, index) => {
-    const chunkNumber = index + 1;
+  const sidecarChunkCount = Math.ceil(
+    sortedSsisColumnMappings.length / SSIS_COLUMN_MAPPING_CHUNK_SIZE
+  );
+  const sidecars = [];
+  const sidecarRefs = [];
+
+  for (
+    let chunkStart = 0, chunkNumber = 1;
+    chunkStart < sortedSsisColumnMappings.length;
+    chunkStart += SSIS_COLUMN_MAPPING_CHUNK_SIZE, chunkNumber += 1
+  ) {
+    const chunk = sortedSsisColumnMappings.slice(
+      chunkStart,
+      chunkStart + SSIS_COLUMN_MAPPING_CHUNK_SIZE
+    );
     const chunkLabel = String(chunkNumber).padStart(3, '0');
     const sidecarId = `${id}.ssis_column_mappings.chunk_${chunkLabel}`;
     const sidecarFrontmatter = {
@@ -848,7 +1210,7 @@ function buildSsisMarkdown(result, packageRow, server, aliases, referenceIndex) 
       ssis_column_mapping_summary: {
         total_mappings: sortedSsisColumnMappings.length,
         chunk_number: chunkNumber,
-        chunk_count: sidecarChunks.length,
+        chunk_count: sidecarChunkCount,
         chunk_mappings: chunk.length,
       },
       ssis_column_mappings: chunk,
@@ -860,28 +1222,31 @@ function buildSsisMarkdown(result, packageRow, server, aliases, referenceIndex) 
 ## Package
 - Package ID: ${id}
 - Package Path: ${folder}.${project}.${pkg}
-- Chunk: ${chunkNumber} of ${sidecarChunks.length}
+- Chunk: ${chunkNumber} of ${sidecarChunkCount}
 - Mapping Records: ${chunk.length}
 
 This sidecar preserves complete SSIS column mapping evidence without forcing every
 mapping into the parent package frontmatter.
 `;
-    return {
+    sidecars.push({
       id: sidecarId,
       frontmatter: sidecarFrontmatter,
       body: sidecarBody,
       content: `${renderFrontmatter(sidecarFrontmatter)}${sidecarBody}`,
       chunkNumber,
       recordCount: chunk.length,
-    };
-  });
-  const unresolvedSsisColumnMappings = [
-    ...(Array.isArray(
+    });
+    sidecarRefs.push({
+      id: sidecarId,
+      chunk_number: chunkNumber,
+      records: chunk.length,
+    });
+  }
+  const unresolvedSsisColumnMappings = Array.isArray(
     packageXmlMetadata?.unresolvedSsisColumnMappings
   )
-      ? packageXmlMetadata.unresolvedSsisColumnMappings
-      : []),
-  ];
+    ? packageXmlMetadata.unresolvedSsisColumnMappings
+    : [];
 
   const frontmatter = {
     id,
@@ -907,20 +1272,10 @@ mapping into the parent package frontmatter.
       sidecar_chunks: sidecars.length,
       truncated: false,
     },
-    ssis_column_mapping_sidecars: sidecars.map((sidecar) => ({
-      id: sidecar.id,
-      chunk_number: sidecar.chunkNumber,
-      records: sidecar.recordCount,
-    })),
+    ssis_column_mapping_sidecars: sidecarRefs,
     ssis_column_mappings: embeddedSsisColumnMappings,
     unresolved_ssis_column_mappings: unresolvedSsisColumnMappings,
-    lineage_quality: {
-      validated_edges: packageEdges.filter((edge) => edge.validation_status === 'validated').length,
-      probable_edges: packageEdges.filter((edge) => edge.validation_status === 'probable').length,
-      unresolved_facts: packageEdges.filter(
-        (edge) => edge.validation_status === 'unresolved' || edge.edgeType === 'UNRESOLVED_DYNAMIC_EDGE'
-      ).length,
-    },
+    lineage_quality: edgeSummary.lineageQuality,
     description: `SSIS package metadata extracted from folder ${folder}, project ${project}, package ${pkg}.`,
   };
 
@@ -951,16 +1306,26 @@ mapping into the parent package frontmatter.
 function buildSsisSummary(result, server) {
   const lineageEdges = result.lineageEdges || [];
   const lineageQuality = {
-    validated_edges: lineageEdges.filter(
-      (edge) => edge.validation_status === 'validated' || edge.confidence === 'high'
-    ).length,
-    probable_edges: lineageEdges.filter(
-      (edge) => edge.validation_status === 'probable' || edge.confidence === 'medium'
-    ).length,
-    unresolved_facts: lineageEdges.filter(
-      (edge) => edge.validation_status === 'unresolved' || edge.edgeType === 'UNRESOLVED_DYNAMIC_EDGE'
-    ).length,
+    validated_edges: 0,
+    probable_edges: 0,
+    unresolved_facts: 0,
   };
+
+  for (const edge of lineageEdges) {
+    if (edge.validation_status === 'validated' || edge.confidence === 'high') {
+      lineageQuality.validated_edges += 1;
+    }
+    if (edge.validation_status === 'probable' || edge.confidence === 'medium') {
+      lineageQuality.probable_edges += 1;
+    }
+    if (
+      edge.validation_status === 'unresolved' ||
+      edge.edgeType === 'UNRESOLVED_DYNAMIC_EDGE'
+    ) {
+      lineageQuality.unresolved_facts += 1;
+    }
+  }
+
   const frontmatter = {
     name: 'ssis_catalog_lineage',
     server,
@@ -975,9 +1340,14 @@ function buildSsisSummary(result, server) {
   };
   frontmatter.catalog_confidence = buildCatalogConfidence(frontmatter);
 
-  const lines = lineageEdges.slice(0, 500).map((edge) => {
-    return `- ${edge.from || 'UNKNOWN'} -> ${edge.to || 'UNKNOWN'} (type=${edge.edgeType || 'ETL'}, confidence=${edge.confidence ?? 'n/a'}, via=${edge.via || 'n/a'})`;
-  });
+  const lines = [];
+  const previewEdgeCount = Math.min(lineageEdges.length, 500);
+  for (let index = 0; index < previewEdgeCount; index += 1) {
+    const edge = lineageEdges[index];
+    lines.push(
+      `- ${edge.from || 'UNKNOWN'} -> ${edge.to || 'UNKNOWN'} (type=${edge.edgeType || 'ETL'}, confidence=${edge.confidence ?? 'n/a'}, via=${edge.via || 'n/a'})`
+    );
+  }
   const body = `# SSIS Catalog Lineage Summary
 
 ## Overview
@@ -998,41 +1368,41 @@ function isExternalSsisComponent(component = {}) {
 }
 
 function columnsFromSsisComponent(component = {}, objectId = '', role = 'source') {
-  const candidates =
-    role === 'destination'
-      ? [
-          ...(component.externalMetadataColumns || []),
-          ...(component.inputColumns || []),
-          ...(component.outputColumns || []),
-        ]
-      : [
-          ...(component.outputColumns || []),
-          ...(component.externalMetadataColumns || []),
-          ...(component.inputColumns || []),
-        ];
   const seen = new Set();
   const columns = [];
 
-  for (const column of candidates) {
-    const name = cleanSegment(column?.name || column?.cachedName || '');
-    if (!name) continue;
-    const key = name.toLowerCase();
-    if (seen.has(key)) continue;
-    seen.add(key);
-    columns.push({
-      name,
-      column_id: `${objectId}.${name}`,
-      ordinal: columns.length + 1,
-      data_type: column.dataType || 'external',
-      max_length: column.length || null,
-      nullable: true,
-      sensitivity: 'internal',
-      extraction_evidence: {
-        source: 'ssis_external_component_metadata',
-        component_name: component.componentName || '',
-        component_type: component.componentType || '',
-      },
-    });
+  const appendColumns = (candidateColumns = []) => {
+    for (const column of candidateColumns || []) {
+      const name = cleanSegment(column?.name || column?.cachedName || '');
+      if (!name) continue;
+      const key = name.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      columns.push({
+        name,
+        column_id: `${objectId}.${name}`,
+        ordinal: columns.length + 1,
+        data_type: column.dataType || 'external',
+        max_length: column.length || null,
+        nullable: true,
+        sensitivity: 'internal',
+        extraction_evidence: {
+          source: 'ssis_external_component_metadata',
+          component_name: component.componentName || '',
+          component_type: component.componentType || '',
+        },
+      });
+    }
+  };
+
+  if (role === 'destination') {
+    appendColumns(component.externalMetadataColumns);
+    appendColumns(component.inputColumns);
+    appendColumns(component.outputColumns);
+  } else {
+    appendColumns(component.outputColumns);
+    appendColumns(component.externalMetadataColumns);
+    appendColumns(component.inputColumns);
   }
 
   return columns;
@@ -1133,29 +1503,36 @@ function referenceMatchesCandidate(candidateId = '', reference = '') {
   if (!candidate || !hint) return false;
   if (candidate === hint || candidate.endsWith(`.${hint}`)) return true;
 
-  const candidateParts = candidate.split('.').filter(Boolean);
-  const hintParts = hint.split('.').filter(Boolean);
+  const candidateParts = splitDotSegments(candidate);
+  const hintParts = splitDotSegments(hint);
   if (hintParts.length === 1) {
     return candidateParts[candidateParts.length - 1] === hintParts[0];
   }
   if (hintParts.length === 2) {
-    return (
-      candidateParts.slice(-2).join('.') === hint ||
-      candidateParts.slice(-3).join('.').endsWith(`.${hint}`)
-    );
+    return tailDotSegmentsMatch(candidateParts, hintParts);
   }
   if (hintParts.length === 3) {
-    return candidateParts.slice(-3).join('.') === hint;
+    return tailDotSegmentsMatch(candidateParts, hintParts);
   }
   return false;
 }
 
 function resolveUniqueCandidateReference(candidates = [], reference = '') {
-  const uniqueCandidates = unique(candidates);
-  const matches = uniqueCandidates.filter((candidate) =>
-    referenceMatchesCandidate(candidate, reference)
-  );
-  return matches.length === 1 ? matches[0] : '';
+  const seen = new Set();
+  let match = '';
+
+  for (const value of candidates) {
+    const candidate = String(value || '').trim();
+    if (!candidate) continue;
+    const key = candidate.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    if (!referenceMatchesCandidate(candidate, reference)) continue;
+    if (match) return '';
+    match = candidate;
+  }
+
+  return match;
 }
 
 function addSsisEndpointColumn(endpoint, columnName, mapping = {}, role = 'source') {
@@ -1208,35 +1585,35 @@ function ensureSsisSqlEndpoint(endpoints, endpointId, packageIdValue, role) {
 
   const endpoint = endpoints.get(normalizedId);
   endpoint.role = endpoint.role === role ? role : 'source_and_target';
-  endpoint.packages = unique([...endpoint.packages, packageIdValue]);
+  endpoint.packages = pushUniqueText(endpoint.packages, packageIdValue);
   if (role === 'source') {
-    endpoint.usedBy = unique([...endpoint.usedBy, packageIdValue]);
+    endpoint.usedBy = pushUniqueText(endpoint.usedBy, packageIdValue);
   } else {
-    endpoint.createdVia = unique([...endpoint.createdVia, packageIdValue]);
+    endpoint.createdVia = pushUniqueText(endpoint.createdVia, packageIdValue);
   }
   endpoint.mappings += 1;
   return endpoint;
 }
 
-function buildSsisSqlEndpointRecords(records) {
+function* buildSsisSqlEndpointRecords(records) {
   const endpoints = new Map();
-  const packageRecords = Array.from(records.values()).filter((record) => {
-    const frontmatter = record?.frontmatter || {};
-    return (
-      Array.isArray(frontmatter.ssis_column_mappings) &&
-      frontmatter.ssis_column_mappings.length > 0 &&
-      (frontmatter.type === 'package' || frontmatter.type === 'dataset')
-    );
-  });
 
-  for (const record of packageRecords) {
-    const frontmatter = record.frontmatter || {};
+  for (const record of records.values()) {
+    const frontmatter = record?.frontmatter || {};
+    if (
+      !Array.isArray(frontmatter.ssis_column_mappings) ||
+      frontmatter.ssis_column_mappings.length === 0 ||
+      (frontmatter.type !== 'package' && frontmatter.type !== 'dataset')
+    ) {
+      continue;
+    }
+
     const packageIdValue = frontmatter.package_id || frontmatter.id || record.id;
-    const sourceCandidates = unique([
-      ...(frontmatter.reads_from || []),
-      ...(frontmatter.depends_on || []),
-    ]);
-    const targetCandidates = unique(frontmatter.writes_to || []);
+    const sourceCandidates = mergeUniqueTextGroups(
+      frontmatter.reads_from,
+      frontmatter.depends_on
+    );
+    const targetCandidates = Array.isArray(frontmatter.writes_to) ? frontmatter.writes_to : [];
 
     for (const mapping of frontmatter.ssis_column_mappings || []) {
       if (mapping.validation_status && mapping.validation_status !== 'validated') continue;
@@ -1275,7 +1652,7 @@ function buildSsisSqlEndpointRecords(records) {
     }
   }
 
-  return Array.from(endpoints.values()).map((endpoint) => {
+  for (const endpoint of endpoints.values()) {
     const roleTags =
       endpoint.role === 'source_and_target'
         ? ['source', 'destination']
@@ -1321,7 +1698,7 @@ column impact analysis can remain connected until a full SQL extraction for this
 source is available.
 `;
 
-    return {
+    yield {
       id: endpoint.id,
       type: 'table',
       frontmatter,
@@ -1331,7 +1708,7 @@ source is available.
       schema: endpoint.schema,
       name: endpoint.name,
     };
-  });
+  }
 }
 
 async function loadSqlRawObjects(aliases) {
@@ -1359,6 +1736,10 @@ async function loadSqlRawObjects(aliases) {
       const name = cleanSegment(metadata.name || path.basename(filePath, '.md').split('__').slice(1).join('__'));
       const type = typeFromDirectory(kind);
       const id = makeSqlId(server, database, schema, name);
+      const markdownColumns =
+        Array.isArray(metadata.columns) && metadata.columns.length > 0
+          ? []
+          : parseMarkdownColumns(body, { id, metadata });
       const record = {
         id,
         server,
@@ -1369,7 +1750,7 @@ async function loadSqlRawObjects(aliases) {
         type,
         kind,
         metadata,
-        body,
+        markdownColumns,
         definition: extractDefinition(body),
         sourcePath: filePath,
       };
@@ -1437,7 +1818,7 @@ function rewriteSqlLineage(records, aliases) {
         aliases,
         referenceIndex
       );
-      dependsOn = unique([...readsFrom, ...calls]);
+      dependsOn = mergeUniqueTextGroups(readsFrom, calls);
     } else if (record.type === 'function' || record.kind === 'triggers') {
       dependsOn = normalizeReferenceList(
         Array.isArray(record.metadata.depends_on) ? record.metadata.depends_on : [],
@@ -1496,8 +1877,14 @@ function rewriteSqlLineage(records, aliases) {
         : [],
       extracted_at: new Date().toISOString(),
     };
+
+    delete record.metadata;
+    delete record.definition;
+    delete record.markdownColumns;
+    delete record.columns;
   }
 
+  clearColumnUsageMetadata(columnUsageMetadata);
   return referenceIndex;
 }
 
@@ -1508,22 +1895,22 @@ function applyForwardSqlEdges(records, referenceIndex) {
     for (const targetId of fm.writes_to || []) {
       const target = records.get(targetId.toLowerCase());
       if (!target || target.type !== 'table') continue;
-      target.frontmatter.created_by = unique([...(target.frontmatter.created_by || []), record.id]);
-      target.frontmatter.depends_on = unique([...(target.frontmatter.depends_on || []), record.id]);
+      target.frontmatter.created_by = pushUniqueText(target.frontmatter.created_by, record.id);
+      target.frontmatter.depends_on = pushUniqueText(target.frontmatter.depends_on, record.id);
       target.frontmatter.lineage_status = 'creator_found';
     }
 
     for (const sourceId of fm.reads_from || []) {
       const source = records.get(sourceId.toLowerCase());
       if (!source || source.type !== 'table') continue;
-      source.frontmatter.used_by = unique([...(source.frontmatter.used_by || []), record.id]);
+      source.frontmatter.used_by = pushUniqueText(source.frontmatter.used_by, record.id);
     }
   }
 
   return referenceIndex;
 }
 
-async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog) {
+async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog, options = {}) {
   const xmlFiles = await listFiles(
     RAW_SSIS_XML_ROOT,
     (filePath) => filePath.toLowerCase().endsWith('.dtsx.xml')
@@ -1532,8 +1919,12 @@ async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog
   const catalog = [];
   const xmlMetadata = [];
   let skipped = 0;
+  let processedXmlFiles = 0;
+  const ssisLimit = Math.max(0, Number(options.ssisLimit || 0));
 
   for (const filePath of xmlFiles) {
+    if (ssisLimit > 0 && processedXmlFiles >= ssisLimit) break;
+    processedXmlFiles += 1;
     try {
       const xmlText = await fs.readFile(filePath, 'utf8');
       const { folder, project, packageName } = inferSsisFileParts(
@@ -1580,9 +1971,11 @@ async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog
     warnings: [],
   };
   result.lineageEdges = extractor.buildLineageEdges(catalog, xmlMetadata, result.agentJobs, [], {});
+  const markdownIndexes = buildSsisMarkdownIndexes(result.lineageEdges, result.xmlMetadata);
+  const pendingPackageTargetUpdates = [];
 
-  const markdowns = catalog.map((row) => buildSsisMarkdown(result, row, server, aliases, referenceIndex));
-  for (const md of markdowns) {
+  for (const row of catalog) {
+    const md = buildSsisMarkdown(result, row, server, aliases, referenceIndex, markdownIndexes);
     records.set(md.id.toLowerCase(), {
       id: md.id,
       type: 'package',
@@ -1616,6 +2009,11 @@ async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog
         outputPath: sidecarOutputPath,
       });
     }
+
+    pendingPackageTargetUpdates.push({
+      packageId: md.id,
+      writesTo: md.frontmatter.writes_to || [],
+    });
   }
 
   for (const externalRecord of buildExternalSsisRecords(result, server)) {
@@ -1628,11 +2026,14 @@ async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog
     ssisSqlEndpointRecords += 1;
   }
 
-  for (const md of markdowns) {
-    for (const targetId of md.frontmatter.writes_to || []) {
+  for (const update of pendingPackageTargetUpdates) {
+    for (const targetId of update.writesTo) {
       const target = records.get(targetId.toLowerCase());
       if (!target || target.type !== 'table') continue;
-      target.frontmatter.created_via = unique([...(target.frontmatter.created_via || []), md.id]);
+      target.frontmatter.created_via = pushUniqueText(
+        target.frontmatter.created_via,
+        update.packageId
+      );
       if (target.frontmatter.lineage_status !== 'creator_found') {
         target.frontmatter.lineage_status = 'creator_found';
       }
@@ -1644,25 +2045,67 @@ async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog
     result,
     packageCount: catalog.length,
     edgeCount: result.lineageEdges.length,
+    discoveredXmlFiles: xmlFiles.length,
+    processedXmlFiles,
+    limited: ssisLimit > 0 && processedXmlFiles < xmlFiles.length,
     ssisSqlEndpointRecords,
     skipped,
   };
 }
 
 function applySsisBridgeInferences(records) {
-  const tables = Array.from(records.values()).filter((record) => record.type === 'table');
+  const tableCandidatesFor = createBridgeTableCandidateResolver(records);
+  const tableTokenCache = new Map();
   let inferred = 0;
+
+  const tableTokensFor = (table) => {
+    const key = String(table.id || table.name || '').toLowerCase();
+    if (!tableTokenCache.has(key)) {
+      tableTokenCache.set(key, lineageTokens(table.name));
+    }
+    return tableTokenCache.get(key);
+  };
+
+  const chooseBestBridgeTarget = (tables, procTokens, stageTokens) => {
+    let best = null;
+
+    for (const table of tables) {
+      const tableTokens = tableTokensFor(table);
+      const baseScore =
+        intersectionSize(tableTokens, procTokens) +
+        intersectionSize(tableTokens, stageTokens);
+      if (baseScore < 4) continue;
+
+      const score = baseScore - lineageRolePenalty(table.name, procTokens);
+      if (
+        !best ||
+        score > best.score ||
+        (score === best.score &&
+          String(table.name || '').localeCompare(String(best.table.name || '')) < 0)
+      ) {
+        best = { table, score };
+      }
+    }
+
+    return best?.table || null;
+  };
 
   for (const pkg of records.values()) {
     if (pkg.type !== 'package') continue;
     const writes = Array.isArray(pkg.frontmatter?.writes_to) ? pkg.frontmatter.writes_to : [];
     const calls = Array.isArray(pkg.frontmatter?.calls) ? pkg.frontmatter.calls : [];
-    const stageWrites = writes
-      .map((ref) => ({ ref, parsed: parseSqlId(ref), record: records.get(String(ref).toLowerCase()) }))
-      .filter(({ parsed }) => {
-        const db = parsed?.database?.toLowerCase();
-        return db === 'stagingdb' || db === 'etl_staging' || db?.includes('staging');
+    const stageWrites = [];
+
+    for (const ref of writes) {
+      const parsed = parseSqlId(ref);
+      const db = parsed?.database?.toLowerCase();
+      if (db !== 'stagingdb' && db !== 'etl_staging' && !db?.includes('staging')) continue;
+      stageWrites.push({
+        ref,
+        parsed,
+        record: records.get(String(ref).toLowerCase()),
       });
+    }
 
     if (stageWrites.length === 0 || calls.length === 0) continue;
 
@@ -1677,42 +2120,23 @@ function applySsisBridgeInferences(records) {
         const stageTokens = lineageTokens(stage.parsed?.name || stage.ref);
         if (intersectionSize(procTokens, stageTokens) < 2) continue;
 
-        const candidates = tables
-          .filter((table) => {
-            const dbMatch = table.database.toLowerCase() === callDb;
-            const schemaMatch =
-              !parsedCall.schema ||
-              !table.schema ||
-              table.schema.toLowerCase() === parsedCall.schema.toLowerCase();
-            return dbMatch && schemaMatch;
-          })
-          .map((table) => {
-            const tableTokens = lineageTokens(table.name);
-            const baseScore =
-              intersectionSize(tableTokens, procTokens) +
-              intersectionSize(tableTokens, stageTokens);
-            return {
-              table,
-              score: baseScore - lineageRolePenalty(table.name, procTokens),
-              baseScore,
-            };
-          })
-          .filter(({ baseScore }) => baseScore >= 4)
-          .sort((a, b) => b.score - a.score || a.table.name.localeCompare(b.table.name));
-
-        const target = candidates[0]?.table;
+        const target = chooseBestBridgeTarget(
+          tableCandidatesFor(callDb, parsedCall.schema),
+          procTokens,
+          stageTokens
+        );
         if (!target || target.id.toLowerCase() === stage.ref.toLowerCase()) continue;
 
-        target.frontmatter.created_by = unique([...(target.frontmatter.created_by || []), stage.ref]);
-        target.frontmatter.created_via = unique([...(target.frontmatter.created_via || []), pkg.id]);
-        target.frontmatter.depends_on = unique([...(target.frontmatter.depends_on || []), stage.ref]);
+        target.frontmatter.created_by = pushUniqueText(target.frontmatter.created_by, stage.ref);
+        target.frontmatter.created_via = pushUniqueText(target.frontmatter.created_via, pkg.id);
+        target.frontmatter.depends_on = pushUniqueText(target.frontmatter.depends_on, stage.ref);
         target.frontmatter.lineage_status = 'creator_found';
 
         if (stage.record?.frontmatter) {
-          stage.record.frontmatter.used_by = unique([
-            ...(stage.record.frontmatter.used_by || []),
-            target.id,
-          ]);
+          stage.record.frontmatter.used_by = pushUniqueText(
+            stage.record.frontmatter.used_by,
+            target.id
+          );
         }
         inferred += 1;
       }
@@ -1720,6 +2144,39 @@ function applySsisBridgeInferences(records) {
   }
 
   return inferred;
+}
+
+function createBridgeTableCandidateResolver(records) {
+  const tablesByDatabase = new Map();
+  const candidateCache = new Map();
+
+  for (const record of records.values()) {
+    if (record.type !== 'table') continue;
+    const database = String(record.database || '').toLowerCase();
+    if (!database) continue;
+    if (!tablesByDatabase.has(database)) tablesByDatabase.set(database, []);
+    tablesByDatabase.get(database).push(record);
+  }
+
+  return (database, schema) => {
+    const dbKey = String(database || '').toLowerCase();
+    const schemaKey = String(schema || '').toLowerCase();
+    const cacheKey = `${dbKey}|${schemaKey}`;
+    if (candidateCache.has(cacheKey)) return candidateCache.get(cacheKey);
+
+    const dbTables = tablesByDatabase.get(dbKey) || [];
+    let candidates = dbTables;
+    if (schemaKey) {
+      candidates = [];
+      for (const table of dbTables) {
+        const tableSchema = String(table.schema || '').toLowerCase();
+        if (!tableSchema || tableSchema === schemaKey) candidates.push(table);
+      }
+    }
+
+    candidateCache.set(cacheKey, candidates);
+    return candidates;
+  };
 }
 
 function groupByProcessId(entries = []) {
@@ -1845,24 +2302,36 @@ function countArray(value) {
 }
 
 function uniqueEdgeCount(frontmatter = {}) {
-  const edgeRefs = [
-    ...(frontmatter.depends_on || []),
-    ...(frontmatter.reads_from || []),
-    ...(frontmatter.writes_to || []),
-    ...(frontmatter.calls || []),
-    ...(frontmatter.created_by || []),
-    ...(frontmatter.created_via || []),
-    ...(frontmatter.used_by || []),
-  ];
-  return new Set(edgeRefs.map((ref) => String(ref || '').trim()).filter(Boolean)).size;
+  const edgeRefs = new Set();
+  const addRefs = (values = []) => {
+    for (const ref of values || []) {
+      const cleaned = String(ref || '').trim();
+      if (cleaned) edgeRefs.add(cleaned);
+    }
+  };
+
+  addRefs(frontmatter.depends_on);
+  addRefs(frontmatter.reads_from);
+  addRefs(frontmatter.writes_to);
+  addRefs(frontmatter.calls);
+  addRefs(frontmatter.created_by);
+  addRefs(frontmatter.created_via);
+  addRefs(frontmatter.used_by);
+  return edgeRefs.size;
 }
 
 function averageConfidence(records = []) {
-  const values = records
-    .map((record) => Number(record?.confidence ?? 1))
-    .filter((value) => Number.isFinite(value));
-  if (values.length === 0) return 1;
-  return values.reduce((sum, value) => sum + value, 0) / values.length;
+  let sum = 0;
+  let count = 0;
+
+  for (const record of records) {
+    const value = Number(record?.confidence ?? 1);
+    if (!Number.isFinite(value)) continue;
+    sum += value;
+    count += 1;
+  }
+
+  return count === 0 ? 1 : sum / count;
 }
 
 function confidenceLabel(overallScore, coverageScore, unresolvedRiskScore) {
@@ -2009,9 +2478,17 @@ function applyCatalogConfidence(records) {
 }
 
 function average(values = []) {
-  const finiteValues = values.map(Number).filter((value) => Number.isFinite(value));
-  if (finiteValues.length === 0) return 0;
-  return score(finiteValues.reduce((sum, value) => sum + value, 0) / finiteValues.length);
+  let sum = 0;
+  let count = 0;
+
+  for (const value of values) {
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric)) continue;
+    sum += numeric;
+    count += 1;
+  }
+
+  return count === 0 ? 0 : score(sum / count);
 }
 
 function ratio(part, total) {
@@ -2069,11 +2546,23 @@ function summarizeConfidence(recordList = []) {
     low_or_needs_review_objects: 0,
     low_or_needs_review_ratio: 0,
   };
-  const overallScores = [];
-  const edgeScores = [];
-  const coverageScores = [];
-  const columnScores = [];
-  const riskScores = [];
+  const scoreTotals = {
+    overall: { sum: 0, count: 0 },
+    edge_correctness: { sum: 0, count: 0 },
+    coverage: { sum: 0, count: 0 },
+    column_lineage: { sum: 0, count: 0 },
+    unresolved_risk: { sum: 0, count: 0 },
+  };
+  const addScore = (key, value) => {
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric)) return;
+    scoreTotals[key].sum += numeric;
+    scoreTotals[key].count += 1;
+  };
+  const averageScore = (key) => {
+    const total = scoreTotals[key];
+    return total.count === 0 ? 0 : score(total.sum / total.count);
+  };
 
   for (const record of recordList) {
     const confidence = recordConfidence(record);
@@ -2095,19 +2584,19 @@ function summarizeConfidence(recordList = []) {
       summary.low_or_needs_review_objects += 1;
     }
 
-    overallScores.push(confidence.overall_score);
-    edgeScores.push(confidence.edge_correctness_score);
-    coverageScores.push(confidence.coverage_score);
-    columnScores.push(confidence.column_lineage_score);
-    riskScores.push(confidence.unresolved_risk_score);
+    addScore('overall', confidence.overall_score);
+    addScore('edge_correctness', confidence.edge_correctness_score);
+    addScore('coverage', confidence.coverage_score);
+    addScore('column_lineage', confidence.column_lineage_score);
+    addScore('unresolved_risk', confidence.unresolved_risk_score);
   }
 
   summary.average_scores = {
-    overall: average(overallScores),
-    edge_correctness: average(edgeScores),
-    coverage: average(coverageScores),
-    column_lineage: average(columnScores),
-    unresolved_risk: average(riskScores),
+    overall: averageScore('overall'),
+    edge_correctness: averageScore('edge_correctness'),
+    coverage: averageScore('coverage'),
+    column_lineage: averageScore('column_lineage'),
+    unresolved_risk: averageScore('unresolved_risk'),
   };
   summary.low_or_needs_review_ratio = ratio(
     summary.low_or_needs_review_objects,
@@ -2146,8 +2635,9 @@ function summarizeSources(recordList = []) {
     }
   }
 
-  return Array.from(grouped.values())
-    .map((source) => ({
+  const sources = [];
+  for (const source of grouped.values()) {
+    sources.push({
       source_key: source.source_key,
       object_count: source.object_count,
       scored_objects: source.scored_objects,
@@ -2160,8 +2650,10 @@ function summarizeSources(recordList = []) {
         source.scored_objects
       ),
       unresolved_facts: source.unresolved_facts,
-    }))
-    .sort((left, right) => left.source_key.localeCompare(right.source_key));
+    });
+  }
+
+  return sources.sort((left, right) => left.source_key.localeCompare(right.source_key));
 }
 
 function packageConfidenceIndex(recordList = []) {
@@ -2186,45 +2678,51 @@ function packageConfidenceIndex(recordList = []) {
 }
 
 function objectConfidenceRows(recordList = []) {
-  return recordList
-    .map((record) => {
-      const confidence = recordConfidence(record);
-      return {
-        id: recordObjectId(record),
-        name: record.frontmatter?.name || record.name || recordObjectId(record),
-        type: record.frontmatter?.type || record.type || 'unknown',
-        source_key: recordSourceKey(record),
-        score: confidence ? Number(confidence.overall_score || 0) : null,
-        label: confidence?.confidence_label || 'missing',
-        unresolved_facts: unresolvedFactCount(record),
-      };
-    })
-    .sort((left, right) => {
-      const leftScore = left.score ?? -1;
-      const rightScore = right.score ?? -1;
-      return leftScore - rightScore || right.unresolved_facts - left.unresolved_facts;
+  const rows = [];
+
+  for (const record of recordList) {
+    const confidence = recordConfidence(record);
+    const objectId = recordObjectId(record);
+    rows.push({
+      id: objectId,
+      name: record.frontmatter?.name || record.name || objectId,
+      type: record.frontmatter?.type || record.type || 'unknown',
+      source_key: recordSourceKey(record),
+      score: confidence ? Number(confidence.overall_score || 0) : null,
+      label: confidence?.confidence_label || 'missing',
+      unresolved_facts: unresolvedFactCount(record),
     });
+  }
+
+  return rows.sort((left, right) => {
+    const leftScore = left.score ?? -1;
+    const rightScore = right.score ?? -1;
+    return leftScore - rightScore || right.unresolved_facts - left.unresolved_facts;
+  });
 }
 
 function comparePackageConfidence(currentIndex = {}, previousIndex = {}) {
-  return Object.values(currentIndex)
-    .map((current) => {
-      const previous = previousIndex[current.id];
-      if (!previous || !Number.isFinite(Number(previous.score))) return null;
-      const previousScore = Number(previous.score);
-      return {
-        id: current.id,
-        name: current.name,
-        previous_score: score(previousScore),
-        current_score: score(current.score),
-        delta: roundMetric(current.score - previousScore),
-        previous_label: previous.label || 'unknown',
-        current_label: current.label || 'unknown',
-        current_unresolved_facts: current.unresolved_facts,
-      };
-    })
-    .filter(Boolean)
-    .filter((entry) => entry.delta < 0)
+  const regressions = [];
+
+  for (const current of Object.values(currentIndex)) {
+    const previous = previousIndex[current.id];
+    if (!previous || !Number.isFinite(Number(previous.score))) continue;
+    const previousScore = Number(previous.score);
+    const delta = roundMetric(current.score - previousScore);
+    if (delta >= 0) continue;
+    regressions.push({
+      id: current.id,
+      name: current.name,
+      previous_score: score(previousScore),
+      current_score: score(current.score),
+      delta,
+      previous_label: previous.label || 'unknown',
+      current_label: current.label || 'unknown',
+      current_unresolved_facts: current.unresolved_facts,
+    });
+  }
+
+  return regressions
     .sort((left, right) => left.delta - right.delta)
     .slice(0, 25);
 }
@@ -2331,8 +2829,17 @@ function evaluateRebuildGates(report, thresholds = DEFAULT_REBUILD_GATES) {
     );
   }
 
-  const failed = checks.filter((check) => !check.passed && check.severity === 'fail');
-  const warnings = checks.filter((check) => !check.passed && check.severity !== 'fail');
+  const failed = [];
+  const warnings = [];
+  for (const check of checks) {
+    if (check.passed) continue;
+    if (check.severity === 'fail') {
+      failed.push(check);
+    } else {
+      warnings.push(check);
+    }
+  }
+
   return {
     status: failed.length > 0 ? 'failed' : warnings.length > 0 ? 'warning' : 'passed',
     enforceable: ENFORCE_REBUILD_GATES,
@@ -2350,21 +2857,46 @@ function buildRebuildReport({ summary, recordList, previousReport = null, thresh
   const sourceSummary = summarizeSources(recordList);
   const currentPackageIndex = packageConfidenceIndex(recordList);
   const previousPackageIndex = previousReport?.package_confidence_index || {};
-  const previousSources = new Set(
-    (previousReport?.source_summary || []).map((source) => source.source_key)
+  const previousSources = new Set();
+  for (const source of previousReport?.source_summary || []) {
+    previousSources.add(source.source_key);
+  }
+
+  const lowOrNeedsReviewTop = [];
+  const topUnresolvedObjects = [];
+  for (const row of rows) {
+    if (
+      lowOrNeedsReviewTop.length < 50 &&
+      (row.label === 'low' || row.label === 'needs_review')
+    ) {
+      lowOrNeedsReviewTop.push(row);
+    }
+    if (row.unresolved_facts > 0) {
+      topUnresolvedObjects.push(row);
+    }
+  }
+  topUnresolvedObjects.sort(
+    (left, right) => right.unresolved_facts - left.unresolved_facts
   );
-  const totalUnresolvedFacts = recordList.reduce(
-    (sum, record) => sum + unresolvedFactCount(record),
-    0
-  );
-  const totalDirectEdgeRefs = recordList.reduce(
-    (sum, record) => sum + uniqueEdgeCount(record.frontmatter || {}),
-    0
-  );
-  const totalColumnLineageRecords = recordList.reduce(
-    (sum, record) => sum + countArray(record.frontmatter?.column_lineage),
-    0
-  );
+  topUnresolvedObjects.length = Math.min(topUnresolvedObjects.length, 50);
+
+  const newDataSources = [];
+  if (previousSources.size > 0) {
+    for (const source of sourceSummary) {
+      if (!previousSources.has(source.source_key)) newDataSources.push(source);
+    }
+  }
+
+  let totalUnresolvedFacts = 0;
+  let totalDirectEdgeRefs = 0;
+  let totalColumnLineageRecords = 0;
+
+  for (const record of recordList) {
+    totalUnresolvedFacts += unresolvedFactCount(record);
+    totalDirectEdgeRefs += uniqueEdgeCount(record.frontmatter || {});
+    totalColumnLineageRecords += countArray(record.frontmatter?.column_lineage);
+  }
+
   const report = {
     generated_at: new Date().toISOString(),
     generator: 'scripts/rebuild-catalog-from-raw.mjs',
@@ -2399,21 +2931,13 @@ function buildRebuildReport({ summary, recordList, previousReport = null, thresh
         previousReport?.metrics?.column_lineage_records
       ),
     },
-    low_or_needs_review_top: rows
-      .filter((row) => row.label === 'low' || row.label === 'needs_review')
-      .slice(0, 50),
-    top_unresolved_objects: rows
-      .filter((row) => row.unresolved_facts > 0)
-      .sort((left, right) => right.unresolved_facts - left.unresolved_facts)
-      .slice(0, 50),
+    low_or_needs_review_top: lowOrNeedsReviewTop,
+    top_unresolved_objects: topUnresolvedObjects,
     package_confidence_regressions: comparePackageConfidence(
       currentPackageIndex,
       previousPackageIndex
     ),
-    new_data_sources:
-      previousSources.size === 0
-        ? []
-        : sourceSummary.filter((source) => !previousSources.has(source.source_key)),
+    new_data_sources: newDataSources,
     source_summary: sourceSummary,
     package_confidence_index: currentPackageIndex,
   };
@@ -2462,19 +2986,24 @@ function renderRebuildReportMarkdown(report) {
   if (report.package_confidence_regressions.length === 0) {
     lines.push('- No package confidence regressions detected.');
   } else {
-    for (const pkg of report.package_confidence_regressions.slice(0, 10)) {
+    let renderedPackages = 0;
+    for (const pkg of report.package_confidence_regressions) {
+      if (renderedPackages >= 10) break;
       lines.push(
         `- ${pkg.name}: ${pkg.previous_score} -> ${pkg.current_score} (${pkg.delta})`
       );
+      renderedPackages += 1;
     }
   }
 
   lines.push('', '## Gate Warnings And Failures', '');
-  const gateIssues = [...report.gates.failed, ...report.gates.warnings];
-  if (gateIssues.length === 0) {
+  if (report.gates.failed.length === 0 && report.gates.warnings.length === 0) {
     lines.push('- No gate failures or warnings.');
   } else {
-    for (const issue of gateIssues) {
+    for (const issue of report.gates.failed) {
+      lines.push(`- ${issue.severity.toUpperCase()} ${issue.name}: ${JSON.stringify(issue)}`);
+    }
+    for (const issue of report.gates.warnings) {
       lines.push(`- ${issue.severity.toUpperCase()} ${issue.name}: ${JSON.stringify(issue)}`);
     }
   }
@@ -2483,10 +3012,13 @@ function renderRebuildReportMarkdown(report) {
   if (report.new_data_sources.length === 0) {
     lines.push('- No new data sources detected against the previous report baseline.');
   } else {
-    for (const source of report.new_data_sources.slice(0, 25)) {
+    let renderedSources = 0;
+    for (const source of report.new_data_sources) {
+      if (renderedSources >= 25) break;
       lines.push(
         `- ${source.source_key}: objects=${source.object_count}, avg=${source.average_confidence}, low_or_needs_review=${source.low_or_needs_review_ratio}`
       );
+      renderedSources += 1;
     }
   }
 
@@ -2505,42 +3037,80 @@ async function writeRebuildReport(report) {
 
 async function backupExistingServers() {
   if (process.argv.includes('--in-place')) {
-    return null;
+    return { mode: 'in_place_requested', path: null };
   }
 
   try {
     await fs.access(OUTPUT_SERVERS_ROOT);
   } catch {
-    return null;
+    return { mode: 'not_needed', path: null };
   }
 
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const backupRoot = path.join(OUTPUT_ROOT, '_rebuild_backups');
   const backupPath = path.join(backupRoot, `servers_${timestamp}`);
   await fs.mkdir(backupRoot, { recursive: true });
+
   try {
     await fs.rename(OUTPUT_SERVERS_ROOT, backupPath);
-    return backupPath;
+    console.log(`[rebuild] moved existing servers folder to backup ${backupPath}`);
+    return { mode: 'moved', path: backupPath };
   } catch (err) {
+    const moveMessage = err.code || err.message;
+    let copySucceeded = false;
+
+    try {
+      await fs.cp(OUTPUT_SERVERS_ROOT, backupPath, {
+        recursive: true,
+        errorOnExist: true,
+        force: false,
+      });
+      copySucceeded = true;
+      console.warn(
+        `[rebuild] could not move existing servers folder for backup (${moveMessage}); copied backup to ${backupPath}`
+      );
+    } catch (copyErr) {
+      console.warn(
+        `[rebuild] could not copy existing servers folder for backup after move failed (${copyErr.code || copyErr.message})`
+      );
+      await fs.rm(backupPath, { recursive: true, force: true }).catch(() => {});
+    }
+
     if (process.argv.includes('--clean')) {
       try {
         await fs.rm(OUTPUT_SERVERS_ROOT, { recursive: true, force: true });
         console.warn(
-          `[rebuild] could not move existing servers folder for backup (${err.code || err.message}); removed it for clean rebuild`
+          `[rebuild] removed existing servers folder for clean rebuild after backup move failed (${moveMessage})`
         );
-        return null;
+        return {
+          mode: copySucceeded ? 'copied_then_removed_for_clean' : 'removed_for_clean_without_backup',
+          path: copySucceeded ? backupPath : null,
+          warning: copySucceeded
+            ? 'Backup move failed; copied backup before clean rebuild.'
+            : 'Backup move and copy failed; clean rebuild removed existing servers without backup.',
+        };
       } catch (removeErr) {
         console.warn(
           `[rebuild] clean remove failed (${removeErr.code || removeErr.message}); rebuilding in place`
         );
-        return null;
+        return {
+          mode: copySucceeded ? 'copied_then_in_place' : 'in_place_without_backup',
+          path: copySucceeded ? backupPath : null,
+          warning: copySucceeded
+            ? 'Backup move failed and clean remove failed; copied backup exists but rebuild continued in place.'
+            : 'Backup move, copy, and clean remove failed; rebuild continued in place without backup.',
+        };
       }
     }
 
-    console.warn(
-      `[rebuild] could not move existing servers folder for backup (${err.code || err.message}); rebuilding in place`
-    );
-    return null;
+    console.warn('[rebuild] rebuilding in place; pass --clean only when a clean remove is intended');
+    return {
+      mode: copySucceeded ? 'copied_then_in_place' : 'in_place_without_backup',
+      path: copySucceeded ? backupPath : null,
+      warning: copySucceeded
+        ? 'Backup move failed; copied backup exists but rebuild continued in place.'
+        : 'Backup move and copy failed; rebuild continued in place without backup.',
+    };
   }
 }
 
@@ -2573,7 +3143,13 @@ async function writeRecords(records, ssisSummary) {
       );
     }
 
-    const content = `${renderFrontmatter(record.frontmatter)}${record.body || ''}`;
+    const body =
+      record.body !== undefined
+        ? record.body || ''
+        : record.sourcePath
+          ? await readMarkdownBodyContent(record.sourcePath)
+          : '';
+    const content = `${renderFrontmatter(record.frontmatter)}${body}`;
     await fs.mkdir(path.dirname(outputPath), { recursive: true });
     await fs.writeFile(outputPath, content, 'utf8');
     generatedFiles.push(manifestPath(outputPath));
@@ -2609,7 +3185,7 @@ async function validateOutput() {
 
   for (const filePath of files) {
     try {
-      const object = await parseMarkdownFile(filePath);
+      const object = await parseMarkdownMetadataFile(filePath);
       const errors = validateMetadata(object);
       if (errors.length > 0) {
         invalid.push({ id: object.id, errors });
@@ -2622,102 +3198,185 @@ async function validateOutput() {
   return { objectCount: files.length, invalid };
 }
 
+function validateRecords(records) {
+  const invalid = [];
+
+  for (const record of records.values()) {
+    try {
+      const errors = validateMetadata(record.frontmatter || {});
+      if (errors.length > 0) {
+        invalid.push({ id: record.id || record.frontmatter?.id || 'unknown', errors });
+      }
+    } catch (err) {
+      invalid.push({
+        id: record.id || record.frontmatter?.id || 'unknown',
+        errors: [err.message],
+      });
+    }
+  }
+
+  return { objectCount: records.size, invalid };
+}
+
+function summarizeRecordMetrics(recordList) {
+  const metrics = {
+    sqlObjects: 0,
+    columnInventoryObjects: 0,
+    columnInventoryColumns: 0,
+    columnUsageObjects: 0,
+    columnUsageRecords: 0,
+    unresolvedColumnUsageObjects: 0,
+    unresolvedColumnUsageRecords: 0,
+    columnRiskFlagObjects: 0,
+    columnRiskFlags: 0,
+    columnLineageObjects: 0,
+    columnLineageRecords: 0,
+    unresolvedColumnLineageObjects: 0,
+    unresolvedColumnLineageRecords: 0,
+    ssisColumnMappingObjects: 0,
+    ssisColumnMappings: 0,
+    unresolvedSsisColumnMappingObjects: 0,
+    unresolvedSsisColumnMappings: 0,
+  };
+
+  for (const record of recordList) {
+    const frontmatter = record.frontmatter || {};
+    if (record.type !== 'package') metrics.sqlObjects += 1;
+
+    const columns = countArray(frontmatter.columns);
+    if (columns > 0) {
+      metrics.columnInventoryObjects += 1;
+      metrics.columnInventoryColumns += columns;
+    }
+
+    const columnUsage = countArray(frontmatter.column_usage);
+    if (columnUsage > 0) {
+      metrics.columnUsageObjects += 1;
+      metrics.columnUsageRecords += columnUsage;
+    }
+
+    const unresolvedColumnUsage = countArray(frontmatter.unresolved_column_usage);
+    if (unresolvedColumnUsage > 0) {
+      metrics.unresolvedColumnUsageObjects += 1;
+      metrics.unresolvedColumnUsageRecords += unresolvedColumnUsage;
+    }
+
+    const columnRiskFlags = countArray(frontmatter.column_risk_flags);
+    if (columnRiskFlags > 0) {
+      metrics.columnRiskFlagObjects += 1;
+      metrics.columnRiskFlags += columnRiskFlags;
+    }
+
+    const columnLineage = countArray(frontmatter.column_lineage);
+    if (columnLineage > 0) {
+      metrics.columnLineageObjects += 1;
+      metrics.columnLineageRecords += columnLineage;
+    }
+
+    const unresolvedColumnLineage = countArray(frontmatter.unresolved_column_lineage);
+    if (unresolvedColumnLineage > 0) {
+      metrics.unresolvedColumnLineageObjects += 1;
+      metrics.unresolvedColumnLineageRecords += unresolvedColumnLineage;
+    }
+
+    const ssisColumnMappings = countArray(frontmatter.ssis_column_mappings);
+    if (ssisColumnMappings > 0) {
+      metrics.ssisColumnMappingObjects += 1;
+      metrics.ssisColumnMappings += ssisColumnMappings;
+    }
+
+    const unresolvedSsisColumnMappings = countArray(frontmatter.unresolved_ssis_column_mappings);
+    if (unresolvedSsisColumnMappings > 0) {
+      metrics.unresolvedSsisColumnMappingObjects += 1;
+      metrics.unresolvedSsisColumnMappings += unresolvedSsisColumnMappings;
+    }
+  }
+
+  return metrics;
+}
+
 async function main() {
+  const memoryCheckpoints = [];
+  const recordMemory = (phase) => {
+    if (DRY_RUN_REBUILD || DEBUG_REBUILD) {
+      memoryCheckpoints.push({ phase, ...memoryUsageMb() });
+    }
+  };
+
+  recordMemory('start');
   const aliases = await readJsonIfExists(ALIAS_CONFIG_PATH, {});
-  const previousRebuildReport = await readJsonIfExists(REBUILD_REPORT_JSON_PATH, null);
+  recordMemory('aliases_loaded');
+  const previousRebuildReport = DRY_RUN_REBUILD
+    ? null
+    : await readJsonIfExists(REBUILD_REPORT_JSON_PATH, null);
   const existingSsisCatalog = await loadExistingSsisCatalog();
-  const backupPath = await backupExistingServers();
+  recordMemory('existing_ssis_catalog_loaded');
+  const backup = DRY_RUN_REBUILD
+    ? { mode: 'dry_run', path: null }
+    : await backupExistingServers();
   logRebuildPhase('loading raw SQL metadata');
   const { records, skipped: skippedSql } = await loadSqlRawObjects(aliases);
+  recordMemory('sql_raw_loaded');
   logRebuildPhase(`loaded ${records.size} SQL objects`);
   logRebuildPhase('rewriting SQL lineage');
   const referenceIndex = rewriteSqlLineage(records, aliases);
   applyForwardSqlEdges(records, referenceIndex);
+  recordMemory('sql_lineage_rewritten');
   logRebuildPhase('rebuilding SSIS metadata');
-  const ssisSummary = await rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog);
+  const ssisSummary = await rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog, {
+    ssisLimit: SSIS_REBUILD_LIMIT,
+  });
+  recordMemory('ssis_rebuilt');
   logRebuildPhase('applying SSIS bridge inferences');
   const inferredSsisBridges = applySsisBridgeInferences(records);
+  recordMemory('ssis_bridge_inferences_applied');
   logRebuildPhase('resolving column lineage');
   const columnLineageResolution = applyColumnLineageResolution(records);
+  recordMemory('column_lineage_resolved');
   logRebuildPhase('scoring catalog confidence');
   const catalogConfidenceSummary = applyCatalogConfidence(records);
-  logRebuildPhase('writing markdown records');
-  const writeSummary = await writeRecords(records, ssisSummary);
-  logRebuildPhase('validating generated markdown');
-  const validation = await validateOutput();
+  recordMemory('catalog_confidence_scored');
+  const writeSummary = DRY_RUN_REBUILD
+    ? { filesWritten: 0, manifestFiles: 0 }
+    : await writeRecords(records, ssisSummary);
+  recordMemory(DRY_RUN_REBUILD ? 'writes_skipped' : 'records_written');
+  logRebuildPhase(DRY_RUN_REBUILD ? 'validating in-memory records' : 'validating generated markdown');
+  const validation = DRY_RUN_REBUILD ? validateRecords(records) : await validateOutput();
+  recordMemory('validated');
   const recordList = Array.from(records.values());
-  const columnInventoryObjects = recordList.filter(
-    (record) => (record.frontmatter?.columns || []).length > 0
-  );
-  const columnUsageObjects = recordList.filter(
-    (record) => (record.frontmatter?.column_usage || []).length > 0
-  );
-  const unresolvedColumnUsageObjects = recordList.filter(
-    (record) => (record.frontmatter?.unresolved_column_usage || []).length > 0
-  );
-  const columnRiskFlagObjects = recordList.filter(
-    (record) => (record.frontmatter?.column_risk_flags || []).length > 0
-  );
-  const columnLineageObjects = recordList.filter(
-    (record) => (record.frontmatter?.column_lineage || []).length > 0
-  );
-  const unresolvedColumnLineageObjects = recordList.filter(
-    (record) => (record.frontmatter?.unresolved_column_lineage || []).length > 0
-  );
-  const ssisColumnMappingObjects = recordList.filter(
-    (record) => (record.frontmatter?.ssis_column_mappings || []).length > 0
-  );
-  const unresolvedSsisColumnMappingObjects = recordList.filter(
-    (record) => (record.frontmatter?.unresolved_ssis_column_mappings || []).length > 0
-  );
+  const recordMetrics = summarizeRecordMetrics(recordList);
+  recordMemory('record_metrics_summarized');
 
   const summary = {
-    backupPath,
-    sqlObjects: recordList.filter((record) => record.type !== 'package').length,
+    dryRun: DRY_RUN_REBUILD,
+    ssisLimit: SSIS_REBUILD_LIMIT || null,
+    backupPath: backup.path || null,
+    backupMode: backup.mode,
+    backupWarning: backup.warning || null,
+    sqlObjects: recordMetrics.sqlObjects,
     ssisPackages: ssisSummary.packageCount,
     ssisEdges: ssisSummary.edgeCount,
-    columnInventoryObjects: columnInventoryObjects.length,
-    columnInventoryColumns: columnInventoryObjects.reduce(
-      (sum, record) => sum + (record.frontmatter?.columns || []).length,
-      0
-    ),
-    columnUsageObjects: columnUsageObjects.length,
-    columnUsageRecords: columnUsageObjects.reduce(
-      (sum, record) => sum + (record.frontmatter?.column_usage || []).length,
-      0
-    ),
-    unresolvedColumnUsageObjects: unresolvedColumnUsageObjects.length,
-    unresolvedColumnUsageRecords: unresolvedColumnUsageObjects.reduce(
-      (sum, record) => sum + (record.frontmatter?.unresolved_column_usage || []).length,
-      0
-    ),
-    columnRiskFlagObjects: columnRiskFlagObjects.length,
-    columnRiskFlags: columnRiskFlagObjects.reduce(
-      (sum, record) => sum + (record.frontmatter?.column_risk_flags || []).length,
-      0
-    ),
-    columnLineageObjects: columnLineageObjects.length,
-    columnLineageRecords: columnLineageObjects.reduce(
-      (sum, record) => sum + (record.frontmatter?.column_lineage || []).length,
-      0
-    ),
-    unresolvedColumnLineageObjects: unresolvedColumnLineageObjects.length,
-    unresolvedColumnLineageRecords: unresolvedColumnLineageObjects.reduce(
-      (sum, record) => sum + (record.frontmatter?.unresolved_column_lineage || []).length,
-      0
-    ),
+    discoveredSsisXmlFiles: ssisSummary.discoveredXmlFiles,
+    processedSsisXmlFiles: ssisSummary.processedXmlFiles,
+    ssisLimited: ssisSummary.limited,
+    columnInventoryObjects: recordMetrics.columnInventoryObjects,
+    columnInventoryColumns: recordMetrics.columnInventoryColumns,
+    columnUsageObjects: recordMetrics.columnUsageObjects,
+    columnUsageRecords: recordMetrics.columnUsageRecords,
+    unresolvedColumnUsageObjects: recordMetrics.unresolvedColumnUsageObjects,
+    unresolvedColumnUsageRecords: recordMetrics.unresolvedColumnUsageRecords,
+    columnRiskFlagObjects: recordMetrics.columnRiskFlagObjects,
+    columnRiskFlags: recordMetrics.columnRiskFlags,
+    columnLineageObjects: recordMetrics.columnLineageObjects,
+    columnLineageRecords: recordMetrics.columnLineageRecords,
+    unresolvedColumnLineageObjects: recordMetrics.unresolvedColumnLineageObjects,
+    unresolvedColumnLineageRecords: recordMetrics.unresolvedColumnLineageRecords,
     columnLineageResolution,
     catalogConfidenceSummary,
-    ssisColumnMappingObjects: ssisColumnMappingObjects.length,
-    ssisColumnMappings: ssisColumnMappingObjects.reduce(
-      (sum, record) => sum + (record.frontmatter?.ssis_column_mappings || []).length,
-      0
-    ),
-    unresolvedSsisColumnMappingObjects: unresolvedSsisColumnMappingObjects.length,
-    unresolvedSsisColumnMappings: unresolvedSsisColumnMappingObjects.reduce(
-      (sum, record) => sum + (record.frontmatter?.unresolved_ssis_column_mappings || []).length,
-      0
-    ),
+    ssisColumnMappingObjects: recordMetrics.ssisColumnMappingObjects,
+    ssisColumnMappings: recordMetrics.ssisColumnMappings,
+    unresolvedSsisColumnMappingObjects: recordMetrics.unresolvedSsisColumnMappingObjects,
+    unresolvedSsisColumnMappings: recordMetrics.unresolvedSsisColumnMappings,
     skippedSql,
     skippedSsis: ssisSummary.skipped,
     ssisSqlEndpointRecords: ssisSummary.ssisSqlEndpointRecords,
@@ -2735,9 +3394,14 @@ async function main() {
     previousReport: previousRebuildReport,
     thresholds: aliases.rebuildConfidenceGates || {},
   });
-  const reportPaths = await writeRebuildReport(rebuildReport);
+  recordMemory('rebuild_report_built');
+  const reportPaths = DRY_RUN_REBUILD
+    ? { json: null, markdown: null }
+    : await writeRebuildReport(rebuildReport);
+  recordMemory(DRY_RUN_REBUILD ? 'report_write_skipped' : 'report_written');
   summary.rebuildReport = {
     gateStatus: rebuildReport.gates.status,
+    written: !DRY_RUN_REBUILD,
     json: reportPaths.json,
     markdown: reportPaths.markdown,
     unresolvedFacts: rebuildReport.metrics.unresolved_facts,
@@ -2746,6 +3410,8 @@ async function main() {
     packageConfidenceRegressions: rebuildReport.package_confidence_regressions.length,
     newDataSources: rebuildReport.new_data_sources.length,
   };
+  summary.memoryUsageMb = memoryUsageMb();
+  summary.memoryCheckpointsMb = memoryCheckpoints;
 
   console.log(JSON.stringify(summary, null, 2));
   if (validation.invalid.length > 0) {
