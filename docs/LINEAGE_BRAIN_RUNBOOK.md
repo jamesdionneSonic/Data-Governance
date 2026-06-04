@@ -7,6 +7,7 @@ This runbook explains the current local workflow for generating lineage prompts,
 ## What This Process Does
 
 - Scans curated lineage markdown and raw source files locally.
+- Uses compact full-corpus scans, then hydrates only selected records for prompting or draft rewrites.
 - Distills small evidence snippets from SSIS XML and SQL text.
 - Classifies anomalies as under-populated, over-populated, or expected high fan-out.
 - Writes compact prompt/report files for the selected lane.
@@ -15,14 +16,17 @@ This runbook explains the current local workflow for generating lineage prompts,
 
 ## Current Inputs
 
-- `data/markdown/ssis_packages` for SSIS package markdown.
+- `data/markdown/servers/**/ssis_packages` for curated SSIS package markdown.
 - `data/markdown/ssis_raw_xml` for raw SSIS XML.
-- `data/markdown/databases` for curated SQL Server markdown.
-- `data/analysis/raw/sqlserver/databases` for raw SQL evidence.
+- `data/markdown/servers/**/databases` for curated SQL Server markdown.
+- `data/analysis/raw/sqlserver` for raw SQL evidence.
 
 ## Current Outputs
 
 - `generated_lineage_prompts.txt`
+- `data/markdown/_drafts/reports/lineage-brain-run-report.json`
+- `data/lineage-brain/proposed-rules.jsonl`
+- `data/lineage-brain/rejected-rules.jsonl`
 - `data/markdown/_prompt_queue/pending/...`
 - `data/markdown/_prompt_queue/working/...`
 - `data/markdown/_prompt_queue/archive/...`
@@ -46,6 +50,18 @@ To write drafts into a separate review tree:
 
 ```powershell
 npm run lineage:brain -- --mode both --draft-root data/markdown/_drafts
+```
+
+To write a diff/stability report without proposing new rules:
+
+```powershell
+npm run lineage:brain -- --mode both --max-changes 5 --validate-stability --no-propose-rules
+```
+
+To validate the mini-backlog checkpoints:
+
+```powershell
+npm run lineage:brain:check
 ```
 
 Split the big consolidated prompt file into one file per investigation:
@@ -109,11 +125,27 @@ npm run lineage:brain -- --mode ssis --target DimVehicle_DIM_DimVehicle
 
 The draft tree is the staging area. If a draft is approved, copy or promote it into the live markdown path that the original file came from.
 
+Live correction writes are available but intentionally gated:
+
+```powershell
+npm run lineage:brain -- --mode table --target BT_ChecklistRecord --apply-corrections --confirm-live-write --max-changes 1
+```
+
+Do not use live writes without a target or a small `--max-changes` cap.
+
+## Rule Learning
+
+- Active reviewed rules live in `config/lineage-brain-rules.yml`.
+- New pattern learning is proposal-only by default.
+- Proposed rules are appended to `data/lineage-brain/proposed-rules.jsonl` with `status: needs_review`.
+- Rejected rules can be recorded in `data/lineage-brain/rejected-rules.jsonl`.
+- The engine never silently promotes proposed rules into the active rules file; a reviewer must approve and commit that change.
+
 ## Troubleshooting
 
 - If the prompt file looks too large, reduce the amount of evidence being distilled locally.
 - If a draft path looks wrong, check the lane-specific path logic under `src/services/lineageBrain/runner.js`.
-- If the process keeps picking an expected high-fanout object, add or refine the allowlist in `src/services/lineageBrain/constants.js`.
+- If the process keeps picking an expected high-fanout object, review proposed rules and then add or refine the allowlist in `config/lineage-brain-rules.yml`.
 
 ## Related Files
 

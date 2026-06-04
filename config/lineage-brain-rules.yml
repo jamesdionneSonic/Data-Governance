@@ -1,0 +1,52 @@
+version: 1
+high_fanout:
+  thresholds:
+    review: 10
+    hard: 25
+  allowlists:
+    ssis:
+      - reference
+      - lookup
+      - mapping
+      - bridge
+      - staging
+      - source
+      - xref
+      - crossref
+      - dim
+      - fact
+    table:
+      - reference
+      - lookup
+      - mapping
+      - bridge
+      - xref
+      - crossref
+      - staging
+      - audit
+      - history
+      - log
+      - queue
+edge_classification:
+  direct_fields:
+    - depends_on
+    - reads_from
+    - writes_to
+    - calls
+  reverse_fields:
+    - created_by
+    - used_by
+    - called_by
+  inferred_fields:
+    - created_via
+    - inferred_edges
+    - probable_edges
+  context_fields:
+    - contextual_reads
+    - contextual_edges
+    - edges
+rule_learning:
+  mode: propose_for_review
+  min_supporting_examples: 2
+  proposal_status: needs_review
+  auto_promote: false

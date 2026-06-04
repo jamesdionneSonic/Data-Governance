@@ -6,49 +6,57 @@ This backlog covers the next steps before the first correction run and before an
 
 ## 1. Template Wiring
 
-- Make sure every correction pass writes markdown using the shared lineage template.
-- Make sure fresh population runs also write the same template shape.
-- Confirm the template fields are stable for SSIS and SQL Server sources.
-- Add a controlled batch runner that can write corrected markdown files only when explicitly enabled.
+- [x] Make sure every correction pass writes markdown using the shared lineage template.
+- [x] Make sure fresh population runs also write the same template shape.
+- [x] Confirm the template fields are stable for SSIS and SQL Server sources.
+- [x] Add a controlled batch runner that can write corrected markdown files only when explicitly enabled.
 
 ## 2. Provenance Fields
 
-- Populate `lineage_confidence`.
-- Populate `edge_quality_score`.
-- Populate `lineage_strategy`.
-- Populate `lineage_pattern_class`.
-- Populate `lineage_source`.
-- Populate `lineage_source_path`.
-- Populate `lineage_evidence_hash`.
-- Populate `extraction_warnings`.
+- [x] Populate `lineage_confidence`.
+- [x] Populate `edge_quality_score`.
+- [x] Populate `lineage_strategy`.
+- [x] Populate `lineage_pattern_class`.
+- [x] Populate `lineage_source`.
+- [x] Populate `lineage_source_path`.
+- [x] Populate `lineage_evidence_hash`.
+- [x] Populate `extraction_warnings`.
 
 ## 3. Classification Rules
 
-- Distinguish legitimate high-fanout objects from overcapture bugs.
-- Preserve allowlists for reference, lookup, mapping, staging, audit, xref, and history patterns.
-- Keep direct edges separate from inferred or context-only references.
+- [x] Distinguish legitimate high-fanout objects from overcapture bugs.
+- [x] Preserve allowlists for reference, lookup, mapping, staging, audit, xref, and history patterns.
+- [x] Keep direct edges separate from inferred or context-only references.
 
 ## 4. Reprocessing Safety
 
-- Add a diff report after each run.
-- Track which files changed on the first pass.
-- Re-run the extractor and confirm the second pass is stable.
+- [x] Add a diff report after each run.
+- [x] Track which files changed on the first pass.
+- [x] Re-run the extractor and confirm the second pass is stable.
 
 ## 5. Engine Learning
 
-- Persist extraction lessons in a rules file.
-- Reuse prior lessons when new data sources are added.
-- Keep prompt templates short and stable for low-cost runs.
+- [x] Persist extraction lessons in a rules file.
+- [x] Reuse prior lessons when new data sources are added.
+- [x] Keep prompt templates short and stable for low-cost runs.
+- [x] Propose new rules for review instead of auto-promoting them.
 
 ## 6. Validation
 
-- Verify the SSIS prompt generator still finds a DimVehicle baseline.
-- Verify the table prompt generator still finds a stable baseline and one true anomaly.
-- Validate the rendered markdown template on at least one SSIS object and one SQL object before mass updates.
+- [x] Verify the SSIS prompt generator still finds a DimVehicle baseline.
+- [x] Verify the table prompt generator still finds a stable baseline and one true anomaly.
+- [x] Validate the rendered markdown template on at least one SSIS object and one SQL object before mass updates.
 
 ## 7. Next After Correction
 
-- Diff the corrected markdown against the original files.
-- Re-run extraction on the corrected corpus.
-- Confirm the second pass produces no new changes or only known, intentional adjustments.
-- Promote any stable lesson into the extraction rules so future sources inherit it automatically.
+- [x] Diff the corrected markdown against the original files.
+- [x] Re-run extraction on the corrected corpus.
+- [x] Confirm the second pass produces no new changes or only known, intentional adjustments.
+- [x] Promote any stable lesson into the extraction rules so future sources inherit it automatically.
+
+## Operational Notes
+
+- Active reviewed rules live in `config/lineage-brain-rules.yml`.
+- Proposed rules are written to `data/lineage-brain/proposed-rules.jsonl` with `status: needs_review`.
+- Rejected rules can be recorded in `data/lineage-brain/rejected-rules.jsonl` to suppress repeat suggestions.
+- The engine never silently promotes proposed rules into active rules; a human review/commit is required.

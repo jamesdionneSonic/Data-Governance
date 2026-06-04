@@ -16,6 +16,7 @@
     "test:e2e:headed": "playwright test --headed",
     "perf:load": "node scripts/perf-load-test.js",
     "lineage:brain": "node src/services/lineageBrain/runLineageBrain.js",
+    "lineage:brain:check": "node scripts/check-lineage-brain.mjs",
     "catalog:rebuild:sample": "node scripts/rebuild-catalog-from-raw.mjs --dry-run --ssis-limit=100",
     "catalog:rebuild:dry": "node scripts/rebuild-catalog-from-raw.mjs --dry-run --enforce-gates",
     "catalog:rebuild": "node scripts/rebuild-catalog-from-raw.mjs --enforce-gates",
