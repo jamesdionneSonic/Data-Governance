@@ -3,36 +3,15 @@
  * Reconciles cross-file and cross-database lineage after markdown generation.
  */
 
-import { readdir } from 'fs/promises';
 import { mkdir, writeFile, appendFile } from 'fs/promises';
-import { join, extname } from 'path';
+import { join } from 'path';
 import {
-  parseMarkdownFile,
+  getMarkdownFiles,
+  parseMarkdownMetadataFile,
   updateMarkdownMetadata,
 } from './markdownService.js';
 
-async function walkMarkdownFiles(dirPath) {
-  const files = [];
-
-  async function walk(currentPath) {
-    try {
-      const entries = await readdir(currentPath, { withFileTypes: true });
-      await Promise.all(entries.map(async (entry) => {
-        const fullPath = join(currentPath, entry.name);
-        if (entry.isDirectory()) {
-          await walk(fullPath);
-        } else if (entry.isFile() && extname(entry.name) === '.md') {
-          files.push(fullPath);
-        }
-      }));
-    } catch (err) {
-      console.error(`Error reading directory ${currentPath}:`, err.message);
-    }
-  }
-
-  await walk(dirPath);
-  return files;
-}
+const TRACE_LOG_BATCH_SIZE = 1000;
 
 function normalizeRef(value) {
   return String(value ?? '')
@@ -176,12 +155,26 @@ function compactId(value) {
 export async function resolveLineageCorpus(dataPath) {
   const traceLogPath = await initTraceLog();
   const traceLines = [];
-  const files = await walkMarkdownFiles(dataPath);
+  const pushTrace = (line) => {
+    traceLines.push(line);
+  };
+  const flushTrace = async () => {
+    if (traceLines.length === 0) return;
+    const lines = traceLines.join('\n');
+    traceLines.length = 0;
+    await appendFile(traceLogPath, `${lines}\n`, 'utf8');
+  };
+  const flushTraceIfNeeded = async () => {
+    if (traceLines.length >= TRACE_LOG_BATCH_SIZE) {
+      await flushTrace();
+    }
+  };
+  const files = await getMarkdownFiles(dataPath);
   const records = [];
 
   for (const filePath of files) {
     try {
-      const metadata = await parseMarkdownFile(filePath);
+      const metadata = await parseMarkdownMetadataFile(filePath);
       records.push({ filePath, metadata });
     } catch (err) {
       console.error(`Resolver parse failed for ${filePath}:`, err.message);
@@ -196,41 +189,43 @@ export async function resolveLineageCorpus(dataPath) {
   for (const record of records) {
     const sourceId = record.metadata.id;
     if (record.metadata.external_source) {
-      traceLines.push(`[EXTERNAL] Tagged ${sourceId} as external_source`);
+      pushTrace(`[EXTERNAL] Tagged ${sourceId} as external_source`);
     }
 
     for (const ref of ensureArray(record.metadata.writes_to)) {
       const matches = resolveReference(ref, aliasIndex, record.metadata);
       if (matches.length === 0) {
-        traceLines.push(`[REJECTED] ${sourceId} -> ${compactId(ref)} (No exact match)`);
+        pushTrace(`[REJECTED] ${sourceId} -> ${compactId(ref)} (No exact match)`);
       }
       for (const targetId of matches) {
         pushUnique(outgoingWrites, targetId, sourceId);
-        traceLines.push(`[MAPPED] ${sourceId} -> ${targetId} via writes_to`);
+        pushTrace(`[MAPPED] ${sourceId} -> ${targetId} via writes_to`);
       }
     }
 
     for (const ref of ensureArray(record.metadata.calls)) {
       const matches = resolveReference(ref, aliasIndex, record.metadata);
       if (matches.length === 0) {
-        traceLines.push(`[REJECTED] ${sourceId} -> ${compactId(ref)} (No exact match)`);
+        pushTrace(`[REJECTED] ${sourceId} -> ${compactId(ref)} (No exact match)`);
       }
       for (const targetId of matches) {
         pushUnique(outgoingCalls, targetId, sourceId);
-        traceLines.push(`[MAPPED] ${sourceId} -> ${targetId} via calls`);
+        pushTrace(`[MAPPED] ${sourceId} -> ${targetId} via calls`);
       }
     }
 
     for (const ref of ensureArray(record.metadata.reads_from)) {
       const matches = resolveReference(ref, aliasIndex, record.metadata);
       if (matches.length === 0) {
-        traceLines.push(`[REJECTED] ${sourceId} -> ${compactId(ref)} (No exact match)`);
+        pushTrace(`[REJECTED] ${sourceId} -> ${compactId(ref)} (No exact match)`);
       }
       for (const targetId of matches) {
         pushUnique(outgoingReads, targetId, sourceId);
-        traceLines.push(`[MAPPED] ${sourceId} -> ${targetId} via reads_from`);
+        pushTrace(`[MAPPED] ${sourceId} -> ${targetId} via reads_from`);
       }
     }
+
+    await flushTraceIfNeeded();
   }
 
   const objectById = new Map();
@@ -298,11 +293,11 @@ export async function resolveLineageCorpus(dataPath) {
     };
 
     if (existingExternalSource) {
-      traceLines.push(`[EXTERNAL] Tagged ${metadata.id} as external_source`);
+      pushTrace(`[EXTERNAL] Tagged ${metadata.id} as external_source`);
     }
 
     for (const creator of resolvedCreators) {
-      traceLines.push(`[MAPPED] ${creator} -> ${metadata.id} via created_by`);
+      pushTrace(`[MAPPED] ${creator} -> ${metadata.id} via created_by`);
     }
 
     const changed =
@@ -316,11 +311,11 @@ export async function resolveLineageCorpus(dataPath) {
     if (changed) {
       updates.push({ filePath: record.filePath, next });
     }
+
+    await flushTraceIfNeeded();
   }
 
-  if (traceLines.length > 0) {
-    await appendFile(traceLogPath, `${traceLines.join('\n')}\n`, 'utf8');
-  }
+  await flushTrace();
 
   for (const update of updates) {
     try {

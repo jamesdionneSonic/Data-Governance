@@ -8,6 +8,7 @@ import { setIntegrationCache } from '../api/integrations.js';
 import { setMarketplaceCache } from '../api/marketplace.js';
 import { setClassificationCache } from '../api/classification.js';
 import { setGovernanceCache } from '../api/governance.js';
+import { setCatalogRuntime } from '../services/catalogRuntimeStore.js';
 
 function normalizeObjects(input) {
   if (input instanceof Map) return input;
@@ -44,6 +45,7 @@ export function initializeCache(...args) {
   const firstArgLooksLikeApp = args[0] && typeof args[0].use === 'function';
   const objects = normalizeObjects(firstArgLooksLikeApp ? args[1] : args[0]);
   const lineageGraph = normalizeLineageGraph(firstArgLooksLikeApp ? args[2] : args[1]);
+  const runtime = firstArgLooksLikeApp ? args[3] : args[2];
 
   const downstreamCounts = new Map();
   for (const id of objects.keys()) {
@@ -64,6 +66,7 @@ export function initializeCache(...args) {
   }
 
   setObjectsCache(objects);
+  setCatalogRuntime(runtime || {});
   setSearchCache(objects);
   setDiscoveryCache(objects, lineageGraph);
   setAdminCache(objects);

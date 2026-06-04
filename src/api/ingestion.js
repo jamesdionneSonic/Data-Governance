@@ -13,13 +13,12 @@ import { sendErrorResponse } from '../middleware/errorHandler.js';
 import {
   parseMarkdownFile,
   parseMarkdownContent,
-  loadAllMarkdown,
   validateMarkdownCatalog,
   validateMarkdownManifest,
   validateMetadata,
 } from '../services/markdownService.js';
 import { resolveLineageCorpus } from '../services/lineageResolver.js';
-import { buildLineageGraph } from '../services/lineageService.js';
+import { loadRuntimeCatalog } from '../services/catalogRuntimeService.js';
 import { indexObjects, createIndex, healthCheck } from '../services/indexService.js';
 import { initializeCache } from '../utils/cacheInitializer.js';
 
@@ -340,8 +339,9 @@ router.post('/load', authenticate, requireAdmin, async (req, res) => {
       await resolveLineageCorpus(safeDataPath);
     }
 
-    // Load markdown files
-    const objects = await loadAllMarkdown(safeDataPath);
+    // Load compact runtime indexes instead of full column-level markdown.
+    const runtimeCatalog = await loadRuntimeCatalog(safeDataPath, { rebuild: true });
+    const objects = runtimeCatalog.objects;
 
     if (objects.size === 0) {
       return sendErrorResponse(res, req, 400, 'No markdown files found', {
@@ -357,11 +357,8 @@ router.post('/load', authenticate, requireAdmin, async (req, res) => {
     const objectsArray = Array.from(objects.values());
     await indexObjects(indexName, objectsArray);
 
-    // Build lineage graph
-    const lineageGraph = buildLineageGraph(objects);
-
     // FIX: Hot-reload all live memory caches without restarting the server!
-    initializeCache(objects, lineageGraph);
+    initializeCache(objects, runtimeCatalog.lineageGraph, runtimeCatalog);
 
     ingestionState.loadedObjectCount = objects.size;
     ingestionState.indexName = indexName;
@@ -511,9 +508,9 @@ router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) 
       ingestionState.lastGeneratedPath = persisted.baseOutputPath;
       console.log(`[Markdown] SUCCESS! Wrote ${filesWrittenCount} files to disk.\n`);
 
-      const refreshedObjects = await loadAllMarkdown(persisted.baseOutputPath);
-      initializeCache(refreshedObjects, buildLineageGraph(refreshedObjects));
-      ingestionState.loadedObjectCount = refreshedObjects.size;
+      const runtimeCatalog = await loadRuntimeCatalog(persisted.baseOutputPath, { rebuild: true });
+      initializeCache(runtimeCatalog.objects, runtimeCatalog.lineageGraph, runtimeCatalog);
+      ingestionState.loadedObjectCount = runtimeCatalog.objects.size;
       ingestionState.lastLoadedAt = new Date().toISOString();
       ingestionState.lastDataPath = persisted.baseOutputPath;
     } catch (markdownErr) {

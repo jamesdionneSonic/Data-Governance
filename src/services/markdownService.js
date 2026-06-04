@@ -10,6 +10,7 @@ import yaml from 'yaml';
 const CATALOG_MANIFEST_FILE = 'catalog-manifest.json';
 const FRONTMATTER_READ_CHUNK_BYTES = 64 * 1024;
 const MAX_FRONTMATTER_READ_BYTES = 8 * 1024 * 1024;
+const DEFAULT_MARKDOWN_LOAD_CONCURRENCY = 16;
 
 /**
  * Parse markdown file and extract metadata
@@ -405,7 +406,10 @@ export async function loadAllMarkdown(dataPath) {
 
   try {
     const mdFiles = await getMarkdownFiles(dataPath);
-    const concurrency = Math.max(1, Number(process.env.MARKDOWN_LOAD_CONCURRENCY) || 64);
+    const concurrency = Math.max(
+      1,
+      Number(process.env.MARKDOWN_LOAD_CONCURRENCY) || DEFAULT_MARKDOWN_LOAD_CONCURRENCY
+    );
     let nextIndex = 0;
 
     const workers = Array.from({ length: Math.min(concurrency, mdFiles.length) }, async () => {
@@ -438,7 +442,10 @@ export async function validateMarkdownCatalog(dataPath) {
   };
 
   const mdFiles = await getMarkdownFiles(dataPath);
-  const concurrency = Math.max(1, Number(process.env.MARKDOWN_LOAD_CONCURRENCY) || 64);
+  const concurrency = Math.max(
+    1,
+    Number(process.env.MARKDOWN_LOAD_CONCURRENCY) || DEFAULT_MARKDOWN_LOAD_CONCURRENCY
+  );
   let nextIndex = 0;
 
   const workers = Array.from({ length: Math.min(concurrency, mdFiles.length) }, async () => {

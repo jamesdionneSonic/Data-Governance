@@ -23,13 +23,15 @@ export async function ensureCatalogCacheHydrated({ force = false } = {}) {
 
   hydrationPromise = (async () => {
     const dataPath = resolveMarkdownDataPath();
-    const { loadAllMarkdown } = await import('../services/markdownService.js');
-    const { buildLineageGraph } = await import('../services/lineageService.js');
+    const { loadRuntimeCatalog } = await import('../services/catalogRuntimeService.js');
     const { initializeCache } = await import('./cacheInitializer.js');
-    const objects = await loadAllMarkdown(dataPath);
+    const runtimeCatalog = await loadRuntimeCatalog(dataPath, {
+      autoRebuild: process.env.NODE_ENV === 'test',
+    });
+    const objects = runtimeCatalog.objects;
 
     if (objects.size > 0) {
-      initializeCache(objects, buildLineageGraph(objects));
+      initializeCache(objects, runtimeCatalog.lineageGraph, runtimeCatalog);
     }
 
     return {

@@ -10,6 +10,8 @@ import { indexObjects } from '../services/indexService.js';
 import { updateMarkdownMetadata } from '../services/markdownService.js';
 import { getObjectsCache, setObjectsCache } from '../services/objectCacheStore.js';
 import { ensureCatalogCacheHydrated } from '../utils/catalogCacheHydrator.js';
+import { getCatalogDataPath, getObjectFileIndex } from '../services/catalogRuntimeStore.js';
+import { loadObjectDetail, loadRuntimeCatalog } from '../services/catalogRuntimeService.js';
 
 const router = createApiRouter();
 export { setObjectsCache };
@@ -84,11 +86,16 @@ router.get('/:id', authenticate, async (req, res) => {
         code: 'NOT_FOUND',
       });
     }
+    const detailedObject = await loadObjectDetail(
+      getCatalogDataPath() || process.env.MARKDOWN_DATA_PATH || './data/markdown',
+      id,
+      getObjectFileIndex()
+    );
 
     return res.json({
       status: 'success',
       objectId: id,
-      data: object,
+      data: detailedObject || object,
     });
   } catch (err) {
     return sendErrorResponse(res, req, 500, err.message, {
@@ -142,12 +149,12 @@ router.put('/:id', authenticate, async (req, res) => {
     const updated = await updateMarkdownMetadata(object.filePath, updates);
     objectCache.set(id, updated);
     await indexObjects('objects', [updated]).catch(() => {});
-    const { loadAllMarkdown } = await import('../services/markdownService.js');
-    const { buildLineageGraph } = await import('../services/lineageService.js');
     const { initializeCache } = await import('../utils/cacheInitializer.js');
-    const freshObjects = await loadAllMarkdown(process.env.MARKDOWN_DATA_PATH || './data/markdown');
-    const freshGraph = buildLineageGraph(freshObjects);
-    initializeCache(freshObjects, freshGraph);
+    const runtimeCatalog = await loadRuntimeCatalog(
+      getCatalogDataPath() || process.env.MARKDOWN_DATA_PATH || './data/markdown',
+      { rebuild: true }
+    );
+    initializeCache(runtimeCatalog.objects, runtimeCatalog.lineageGraph, runtimeCatalog);
     return res.json({
       status: 'success',
       message: 'Object metadata updated',

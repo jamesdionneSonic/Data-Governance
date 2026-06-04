@@ -108,6 +108,7 @@ describe('Confluence Export Service', () => {
       expect.arrayContaining([
         '[AUTO] Sonic Data Lineage README',
         '[AUTO] Latest Rebuild Report',
+        '[AUTO] Governance Portal',
         '[AUTO] Object Index',
       ])
     );
@@ -121,9 +122,14 @@ describe('Confluence Export Service', () => {
     expect(result.manifest.shard_pages.every((page) => page.publish === true)).toBe(true);
     expect(result.manifest.object_locator_pages.every((page) => page.publish === true)).toBe(true);
     expect(result.manifest.quick_context_pages.every((page) => page.publish === true)).toBe(true);
-    expect(result.manifest.object_pages).toHaveLength(0);
+    expect(result.manifest.object_pages.length).toBeGreaterThan(0);
     expect(result.manifest.attachments.map((attachment) => attachment.file_name)).toEqual(
-      expect.arrayContaining(['catalog-object-index.json', 'lineage-catalog.zip'])
+      expect.arrayContaining([
+        'catalog-object-index.json',
+        'catalog-object-registry.json',
+        'catalog-object-registry.csv',
+        'lineage-catalog.zip',
+      ])
     );
 
     const shardPages = await Promise.all(
@@ -157,6 +163,7 @@ describe('Confluence Export Service', () => {
     expect(manifest.stats.object_locator_pages).toBeGreaterThan(0);
     expect(manifest.stats.quick_context_pages).toBeGreaterThan(0);
     expect(manifest.stats.shard_pages).toBe(2);
+    expect(manifest.stats.governed_asset_pages).toBeGreaterThan(0);
     expect(manifest.confluence.parent_page_id).toBe('2221670415');
   });
 });
