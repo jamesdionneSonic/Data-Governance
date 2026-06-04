@@ -7,6 +7,7 @@ import { compactPrompt, truncateText, wrapEvidence } from './promptHelpers.js';
 import { isExpectedHighFanoutSSIS } from './anomalyRules.js';
 import { renderLineageMarkdownTemplate } from './markdownTemplateRenderer.js';
 import { writeCorrectedMarkdown } from './markdownCorrectionWriter.js';
+import { templateValuesFromRecord } from './provenance.js';
 
 function listMarkdownFiles(rootDir) {
   const files = [];
@@ -15,7 +16,11 @@ function listMarkdownFiles(rootDir) {
     const current = stack.pop();
     for (const entry of readdirSync(current, { withFileTypes: true })) {
       const fullPath = join(current, entry.name);
-      if (entry.isDirectory()) stack.push(fullPath);
+      if (entry.isDirectory()) {
+        if (!['_drafts', '_runtime', '_rebuild_backups', '_prompt_queue'].includes(entry.name)) {
+          stack.push(fullPath);
+        }
+      }
       else if (entry.isFile() && extname(entry.name) === '.md') files.push(fullPath);
     }
   }
@@ -103,24 +108,17 @@ export function generateSsisPrompts(outputFile = 'generated_llm_prompts.txt', op
   ]);
 
   writeTextFile(outputFile, report);
-  const correctionMarkdown = renderLineageMarkdownTemplate({
-    name: baseline.displayName,
-    database: 'ssisdb',
-    type: 'package',
-    schema: 'dbo',
-    owner: baseline.metadata.owner || 'ssis-platform',
-    sensitivity: baseline.metadata.sensitivity || 'internal',
-    tags: baseline.tags,
-    depends_on: baseline.edges,
-    lineage_confidence: 'unknown',
-    lineage_strategy: 'ssis-package-lineage',
-    lineage_pattern_class: 'ssis-package',
-    lineage_source: 'ssis_raw_xml',
-    lineage_source_path: baseline.rawXmlPath || '',
-    lineage_evidence_hash: '',
-    extraction_warnings: [],
-    edge_count: baseline.edgeCount,
-  });
+  const correctionMarkdown = renderLineageMarkdownTemplate(
+    templateValuesFromRecord(
+      {
+        ...baseline,
+        rawPath: baseline.rawXmlPath,
+        kind: 'ssis',
+        objectName: baseline.packageName,
+      },
+      'ssis'
+    )
+  );
   if (writeCorrection && correctionOutputPath) {
     writeCorrectedMarkdown(correctionOutputPath, correctionMarkdown);
   }

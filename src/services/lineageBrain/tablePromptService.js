@@ -7,6 +7,7 @@ import { compactPrompt, truncateText, wrapEvidence } from './promptHelpers.js';
 import { isExpectedHighFanoutTable } from './anomalyRules.js';
 import { renderLineageMarkdownTemplate } from './markdownTemplateRenderer.js';
 import { writeCorrectedMarkdown } from './markdownCorrectionWriter.js';
+import { templateValuesFromRecord } from './provenance.js';
 
 function listMarkdownFiles(rootDir) {
   const files = [];
@@ -15,7 +16,11 @@ function listMarkdownFiles(rootDir) {
     const current = stack.pop();
     for (const entry of readdirSync(current, { withFileTypes: true })) {
       const fullPath = join(current, entry.name);
-      if (entry.isDirectory()) stack.push(fullPath);
+      if (entry.isDirectory()) {
+        if (!['_drafts', '_runtime', '_rebuild_backups', '_prompt_queue'].includes(entry.name)) {
+          stack.push(fullPath);
+        }
+      }
       else if (entry.isFile() && extname(entry.name) === '.md') files.push(fullPath);
     }
   }
@@ -47,7 +52,9 @@ function buildSnippet(sqlText, objectName) {
 
 export function generateTablePrompts(outputFile = 'generated_table_llm_prompts.txt', options = {}) {
   const { writeCorrection = false, correctionOutputPath = null } = options;
-  const files = listMarkdownFiles(TABLE_CURATED_ROOT);
+  const files = listMarkdownFiles(TABLE_CURATED_ROOT).filter((filePath) =>
+    filePath.replace(/\\/g, '/').includes('/databases/')
+  );
   const records = files.map((markdownPath) => {
     const content = readTextFile(markdownPath);
     const { metadata, body } = parseFrontmatter(content);
@@ -102,27 +109,17 @@ export function generateTablePrompts(outputFile = 'generated_table_llm_prompts.t
   ]);
 
   writeTextFile(outputFile, report);
-  const correctionMarkdown = renderLineageMarkdownTemplate({
-    name: baseline.objectName,
-    database: 'unknown',
-    type: baseline.objectType,
-    schema: 'dbo',
-    owner: baseline.metadata.owner || 'Data Team',
-    sensitivity: baseline.metadata.sensitivity || 'internal',
-    tags: baseline.metadata.tags || [],
-    depends_on: baseline.metadata.depends_on || [],
-    reads_from: baseline.metadata.reads_from || [],
-    writes_to: baseline.metadata.writes_to || [],
-    calls: baseline.metadata.calls || [],
-    lineage_confidence: 'unknown',
-    lineage_strategy: 'sql-reference-count',
-    lineage_pattern_class: 'sql-server-object',
-    lineage_source: 'sqlserver_raw_sql',
-    lineage_source_path: baseline.rawSqlPath || '',
-    lineage_evidence_hash: '',
-    extraction_warnings: [],
-    edge_count: baseline.refCount,
-  });
+  const correctionMarkdown = renderLineageMarkdownTemplate(
+    templateValuesFromRecord(
+      {
+        ...baseline,
+        rawPath: baseline.rawSqlPath,
+        kind: 'table',
+        edgeCount: baseline.refCount,
+      },
+      'table'
+    )
+  );
   if (writeCorrection && correctionOutputPath) {
     writeCorrectedMarkdown(correctionOutputPath, correctionMarkdown);
   }
