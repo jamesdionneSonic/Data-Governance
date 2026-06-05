@@ -46,10 +46,12 @@ export default function errorHandler(err, req, res, _next) {
   const legacyError = getLegacyErrorLabel(status, err);
   const safeDetails = isServerError && !isDevelopment ? null : err.details || null;
 
-  console.error(
-    `[ERROR] ${status} ${req.method} ${req.originalUrl} requestId=${requestId || 'n/a'}: ${originalMessage}`,
-    err
-  );
+  const logMessage = `[${isServerError ? 'ERROR' : 'WARN'}] ${status} ${req.method} ${req.originalUrl} requestId=${requestId || 'n/a'}: ${originalMessage}`;
+  if (isServerError) {
+    console.error(logMessage, err);
+  } else {
+    console.warn(logMessage);
+  }
 
   const payload = {
     status: 'error',

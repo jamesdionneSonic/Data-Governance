@@ -24,6 +24,7 @@ import {
 import { getUpstreamDependencies, getDownstreamDependents } from '../services/lineageService.js';
 import { buildCodexColumnContext } from '../services/codexContextService.js';
 import { buildLineageAnswer, buildLineageQuestionHelp } from '../services/lineageAnswerService.js';
+import { answerLineageQuestion } from '../services/lineageQuestionService.js';
 import { createTtlCache } from '../utils/ttlCache.js';
 import { getTypedLineageEdgeIndex } from '../services/catalogRuntimeStore.js';
 
@@ -61,6 +62,35 @@ router.get('/lineage-help', authenticate, (_req, res) =>
     message: 'Lineage help retrieved',
     data: buildLineageQuestionHelp(),
   }));
+
+/**
+ * POST /api/v1/discovery/lineage-question
+ * Answer an English lineage/catalog question from the loaded app runtime.
+ * Requires authentication.
+ */
+router.post('/lineage-question', authenticate, (req, res) => {
+  try {
+    if (cachedObjects.size === 0) {
+      return sendErrorResponse(res, req, 503, 'Data not yet loaded', {
+        code: 'SERVICE_UNAVAILABLE',
+      });
+    }
+
+    const answer = answerLineageQuestion(cachedObjects, {
+      question: req.body?.question,
+    });
+
+    return res.json({
+      status: 'success',
+      message: 'Lineage question answered',
+      data: answer,
+    });
+  } catch (err) {
+    return sendErrorResponse(res, req, 400, err.message, {
+      code: 'LINEAGE_QUESTION_ERROR',
+    });
+  }
+});
 
 /**
  * GET /api/v1/discovery/dashboard
