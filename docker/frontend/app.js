@@ -224,6 +224,10 @@ const appConfig = {
       discoveryDepth: 2,
       discoveryGraph: null,
       impactData: null,
+      lineageAnswerIntent: 'full_lineage',
+      lineageAnswer: null,
+      lineageHelp: null,
+      lineageAnswerLoading: false,
       lineageRaw: {
         upstream: null,
         downstream: null,
@@ -291,6 +295,7 @@ const appConfig = {
       edgeAuditDialog: false,
       graphTabLinkAvailable: typeof window !== 'undefined',
       importer: {
+        activeConnector: 'sql-server',
         files: [],
         parsed: [],
         validatePath: './data/markdown',
@@ -355,6 +360,40 @@ const appConfig = {
           extractXml: true,
 
           // UI State
+          discovering: false,
+          connecting: false,
+          result: null,
+          inventory: null,
+        },
+        dataFactory: {
+          subscriptionId: '',
+          resourceGroupName: '',
+          factoryName: '',
+          tenantId: '',
+          clientId: '',
+          clientSecret: '',
+          accessToken: '',
+          discovering: false,
+          connecting: false,
+          result: null,
+          inventory: null,
+        },
+        airflow: {
+          baseUrl: '',
+          apiVersion: 'v1',
+          token: '',
+          username: '',
+          password: '',
+          limit: 100,
+          discovering: false,
+          connecting: false,
+          result: null,
+          inventory: null,
+        },
+        databricks: {
+          workspaceUrl: '',
+          token: '',
+          limit: 100,
           discovering: false,
           connecting: false,
           result: null,
@@ -459,6 +498,98 @@ const appConfig = {
     canLoadToIndex() {
       return this.isElasticsearchHealthy;
     },
+    ingestionConnectorOptions() {
+      const sqlObjects = Number(this.importer.sqlServer.result?.totalObjectsExtracted || 0);
+      const ssisPackages = Number(this.importer.ssis.result?.summary?.counts?.packages || 0);
+      const parsedMarkdown = Number(this.importer.parsed?.length || 0);
+      const dataFactoryPipelines = Number(this.importer.dataFactory.result?.pipelines?.length || 0);
+      const dataFactoryDiscovered = Number(
+        this.importer.dataFactory.inventory?.pipelines?.length || 0
+      );
+      const airflowDags = Number(this.importer.airflow.result?.dags?.length || 0);
+      const airflowDiscovered = Number(this.importer.airflow.inventory?.dags?.length || 0);
+      const databricksJobs = Number(this.importer.databricks.result?.jobs?.length || 0);
+      const databricksDiscovered = Number(this.importer.databricks.inventory?.jobs?.length || 0);
+
+      return [
+        {
+          key: 'sql-server',
+          icon: 'mdi-database',
+          label: 'SQL Server',
+          type: 'Database',
+          status: sqlObjects > 0 ? 'Extracted' : 'Ready',
+          statusColor: sqlObjects > 0 ? 'success' : 'primary',
+          metric: sqlObjects > 0 ? `${sqlObjects.toLocaleString()} objects` : `${this.importer.sqlServer.database || 'No database'} selected`,
+          description: 'Discover schemas, tables, views, procedures, and relationship confidence.',
+        },
+        {
+          key: 'ssis',
+          icon: 'mdi-package-variant',
+          label: 'SSIS',
+          type: 'ETL',
+          status: ssisPackages > 0 ? 'Extracted' : this.importer.ssis.inventory ? 'Discovered' : 'Ready',
+          statusColor: ssisPackages > 0 ? 'success' : this.importer.ssis.inventory ? 'warning' : 'primary',
+          metric: ssisPackages > 0 ? `${ssisPackages.toLocaleString()} packages` : `${this.importer.ssis.server || 'No server'} configured`,
+          description: 'Extract packages, jobs, execution history, XML lineage, and generated markdown.',
+        },
+        {
+          key: 'markdown',
+          icon: 'mdi-file-document-multiple',
+          label: 'Markdown',
+          type: 'File ingest',
+          status: parsedMarkdown > 0 ? 'Parsed' : 'Ready',
+          statusColor: parsedMarkdown > 0 ? 'success' : 'primary',
+          metric: parsedMarkdown > 0 ? `${parsedMarkdown.toLocaleString()} files` : 'Upload governance markdown',
+          description: 'Upload curated markdown files and inspect parse results before validation.',
+        },
+        {
+          key: 'data-factory',
+          icon: 'mdi-factory',
+          label: 'Data Factory',
+          type: 'Cloud pipeline',
+          status: dataFactoryPipelines > 0 ? 'Extracted' : dataFactoryDiscovered > 0 ? 'Discovered' : 'Ready',
+          statusColor: dataFactoryPipelines > 0 ? 'success' : dataFactoryDiscovered > 0 ? 'warning' : 'primary',
+          metric:
+            dataFactoryPipelines > 0
+              ? `${dataFactoryPipelines.toLocaleString()} pipelines`
+              : this.importer.dataFactory.factoryName || 'Azure pipelines',
+          description: 'Discover ADF pipelines, activities, datasets, linked services, and triggers.',
+        },
+        {
+          key: 'airflow',
+          icon: 'mdi-source-branch',
+          label: 'Airflow',
+          type: 'Orchestrator',
+          status: airflowDags > 0 ? 'Extracted' : airflowDiscovered > 0 ? 'Discovered' : 'Ready',
+          statusColor: airflowDags > 0 ? 'success' : airflowDiscovered > 0 ? 'warning' : 'primary',
+          metric:
+            airflowDags > 0
+              ? `${airflowDags.toLocaleString()} DAGs`
+              : this.importer.airflow.baseUrl || 'DAG lineage',
+          description: 'Discover DAGs, connections, schedules, and orchestration metadata.',
+        },
+        {
+          key: 'databricks',
+          icon: 'mdi-cube-outline',
+          label: 'Databricks',
+          type: 'Lakehouse',
+          status: databricksJobs > 0 ? 'Extracted' : databricksDiscovered > 0 ? 'Discovered' : 'Ready',
+          statusColor: databricksJobs > 0 ? 'success' : databricksDiscovered > 0 ? 'warning' : 'primary',
+          metric:
+            databricksJobs > 0
+              ? `${databricksJobs.toLocaleString()} jobs`
+              : this.importer.databricks.workspaceUrl || 'Jobs and notebooks',
+          description: 'Discover jobs, clusters, Unity Catalog catalogs, and workspace metadata.',
+        },
+      ];
+    },
+    activeIngestionConnector() {
+      return (
+        this.ingestionConnectorOptions.find(
+          (connector) => connector.key === this.importer.activeConnector
+        ) || this.ingestionConnectorOptions[0]
+      );
+    },
     elasticsearchStatusLabel() {
       if (this.importer.status?.elasticsearchHealthy === true) {
         return 'Connected';
@@ -526,6 +657,14 @@ const appConfig = {
         blastObjects: this.reports?.blastRadius?.impactedObjects || 0,
         blastDepth: this.reports?.blastRadius?.maxDepth || 0,
       };
+    },
+    lineageAnswerIntentOptions() {
+      return [
+        { title: 'Full lineage', value: 'full_lineage' },
+        { title: 'What feeds this?', value: 'feeds' },
+        { title: 'What loads this?', value: 'loads' },
+        { title: 'What uses this?', value: 'uses' },
+      ];
     },
     isMarketplaceAdmin() {
       const roles = (this.currentUser?.roles || []).map((role) => String(role).toLowerCase());
@@ -2494,6 +2633,7 @@ const appConfig = {
         this.discoveryGraph = null;
         this.graphReportData = null;
         this.impactData = null;
+        this.lineageAnswer = null;
         return;
       }
 
@@ -2527,7 +2667,7 @@ const appConfig = {
           const [databaseName] = this.selectedObjectId.split('.');
           this.matrixDatabase = databaseName;
         }
-        await this.loadObjectContext();
+        await Promise.all([this.loadObjectContext(), this.loadLineageAnswer()]);
         this.buildBlastRadiusReport();
 
         await nextTick();
@@ -2544,6 +2684,35 @@ const appConfig = {
           return;
         }
         this.showToast(`Discovery load issue: ${err.message}`);
+      }
+    },
+    async loadLineageAnswer() {
+      if (!this.selectedObjectId) {
+        this.lineageAnswer = null;
+        return;
+      }
+
+      this.lineageAnswerLoading = true;
+      try {
+        const requests = [
+          this.api(
+            `/api/v1/discovery/lineage-answer/${encodeURIComponent(this.selectedObjectId)}?intent=${encodeURIComponent(this.lineageAnswerIntent)}`
+          ),
+        ];
+        if (!this.lineageHelp) {
+          requests.push(this.api('/api/v1/discovery/lineage-help'));
+        }
+
+        const [answerPayload, helpPayload] = await Promise.all(requests);
+        this.lineageAnswer = answerPayload.data || null;
+        if (helpPayload) {
+          this.lineageHelp = helpPayload.data || null;
+        }
+      } catch (err) {
+        this.lineageAnswer = null;
+        this.showToast(`Lineage answer load failed: ${err.message}`);
+      } finally {
+        this.lineageAnswerLoading = false;
       }
     },
     async loadEdgeAudit() {
@@ -3779,6 +3948,179 @@ const appConfig = {
       }
     },
 
+    validateDataFactoryInputs() {
+      const cfg = this.importer.dataFactory;
+      if (!cfg.subscriptionId || !cfg.resourceGroupName || !cfg.factoryName) {
+        this.showToast('Subscription ID, resource group, and factory name are required.');
+        return false;
+      }
+      if (!cfg.accessToken && (!cfg.tenantId || !cfg.clientId || !cfg.clientSecret)) {
+        this.showToast('Provide an access token or tenant/client credentials for Data Factory.');
+        return false;
+      }
+      return true;
+    },
+    buildDataFactoryPayload() {
+      return {
+        ...this.importer.dataFactory,
+        outputPath: this.importer.validatePath || './data/markdown',
+      };
+    },
+    async discoverDataFactory() {
+      try {
+        if (!this.validateDataFactoryInputs()) return;
+        this.importer.dataFactory.discovering = true;
+        this.importer.dataFactory.inventory = null;
+        const payload = await this.api('/api/v1/ingestion/connect-data-factory/discover', {
+          method: 'POST',
+          body: JSON.stringify(this.buildDataFactoryPayload()),
+        });
+        this.importer.dataFactory.inventory = payload.data;
+        this.showToast(
+          `Discovered ${payload.data.pipelines?.length || 0} ADF pipelines, ${payload.data.datasets?.length || 0} datasets.`
+        );
+      } catch (err) {
+        this.showToast(`Data Factory discovery failed: ${err.message}`);
+      } finally {
+        this.importer.dataFactory.discovering = false;
+      }
+    },
+    async runDataFactoryExtraction() {
+      try {
+        if (!this.validateDataFactoryInputs()) return;
+        this.importer.dataFactory.connecting = true;
+        this.importer.dataFactory.result = null;
+        const payload = await this.api('/api/v1/ingestion/connect-data-factory', {
+          method: 'POST',
+          body: JSON.stringify(this.buildDataFactoryPayload()),
+        });
+        this.importer.dataFactory.result = payload.data;
+        if (payload.data.markdownOutputPath) {
+          this.importer.validatePath = payload.data.markdownOutputPath;
+          this.importer.loadPath = payload.data.markdownOutputPath;
+        }
+        this.showToast(
+          `Data Factory extraction complete: ${payload.data.pipelines?.length || 0} pipelines, ${payload.data.markdownFilesWritten || 0} markdown files.`
+        );
+      } catch (err) {
+        this.showToast(`Data Factory extraction failed: ${err.message}`);
+      } finally {
+        this.importer.dataFactory.connecting = false;
+      }
+    },
+
+    validateAirflowInputs() {
+      if (!this.importer.airflow.baseUrl) {
+        this.showToast('Airflow base URL is required.');
+        return false;
+      }
+      return true;
+    },
+    buildAirflowPayload() {
+      return {
+        ...this.importer.airflow,
+        outputPath: this.importer.validatePath || './data/markdown',
+      };
+    },
+    async discoverAirflow() {
+      try {
+        if (!this.validateAirflowInputs()) return;
+        this.importer.airflow.discovering = true;
+        this.importer.airflow.inventory = null;
+        const payload = await this.api('/api/v1/ingestion/connect-airflow/discover', {
+          method: 'POST',
+          body: JSON.stringify(this.buildAirflowPayload()),
+        });
+        this.importer.airflow.inventory = payload.data;
+        this.showToast(
+          `Discovered ${payload.data.dags?.length || 0} Airflow DAGs and ${payload.data.connections?.length || 0} connections.`
+        );
+      } catch (err) {
+        this.showToast(`Airflow discovery failed: ${err.message}`);
+      } finally {
+        this.importer.airflow.discovering = false;
+      }
+    },
+    async runAirflowExtraction() {
+      try {
+        if (!this.validateAirflowInputs()) return;
+        this.importer.airflow.connecting = true;
+        this.importer.airflow.result = null;
+        const payload = await this.api('/api/v1/ingestion/connect-airflow', {
+          method: 'POST',
+          body: JSON.stringify(this.buildAirflowPayload()),
+        });
+        this.importer.airflow.result = payload.data;
+        if (payload.data.markdownOutputPath) {
+          this.importer.validatePath = payload.data.markdownOutputPath;
+          this.importer.loadPath = payload.data.markdownOutputPath;
+        }
+        this.showToast(
+          `Airflow extraction complete: ${payload.data.dags?.length || 0} DAGs, ${payload.data.markdownFilesWritten || 0} markdown files.`
+        );
+      } catch (err) {
+        this.showToast(`Airflow extraction failed: ${err.message}`);
+      } finally {
+        this.importer.airflow.connecting = false;
+      }
+    },
+
+    validateDatabricksInputs() {
+      if (!this.importer.databricks.workspaceUrl || !this.importer.databricks.token) {
+        this.showToast('Databricks workspace URL and token are required.');
+        return false;
+      }
+      return true;
+    },
+    buildDatabricksPayload() {
+      return {
+        ...this.importer.databricks,
+        outputPath: this.importer.validatePath || './data/markdown',
+      };
+    },
+    async discoverDatabricks() {
+      try {
+        if (!this.validateDatabricksInputs()) return;
+        this.importer.databricks.discovering = true;
+        this.importer.databricks.inventory = null;
+        const payload = await this.api('/api/v1/ingestion/connect-databricks/discover', {
+          method: 'POST',
+          body: JSON.stringify(this.buildDatabricksPayload()),
+        });
+        this.importer.databricks.inventory = payload.data;
+        this.showToast(
+          `Discovered ${payload.data.jobs?.length || 0} Databricks jobs and ${payload.data.catalogs?.length || 0} catalogs.`
+        );
+      } catch (err) {
+        this.showToast(`Databricks discovery failed: ${err.message}`);
+      } finally {
+        this.importer.databricks.discovering = false;
+      }
+    },
+    async runDatabricksExtraction() {
+      try {
+        if (!this.validateDatabricksInputs()) return;
+        this.importer.databricks.connecting = true;
+        this.importer.databricks.result = null;
+        const payload = await this.api('/api/v1/ingestion/connect-databricks', {
+          method: 'POST',
+          body: JSON.stringify(this.buildDatabricksPayload()),
+        });
+        this.importer.databricks.result = payload.data;
+        if (payload.data.markdownOutputPath) {
+          this.importer.validatePath = payload.data.markdownOutputPath;
+          this.importer.loadPath = payload.data.markdownOutputPath;
+        }
+        this.showToast(
+          `Databricks extraction complete: ${payload.data.jobs?.length || 0} jobs, ${payload.data.markdownFilesWritten || 0} markdown files.`
+        );
+      } catch (err) {
+        this.showToast(`Databricks extraction failed: ${err.message}`);
+      } finally {
+        this.importer.databricks.connecting = false;
+      }
+    },
+
     toggleAllSqlServerSchemas(selectAll) {
       if (selectAll) {
         this.importer.sqlServer.selectedSchemas = this.importer.sqlServer.availableSchemas.map(
@@ -4172,7 +4514,7 @@ const appConfig = {
         </v-navigation-drawer>
 
         <v-main class="main">
-          <v-app-bar class="topbar" flat style="backdrop-filter: blur(12px); background: rgba(2, 6, 23, 0.72); border-bottom: 1px solid rgba(255,255,255,0.08); padding: 10px 16px 12px;">
+          <v-app-bar class="topbar" flat>
             <div class="topbar-left">
               <div class="topbar-nav-controls">
                 <v-btn v-if="$vuetify.display.smAndDown" icon="mdi-menu" variant="text" size="small" @click="toggleMobileSidebar" title="Open navigation"></v-btn>
@@ -4289,10 +4631,19 @@ const appConfig = {
             </div>
           </v-app-bar>
 
-          <div class="telemetry-banner" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:16px 16px 0;padding:20px;background:rgba(15, 23, 42, 0.6);backdrop-filter:blur(16px);border:1px solid rgba(255, 255, 255, 0.1);border-radius:16px;">
-            <div class="mini-metric" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);box-shadow:0 4px 10px -6px rgba(15, 23, 42, 0.35);"><span class="text-white font-weight-medium">Ingestion Health</span><strong style="color:#38bdf8;">{{ importer.status?.status || 'monitoring' }}</strong></div>
-            <div class="mini-metric" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);box-shadow:0 4px 10px -6px rgba(15, 23, 42, 0.35);"><span class="text-white font-weight-medium">Pipeline Progress</span><strong style="color:#38bdf8;">{{ workflowProgressPercent }}%</strong></div>
-            <div class="mini-metric" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);box-shadow:0 4px 10px -6px rgba(15, 23, 42, 0.35);"><span class="text-white font-weight-medium">Elasticsearch</span><strong style="color:#38bdf8;">{{ elasticsearchStatusLabel }}</strong></div>
+          <div class="telemetry-banner">
+            <div class="telemetry-card">
+              <span>Ingestion Health</span>
+              <strong>{{ importer.status?.status || 'monitoring' }}</strong>
+            </div>
+            <div class="telemetry-card">
+              <span>Pipeline Progress</span>
+              <strong>{{ workflowProgressPercent }}%</strong>
+            </div>
+            <div class="telemetry-card">
+              <span>Elasticsearch</span>
+              <strong>{{ elasticsearchStatusLabel }}</strong>
+            </div>
           </div>
 
           <v-container fluid class="content">
@@ -4988,8 +5339,17 @@ const appConfig = {
                     <v-btn size="small" color="primary" @click="loadDiscovery">↔ Render</v-btn>
                   </div>
                 </div>
-                <div class="form-row" style="grid-template-columns:1fr auto auto auto;">
+                <div class="form-row" style="grid-template-columns:1fr auto auto auto auto;">
                   <v-text-field v-model="selectedObjectId" placeholder="Object ID (e.g. sales.orders)" density="compact" variant="outlined" hide-details></v-text-field>
+                  <v-select
+                    v-model="lineageAnswerIntent"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    style="width:180px;"
+                    :items="lineageAnswerIntentOptions"
+                    @update:model-value="selectedObjectId ? loadLineageAnswer() : null"
+                  ></v-select>
                   <v-select
                     v-model="discoveryFormat"
                     density="compact"
@@ -5188,6 +5548,78 @@ const appConfig = {
               </v-col>
 
               <v-col cols="12" md="4" lg="4">
+              <v-card class="card" style="padding:12px; margin-bottom:12px;" variant="outlined">
+                <div class="section-header" style="margin-bottom:8px;">
+                  <span class="section-title">Lineage Answer</span>
+                  <div class="btn-row">
+                    <v-btn size="small" variant="outlined" @click="loadLineageAnswer" :loading="lineageAnswerLoading">Refresh</v-btn>
+                    <v-btn size="small" variant="outlined" @click="onViewChange('docs'); openDocByKey('help-center')">Help</v-btn>
+                  </div>
+                </div>
+
+                <div class="mini-stack" style="margin-bottom:10px;">
+                  <div class="mini-metric"><span>Intent</span><strong>{{ lineageAnswer?.intent_description || 'Choose a lineage question' }}</strong></div>
+                  <div class="mini-metric"><span>Focus Object</span><strong style="font-family:monospace;font-size:11px;">{{ selectedObjectId || '-' }}</strong></div>
+                </div>
+
+                <div v-if="lineageAnswerLoading" class="empty-state" style="padding:20px;">
+                  <div class="empty-state-icon">&#8987;</div>
+                  <h4>Building answer</h4>
+                  <p>Summarizing the semantic lineage for this object.</p>
+                </div>
+
+                <template v-else-if="lineageAnswer">
+                  <p class="lineage-answer-text">{{ lineageAnswer.plain_english }}</p>
+
+                  <div v-if="lineageAnswer.caveats && lineageAnswer.caveats.length" class="lineage-caveat-list">
+                    <div v-for="caveat in lineageAnswer.caveats" :key="caveat" class="lineage-caveat-item">
+                      {{ caveat }}
+                    </div>
+                  </div>
+
+                  <div class="table-wrap lineage-answer-table" v-if="lineageAnswer.impacted_objects && lineageAnswer.impacted_objects.length">
+                    <v-table density="compact">
+                      <thead>
+                        <tr>
+                          <th>Role</th>
+                          <th>Object</th>
+                          <th>Type</th>
+                          <th>Where</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="item in lineageAnswer.impacted_objects.slice(0, 12)" :key="'lineage-answer-' + item.role + '-' + item.id">
+                          <td>{{ item.role }}</td>
+                          <td>
+                            <div class="lineage-answer-object">{{ item.label }}</div>
+                            <div class="lineage-answer-why">{{ item.why_it_matters }}</div>
+                          </td>
+                          <td>{{ item.type }}</td>
+                          <td class="lineage-answer-location">{{ item.location || '-' }}</td>
+                        </tr>
+                      </tbody>
+                    </v-table>
+                  </div>
+
+                  <div v-if="lineageHelp && lineageHelp.examples && lineageHelp.examples.length" class="lineage-help-panel">
+                    <div class="lineage-help-title">How to ask</div>
+                    <div class="lineage-help-copy">{{ lineageHelp.plain_english }}</div>
+                    <div class="lineage-help-examples">
+                      <div v-for="example in lineageHelp.examples.slice(0, 4)" :key="example.prompt" class="lineage-help-example">
+                        <strong>{{ example.prompt }}</strong>
+                        <span>{{ example.description }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+
+                <div v-else class="empty-state" style="padding:20px;">
+                  <div class="empty-state-icon">&#128270;</div>
+                  <h4>No lineage answer yet</h4>
+                  <p>Render the object to get a plain-English explanation and impacted object list.</p>
+                </div>
+              </v-card>
+
               <v-card class="card" style="padding:12px;" variant="outlined">
                 <h3>Impact Summary</h3>
                 <div class="mini-stack" style="margin-bottom:10px;">
@@ -5658,7 +6090,7 @@ const appConfig = {
               </v-card>
             </div>
 
-            <div v-if="activeView === 'import'">
+            <div v-if="activeView === 'import'" class="import-page">
               <v-row>
               <v-col cols="12">
               <v-card class="card" variant="outlined">
@@ -5718,9 +6150,51 @@ const appConfig = {
 
               <v-row>
               <v-col cols="12">
-              <v-card class="card" variant="outlined">
+              <v-card class="card ingestion-workspace" variant="outlined">
+                <div class="ingestion-workspace-header">
+                  <div>
+                    <h3>Connector Workspace</h3>
+                    <p class="card-help">Choose one source at a time, configure it, then send generated markdown through validation and indexing.</p>
+                  </div>
+                  <div class="connector-picker">
+                    <span>Active Connector</span>
+                    <v-select
+                      v-model="importer.activeConnector"
+                      class="ingestion-connector-select"
+                      density="compact"
+                      variant="outlined"
+                      hide-details
+                      :items="ingestionConnectorOptions"
+                      item-title="label"
+                      item-value="key"
+                    ></v-select>
+                  </div>
+                </div>
+                <div class="connector-grid">
+                  <button
+                    v-for="connector in ingestionConnectorOptions"
+                    :key="'connector-' + connector.key"
+                    type="button"
+                    class="connector-card"
+                    :class="{ active: importer.activeConnector === connector.key, planned: connector.planned }"
+                    @click="importer.activeConnector = connector.key"
+                  >
+                    <span class="connector-icon"><v-icon :icon="connector.icon" size="20"></v-icon></span>
+                    <span class="connector-body">
+                      <span class="connector-topline">
+                        <strong>{{ connector.label }}</strong>
+                        <v-chip size="x-small" variant="tonal" :color="connector.statusColor">{{ connector.status }}</v-chip>
+                      </span>
+                      <span class="connector-type">{{ connector.type }} · {{ connector.metric }}</span>
+                      <span class="connector-description">{{ connector.description }}</span>
+                    </span>
+                  </button>
+                </div>
+              </v-card>
+
+              <v-card v-if="importer.activeConnector === 'sql-server'" class="card connector-detail-card" variant="outlined">
                 <h3>SQL Server Connector</h3>
-                <p style="margin-bottom: 15px; font-size: 0.9em; color: #666;">Extract table metadata from SQL Server and auto-generate governance markdown with relationship confidence scoring.</p>
+                <p class="card-help">Extract table metadata from SQL Server and auto-generate governance markdown with relationship confidence scoring.</p>
                 <div class="form-row" style="margin-bottom: 10px;">
                   <div class="col-2"><v-label>Auth Method</v-label><v-select v-model="importer.sqlServer.authentication" density="compact" variant="outlined" hide-details :items="[{ title: 'SQL Server Auth', value: 'sql-server' }, { title: 'Windows Auth', value: 'windows' }, { title: 'Azure AD', value: 'azure-ad' }]" item-title="title" item-value="value"></v-select></div>
                   <div class="col-3"><v-label>Server</v-label><v-text-field v-model="importer.sqlServer.server" placeholder="localhost or server.database.windows.net" density="compact" variant="outlined" hide-details></v-text-field></div>
@@ -5928,9 +6402,9 @@ const appConfig = {
                 </div>
               </v-card>
 
-              <v-card class="card" variant="outlined" style="margin-bottom: 16px;">
+              <v-card v-if="importer.activeConnector === 'ssis'" class="card connector-detail-card" variant="outlined">
                 <h3>SSIS Connector</h3>
-                <p style="margin-bottom: 15px; font-size: 0.9em; color: #666;">Extract packages, execution history, and lineage from SSISDB.</p>
+                <p class="card-help">Extract packages, execution history, and lineage from SSISDB.</p>
                 
                 <div class="form-row" style="margin-bottom: 10px;">
                   <div class="col-2"><v-label>Auth Method</v-label><v-select v-model="importer.ssis.authentication" density="compact" variant="outlined" hide-details :items="[{ title: 'SQL Server Auth', value: 'sql-server' }, { title: 'Windows Auth', value: 'windows' }, { title: 'Azure AD', value: 'azure-ad' }]" item-title="title" item-value="value"></v-select></div>
@@ -6003,8 +6477,9 @@ const appConfig = {
                 </div>
               </v-card>
               
-              <v-card class="card span-12" variant="outlined">
+              <v-card v-if="importer.activeConnector === 'markdown'" class="card connector-detail-card span-12" variant="outlined">
                 <h3>Markdown Upload & Parse</h3>
+                <p class="card-help">Use this for curated or externally generated markdown that should enter the same validate/load pipeline.</p>
                 <v-file-input multiple accept=".md,text/markdown" density="compact" variant="outlined" show-size @change="handleFileUpload" hide-details></v-file-input>
                 <div class="table-wrap" style="margin-top:10px;">
                   <v-table density="compact">
@@ -6022,11 +6497,168 @@ const appConfig = {
                   </v-table>
                 </div>
               </v-card>
+
+              <v-card
+                v-if="importer.activeConnector === 'data-factory'"
+                class="card connector-detail-card cloud-connector-panel span-12"
+                variant="outlined"
+              >
+                <div class="cloud-connector-header">
+                  <v-icon icon="mdi-factory" size="28"></v-icon>
+                  <div>
+                    <h3>Data Factory Connector</h3>
+                    <p class="card-help">Connect to Azure Data Factory and generate markdown from pipelines, datasets, linked services, and triggers.</p>
+                  </div>
+                </div>
+                <div class="form-row" style="margin-top: 14px;">
+                  <div class="col-4">
+                    <div class="field-label-row"><v-label>Subscription ID</v-label><v-tooltip location="top" max-width="360" text="The Azure subscription that owns the Data Factory. In Azure Portal, open the Data Factory resource, then copy Subscription ID from Overview or Essentials."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Subscription ID help"></v-btn></template></v-tooltip></div>
+                    <v-text-field v-model="importer.dataFactory.subscriptionId" density="compact" variant="outlined" hide-details></v-text-field>
+                  </div>
+                  <div class="col-4">
+                    <div class="field-label-row"><v-label>Resource Group</v-label><v-tooltip location="top" max-width="360" text="The Azure resource group containing the Data Factory. In Azure Portal, open the factory and copy Resource group from Overview or Essentials."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Resource Group help"></v-btn></template></v-tooltip></div>
+                    <v-text-field v-model="importer.dataFactory.resourceGroupName" density="compact" variant="outlined" hide-details></v-text-field>
+                  </div>
+                  <div class="col-4">
+                    <div class="field-label-row"><v-label>Factory Name</v-label><v-tooltip location="top" max-width="360" text="The exact Azure Data Factory resource name. Find it in Azure Portal by searching Data factories, then open the factory and copy the Name value."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Factory Name help"></v-btn></template></v-tooltip></div>
+                    <v-text-field v-model="importer.dataFactory.factoryName" density="compact" variant="outlined" hide-details></v-text-field>
+                  </div>
+                </div>
+                <div class="form-row" style="margin-top: 10px;">
+                  <div class="col-4">
+                    <div class="field-label-row"><v-label>Tenant ID</v-label><v-tooltip location="top" max-width="380" text="The Microsoft Entra tenant for the service principal. In Azure Portal, go to Microsoft Entra ID > Overview and copy Tenant ID. You can skip this if using a pasted access token."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Tenant ID help"></v-btn></template></v-tooltip></div>
+                    <v-text-field v-model="importer.dataFactory.tenantId" density="compact" variant="outlined" hide-details></v-text-field>
+                  </div>
+                  <div class="col-4">
+                    <div class="field-label-row"><v-label>Client ID</v-label><v-tooltip location="top" max-width="380" text="The Application client ID for a Microsoft Entra app registration or managed service principal that has Reader access to the Data Factory. Find it under Microsoft Entra ID > App registrations > your app > Application client ID."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Client ID help"></v-btn></template></v-tooltip></div>
+                    <v-text-field v-model="importer.dataFactory.clientId" density="compact" variant="outlined" hide-details></v-text-field>
+                  </div>
+                  <div class="col-4">
+                    <div class="field-label-row"><v-label>Client Secret</v-label><v-tooltip location="top" max-width="380" text="A secret for the Entra app registration. Create one in Microsoft Entra ID > App registrations > your app > Certificates & secrets. Copy the secret Value immediately; Azure will not show it again."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Client Secret help"></v-btn></template></v-tooltip></div>
+                    <v-text-field v-model="importer.dataFactory.clientSecret" type="password" density="compact" variant="outlined" hide-details></v-text-field>
+                  </div>
+                </div>
+                <div class="form-row" style="margin-top: 10px;">
+                  <div class="col-12">
+                    <div class="field-label-row"><v-label>Access Token</v-label><v-tooltip location="top" max-width="390" text="Optional Azure Management API bearer token. Use this instead of tenant/client credentials for short-lived testing. Generate with Azure CLI using az account get-access-token --resource https://management.azure.com/ and paste accessToken only."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Access Token help"></v-btn></template></v-tooltip></div>
+                    <v-text-field v-model="importer.dataFactory.accessToken" type="password" density="compact" variant="outlined" placeholder="Optional bearer token instead of service principal fields" hide-details></v-text-field>
+                  </div>
+                </div>
+                <div class="btn-row" style="margin-top: 14px; justify-content: flex-end;">
+                  <v-btn variant="tonal" @click="discoverDataFactory" :loading="importer.dataFactory.discovering" :disabled="importer.dataFactory.discovering || importer.dataFactory.connecting">Discover Factory</v-btn>
+                  <v-btn color="primary" @click="runDataFactoryExtraction" :loading="importer.dataFactory.connecting" :disabled="importer.dataFactory.discovering || importer.dataFactory.connecting">{{ importer.dataFactory.connecting ? 'Extracting ADF...' : 'Generate Markdown' }}</v-btn>
+                </div>
+                <div v-if="importer.dataFactory.inventory || importer.dataFactory.result" class="cloud-connector-body">
+                  <div class="mini-metric"><span>Pipelines</span><strong>{{ (importer.dataFactory.result || importer.dataFactory.inventory).pipelines?.length || 0 }}</strong></div>
+                  <div class="mini-metric"><span>Datasets</span><strong>{{ (importer.dataFactory.result || importer.dataFactory.inventory).datasets?.length || 0 }}</strong></div>
+                  <div class="mini-metric"><span>Linked Services</span><strong>{{ (importer.dataFactory.result || importer.dataFactory.inventory).linkedServices?.length || 0 }}</strong></div>
+                  <div class="mini-metric"><span>Triggers</span><strong>{{ (importer.dataFactory.result || importer.dataFactory.inventory).triggers?.length || 0 }}</strong></div>
+                  <div class="mini-metric" v-if="importer.dataFactory.result?.markdownOutputPath"><span>Markdown Path</span><span class="text-mono text-small">{{ importer.dataFactory.result.markdownOutputPath }}</span></div>
+                  <div class="mini-metric" v-if="importer.dataFactory.result"><span>Files Written</span><strong>{{ importer.dataFactory.result.markdownFilesWritten || 0 }}</strong></div>
+                </div>
+              </v-card>
+
+              <v-card
+                v-if="importer.activeConnector === 'airflow'"
+                class="card connector-detail-card cloud-connector-panel span-12"
+                variant="outlined"
+              >
+                <div class="cloud-connector-header">
+                  <v-icon icon="mdi-source-branch" size="28"></v-icon>
+                  <div>
+                    <h3>Airflow Connector</h3>
+                    <p class="card-help">Connect to the Airflow REST API and generate markdown from DAGs, schedules, connections, and orchestration metadata.</p>
+                  </div>
+                </div>
+                <div class="form-row" style="margin-top: 14px;">
+                  <div class="col-6">
+                    <div class="field-label-row"><v-label>Base URL</v-label><v-tooltip location="top" max-width="380" text="The URL for your Airflow webserver, not a DAG page. Open Airflow in the browser and copy the root host, for example https://airflow.company.com. The connector appends /api/v1 automatically."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Airflow Base URL help"></v-btn></template></v-tooltip></div>
+                    <v-text-field v-model="importer.airflow.baseUrl" density="compact" variant="outlined" placeholder="https://airflow.example.com" hide-details></v-text-field>
+                  </div>
+                  <div class="col-3">
+                    <div class="field-label-row"><v-label>API Version</v-label><v-tooltip location="top" max-width="360" text="The Airflow stable REST API version. Use v1 for Airflow 2.x in most deployments. Ask your Airflow admin or check the API docs page at /api/v1/ui if exposed."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Airflow API Version help"></v-btn></template></v-tooltip></div>
+                    <v-text-field v-model="importer.airflow.apiVersion" density="compact" variant="outlined" hide-details></v-text-field>
+                  </div>
+                  <div class="col-3">
+                    <div class="field-label-row"><v-label>Limit</v-label><v-tooltip location="top" max-width="340" text="Maximum number of DAGs and connections to request from Airflow. Start with 100 for discovery; increase it if your Airflow environment has more DAGs."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Airflow Limit help"></v-btn></template></v-tooltip></div>
+                    <v-text-field v-model.number="importer.airflow.limit" type="number" min="1" density="compact" variant="outlined" hide-details></v-text-field>
+                  </div>
+                </div>
+                <div class="form-row" style="margin-top: 10px;">
+                  <div class="col-6">
+                    <div class="field-label-row"><v-label>Bearer Token</v-label><v-tooltip location="top" max-width="390" text="Optional token for Airflow deployments using bearer auth. Get this from your Airflow or identity-provider admin. If your Airflow uses basic auth instead, leave token blank and use username/password."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Airflow Bearer Token help"></v-btn></template></v-tooltip></div>
+                    <v-text-field v-model="importer.airflow.token" type="password" density="compact" variant="outlined" hide-details></v-text-field>
+                  </div>
+                  <div class="col-3">
+                    <div class="field-label-row"><v-label>Username</v-label><v-tooltip location="top" max-width="360" text="Optional Airflow username for basic authentication. Use a service account or user that can read DAGs and, if available, connections through the REST API."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Airflow Username help"></v-btn></template></v-tooltip></div>
+                    <v-text-field v-model="importer.airflow.username" density="compact" variant="outlined" hide-details></v-text-field>
+                  </div>
+                  <div class="col-3">
+                    <div class="field-label-row"><v-label>Password</v-label><v-tooltip location="top" max-width="360" text="Optional password for Airflow basic authentication. Pair it with the username. For production, prefer a read-only service account managed by your Airflow admin."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Airflow Password help"></v-btn></template></v-tooltip></div>
+                    <v-text-field v-model="importer.airflow.password" type="password" density="compact" variant="outlined" hide-details></v-text-field>
+                  </div>
+                </div>
+                <div class="btn-row" style="margin-top: 14px; justify-content: flex-end;">
+                  <v-btn variant="tonal" @click="discoverAirflow" :loading="importer.airflow.discovering" :disabled="importer.airflow.discovering || importer.airflow.connecting">Discover DAGs</v-btn>
+                  <v-btn color="primary" @click="runAirflowExtraction" :loading="importer.airflow.connecting" :disabled="importer.airflow.discovering || importer.airflow.connecting">{{ importer.airflow.connecting ? 'Extracting Airflow...' : 'Generate Markdown' }}</v-btn>
+                </div>
+                <div v-if="importer.airflow.inventory || importer.airflow.result" class="cloud-connector-body">
+                  <div class="mini-metric"><span>DAGs</span><strong>{{ (importer.airflow.result || importer.airflow.inventory).dags?.length || 0 }}</strong></div>
+                  <div class="mini-metric"><span>Connections</span><strong>{{ (importer.airflow.result || importer.airflow.inventory).connections?.length || 0 }}</strong></div>
+                  <div class="mini-metric"><span>API Version</span><strong>{{ (importer.airflow.result || importer.airflow.inventory).apiVersion }}</strong></div>
+                  <div class="mini-metric" v-if="importer.airflow.result"><span>Files Written</span><strong>{{ importer.airflow.result.markdownFilesWritten || 0 }}</strong></div>
+                  <div class="mini-metric span-12" v-if="(importer.airflow.result || importer.airflow.inventory).connectionWarning"><span>Warning</span><span>{{ (importer.airflow.result || importer.airflow.inventory).connectionWarning }}</span></div>
+                  <div class="mini-metric" v-if="importer.airflow.result?.markdownOutputPath"><span>Markdown Path</span><span class="text-mono text-small">{{ importer.airflow.result.markdownOutputPath }}</span></div>
+                </div>
+              </v-card>
+
+              <v-card
+                v-if="importer.activeConnector === 'databricks'"
+                class="card connector-detail-card cloud-connector-panel span-12"
+                variant="outlined"
+              >
+                <div class="cloud-connector-header">
+                  <v-icon icon="mdi-cube-outline" size="28"></v-icon>
+                  <div>
+                    <h3>Databricks Connector</h3>
+                    <p class="card-help">Connect to Databricks workspace APIs and generate markdown from jobs, clusters, and Unity Catalog metadata.</p>
+                  </div>
+                </div>
+                <div class="form-row" style="margin-top: 14px;">
+                  <div class="col-7">
+                    <div class="field-label-row"><v-label>Workspace URL</v-label><v-tooltip location="top" max-width="380" text="The Databricks workspace root URL. Open Databricks in your browser and copy the host, for example https://adb-0000000000000000.0.azuredatabricks.net. Do not include /jobs or /sql paths."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Databricks Workspace URL help"></v-btn></template></v-tooltip></div>
+                    <v-text-field v-model="importer.databricks.workspaceUrl" density="compact" variant="outlined" placeholder="https://adb-0000000000000000.0.azuredatabricks.net" hide-details></v-text-field>
+                  </div>
+                  <div class="col-3">
+                    <div class="field-label-row"><v-label>Token</v-label><v-tooltip location="top" max-width="390" text="A Databricks personal access token or service principal OAuth token with permission to list jobs, clusters, and Unity Catalog metadata. For a PAT, open Databricks > User Settings > Developer > Access tokens."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Databricks Token help"></v-btn></template></v-tooltip></div>
+                    <v-text-field v-model="importer.databricks.token" type="password" density="compact" variant="outlined" hide-details></v-text-field>
+                  </div>
+                  <div class="col-2">
+                    <div class="field-label-row"><v-label>Limit</v-label><v-tooltip location="top" max-width="340" text="Maximum number of Databricks jobs to request. Start with 100 for discovery; increase it if the workspace has more jobs to evaluate."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Databricks Limit help"></v-btn></template></v-tooltip></div>
+                    <v-text-field v-model.number="importer.databricks.limit" type="number" min="1" density="compact" variant="outlined" hide-details></v-text-field>
+                  </div>
+                </div>
+                <div class="btn-row" style="margin-top: 14px; justify-content: flex-end;">
+                  <v-btn variant="tonal" @click="discoverDatabricks" :loading="importer.databricks.discovering" :disabled="importer.databricks.discovering || importer.databricks.connecting">Discover Workspace</v-btn>
+                  <v-btn color="primary" @click="runDatabricksExtraction" :loading="importer.databricks.connecting" :disabled="importer.databricks.discovering || importer.databricks.connecting">{{ importer.databricks.connecting ? 'Extracting Databricks...' : 'Generate Markdown' }}</v-btn>
+                </div>
+                <div v-if="importer.databricks.inventory || importer.databricks.result" class="cloud-connector-body">
+                  <div class="mini-metric"><span>Jobs</span><strong>{{ (importer.databricks.result || importer.databricks.inventory).jobs?.length || 0 }}</strong></div>
+                  <div class="mini-metric"><span>Clusters</span><strong>{{ (importer.databricks.result || importer.databricks.inventory).clusters?.length || 0 }}</strong></div>
+                  <div class="mini-metric"><span>Catalogs</span><strong>{{ (importer.databricks.result || importer.databricks.inventory).catalogs?.length || 0 }}</strong></div>
+                  <div class="mini-metric" v-if="importer.databricks.result"><span>Files Written</span><strong>{{ importer.databricks.result.markdownFilesWritten || 0 }}</strong></div>
+                  <div class="mini-metric span-12" v-if="(importer.databricks.result || importer.databricks.inventory).clusterWarning"><span>Cluster Warning</span><span>{{ (importer.databricks.result || importer.databricks.inventory).clusterWarning }}</span></div>
+                  <div class="mini-metric span-12" v-if="(importer.databricks.result || importer.databricks.inventory).catalogWarning"><span>Catalog Warning</span><span>{{ (importer.databricks.result || importer.databricks.inventory).catalogWarning }}</span></div>
+                  <div class="mini-metric" v-if="importer.databricks.result?.markdownOutputPath"><span>Markdown Path</span><span class="text-mono text-small">{{ importer.databricks.result.markdownOutputPath }}</span></div>
+                </div>
+              </v-card>
               </v-col>
 
               <v-row>
               <v-col cols="12" md="6">
               <v-card class="card" variant="outlined">
+                <h3>Validate Markdown</h3>
+                <p class="card-help">Check generated or uploaded markdown before loading it into the searchable catalog.</p>
                 <v-label>Path to markdown tree</v-label>
                 <v-text-field v-model="importer.validatePath" density="compact" variant="outlined" hide-details></v-text-field>
                 <div class="btn-row" style="margin-top:10px;"><v-btn color="primary" @click="runValidation">Run Validate</v-btn></div>
@@ -6035,6 +6667,8 @@ const appConfig = {
 
               <v-col cols="12" md="6">
               <v-card class="card" variant="outlined">
+                <h3>Load & Export</h3>
+                <p class="card-help">Publish validated markdown into the search index or export generated artifacts.</p>
                 <v-label>Path to markdown tree</v-label>
                 <v-text-field v-model="importer.loadPath" density="compact" variant="outlined" hide-details></v-text-field>
                 <div style="margin-top: 8px; font-size: 0.85em; color: #4b5563;">

@@ -84,6 +84,300 @@ async function persistGeneratedMarkdown(markdowns, database, outputPath) {
   };
 }
 
+function normalizeBaseUrl(value) {
+  return String(value || '').replace(/\/+$/, '');
+}
+
+async function fetchJson(url, { method = 'GET', headers = {}, body, timeoutMs = 30000 } = {}) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, {
+      method,
+      headers: {
+        Accept: 'application/json',
+        ...headers,
+      },
+      body,
+      signal: controller.signal,
+    });
+    const text = await response.text();
+    const data = text ? JSON.parse(text) : {};
+    if (!response.ok) {
+      const message = data?.error?.message || data?.message || data?.detail || response.statusText;
+      throw new Error(`${response.status} ${message}`);
+    }
+    return data;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function getAzureAccessToken(payload) {
+  if (payload.accessToken) return payload.accessToken;
+  const { tenantId, clientId, clientSecret } = payload;
+  if (!tenantId || !clientId || !clientSecret) {
+    throw new Error('tenantId, clientId, and clientSecret are required unless accessToken is provided');
+  }
+  const body = new URLSearchParams({
+    client_id: clientId,
+    client_secret: clientSecret,
+    grant_type: 'client_credentials',
+    scope: 'https://management.azure.com/.default',
+  });
+  const token = await fetchJson(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body,
+  });
+  return token.access_token;
+}
+
+function connectorMarkdownFrontmatter({ id, name, type, sourceSystem, dependsOn = [], description }) {
+  return `---
+id: ${JSON.stringify(id)}
+name: ${JSON.stringify(name)}
+database: ${JSON.stringify(sourceSystem)}
+type: ${JSON.stringify(type)}
+owner: data-platform
+sensitivity: internal
+tags: ['${sourceSystem}', 'ingestion', 'connector']
+depends_on: ${JSON.stringify(dependsOn)}
+description: ${JSON.stringify(description)}
+---
+`;
+}
+
+function connectorErrorStatus(err) {
+  return /required|invalid/i.test(err?.message || '') ? 400 : 500;
+}
+
+async function persistConnectorMarkdown({ connectorKey, sourceName, markdownFiles, outputPath }) {
+  const baseOutputPath = resolve(process.cwd(), outputPath || './data/markdown');
+  const targetDir = join(baseOutputPath, 'connectors', sanitizePathSegment(connectorKey));
+  await mkdir(targetDir, { recursive: true });
+  await Promise.all(
+    markdownFiles.map((file) =>
+      writeFile(join(targetDir, sanitizePathSegment(file.fileName)), file.content || '', 'utf-8')
+    )
+  );
+  ingestionState.lastGeneratedPath = baseOutputPath;
+  ingestionState.lastDataPath = baseOutputPath;
+  return {
+    baseOutputPath,
+    connectorPath: targetDir,
+    filesWritten: markdownFiles.length,
+    sourceName,
+  };
+}
+
+function listValue(response, keys) {
+  for (const key of keys) {
+    if (Array.isArray(response?.[key])) return response[key];
+  }
+  return [];
+}
+
+async function discoverDataFactory(payload) {
+  const { subscriptionId, resourceGroupName, factoryName } = payload;
+  if (!subscriptionId || !resourceGroupName || !factoryName) {
+    throw new Error('subscriptionId, resourceGroupName, and factoryName are required');
+  }
+  const accessToken = await getAzureAccessToken(payload);
+  const root = `https://management.azure.com/subscriptions/${encodeURIComponent(
+    subscriptionId
+  )}/resourceGroups/${encodeURIComponent(
+    resourceGroupName
+  )}/providers/Microsoft.DataFactory/factories/${encodeURIComponent(factoryName)}`;
+  const authHeaders = { Authorization: `Bearer ${accessToken}` };
+  const apiVersion = '2018-06-01';
+  const [pipelines, datasets, linkedServices, triggers] = await Promise.all([
+    fetchJson(`${root}/pipelines?api-version=${apiVersion}`, { headers: authHeaders }),
+    fetchJson(`${root}/datasets?api-version=${apiVersion}`, { headers: authHeaders }),
+    fetchJson(`${root}/linkedservices?api-version=${apiVersion}`, { headers: authHeaders }),
+    fetchJson(`${root}/triggers?api-version=${apiVersion}`, { headers: authHeaders }),
+  ]);
+  return {
+    factoryName,
+    subscriptionId,
+    resourceGroupName,
+    pipelines: pipelines.value || [],
+    datasets: datasets.value || [],
+    linkedServices: linkedServices.value || [],
+    triggers: triggers.value || [],
+  };
+}
+
+function buildDataFactoryMarkdown(discovery) {
+  const dependencyNames = discovery.datasets.map((item) => item.name).filter(Boolean);
+  const summary = connectorMarkdownFrontmatter({
+    id: `datafactory.${discovery.factoryName}`,
+    name: discovery.factoryName,
+    type: 'data_factory',
+    sourceSystem: 'datafactory',
+    dependsOn: dependencyNames,
+    description: `Azure Data Factory metadata extracted from ${discovery.factoryName}.`,
+  });
+  const pipelineRows = discovery.pipelines
+    .map((item) => `- ${item.name} (${item.properties?.activities?.length || 0} activities)`)
+    .join('\n');
+  const linkedRows = discovery.linkedServices
+    .map((item) => `- ${item.name} (${item.properties?.type || 'linkedService'})`)
+    .join('\n');
+  return [
+    {
+      fileName: `${discovery.factoryName}.md`,
+      content: `${summary}
+# Data Factory ${discovery.factoryName}
+
+## Inventory
+- Pipelines: ${discovery.pipelines.length}
+- Datasets: ${discovery.datasets.length}
+- Linked services: ${discovery.linkedServices.length}
+- Triggers: ${discovery.triggers.length}
+
+## Pipelines
+${pipelineRows || '- No pipelines discovered.'}
+
+## Linked Services
+${linkedRows || '- No linked services discovered.'}
+`,
+    },
+  ];
+}
+
+function buildAirflowHeaders(payload) {
+  if (payload.token) return { Authorization: `Bearer ${payload.token}` };
+  if (payload.username || payload.password) {
+    return {
+      Authorization: `Basic ${Buffer.from(`${payload.username || ''}:${payload.password || ''}`).toString(
+        'base64'
+      )}`,
+    };
+  }
+  return {};
+}
+
+async function discoverAirflow(payload) {
+  const baseUrl = normalizeBaseUrl(payload.baseUrl);
+  if (!baseUrl) throw new Error('baseUrl is required');
+  const apiVersion = payload.apiVersion || 'v1';
+  const root = `${baseUrl}/api/${apiVersion}`;
+  const headers = buildAirflowHeaders(payload);
+  const [dags, connections] = await Promise.all([
+    fetchJson(`${root}/dags?limit=${Number(payload.limit) || 100}`, { headers }),
+    fetchJson(`${root}/connections?limit=${Number(payload.limit) || 100}`, { headers }).catch(
+      (err) => ({ error: err.message, connections: [] })
+    ),
+  ]);
+  return {
+    baseUrl,
+    apiVersion,
+    dags: listValue(dags, ['dags']),
+    connections: listValue(connections, ['connections']),
+    connectionWarning: connections.error || '',
+  };
+}
+
+function buildAirflowMarkdown(discovery) {
+  const dagRows = discovery.dags
+    .map((dag) => `- ${dag.dag_id || dag.dagId} (${dag.is_paused ? 'paused' : 'active'})`)
+    .join('\n');
+  const connectionRows = discovery.connections
+    .map((conn) => `- ${conn.connection_id || conn.conn_id || conn.id} (${conn.conn_type || 'connection'})`)
+    .join('\n');
+  return [
+    {
+      fileName: 'airflow_catalog.md',
+      content: `${connectorMarkdownFrontmatter({
+        id: `airflow.${discovery.baseUrl.replace(/^https?:\/\//, '')}`,
+        name: 'airflow_catalog',
+        type: 'airflow_catalog',
+        sourceSystem: 'airflow',
+        description: `Airflow metadata extracted from ${discovery.baseUrl}.`,
+      })}
+# Airflow Catalog
+
+## Inventory
+- DAGs: ${discovery.dags.length}
+- Connections: ${discovery.connections.length}
+- API version: ${discovery.apiVersion}
+
+## DAGs
+${dagRows || '- No DAGs discovered.'}
+
+## Connections
+${connectionRows || '- No connections discovered or permissions unavailable.'}
+${discovery.connectionWarning ? `\n## Warnings\n- ${discovery.connectionWarning}\n` : ''}
+`,
+    },
+  ];
+}
+
+async function discoverDatabricks(payload) {
+  const workspaceUrl = normalizeBaseUrl(payload.workspaceUrl);
+  if (!workspaceUrl || !payload.token) throw new Error('workspaceUrl and token are required');
+  const headers = { Authorization: `Bearer ${payload.token}` };
+  const [jobs, clusters, catalogs] = await Promise.all([
+    fetchJson(`${workspaceUrl}/api/2.1/jobs/list?limit=${Number(payload.limit) || 100}`, {
+      headers,
+    }),
+    fetchJson(`${workspaceUrl}/api/2.0/clusters/list`, { headers }).catch((err) => ({
+      error: err.message,
+      clusters: [],
+    })),
+    fetchJson(`${workspaceUrl}/api/2.1/unity-catalog/catalogs`, { headers }).catch((err) => ({
+      error: err.message,
+      catalogs: [],
+    })),
+  ]);
+  return {
+    workspaceUrl,
+    jobs: jobs.jobs || [],
+    clusters: clusters.clusters || [],
+    catalogs: catalogs.catalogs || [],
+    clusterWarning: clusters.error || '',
+    catalogWarning: catalogs.error || '',
+  };
+}
+
+function buildDatabricksMarkdown(discovery) {
+  const jobRows = discovery.jobs
+    .map((job) => `- ${job.settings?.name || job.job_id} (${(job.settings?.tasks || []).length} tasks)`)
+    .join('\n');
+  const catalogRows = discovery.catalogs.map((catalog) => `- ${catalog.name}`).join('\n');
+  return [
+    {
+      fileName: 'databricks_workspace.md',
+      content: `${connectorMarkdownFrontmatter({
+        id: `databricks.${discovery.workspaceUrl.replace(/^https?:\/\//, '')}`,
+        name: 'databricks_workspace',
+        type: 'databricks_workspace',
+        sourceSystem: 'databricks',
+        dependsOn: discovery.catalogs.map((catalog) => catalog.name).filter(Boolean),
+        description: `Databricks metadata extracted from ${discovery.workspaceUrl}.`,
+      })}
+# Databricks Workspace
+
+## Inventory
+- Jobs: ${discovery.jobs.length}
+- Clusters: ${discovery.clusters.length}
+- Unity Catalog catalogs: ${discovery.catalogs.length}
+
+## Jobs
+${jobRows || '- No jobs discovered.'}
+
+## Catalogs
+${catalogRows || '- No catalogs discovered or Unity Catalog permissions unavailable.'}
+${discovery.clusterWarning || discovery.catalogWarning ? `\n## Warnings\n${[discovery.clusterWarning, discovery.catalogWarning]
+  .filter(Boolean)
+  .map((warning) => `- ${warning}`)
+  .join('\n')}\n` : ''}
+`,
+    },
+  ];
+}
+
 async function buildSqlConnectionContext(payload) {
   const mssqlDriver = await import('mssql');
   const {
@@ -698,6 +992,132 @@ router.post('/connect-sql-server/discover', authenticate, requireAdmin, async (r
         // no-op
       }
     }
+  }
+});
+
+router.post('/connect-data-factory/discover', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const discovery = await discoverDataFactory(req.body);
+    return res.json({
+      status: 'success',
+      message: `Discovered ${discovery.pipelines.length} Data Factory pipeline(s)`,
+      data: discovery,
+    });
+  } catch (err) {
+    return sendErrorResponse(res, req, connectorErrorStatus(err), err.message, {
+      code: 'DATA_FACTORY_DISCOVERY_ERROR',
+    });
+  }
+});
+
+router.post('/connect-data-factory', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const discovery = await discoverDataFactory(req.body);
+    const markdownFiles = buildDataFactoryMarkdown(discovery);
+    const persisted = await persistConnectorMarkdown({
+      connectorKey: 'data-factory',
+      sourceName: discovery.factoryName,
+      markdownFiles,
+      outputPath: req.body.outputPath,
+    });
+    return res.json({
+      status: 'success',
+      message: `Extracted Data Factory metadata from ${discovery.factoryName}`,
+      data: {
+        ...discovery,
+        markdownFilesWritten: persisted.filesWritten,
+        markdownOutputPath: persisted.baseOutputPath,
+        connectorPath: persisted.connectorPath,
+      },
+    });
+  } catch (err) {
+    return sendErrorResponse(res, req, connectorErrorStatus(err), err.message, {
+      code: 'DATA_FACTORY_EXTRACTION_ERROR',
+    });
+  }
+});
+
+router.post('/connect-airflow/discover', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const discovery = await discoverAirflow(req.body);
+    return res.json({
+      status: 'success',
+      message: `Discovered ${discovery.dags.length} Airflow DAG(s)`,
+      data: discovery,
+    });
+  } catch (err) {
+    return sendErrorResponse(res, req, connectorErrorStatus(err), err.message, {
+      code: 'AIRFLOW_DISCOVERY_ERROR',
+    });
+  }
+});
+
+router.post('/connect-airflow', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const discovery = await discoverAirflow(req.body);
+    const markdownFiles = buildAirflowMarkdown(discovery);
+    const persisted = await persistConnectorMarkdown({
+      connectorKey: 'airflow',
+      sourceName: discovery.baseUrl,
+      markdownFiles,
+      outputPath: req.body.outputPath,
+    });
+    return res.json({
+      status: 'success',
+      message: `Extracted Airflow metadata from ${discovery.baseUrl}`,
+      data: {
+        ...discovery,
+        markdownFilesWritten: persisted.filesWritten,
+        markdownOutputPath: persisted.baseOutputPath,
+        connectorPath: persisted.connectorPath,
+      },
+    });
+  } catch (err) {
+    return sendErrorResponse(res, req, connectorErrorStatus(err), err.message, {
+      code: 'AIRFLOW_EXTRACTION_ERROR',
+    });
+  }
+});
+
+router.post('/connect-databricks/discover', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const discovery = await discoverDatabricks(req.body);
+    return res.json({
+      status: 'success',
+      message: `Discovered ${discovery.jobs.length} Databricks job(s)`,
+      data: discovery,
+    });
+  } catch (err) {
+    return sendErrorResponse(res, req, connectorErrorStatus(err), err.message, {
+      code: 'DATABRICKS_DISCOVERY_ERROR',
+    });
+  }
+});
+
+router.post('/connect-databricks', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const discovery = await discoverDatabricks(req.body);
+    const markdownFiles = buildDatabricksMarkdown(discovery);
+    const persisted = await persistConnectorMarkdown({
+      connectorKey: 'databricks',
+      sourceName: discovery.workspaceUrl,
+      markdownFiles,
+      outputPath: req.body.outputPath,
+    });
+    return res.json({
+      status: 'success',
+      message: `Extracted Databricks metadata from ${discovery.workspaceUrl}`,
+      data: {
+        ...discovery,
+        markdownFilesWritten: persisted.filesWritten,
+        markdownOutputPath: persisted.baseOutputPath,
+        connectorPath: persisted.connectorPath,
+      },
+    });
+  } catch (err) {
+    return sendErrorResponse(res, req, connectorErrorStatus(err), err.message, {
+      code: 'DATABRICKS_EXTRACTION_ERROR',
+    });
   }
 });
 

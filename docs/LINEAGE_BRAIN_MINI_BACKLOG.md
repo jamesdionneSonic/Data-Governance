@@ -54,6 +54,15 @@ This backlog covers the next steps before the first correction run and before an
 - [x] Confirm the second pass produces no new changes or only known, intentional adjustments.
 - [x] Promote any stable lesson into the extraction rules so future sources inherit it automatically.
 
+## 8. Semantic Lineage Rollout
+
+- [x] Add an orchestrated refresh command for the full semantic lineage pipeline. (`npm run lineage:semantic:refresh`)
+- [ ] Re-run the raw SQL Server and SSIS extraction pipeline after semantic lineage answer-planner changes land.
+- [ ] Rewrite local markdown/context outputs so semantic lineage summaries and maintenance-read classifications are embedded across the corpus.
+- [ ] Rebuild runtime indexes, answer packs, and package artifacts from the corrected markdown.
+- [ ] Export the refreshed corpus to the DevOps catalog repo and review the diff before publish.
+- [ ] Publish or push the validated DevOps repo and runtime package updates together so the app, Codex, and downstream consumers stay in sync.
+
 ## Operational Notes
 
 - Active reviewed rules live in `config/lineage-brain-rules.yml`.

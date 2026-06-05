@@ -10,6 +10,7 @@ import { mkdir, readFile, stat, writeFile } from 'fs/promises';
 import path from 'path';
 
 import { buildTypedLineageEdges, indexTypedLineageEdges } from './lineageService.js';
+import { buildSemanticLineageIndex } from './semanticLineageService.js';
 import {
   getMarkdownFiles,
   parseMarkdownFile,
@@ -21,6 +22,7 @@ const RUNTIME_INDEX_VERSION = 2;
 const RUNTIME_MANIFEST_FILE = 'runtime-manifest.json';
 const SUMMARY_FILE = 'catalog-summary.json';
 const EDGE_INDEX_FILE = 'edge-index.json';
+const SEMANTIC_EDGE_INDEX_FILE = 'semantic-edge-index.json';
 const OBJECT_FILE_INDEX_FILE = 'object-file-index.json';
 const COLUMN_INDEX_FILE = 'column-index.json';
 const detailCache = new Map();
@@ -50,6 +52,7 @@ function runtimePaths(dataPath) {
     manifest: path.join(root, RUNTIME_MANIFEST_FILE),
     summary: path.join(root, SUMMARY_FILE),
     edges: path.join(root, EDGE_INDEX_FILE),
+    semanticEdges: path.join(root, SEMANTIC_EDGE_INDEX_FILE),
     objectFiles: path.join(root, OBJECT_FILE_INDEX_FILE),
     columns: path.join(root, COLUMN_INDEX_FILE),
   };
@@ -417,9 +420,21 @@ export async function buildRuntimeCatalogIndexes(dataPath, options = {}) {
     dedupe: true,
     maxEdgesPerObjectByType: runtimeConfigSnapshot.edge_limits_by_type,
   });
+  const semanticLineage = buildSemanticLineageIndex(objectMap);
+  const semanticEdges = semanticLineage.edges;
+  for (const object of objects) {
+    const semanticPack = semanticLineage.packs.get(object.id);
+    if (!semanticPack) continue;
+    object.semantic_lineage = {
+      plain_english: semanticPack.summary.plain_english,
+      counts: semanticPack.summary.counts,
+      semantic_edge_types: semanticPack.summary.semantic_edge_types,
+    };
+  }
   const objectCount = objects.length;
   const columnCount = columns.length;
   const edgeCount = typedEdges.length;
+  const semanticEdgeCount = semanticEdges.length;
   const paths = runtimePaths(resolvedDataPath);
   objectMap.clear();
 
@@ -454,6 +469,19 @@ export async function buildRuntimeCatalogIndexes(dataPath, options = {}) {
   );
   typedEdges.length = 0;
 
+  await writeJsonArrayIndex(
+    paths.semanticEdges,
+    {
+      runtime_index_version: RUNTIME_INDEX_VERSION,
+      generated_at: generatedAt,
+      source_markdown_root: normalizePathForManifest(resolvedDataPath),
+      edge_count: semanticEdgeCount,
+    },
+    'edges',
+    semanticEdges
+  );
+  semanticEdges.length = 0;
+
   await writeJson(paths.objectFiles, {
     generated_at: generatedAt,
     source_markdown_root: normalizePathForManifest(resolvedDataPath),
@@ -478,9 +506,11 @@ export async function buildRuntimeCatalogIndexes(dataPath, options = {}) {
     object_count: objectCount,
     column_count: columnCount,
     edge_count: edgeCount,
+    semantic_edge_count: semanticEdgeCount,
     files: {
       summary: SUMMARY_FILE,
       edges: EDGE_INDEX_FILE,
+      semanticEdges: SEMANTIC_EDGE_INDEX_FILE,
       objectFiles: OBJECT_FILE_INDEX_FILE,
       columns: COLUMN_INDEX_FILE,
     },
@@ -543,6 +573,8 @@ export async function loadRuntimeCatalog(dataPath, options = {}) {
   const edgeIndex = await readJson(paths.edges);
   const typedEdges = ensureArray(edgeIndex.edges);
   const typedEdgeIndex = indexTypedLineageEdges(typedEdges);
+  const semanticEdgeIndex = await readJson(paths.semanticEdges).catch(() => ({ edges: [] }));
+  const semanticEdges = ensureArray(semanticEdgeIndex.edges);
   const lineageGraph = buildGraphFromTypedEdges(objects, typedEdges);
 
   return {
@@ -551,6 +583,7 @@ export async function loadRuntimeCatalog(dataPath, options = {}) {
     lineageGraph,
     typedEdges,
     typedEdgeIndex,
+    semanticEdges,
     objectFileIndex,
     generatedAt,
     mode,
