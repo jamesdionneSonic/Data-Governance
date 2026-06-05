@@ -87,6 +87,58 @@ describe('Rebuild confidence report and SSIS endpoint gates', () => {
     );
   });
 
+  test('keeps IPv4 server prefixes out of generated database names for SSIS endpoints', () => {
+    const sourceId = '206.22.183.247.SONICWEBV_VEH.dbo.veh_inventory';
+    const packageId = 'V1-SSIS25-01, 11040.SSISDB.WebV.CopyInventory.CopyInventory.dtsx';
+    const records = new Map([
+      [
+        packageId.toLowerCase(),
+        {
+          id: packageId,
+          type: 'package',
+          frontmatter: {
+            id: packageId,
+            name: 'CopyInventory.dtsx',
+            database: 'ssisdb',
+            type: 'package',
+            reads_from: [sourceId],
+            writes_to: [],
+            ssis_column_mappings: [
+              {
+                package_id: packageId,
+                source_object: 'veh_inventory',
+                input_column: 'VehicleID',
+                output_column: 'VehicleID',
+                validation_status: 'validated',
+              },
+            ],
+          },
+        },
+      ],
+    ]);
+
+    const endpoints = [...buildSsisSqlEndpointRecords(records)];
+
+    expect(endpoints).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: sourceId,
+          server: '206.22.183.247',
+          database: 'SONICWEBV_VEH',
+          schema: 'dbo',
+          name: 'veh_inventory',
+        }),
+      ])
+    );
+    expect(endpoints).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          database: '22',
+        }),
+      ])
+    );
+  });
+
   test('builds rebuild report with distribution, deltas, regressions, and gates', () => {
     const packageId = 'SSIS01.SSISDB.Claims.CopyClaims.CopyClaims.dtsx';
     const recordList = [

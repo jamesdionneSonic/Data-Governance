@@ -11,12 +11,14 @@ import {
   writeFile,
 } from 'fs/promises';
 import path from 'path';
+import { deriveSemanticLineageGroups } from '../src/services/semanticLineageRuntimeGrouping.js';
+import { buildDatabaseCatalogAnswer } from '../src/services/lineageCatalogAnswerService.js';
 
 const DEFAULT_SOURCE_REPO = '../Sonic-data-lineage';
 const DEFAULT_PACKAGE_ROOT = './data/lineage-runtime-package/sonic-data-lineage-runtime';
 const DEFAULT_PACKAGE_NAME = 'sonic-data-lineage-runtime';
 const PACKAGE_SCHEMA_VERSION = 1;
-const RUNTIME_BUILDER_VERSION = 2;
+const RUNTIME_BUILDER_VERSION = 3;
 const COPY_ENTRIES = [
   '.gitattributes',
   'AI_README.md',
@@ -24,6 +26,7 @@ const COPY_ENTRIES = [
   'schemas',
   'registry',
   'context-packs',
+  'servers',
   'ssis',
   'reports',
   'docs',
@@ -35,6 +38,7 @@ const HASH_FILES = [
   'registry/duplicate-objects.jsonl',
   'registry/unresolved-server-objects.jsonl',
   'registry/database-index.json',
+  'answers/catalog/databases.json',
   'registry/object-registry-summary.json',
   'indexes/index-manifest.json',
   'AI_README.md',
@@ -292,6 +296,10 @@ function normalizeLookupKey(value) {
     .toLowerCase();
 }
 
+function ensureArray(value) {
+  return Array.isArray(value) ? value : [];
+}
+
 function compactLookupKey(value) {
   return normalizeLookupKey(value).replace(/[^a-z0-9]/g, '');
 }
@@ -457,6 +465,20 @@ async function readContextPack(packageRoot, row) {
   }
 }
 
+function buildOrchestratorsByTarget(rows, contextPackByObjectId) {
+  const orchestratorsByTarget = new Map();
+  for (const row of rows) {
+    const objectType = normalizeLookupKey(row.object_type || '');
+    if (objectType !== 'package' && objectType !== 'ssis_package') continue;
+    const downstream = ensureArray(contextPackByObjectId.get(row.object_id)?.lineage?.downstream);
+    for (const targetId of downstream) {
+      if (!orchestratorsByTarget.has(targetId)) orchestratorsByTarget.set(targetId, new Set());
+      orchestratorsByTarget.get(targetId).add(row.object_id);
+    }
+  }
+  return orchestratorsByTarget;
+}
+
 function lookupKeysForRow(row, contextPack) {
   const keys = new Set();
   const parts = {
@@ -496,10 +518,11 @@ function aliasKeysForRow(row, contextPack) {
   return [...keys].filter((key) => key.length <= 220).sort();
 }
 
-function compactContextPack(row, contextPack, answerCards) {
+function compactContextPack(row, contextPack, answerCards, relationIndex = {}) {
   const lineage = contextPack?.lineage || {};
   const columns = contextPack?.columns || {};
   const directEdges = Array.isArray(lineage.direct_edges) ? lineage.direct_edges : [];
+  const semanticLineage = deriveSemanticLineageGroups(row.object_id, contextPack, relationIndex);
   return {
     schema_version: 1,
     object_id: row.object_id,
@@ -533,6 +556,7 @@ function compactContextPack(row, contextPack, answerCards) {
       direct_edges_count: directEdges.length,
       direct_edges_truncated: directEdges.length > DIRECT_EDGE_LIMIT,
     },
+    semantic_lineage: semanticLineage,
     columns: {
       count: Number(row.column_count || columns.count || 0),
       names: columns.names || columns.column_names || columns.list || [],
@@ -540,9 +564,12 @@ function compactContextPack(row, contextPack, answerCards) {
     },
     source: {
       markdown_path: normalizePath(row.source_markdown_path || ''),
+      markdown_available: Boolean(contextPack?.evidence?.source_markdown_available),
       original_context_pack_json_path: normalizePath(row.context_pack_json_path || ''),
       original_context_pack_path: normalizePath(row.context_pack_path || ''),
     },
+    logic_summary: contextPack?.logic_summary || null,
+    evidence_snippets: Array.isArray(contextPack?.evidence_snippets) ? contextPack.evidence_snippets : [],
     answer_cards: answerCards,
   };
 }
@@ -561,9 +588,10 @@ function usageAnswerCard(row) {
   };
 }
 
-function directionAnswerCard(row, direction, contextPack) {
+function directionAnswerCard(row, direction, contextPack, relationIndex = {}) {
   const lineage = contextPack?.lineage || {};
   const values = Array.isArray(lineage[direction]) ? lineage[direction] : [];
+  const semanticLineage = deriveSemanticLineageGroups(row.object_id, contextPack, relationIndex);
   return {
     schema_version: 1,
     question_type: direction,
@@ -572,6 +600,18 @@ function directionAnswerCard(row, direction, contextPack) {
       count: Number(row[`${direction}_count`] || values.length || 0),
       object_ids: values,
       truncated: Boolean(lineage[`${direction}_truncated`]),
+      grouped_object_ids:
+        direction === 'downstream'
+          ? semanticLineage.downstream_groups
+          : undefined,
+      grouped_counts:
+        direction === 'downstream'
+          ? {
+              business_consumers: semanticLineage.counts.business_consumers,
+              maintenance_reads: semanticLineage.counts.maintenance_reads,
+              orchestrators: semanticLineage.counts.orchestrators,
+            }
+          : undefined,
     },
     context_pack_json_path: normalizePath(row.compact_context_pack_path || row.context_pack_json_path || ''),
   };
@@ -672,6 +712,14 @@ async function buildRuntimeIndexes(packageRoot, previousState = {}) {
   for (const row of canonicalRows) runtimeRowsById.set(row.object_id, row);
   for (const row of duplicateRows) runtimeRowsById.set(row.object_id, row);
   for (const row of unresolvedRows) runtimeRowsById.set(row.object_id, row);
+  const contextPackByObjectId = new Map();
+  for (const row of runtimeRowsById.values()) {
+    // eslint-disable-next-line no-await-in-loop
+    contextPackByObjectId.set(row.object_id, await readContextPack(packageRoot, row));
+  }
+  const relationIndex = {
+    orchestratorsByTarget: buildOrchestratorsByTarget([...runtimeRowsById.values()], contextPackByObjectId),
+  };
 
   const byName = new Map();
   const byAlias = new Map();
@@ -719,18 +767,18 @@ async function buildRuntimeIndexes(packageRoot, previousState = {}) {
       stats.objectFilesSkipped += 4;
     } else {
       // eslint-disable-next-line no-await-in-loop
-      const contextPack = await readContextPack(packageRoot, row);
+      const contextPack = contextPackByObjectId.get(row.object_id) || null;
       row.lookup_keys = lookupKeysForRow(row, contextPack);
       row.alias_keys = aliasKeysForRow(row, contextPack);
 
       // eslint-disable-next-line no-await-in-loop
       const usageResult = await writeJsonIfChanged(packageRoot, answerCards.usage_count, usageAnswerCard(row));
       // eslint-disable-next-line no-await-in-loop
-      const upstreamResult = await writeJsonIfChanged(packageRoot, answerCards.upstream, directionAnswerCard(row, 'upstream', contextPack));
+      const upstreamResult = await writeJsonIfChanged(packageRoot, answerCards.upstream, directionAnswerCard(row, 'upstream', contextPack, relationIndex));
       // eslint-disable-next-line no-await-in-loop
-      const downstreamResult = await writeJsonIfChanged(packageRoot, answerCards.downstream, directionAnswerCard(row, 'downstream', contextPack));
+      const downstreamResult = await writeJsonIfChanged(packageRoot, answerCards.downstream, directionAnswerCard(row, 'downstream', contextPack, relationIndex));
       // eslint-disable-next-line no-await-in-loop
-      const compactResult = await writeJsonIfChanged(packageRoot, row.compact_context_pack_path, compactContextPack(row, contextPack, answerCards));
+      const compactResult = await writeJsonIfChanged(packageRoot, row.compact_context_pack_path, compactContextPack(row, contextPack, answerCards, relationIndex));
       for (const result of [usageResult, upstreamResult, downstreamResult, compactResult]) {
         if (result.written) stats.objectFilesWritten += 1;
         else stats.objectFilesSkipped += 1;
@@ -775,6 +823,12 @@ async function buildRuntimeIndexes(packageRoot, previousState = {}) {
   for (const rowsForKey of [...byName.values(), ...byAlias.values(), ...byDatabase.values(), ...bySchema.values()]) {
     rowsForKey.sort(sortObjectsForLookup);
   }
+
+  const databaseIndex = await readJson(path.join(packageRoot, 'registry/database-index.json'));
+  const databaseCatalogAnswer = buildDatabaseCatalogAnswer(databaseIndex, byDatabase);
+  const databaseCatalogResult = await writeJsonIfChanged(packageRoot, 'answers/catalog/databases.json', databaseCatalogAnswer);
+  if (databaseCatalogResult.written) stats.indexFilesWritten += 1;
+  else stats.indexFilesSkipped += 1;
 
   for (const result of [
     await writeJsonlIfChanged(packageRoot, 'registry/canonical-objects.jsonl', canonicalRows),
@@ -936,6 +990,7 @@ async function buildRuntimeIndexes(packageRoot, previousState = {}) {
       usage_count_by_object_id: 'answers/usage-count/by-object-id/',
       upstream_by_object_id: 'answers/upstream/by-object-id/',
       downstream_by_object_id: 'answers/downstream/by-object-id/',
+      catalog_databases: 'answers/catalog/databases.json',
     },
     context_packs: {
       compact_by_object_id: 'context-packs/objects/by-id/',
@@ -953,6 +1008,7 @@ async function buildRuntimeIndexes(packageRoot, previousState = {}) {
       top_used_files: topUsedFileCount,
       ranking_files: rankingFileCount,
       answer_card_files: answerCardFileCount,
+      catalog_answer_files: 1,
       compact_context_pack_files: compactContextFileCount,
     },
     build: {
@@ -1197,6 +1253,7 @@ async function main() {
       usage_count: 'answers/usage-count/by-object-id/',
       upstream: 'answers/upstream/by-object-id/',
       downstream: 'answers/downstream/by-object-id/',
+      catalog_databases: 'answers/catalog/databases.json',
     },
     compact_context_packs: {
       by_object_id: 'context-packs/objects/by-id/',
@@ -1208,6 +1265,7 @@ async function main() {
       unresolved_server_registry_jsonl: 'registry/unresolved-server-objects.jsonl',
       registry_csv: 'registry/object-registry.csv',
       database_index: 'registry/database-index.json',
+      database_catalog_answer: 'answers/catalog/databases.json',
       registry_summary: 'registry/object-registry-summary.json',
       index_manifest: 'indexes/index-manifest.json',
       catalog_manifest: 'catalog-manifest.json',

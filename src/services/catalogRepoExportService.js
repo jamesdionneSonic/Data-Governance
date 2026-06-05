@@ -6,7 +6,7 @@
 import { createHash } from 'crypto';
 import { once } from 'events';
 import { createWriteStream } from 'fs';
-import { mkdir, readFile, readdir, rm, stat, writeFile } from 'fs/promises';
+import { copyFile, mkdir, readFile, readdir, rm, stat, writeFile } from 'fs/promises';
 import path from 'path';
 
 import { loadRuntimeCatalog } from './catalogRuntimeService.js';
@@ -48,7 +48,7 @@ const REGISTRY_HEADERS = [
   'source_markdown_path',
   'last_refreshed_at',
 ];
-const GENERATED_DIRECTORIES = ['schemas', 'registry', 'context-packs', 'ssis', 'reports', 'docs'];
+const GENERATED_DIRECTORIES = ['schemas', 'registry', 'context-packs', 'ssis', 'reports', 'docs', 'servers'];
 const GENERATED_ROOT_FILES = [
   '.gitattributes',
   'README.md',
@@ -197,6 +197,111 @@ function relativeSourcePath(markdownRoot, filePath) {
   return normalizePathForManifest(relative);
 }
 
+function sourceAbsolutePath(markdownRoot, relativeSourcePathValue) {
+  const relative = compactText(relativeSourcePathValue);
+  if (!relative) return '';
+  return path.join(path.resolve(process.cwd(), markdownRoot), relative);
+}
+
+function detectProcedureStepLines(sqlText = '') {
+  const lines = String(sqlText || '').split(/\r?\n/);
+  const findLine = (pattern) => {
+    const index = lines.findIndex((line) => pattern.test(line));
+    return index >= 0 ? index + 1 : null;
+  };
+  return {
+    sourceReadLine: findLine(/synwrk|stage|wrk|stg/i),
+    targetUpdateLine: findLine(/\bupdate\s+\w+/i),
+    targetInsertLine: findLine(/\binsert\s+into\b/i),
+    antiJoinLine: findLine(/\b(left\s+join|not\s+exists)\b/i),
+    keyLookupLine: findLine(/\bdimvin\b/i),
+  };
+}
+
+function extractDefinitionSection(markdownText = '') {
+  const match = String(markdownText || '').match(/## Definition\s+```sql\s*([\s\S]*?)```/i);
+  return match ? match[1].trim() : '';
+}
+
+function summarizeProcedureLogic({ object = {}, row, definitionSql = '' }) {
+  if (compactText(row.object_type).toLowerCase() !== 'procedure') return null;
+  const readsFrom = ensureArray(object.reads_from || object.depends_on);
+  const writesTo = ensureArray(object.writes_to);
+  const sourceObjects = readsFrom.filter((id) => /synwrk|stage|wrk|stg|source/i.test(id));
+  const dimVin = readsFrom.find((id) => /(^|[.])dimvin$/i.test(id));
+  const targetObjects = writesTo.filter((id) => /dimvehicle/i.test(id));
+  const targetDimensions = writesTo.filter((id) => /dimvehicle/i.test(id) && !/(^|[.])dimvehicle$/i.test(id));
+  const lines = detectProcedureStepLines(definitionSql);
+  const steps = [];
+
+  if (sourceObjects.length > 0) {
+    steps.push(`Reads staged vehicle rows from ${sourceObjects[0].split('.').slice(-3).join('.')}.`);
+  }
+  if (dimVin) {
+    steps.push('Uses DimVin to resolve or verify VehicleKey mappings.');
+  }
+  if (lines.targetUpdateLine) {
+    steps.push('Updates existing target rows when matching vehicle records already exist.');
+  }
+  if (lines.targetInsertLine) {
+    steps.push('Inserts missing vehicle rows when no matching target record exists.');
+  }
+  if (targetDimensions.length > 0) {
+    steps.push(`Maintains related vehicle attribute dimensions such as ${targetDimensions
+      .slice(0, 6)
+      .map((id) => id.split('.').slice(-1)[0])
+      .join(', ')}${targetDimensions.length > 6 ? ', and others' : ''}.`);
+  } else if (targetObjects.length > 0) {
+    steps.push(`Maintains ${targetObjects.map((id) => id.split('.').slice(-1)[0]).join(', ')}.`);
+  }
+
+  const narrative = steps.join(' ');
+  if (!narrative) return null;
+
+  const snippets = [
+    lines.sourceReadLine
+      ? {
+          label: 'Staged source read',
+          line: lines.sourceReadLine,
+          detail: 'Reads staged/work vehicle rows',
+        }
+      : null,
+    lines.keyLookupLine
+      ? {
+          label: 'Vehicle key lookup',
+          line: lines.keyLookupLine,
+          detail: 'Checks DimVin / key resolution logic',
+        }
+      : null,
+    lines.targetUpdateLine
+      ? {
+          label: 'Target update',
+          line: lines.targetUpdateLine,
+          detail: 'Updates existing DimVehicle rows',
+        }
+      : null,
+    lines.targetInsertLine
+      ? {
+          label: 'Target insert',
+          line: lines.targetInsertLine,
+          detail: 'Inserts missing DimVehicle rows',
+        }
+      : null,
+    lines.antiJoinLine
+      ? {
+          label: 'New-row detection',
+          line: lines.antiJoinLine,
+          detail: 'Uses anti-join / existence logic to find new rows',
+        }
+      : null,
+  ].filter(Boolean);
+
+  return {
+    summary: narrative,
+    evidence_snippets: snippets,
+  };
+}
+
 function pathBaseForObject(object, id) {
   const hash = shortHash(id);
   const name = safeSegment(object.name || object.packageName || object.package_name || id, 'object', 60);
@@ -291,7 +396,7 @@ function buildRegistryRow({ entry, graph, generatedAt, markdownRoot, confluenceB
   };
 }
 
-function buildContextPack({ row, object, id, graph, typedEdges }) {
+async function buildContextPack({ row, object, id, graph, typedEdges, markdownRoot }) {
   const upstream = getUpstreamDependencies(id, graph, 1).sort();
   const downstream = getDownstreamDependents(id, graph, 1).sort();
   const directEdges = ensureArray(typedEdges)
@@ -304,6 +409,16 @@ function buildContextPack({ row, object, id, graph, typedEdges }) {
       confidence: edge.confidence ?? null,
       evidence: edge.evidence || '',
     }));
+
+  const sourceMarkdownAbsolutePath = sourceAbsolutePath(markdownRoot, row.source_markdown_path);
+  let sourceMarkdownText = '';
+  try {
+    sourceMarkdownText = sourceMarkdownAbsolutePath ? await readFile(sourceMarkdownAbsolutePath, 'utf8') : '';
+  } catch {
+    sourceMarkdownText = '';
+  }
+  const definitionSql = extractDefinitionSection(sourceMarkdownText);
+  const logic = summarizeProcedureLogic({ object, row, definitionSql });
 
   return {
     schema_version: CATALOG_REPO_VERSION,
@@ -365,9 +480,12 @@ function buildContextPack({ row, object, id, graph, typedEdges }) {
     },
     evidence: {
       source_markdown_path: row.source_markdown_path,
+      source_markdown_available: Boolean(sourceMarkdownText),
       context_pack_path: row.context_pack_path,
       confluence_url: row.confluence_url,
     },
+    logic_summary: logic?.summary || null,
+    evidence_snippets: logic?.evidence_snippets || [],
     ai_guidance: [
       'Use object-registry.jsonl for lookup first.',
       'Use this context pack for focused evidence.',
@@ -438,9 +556,18 @@ function renderContextPackMarkdown(pack) {
     columnRows.length ? markdownTable(['Name', 'Type', 'Nullable'], columnRows) : '- No columns recorded.',
     pack.columns.preview_truncated ? '- Column preview is truncated in this context pack.' : '',
     '',
+    pack.logic_summary ? '## Logic Summary' : '',
+    pack.logic_summary ? '' : '',
+    pack.logic_summary ? pack.logic_summary : '',
+    pack.evidence_snippets?.length ? '' : '',
+    pack.evidence_snippets?.length ? '## Evidence Snippets' : '',
+    pack.evidence_snippets?.length ? '' : '',
+    ...(pack.evidence_snippets?.map((snippet) => `- ${snippet.label}: line ${snippet.line}${snippet.detail ? ` (${snippet.detail})` : ''}`) || []),
+    pack.evidence_snippets?.length ? '' : '',
     '## Evidence',
     '',
     `- Source markdown: \`${pack.evidence.source_markdown_path}\``,
+    `- Source markdown available in repo export: ${pack.evidence.source_markdown_available ? 'yes' : 'no'}`,
     `- Generated at: ${pack.generated_at}`,
     '',
   ]
@@ -490,6 +617,25 @@ async function writeCsv(root, relativePath, headers, rows) {
     ...rows.map((row) => headers.map((header) => csvCell(row[header])).join(',')),
   ];
   return writeText(root, relativePath, lines.join('\n'));
+}
+
+async function copyRawSourceMarkdown({ markdownRoot, targetRoot, registryRows }) {
+  const copied = [];
+  for (const row of registryRows) {
+    const relativePath = compactText(row.source_markdown_path);
+    if (!relativePath || !relativePath.startsWith('servers/')) continue;
+    const sourcePath = sourceAbsolutePath(markdownRoot, relativePath);
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      await mkdir(path.dirname(path.join(targetRoot, relativePath)), { recursive: true });
+      // eslint-disable-next-line no-await-in-loop
+      await copyFile(sourcePath, path.join(targetRoot, relativePath));
+      copied.push(relativePath);
+    } catch {
+      // Leave missing files to validation/reporting; context packs now carry this truth explicitly.
+    }
+  }
+  return Array.from(new Set(copied)).sort();
 }
 
 async function resetGeneratedRepoContent(targetRoot) {
@@ -954,12 +1100,13 @@ export async function exportCatalogRepo(options = {}) {
   for (const entry of entries) {
     const row = rowById.get(entry.id);
     if (!row) continue;
-    const pack = buildContextPack({
+    const pack = await buildContextPack({
       row,
       object: entry.object,
       id: entry.id,
       graph: runtime.lineageGraph,
       typedEdges: runtime.typedEdges,
+      markdownRoot,
     });
     // eslint-disable-next-line no-await-in-loop
     await writeJson(targetRoot, row.context_pack_json_path, pack);
@@ -972,6 +1119,12 @@ export async function exportCatalogRepo(options = {}) {
     // eslint-disable-next-line no-await-in-loop
     await writeText(targetRoot, value.context_readme_path, renderDatabaseReadme(database, rows));
   }
+
+  const copiedRawMarkdownPaths = await copyRawSourceMarkdown({
+    markdownRoot,
+    targetRoot,
+    registryRows,
+  });
 
   const ssisRows = registryRows.filter((row) => row.context_pack_path.startsWith('ssis/'));
   await writeText(targetRoot, 'ssis/README.md', renderSsisReadme(ssisRows));
@@ -1026,7 +1179,9 @@ export async function exportCatalogRepo(options = {}) {
       database_index: 'registry/database-index.json',
       registry_summary: 'registry/object-registry-summary.json',
       ai_readme: 'AI_README.md',
+      raw_markdown_root: 'servers/',
     },
+    raw_source_markdown_count: copiedRawMarkdownPaths.length,
   };
   await writeJson(targetRoot, 'reports/publish-summary.json', manifest);
   await writeJson(targetRoot, 'catalog-manifest.json', manifest);

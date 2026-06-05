@@ -147,15 +147,27 @@ describe('Lineage Answer Service', () => {
     });
 
     expect(answer.intent).toBe('uses');
-    expect(answer.impacted_objects).toEqual([
-      expect.objectContaining({
-        role: 'Business consumer',
-        id: viewId,
-      }),
-    ]);
+    expect(answer.impacted_objects).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          role: 'Business consumer',
+          id: viewId,
+        }),
+        expect.objectContaining({
+          role: 'Maintenance read',
+          id: procId,
+        }),
+        expect.objectContaining({
+          role: 'Orchestrates load',
+          id: packageId,
+        }),
+      ])
+    );
+    expect(answer.plain_english).toContain('1 downstream business consumer, 1 maintenance/load-path procedure');
+    expect(answer.plain_english).toContain('1 orchestrating SSIS package');
     expect(answer.caveats).toEqual(
       expect.arrayContaining([
-        expect.stringContaining('excluded from the business consumer list'),
+        expect.stringContaining('shown separately'),
       ])
     );
   });
