@@ -17,6 +17,7 @@ const navSections = [
     items: [
       { key: 'overview', label: 'Command Center', icon: 'mdi-view-dashboard' },
       { key: 'browse', label: 'Catalog Search', icon: 'mdi-magnify' },
+      { key: 'lineageAsk', label: 'Lineage Assistant', icon: 'mdi-message-question' },
       { key: 'discovery', label: 'Lineage Explorer', icon: 'mdi-graphql' },
     ],
   },
@@ -233,6 +234,19 @@ const appConfig = {
         downstream: null,
         impact: null,
       },
+      lineageQuestion: 'what uses DimVehicle?',
+      lineageQuestionAnswer: null,
+      lineageQuestionLoading: false,
+      lineageQuestionHistory: [],
+      lineageAssistantMessages: [
+        {
+          id: 'welcome',
+          role: 'assistant',
+          title: 'Sonic Lineage Assistant',
+          text: 'Ask me about lineage, catalog counts, SSIS load paths, or where an object is used. I will answer in plain English and show the technical objects behind the answer.',
+          answer: null,
+        },
+      ],
       matrixDatabase: 'sales',
       matrixData: null,
       reports: {
@@ -1337,6 +1351,17 @@ const appConfig = {
 
       return this.authRefreshPromise;
     },
+    clearLocalSession(reason = '') {
+      this.token = '';
+      this.refreshToken = '';
+      this.currentUser = null;
+      localStorage.removeItem('dg_token');
+      localStorage.removeItem('dg_refresh');
+      localStorage.removeItem('dg_user');
+      if (reason) {
+        this.showToast(reason);
+      }
+    },
     useDemoFallback(reason) {
       if (!this.demoModeEnabled || this.hasRealData) {
         return;
@@ -1379,7 +1404,7 @@ const appConfig = {
     },
     async detectRealDataAvailability() {
       try {
-        const status = await this.api('/api/v1/ingestion/status');
+        const status = await this.api('/api/v1/ingestion/status', { trackError: false });
         const loadedCount = status.data?.loadedObjectCount || 0;
 
         if (loadedCount > 0) {
@@ -1391,7 +1416,7 @@ const appConfig = {
           return;
         }
 
-        const dashboard = await this.api('/api/v1/discovery/dashboard');
+        const dashboard = await this.api('/api/v1/discovery/dashboard', { trackError: false });
         const total = dashboard.data?.overview?.totalObjects || 0;
         if (total > 0) {
           this.hasRealData = true;
@@ -1465,8 +1490,16 @@ const appConfig = {
             allowAuthRetry: false,
             ...fetchOptions,
           });
-        } catch (_refreshErr) {
-          // Fall through to the original 401 so the UI reports the real endpoint that failed.
+        } catch (refreshErr) {
+          this.clearLocalSession('Your saved session expired. Sign in again to continue.');
+          const refreshError = new Error(refreshErr.message || 'Session refresh failed');
+          Object.assign(refreshError, {
+            path,
+            method: fetchOptions.method || 'GET',
+            status: 401,
+            code: 'SESSION_EXPIRED',
+          });
+          throw refreshError;
         }
       }
 
@@ -2714,6 +2747,142 @@ const appConfig = {
       } finally {
         this.lineageAnswerLoading = false;
       }
+    },
+    async askLineageQuestion(question = this.lineageQuestion) {
+      const trimmedQuestion = String(question || '').trim();
+      if (!trimmedQuestion) {
+        this.showToast('Type a lineage question first.');
+        return;
+      }
+
+      this.lineageQuestion = trimmedQuestion;
+      this.lineageQuestionLoading = true;
+      const requestId = `lineage-user-${Date.now()}`;
+      this.lineageAssistantMessages.push({
+        id: requestId,
+        role: 'user',
+        text: trimmedQuestion,
+      });
+      try {
+        const payload = await this.api('/api/v1/discovery/lineage-question', {
+          method: 'POST',
+          body: JSON.stringify({ question: trimmedQuestion }),
+        });
+        this.lineageQuestionAnswer = payload.data || null;
+        this.lineageAssistantMessages.push({
+          id: `lineage-assistant-${Date.now()}`,
+          role: 'assistant',
+          title: this.lineageQuestionAnswer?.assistant?.title || 'Lineage Answer',
+          text: this.lineageQuestionAnswer?.assistant?.message || this.lineageQuestionAnswer?.plain_english || '',
+          answer: this.lineageQuestionAnswer,
+        });
+        this.lineageQuestionHistory = [
+          trimmedQuestion,
+          ...this.lineageQuestionHistory.filter((item) => item !== trimmedQuestion),
+        ].slice(0, 6);
+
+        if (this.lineageQuestionAnswer?.resolved_object?.object_id) {
+          this.selectedObjectId = this.lineageQuestionAnswer.resolved_object.object_id;
+          this.lineageAnswer = this.lineageQuestionAnswer;
+        }
+      } catch (err) {
+        this.lineageQuestionAnswer = null;
+        this.lineageAssistantMessages.push({
+          id: `lineage-error-${Date.now()}`,
+          role: 'assistant',
+          title: 'I hit a snag',
+          text: err.message,
+          answer: null,
+        });
+        this.showToast(`Lineage question failed: ${err.message}`);
+      } finally {
+        this.lineageQuestionLoading = false;
+      }
+    },
+    clearLineageAssistant() {
+      this.lineageQuestionAnswer = null;
+      this.lineageAssistantMessages = [
+        {
+          id: 'welcome',
+          role: 'assistant',
+          title: 'Sonic Lineage Assistant',
+          text: 'Ask me about lineage, catalog counts, SSIS load paths, or where an object is used. I will answer in plain English and show the technical objects behind the answer.',
+          answer: null,
+        },
+      ];
+    },
+    lineageQuestionRows(answer = null) {
+      if (!answer) return [];
+      if (answer.table?.rows?.length) return answer.table.rows;
+      return answer.impacted_objects || [];
+    },
+    lineageQuestionColumns(answer = null) {
+      if (!answer) return [];
+      if (answer.table?.columns?.length) return answer.table.columns;
+      if (answer.impacted_objects?.length) return ['Role', 'Object', 'Type', 'Location'];
+      return [];
+    },
+    lineageQuestionCell(row = {}, column = '') {
+      const key = String(column || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+      const aliases = {
+        objects: 'object_count',
+        tables: 'table_count',
+        views: 'view_count',
+        procedures: 'procedure_count',
+        packages: 'package_count',
+        what_it_answers: 'description',
+        example: 'prompt',
+        object: 'label',
+        where: 'location',
+      };
+      return row[key] ?? row[aliases[key]] ?? row[column] ?? '';
+    },
+    lineageAnswerRoleGroups(answer = this.lineageQuestionAnswer) {
+      const rows = answer?.impacted_objects || [];
+      if (!rows.length) return [];
+
+      const groups = [
+        {
+          title: 'Business Consumers',
+          match: (row) => String(row.role || '').toLowerCase().includes('business consumer'),
+        },
+        {
+          title: 'Maintenance / Load-Path Reads',
+          match: (row) => String(row.role || '').toLowerCase().includes('maintenance'),
+        },
+        {
+          title: 'Load Orchestration',
+          match: (row) => /orchestrates|loads target/i.test(String(row.role || '')),
+        },
+        {
+          title: 'Upstream Sources & Lookups',
+          match: (row) => /source input|lookup/i.test(String(row.role || '')),
+        },
+      ];
+
+      const matched = new Set();
+      const built = groups
+        .map((group) => {
+          const groupRows = rows.filter((row, index) => {
+            const isMatch = group.match(row);
+            if (isMatch) matched.add(index);
+            return isMatch;
+          });
+          return { title: group.title, rows: groupRows };
+        })
+        .filter((group) => group.rows.length);
+
+      const otherRows = rows.filter((_row, index) => !matched.has(index));
+      if (otherRows.length) {
+        built.push({ title: 'Other Related Objects', rows: otherRows });
+      }
+
+      return built;
+    },
+    lineageAnswerTableColumns(answer = this.lineageQuestionAnswer) {
+      if (!answer) return [];
+      if (answer.impacted_objects?.length) return ['Role', 'Object', 'Type', 'Location'];
+      return answer.table?.columns || [];
     },
     async loadEdgeAudit() {
       if (!this.selectedObjectId) {
@@ -4412,6 +4581,7 @@ const appConfig = {
       requestedView &&
       [
         'discovery',
+        'lineageAsk',
         'browse',
         'overview',
         'reports',
@@ -5320,6 +5490,177 @@ const appConfig = {
                   </v-card>
                 </v-col>
               </v-row>
+            </div>
+
+            <div v-if="activeView === 'lineageAsk'">
+              <div class="lineage-assistant-shell">
+                <section class="lineage-assistant-prompt">
+                  <div class="lineage-assistant-title">
+                    <v-icon>mdi-auto-fix</v-icon>
+                    <div>
+                      <h2>Sonic Lineage Assistant</h2>
+                      <p>Ask a lineage question and get a plain-English answer with technical evidence.</p>
+                    </div>
+                  </div>
+                  <div class="lineage-assistant-input">
+                    <v-text-field
+                      v-model="lineageQuestion"
+                      density="comfortable"
+                      variant="outlined"
+                      hide-details
+                      placeholder="Ask: what uses DimVehicle? how many tables are in WebV?"
+                      prepend-inner-icon="mdi-message-question"
+                      @keyup.enter="askLineageQuestion()"
+                    ></v-text-field>
+                    <v-btn color="primary" :loading="lineageQuestionLoading" @click="askLineageQuestion()">Ask</v-btn>
+                  </div>
+                  <div class="lineage-question-examples">
+                    <v-btn size="small" variant="tonal" @click="askLineageQuestion('what uses DimVehicle?')">what uses DimVehicle?</v-btn>
+                    <v-btn size="small" variant="tonal" @click="askLineageQuestion('what loads DimVehicle?')">what loads DimVehicle?</v-btn>
+                    <v-btn size="small" variant="tonal" @click="askLineageQuestion('how many tables are in WebV?')">tables in WebV</v-btn>
+                    <v-btn size="small" variant="tonal" @click="askLineageQuestion('?help')">?help</v-btn>
+                  </div>
+                </section>
+
+                <div class="lineage-answer-workspace">
+                  <main class="lineage-answer-document">
+                    <div class="lineage-answer-toolbar">
+                      <span>{{ lineageQuestionAnswer?.assistant?.title || 'Answer Workspace' }}</span>
+                      <div class="btn-row">
+                        <v-chip size="x-small" variant="tonal" v-if="lineageQuestionAnswer">{{ lineageQuestionAnswer.answer_type }}</v-chip>
+                        <v-btn size="small" variant="outlined" @click="askLineageQuestion('?help')">Help</v-btn>
+                        <v-btn size="small" variant="outlined" @click="clearLineageAssistant">Clear</v-btn>
+                        <v-btn
+                          v-if="lineageQuestionAnswer?.resolved_object?.object_id"
+                          size="small"
+                          variant="outlined"
+                          append-icon="mdi-graphql"
+                          @click="selectedObjectId = lineageQuestionAnswer.resolved_object.object_id; onViewChange('discovery')"
+                        >Open Graph</v-btn>
+                      </div>
+                    </div>
+
+                    <div v-if="lineageQuestionLoading" class="lineage-answer-empty">
+                      <v-icon size="34">mdi-progress-clock</v-icon>
+                      <h3>Building the answer</h3>
+                      <p>Resolving your question against the loaded lineage catalog.</p>
+                    </div>
+
+                    <template v-else-if="lineageQuestionAnswer">
+                      <p class="lineage-answer-lead">{{ lineageQuestionAnswer.plain_english }}</p>
+
+                      <div v-if="lineageQuestionAnswer.caveats && lineageQuestionAnswer.caveats.length" class="lineage-caveat-list">
+                        <div v-for="caveat in lineageQuestionAnswer.caveats" :key="'qa-doc-caveat-' + caveat" class="lineage-caveat-item">
+                          {{ caveat }}
+                        </div>
+                      </div>
+
+                      <template v-if="lineageAnswerRoleGroups().length">
+                        <section v-for="group in lineageAnswerRoleGroups()" :key="'qa-group-' + group.title" class="lineage-answer-section">
+                          <div class="lineage-answer-section-header">
+                            <h3>{{ group.title }}</h3>
+                            <span>{{ group.rows.length }} object{{ group.rows.length === 1 ? '' : 's' }}</span>
+                          </div>
+                          <div class="table-wrap lineage-answer-section-table">
+                            <v-table density="compact">
+                              <thead>
+                                <tr>
+                                  <th>Object</th>
+                                  <th>Type</th>
+                                  <th>Location</th>
+                                  <th>Why it matters</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr v-for="row in group.rows" :key="'qa-group-row-' + group.title + '-' + row.id">
+                                  <td><span class="lineage-answer-object">{{ row.label || row.id }}</span></td>
+                                  <td>{{ row.type }}</td>
+                                  <td class="lineage-answer-location">{{ row.location || '-' }}</td>
+                                  <td class="lineage-answer-why">{{ row.why_it_matters || row.evidence || '-' }}</td>
+                                </tr>
+                              </tbody>
+                            </v-table>
+                          </div>
+                        </section>
+                      </template>
+
+                      <section v-else-if="lineageQuestionRows(lineageQuestionAnswer).length" class="lineage-answer-section">
+                        <div class="lineage-answer-section-header">
+                          <h3>Results</h3>
+                          <span>{{ lineageQuestionRows(lineageQuestionAnswer).length }} row{{ lineageQuestionRows(lineageQuestionAnswer).length === 1 ? '' : 's' }}</span>
+                        </div>
+                        <div class="table-wrap lineage-answer-section-table">
+                          <v-table density="compact">
+                            <thead>
+                              <tr>
+                                <th v-for="column in lineageQuestionColumns(lineageQuestionAnswer)" :key="'qa-doc-head-' + column">{{ column }}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr v-for="(row, idx) in lineageQuestionRows(lineageQuestionAnswer).slice(0, 60)" :key="'qa-doc-row-' + idx">
+                                <td v-for="column in lineageQuestionColumns(lineageQuestionAnswer)" :key="'qa-doc-cell-' + idx + '-' + column">
+                                  <span v-if="column === 'Object' || column === 'Database' || column === 'Example'" class="lineage-answer-object">{{ lineageQuestionCell(row, column) }}</span>
+                                  <span v-else>{{ lineageQuestionCell(row, column) }}</span>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </v-table>
+                        </div>
+                      </section>
+
+                      <div v-if="lineageQuestionAnswer.assistant?.suggested_followups?.length" class="lineage-followups answer-doc-followups">
+                        <v-btn
+                          v-for="followup in lineageQuestionAnswer.assistant.suggested_followups"
+                          :key="'qa-doc-followup-' + followup"
+                          size="small"
+                          variant="tonal"
+                          @click="askLineageQuestion(followup)"
+                        >{{ followup }}</v-btn>
+                      </div>
+                    </template>
+
+                    <div v-else class="lineage-answer-empty">
+                      <v-icon size="34">mdi-message-question</v-icon>
+                      <h3>Ask a lineage question</h3>
+                      <p>Answers will be formatted like a short technical brief with exact object names and evidence.</p>
+                    </div>
+                  </main>
+
+                  <aside class="lineage-evidence-rail">
+                    <section class="lineage-rail-card">
+                      <h3>Question</h3>
+                      <p>{{ lineageQuestionAnswer?.question || lineageQuestion }}</p>
+                    </section>
+
+                    <section class="lineage-rail-card" v-if="lineageQuestionAnswer?.resolved_object">
+                      <h3>Resolved Object</h3>
+                      <div class="lineage-rail-kv"><span>ID</span><strong>{{ lineageQuestionAnswer.resolved_object.object_id }}</strong></div>
+                      <div class="lineage-rail-kv"><span>Type</span><strong>{{ lineageQuestionAnswer.resolved_object.type }}</strong></div>
+                    </section>
+
+                    <section class="lineage-rail-card">
+                      <h3>Sources</h3>
+                      <div v-if="lineageQuestionAnswer?.sources?.length" class="lineage-source-list">
+                        <div v-for="source in lineageQuestionAnswer.sources.slice(0, 12)" :key="'qa-rail-source-' + (source.object_id || source.source) + source.role" class="lineage-source-item">
+                          <strong>{{ source.object || source.source }}</strong>
+                          <span>{{ source.role || source.detail }}</span>
+                          <code v-if="source.location">{{ source.location }}</code>
+                        </div>
+                      </div>
+                      <p v-else class="lineage-rail-muted">Sources appear after an answer is built.</p>
+                    </section>
+
+                    <section class="lineage-rail-card" v-if="lineageQuestionHistory.length">
+                      <h3>Recent Questions</h3>
+                      <div class="lineage-question-history">
+                        <button v-for="item in lineageQuestionHistory" :key="'qa-history-' + item" type="button" @click="askLineageQuestion(item)">
+                          {{ item }}
+                        </button>
+                      </div>
+                    </section>
+                  </aside>
+                </div>
+              </div>
             </div>
 
             <div v-if="activeView === 'discovery'">

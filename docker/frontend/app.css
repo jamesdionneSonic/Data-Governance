@@ -310,6 +310,346 @@ body {
   word-break: break-word;
 }
 
+.lineage-assistant-shell {
+  display: grid;
+  gap: 14px;
+}
+
+.lineage-assistant-prompt {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.lineage-assistant-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.lineage-assistant-title > .v-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  background: var(--primary-light);
+  color: var(--primary-strong);
+}
+
+.lineage-assistant-title h2 {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+.lineage-assistant-title p {
+  margin: 2px 0 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.lineage-assistant-input {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.lineage-question-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lineage-question-table {
+  max-height: 560px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.lineage-question-table th {
+  white-space: nowrap;
+}
+
+.lineage-question-table td {
+  vertical-align: top;
+  font-size: 12px;
+}
+
+.lineage-answer-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+  gap: 14px;
+  align-items: start;
+}
+
+.lineage-answer-document,
+.lineage-evidence-rail {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+}
+
+.lineage-answer-document {
+  min-height: 620px;
+  padding: 18px;
+}
+
+.lineage-answer-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.lineage-answer-toolbar > span {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.lineage-answer-lead {
+  max-width: 980px;
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.65;
+  margin: 0 0 14px;
+}
+
+.lineage-answer-section {
+  margin-top: 16px;
+}
+
+.lineage-answer-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.lineage-answer-section-header h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.lineage-answer-section-header span {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.lineage-answer-section-table {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: auto;
+  max-height: none;
+}
+
+.lineage-answer-section-table th {
+  color: var(--text-muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #f8fafc;
+  white-space: nowrap;
+}
+
+.lineage-answer-section-table td {
+  vertical-align: top;
+  font-size: 12px;
+}
+
+.lineage-answer-empty {
+  min-height: 420px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.lineage-answer-empty h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 16px;
+}
+
+.lineage-answer-empty p {
+  margin: 0;
+  max-width: 460px;
+  font-size: 13px;
+}
+
+.lineage-evidence-rail {
+  position: sticky;
+  top: 88px;
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+  max-height: calc(100vh - 120px);
+  overflow: auto;
+}
+
+.lineage-rail-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  padding: 10px;
+}
+
+.lineage-rail-card h3 {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.lineage-rail-card p,
+.lineage-rail-muted {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.lineage-rail-kv {
+  display: grid;
+  gap: 3px;
+  padding: 7px 0;
+  border-top: 1px solid var(--border);
+}
+
+.lineage-rail-kv:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.lineage-rail-kv span {
+  color: var(--text-muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.lineage-rail-kv strong {
+  color: var(--text);
+  font-size: 11px;
+  word-break: break-word;
+}
+
+.lineage-followups {
+  margin-top: 10px;
+}
+
+.lineage-followups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.answer-doc-followups {
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.lineage-source-list {
+  display: grid;
+  gap: 8px;
+}
+
+.lineage-source-list.compact {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.lineage-source-item {
+  display: grid;
+  gap: 3px;
+  padding: 9px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-muted);
+}
+
+.lineage-source-item strong {
+  font-size: 12px;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.lineage-source-item span {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.lineage-source-item code {
+  color: var(--primary-strong);
+  font-size: 10px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.lineage-question-history {
+  display: grid;
+  gap: 7px;
+}
+
+.lineage-question-history button {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text);
+  padding: 8px 9px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.lineage-question-history button:hover {
+  border-color: var(--primary);
+  color: var(--primary-strong);
+}
+
+@media (max-width: 1180px) {
+  .lineage-answer-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .lineage-evidence-rail {
+    position: static;
+    max-height: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .lineage-assistant-input {
+    grid-template-columns: 1fr;
+  }
+
+  .lineage-answer-toolbar,
+  .lineage-answer-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .lineage-answer-document {
+    padding: 14px;
+  }
+}
+
 .lineage-help-panel {
   border-top: 1px solid var(--border);
   padding-top: 12px;

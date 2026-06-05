@@ -114,6 +114,26 @@ describe('Lineage Answer API', () => {
           reads_from: [tableId],
         },
       ],
+      [
+        'webv.vehicle',
+        {
+          id: 'webv.vehicle',
+          name: 'vehicle',
+          database: 'WebV',
+          schema: 'dbo',
+          type: 'table',
+        },
+      ],
+      [
+        'webv.lead',
+        {
+          id: 'webv.lead',
+          name: 'lead',
+          database: 'WebV',
+          schema: 'dbo',
+          type: 'table',
+        },
+      ],
     ]);
   }
 
@@ -168,6 +188,48 @@ describe('Lineage Answer API', () => {
           prompt: 'what loads DimVehicle?',
         }),
       ])
+    );
+  });
+
+  test('answers an English lineage question through the API', async () => {
+    const response = await request(app)
+      .post('/api/v1/discovery/lineage-question')
+      .set(createAuthHeader(['Viewer']))
+      .send({ question: 'what uses DimVehicle?' });
+
+    expect(response.status).toBe(200);
+    expect(response.body.status).toBe('success');
+    expect(response.body.data.answer_type).toBe('object_lineage');
+    expect(response.body.data.assistant.title).toBe('Lineage for dbo.DimVehicle');
+    expect(response.body.data.resolved_object.object_id).toBe(tableId);
+    expect(response.body.data.impacted_objects).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ id: viewId }),
+        expect.objectContaining({ id: procId }),
+      ])
+    );
+  });
+
+  test('answers a database count question through the API', async () => {
+    const response = await request(app)
+      .post('/api/v1/discovery/lineage-question')
+      .set(createAuthHeader(['Viewer']))
+      .send({ question: 'how many tables are in WebV' });
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.answer_type).toBe('database_object_count');
+    expect(response.body.data.assistant).toEqual(
+      expect.objectContaining({
+        title: 'Catalog Count',
+        has_table: true,
+      })
+    );
+    expect(response.body.data.plain_english).toBe('WebV has 2 tables in the loaded lineage catalog.');
+    expect(response.body.data.table.rows[0]).toEqual(
+      expect.objectContaining({
+        database: 'WebV',
+        table_count: 2,
+      })
     );
   });
 });

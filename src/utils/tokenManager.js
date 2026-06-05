@@ -61,7 +61,9 @@ export function verifyToken(token) {
   try {
     return jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] });
   } catch (err) {
-    console.error('Token verification failed:', err.message);
+    if (err?.name !== 'TokenExpiredError' && err?.name !== 'JsonWebTokenError') {
+      console.error('Token verification failed:', err.message);
+    }
     return null;
   }
 }
