@@ -112,4 +112,64 @@ describe('Ingestion API', () => {
     expect(res.status).toBe(400);
     expect(res.body.error).toBe('Bad Request');
   });
+
+  test('ING-010: connect-data-factory validates required fields', async () => {
+    const res = await request(app)
+      .post('/api/v1/ingestion/connect-data-factory')
+      .set(adminHeaders)
+      .send({});
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe('Bad Request');
+  });
+
+  test('ING-011: connect-data-factory/discover validates required fields', async () => {
+    const res = await request(app)
+      .post('/api/v1/ingestion/connect-data-factory/discover')
+      .set(adminHeaders)
+      .send({});
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe('Bad Request');
+  });
+
+  test('ING-012: connect-airflow validates required fields', async () => {
+    const res = await request(app)
+      .post('/api/v1/ingestion/connect-airflow')
+      .set(adminHeaders)
+      .send({});
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe('Bad Request');
+  });
+
+  test('ING-013: connect-airflow/discover validates required fields', async () => {
+    const res = await request(app)
+      .post('/api/v1/ingestion/connect-airflow/discover')
+      .set(adminHeaders)
+      .send({});
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe('Bad Request');
+  });
+
+  test('ING-014: connect-databricks validates required fields', async () => {
+    const res = await request(app)
+      .post('/api/v1/ingestion/connect-databricks')
+      .set(adminHeaders)
+      .send({});
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe('Bad Request');
+  });
+
+  test('ING-015: connect-databricks/discover validates required fields', async () => {
+    const res = await request(app)
+      .post('/api/v1/ingestion/connect-databricks/discover')
+      .set(adminHeaders)
+      .send({});
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe('Bad Request');
+  });
 });

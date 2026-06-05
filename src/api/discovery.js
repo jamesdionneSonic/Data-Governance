@@ -23,6 +23,7 @@ import {
 } from '../services/visualizationService.js';
 import { getUpstreamDependencies, getDownstreamDependents } from '../services/lineageService.js';
 import { buildCodexColumnContext } from '../services/codexContextService.js';
+import { buildLineageAnswer, buildLineageQuestionHelp } from '../services/lineageAnswerService.js';
 import { createTtlCache } from '../utils/ttlCache.js';
 import { getTypedLineageEdgeIndex } from '../services/catalogRuntimeStore.js';
 
@@ -53,6 +54,13 @@ export function setDiscoveryCache(objects, lineageGraph) {
   cachedLineageGraph = lineageGraph;
   discoveryCache.clear();
 }
+
+router.get('/lineage-help', authenticate, (_req, res) =>
+  res.json({
+    status: 'success',
+    message: 'Lineage help retrieved',
+    data: buildLineageQuestionHelp(),
+  }));
 
 /**
  * GET /api/v1/discovery/dashboard
@@ -406,6 +414,42 @@ router.get('/codex-context/:objectId', authenticate, (req, res) => {
   } catch (err) {
     return sendErrorResponse(res, req, 500, err.message, {
       code: 'CODEX_CONTEXT_ERROR',
+    });
+  }
+});
+
+/**
+ * GET /api/v1/discovery/lineage-answer/:objectId?intent=feeds
+ * Build a semantic lineage answer pack for tables, views, procedures, and packages.
+ * Requires authentication
+ */
+router.get('/lineage-answer/:objectId', authenticate, (req, res) => {
+  try {
+    const { objectId } = req.params;
+    const intent = req.query.intent || req.query.question_type || 'full_lineage';
+
+    if (!cachedObjects.has(objectId)) {
+      return sendErrorResponse(res, req, 404, `Object not found: ${objectId}`, {
+        code: 'NOT_FOUND',
+      });
+    }
+
+    const cacheKey = `lineage-answer:${objectId}:${String(intent).toLowerCase()}`;
+    const answer = getOrSetCache(cacheKey, () =>
+      buildLineageAnswer(cachedObjects, {
+        object_id: objectId,
+        intent,
+      })
+    );
+
+    return res.json({
+      status: 'success',
+      message: 'Lineage answer retrieved',
+      data: answer,
+    });
+  } catch (err) {
+    return sendErrorResponse(res, req, 500, err.message, {
+      code: 'LINEAGE_ANSWER_ERROR',
     });
   }
 });
