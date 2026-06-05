@@ -14,8 +14,12 @@ const REQUIRED_FILES = [
   'catalog-manifest.json',
   'registry/object-registry.csv',
   'registry/object-registry.jsonl',
+  'registry/canonical-objects.jsonl',
+  'registry/duplicate-objects.jsonl',
+  'registry/unresolved-server-objects.jsonl',
   'registry/database-index.json',
   'registry/object-registry-summary.json',
+  'indexes/index-manifest.json',
   'docs/ai-usage-guide.md',
   'docs/runtime-package-guide.md',
 ];
@@ -45,6 +49,24 @@ async function readJson(filePath) {
   return JSON.parse(await readFile(filePath, 'utf8'));
 }
 
+async function countJsonl(filePath, failures, label) {
+  let count = 0;
+  const rows = createInterface({
+    input: createReadStream(filePath, { encoding: 'utf8' }),
+    crlfDelay: Infinity,
+  });
+  for await (const line of rows) {
+    if (!line.trim()) continue;
+    count += 1;
+    try {
+      JSON.parse(line);
+    } catch (error) {
+      failures.push(`Invalid ${label} JSONL row ${count}: ${error.message}`);
+    }
+  }
+  return count;
+}
+
 async function listFilesRecursive(root, current = '') {
   const directory = path.join(root, current);
   const entries = await readdir(directory, { withFileTypes: true });
@@ -54,7 +76,10 @@ async function listFilesRecursive(root, current = '') {
     const relativePath = normalizePath(path.join(current, entry.name));
     if (entry.isDirectory()) {
       // eslint-disable-next-line no-await-in-loop
-      files.push(...(await listFilesRecursive(root, relativePath)));
+      const childFiles = await listFilesRecursive(root, relativePath);
+      for (const childFile of childFiles) {
+        files.push(childFile);
+      }
     } else if (entry.isFile()) {
       files.push(relativePath);
     }
@@ -141,6 +166,95 @@ async function validateRegistry(packageRoot, failures) {
   return rowCount;
 }
 
+async function validateRuntimeEnhancements(packageRoot, manifest, registryCount, failures) {
+  const canonicalCount = await countJsonl(
+    path.join(packageRoot, 'registry/canonical-objects.jsonl'),
+    failures,
+    'canonical-objects'
+  );
+  const duplicateCount = await countJsonl(
+    path.join(packageRoot, 'registry/duplicate-objects.jsonl'),
+    failures,
+    'duplicate-objects'
+  );
+  const unresolvedCount = await countJsonl(
+    path.join(packageRoot, 'registry/unresolved-server-objects.jsonl'),
+    failures,
+    'unresolved-server-objects'
+  );
+
+  if (canonicalCount + duplicateCount + unresolvedCount !== registryCount) {
+    failures.push(
+      `Registry split counts do not match full registry: canonical ${canonicalCount} + duplicate ${duplicateCount} + unresolved ${unresolvedCount} != ${registryCount}.`
+    );
+  }
+
+  const indexManifest = await readJson(path.join(packageRoot, 'indexes/index-manifest.json'));
+  const requiredDirectories = [
+    manifest.indexes?.object_name,
+    manifest.indexes?.database,
+    manifest.indexes?.schema,
+    manifest.indexes?.aliases,
+    manifest.indexes?.top_used,
+    manifest.indexes?.rankings,
+    manifest.answer_cards?.usage_count,
+    manifest.answer_cards?.upstream,
+    manifest.answer_cards?.downstream,
+    manifest.compact_context_packs?.by_object_id,
+  ].filter(Boolean);
+
+  for (const directory of requiredDirectories) {
+    // eslint-disable-next-line no-await-in-loop
+    if (!(await fileExists(path.join(packageRoot, directory)))) {
+      failures.push(`Missing runtime directory from manifest: ${directory}`);
+    }
+  }
+
+  const expectedAnswerCards = registryCount * 3;
+  if ((indexManifest.counts?.answer_card_files || 0) !== expectedAnswerCards) {
+    failures.push(
+      `Answer card count ${indexManifest.counts?.answer_card_files || 0} does not equal registry * 3 (${expectedAnswerCards}).`
+    );
+  }
+  if ((indexManifest.counts?.compact_context_pack_files || 0) !== registryCount) {
+    failures.push(
+      `Compact context pack count ${indexManifest.counts?.compact_context_pack_files || 0} does not equal registry ${registryCount}.`
+    );
+  }
+  for (const [label, count] of Object.entries({
+    by_name_files: indexManifest.counts?.by_name_files || 0,
+    alias_files: indexManifest.counts?.alias_files || 0,
+    by_database_files: indexManifest.counts?.by_database_files || 0,
+    by_schema_files: indexManifest.counts?.by_schema_files || 0,
+    ranking_files: indexManifest.counts?.ranking_files || 0,
+  })) {
+    if (count <= 0) {
+      failures.push(`Runtime index ${label} is empty.`);
+    }
+  }
+
+  const canonicalRows = createInterface({
+    input: createReadStream(path.join(packageRoot, 'registry/canonical-objects.jsonl'), { encoding: 'utf8' }),
+    crlfDelay: Infinity,
+  });
+  for await (const line of canonicalRows) {
+    if (!line.trim()) continue;
+    const row = JSON.parse(line);
+    for (const relativePath of [
+      row.compact_context_pack_path,
+      row.answer_cards?.usage_count,
+      row.answer_cards?.upstream,
+      row.answer_cards?.downstream,
+    ].filter(Boolean)) {
+      // eslint-disable-next-line no-await-in-loop
+      if (!(await fileExists(path.join(packageRoot, normalizePath(relativePath))))) {
+        failures.push(`Canonical row ${row.object_id} points to missing runtime file: ${relativePath}`);
+      }
+    }
+    break;
+  }
+}
+
 async function main() {
   const packageRoot = path.resolve(
     process.cwd(),
@@ -166,6 +280,9 @@ async function main() {
   }
 
   const registryCount = failures.length === 0 ? await validateRegistry(packageRoot, failures) : 0;
+  if (failures.length === 0) {
+    await validateRuntimeEnhancements(packageRoot, manifest, registryCount, failures);
+  }
 
   if (manifest.package_name !== latest.package_name) {
     failures.push('latest.json package_name does not match manifest.json.');
