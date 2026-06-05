@@ -376,6 +376,45 @@ describe('SSIS-004: buildLineageEdges – derives edges from mock data', () => {
     const xmlEdge = edges.find((e) => e.edgeType === 'WRITES_TO');
     expect(xmlEdge.confidence).toBeGreaterThanOrEqual(0.9);
   });
+
+  test('preserves IPv4 server prefixes when parsing four-part table references', () => {
+    const edges = extractor.buildLineageEdges(
+      mockCatalog,
+      [
+        {
+          ...mockXmlMeta[0],
+          dataFlowComponents: [
+            {
+              componentName: 'OLE DB Source',
+              role: 'SOURCE',
+              tableName: '206.22.183.247.SONICWEBV_VEH.dbo.veh_inventory',
+              connectionManagerId: '',
+              lookupConnectionManagerId: '',
+              lookupTable: '',
+            },
+          ],
+        },
+      ],
+      mockAgentJobs,
+      mockPerfStats
+    );
+
+    expect(edges).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          edgeType: 'READS_FROM',
+          to: '206.22.183.247.SONICWEBV_VEH.dbo.veh_inventory',
+        }),
+      ])
+    );
+    expect(edges).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          to: '206.22.183.247.SONICWEBV_VEH.dbo',
+        }),
+      ])
+    );
+  });
 });
 
 describe('SSIS-005: Sensitive value masking', () => {

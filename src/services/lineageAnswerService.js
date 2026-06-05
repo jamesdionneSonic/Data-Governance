@@ -182,10 +182,10 @@ export function buildLineageAnswer(objects = new Map(), request = {}) {
         : [];
       break;
     case 'uses':
-      impactedObjects = dedupeById([...businessConsumers]);
-      plainEnglish = `${objectLabel(focusMetadata, objectId)} has ${businessConsumers.length} detected downstream business ${businessConsumers.length === 1 ? 'consumer' : 'consumers'}.`;
+      impactedObjects = dedupeById([...businessConsumers, ...maintenanceReads, ...orchestrators]);
+      plainEnglish = `${objectLabel(focusMetadata, objectId)} has ${businessConsumers.length} downstream business ${businessConsumers.length === 1 ? 'consumer' : 'consumers'}, ${maintenanceReads.length} maintenance/load-path ${maintenanceReads.length === 1 ? 'procedure' : 'procedures'} that also read the table during write processing, and ${orchestrators.length} orchestrating ${orchestrators.length === 1 ? 'SSIS package' : 'SSIS packages'} in that load path.`;
       caveats = maintenanceReads.length > 0
-        ? ['Target-maintenance reads are excluded from the business consumer list.']
+        ? ['Maintenance/load-path procedures are shown separately so technical users keep the exact object names without treating those procedures as ordinary business consumers.']
         : [];
       break;
     default:

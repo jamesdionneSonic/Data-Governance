@@ -460,6 +460,16 @@ function fixedDotSegment(value) {
   return String(value ?? '');
 }
 
+function isIpv4Segment(value) {
+  if (!/^\d{1,3}$/.test(String(value || ''))) return false;
+  const number = Number(value);
+  return number >= 0 && number <= 255;
+}
+
+function startsWithIpv4Parts(parts) {
+  return parts.length >= 4 && parts.slice(0, 4).every(isIpv4Segment);
+}
+
 function scoreReferenceContext(value, contextServer, contextDatabase) {
   const text = String(value || '');
   const firstDot = text.indexOf('.');
@@ -910,6 +920,14 @@ function packageId(server, folder, project, pkg) {
 function parseSqlId(id) {
   const parts = splitDotSegments(id);
   if (parts.length < 4) return null;
+  if (parts.length >= 7 && startsWithIpv4Parts(parts)) {
+    return {
+      server: joinDotSegments(parts, 0, 4),
+      database: parts[4],
+      schema: parts[5],
+      name: joinDotSegments(parts, 6),
+    };
+  }
   return {
     server: parts[0],
     database: parts[1],

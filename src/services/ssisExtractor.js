@@ -268,6 +268,16 @@ function cleanSsisSegment(value) {
     .trim();
 }
 
+function isIpv4Segment(value) {
+  if (!/^\d{1,3}$/.test(String(value || ''))) return false;
+  const number = Number(value);
+  return number >= 0 && number <= 255;
+}
+
+function startsWithIpv4Parts(parts) {
+  return parts.length >= 4 && parts.slice(0, 4).every(isIpv4Segment);
+}
+
 function buildCanonicalSqlId(serverName, databaseName, schemaName, objectName) {
   const server = cleanSsisSegment(serverName);
   const db = cleanSsisSegment(databaseName);
@@ -324,6 +334,15 @@ function isExternalSsisComponent(component = {}) {
 function splitSsisTableReference(reference) {
   const cleaned = cleanSsisSegment(reference);
   const parts = cleaned.split('.').filter(Boolean);
+
+  if (parts.length >= 7 && startsWithIpv4Parts(parts)) {
+    return {
+      serverName: parts.slice(0, 4).join('.'),
+      databaseName: parts[4],
+      schemaName: parts[5],
+      objectName: parts.slice(6).join('.'),
+    };
+  }
 
   if (parts.length >= 4) {
     return {
