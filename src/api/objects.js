@@ -12,6 +12,7 @@ import { getObjectsCache, setObjectsCache } from '../services/objectCacheStore.j
 import { ensureCatalogCacheHydrated } from '../utils/catalogCacheHydrator.js';
 import { getCatalogDataPath, getObjectFileIndex } from '../services/catalogRuntimeStore.js';
 import { loadObjectDetail, loadRuntimeCatalog } from '../services/catalogRuntimeService.js';
+import { normalizeBusinessMetadataUpdates } from '../services/schemaDictionaryService.js';
 
 const router = createApiRouter();
 export { setObjectsCache };
@@ -139,10 +140,16 @@ router.put('/:id', authenticate, async (req, res) => {
     'certified_by',
     'certification_date',
     'trust_level',
+    'business_domain',
+    'business_justification',
+    'business_processes',
+    'use_cases',
+    'documentation_links',
+    'related_dashboards',
   ];
 
-  const updates = Object.fromEntries(
-    Object.entries(req.body || {}).filter(([key]) => allowedFields.includes(key))
+  const updates = normalizeBusinessMetadataUpdates(
+    Object.fromEntries(Object.entries(req.body || {}).filter(([key]) => allowedFields.includes(key)))
   );
 
   try {

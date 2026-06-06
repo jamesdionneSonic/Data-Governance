@@ -21,6 +21,7 @@
     "catalog:rebuild:dry": "node scripts/rebuild-catalog-from-raw.mjs --dry-run --enforce-gates",
     "catalog:rebuild": "node scripts/rebuild-catalog-from-raw.mjs --enforce-gates",
     "catalog:index": "node scripts/build-runtime-catalog-indexes.mjs",
+    "catalog:dictionary:enrich": "node scripts/enrich-markdown-data-dictionary.mjs",
     "catalog:runtime:check": "node scripts/check-runtime-catalog.mjs",
     "catalog:repo:export": "node scripts/export-catalog-repo.mjs",
     "catalog:repo:check": "node scripts/check-catalog-repo.mjs",

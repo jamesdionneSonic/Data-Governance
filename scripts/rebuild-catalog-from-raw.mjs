@@ -3,6 +3,7 @@ import path from 'path';
 import { pathToFileURL } from 'url';
 import yaml from 'yaml';
 import MarkdownGenerator from '../src/services/markdownFromSqlServer.js';
+import { applyDictionaryEnrichmentContract } from '../src/services/markdownEnrichmentContract.js';
 import {
   SsisMetadataExtractor,
   buildSsisExternalObjectId,
@@ -2525,6 +2526,33 @@ function applyCatalogConfidence(records) {
   return summary;
 }
 
+function applyDictionaryEnrichment(records) {
+  const summary = {
+    enrichedObjects: 0,
+    enrichedColumns: 0,
+    inferredMetrics: 0,
+    sensitiveColumns: 0,
+  };
+
+  for (const record of records.values()) {
+    if (!record?.frontmatter) continue;
+    record.frontmatter = applyDictionaryEnrichmentContract(record.frontmatter, {
+      enrichedAt: record.frontmatter.extracted_at || new Date().toISOString(),
+    });
+    summary.enrichedObjects += 1;
+
+    if (Array.isArray(record.frontmatter.columns)) {
+      summary.enrichedColumns += record.frontmatter.columns.length;
+      summary.inferredMetrics += record.frontmatter.columns.filter((column) => column.is_metric).length;
+      summary.sensitiveColumns += record.frontmatter.columns.filter((column) =>
+        ['restricted', 'confidential'].includes(String(column.sensitivity || '').toLowerCase())
+      ).length;
+    }
+  }
+
+  return summary;
+}
+
 function average(values = []) {
   let sum = 0;
   let count = 0;
@@ -3383,6 +3411,9 @@ async function main() {
   logRebuildPhase('resolving column lineage');
   const columnLineageResolution = applyColumnLineageResolution(records);
   recordMemory('column_lineage_resolved');
+  logRebuildPhase('applying dictionary enrichment contract');
+  const dictionaryEnrichmentSummary = applyDictionaryEnrichment(records);
+  recordMemory('dictionary_enrichment_applied');
   logRebuildPhase('scoring catalog confidence');
   const catalogConfidenceSummary = applyCatalogConfidence(records);
   recordMemory('catalog_confidence_scored');
@@ -3422,6 +3453,7 @@ async function main() {
     unresolvedColumnLineageObjects: recordMetrics.unresolvedColumnLineageObjects,
     unresolvedColumnLineageRecords: recordMetrics.unresolvedColumnLineageRecords,
     columnLineageResolution,
+    dictionaryEnrichmentSummary,
     catalogConfidenceSummary,
     ssisColumnMappingObjects: recordMetrics.ssisColumnMappingObjects,
     ssisColumnMappings: recordMetrics.ssisColumnMappings,

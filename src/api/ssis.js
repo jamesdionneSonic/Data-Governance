@@ -16,9 +16,9 @@ import { join, resolve } from 'path';
 import { createApiRouter } from '../utils/apiRouter.js';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 import { sendErrorResponse } from '../middleware/errorHandler.js';
-import { SsisMetadataExtractor } from '../services/ssisExtractor.js';
 import { loadRuntimeCatalog } from '../services/catalogRuntimeService.js';
 import { initializeCache } from '../utils/cacheInitializer.js';
+import { runConnectorExtractionForConfig } from '../services/connectorService.js';
 
 const router = createApiRouter();
 
@@ -573,13 +573,34 @@ router.post('/extract', authenticate, requireAdmin, async (req, res) => {
   const { connConfig, sqlDriver } = built;
   const opts = req.body.options || {};
 
-  const extractor = new SsisMetadataExtractor(connConfig, sqlDriver);
   let result;
+  let connectorExtraction;
   try {
-    await extractor.connect();
-    result = await extractor.extractAll({
-      extractXml: opts.extractXml !== false,
+    connectorExtraction = await runConnectorExtractionForConfig({
+      id: `legacy-ssis-${req.body.server || 'server'}`,
+      type: 'ssis',
+      label: `Legacy SSIS extraction - ${req.body.server || 'server'}`,
+      config: {
+        server: req.body.server,
+        connectionConfig: connConfig,
+        sqlDriver,
+      },
+      credential: {
+        mode: req.body.authentication === 'windows' ? 'windows_integrated' : 'service_account',
+        secret_ref: 'legacy-request-body',
+      },
+      options: {
+        dry_run: false,
+        include_metadata: true,
+        fail_fast: false,
+        extractXml: opts.extractXml !== false,
+      },
     });
+    if (connectorExtraction.status === 'failed' || !connectorExtraction.metadata) {
+      const firstError = connectorExtraction.errors?.[0];
+      throw new Error(firstError?.message || 'SSIS connector extraction failed before metadata was returned.');
+    }
+    result = connectorExtraction.metadata;
     result.connectionConfig = connConfig;
   } catch (err) {
     return sendErrorResponse(res, req, 500, err.message, {
@@ -587,8 +608,6 @@ router.post('/extract', authenticate, requireAdmin, async (req, res) => {
       details:
         'Check server connectivity and permissions. See GET /api/v1/ssis/schema for required permissions.',
     });
-  } finally {
-    await extractor.disconnect().catch(() => {});
   }
 
   let markdownOutput = null;
@@ -601,6 +620,13 @@ router.post('/extract', authenticate, requireAdmin, async (req, res) => {
   return res.json({
     summary: summariseResult(result),
     data: result,
+    connectorExtraction: {
+      status: connectorExtraction?.status,
+      adapter: connectorExtraction?.adapter,
+      summary: connectorExtraction?.summary,
+      streamResults: connectorExtraction?.stream_results,
+      errors: connectorExtraction?.errors,
+    },
     markdownOutputPath: markdownOutput?.baseOutputPath || null,
     markdownFilesWritten: markdownOutput?.filesWritten || 0,
     debugDumpXmlRequested: true,
@@ -623,19 +649,38 @@ router.post('/lineage', authenticate, async (req, res) => {
   const { connConfig, sqlDriver } = built;
   const opts = req.body.options || {};
 
-  const extractor = new SsisMetadataExtractor(connConfig, sqlDriver);
   let result;
   try {
-    await extractor.connect();
-    result = await extractor.extractAll({
-      extractXml: opts.extractXml !== false,
+    const connectorExtraction = await runConnectorExtractionForConfig({
+      id: `legacy-ssis-lineage-${req.body.server || 'server'}`,
+      type: 'ssis',
+      label: `Legacy SSIS lineage - ${req.body.server || 'server'}`,
+      config: {
+        server: req.body.server,
+        connectionConfig: connConfig,
+        sqlDriver,
+      },
+      credential: {
+        mode: req.body.authentication === 'windows' ? 'windows_integrated' : 'service_account',
+        secret_ref: 'legacy-request-body',
+      },
+      options: {
+        dry_run: false,
+        include_metadata: true,
+        fail_fast: false,
+        extractXml: opts.extractXml !== false,
+        streams: ['lineage'],
+      },
     });
+    if (connectorExtraction.status === 'failed' || !connectorExtraction.metadata) {
+      const firstError = connectorExtraction.errors?.[0];
+      throw new Error(firstError?.message || 'SSIS connector lineage extraction failed before metadata was returned.');
+    }
+    result = connectorExtraction.metadata;
   } catch (err) {
     return sendErrorResponse(res, req, 500, err.message, {
       code: 'SSIS_LINEAGE_EXTRACTION_FAILED',
     });
-  } finally {
-    await extractor.disconnect().catch(() => {});
   }
 
   return res.json({
@@ -660,37 +705,48 @@ router.post('/catalog', authenticate, async (req, res) => {
   }
 
   const { connConfig, sqlDriver } = built;
-  const warnings = [];
-  const extractor = new SsisMetadataExtractor(connConfig, sqlDriver);
-
-  let catalog = [];
-  let parameters = [];
-  let ssisdbPresent = false;
+  let result;
 
   try {
-    await extractor.connect();
-
-    ssisdbPresent = await extractor.checkSsisdb(warnings);
-
-    if (ssisdbPresent) {
-      catalog = await extractor.extractCatalogInventory(warnings);
-      parameters = await extractor.extractParameters(warnings);
+    const connectorExtraction = await runConnectorExtractionForConfig({
+      id: `legacy-ssis-catalog-${req.body.server || 'server'}`,
+      type: 'ssis',
+      label: `Legacy SSIS catalog - ${req.body.server || 'server'}`,
+      config: {
+        server: req.body.server,
+        connectionConfig: connConfig,
+        sqlDriver,
+      },
+      credential: {
+        mode: req.body.authentication === 'windows' ? 'windows_integrated' : 'service_account',
+        secret_ref: 'legacy-request-body',
+      },
+      options: {
+        dry_run: false,
+        include_metadata: true,
+        fail_fast: false,
+        extractXml: false,
+        streams: ['catalog', 'parameters'],
+      },
+    });
+    if (connectorExtraction.status === 'failed' || !connectorExtraction.metadata) {
+      const firstError = connectorExtraction.errors?.[0];
+      throw new Error(firstError?.message || 'SSIS connector catalog extraction failed before metadata was returned.');
     }
+    result = connectorExtraction.metadata;
   } catch (err) {
     return sendErrorResponse(res, req, 500, err.message, {
       code: 'SSIS_CATALOG_EXTRACTION_FAILED',
     });
-  } finally {
-    await extractor.disconnect().catch(() => {});
   }
 
   return res.json({
-    extractedAt: new Date().toISOString(),
-    ssisdbPresent,
-    packageCount: catalog.length,
-    catalog,
-    parameters,
-    warnings,
+    extractedAt: result.extractedAt,
+    ssisdbPresent: result.ssisdbPresent,
+    packageCount: result.catalog.length,
+    catalog: result.catalog,
+    parameters: result.parameters,
+    warnings: result.warnings,
   });
 });
 
@@ -707,27 +763,46 @@ router.post('/agent-jobs', authenticate, async (req, res) => {
   }
 
   const { connConfig, sqlDriver } = built;
-  const warnings = [];
-  const extractor = new SsisMetadataExtractor(connConfig, sqlDriver);
-
-  let agentJobs;
+  let result;
   try {
-    await extractor.connect();
-    agentJobs = await extractor.extractAgentJobs(warnings);
+    const connectorExtraction = await runConnectorExtractionForConfig({
+      id: `legacy-ssis-agent-${req.body.server || 'server'}`,
+      type: 'ssis',
+      label: `Legacy SSIS agent jobs - ${req.body.server || 'server'}`,
+      config: {
+        server: req.body.server,
+        connectionConfig: connConfig,
+        sqlDriver,
+      },
+      credential: {
+        mode: req.body.authentication === 'windows' ? 'windows_integrated' : 'service_account',
+        secret_ref: 'legacy-request-body',
+      },
+      options: {
+        dry_run: false,
+        include_metadata: true,
+        fail_fast: false,
+        extractXml: false,
+        streams: ['agent_jobs'],
+      },
+    });
+    if (connectorExtraction.status === 'failed' || !connectorExtraction.metadata) {
+      const firstError = connectorExtraction.errors?.[0];
+      throw new Error(firstError?.message || 'SSIS connector agent job extraction failed before metadata was returned.');
+    }
+    result = connectorExtraction.metadata;
   } catch (err) {
     return sendErrorResponse(res, req, 500, err.message, {
       code: 'SSIS_AGENT_JOB_EXTRACTION_FAILED',
     });
-  } finally {
-    await extractor.disconnect().catch(() => {});
   }
 
   return res.json({
-    extractedAt: new Date().toISOString(),
-    jobCount: agentJobs.jobs.length,
-    ssisStepCount: agentJobs.ssisSteps.length,
-    ...agentJobs,
-    warnings,
+    extractedAt: result.extractedAt,
+    jobCount: result.agentJobs.jobs.length,
+    ssisStepCount: result.agentJobs.ssisSteps.length,
+    ...result.agentJobs,
+    warnings: result.warnings,
   });
 });
 

@@ -157,6 +157,16 @@ Edit files in `src/frontend/` - frontend rebuilds on file changes.
 docker compose exec backend npm test
 ```
 
+For local non-Docker validation:
+
+```bash
+npm test -- --runInBand --coverage=false
+npm run test:e2e
+npm run build
+```
+
+The latest full local validation record is [End-To-End Validation 2026-06-06](END_TO_END_VALIDATION_2026-06-06.md).
+
 ### 5. View Indexed Data
 
 ```bash

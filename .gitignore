@@ -39,5 +39,8 @@ ai_context.txt
 generated_*prompts.txt
 repomix-*.xml
 
-# Ignore generated catalog data from SQL Server
-/data/
+# Ignore generated catalog data from SQL Server while keeping governed definitions.
+/data/*
+!/data/classification/
+/data/classification/*
+!/data/classification/taxonomy.yml

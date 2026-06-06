@@ -8,6 +8,7 @@ A modern, enterprise-grade platform for visualizing data lineage from markdown d
 - **Interactive Visualization**: Dependency graphs, impact analysis diagrams, and heatmap matrices using Cytoscape.js and D3.js
 - **Enterprise Search**: Full-text search with faceted filtering (database, owner, sensitivity, tags)
 - **Role-Based Access**: Database-level RBAC tied to Entra ID; users see only what they're permitted
+- **Managed Connectors**: Permissioned metadata extraction framework for SQL Server, SSIS, cloud, BI, repository, API, and warehouse sources
 - **Lightweight Stack**: File-based architecture with Meilisearch indexing; no heavy database scanning
 - **Admin Dashboard**: User management, permission matrix, audit logs, settings
 
@@ -103,6 +104,8 @@ Master customer table...
 - **Docs Portal (full index)**: [docs/README.md](docs/README.md)
 - **Source Structure**: [src/README.md](src/README.md)
 - **Architecture**: [docs/ENTERPRISE_ARCHITECTURE.md](docs/ENTERPRISE_ARCHITECTURE.md)
+- **Connector Extraction Framework**: [docs/CONNECTOR_EXTRACTION_FRAMEWORK.md](docs/CONNECTOR_EXTRACTION_FRAMEWORK.md)
+- **Latest End-To-End Validation**: [docs/END_TO_END_VALIDATION_2026-06-06.md](docs/END_TO_END_VALIDATION_2026-06-06.md)
 - **Product Requirements**: [docs/PRODUCT_REQUIREMENTS.md](docs/PRODUCT_REQUIREMENTS.md)
 - **Project Backlog**: [docs/PROJECT_BACKLOG.md](docs/PROJECT_BACKLOG.md)
 - **API Spec (OpenAPI)**: [docs/OPENAPI.yaml](docs/OPENAPI.yaml)
@@ -138,6 +141,12 @@ If you are updating code, use the source-level README files for guidance:
 ```bash
 # Run lint + tests
 npm run verify
+
+# Run unit/API/service tests only
+npm test -- --runInBand --coverage=false
+
+# Run browser smoke tests
+npm run test:e2e
 
 # Run load profile for p95/p99 API latency
 npm run perf:load

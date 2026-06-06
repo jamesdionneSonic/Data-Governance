@@ -8,6 +8,7 @@
 
 import { computeTrustScore } from './trustService.js';
 import { classifyAsset } from './classificationService.js';
+import { resolveAssetGlossaryLinks } from './glossaryService.js';
 
 /**
  * Resolve upstream and downstream assets from a lineage graph Map
@@ -45,9 +46,10 @@ function resolveLineage(assetId, lineageGraph) {
  * @param {string} assetId - e.g. "sales.orders"
  * @param {Map} assets - All loaded asset objects
  * @param {Map} lineageGraph - Lineage graph (may be null)
+ * @param {Array} glossaryTerms - Optional glossary terms for semantic links
  * @returns {Object} Full governance context payload
  */
-export function buildGovernanceContext(assetId, assets, lineageGraph) {
+export function buildGovernanceContext(assetId, assets, lineageGraph, glossaryTerms = []) {
   const asset = assets ? assets.get(assetId) : null;
 
   if (!asset) {
@@ -57,6 +59,7 @@ export function buildGovernanceContext(assetId, assets, lineageGraph) {
   const trust = computeTrustScore(asset);
   const classifications = classifyAsset(asset);
   const lineage = resolveLineage(assetId, lineageGraph);
+  const glossaryLinks = resolveAssetGlossaryLinks(assetId, asset, glossaryTerms);
 
   return {
     asset_id: assetId,
@@ -78,7 +81,7 @@ export function buildGovernanceContext(assetId, assets, lineageGraph) {
     trust,
     classifications,
     lineage,
-    glossary_links: [],
+    glossary_links: glossaryLinks,
     generated_at: new Date().toISOString(),
   };
 }

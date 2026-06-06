@@ -46,4 +46,9 @@ test.describe('Playwright Smoke Suite', () => {
     const response = await request.get('/api/v1/reporting/export/catalog.csv');
     expect(response.status()).toBe(401);
   });
+
+  test('SMOKE-009: Dictionary endpoint is reachable and protected', async ({ request }) => {
+    const response = await request.get('/api/v1/dictionary');
+    expect(response.status()).toBe(401);
+  });
 });

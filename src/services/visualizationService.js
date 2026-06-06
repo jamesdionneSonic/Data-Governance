@@ -13,6 +13,7 @@ import {
   buildTypedLineageEdges,
   indexTypedLineageEdges,
 } from './lineageService.js';
+import { resolveAssetGlossaryLinks } from './glossaryService.js';
 
 const DEFAULT_DEPENDENCY_MATRIX_MAX_OBJECTS = 500;
 const DEFAULT_IMPACT_VISUALIZATION_MAX_PER_LEVEL = 250;
@@ -21,6 +22,138 @@ function boundedPositiveInteger(value, fallback) {
   const parsed = Number(value);
   if (!Number.isFinite(parsed) || parsed < 1) return fallback;
   return Math.floor(parsed);
+}
+
+function normalizeGraphElements(graphData = {}) {
+  if (!graphData || !Array.isArray(graphData.nodes) || !Array.isArray(graphData.edges)) {
+    return null;
+  }
+  return graphData;
+}
+
+function cloneTerm(term = {}) {
+  return {
+    slug: term.slug,
+    term: term.term,
+    domain: term.domain,
+    relationship: term.relationship || 'semantic_match',
+    inherited_from: term.inherited_from || undefined,
+    via_edge: term.via_edge || undefined,
+  };
+}
+
+function uniqueTerms(terms = []) {
+  const seen = new Set();
+  const result = [];
+  for (const term of terms) {
+    if (!term?.slug || seen.has(term.slug)) continue;
+    seen.add(term.slug);
+    result.push(cloneTerm(term));
+  }
+  return result;
+}
+
+/**
+ * Enrich graph nodes and edges with direct and propagated glossary semantics.
+ * Direct mappings come from explicit glossary asset links. Propagated mappings
+ * are carried across visible lineage edges and marked with inherited_from.
+ */
+export function enrichGraphWithSemanticTerms(graphData, objects, glossaryTerms = []) {
+  const graph = normalizeGraphElements(graphData);
+  if (!graph || !objects || !Array.isArray(glossaryTerms) || glossaryTerms.length === 0) {
+    return graphData;
+  }
+
+  const directTermsById = new Map();
+  const propagatedTermsById = new Map();
+
+  for (const node of graph.nodes) {
+    const id = node?.data?.id;
+    if (!id) continue;
+    const asset = objects.get(id) || {};
+    const directTerms = resolveAssetGlossaryLinks(id, asset, glossaryTerms);
+    directTermsById.set(id, directTerms);
+  }
+
+  for (const edge of graph.edges) {
+    const source = edge?.data?.source;
+    const target = edge?.data?.target;
+    if (!source || !target) continue;
+
+    const sourceTerms = directTermsById.get(source) || [];
+    const targetTerms = directTermsById.get(target) || [];
+    const targetSlugs = new Set(targetTerms.map((term) => term.slug));
+    const sharedTerms = sourceTerms.filter((term) => targetSlugs.has(term.slug));
+    const propagatedTerms = sourceTerms
+      .filter((term) => !targetSlugs.has(term.slug))
+      .map((term) => ({
+        ...cloneTerm(term),
+        inherited_from: source,
+        via_edge: edge.data.label || edge.data.type || 'lineage',
+      }));
+
+    if (propagatedTerms.length > 0) {
+      propagatedTermsById.set(target, [
+        ...(propagatedTermsById.get(target) || []),
+        ...propagatedTerms,
+      ]);
+    }
+
+    edge.data = {
+      ...edge.data,
+      semantic_terms: uniqueTerms(sharedTerms),
+      propagated_semantic_terms: uniqueTerms(propagatedTerms),
+    };
+
+    if (sharedTerms.length > 0 || propagatedTerms.length > 0) {
+      const classes = Array.isArray(edge.classes) ? edge.classes : [edge.classes].filter(Boolean);
+      edge.classes = [...new Set([...classes, 'semantic-edge'])];
+    }
+  }
+
+  let directMappedNodes = 0;
+  let propagatedNodes = 0;
+  const allTermSlugs = new Set();
+
+  for (const node of graph.nodes) {
+    const id = node?.data?.id;
+    if (!id) continue;
+    const directTerms = uniqueTerms(directTermsById.get(id) || []);
+    const propagatedTerms = uniqueTerms(propagatedTermsById.get(id) || []);
+    directTerms.forEach((term) => allTermSlugs.add(term.slug));
+    propagatedTerms.forEach((term) => allTermSlugs.add(term.slug));
+    if (directTerms.length > 0) directMappedNodes += 1;
+    if (propagatedTerms.length > 0) propagatedNodes += 1;
+
+    node.data = {
+      ...node.data,
+      glossaryTerms: directTerms,
+      glossaryTermLabels: directTerms.map((term) => term.term),
+      propagatedGlossaryTerms: propagatedTerms,
+      semanticDomains: [
+        ...new Set([...directTerms, ...propagatedTerms].map((term) => term.domain).filter(Boolean)),
+      ],
+      semanticTermCount: directTerms.length + propagatedTerms.length,
+      hasSemanticMapping: directTerms.length > 0,
+    };
+
+    const classes = Array.isArray(node.classes) ? node.classes : [node.classes].filter(Boolean);
+    if (directTerms.length > 0) classes.push('semantic-mapped');
+    if (propagatedTerms.length > 0) classes.push('semantic-propagated');
+    node.classes = [...new Set(classes)];
+  }
+
+  graph.meta = {
+    ...(graph.meta || {}),
+    semantic: {
+      direct_mapped_nodes: directMappedNodes,
+      propagated_nodes: propagatedNodes,
+      term_count: allTermSlugs.size,
+      propagation: 'visible_lineage_edges',
+    },
+  };
+
+  return graph;
 }
 
 /**

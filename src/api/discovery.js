@@ -20,6 +20,7 @@ import {
   buildMermaidDiagram,
   buildImpactVisualization,
   buildDependencyMatrix,
+  enrichGraphWithSemanticTerms,
 } from '../services/visualizationService.js';
 import { getUpstreamDependencies, getDownstreamDependents } from '../services/lineageService.js';
 import { buildCodexColumnContext } from '../services/codexContextService.js';
@@ -27,6 +28,7 @@ import { buildLineageAnswer, buildLineageQuestionHelp } from '../services/lineag
 import { answerLineageQuestion } from '../services/lineageQuestionService.js';
 import { createTtlCache } from '../utils/ttlCache.js';
 import { getTypedLineageEdgeIndex } from '../services/catalogRuntimeStore.js';
+import { loadAllTerms } from '../services/glossaryService.js';
 
 const router = createApiRouter();
 
@@ -309,7 +311,7 @@ router.get('/:objectId/downstream', authenticate, (req, res) => {
  * Query params: format (centered|cytoscape|d3|mermaid), depth (1-5)
  * Requires authentication
  */
-router.get('/graph/:objectId', authenticate, (req, res) => {
+router.get('/graph/:objectId', authenticate, async (req, res) => {
   try {
     const { objectId } = req.params;
     const { format = 'cytoscape', depth = 2 } = req.query;
@@ -331,17 +333,25 @@ router.get('/graph/:objectId', authenticate, (req, res) => {
     if (isDataObject && effectiveDepth < 4) {
       effectiveDepth = 4;
     }
-    const graphCacheKey = `graph:${objectId}:${normalizedFormat}:${effectiveDepth}`;
     const typedEdges = getTypedLineageEdgeIndex();
+    const glossaryTerms = await loadAllTerms();
+    const glossarySignature = glossaryTerms
+      .map((term) => `${term.slug}:${term.version || 1}:${term.asset_count || 0}`)
+      .join('|');
+    const graphCacheKey = `graph:${objectId}:${normalizedFormat}:${effectiveDepth}:${glossarySignature}`;
 
     const graphData = getOrSetCache(graphCacheKey, () => {
       switch (normalizedFormat) {
         case 'centered':
-          return buildCenteredLineageGraph(objectId, cachedObjects, {
-            maxBridgeDepth: effectiveDepth,
-            groupSsis: true,
-            typedEdges,
-          });
+          return enrichGraphWithSemanticTerms(
+            buildCenteredLineageGraph(objectId, cachedObjects, {
+              maxBridgeDepth: effectiveDepth,
+              groupSsis: true,
+              typedEdges,
+            }),
+            cachedObjects,
+            glossaryTerms
+          );
         case 'd3':
           return buildD3Graph(objectId, cachedLineageGraph, cachedObjects, effectiveDepth);
         case 'mermaid':
@@ -350,12 +360,16 @@ router.get('/graph/:objectId', authenticate, (req, res) => {
           });
         case 'cytoscape':
         default:
-          return buildCytoscapeGraph(
-            objectId,
-            cachedLineageGraph,
+          return enrichGraphWithSemanticTerms(
+            buildCytoscapeGraph(
+              objectId,
+              cachedLineageGraph,
+              cachedObjects,
+              effectiveDepth,
+              { typedEdges }
+            ),
             cachedObjects,
-            effectiveDepth,
-            { typedEdges }
+            glossaryTerms
           );
       }
     });

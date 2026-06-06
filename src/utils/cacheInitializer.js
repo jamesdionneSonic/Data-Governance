@@ -8,7 +8,9 @@ import { setIntegrationCache } from '../api/integrations.js';
 import { setMarketplaceCache } from '../api/marketplace.js';
 import { setClassificationCache } from '../api/classification.js';
 import { setGovernanceCache } from '../api/governance.js';
-import { setCatalogRuntime } from '../services/catalogRuntimeStore.js';
+import { setGlossaryCache } from '../api/glossary.js';
+import { setQualityCache } from '../api/quality.js';
+import { setCatalogRuntime, setRuntimeLineageGraph } from '../services/catalogRuntimeStore.js';
 
 function normalizeObjects(input) {
   if (input instanceof Map) return input;
@@ -66,6 +68,7 @@ export function initializeCache(...args) {
   }
 
   setObjectsCache(objects);
+  setRuntimeLineageGraph(lineageGraph);
   setCatalogRuntime(runtime || {});
   setSearchCache(objects);
   setDiscoveryCache(objects, lineageGraph);
@@ -76,6 +79,8 @@ export function initializeCache(...args) {
   setMarketplaceCache(objects);
   setClassificationCache(objects);
   setGovernanceCache(objects, lineageGraph);
+  setGlossaryCache(objects);
+  setQualityCache(objects);
 }
 
 export default initializeCache;

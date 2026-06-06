@@ -16,6 +16,7 @@ import {
   buildMermaidDiagram,
   buildImpactVisualization,
   buildDependencyMatrix,
+  enrichGraphWithSemanticTerms,
 } from '../../src/services/visualizationService.js';
 import {
   getDashboardSummary,
@@ -316,6 +317,42 @@ describe('Phase 3 - Visualization Service', () => {
       const centralNode = graph.nodes.find((n) => n.data.id === 'order_summary');
       expect(centralNode.classes).toContain('central');
     });
+
+    test('VIZ-005A: Should enrich graph nodes with direct and propagated glossary semantics', () => {
+      const objects = new Map([
+        ['source_table', { id: 'source_table', name: 'Source Table', type: 'table' }],
+        ['target_view', { id: 'target_view', name: 'Target View', type: 'view' }],
+      ]);
+      const graph = {
+        nodes: [
+          { data: { id: 'source_table', label: 'Source Table' }, classes: ['producer'] },
+          { data: { id: 'target_view', label: 'Target View' }, classes: ['consumer'] },
+        ],
+        edges: [{ data: { source: 'source_table', target: 'target_view', label: 'loads' }, classes: [] }],
+      };
+      const terms = [
+        {
+          slug: 'vehicle-dimension',
+          term: 'Vehicle Dimension',
+          domain: 'Sales',
+          assets: [{ asset_id: 'source_table', relationship: 'defines' }],
+        },
+      ];
+
+      const enriched = enrichGraphWithSemanticTerms(graph, objects, terms);
+      const source = enriched.nodes.find((node) => node.data.id === 'source_table');
+      const target = enriched.nodes.find((node) => node.data.id === 'target_view');
+
+      expect(source.data.glossaryTerms[0].term).toBe('Vehicle Dimension');
+      expect(source.classes).toContain('semantic-mapped');
+      expect(target.data.propagatedGlossaryTerms[0]).toMatchObject({
+        term: 'Vehicle Dimension',
+        inherited_from: 'source_table',
+      });
+      expect(target.classes).toContain('semantic-propagated');
+      expect(enriched.edges[0].classes).toContain('semantic-edge');
+      expect(enriched.meta.semantic.direct_mapped_nodes).toBe(1);
+    });
   });
 
   describe('visualizationService - buildD3Graph', () => {
@@ -491,6 +528,11 @@ describe('Phase 3 - Discovery Service', () => {
   describe('discoveryService - getQualityMetrics', () => {
     test('DISC-011: Should calculate quality metrics', () => {
       const metrics = getQualityMetrics(mockObjects, mockLineageGraph);
+      expect(metrics.score).toBeGreaterThanOrEqual(0);
+      expect(metrics.score).toBeLessThanOrEqual(100);
+      expect(metrics.checks).toBeDefined();
+      expect(metrics.signals).toBeDefined();
+      expect(Array.isArray(metrics.signals)).toBe(true);
       expect(metrics.completeness).toBeDefined();
       expect(metrics.consistency).toBeDefined();
     });
@@ -507,6 +549,13 @@ describe('Phase 3 - Discovery Service', () => {
       const metrics = getQualityMetrics(mockObjects, mockLineageGraph);
       for (const check of metrics.completeness.checks) {
         expect(['good', 'warning']).toContain(check.status);
+      }
+      for (const signal of metrics.signals) {
+        expect(signal.key).toBeDefined();
+        expect(signal.label).toBeDefined();
+        expect(signal.percentage).toBeGreaterThanOrEqual(0);
+        expect(signal.percentage).toBeLessThanOrEqual(100);
+        expect(typeof signal.passing).toBe('boolean');
       }
     });
   });

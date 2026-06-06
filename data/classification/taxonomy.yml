@@ -1,0 +1,223 @@
+version: 1
+updated_at: "2026-06-06T00:00:00.000Z"
+categories:
+  - id: public
+    label: Public
+    parent:
+    level: 1
+    description: Data approved for public consumption.
+    regulatory_frameworks: []
+    name_patterns: []
+    sensitivity_triggers:
+      - public
+    tag_triggers:
+      - public
+      - open-data
+    built_in: true
+  - id: confidential
+    label: Confidential
+    parent:
+    level: 1
+    description: Business data that should not be shared outside approved audiences.
+    regulatory_frameworks: []
+    name_patterns:
+      - confidential
+      - private
+    sensitivity_triggers:
+      - confidential
+    tag_triggers:
+      - confidential
+    built_in: true
+  - id: restricted
+    label: Restricted
+    parent: confidential
+    level: 2
+    description: Highly sensitive data requiring elevated access control.
+    regulatory_frameworks: []
+    name_patterns:
+      - restricted
+      - secret
+    sensitivity_triggers:
+      - restricted
+    tag_triggers:
+      - restricted
+    built_in: true
+  - id: pii
+    label: PII
+    parent: restricted
+    level: 3
+    description: Personally identifiable information.
+    regulatory_frameworks:
+      - GDPR
+      - CCPA
+    name_patterns:
+      - (first|last|full)_?name
+      - email
+      - phone
+      - address
+      - ssn|social_security
+      - passport
+      - date_of_birth|dob
+      - driver_?license
+      - customer_id
+      - user_id
+    sensitivity_triggers:
+      - confidential
+      - restricted
+    tag_triggers:
+      - pii
+      - personal
+      - gdpr
+    built_in: true
+  - id: phi
+    label: PHI
+    parent: restricted
+    level: 3
+    description: Protected health information governed by HIPAA.
+    regulatory_frameworks:
+      - HIPAA
+      - HITECH
+    name_patterns:
+      - diagnosis|icd
+      - medication|prescription|drug
+      - patient
+      - medical_record|mrn
+      - health_plan|insurance_claim
+      - lab_result|test_result
+    sensitivity_triggers:
+      - restricted
+    tag_triggers:
+      - hipaa
+      - phi
+      - health
+    built_in: true
+  - id: gdpr
+    label: GDPR
+    parent: pii
+    level: 4
+    description: Personal data or special-category data subject to GDPR.
+    regulatory_frameworks:
+      - GDPR
+    name_patterns:
+      - political_opinion|religion|ethnicity|race
+      - sexual_orientation|gender_identity
+      - biometric|fingerprint|facial
+      - criminal_record
+      - union_membership
+      - eu_?resident
+    sensitivity_triggers:
+      - restricted
+    tag_triggers:
+      - gdpr
+      - special-category
+    built_in: true
+  - id: hipaa
+    label: HIPAA
+    parent: phi
+    level: 4
+    description: Health data subject to HIPAA safeguards.
+    regulatory_frameworks:
+      - HIPAA
+    name_patterns:
+      - hipaa
+      - patient
+      - medical_record|mrn
+      - diagnosis
+    sensitivity_triggers:
+      - restricted
+    tag_triggers:
+      - hipaa
+    built_in: true
+  - id: ccpa
+    label: CCPA
+    parent: pii
+    level: 4
+    description: California consumer personal information governed by CCPA.
+    regulatory_frameworks:
+      - CCPA
+    name_patterns:
+      - ccpa
+      - consumer
+      - california
+    sensitivity_triggers:
+      - confidential
+      - restricted
+    tag_triggers:
+      - ccpa
+    built_in: true
+  - id: financial
+    label: Financial
+    parent: confidential
+    level: 2
+    description: Financial data subject to audit, SOX, PCI, or business confidentiality.
+    regulatory_frameworks:
+      - SOX
+      - PCI-DSS
+    name_patterns:
+      - revenue
+      - salary|compensation|payroll
+      - account_balance|balance
+      - credit_card|payment_card
+      - invoice|billing
+      - transaction
+      - profit|loss|ebitda
+      - bank_account
+    sensitivity_triggers:
+      - confidential
+      - restricted
+    tag_triggers:
+      - financial
+      - sox
+      - pci
+    built_in: true
+rules:
+  - id: rule-email-pii
+    label: Email columns are PII
+    target: column
+    classification: PII
+    pattern: (^|_|\b)(e_?mail|email_?address)(_|\b|$)
+    confidence: 0.95
+    enabled: true
+    source: built_in
+  - id: rule-phone-pii
+    label: Phone columns are PII
+    target: column
+    classification: PII
+    pattern: (^|_|\b)(phone|mobile|cell)_?(number)?(_|\b|$)
+    confidence: 0.9
+    enabled: true
+    source: built_in
+  - id: rule-ssn-pii
+    label: SSN columns are restricted PII
+    target: column
+    classification: PII
+    pattern: (^|_|\b)(ssn|social_?security)(_|\b|$)
+    confidence: 0.99
+    enabled: true
+    source: built_in
+  - id: rule-name-address-pii
+    label: Name/address combinations are PII
+    target: asset
+    classification: PII
+    pattern: (first|last|full)_?name|address|city|state|zip|postal
+    min_column_hits: 2
+    confidence: 0.82
+    enabled: true
+    source: built_in
+  - id: rule-salary-financial
+    label: Salary and compensation columns are Financial
+    target: column
+    classification: Financial
+    pattern: (^|_|\b)(salary|compensation|payroll|bonus|commission)(_|\b|$)
+    confidence: 0.92
+    enabled: true
+    source: built_in
+  - id: rule-health-phi
+    label: Patient and medical columns are PHI
+    target: column
+    classification: PHI
+    pattern: (^|_|\b)(patient|diagnosis|icd|medical_?record|mrn|prescription)(_|\b|$)
+    confidence: 0.93
+    enabled: true
+    source: built_in
+history: []

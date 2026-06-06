@@ -194,6 +194,9 @@ const appConfig = {
       selectedObjectDetail: null,
       selectedObjectId: '',
       selectedObjectGovernance: null,
+      selectedObjectPiiPolicy: null,
+      selectedObjectColumnSemantics: null,
+      selectedObjectDictionary: null,
       editableObjectMetadata: {
         description: '',
         owner: '',
@@ -202,16 +205,115 @@ const appConfig = {
         custodian: '',
         sensitivity: 'public',
         tags: '',
+        business_domain: '',
+        business_justification: '',
+        business_processes: '',
+        use_cases: '',
+        documentation_links: '',
+        related_dashboards: '',
       },
       glossary: {
         terms: [],
         domains: [],
         query: '',
         selected: null,
+        editing: false,
+        editMode: 'create',
+        editor: {
+          term: '',
+          domain: 'General',
+          status: 'draft',
+          owner: '',
+          business_owner: '',
+          steward: '',
+          parent: '',
+          synonyms: '',
+          related_terms: '',
+          tags: '',
+          definition: '',
+        },
+        semanticQuery: '',
+        semanticResolution: null,
+        assetSearchQuery: '',
+        assetSearchResults: [],
+        assetSearchLoading: false,
+        newMapping: {
+          asset_id: '',
+          relationship: 'defines',
+          type: 'asset',
+          confidence: 0.9,
+          notes: '',
+        },
+        qualityRules: {
+          rules: [],
+          incidents: [],
+          executions: [],
+          scorecard: null,
+          scorecardExport: null,
+          trend: null,
+          loading: false,
+          selectedRuleId: '',
+          editor: {
+            id: '',
+            name: '',
+            asset_id: '*',
+            column_name: '',
+            type: 'null_percent',
+            severity: 'warning',
+            threshold_min: '',
+            threshold_max: '5',
+            threshold_min_percent: '',
+            threshold_min_match_percent: '',
+            schedule: '',
+            alert_routes: '',
+            enabled: true,
+          },
+          runProfile: {
+            asset_id: '',
+            column_name: '',
+            row_count: '',
+            null_count: '',
+            distinct_count: '',
+            min: '',
+            max: '',
+            pattern_match_percent: '',
+          },
+        },
       },
       governance: {
         summaries: [],
         health: null,
+        classification: {
+          taxonomy: null,
+          summary: null,
+          policyEffectiveness: null,
+          run: null,
+          loading: false,
+          selectedCategoryId: '',
+          selectedRuleId: '',
+          categoryEditor: {
+            id: '',
+            label: '',
+            parent: '',
+            level: 1,
+            description: '',
+            regulatory_frameworks: '',
+            name_patterns: '',
+            sensitivity_triggers: '',
+            tag_triggers: '',
+          },
+          ruleEditor: {
+            id: '',
+            label: '',
+            target: 'column',
+            classification: 'PII',
+            pattern: '',
+            min_column_hits: '',
+            confidence: 0.8,
+            enabled: true,
+            description: '',
+          },
+        },
       },
       productsCatalog: {
         products: [],
@@ -258,6 +360,8 @@ const appConfig = {
         blastRadius: null,
         blastRows: [],
         blastHeatmap: [],
+        blastRadiusLoading: false,
+        blastRadiusStatus: '',
         persona: 'auto',
         lastPackRun: null,
         runningPack: false,
@@ -276,6 +380,27 @@ const appConfig = {
         linkType: 'jira',
         linkUrl: 'https://jira.example.com/browse/DG-123',
         links: [],
+        connectorDefinitions: [],
+        managedConnectors: [],
+        connectorRuns: [],
+        connectorSnapshot: null,
+        connectorLoading: false,
+        connectorEditor: {
+          id: 'sonic-managed-connector',
+          type: 'sql_server',
+          label: 'Sonic Managed Connector',
+          description: '',
+          configJson: '{\n  "server": "L1-5FSQL-01",\n  "database": "Sonic_DW"\n}',
+          credentialMode: 'service_account',
+          secretRef: 'kv://metadata/sonic-managed-connector',
+          rawSecret: '',
+        },
+        connectorGrant: {
+          connectorId: '',
+          scope: 'roles',
+          subject: 'Analyst',
+          actions: 'view,run',
+        },
       },
       marketplace: {
         form: {
@@ -298,6 +423,12 @@ const appConfig = {
       },
       graphFocusDialog: {
         show: false,
+      },
+      lineageObjectSearch: {
+        query: '',
+        results: [],
+        loading: false,
+        open: false,
       },
       graphSearchText: '',
       graphSearchMatchCount: 0,
@@ -619,11 +750,21 @@ const appConfig = {
       return Math.round((completedCount / steps.length) * 100);
     },
     importWorkflowSteps() {
-      const discovered = Number(this.importer.sqlServer.discoveredObjectCount || 0) > 0;
-      const extracted = Number(this.importer.sqlServer.result?.totalObjectsExtracted || 0) > 0;
-      const validated = Number(this.importer.validationResult?.valid || 0) > 0;
-      const loaded = Number(this.importer.status?.loadedObjectCount || 0) > 0;
-      const analyzed = Number(this.reports.blastRows?.length || 0) > 0;
+      const governedObjects = Number(this.overview?.overview?.totalObjects || 0);
+      const dependencies = Number(this.overview?.overview?.totalDependencies || 0);
+      const qualityScore = Number(this.quality?.score || 0);
+      const indexedObjects =
+        Number(this.importer.lastLoadStats?.totalObjects || 0) ||
+        Number(this.importer.status?.loadedObjectCount || 0) ||
+        governedObjects;
+      const discovered =
+        Number(this.importer.sqlServer.discoveredObjectCount || 0) > 0 || governedObjects > 0;
+      const extracted =
+        Number(this.importer.sqlServer.result?.totalObjectsExtracted || 0) > 0 || governedObjects > 0;
+      const validated =
+        Number(this.importer.validationResult?.valid || 0) > 0 || qualityScore > 0 || governedObjects > 0;
+      const loaded = indexedObjects > 0;
+      const analyzed = Number(this.reports.blastRows?.length || 0) > 0 || dependencies > 0;
 
       return [
         {
@@ -670,6 +811,11 @@ const appConfig = {
         qualityScore: this.quality?.score || 0,
         blastObjects: this.reports?.blastRadius?.impactedObjects || 0,
         blastDepth: this.reports?.blastRadius?.maxDepth || 0,
+        indexedObjects:
+          this.importer.lastLoadStats?.totalObjects ||
+          this.importer.status?.loadedObjectCount ||
+          this.overview?.overview?.totalObjects ||
+          0,
       };
     },
     lineageAnswerIntentOptions() {
@@ -711,7 +857,7 @@ const appConfig = {
         qualityScore: metrics.qualityScore,
         blastObjects: metrics.blastObjects,
         validationIssues: validation.invalid || 0,
-        indexedObjects: lastLoad.totalObjects || this.importer.status?.loadedObjectCount || 0,
+        indexedObjects: metrics.indexedObjects || lastLoad.totalObjects || this.importer.status?.loadedObjectCount || 0,
       };
 
       switch (this.resolvedPersona) {
@@ -817,6 +963,55 @@ const appConfig = {
         return this.browseResults;
       }
       return this.browseResults.length ? this.browseResults : this.objectList;
+    },
+    overviewRecentObjects() {
+      const candidates = [
+        ...(this.objectList || []),
+        ...(this.recommendations?.recommended?.newData?.items || []),
+        ...(this.recommendations?.recommended?.trending?.items || []),
+        ...(this.recommendations?.recommended?.critical?.items || []),
+      ];
+      const seen = new Set();
+      return candidates
+        .filter((obj) => obj && (obj.id || obj.name))
+        .filter((obj) => {
+          const id = obj.id || obj.name;
+          if (seen.has(id)) return false;
+          seen.add(id);
+          return true;
+        })
+        .slice(0, 6);
+    },
+    qualityRadarSignals() {
+      if (Array.isArray(this.quality?.signals)) {
+        return this.quality.signals;
+      }
+      return Object.entries(this.quality?.checks || {}).map(([key, passing]) => ({
+        key,
+        label: key.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase()),
+        percentage: passing ? 100 : 0,
+        value: passing ? 'Pass' : 'Gap',
+        passing,
+      }));
+    },
+    qualityTrendBars() {
+      const scorePoints = this.governance.qualityRules.trend?.score_points || [];
+      const profilePoints = this.governance.qualityRules.trend?.profile_points || [];
+      const points = scorePoints.length
+        ? scorePoints.map((point) => ({
+            label: this.formatTrendTimestamp(point.generated_at),
+            value: Number(point.overall_score || 0),
+            metric: 'Score',
+          }))
+        : profilePoints.map((point) => ({
+            label: this.formatTrendTimestamp(point.generated_at),
+            value: Math.max(0, 100 - Number(point.average_null_percent || 0)),
+            metric: 'Completeness',
+          }));
+      return points.slice(0, 12).reverse();
+    },
+    catalogHasLoadedObjects() {
+      return Number(this.overview?.overview?.totalObjects || 0) > 0 || this.overviewRecentObjects.length > 0;
     },
     hasStaleDemoCatalogState() {
       return (
@@ -1887,97 +2082,14 @@ const appConfig = {
       }
     },
     renderOverviewChart() {
-      const canvas = document.getElementById('quality-chart');
-      if (!canvas || !window.Chart || !this.quality) {
-        return;
-      }
-
       if (this.chartInstance) {
-        this.chartInstance.destroy();
+        try {
+          this.chartInstance.destroy();
+        } catch (_err) {
+          // Chart.js can throw if Vue has already detached the canvas during view changes.
+        }
+        this.chartInstance = null;
       }
-
-      const checks = this.quality.checks || {};
-      const labels = Object.keys(checks);
-      const passData = labels.map((key) => (checks[key] ? 82 : 18));
-      const failData = labels.map((key) => (checks[key] ? 18 : 82));
-      const ctx = canvas.getContext('2d');
-      const qualityGradient = ctx.createLinearGradient(0, 0, 0, 320);
-      qualityGradient.addColorStop(0, 'rgba(59, 130, 246, 0.95)');
-      qualityGradient.addColorStop(0.55, 'rgba(14, 165, 233, 0.72)');
-      qualityGradient.addColorStop(1, 'rgba(16, 185, 129, 0.45)');
-      this.chartInstance = new Chart(canvas, {
-        type: 'bar',
-        data: {
-          labels,
-          datasets: [
-            {
-              label: 'Passing Signals',
-              data: passData,
-              backgroundColor: qualityGradient,
-              borderColor: '#60a5fa',
-              borderWidth: 1,
-              borderRadius: 10,
-              stack: 'quality',
-            },
-            {
-              label: 'Risk Gap',
-              data: failData,
-              backgroundColor: 'rgba(15, 23, 42, 0.28)',
-              borderColor: 'rgba(148, 163, 184, 0.7)',
-              borderWidth: 1,
-              borderRadius: 10,
-              stack: 'quality',
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          indexAxis: 'y',
-          interaction: {
-            mode: 'index',
-            intersect: false,
-          },
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                color: '#cbd5e1',
-                usePointStyle: true,
-              },
-            },
-            tooltip: {
-              backgroundColor: 'rgba(15, 23, 42, 0.95)',
-              titleColor: '#f8fafc',
-              bodyColor: '#e2e8f0',
-              borderColor: 'rgba(148, 163, 184, 0.35)',
-              borderWidth: 1,
-            },
-          },
-          scales: {
-            x: {
-              stacked: true,
-              suggestedMin: 0,
-              suggestedMax: 100,
-              grid: {
-                color: 'rgba(148, 163, 184, 0.14)',
-              },
-              ticks: {
-                color: '#94a3b8',
-              },
-            },
-            y: {
-              stacked: true,
-              grid: {
-                color: 'rgba(148, 163, 184, 0.08)',
-              },
-              ticks: {
-                color: '#cbd5e1',
-              },
-            },
-          },
-        },
-      });
     },
     normalizeGraphData(rawGraphData) {
       if (!rawGraphData) {
@@ -2179,21 +2291,31 @@ const appConfig = {
     },
     renderBlastRadiusChart() {
       const canvas = document.getElementById('blast-radius-chart');
-      if (!canvas || !window.Chart || !this.reports.blastRows?.length) {
+      if (!canvas || !canvas.isConnected || !window.Chart || !this.reports.blastRows?.length) {
         return;
       }
 
       if (this.blastChartInstance) {
-        this.blastChartInstance.destroy();
+        try {
+          this.blastChartInstance.destroy();
+        } catch (_err) {
+          // Chart.js can throw if Vue has already detached the canvas during view changes.
+        }
+        this.blastChartInstance = null;
       }
 
       const topRows = this.reports.blastRows.slice(0, 12);
       const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        return;
+      }
+      canvas.width = Math.max(320, canvas.clientWidth || canvas.parentElement?.clientWidth || 640);
+      canvas.height = Math.max(240, canvas.clientHeight || canvas.parentElement?.clientHeight || 320);
       const blastGradient = ctx.createLinearGradient(0, 0, 420, 0);
       blastGradient.addColorStop(0, 'rgba(14, 165, 233, 0.92)');
       blastGradient.addColorStop(0.5, 'rgba(99, 102, 241, 0.86)');
       blastGradient.addColorStop(1, 'rgba(239, 68, 68, 0.88)');
-      this.blastChartInstance = new Chart(canvas, {
+      this.blastChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
           labels: topRows.map((row) => row.id),
@@ -2223,7 +2345,7 @@ const appConfig = {
           ],
         },
         options: {
-          responsive: true,
+          responsive: false,
           maintainAspectRatio: false,
           indexAxis: 'y',
           interaction: {
@@ -2492,6 +2614,12 @@ const appConfig = {
       if (Number.isNaN(parsed.getTime())) return String(value);
       return parsed.toLocaleString();
     },
+    csvFromValue(value) {
+      if (Array.isArray(value)) {
+        return value.filter(Boolean).join(', ');
+      }
+      return String(value || '');
+    },
     async loadDocsLibrary() {
       this.docsLoading = true;
       try {
@@ -2543,11 +2671,14 @@ const appConfig = {
       if (!this.selectedObjectId) {
         this.selectedObjectDetail = null;
         this.selectedObjectGovernance = null;
+        this.selectedObjectPiiPolicy = null;
+        this.selectedObjectColumnSemantics = null;
+        this.selectedObjectDictionary = null;
         return;
       }
 
       try {
-        const [detail, upstream, downstream, impact, governanceContext] = await Promise.all([
+        const [detail, upstream, downstream, impact, governanceContext, piiPolicy, columnSemantics, dictionary] = await Promise.all([
           this.api(`/api/v1/objects/${encodeURIComponent(this.selectedObjectId)}`),
           this.api(
             `/api/v1/lineage/${encodeURIComponent(this.selectedObjectId)}/upstream?depth=${this.discoveryDepth}`
@@ -2557,10 +2688,16 @@ const appConfig = {
           ),
           this.api(`/api/v1/lineage/${encodeURIComponent(this.selectedObjectId)}/impact`),
           this.api(`/api/v1/governance/context/${encodeURIComponent(this.selectedObjectId)}`),
+          this.api(`/api/v1/classification/pii/${encodeURIComponent(this.selectedObjectId)}`),
+          this.api(`/api/v1/classification/columns/${encodeURIComponent(this.selectedObjectId)}/semantics`),
+          this.api(`/api/v1/dictionary/${encodeURIComponent(this.selectedObjectId)}`),
         ]);
 
         this.selectedObjectDetail = detail.data || null;
         this.selectedObjectGovernance = governanceContext.context || null;
+        this.selectedObjectPiiPolicy = piiPolicy.pii_policy || null;
+        this.selectedObjectColumnSemantics = columnSemantics.semantics || null;
+        this.selectedObjectDictionary = dictionary.data || null;
         this.editableObjectMetadata = {
           description: detail.data?.description || '',
           owner: detail.data?.owner || '',
@@ -2568,7 +2705,13 @@ const appConfig = {
           domain_manager: detail.data?.domain_manager || '',
           custodian: detail.data?.custodian || '',
           sensitivity: detail.data?.sensitivity || 'public',
-          tags: (detail.data?.tags || []).join(', '),
+          tags: this.csvFromValue(detail.data?.tags),
+          business_domain: detail.data?.business_domain || detail.data?.domain || '',
+          business_justification: detail.data?.business_justification || '',
+          business_processes: this.csvFromValue(detail.data?.business_processes || detail.data?.business_process),
+          use_cases: this.csvFromValue(detail.data?.use_cases),
+          documentation_links: this.csvFromValue(detail.data?.documentation_links || detail.data?.links),
+          related_dashboards: this.csvFromValue(detail.data?.related_dashboards || detail.data?.dashboards),
         };
         this.lineageRaw = {
           upstream,
@@ -2579,6 +2722,9 @@ const appConfig = {
       } catch (_err) {
         this.selectedObjectDetail = null;
         this.selectedObjectGovernance = null;
+        this.selectedObjectPiiPolicy = null;
+        this.selectedObjectColumnSemantics = null;
+        this.selectedObjectDictionary = null;
       }
     },
     saveSelectedObjectMetadata() {
@@ -2590,6 +2736,22 @@ const appConfig = {
       const bodyPayload = {
         ...this.editableObjectMetadata,
         tags: String(this.editableObjectMetadata.tags || '')
+          .split(',')
+          .map((t) => t.trim())
+          .filter(Boolean),
+        business_processes: String(this.editableObjectMetadata.business_processes || '')
+          .split(',')
+          .map((t) => t.trim())
+          .filter(Boolean),
+        use_cases: String(this.editableObjectMetadata.use_cases || '')
+          .split(',')
+          .map((t) => t.trim())
+          .filter(Boolean),
+        documentation_links: String(this.editableObjectMetadata.documentation_links || '')
+          .split(',')
+          .map((t) => t.trim())
+          .filter(Boolean),
+        related_dashboards: String(this.editableObjectMetadata.related_dashboards || '')
           .split(',')
           .map((t) => t.trim())
           .filter(Boolean),
@@ -2608,6 +2770,17 @@ const appConfig = {
           this.showToast(`Metadata update failed: ${err.message}`);
         });
     },
+    downloadObjectDictionary() {
+      if (!this.selectedObjectId) {
+        this.showToast('Select an object first.');
+        return;
+      }
+      const encodedId = encodeURIComponent(this.selectedObjectId);
+      this.downloadProtected(
+        `/api/v1/dictionary/${encodedId}/export.md`,
+        `${this.selectedObjectId}-dictionary.md`
+      );
+    },
     async loadGlossary() {
       try {
         const [termsPayload, domainsPayload] = await Promise.all([
@@ -2619,9 +2792,14 @@ const appConfig = {
 
         this.glossary.terms = termsPayload.terms || [];
         this.glossary.domains = domainsPayload.domains || [];
-        if (!this.glossary.selected && this.glossary.terms.length > 0) {
+        if (this.glossary.terms.length > 0) {
           const [firstTerm] = this.glossary.terms;
-          this.glossary.selected = firstTerm;
+          const selectedStillVisible = this.glossary.terms.some(
+            (term) => term.slug === this.glossary.selected?.slug
+          );
+          await this.openGlossaryTerm(selectedStillVisible ? this.glossary.selected.slug : firstTerm.slug);
+        } else {
+          this.glossary.selected = null;
         }
       } catch (err) {
         this.showToast(`Glossary load failed: ${err.message}`);
@@ -2631,21 +2809,662 @@ const appConfig = {
       try {
         const payload = await this.api(`/api/v1/glossary/${encodeURIComponent(slug)}`);
         this.glossary.selected = payload.term || null;
+        this.glossary.newMapping.asset_id = '';
+        this.glossary.newMapping.notes = '';
+        this.glossary.assetSearchResults = [];
       } catch (err) {
         this.showToast(`Glossary term load failed: ${err.message}`);
       }
     },
+    glossaryArrayField(value = '') {
+      return String(value || '')
+        .split(/[|,;]/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+    },
+    startGlossaryCreate() {
+      this.glossary.editMode = 'create';
+      this.glossary.editing = true;
+      this.glossary.editor = {
+        term: '',
+        domain: this.glossary.domains[0] || 'General',
+        status: 'draft',
+        owner: '',
+        business_owner: '',
+        steward: '',
+        parent: '',
+        synonyms: '',
+        related_terms: '',
+        tags: '',
+        definition: '',
+      };
+    },
+    startGlossaryEdit() {
+      if (!this.glossary.selected) {
+        this.showToast('Select a glossary term first.');
+        return;
+      }
+
+      const selected = this.glossary.selected;
+      this.glossary.editMode = 'edit';
+      this.glossary.editing = true;
+      this.glossary.editor = {
+        term: selected.term || '',
+        domain: selected.domain || 'General',
+        status: selected.status || 'draft',
+        owner: selected.owner || '',
+        business_owner: selected.business_owner || '',
+        steward: selected.steward || '',
+        parent: selected.parent || '',
+        synonyms: (selected.synonyms || []).join(', '),
+        related_terms: (selected.related_terms || []).join(', '),
+        tags: (selected.tags || []).join(', '),
+        definition: selected.definition || '',
+      };
+    },
+    cancelGlossaryEdit() {
+      this.glossary.editing = false;
+    },
+    async saveGlossaryTerm() {
+      const editor = this.glossary.editor;
+      if (!editor.term.trim()) {
+        this.showToast('Term name is required.');
+        return;
+      }
+      if (!editor.definition.trim()) {
+        this.showToast('Definition is required.');
+        return;
+      }
+
+      const payload = {
+        ...editor,
+        term: editor.term.trim(),
+        definition: editor.definition.trim(),
+        synonyms: this.glossaryArrayField(editor.synonyms),
+        related_terms: this.glossaryArrayField(editor.related_terms),
+        tags: this.glossaryArrayField(editor.tags),
+      };
+
+      try {
+        const isEdit = this.glossary.editMode === 'edit' && this.glossary.selected?.slug;
+        const response = await this.api(
+          isEdit
+            ? `/api/v1/glossary/${encodeURIComponent(this.glossary.selected.slug)}`
+            : '/api/v1/glossary',
+          {
+            method: isEdit ? 'PUT' : 'POST',
+            body: JSON.stringify(payload),
+          }
+        );
+        this.glossary.selected = response.term || null;
+        this.glossary.editing = false;
+        await this.loadGlossary();
+        this.showToast(isEdit ? 'Glossary term updated.' : 'Glossary term created.');
+      } catch (err) {
+        this.showToast(`Glossary save failed: ${err.message}`);
+      }
+    },
+    async deleteGlossaryTerm() {
+      if (!this.glossary.selected?.slug) {
+        this.showToast('Select a glossary term first.');
+        return;
+      }
+
+      try {
+        await this.api(`/api/v1/glossary/${encodeURIComponent(this.glossary.selected.slug)}`, {
+          method: 'DELETE',
+        });
+        this.glossary.selected = null;
+        this.glossary.editing = false;
+        await this.loadGlossary();
+        this.showToast('Glossary term deleted.');
+      } catch (err) {
+        this.showToast(`Glossary delete failed: ${err.message}`);
+      }
+    },
+    async searchGlossaryMappingAssets() {
+      const query = String(this.glossary.assetSearchQuery || '').trim();
+      if (!query) {
+        this.glossary.assetSearchResults = [];
+        return;
+      }
+
+      this.glossary.assetSearchLoading = true;
+      try {
+        const payload = await this.api(`/api/v1/search?q=${encodeURIComponent(query)}&limit=8`);
+        this.glossary.assetSearchResults = payload.results || [];
+      } catch (err) {
+        this.showToast(`Asset search failed: ${err.message}`);
+      } finally {
+        this.glossary.assetSearchLoading = false;
+      }
+    },
+    chooseGlossaryMappingAsset(asset) {
+      this.glossary.newMapping.asset_id = asset.id || asset.asset_id || asset.name || '';
+      this.glossary.newMapping.type = asset.type || 'asset';
+    },
+    async resolveGlossarySemanticQuery() {
+      if (!this.glossary.semanticQuery.trim()) {
+        this.showToast('Enter a business term or synonym to resolve.');
+        return;
+      }
+
+      try {
+        const payload = await this.api(
+          `/api/v1/glossary/resolve?q=${encodeURIComponent(this.glossary.semanticQuery)}`
+        );
+        this.glossary.semanticResolution = payload.resolution || null;
+      } catch (err) {
+        this.showToast(`Semantic resolution failed: ${err.message}`);
+      }
+    },
+    async linkGlossaryAsset() {
+      if (!this.glossary.selected?.slug) {
+        this.showToast('Select a glossary term first.');
+        return;
+      }
+      if (!this.glossary.newMapping.asset_id.trim()) {
+        this.showToast('Enter an asset id to link.');
+        return;
+      }
+
+      try {
+        const payload = await this.api(
+          `/api/v1/glossary/${encodeURIComponent(this.glossary.selected.slug)}/assets`,
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              ...this.glossary.newMapping,
+              asset_id: this.glossary.newMapping.asset_id.trim(),
+            }),
+          }
+        );
+        this.glossary.selected = payload.term || this.glossary.selected;
+        this.glossary.newMapping.asset_id = '';
+        this.glossary.newMapping.notes = '';
+        this.showToast('Glossary mapping saved.');
+        await this.loadGlossary();
+      } catch (err) {
+        this.showToast(`Glossary mapping failed: ${err.message}`);
+      }
+    },
     async loadGovernanceSummary() {
       try {
-        const [summaryPayload, healthPayload] = await Promise.all([
-          this.api('/api/v1/governance/summary'),
-          this.api('/api/v1/governance/health'),
+        const optionalApi = (url, fallback) => this.api(url).catch(() => fallback);
+        const [
+          summaryPayload,
+          healthPayload,
+          taxonomyPayload,
+          classificationSummary,
+          policyEffectivenessPayload,
+        ] = await Promise.all([
+          optionalApi('/api/v1/governance/summary', { summaries: [] }),
+          optionalApi('/api/v1/governance/health', null),
+          optionalApi('/api/v1/classification/taxonomy', { taxonomy: null }),
+          optionalApi('/api/v1/classification/summary', null),
+          optionalApi('/api/v1/classification/policies/effectiveness', { report: null }),
         ]);
 
         this.governance.summaries = summaryPayload.summaries || [];
         this.governance.health = healthPayload || null;
+        this.governance.classification.taxonomy = taxonomyPayload.taxonomy || null;
+        this.governance.classification.summary = classificationSummary || null;
+        this.governance.classification.policyEffectiveness =
+          policyEffectivenessPayload.report || null;
+        if (!this.governance.classification.selectedCategoryId) {
+          this.startClassificationCategoryCreate();
+        }
+        if (!this.governance.classification.selectedRuleId) {
+          this.startClassificationRuleCreate();
+        }
+        await this.loadQualityRulesPanel();
       } catch (err) {
         this.showToast(`Governance summary load failed: ${err.message}`);
+      }
+    },
+    formatTrendTimestamp(value) {
+      if (!value) return 'n/a';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return String(value);
+      return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    },
+    qualityScoreForItem(item) {
+      const raw =
+        item?.quality_score ??
+        item?.qualityScore ??
+        item?.quality?.score ??
+        item?.scorecard?.overall_score ??
+        item?.trust_score ??
+        item?.trust?.score;
+      const score = Number(raw);
+      return Number.isFinite(score) ? Math.round(score) : null;
+    },
+    qualityScoreColor(score) {
+      const value = Number(score);
+      if (!Number.isFinite(value)) return 'blue-grey-lighten-4';
+      if (value >= 85) return 'success';
+      if (value >= 70) return 'info';
+      if (value >= 50) return 'warning';
+      return 'error';
+    },
+    qualityTrendLabel(item) {
+      const trend =
+        item?.quality_trend ??
+        item?.qualityTrend ??
+        item?.quality?.trend ??
+        item?.scorecard?.trend;
+      if (typeof trend === 'number') {
+        if (trend > 0) return `+${trend}`;
+        if (trend < 0) return String(trend);
+        return 'flat';
+      }
+      return trend || 'baseline';
+    },
+    thresholdFromQualityEditor() {
+      const editor = this.governance.qualityRules.editor;
+      const threshold = {};
+      if (editor.threshold_min !== '') threshold.min = Number(editor.threshold_min);
+      if (editor.threshold_max !== '') threshold.max = Number(editor.threshold_max);
+      if (editor.threshold_min_percent !== '') {
+        threshold.min_percent = Number(editor.threshold_min_percent);
+      }
+      if (editor.threshold_min_match_percent !== '') {
+        threshold.min_match_percent = Number(editor.threshold_min_match_percent);
+      }
+      return threshold;
+    },
+    startQualityRuleCreate() {
+      this.governance.qualityRules.selectedRuleId = '';
+      this.governance.qualityRules.editor = {
+        id: '',
+        name: '',
+        asset_id: '*',
+        column_name: '',
+        type: 'null_percent',
+        severity: 'warning',
+        threshold_min: '',
+        threshold_max: '5',
+        threshold_min_percent: '',
+        threshold_min_match_percent: '',
+        schedule: '',
+        alert_routes: '',
+        enabled: true,
+      };
+    },
+    editQualityRule(rule) {
+      if (!rule) return;
+      const threshold = rule.threshold || {};
+      this.governance.qualityRules.selectedRuleId = rule.id || '';
+      this.governance.qualityRules.editor = {
+        id: rule.id || '',
+        name: rule.name || '',
+        asset_id: rule.asset_id || '*',
+        column_name: rule.column_name || '',
+        type: rule.type || 'null_percent',
+        severity: rule.severity || 'warning',
+        threshold_min: threshold.min ?? '',
+        threshold_max: threshold.max ?? threshold.max_percent ?? '',
+        threshold_min_percent: threshold.min_percent ?? '',
+        threshold_min_match_percent: threshold.min_match_percent ?? '',
+        schedule: rule.schedule || '',
+        alert_routes: (rule.alert_routes || []).join(', '),
+        enabled: rule.enabled !== false,
+      };
+    },
+    qualityRuleTypeLabel(type) {
+      return String(type || '').replace(/_/g, ' ');
+    },
+    async loadQualityRulesPanel() {
+      try {
+        const [rules, executions, incidents] = await Promise.all([
+          this.api('/api/v1/quality/rules'),
+          this.api('/api/v1/quality/executions'),
+          this.api('/api/v1/quality/incidents'),
+        ]);
+        this.governance.qualityRules.rules = rules.rules || [];
+        this.governance.qualityRules.executions = executions.executions || [];
+        this.governance.qualityRules.incidents = incidents.incidents || [];
+        if (!this.governance.qualityRules.selectedRuleId) {
+          this.startQualityRuleCreate();
+        }
+      } catch (err) {
+        this.showToast(`Quality rules load failed: ${err.message}`);
+      }
+    },
+    async saveQualityRule() {
+      const editor = this.governance.qualityRules.editor;
+      if (!editor.name.trim()) {
+        this.showToast('Quality rule name is required.');
+        return;
+      }
+      try {
+        this.governance.qualityRules.loading = true;
+        await this.api('/api/v1/quality/rules', {
+          method: 'POST',
+          body: JSON.stringify({
+            id: editor.id || undefined,
+            name: editor.name.trim(),
+            asset_id: editor.asset_id || '*',
+            column_name: editor.column_name.trim(),
+            type: editor.type,
+            severity: editor.severity,
+            threshold: this.thresholdFromQualityEditor(),
+            schedule: editor.schedule.trim() || null,
+            alert_routes: this.classificationArrayField(editor.alert_routes),
+            enabled: editor.enabled,
+          }),
+        });
+        this.showToast('Quality rule saved.');
+        await this.loadQualityRulesPanel();
+      } catch (err) {
+        this.showToast(`Quality rule save failed: ${err.message}`);
+      } finally {
+        this.governance.qualityRules.loading = false;
+      }
+    },
+    async deleteQualityRule(rule = null) {
+      const target = rule || this.governance.qualityRules.rules.find(
+        (item) => item.id === this.governance.qualityRules.selectedRuleId
+      );
+      if (!target?.id) {
+        this.showToast('Select a quality rule to delete.');
+        return;
+      }
+      try {
+        await this.api(`/api/v1/quality/rules/${encodeURIComponent(target.id)}`, {
+          method: 'DELETE',
+        });
+        this.showToast('Quality rule deleted.');
+        this.startQualityRuleCreate();
+        await this.loadQualityRulesPanel();
+      } catch (err) {
+        this.showToast(`Quality rule delete failed: ${err.message}`);
+      }
+    },
+    profilePayloadFromQualityRunner() {
+      const profile = this.governance.qualityRules.runProfile;
+      if (!profile.asset_id || !profile.column_name) return {};
+      const columnStats = {};
+      ['row_count', 'null_count', 'distinct_count', 'min', 'max', 'pattern_match_percent'].forEach(
+        (key) => {
+          if (profile[key] !== '') columnStats[key] = Number(profile[key]);
+        }
+      );
+      return {
+        profiles: {
+          [profile.asset_id]: {
+            columns: {
+              [profile.column_name]: columnStats,
+            },
+          },
+        },
+      };
+    },
+    profileForQualityScorecard() {
+      const profile = this.governance.qualityRules.runProfile;
+      if (!profile.asset_id || !profile.column_name) return {};
+      const columnStats = {};
+      ['row_count', 'null_count', 'distinct_count', 'min', 'max', 'pattern_match_percent'].forEach(
+        (key) => {
+          if (profile[key] !== '') columnStats[key] = Number(profile[key]);
+        }
+      );
+      return {
+        asset_id: profile.asset_id,
+        row_count: profile.row_count !== '' ? Number(profile.row_count) : undefined,
+        columns: {
+          [profile.column_name]: columnStats,
+        },
+      };
+    },
+    async buildQualityScorecard() {
+      const profile = this.profileForQualityScorecard();
+      if (!profile.asset_id) {
+        this.showToast('Enter a profile asset and column first.');
+        return null;
+      }
+      try {
+        this.governance.qualityRules.loading = true;
+        const payload = await this.api('/api/v1/quality/scorecard', {
+          method: 'POST',
+          body: JSON.stringify({ profile }),
+        });
+        this.governance.qualityRules.scorecard = payload.scorecard || null;
+        await this.loadQualityTrend(profile.asset_id);
+        this.showToast(`Quality scorecard built for ${profile.asset_id}.`);
+        return payload.scorecard || null;
+      } catch (err) {
+        this.showToast(`Quality scorecard failed: ${err.message}`);
+        return null;
+      } finally {
+        this.governance.qualityRules.loading = false;
+      }
+    },
+    async exportQualityScorecard(format = 'json') {
+      let scorecard = this.governance.qualityRules.scorecard;
+      if (!scorecard) {
+        scorecard = await this.buildQualityScorecard();
+      }
+      if (!scorecard) return;
+      try {
+        const payload = await this.api('/api/v1/quality/scorecard/export', {
+          method: 'POST',
+          body: JSON.stringify({ scorecard, format }),
+        });
+        this.governance.qualityRules.scorecardExport = payload.export || null;
+        this.showToast(`Quality scorecard export ready (${payload.export?.content_type || format}).`);
+      } catch (err) {
+        this.showToast(`Scorecard export failed: ${err.message}`);
+      }
+    },
+    async loadQualityTrend(assetId = '') {
+      const target = assetId || this.governance.qualityRules.runProfile.asset_id;
+      if (!target) {
+        this.showToast('Enter an asset ID to load quality trend.');
+        return;
+      }
+      try {
+        const payload = await this.api(`/api/v1/quality/profiles/${encodeURIComponent(target)}/trend`);
+        this.governance.qualityRules.trend = payload.trend || null;
+      } catch (err) {
+        this.showToast(`Quality trend load failed: ${err.message}`);
+      }
+    },
+    async runQualityValidation() {
+      try {
+        this.governance.qualityRules.loading = true;
+        const payload = await this.api('/api/v1/quality/run', {
+          method: 'POST',
+          body: JSON.stringify(this.profilePayloadFromQualityRunner()),
+        });
+        this.governance.qualityRules.executions = [
+          payload.execution,
+          ...this.governance.qualityRules.executions.filter((item) => item.id !== payload.execution.id),
+        ];
+        await this.buildQualityScorecard();
+        await this.loadQualityRulesPanel();
+        this.showToast(`Quality validation ${payload.execution.status}: ${payload.execution.failed} issue(s).`);
+      } catch (err) {
+        this.showToast(`Quality validation failed: ${err.message}`);
+      } finally {
+        this.governance.qualityRules.loading = false;
+      }
+    },
+    classificationArrayField(value) {
+      return String(value || '')
+        .split(/[\n,]+/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+    },
+    startClassificationCategoryCreate() {
+      this.governance.classification.selectedCategoryId = '';
+      this.governance.classification.categoryEditor = {
+        id: '',
+        label: '',
+        parent: '',
+        level: 1,
+        description: '',
+        regulatory_frameworks: '',
+        name_patterns: '',
+        sensitivity_triggers: '',
+        tag_triggers: '',
+      };
+    },
+    editClassificationCategory(category) {
+      if (!category) return;
+      this.governance.classification.selectedCategoryId = category.id || '';
+      this.governance.classification.categoryEditor = {
+        id: category.id || '',
+        label: category.label || '',
+        parent: category.parent || '',
+        level: category.level || 1,
+        description: category.description || '',
+        regulatory_frameworks: (category.regulatory_frameworks || []).join(', '),
+        name_patterns: (category.name_patterns || []).join('\n'),
+        sensitivity_triggers: (category.sensitivity_triggers || []).join(', '),
+        tag_triggers: (category.tag_triggers || []).join(', '),
+      };
+    },
+    async saveClassificationCategory() {
+      const editor = this.governance.classification.categoryEditor;
+      if (!editor.label.trim()) {
+        this.showToast('Classification category label is required.');
+        return;
+      }
+
+      try {
+        const payload = {
+          ...editor,
+          label: editor.label.trim(),
+          parent: editor.parent.trim() || null,
+          level: Number(editor.level) || 1,
+          regulatory_frameworks: this.classificationArrayField(editor.regulatory_frameworks),
+          name_patterns: this.classificationArrayField(editor.name_patterns),
+          sensitivity_triggers: this.classificationArrayField(editor.sensitivity_triggers),
+          tag_triggers: this.classificationArrayField(editor.tag_triggers),
+        };
+        const response = await this.api('/api/v1/classification/taxonomy/categories', {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        });
+        this.governance.classification.taxonomy = response.taxonomy || null;
+        this.governance.classification.selectedCategoryId =
+          payload.id || payload.label.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        this.showToast('Classification category saved.');
+      } catch (err) {
+        this.showToast(`Category save failed: ${err.message}`);
+      }
+    },
+    async deleteClassificationCategory(category) {
+      if (!category?.id) {
+        this.showToast('Select a custom category to delete.');
+        return;
+      }
+      if (category.built_in) {
+        this.showToast('Built-in categories cannot be deleted.');
+        return;
+      }
+
+      try {
+        const response = await this.api(
+          `/api/v1/classification/taxonomy/categories/${encodeURIComponent(category.id)}`,
+          { method: 'DELETE' }
+        );
+        this.governance.classification.taxonomy = response.taxonomy || null;
+        this.startClassificationCategoryCreate();
+        this.showToast('Classification category deleted.');
+      } catch (err) {
+        this.showToast(`Category delete failed: ${err.message}`);
+      }
+    },
+    startClassificationRuleCreate() {
+      this.governance.classification.selectedRuleId = '';
+      this.governance.classification.ruleEditor = {
+        id: '',
+        label: '',
+        target: 'column',
+        classification: 'PII',
+        pattern: '',
+        min_column_hits: '',
+        confidence: 0.8,
+        enabled: true,
+        description: '',
+      };
+    },
+    editClassificationRule(rule) {
+      if (!rule) return;
+      this.governance.classification.selectedRuleId = rule.id || '';
+      this.governance.classification.ruleEditor = {
+        id: rule.id || '',
+        label: rule.label || '',
+        target: rule.target || 'asset',
+        classification: rule.classification || '',
+        pattern: rule.pattern || '',
+        min_column_hits: rule.min_column_hits || '',
+        confidence: rule.confidence || 0.8,
+        enabled: rule.enabled !== false,
+        description: rule.description || '',
+      };
+    },
+    async saveClassificationRule() {
+      const editor = this.governance.classification.ruleEditor;
+      if (!editor.label.trim() || !editor.classification.trim() || !editor.pattern.trim()) {
+        this.showToast('Rule name, classification, and pattern are required.');
+        return;
+      }
+
+      try {
+        const payload = {
+          ...editor,
+          label: editor.label.trim(),
+          classification: editor.classification.trim(),
+          pattern: editor.pattern.trim(),
+          confidence: Number(editor.confidence) || 0.75,
+          min_column_hits: editor.min_column_hits ? Number(editor.min_column_hits) : null,
+        };
+        const response = await this.api('/api/v1/classification/rules', {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        });
+        this.governance.classification.taxonomy = response.taxonomy || null;
+        this.governance.classification.selectedRuleId =
+          payload.id || payload.label.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        this.showToast('Classification rule saved.');
+      } catch (err) {
+        this.showToast(`Rule save failed: ${err.message}`);
+      }
+    },
+    async deleteClassificationRule(rule) {
+      if (!rule?.id) {
+        this.showToast('Select a rule to delete.');
+        return;
+      }
+
+      try {
+        const response = await this.api(`/api/v1/classification/rules/${encodeURIComponent(rule.id)}`, {
+          method: 'DELETE',
+        });
+        this.governance.classification.taxonomy = response.taxonomy || null;
+        this.startClassificationRuleCreate();
+        this.showToast('Classification rule deleted.');
+      } catch (err) {
+        this.showToast(`Rule delete failed: ${err.message}`);
+      }
+    },
+    async runClassificationRules() {
+      try {
+        this.governance.classification.loading = true;
+        const payload = await this.api('/api/v1/classification/run', {
+          method: 'POST',
+          body: JSON.stringify({ limit: 100 }),
+        });
+        this.governance.classification.run = payload;
+        this.showToast(`Classification rules evaluated ${payload.evaluated_assets || 0} assets.`);
+        await this.loadGovernanceSummary();
+      } catch (err) {
+        this.showToast(`Classification run failed: ${err.message}`);
+      } finally {
+        this.governance.classification.loading = false;
       }
     },
     async loadProductsCatalog() {
@@ -2660,6 +3479,127 @@ const appConfig = {
         this.showToast(`Products load failed: ${err.message}`);
       }
     },
+    async searchLineageObjects(query = this.lineageObjectSearch.query || this.selectedObjectId) {
+      const searchText = String(query || '').trim();
+      this.lineageObjectSearch.query = searchText;
+
+      if (!searchText) {
+        this.lineageObjectSearch.results = [];
+        this.lineageObjectSearch.open = false;
+        return;
+      }
+
+      try {
+        this.lineageObjectSearch.loading = true;
+        const payload = await this.api(
+          `/api/v1/search?q=${encodeURIComponent(searchText)}&limit=12`
+        );
+        this.lineageObjectSearch.results = (payload.results || []).map((item) => ({
+          id: item.id || item.asset_id || item.name,
+          name: item.name || item.id,
+          database: item.database || item.schema || '',
+          type: item.type || 'object',
+          description: item.description || '',
+        }));
+        this.lineageObjectSearch.open = this.lineageObjectSearch.results.length > 0;
+      } catch (err) {
+        this.lineageObjectSearch.results = [];
+        this.lineageObjectSearch.open = false;
+        this.showToast(`Lineage object search failed: ${err.message}`);
+      } finally {
+        this.lineageObjectSearch.loading = false;
+      }
+    },
+    chooseLineageObject(item) {
+      if (!item?.id) return;
+      this.selectedObjectId = item.id;
+      this.lineageObjectSearch.query = item.id;
+      this.lineageObjectSearch.open = false;
+      if (item.database) {
+        this.matrixDatabase = item.database;
+      } else if (item.id.includes('.')) {
+        const parts = item.id.split('.');
+        this.matrixDatabase = (parts.length >= 4 ? parts[1] : parts[0]) || this.matrixDatabase;
+      }
+    },
+    chooseExactLineageObjectMatch() {
+      const query = String(this.lineageObjectSearch.query || '').trim().toLowerCase();
+      if (!query) return false;
+      const exact = this.lineageObjectSearch.results.find(
+        (item) => String(item.id || '').toLowerCase() === query
+      );
+      if (!exact) return false;
+      this.chooseLineageObject(exact);
+      return true;
+    },
+    async renderSelectedLineage() {
+      if (!this.selectedObjectId && this.lineageObjectSearch.results.length === 1) {
+        this.chooseLineageObject(this.lineageObjectSearch.results[0]);
+      }
+      if (!this.selectedObjectId) {
+        this.chooseExactLineageObjectMatch();
+      }
+      if (!this.selectedObjectId && this.lineageObjectSearch.query) {
+        await this.searchLineageObjects(this.lineageObjectSearch.query);
+        if (this.chooseExactLineageObjectMatch()) {
+          // Exact typed object id selected.
+        } else if (this.lineageObjectSearch.results.length === 1) {
+          this.chooseLineageObject(this.lineageObjectSearch.results[0]);
+        }
+      }
+      if (!this.selectedObjectId) {
+        this.showToast('Choose a catalog object before rendering lineage.');
+        return;
+      }
+      await this.loadDiscovery();
+    },
+    async runBlastRadiusAnalysis() {
+      if (!this.selectedObjectId && this.lineageObjectSearch.query) {
+        await this.renderSelectedLineage();
+      }
+      if (!this.selectedObjectId) {
+        const matchCount = this.lineageObjectSearch.results?.length || 0;
+        this.lineageObjectSearch.open = matchCount > 0;
+        this.reports.blastRadiusStatus = matchCount
+          ? `Choose one of the ${matchCount} matching catalog objects, then run Blast Radius.`
+          : 'Choose a catalog object before running blast radius.';
+        this.showToast(this.reports.blastRadiusStatus);
+        return;
+      }
+
+      this.reports.blastRadiusLoading = true;
+      this.reports.blastRadiusStatus = `Analyzing impact for ${this.selectedObjectId}...`;
+
+      try {
+        if (!this.discoveryGraph || !this.graphReportData) {
+          await this.loadDiscovery();
+        } else {
+          this.buildBlastRadiusReport();
+          await nextTick();
+          this.renderBlastRadiusChart();
+        }
+
+        const impactedCount = this.reports.blastRows?.length || 0;
+        const downstreamCount = this.reports.blastRadius?.directDownstream || 0;
+        this.reports.blastRadiusStatus = impactedCount
+          ? `Blast radius ready: ${impactedCount} impacted object${impactedCount === 1 ? '' : 's'} found, including ${downstreamCount} direct downstream object${downstreamCount === 1 ? '' : 's'}.`
+          : `Blast radius complete: no downstream impact objects were found for ${this.selectedObjectId}.`;
+        this.showToast(this.reports.blastRadiusStatus);
+        await this.scrollToBlastRadiusResults();
+      } catch (err) {
+        this.reports.blastRadiusStatus = `Blast radius failed: ${err.message}`;
+        this.showToast(this.reports.blastRadiusStatus);
+      } finally {
+        this.reports.blastRadiusLoading = false;
+      }
+    },
+    async scrollToBlastRadiusResults() {
+      await nextTick();
+      const target = this.$refs.impactSummaryCard?.$el || this.$refs.impactSummaryCard;
+      if (target?.scrollIntoView) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    },
     async loadDiscovery() {
       // Guard clause: Stop if no object is selected
       if (!this.selectedObjectId) {
@@ -2671,6 +3611,9 @@ const appConfig = {
       }
 
       try {
+        if (!this.lineageObjectSearch.query) {
+          this.lineageObjectSearch.query = this.selectedObjectId;
+        }
         const graphFormat = String(this.discoveryFormat || 'cytoscape').toLowerCase();
         const reportGraphFormat = graphFormat === 'centered' ? 'centered' : 'cytoscape';
         const requests = [
@@ -3125,6 +4068,24 @@ const appConfig = {
               },
             },
             {
+              selector: 'node.semantic-mapped',
+              style: {
+                'border-color': '#22c55e',
+                'border-width': 4,
+                'shadow-color': '#22c55e',
+                'shadow-opacity': 0.34,
+                'shadow-blur': 18,
+              },
+            },
+            {
+              selector: 'node.semantic-propagated',
+              style: {
+                'border-color': '#f59e0b',
+                'border-width': 3,
+                'border-style': 'dashed',
+              },
+            },
+            {
               selector: 'node:selected',
               style: {
                 'border-color': '#fbbf24',
@@ -3193,6 +4154,15 @@ const appConfig = {
                 'line-color': '#fb7185',
                 'target-arrow-color': '#fb7185',
                 width: 3.2,
+              },
+            },
+            {
+              selector: 'edge.semantic-edge',
+              style: {
+                'line-color': '#22c55e',
+                'target-arrow-color': '#22c55e',
+                'line-style': 'solid',
+                width: 4,
               },
             },
             {
@@ -3525,8 +4495,115 @@ const appConfig = {
 
         this.integrations.settings = settings.data;
         this.integrations.webhooks = webhooks.data?.webhooks || [];
+        await this.loadManagedConnectors();
       } catch (err) {
         this.showToast(`Integrations load issue: ${err.message}`);
+      }
+    },
+    parseConnectorConfigJson() {
+      const raw = this.integrations.connectorEditor.configJson || '{}';
+      try {
+        return JSON.parse(raw);
+      } catch (_err) {
+        this.showToast('Connector config must be valid JSON.');
+        return null;
+      }
+    },
+    async loadManagedConnectors() {
+      try {
+        this.integrations.connectorLoading = true;
+        const [definitions, connectors] = await Promise.all([
+          this.api('/api/v1/connectors/definitions'),
+          this.api('/api/v1/connectors'),
+        ]);
+        this.integrations.connectorDefinitions = definitions.definitions || [];
+        this.integrations.managedConnectors = connectors.connectors || [];
+        if (!this.integrations.connectorGrant.connectorId && this.integrations.managedConnectors.length) {
+          this.integrations.connectorGrant.connectorId = this.integrations.managedConnectors[0].id;
+        }
+      } catch (err) {
+        this.showToast(`Managed connector load failed: ${err.message}`);
+      } finally {
+        this.integrations.connectorLoading = false;
+      }
+    },
+    connectorDefinitionLabel(type) {
+      const definition = this.integrations.connectorDefinitions.find((item) => item.type === type);
+      return definition ? `${definition.label} (${definition.cloud})` : type;
+    },
+    async saveManagedConnector() {
+      const editor = this.integrations.connectorEditor;
+      const config = this.parseConnectorConfigJson();
+      if (!config) return;
+      try {
+        this.integrations.connectorLoading = true;
+        await this.api('/api/v1/connectors', {
+          method: 'POST',
+          body: JSON.stringify({
+            id: editor.id,
+            type: editor.type,
+            label: editor.label,
+            description: editor.description,
+            config,
+            credential: {
+              mode: editor.credentialMode,
+              secret_ref: editor.secretRef,
+              secret: editor.rawSecret || undefined,
+            },
+          }),
+        });
+        editor.rawSecret = '';
+        await this.loadManagedConnectors();
+        this.showToast('Managed connector saved.');
+      } catch (err) {
+        this.showToast(`Managed connector save failed: ${err.message}`);
+      } finally {
+        this.integrations.connectorLoading = false;
+      }
+    },
+    async grantManagedConnectorPermission() {
+      const grant = this.integrations.connectorGrant;
+      if (!grant.connectorId || !grant.subject) {
+        this.showToast('Connector and permission subject are required.');
+        return;
+      }
+      try {
+        await this.api(`/api/v1/connectors/${encodeURIComponent(grant.connectorId)}/permissions`, {
+          method: 'POST',
+          body: JSON.stringify({
+            scope: grant.scope,
+            subject: grant.subject,
+            actions: grant.actions,
+          }),
+        });
+        await this.loadManagedConnectors();
+        this.showToast('Connector permission granted.');
+      } catch (err) {
+        this.showToast(`Connector permission failed: ${err.message}`);
+      }
+    },
+    async runManagedConnector(connectorId) {
+      try {
+        this.integrations.connectorLoading = true;
+        const payload = await this.api(`/api/v1/connectors/${encodeURIComponent(connectorId)}/run`, {
+          method: 'POST',
+          body: JSON.stringify({ dry_run: true }),
+        });
+        this.integrations.connectorRuns = [payload.run, ...this.integrations.connectorRuns].slice(0, 10);
+        await this.loadManagedConnectorSnapshot(connectorId);
+        this.showToast(`Connector run ${payload.run.status}: ${payload.run.summary.discovered_objects} metadata object(s).`);
+      } catch (err) {
+        this.showToast(`Connector run failed: ${err.message}`);
+      } finally {
+        this.integrations.connectorLoading = false;
+      }
+    },
+    async loadManagedConnectorSnapshot(connectorId) {
+      try {
+        const payload = await this.api(`/api/v1/connectors/${encodeURIComponent(connectorId)}/snapshot`);
+        this.integrations.connectorSnapshot = payload.snapshot || null;
+      } catch (err) {
+        this.showToast(`Connector snapshot failed: ${err.message}`);
       }
     },
     async saveNotificationChannel() {
@@ -3894,11 +4971,12 @@ const appConfig = {
         }
         this.importer.sqlServer.showScopeSelector = false;
         const objectSummary = `${payload.data.totalObjectsExtracted} objects (${payload.data.tablesExtracted} tables, ${payload.data.viewsExtracted} views, ${payload.data.proceduresExtracted} procs, ${payload.data.functionsExtracted} functions, ${payload.data.triggersExtracted} triggers)`;
+        const frameworkSummary = payload.data.connectorExtraction?.summary;
         const outputHint = payload.data.markdownOutputPath
           ? ` Files saved to ${payload.data.markdownOutputPath}`
           : '';
         this.showToast(
-          `SQL Server extraction complete: ${objectSummary}, ${payload.data.relationshipsDetected} relationships.${outputHint}`
+          `SQL Server extraction complete: ${objectSummary}, ${payload.data.relationshipsDetected} relationships, ${frameworkSummary?.event_count || 0} framework event(s).${outputHint}`
         );
       } catch (err) {
         this.showToast(`SQL Server extraction failed: ${err.message}`);
@@ -4106,8 +5184,9 @@ const appConfig = {
         }
 
         const summary = payload.summary?.counts || {};
+        const frameworkSummary = payload.connectorExtraction?.summary;
         this.showToast(
-          `SSIS extraction complete: ${summary.packages || 0} packages, ${summary.lineageEdges || 0} edges detected. Raw XML dump is always enabled.`
+          `SSIS extraction complete: ${summary.packages || 0} packages, ${summary.lineageEdges || 0} edges detected, ${frameworkSummary?.event_count || 0} framework event(s). Raw XML dump is always enabled.`
         );
       } catch (err) {
         const detail = err?.details ? ` ${err.details}` : '';
@@ -4882,7 +5961,29 @@ const appConfig = {
                 <v-col cols="12" sm="12" md="7" lg="8">
                   <v-card variant="outlined">
                     <v-card-title style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:12px;">Quality Radar</v-card-title>
-                    <v-card-text style="min-height:290px;"><canvas id="quality-chart"></canvas></v-card-text>
+                    <v-card-text style="min-height:290px;">
+                      <div class="quality-radar-bars" v-if="qualityRadarSignals.length">
+                        <div
+                          v-for="signal in qualityRadarSignals"
+                          :key="'quality-radar-' + signal.key"
+                          class="quality-radar-row"
+                        >
+                          <div class="quality-radar-label">
+                            <strong>{{ signal.label }}</strong>
+                            <span>{{ signal.value }}</span>
+                          </div>
+                          <div class="quality-radar-track">
+                            <div
+                              class="quality-radar-fill"
+                              :class="signal.passing ? 'pass' : 'gap'"
+                              :style="{ width: Math.max(3, Number(signal.percentage || 0)) + '%' }"
+                            ></div>
+                          </div>
+                          <div class="quality-radar-score">{{ signal.percentage || 0 }}%</div>
+                        </div>
+                      </div>
+                      <div v-else class="empty">Load data to see quality signals.</div>
+                    </v-card-text>
                   </v-card>
                 </v-col>
 
@@ -4895,13 +5996,17 @@ const appConfig = {
                       </ul>
 
                       <h4 style="margin:12px 0 8px;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;">Quality Checks</h4>
-                      <div class="check-list" v-if="quality && quality.checks">
-                        <div v-for="(val, key) in quality.checks" :key="key" class="check-item" :class="val ? 'pass' : 'fail'">
+                      <div class="check-list" v-if="quality && (quality.signals?.length || quality.checks)">
+                        <div v-for="signal in (quality.signals || [])" :key="signal.key" class="check-item" :class="signal.passing ? 'pass' : 'fail'">
+                          <span class="check-icon">{{ signal.passing ? '&#10003;' : '&#10007;' }}</span>
+                          <span class="check-label">{{ signal.label }} · {{ signal.value }}</span>
+                          <v-chip size="x-small" :class="signal.passing ? 'analyst' : 'admin'" variant="flat">{{ signal.percentage }}%</v-chip>
+                        </div>
+                        <div v-if="!(quality.signals || []).length" v-for="(val, key) in quality.checks" :key="key" class="check-item" :class="val ? 'pass' : 'fail'">
                           <span class="check-icon">{{ val ? '&#10003;' : '&#10007;' }}</span>
                           <span class="check-label">{{ key.replace(/([A-Z])/g,' $1').replace(/^./,s=>s.toUpperCase()) }}</span>
                           <v-chip size="x-small" :class="val ? 'analyst' : 'admin'" variant="flat">{{ val ? 'Pass' : 'Fail' }}</v-chip>
                         </div>
-                        <div v-if="!quality.checks" class="empty">No quality data yet.</div>
                       </div>
                       <div v-else class="empty">Load data to see quality checks.</div>
                     </v-card-text>
@@ -4914,7 +6019,7 @@ const appConfig = {
                     <v-card-text>
                       <div class="asset-results">
                         <div
-                          v-for="obj in (objectList.length ? objectList : (demoModeEnabled ? demoSnapshot.objects : [])).slice(0,6)"
+                          v-for="obj in (overviewRecentObjects.length ? overviewRecentObjects : (demoModeEnabled ? demoSnapshot.objects : []))"
                           :key="obj.id"
                           class="asset-card"
                           :class="{ selected: selectedObjectId === obj.id }"
@@ -4934,17 +6039,20 @@ const appConfig = {
                               <v-chip size="x-small" variant="tonal" class="schema-badge">{{ obj.database || 'unknown' }}</v-chip>
                               <v-chip size="x-small" variant="outlined" class="owner-chip">&#128100; {{ obj.owner || 'unassigned' }}</v-chip>
                               <v-chip size="x-small" variant="outlined" class="type-chip">{{ obj.type || 'object' }}</v-chip>
+                              <v-chip size="x-small" variant="tonal" :color="qualityScoreColor(qualityScoreForItem(obj))">Quality {{ qualityScoreForItem(obj) ?? 'n/a' }}</v-chip>
+                              <v-chip size="x-small" variant="outlined">Trend {{ qualityTrendLabel(obj) }}</v-chip>
                             </div>
                           </div>
                           <div class="asset-actions">
                             <v-btn size="small" variant="outlined" append-icon="mdi-open-in-new" @click.stop="selectedObjectId = obj.id; onViewChange('discovery'); $nextTick(loadDiscovery)">Lineage</v-btn>
                           </div>
                         </div>
-                        <div v-if="!(objectList.length || (demoModeEnabled && demoSnapshot.objects.length))" class="empty-state">
+                        <div v-if="!(overviewRecentObjects.length || (demoModeEnabled && demoSnapshot.objects.length))" class="empty-state">
                           <div class="empty-state-icon">&#128193;</div>
-                          <h4>No catalog objects yet</h4>
-                          <p>Connect to SQL Server or upload markdown files to populate your catalog.</p>
-                          <v-btn color="primary" @click="onViewChange('import')">Go to Ingestion</v-btn>
+                          <h4>{{ catalogHasLoadedObjects ? 'Catalog loaded, examples unavailable' : 'No catalog objects yet' }}</h4>
+                          <p v-if="catalogHasLoadedObjects">The dashboard has loaded catalog totals, but no sample objects were returned for this card.</p>
+                          <p v-else>Connect to SQL Server or upload markdown files to populate your catalog.</p>
+                          <v-btn color="primary" @click="catalogHasLoadedObjects ? onViewChange('browse') : onViewChange('import')">{{ catalogHasLoadedObjects ? 'Open Catalog Search' : 'Go to Ingestion' }}</v-btn>
                         </div>
                       </div>
                     </v-card-text>
@@ -5210,6 +6318,8 @@ const appConfig = {
                           <v-chip v-if="item.sensitivity" size="x-small" :class="'sens-' + item.sensitivity" variant="flat">{{ item.sensitivity }}</v-chip>
                           <v-chip v-if="item.trust_level" size="x-small" class="analyst" variant="flat">Trust: {{ item.trust_level }}</v-chip>
                           <v-chip v-if="item.certified" size="x-small" class="poweruser" variant="flat">Certified</v-chip>
+                          <v-chip size="x-small" variant="tonal" :color="qualityScoreColor(qualityScoreForItem(item))">Quality {{ qualityScoreForItem(item) ?? 'n/a' }}</v-chip>
+                          <v-chip size="x-small" variant="outlined">Trend {{ qualityTrendLabel(item) }}</v-chip>
                           <v-chip
                             v-for="cls in (item.classifications || []).slice(0, 3)"
                             :key="(item.id || item.name) + '-cls-' + cls"
@@ -5265,6 +6375,8 @@ const appConfig = {
                             >External Source</v-chip>
                             <v-chip v-if="selectedObjectGovernance?.trust?.trust_level" size="x-small" class="analyst" variant="flat">{{ selectedObjectGovernance.trust.trust_level }}</v-chip>
                             <v-chip v-if="selectedObjectGovernance?.trust?.certified" size="x-small" class="poweruser" variant="flat">Certified</v-chip>
+                            <v-chip size="x-small" variant="tonal" :color="qualityScoreColor(qualityScoreForItem(selectedObjectDetail))">Quality {{ qualityScoreForItem(selectedObjectDetail) ?? 'n/a' }}</v-chip>
+                            <v-chip size="x-small" variant="outlined">Trend {{ qualityTrendLabel(selectedObjectDetail) }}</v-chip>
                           </div>
                           <div v-if="selectedObjectDetail.external_source" style="margin-top:8px;font-size:12px;color:var(--text-muted);">
                             This table is source-owned in the current corpus, so created_by is intentionally empty until a local writer is discovered.
@@ -5278,11 +6390,65 @@ const appConfig = {
                         <v-btn size="small" variant="outlined" append-icon="mdi-open-in-new" @click="onViewChange('discovery'); $nextTick(loadDiscovery)">Lineage</v-btn>
                       </div>
                       <p style="font-size:13px;color:var(--text-muted);">{{ selectedObjectDetail.description || 'No description available.' }}</p>
+                      <div class="asset-semantic-strip" v-if="selectedObjectGovernance?.glossary_links?.length">
+                        <div>
+                          <span>Business Terms</span>
+                          <strong>{{ selectedObjectGovernance.glossary_links.length }} mapped</strong>
+                        </div>
+                        <button
+                          v-for="term in selectedObjectGovernance.glossary_links"
+                          :key="'asset-semantic-' + term.slug"
+                          @click="onViewChange('glossary'); $nextTick(() => openGlossaryTerm(term.slug))"
+                        >{{ term.term }}</button>
+                      </div>
                       <div class="stat-row">
                         <div class="stat-item"><div class="stat-value">{{ selectedObjectDetail.upstreamCount || '-' }}</div><div class="stat-label">Upstream</div></div>
                         <div class="stat-item"><div class="stat-value">{{ selectedObjectDetail.downstreamCount || '-' }}</div><div class="stat-label">Downstream</div></div>
                         <div class="stat-item"><div class="stat-value">{{ selectedObjectDetail.sensitivity || '-' }}</div><div class="stat-label">Sensitivity</div></div>
                         <div class="stat-item"><div class="stat-value">{{ selectedObjectGovernance?.trust?.score || '-' }}</div><div class="stat-label">Trust Score</div></div>
+                        <div class="stat-item"><div class="stat-value">{{ qualityScoreForItem(selectedObjectDetail) ?? '-' }}</div><div class="stat-label">Quality Score</div></div>
+                        <div class="stat-item"><div class="stat-value">{{ qualityTrendLabel(selectedObjectDetail) }}</div><div class="stat-label">Quality Trend</div></div>
+                      </div>
+                      <div class="schema-column-browser mt-12" v-if="selectedObjectDictionary">
+                        <div class="section-header" style="margin-bottom:10px;">
+                          <span class="section-title">Column Dictionary</span>
+                          <div class="btn-row">
+                            <v-chip size="x-small" variant="tonal">{{ selectedObjectDictionary.columns?.length || 0 }} columns</v-chip>
+                            <v-btn
+                              size="small"
+                              variant="outlined"
+                              append-icon="mdi-download"
+                              @click="downloadObjectDictionary"
+                            >Export</v-btn>
+                          </div>
+                        </div>
+                        <v-table density="compact" class="dictionary-table">
+                          <thead>
+                            <tr>
+                              <th>Column</th>
+                              <th>Type</th>
+                              <th>Semantic</th>
+                              <th>Sensitivity</th>
+                              <th>Description</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr v-for="column in (selectedObjectDictionary.columns || []).slice(0, 40)" :key="'dict-column-' + column.column_id">
+                              <td><code>{{ column.name }}</code></td>
+                              <td>{{ column.data_type || '-' }}</td>
+                              <td>
+                                <v-chip size="x-small" variant="tonal" :color="column.is_metric ? 'primary' : 'blue-grey-lighten-4'">
+                                  {{ column.semantic_type || (column.is_key ? 'key' : '-') }}
+                                </v-chip>
+                              </td>
+                              <td>{{ column.sensitivity || '-' }}</td>
+                              <td>{{ column.description || '-' }}</td>
+                            </tr>
+                            <tr v-if="!(selectedObjectDictionary.columns || []).length">
+                              <td colspan="5" class="text-center">No column metadata captured yet.</td>
+                            </tr>
+                          </tbody>
+                        </v-table>
                       </div>
                       <div class="grid mt-12" style="grid-template-columns:1fr 1fr;gap:12px;">
                         <v-card class="card" style="box-shadow:none;" variant="outlined">
@@ -5291,6 +6457,9 @@ const appConfig = {
                           <div class="form-row"><v-text-field v-model="editableObjectMetadata.steward" placeholder="Steward" density="compact" variant="outlined" hide-details></v-text-field></div>
                           <div class="form-row"><v-text-field v-model="editableObjectMetadata.domain_manager" placeholder="Domain Manager" density="compact" variant="outlined" hide-details></v-text-field></div>
                           <div class="form-row"><v-text-field v-model="editableObjectMetadata.custodian" placeholder="Custodian" density="compact" variant="outlined" hide-details></v-text-field></div>
+                          <div class="form-row"><v-text-field v-model="editableObjectMetadata.business_domain" placeholder="Business Domain" density="compact" variant="outlined" hide-details></v-text-field></div>
+                          <div class="form-row"><v-text-field v-model="editableObjectMetadata.business_processes" placeholder="Business Processes (comma-separated)" density="compact" variant="outlined" hide-details></v-text-field></div>
+                          <div class="form-row"><v-text-field v-model="editableObjectMetadata.use_cases" placeholder="Use Cases (comma-separated)" density="compact" variant="outlined" hide-details></v-text-field></div>
                           <div class="form-row">
                             <v-select
                               v-model="editableObjectMetadata.sensitivity"
@@ -5301,6 +6470,9 @@ const appConfig = {
                             ></v-select>
                           </div>
                           <div class="form-row"><v-text-field v-model="editableObjectMetadata.tags" placeholder="Tags (comma-separated)" density="compact" variant="outlined" hide-details></v-text-field></div>
+                          <div class="form-row"><v-text-field v-model="editableObjectMetadata.documentation_links" placeholder="Documentation Links (comma-separated)" density="compact" variant="outlined" hide-details></v-text-field></div>
+                          <div class="form-row"><v-text-field v-model="editableObjectMetadata.related_dashboards" placeholder="Related Dashboards (comma-separated)" density="compact" variant="outlined" hide-details></v-text-field></div>
+                          <div class="form-row"><v-textarea v-model="editableObjectMetadata.business_justification" rows="3" variant="outlined" density="compact" hide-details placeholder="Business justification"></v-textarea></div>
                           <div class="form-row"><v-textarea v-model="editableObjectMetadata.description" rows="5" variant="outlined" density="compact" hide-details placeholder="Description"></v-textarea></div>
                           <div class="btn-row"><v-btn color="primary" @click="saveSelectedObjectMetadata">Save Markdown Metadata</v-btn></div>
                         </v-card>
@@ -5316,6 +6488,39 @@ const appConfig = {
                             <div class="section-title" style="font-size:11px;margin-bottom:6px;">Classifications</div>
                             <div class="btn-row">
                               <v-chip v-for="cls in selectedObjectGovernance.classifications" :key="'detail-cls-' + cls" class="viewer" size="x-small" variant="flat">{{ cls }}</v-chip>
+                            </div>
+                          </div>
+                          <div class="mt-8" v-if="selectedObjectPiiPolicy">
+                            <div class="section-title" style="font-size:11px;margin-bottom:6px;">PII Masking Policy</div>
+                            <div class="policy-summary-strip">
+                              <span :class="selectedObjectPiiPolicy.summary?.requires_masking ? 'policy-risk' : 'policy-ok'">
+                                {{ selectedObjectPiiPolicy.summary?.requires_masking ? 'Mask required' : 'No PII detected' }}
+                              </span>
+                              <strong>{{ selectedObjectPiiPolicy.summary?.pii_columns || 0 }} / {{ selectedObjectPiiPolicy.summary?.total_columns || 0 }} columns</strong>
+                            </div>
+                            <div class="policy-action-list" v-if="selectedObjectPiiPolicy.masking_actions?.length">
+                              <div v-for="action in selectedObjectPiiPolicy.masking_actions" :key="'mask-action-' + action.column_name" class="policy-action-row">
+                                <code>{{ action.column_name }}</code>
+                                <span>{{ action.strategy }}</span>
+                                <strong>{{ Math.round((action.confidence || 0) * 100) }}%</strong>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mt-8" v-if="selectedObjectColumnSemantics?.can_answer_metric_question">
+                            <div class="section-title" style="font-size:11px;margin-bottom:6px;">Metric Columns</div>
+                            <div class="policy-action-list">
+                              <div
+                                v-for="column in selectedObjectColumnSemantics.metric_columns || []"
+                                :key="'metric-column-' + column.column_name"
+                                class="policy-action-row"
+                              >
+                                <code>{{ column.column_name }}</code>
+                                <span>{{ column.semantic_type }}</span>
+                                <strong>{{ Math.round((column.confidence || 0) * 100) }}%</strong>
+                              </div>
+                              <div v-if="!(selectedObjectColumnSemantics.metric_columns || []).length" class="policy-empty-row">
+                                No metric columns detected from current metadata.
+                              </div>
                             </div>
                           </div>
                           <div class="mt-8" v-if="selectedObjectGovernance?.glossary_links?.length">
@@ -5346,64 +6551,240 @@ const appConfig = {
             </div>
 
             <div v-if="activeView === 'glossary'">
-              <v-row>
-              <v-col cols="12" md="3" lg="2">
-              <v-card class="card" variant="outlined">
-                <div class="section-header" style="margin-bottom:10px;">
-                  <span class="section-title">Business Glossary</span>
-                </div>
-                <div class="form-row">
-                  <v-text-field
-                    v-model="glossary.query"
-                    placeholder="Search glossary terms..."
-                    density="compact"
-                    variant="outlined"
-                    hide-details
-                    @keyup.enter="loadGlossary"
-                  ></v-text-field>
-                </div>
-                <div class="btn-row" style="margin-bottom:10px;">
-                  <v-btn size="small" color="primary" @click="loadGlossary">Search</v-btn>
-                </div>
-                <div class="facet-group" v-if="glossary.domains.length">
-                  <div class="facet-group-title">Domains</div>
-                  <div class="facet-item" v-for="domain in glossary.domains" :key="'glossary-domain-' + domain">
-                    <span>{{ domain }}</span>
-                  </div>
-                </div>
-                <div class="mini-stack" style="margin-top:12px;">
-                  <v-btn
-                    v-for="term in glossary.terms"
-                    :key="term.slug"
-                    size="small"
-                    variant="outlined"
-                    style="justify-content:flex-start;"
-                    @click="openGlossaryTerm(term.slug)"
-                  >{{ term.term }}</v-btn>
-                </div>
-              </v-card>
-              </v-col>
-              <v-col cols="12" md="9" lg="10">
-              <v-card class="card" variant="outlined">
-                <div v-if="glossary.selected">
-                  <div class="section-header" style="margin-bottom:8px;">
-                    <span class="section-title">{{ glossary.selected.term }}</span>
-                    <div class="btn-row">
-                      <v-chip class="analyst" size="x-small" variant="flat">{{ glossary.selected.domain }}</v-chip>
-                      <v-chip class="viewer" size="x-small" variant="flat">{{ glossary.selected.status }}</v-chip>
+              <div class="glossary-workspace">
+                <aside class="glossary-rail">
+                  <div class="glossary-rail-block">
+                    <div class="glossary-rail-title">Business Glossary</div>
+                    <div class="form-row">
+                      <v-text-field
+                        v-model="glossary.query"
+                        placeholder="Search terms, owners, synonyms..."
+                        density="compact"
+                        variant="outlined"
+                        hide-details
+                        @keyup.enter="loadGlossary"
+                      ></v-text-field>
+                    </div>
+                    <v-btn size="small" color="primary" block @click="loadGlossary">Search</v-btn>
+                    <div class="glossary-admin-actions">
+                      <v-btn size="small" variant="tonal" color="primary" @click="startGlossaryCreate">New Term</v-btn>
+                      <v-btn size="small" variant="tonal" :disabled="!glossary.selected" @click="startGlossaryEdit">Edit</v-btn>
+                    </div>
+                    <div class="glossary-domain-list" v-if="glossary.domains.length">
+                      <div class="glossary-muted-label">Domains</div>
+                      <div class="glossary-domain" v-for="domain in glossary.domains" :key="'glossary-domain-' + domain">
+                        <span>{{ domain }}</span>
+                      </div>
+                    </div>
+                    <div class="glossary-term-list">
+                      <button
+                        v-for="term in glossary.terms"
+                        :key="term.slug"
+                        class="glossary-term-button"
+                        :class="{ active: term.slug === glossary.selected?.slug }"
+                        @click="openGlossaryTerm(term.slug)"
+                      >
+                        <span class="glossary-term-name">{{ term.term }}</span>
+                        <span class="glossary-term-meta">{{ term.domain }}<template v-if="term.asset_count"> · {{ term.asset_count }} links</template></span>
+                      </button>
                     </div>
                   </div>
-                  <div class="asset-meta" style="margin-bottom:8px;">
-                    <v-chip class="owner-chip" size="x-small" variant="outlined">&#128100; {{ glossary.selected.owner || 'unassigned' }}</v-chip>
-                    <v-chip class="owner-chip" size="x-small" variant="outlined">Steward: {{ glossary.selected.steward || '-' }}</v-chip>
-                    <v-chip v-if="glossary.selected.abbreviation" class="type-chip" size="x-small" variant="outlined">{{ glossary.selected.abbreviation }}</v-chip>
+
+                  <div class="glossary-resolver">
+                    <div class="glossary-rail-title">Semantic Resolver</div>
+                    <v-text-field
+                      v-model="glossary.semanticQuery"
+                      placeholder="Try a business term..."
+                      density="compact"
+                      variant="outlined"
+                      hide-details
+                      @keyup.enter="resolveGlossarySemanticQuery"
+                    ></v-text-field>
+                    <v-btn class="mt-8" size="small" color="primary" block @click="resolveGlossarySemanticQuery">Resolve</v-btn>
+                    <div class="glossary-resolver-metrics" v-if="glossary.semanticResolution">
+                      <div>
+                        <span>Terms</span>
+                        <strong>{{ glossary.semanticResolution.terms?.length || 0 }}</strong>
+                      </div>
+                      <div>
+                        <span>Assets</span>
+                        <strong>{{ glossary.semanticResolution.assets?.length || 0 }}</strong>
+                      </div>
+                    </div>
                   </div>
-                  <div v-html="renderDocHtml(glossary.selected.body || '')"></div>
-                </div>
-                <div v-else class="empty">Select a glossary term.</div>
-              </v-card>
-              </v-col>
-              </v-row>
+                </aside>
+
+                <main class="glossary-main">
+                  <section class="glossary-record compact" v-if="glossary.editing">
+                    <div class="glossary-section-heading" style="margin-top:0;">
+                      <div>
+                        <h3>{{ glossary.editMode === 'edit' ? 'Edit Glossary Term' : 'Create Glossary Term' }}</h3>
+                        <p>Maintain the governed business definition and ownership metadata.</p>
+                      </div>
+                      <div class="btn-row">
+                        <v-btn size="small" variant="tonal" @click="cancelGlossaryEdit">Cancel</v-btn>
+                        <v-btn size="small" color="primary" @click="saveGlossaryTerm">Save Term</v-btn>
+                      </div>
+                    </div>
+                    <div class="glossary-editor-grid">
+                      <v-text-field v-model="glossary.editor.term" label="Term" density="compact" variant="outlined" hide-details></v-text-field>
+                      <v-text-field v-model="glossary.editor.domain" label="Domain" density="compact" variant="outlined" hide-details></v-text-field>
+                      <v-select v-model="glossary.editor.status" :items="['draft','approved','deprecated']" label="Status" density="compact" variant="outlined" hide-details></v-select>
+                      <v-text-field v-model="glossary.editor.parent" label="Parent slug" density="compact" variant="outlined" hide-details></v-text-field>
+                      <v-text-field v-model="glossary.editor.owner" label="Technical owner" density="compact" variant="outlined" hide-details></v-text-field>
+                      <v-text-field v-model="glossary.editor.business_owner" label="Business owner" density="compact" variant="outlined" hide-details></v-text-field>
+                      <v-text-field v-model="glossary.editor.steward" label="Steward" density="compact" variant="outlined" hide-details></v-text-field>
+                      <v-text-field v-model="glossary.editor.synonyms" label="Synonyms" density="compact" variant="outlined" hide-details></v-text-field>
+                      <v-text-field v-model="glossary.editor.related_terms" label="Related terms" density="compact" variant="outlined" hide-details></v-text-field>
+                      <v-text-field v-model="glossary.editor.tags" label="Tags" density="compact" variant="outlined" hide-details></v-text-field>
+                      <v-textarea class="glossary-editor-definition" v-model="glossary.editor.definition" label="Definition" rows="4" density="compact" variant="outlined" hide-details></v-textarea>
+                    </div>
+                    <div class="btn-row mt-12" v-if="glossary.editMode === 'edit'">
+                      <v-btn size="small" color="error" variant="tonal" @click="deleteGlossaryTerm">Delete Term</v-btn>
+                    </div>
+                  </section>
+
+                  <section class="glossary-record">
+                    <div v-if="glossary.selected">
+                      <div class="glossary-record-header">
+                        <div>
+                          <div class="glossary-kicker">{{ glossary.selected.domain }}</div>
+                          <h2>{{ glossary.selected.term }}</h2>
+                          <p v-if="glossary.selected.definition">{{ glossary.selected.definition }}</p>
+                        </div>
+                        <div class="glossary-status-stack">
+                          <span class="glossary-status approved">{{ glossary.selected.status }}</span>
+                          <span class="glossary-status">v{{ glossary.selected.version || 1 }}</span>
+                        </div>
+                      </div>
+
+                      <div class="glossary-owner-strip">
+                        <div><span>Technical Owner</span><strong>{{ glossary.selected.owner || 'unassigned' }}</strong></div>
+                        <div><span>Business Owner</span><strong>{{ glossary.selected.business_owner || '-' }}</strong></div>
+                        <div><span>Steward</span><strong>{{ glossary.selected.steward || '-' }}</strong></div>
+                        <div><span>Effective From</span><strong>{{ glossary.selected.effective_from || '-' }}</strong></div>
+                      </div>
+
+                      <div class="glossary-content-grid">
+                        <article class="glossary-definition">
+                          <div v-html="renderDocHtml(glossary.selected.body || '')"></div>
+                        </article>
+                        <aside class="glossary-facts">
+                          <div class="glossary-fact">
+                            <span>Parent Term</span>
+                            <strong>{{ glossary.selected.parent || '-' }}</strong>
+                          </div>
+                          <div class="glossary-fact">
+                            <span>Synonyms</span>
+                            <div class="glossary-chip-row">
+                              <span v-for="synonym in glossary.selected.synonyms || []" :key="'synonym-' + synonym" class="glossary-soft-chip">{{ synonym }}</span>
+                              <strong v-if="!(glossary.selected.synonyms || []).length">-</strong>
+                            </div>
+                          </div>
+                          <div class="glossary-fact">
+                            <span>Related Terms</span>
+                            <div class="glossary-chip-row">
+                              <span v-for="related in glossary.selected.related_terms || []" :key="'related-' + related" class="glossary-soft-chip">{{ related }}</span>
+                              <strong v-if="!(glossary.selected.related_terms || []).length">-</strong>
+                            </div>
+                          </div>
+                        </aside>
+                      </div>
+
+                      <div class="glossary-section-heading">
+                        <div>
+                          <h3>Mapped Technical Assets</h3>
+                          <p>Exact physical objects connected to this business term.</p>
+                        </div>
+                        <span>{{ (glossary.selected.assets || []).length }} links</span>
+                      </div>
+                      <div class="glossary-table-wrap">
+                        <table class="glossary-table">
+                          <thead>
+                            <tr>
+                              <th>Asset</th>
+                              <th>Type</th>
+                              <th>Relationship</th>
+                              <th>Confidence</th>
+                              <th>Notes</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr v-for="asset in glossary.selected.assets || []" :key="'glossary-asset-' + asset.asset_id">
+                              <td><code>{{ asset.asset_id }}</code></td>
+                              <td>{{ asset.type || 'asset' }}</td>
+                              <td>{{ asset.relationship || 'related' }}</td>
+                              <td>{{ asset.confidence || '-' }}</td>
+                              <td>{{ asset.notes || '-' }}</td>
+                            </tr>
+                            <tr v-if="!(glossary.selected.assets || []).length">
+                              <td colspan="5" class="glossary-empty-row">No physical assets linked yet.</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                      <div class="glossary-mapping-panel">
+                        <div>
+                          <h3>Add Mapping</h3>
+                          <p>Attach a catalog object, table, column, package, or dashboard to this term.</p>
+                        </div>
+                        <div class="glossary-asset-search">
+                          <v-text-field v-model="glossary.assetSearchQuery" label="Find asset" density="compact" variant="outlined" hide-details @keyup.enter="searchGlossaryMappingAssets"></v-text-field>
+                          <v-btn color="primary" variant="tonal" :loading="glossary.assetSearchLoading" @click="searchGlossaryMappingAssets">Find</v-btn>
+                        </div>
+                        <div class="glossary-asset-results" v-if="glossary.assetSearchResults.length">
+                          <button
+                            v-for="asset in glossary.assetSearchResults"
+                            :key="'glossary-map-result-' + (asset.id || asset.name)"
+                            class="glossary-asset-result"
+                            @click="chooseGlossaryMappingAsset(asset)"
+                          >
+                            <strong>{{ asset.id || asset.name }}</strong>
+                            <span>{{ asset.type || 'asset' }} · {{ asset.database || 'unknown' }}</span>
+                          </button>
+                        </div>
+                        <div class="glossary-mapping-form">
+                          <v-text-field v-model="glossary.newMapping.asset_id" label="Asset id" density="compact" variant="outlined" hide-details></v-text-field>
+                          <v-select v-model="glossary.newMapping.relationship" :items="['defines','contains','reports','derived_from','related']" label="Relationship" density="compact" variant="outlined" hide-details></v-select>
+                          <v-text-field v-model.number="glossary.newMapping.confidence" label="Confidence" type="number" min="0" max="1" step="0.05" density="compact" variant="outlined" hide-details></v-text-field>
+                          <v-btn color="primary" @click="linkGlossaryAsset">Link Asset</v-btn>
+                        </div>
+                      </div>
+                    </div>
+                    <div v-else class="empty">Select a glossary term.</div>
+                  </section>
+
+                  <section class="glossary-record compact" v-if="glossary.semanticResolution?.assets?.length">
+                    <div class="glossary-section-heading">
+                      <div>
+                        <h3>Resolved Physical Assets</h3>
+                        <p>Objects found from the semantic resolver.</p>
+                      </div>
+                    </div>
+                    <div class="glossary-table-wrap">
+                      <table class="glossary-table">
+                        <thead>
+                          <tr>
+                            <th>Asset</th>
+                            <th>Type</th>
+                            <th>Reason</th>
+                            <th>Score</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="asset in glossary.semanticResolution.assets" :key="'semantic-' + asset.asset_id">
+                            <td><code>{{ asset.asset_id }}</code></td>
+                            <td>{{ asset.type }}</td>
+                            <td>{{ asset.reason }}</td>
+                            <td>{{ asset.score }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </section>
+                </main>
+              </div>
             </div>
 
             <div v-if="activeView === 'products'">
@@ -5436,7 +6817,7 @@ const appConfig = {
               </v-row>
             </div>
 
-            <div v-if="activeView === 'governance'">
+            <div v-if="activeView === 'governance'" class="governance-page">
               <v-row>
                 <v-col cols="12" sm="6" md="3">
                   <v-card class="card kpi" variant="outlined">
@@ -5464,6 +6845,308 @@ const appConfig = {
                 </v-col>
                 <v-col cols="12">
                   <v-card class="card" variant="outlined">
+                    <div class="section-header" style="margin-bottom:12px;">
+                      <span class="section-title">Policy Effectiveness</span>
+                      <v-chip size="small" variant="tonal" color="primary">
+                        {{ governance.classification.policyEffectiveness?.coverage_score || 0 }} score
+                      </v-chip>
+                    </div>
+                    <div class="policy-dashboard-grid">
+                      <div class="policy-dashboard-score">
+                        <span>Classification Coverage</span>
+                        <strong>{{ governance.classification.policyEffectiveness?.classification_coverage?.percent || 0 }}%</strong>
+                        <small>{{ governance.classification.policyEffectiveness?.classification_coverage?.assets || 0 }} / {{ governance.classification.policyEffectiveness?.total_assets || 0 }} assets</small>
+                      </div>
+                      <div class="policy-dashboard-score">
+                        <span>Policy Coverage</span>
+                        <strong>{{ governance.classification.policyEffectiveness?.policy_coverage?.percent || 0 }}%</strong>
+                        <small>{{ governance.classification.policyEffectiveness?.policy_coverage?.assets || 0 }} governed assets</small>
+                      </div>
+                      <div class="policy-dashboard-score">
+                        <span>Masked Assets</span>
+                        <strong>{{ governance.classification.policyEffectiveness?.controls?.mask || 0 }}</strong>
+                        <small>Dynamic masking recommended</small>
+                      </div>
+                      <div class="policy-dashboard-score">
+                        <span>Restricted Assets</span>
+                        <strong>{{ governance.classification.policyEffectiveness?.controls?.restrict_access || 0 }}</strong>
+                        <small>Access controls recommended</small>
+                      </div>
+                    </div>
+                    <div class="policy-effectiveness-body">
+                      <div>
+                        <div class="panel-kicker">Template Coverage</div>
+                        <div class="policy-template-list">
+                          <div
+                            v-for="template in governance.classification.policyEffectiveness?.template_coverage || []"
+                            :key="'policy-template-' + template.template_id"
+                            class="policy-template-row"
+                          >
+                            <span>{{ template.template_id }}</span>
+                            <strong>{{ template.assets }}</strong>
+                          </div>
+                          <div v-if="!(governance.classification.policyEffectiveness?.template_coverage || []).length" class="policy-empty-row">
+                            No templates matched yet.
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <div class="panel-kicker">Gaps To Fix</div>
+                        <div class="policy-gap-list">
+                          <div
+                            v-for="gap in (governance.classification.policyEffectiveness?.gaps || []).slice(0, 6)"
+                            :key="'policy-gap-' + gap.asset_id"
+                            class="policy-gap-row"
+                          >
+                            <strong>{{ gap.asset_id }}</strong>
+                            <span>{{ gap.issue }}</span>
+                          </div>
+                          <div v-if="!(governance.classification.policyEffectiveness?.gaps || []).length" class="policy-empty-row">
+                            No current policy coverage gaps.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </v-card>
+                </v-col>
+                <v-col cols="12">
+                  <v-card class="card" variant="outlined">
+                    <div class="section-header" style="margin-bottom:12px;">
+                      <span class="section-title">Data Quality Rules</span>
+                      <div class="btn-row">
+                        <v-btn size="small" variant="tonal" @click="startQualityRuleCreate">New Rule</v-btn>
+                        <v-btn size="small" color="primary" :loading="governance.qualityRules.loading" @click="runQualityValidation">Run Validation</v-btn>
+                        <v-btn size="small" variant="outlined" :loading="governance.qualityRules.loading" @click="buildQualityScorecard">Build Scorecard</v-btn>
+                      </div>
+                    </div>
+                    <div class="quality-rules-grid">
+                      <div class="quality-rule-panel">
+                        <div class="panel-kicker">Rules</div>
+                        <div class="quality-rule-list">
+                          <button
+                            v-for="rule in governance.qualityRules.rules"
+                            :key="'quality-rule-' + rule.id"
+                            type="button"
+                            class="quality-rule-row"
+                            :class="{ selected: governance.qualityRules.selectedRuleId === rule.id }"
+                            @click="editQualityRule(rule)"
+                          >
+                            <strong>{{ rule.name }}</strong>
+                            <span>{{ rule.asset_id }} · {{ rule.column_name || 'asset' }} · {{ qualityRuleTypeLabel(rule.type) }}</span>
+                            <v-chip size="x-small" :class="rule.severity === 'fail' ? 'admin' : rule.severity === 'critical' ? 'poweruser' : 'analyst'" variant="flat">{{ rule.severity }}</v-chip>
+                          </button>
+                          <div v-if="!governance.qualityRules.rules.length" class="policy-empty-row">No quality rules defined yet.</div>
+                        </div>
+                      </div>
+                      <div class="quality-rule-panel">
+                        <div class="panel-kicker">Rule Editor</div>
+                        <div class="quality-editor">
+                          <v-text-field v-model="governance.qualityRules.editor.name" density="compact" variant="outlined" label="Rule name" hide-details></v-text-field>
+                          <div class="quality-editor-row">
+                            <v-text-field v-model="governance.qualityRules.editor.id" density="compact" variant="outlined" label="ID" hide-details></v-text-field>
+                            <v-text-field v-model="governance.qualityRules.editor.asset_id" density="compact" variant="outlined" label="Asset ID" hide-details></v-text-field>
+                            <v-text-field v-model="governance.qualityRules.editor.column_name" density="compact" variant="outlined" label="Column" hide-details></v-text-field>
+                          </div>
+                          <div class="quality-editor-row">
+                            <v-select v-model="governance.qualityRules.editor.type" density="compact" variant="outlined" label="Type" :items="['null_percent','cardinality_bounds','range','pattern','uniqueness']" hide-details></v-select>
+                            <v-select v-model="governance.qualityRules.editor.severity" density="compact" variant="outlined" label="Severity" :items="['warning','critical','fail']" hide-details></v-select>
+                            <v-switch v-model="governance.qualityRules.editor.enabled" density="compact" label="Enabled" hide-details color="primary"></v-switch>
+                          </div>
+                          <div class="quality-editor-row four">
+                            <v-text-field v-model="governance.qualityRules.editor.threshold_min" density="compact" variant="outlined" label="Min" type="number" hide-details></v-text-field>
+                            <v-text-field v-model="governance.qualityRules.editor.threshold_max" density="compact" variant="outlined" label="Max" type="number" hide-details></v-text-field>
+                            <v-text-field v-model="governance.qualityRules.editor.threshold_min_percent" density="compact" variant="outlined" label="Min %" type="number" hide-details></v-text-field>
+                            <v-text-field v-model="governance.qualityRules.editor.threshold_min_match_percent" density="compact" variant="outlined" label="Min match %" type="number" hide-details></v-text-field>
+                          </div>
+                          <div class="quality-editor-row two">
+                            <v-text-field v-model="governance.qualityRules.editor.schedule" density="compact" variant="outlined" label="Schedule" hide-details></v-text-field>
+                            <v-text-field v-model="governance.qualityRules.editor.alert_routes" density="compact" variant="outlined" label="Alert routes" hide-details></v-text-field>
+                          </div>
+                          <div class="btn-row">
+                            <v-btn size="small" color="primary" :loading="governance.qualityRules.loading" @click="saveQualityRule">Save Rule</v-btn>
+                            <v-btn size="small" variant="tonal" color="error" :disabled="!governance.qualityRules.selectedRuleId" @click="deleteQualityRule()">Delete</v-btn>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="quality-rule-panel">
+                        <div class="panel-kicker">Validation Runner</div>
+                        <div class="quality-editor">
+                          <v-text-field v-model="governance.qualityRules.runProfile.asset_id" density="compact" variant="outlined" label="Profile asset ID" hide-details></v-text-field>
+                          <v-text-field v-model="governance.qualityRules.runProfile.column_name" density="compact" variant="outlined" label="Profile column" hide-details></v-text-field>
+                          <div class="quality-editor-row two">
+                            <v-text-field v-model="governance.qualityRules.runProfile.row_count" density="compact" variant="outlined" label="Rows" type="number" hide-details></v-text-field>
+                            <v-text-field v-model="governance.qualityRules.runProfile.null_count" density="compact" variant="outlined" label="Nulls" type="number" hide-details></v-text-field>
+                          </div>
+                          <div class="quality-editor-row three">
+                            <v-text-field v-model="governance.qualityRules.runProfile.distinct_count" density="compact" variant="outlined" label="Distinct" type="number" hide-details></v-text-field>
+                            <v-text-field v-model="governance.qualityRules.runProfile.min" density="compact" variant="outlined" label="Min" type="number" hide-details></v-text-field>
+                            <v-text-field v-model="governance.qualityRules.runProfile.max" density="compact" variant="outlined" label="Max" type="number" hide-details></v-text-field>
+                          </div>
+                          <v-text-field v-model="governance.qualityRules.runProfile.pattern_match_percent" density="compact" variant="outlined" label="Pattern match %" type="number" hide-details></v-text-field>
+                        </div>
+                        <div class="btn-row mt-8">
+                          <v-btn size="small" variant="tonal" color="primary" @click="loadQualityTrend()">Load Trend</v-btn>
+                          <v-btn size="small" variant="outlined" @click="exportQualityScorecard('json')">Export JSON</v-btn>
+                          <v-btn size="small" variant="outlined" @click="exportQualityScorecard('csv')">Export CSV</v-btn>
+                        </div>
+                        <div class="quality-execution-summary" v-if="governance.qualityRules.executions.length">
+                          <strong>{{ governance.qualityRules.executions[0].status }}</strong>
+                          <span>{{ governance.qualityRules.executions[0].passed }} passed · {{ governance.qualityRules.executions[0].failed }} failed</span>
+                        </div>
+                        <div class="quality-scorecard-strip" v-if="governance.qualityRules.scorecard">
+                          <div>
+                            <span>Quality Score</span>
+                            <strong>{{ governance.qualityRules.scorecard.overall_score }}</strong>
+                          </div>
+                          <div>
+                            <span>Analytics Fitness</span>
+                            <strong>{{ governance.qualityRules.scorecard.fitness?.analytics }}</strong>
+                          </div>
+                          <div>
+                            <span>Export</span>
+                            <strong>{{ governance.qualityRules.scorecardExport?.content_type || 'not generated' }}</strong>
+                          </div>
+                        </div>
+                        <div class="quality-trend-panel" v-if="governance.qualityRules.trend">
+                          <div class="quality-trend-header">
+                            <strong>{{ governance.qualityRules.trend.asset_id }}</strong>
+                            <span>{{ qualityTrendBars.length }} trend point(s)</span>
+                          </div>
+                          <div class="quality-sparkline" v-if="qualityTrendBars.length">
+                            <div
+                              v-for="(point, index) in qualityTrendBars"
+                              :key="'quality-trend-' + index + '-' + point.label"
+                              class="quality-spark-bar"
+                              :title="point.metric + ' ' + point.value + ' on ' + point.label"
+                            >
+                              <span :style="{ height: Math.max(6, Math.min(100, point.value)) + '%' }"></span>
+                              <small>{{ point.label }}</small>
+                            </div>
+                          </div>
+                          <div v-else class="policy-empty-row">No trend history yet. Build a scorecard or run validation to create the first point.</div>
+                        </div>
+                        <div class="quality-incident-list">
+                          <div v-for="incident in governance.qualityRules.incidents.slice(0, 5)" :key="'quality-incident-' + incident.id" class="quality-incident-row">
+                            <strong>{{ incident.severity }}</strong>
+                            <span>{{ incident.asset_id }} · {{ incident.column_name }}</span>
+                          </div>
+                          <div v-if="!governance.qualityRules.incidents.length" class="policy-empty-row">No quality incidents.</div>
+                        </div>
+                      </div>
+                    </div>
+                  </v-card>
+                </v-col>
+                <v-col cols="12">
+                  <v-card class="card" variant="outlined">
+                    <div class="section-header" style="margin-bottom:12px;">
+                      <span class="section-title">Classification Taxonomy</span>
+                      <v-btn size="small" color="primary" :loading="governance.classification.loading" @click="runClassificationRules">Run Rules</v-btn>
+                    </div>
+                    <div class="classification-admin-grid">
+                      <div class="classification-panel">
+                        <div class="panel-kicker">Categories</div>
+                        <div class="classification-panel-actions">
+                          <v-btn size="x-small" variant="tonal" @click="startClassificationCategoryCreate">New</v-btn>
+                        </div>
+                        <div class="classification-chip-cloud">
+                          <v-chip
+                            v-for="category in governance.classification.taxonomy?.categories || []"
+                            :key="'classification-category-' + category.id"
+                            size="small"
+                            variant="tonal"
+                            :color="category.parent ? 'indigo' : 'primary'"
+                            @click="editClassificationCategory(category)"
+                          >
+                            {{ category.label }}<span v-if="category.parent">&nbsp;/ {{ category.parent }}</span>
+                          </v-chip>
+                        </div>
+                        <div class="classification-editor">
+                          <v-text-field v-model="governance.classification.categoryEditor.label" density="compact" variant="outlined" label="Category label" hide-details></v-text-field>
+                          <div class="classification-editor-row">
+                            <v-text-field v-model="governance.classification.categoryEditor.id" density="compact" variant="outlined" label="ID" hide-details></v-text-field>
+                            <v-text-field v-model="governance.classification.categoryEditor.parent" density="compact" variant="outlined" label="Parent ID" hide-details></v-text-field>
+                            <v-text-field v-model="governance.classification.categoryEditor.level" density="compact" variant="outlined" label="Level" type="number" hide-details></v-text-field>
+                          </div>
+                          <v-textarea v-model="governance.classification.categoryEditor.description" density="compact" variant="outlined" label="Description" rows="2" hide-details></v-textarea>
+                          <v-text-field v-model="governance.classification.categoryEditor.regulatory_frameworks" density="compact" variant="outlined" label="Regulatory frameworks" hide-details></v-text-field>
+                          <v-textarea v-model="governance.classification.categoryEditor.name_patterns" density="compact" variant="outlined" label="Name patterns" rows="3" hide-details></v-textarea>
+                          <div class="classification-editor-row two">
+                            <v-text-field v-model="governance.classification.categoryEditor.sensitivity_triggers" density="compact" variant="outlined" label="Sensitivity triggers" hide-details></v-text-field>
+                            <v-text-field v-model="governance.classification.categoryEditor.tag_triggers" density="compact" variant="outlined" label="Tag triggers" hide-details></v-text-field>
+                          </div>
+                          <div class="btn-row">
+                            <v-btn size="small" color="primary" @click="saveClassificationCategory">Save Category</v-btn>
+                            <v-btn
+                              size="small"
+                              variant="tonal"
+                              color="error"
+                              :disabled="!(governance.classification.taxonomy?.categories || []).find((category) => category.id === governance.classification.selectedCategoryId && !category.built_in)"
+                              @click="deleteClassificationCategory((governance.classification.taxonomy?.categories || []).find((category) => category.id === governance.classification.selectedCategoryId))"
+                            >Delete</v-btn>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="classification-panel">
+                        <div class="panel-kicker">Rules</div>
+                        <div class="classification-panel-actions">
+                          <v-btn size="x-small" variant="tonal" @click="startClassificationRuleCreate">New</v-btn>
+                        </div>
+                        <div class="classification-rule-list">
+                          <div
+                            v-for="rule in (governance.classification.taxonomy?.rules || [])"
+                            :key="'classification-rule-' + rule.id"
+                            class="classification-rule"
+                            @click="editClassificationRule(rule)"
+                          >
+                            <strong>{{ rule.classification }}</strong>
+                            <span>{{ rule.label }}</span>
+                            <v-chip size="x-small" variant="flat">{{ Math.round((rule.confidence || 0) * 100) }}%</v-chip>
+                          </div>
+                        </div>
+                        <div class="classification-editor">
+                          <v-text-field v-model="governance.classification.ruleEditor.label" density="compact" variant="outlined" label="Rule name" hide-details></v-text-field>
+                          <div class="classification-editor-row">
+                            <v-text-field v-model="governance.classification.ruleEditor.id" density="compact" variant="outlined" label="ID" hide-details></v-text-field>
+                            <v-select v-model="governance.classification.ruleEditor.target" density="compact" variant="outlined" label="Target" :items="['asset', 'column']" hide-details></v-select>
+                            <v-select v-model="governance.classification.ruleEditor.classification" density="compact" variant="outlined" label="Classification" :items="(governance.classification.taxonomy?.categories || []).map((category) => category.label)" hide-details></v-select>
+                          </div>
+                          <v-textarea v-model="governance.classification.ruleEditor.pattern" density="compact" variant="outlined" label="Regex pattern" rows="2" hide-details></v-textarea>
+                          <div class="classification-editor-row">
+                            <v-text-field v-model="governance.classification.ruleEditor.confidence" density="compact" variant="outlined" label="Confidence" type="number" step="0.01" min="0" max="1" hide-details></v-text-field>
+                            <v-text-field v-model="governance.classification.ruleEditor.min_column_hits" density="compact" variant="outlined" label="Min column hits" type="number" hide-details></v-text-field>
+                            <v-switch v-model="governance.classification.ruleEditor.enabled" density="compact" label="Enabled" hide-details color="primary"></v-switch>
+                          </div>
+                          <v-textarea v-model="governance.classification.ruleEditor.description" density="compact" variant="outlined" label="Description" rows="2" hide-details></v-textarea>
+                          <div class="btn-row">
+                            <v-btn size="small" color="primary" @click="saveClassificationRule">Save Rule</v-btn>
+                            <v-btn
+                              size="small"
+                              variant="tonal"
+                              color="error"
+                              :disabled="!governance.classification.selectedRuleId"
+                              @click="deleteClassificationRule((governance.classification.taxonomy?.rules || []).find((rule) => rule.id === governance.classification.selectedRuleId))"
+                            >Delete</v-btn>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="classification-panel">
+                        <div class="panel-kicker">Coverage</div>
+                        <div class="classification-count-grid">
+                          <div
+                            v-for="(count, label) in governance.classification.summary?.classification_counts || {}"
+                            :key="'classification-count-' + label"
+                            class="classification-count"
+                          >
+                            <span>{{ label }}</span>
+                            <strong>{{ count }}</strong>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </v-card>
+                </v-col>
+                <v-col cols="12">
+                  <v-card class="card" variant="outlined">
                     <div class="section-header" style="margin-bottom:8px;">
                       <span class="section-title">Governance Leaderboard</span>
                     </div>
@@ -5480,6 +7163,8 @@ const appConfig = {
                             <v-chip size="x-small" class="owner-chip" variant="outlined">&#128100; {{ item.owner || 'unassigned' }}</v-chip>
                             <v-chip size="x-small" class="type-chip" variant="outlined">{{ item.type }}</v-chip>
                             <v-chip size="x-small" variant="outlined">Score {{ item.trust_score }}</v-chip>
+                            <v-chip size="x-small" variant="tonal" :color="qualityScoreColor(qualityScoreForItem(item))">Quality {{ qualityScoreForItem(item) ?? 'n/a' }}</v-chip>
+                            <v-chip size="x-small" variant="outlined">Trend {{ qualityTrendLabel(item) }}</v-chip>
                           </div>
                         </div>
                         <div class="asset-actions">
@@ -5670,18 +7355,48 @@ const appConfig = {
                 <div class="section-header" style="margin-bottom:8px;">
                   <span class="section-title">&#x27C6; Lineage &amp; Dependency Graph</span>
                   <div class="btn-row">
-                    <v-btn size="small" variant="outlined" @click="buildBlastRadiusReport(); $nextTick(renderBlastRadiusChart)">⚡ Blast Radius</v-btn>
+                    <v-btn
+                      size="small"
+                      variant="outlined"
+                      :loading="reports.blastRadiusLoading"
+                      @click="runBlastRadiusAnalysis()"
+                    >⚡ Blast Radius</v-btn>
                     <v-btn size="small" variant="outlined" @click="loadEdgeAudit">Edge Audit</v-btn>
                     <v-btn size="small" variant="outlined" @click="openGraphFocus">Expand</v-btn>
                     <v-btn size="small" variant="outlined" @click="focusGraphToFit">Fit</v-btn>
                     <v-btn size="small" variant="outlined" @click="openDiscoveryInNewTab">Open tab</v-btn>
                     <v-btn size="small" variant="outlined" @click="showOnlySsisPackages" v-if="graphHasSSISNodes">SSIS only</v-btn>
                     <v-btn size="small" variant="outlined" @click="showAllGraphNodes" v-if="graphHasSSISNodes && graphShowOnlySSIS">Show all</v-btn>
-                    <v-btn size="small" color="primary" @click="loadDiscovery">↔ Render</v-btn>
+                    <v-btn size="small" color="primary" @click="renderSelectedLineage">↔ Render</v-btn>
                   </div>
                 </div>
-                <div class="form-row" style="grid-template-columns:1fr auto auto auto auto;">
-                  <v-text-field v-model="selectedObjectId" placeholder="Object ID (e.g. sales.orders)" density="compact" variant="outlined" hide-details></v-text-field>
+                <div class="form-row lineage-object-picker-row">
+                  <div class="lineage-object-picker">
+                    <v-text-field
+                      v-model="lineageObjectSearch.query"
+                      placeholder="Search table, view, procedure, or package"
+                      density="compact"
+                      variant="outlined"
+                      hide-details
+                      prepend-inner-icon="mdi-magnify"
+                      :loading="lineageObjectSearch.loading"
+                      @update:model-value="searchLineageObjects"
+                      @keyup.enter="renderSelectedLineage"
+                      @focus="lineageObjectSearch.open = lineageObjectSearch.results.length > 0"
+                    ></v-text-field>
+                    <div class="lineage-object-suggestions" v-if="lineageObjectSearch.open && lineageObjectSearch.results.length">
+                      <button
+                        v-for="item in lineageObjectSearch.results"
+                        :key="'lineage-object-suggestion-' + item.id"
+                        type="button"
+                        @click="chooseLineageObject(item)"
+                      >
+                        <strong>{{ item.id }}</strong>
+                        <span>{{ item.type }} · {{ item.database || 'unknown' }}</span>
+                      </button>
+                    </div>
+                  </div>
+                  <v-btn variant="outlined" @click="searchLineageObjects()">Search</v-btn>
                   <v-select
                     v-model="lineageAnswerIntent"
                     density="compact"
@@ -5704,7 +7419,7 @@ const appConfig = {
                     ]"
                   ></v-select>
                   <v-text-field type="number" min="1" max="5" v-model.number="discoveryDepth" density="compact" variant="outlined" hide-details style="width:70px;" title="Depth"></v-text-field>
-                  <v-btn color="primary" @click="loadDiscovery">Render Graph</v-btn>
+                  <v-btn color="primary" @click="renderSelectedLineage">Render Graph</v-btn>
                 </div>
                 <div class="graph-legend">
                   <span class="legend-item"><span class="legend-dot" style="background:#2563eb;border-radius:2px;"></span>Table</span>
@@ -5713,6 +7428,8 @@ const appConfig = {
                   <span class="legend-item"><span class="legend-dot" style="background:#0d9488;border-radius:50%;"></span>Function</span>
                   <span class="legend-item"><span class="legend-dot" style="background:#be123c;border-radius:2px;"></span>Trigger</span>
                   <span class="legend-item"><span class="legend-dot" style="background:#5b21b6;border-radius:6px;"></span>SSIS Package</span>
+                  <span class="legend-item"><span class="legend-dot" style="background:#22c55e;border-radius:50%;"></span>Direct business term</span>
+                  <span class="legend-item"><span class="legend-dot" style="background:#f59e0b;border-radius:50%;"></span>Propagated term</span>
                   <span class="legend-item" style="margin-left:auto;font-size:10px;color:var(--text-faint);">Flow: producers -> focus -> consumers &nbsp;|&nbsp; Edge width = confidence</span>
                 </div>
                 <div style="display:flex; justify-content:flex-end; gap:8px; margin:8px 0 10px;">
@@ -5764,11 +7481,14 @@ const appConfig = {
                   <v-card-text style="padding:16px;">
                     <div class="form-row" style="grid-template-columns:1fr auto auto auto auto; margin-bottom:12px; align-items:center;">
                       <v-text-field
-                        v-model="selectedObjectId"
-                        placeholder="Object ID"
+                        v-model="lineageObjectSearch.query"
+                        placeholder="Search object"
                         density="compact"
                         variant="outlined"
                         hide-details
+                        prepend-inner-icon="mdi-magnify"
+                        @update:model-value="searchLineageObjects"
+                        @keyup.enter="renderSelectedLineage"
                       ></v-text-field>
                       <v-text-field
                         v-model="graphSearchText"
@@ -5791,7 +7511,7 @@ const appConfig = {
                         ]"
                       ></v-select>
                       <v-text-field type="number" min="1" max="5" v-model.number="discoveryDepth" density="compact" variant="outlined" hide-details style="width:70px;"></v-text-field>
-                      <v-btn color="primary" @click="loadDiscovery">Render Graph</v-btn>
+                      <v-btn color="primary" @click="renderSelectedLineage">Render Graph</v-btn>
                     </div>
                     <div v-if="graphSearchText" style="margin-bottom:10px; font-size:12px; color:#64748b;">
                       {{ graphSearchMatchCount }} match{{ graphSearchMatchCount === 1 ? '' : 'es' }} found.
@@ -5886,6 +7606,33 @@ const appConfig = {
                 <div class="graph-box" v-else-if="discoveryFormat === 'mermaid'" id="mermaid-graph"></div>
                 <div class="graph-box" v-else style="padding:12px;"><pre class="mono" style="overflow:auto;margin:0;">{{ JSON.stringify(discoveryGraph?.data, null, 2) }}</pre></div>
               </v-card>
+
+              <v-card class="card lineage-compact-matrix" variant="outlined">
+                <div class="section-header">
+                  <span class="section-title">Dependency Matrix &amp; Tier Distribution</span>
+                  <div class="btn-row">
+                    <v-text-field v-model="matrixDatabase" placeholder="Database" density="compact" variant="outlined" hide-details style="width:140px;"></v-text-field>
+                    <v-btn size="small" variant="outlined" @click="loadDiscovery">Reload</v-btn>
+                  </div>
+                </div>
+                <div class="table-wrap lineage-compact-matrix-table" v-if="reports.blastHeatmap && reports.blastHeatmap.length">
+                  <v-table density="compact">
+                    <thead><tr><th>Tier</th><th>Object Type</th><th>Count</th></tr></thead>
+                    <tbody>
+                      <tr v-for="cell in reports.blastHeatmap" :key="'heat-' + cell.tier + '-' + cell.type">
+                        <td><v-chip size="x-small" :class="cell.tier === 'T1' ? 'admin' : cell.tier === 'T2' ? 'poweruser' : 'analyst'" variant="flat">{{ cell.tier }}</v-chip></td>
+                        <td>{{ cell.type }}</td>
+                        <td><strong>{{ cell.count }}</strong></td>
+                      </tr>
+                    </tbody>
+                  </v-table>
+                </div>
+                <div v-else class="empty-state lineage-compact-empty">
+                  <div class="empty-state-icon">&#128202;</div>
+                  <h4>No heat map data yet</h4>
+                  <p>Run a blast radius analysis to see tier and type distribution.</p>
+                </div>
+              </v-card>
               </v-col>
 
               <v-col cols="12" md="4" lg="4">
@@ -5961,8 +7708,15 @@ const appConfig = {
                 </div>
               </v-card>
 
-              <v-card class="card" style="padding:12px;" variant="outlined">
+              <v-card ref="impactSummaryCard" class="card" style="padding:12px;" variant="outlined">
                 <h3>Impact Summary</h3>
+                <div
+                  v-if="reports.blastRadiusStatus"
+                  class="lineage-action-status"
+                  :class="{ active: reports.blastRadiusLoading }"
+                >
+                  {{ reports.blastRadiusStatus }}
+                </div>
                 <div class="mini-stack" style="margin-bottom:10px;">
                   <div class="mini-metric"><span>Focus Object</span><strong style="font-family:monospace;font-size:11px;">{{ selectedObjectId }}</strong></div>
                   <div class="mini-metric"><span>Top Reach Score</span><strong>{{ reports.blastRows?.[0]?.reachScore || 0 }}</strong></div>
@@ -5992,38 +7746,6 @@ const appConfig = {
               </v-col>
               </v-row>
 
-              
-
-              <v-row>
-              <v-col cols="12">
-              <v-card class="card" variant="outlined">
-                <div class="section-header">
-                  <span class="section-title">Dependency Matrix &amp; Tier Distribution</span>
-                  <div class="btn-row">
-                    <v-text-field v-model="matrixDatabase" placeholder="Database" density="compact" variant="outlined" hide-details style="width:140px;"></v-text-field>
-                    <v-btn size="small" variant="outlined" @click="loadDiscovery">Reload</v-btn>
-                  </div>
-                </div>
-                <div class="table-wrap" style="max-height:260px;" v-if="reports.blastHeatmap && reports.blastHeatmap.length">
-                  <v-table density="compact">
-                    <thead><tr><th>Tier</th><th>Object Type</th><th>Count</th></tr></thead>
-                    <tbody>
-                      <tr v-for="cell in reports.blastHeatmap" :key="'heat-' + cell.tier + '-' + cell.type">
-                        <td><v-chip size="x-small" :class="cell.tier === 'T1' ? 'admin' : cell.tier === 'T2' ? 'poweruser' : 'analyst'" variant="flat">{{ cell.tier }}</v-chip></td>
-                        <td>{{ cell.type }}</td>
-                        <td><strong>{{ cell.count }}</strong></td>
-                      </tr>
-                    </tbody>
-                  </v-table>
-                </div>
-                <div v-else class="empty-state">
-                  <div class="empty-state-icon">&#128202;</div>
-                  <h4>No heat map data yet</h4>
-                  <p>Run a blast radius analysis to see tier and type distribution.</p>
-                </div>
-              </v-card>
-              </v-col>
-              </v-row>
             </div>
 
             <div v-if="activeView === 'reports'">
@@ -6347,6 +8069,90 @@ const appConfig = {
                   <div class="help-pill"><strong>Webhooks</strong><span>Push event payloads into external systems and test delivery.</span></div>
                   <div class="help-pill"><strong>External Links</strong><span>Attach Jira/Confluence/Runbook links to any catalog object.</span></div>
                   <div class="help-pill"><strong>CI/CD Checks</strong><span>Run impact, compliance, and docs checks before deploy.</span></div>
+                </div>
+              </v-card>
+
+              <v-card class="card span-12" variant="outlined">
+                <div class="section-header">
+                  <span class="section-title">Managed Metadata Connectors</span>
+                  <div class="btn-row">
+                    <v-btn size="small" variant="outlined" :loading="integrations.connectorLoading" @click="loadManagedConnectors">Refresh</v-btn>
+                    <v-btn size="small" color="primary" :loading="integrations.connectorLoading" @click="saveManagedConnector">Save Connector</v-btn>
+                  </div>
+                </div>
+                <p class="card-help">Admins store connector credentials once, grant users or roles permission, and users run approved metadata harvesting without seeing secrets.</p>
+                <div class="managed-connector-grid">
+                  <div class="managed-connector-panel">
+                    <div class="panel-kicker">Connector Builder</div>
+                    <div class="form-row">
+                      <div class="col-4"><v-label>ID</v-label><v-text-field v-model="integrations.connectorEditor.id" density="compact" variant="outlined" hide-details></v-text-field></div>
+                      <div class="col-4"><v-label>Type</v-label><v-select v-model="integrations.connectorEditor.type" density="compact" variant="outlined" hide-details :items="integrations.connectorDefinitions.map((item) => ({ title: connectorDefinitionLabel(item.type), value: item.type }))"></v-select></div>
+                      <div class="col-4"><v-label>Label</v-label><v-text-field v-model="integrations.connectorEditor.label" density="compact" variant="outlined" hide-details></v-text-field></div>
+                    </div>
+                    <div class="form-row mt-8">
+                      <div class="col-6"><v-label>Credential Mode</v-label><v-select v-model="integrations.connectorEditor.credentialMode" density="compact" variant="outlined" hide-details :items="['managed_identity','service_account','service_principal','secret_reference','pat_reference','oauth_app','iam_role','workload_identity','none']"></v-select></div>
+                      <div class="col-6"><v-label>Secret Reference</v-label><v-text-field v-model="integrations.connectorEditor.secretRef" density="compact" variant="outlined" hide-details placeholder="kv://metadata/source-name"></v-text-field></div>
+                    </div>
+                    <div class="form-row mt-8">
+                      <div class="col-12"><v-label>One-time Secret Value</v-label><v-text-field v-model="integrations.connectorEditor.rawSecret" density="compact" variant="outlined" hide-details type="password" placeholder="Write-only; not displayed after save"></v-text-field></div>
+                    </div>
+                    <div class="form-row mt-8">
+                      <div class="col-12"><v-label>Connector Config JSON</v-label><v-textarea v-model="integrations.connectorEditor.configJson" rows="7" density="compact" variant="outlined" hide-details></v-textarea></div>
+                    </div>
+                  </div>
+
+                  <div class="managed-connector-panel">
+                    <div class="panel-kicker">Available Connectors</div>
+                    <div class="managed-connector-list">
+                      <div v-for="connector in integrations.managedConnectors" :key="'managed-connector-' + connector.id" class="managed-connector-row">
+                        <div>
+                          <strong>{{ connector.label }}</strong>
+                          <span>{{ connector.id }} · {{ connector.provider }} · {{ connector.category }} · {{ connector.cloud }}</span>
+                        </div>
+                        <div class="btn-row">
+                          <v-chip size="x-small" variant="tonal" :color="connector.credential?.status === 'stored_reference' || connector.credential?.status === 'configured' ? 'success' : 'warning'">{{ connector.credential?.status || 'unknown' }}</v-chip>
+                          <v-btn size="small" variant="outlined" @click="runManagedConnector(connector.id)">Run</v-btn>
+                          <v-btn size="small" variant="tonal" @click="loadManagedConnectorSnapshot(connector.id)">Snapshot</v-btn>
+                        </div>
+                      </div>
+                      <div v-if="!integrations.managedConnectors.length" class="empty">No managed connectors available to this user.</div>
+                    </div>
+                    <div class="managed-connector-permissions">
+                      <div class="panel-kicker">Grant Access</div>
+                      <div class="form-row">
+                        <div class="col-3"><v-label>Connector</v-label><v-select v-model="integrations.connectorGrant.connectorId" density="compact" variant="outlined" hide-details :items="integrations.managedConnectors.map((item) => item.id)"></v-select></div>
+                        <div class="col-2"><v-label>Scope</v-label><v-select v-model="integrations.connectorGrant.scope" density="compact" variant="outlined" hide-details :items="['users','roles','groups']"></v-select></div>
+                        <div class="col-3"><v-label>Subject</v-label><v-text-field v-model="integrations.connectorGrant.subject" density="compact" variant="outlined" hide-details></v-text-field></div>
+                        <div class="col-3"><v-label>Actions</v-label><v-text-field v-model="integrations.connectorGrant.actions" density="compact" variant="outlined" hide-details></v-text-field></div>
+                        <div class="col-1" style="display:flex;align-items:end;"><v-btn size="small" color="primary" @click="grantManagedConnectorPermission">Grant</v-btn></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="managed-connector-results" v-if="integrations.connectorSnapshot || integrations.connectorRuns.length">
+                  <div class="mini-stack" v-if="integrations.connectorSnapshot">
+                    <div class="mini-metric"><span>Snapshot Connector</span><strong>{{ integrations.connectorSnapshot.connector_id }}</strong></div>
+                    <div class="mini-metric"><span>Objects</span><strong>{{ integrations.connectorSnapshot.object_count }}</strong></div>
+                    <div class="mini-metric"><span>Columns</span><strong>{{ integrations.connectorSnapshot.column_count }}</strong></div>
+                    <div class="mini-metric"><span>Lineage Edges</span><strong>{{ integrations.connectorSnapshot.lineage_edge_count }}</strong></div>
+                    <div class="mini-metric"><span>Python Scripts</span><strong>{{ (integrations.connectorSnapshot.python_scripts || []).length }}</strong></div>
+                  </div>
+                  <div class="table-wrap mt-8" v-if="integrations.connectorRuns.length">
+                    <v-table density="compact">
+                      <thead><tr><th>Run</th><th>Connector</th><th>Mode</th><th>Status</th><th>Objects</th><th>Secrets</th></tr></thead>
+                      <tbody>
+                        <tr v-for="run in integrations.connectorRuns" :key="'connector-run-' + run.id">
+                          <td class="mono">{{ run.id }}</td>
+                          <td>{{ run.connector_id }}</td>
+                          <td>{{ run.mode }}</td>
+                          <td><v-chip size="x-small" variant="tonal" color="success">{{ run.status }}</v-chip></td>
+                          <td>{{ run.summary?.discovered_objects || 0 }}</td>
+                          <td>{{ run.summary?.secret_exposed ? 'exposed' : 'masked' }}</td>
+                        </tr>
+                      </tbody>
+                    </v-table>
+                  </div>
                 </div>
               </v-card>
 
@@ -6693,6 +8499,18 @@ const appConfig = {
                 <div v-if="importer.sqlServer.result" style="margin-top: 15px; padding: 10px; background: #f0f8ff; border-left: 4px solid #2563eb; border-radius: 4px;">
                   <div style="font-weight:bold; color:#2563eb;">✓ Extraction Complete</div>
                   <div style="margin-top: 8px; font-size: 0.9em; line-height: 1.6;">
+                    <div v-if="importer.sqlServer.result.connectorExtraction" style="margin-bottom: 10px; padding: 8px; border: 1px solid #bfdbfe; border-radius: 6px; background: #eff6ff; color: #1e3a8a;">
+                      <div style="font-weight: 700;">Connector Framework</div>
+                      <div>
+                        <strong>Adapter:</strong> {{ importer.sqlServer.result.connectorExtraction.adapter }}
+                        · <strong>Status:</strong> {{ importer.sqlServer.result.connectorExtraction.status }}
+                        · <strong>Events:</strong> {{ importer.sqlServer.result.connectorExtraction.summary?.event_count || 0 }}
+                        · <strong>Streams:</strong> {{ importer.sqlServer.result.connectorExtraction.streamResults?.length || 0 }}
+                      </div>
+                      <div v-if="importer.sqlServer.result.connectorExtraction.errors?.length" style="margin-top: 4px; color: #991b1b;">
+                        <strong>Framework Errors:</strong> {{ importer.sqlServer.result.connectorExtraction.errors.length }}
+                      </div>
+                    </div>
                     <div><strong>Objects Extracted:</strong> {{ importer.sqlServer.result.totalObjectsExtracted }} total</div>
                     <div style="margin-left: 16px; font-size: 0.85em; color: #444;">
                       <div v-if="importer.sqlServer.result.tablesExtracted > 0">• {{ importer.sqlServer.result.tablesExtracted }} tables</div>
@@ -6803,6 +8621,18 @@ const appConfig = {
                 <div v-if="importer.ssis.result" style="margin-top: 15px; padding: 10px; background: #f0f8ff; border-left: 4px solid #2563eb; border-radius: 4px;">
                   <div style="font-weight:bold; color:#2563eb;">✓ SSIS Extraction Complete</div>
                   <div style="margin-top: 8px; font-size: 0.9em; line-height: 1.6;">
+                    <div v-if="importer.ssis.result.connectorExtraction" style="margin-bottom: 10px; padding: 8px; border: 1px solid #bfdbfe; border-radius: 6px; background: #eff6ff; color: #1e3a8a;">
+                      <div style="font-weight: 700;">Connector Framework</div>
+                      <div>
+                        <strong>Adapter:</strong> {{ importer.ssis.result.connectorExtraction.adapter }}
+                        · <strong>Status:</strong> {{ importer.ssis.result.connectorExtraction.status }}
+                        · <strong>Events:</strong> {{ importer.ssis.result.connectorExtraction.summary?.event_count || 0 }}
+                        · <strong>Streams:</strong> {{ importer.ssis.result.connectorExtraction.streamResults?.length || 0 }}
+                      </div>
+                      <div v-if="importer.ssis.result.connectorExtraction.errors?.length" style="margin-top: 4px; color: #991b1b;">
+                        <strong>Framework Errors:</strong> {{ importer.ssis.result.connectorExtraction.errors.length }}
+                      </div>
+                    </div>
                     <div><strong>Packages:</strong> {{ importer.ssis.result.summary?.counts?.packages || 0 }}</div>
                     <div><strong>Lineage Edges:</strong> {{ importer.ssis.result.summary?.counts?.lineageEdges || 0 }}</div>
                     <div><strong>Agent Jobs:</strong> {{ importer.ssis.result.summary?.counts?.agentJobs || 0 }}</div>
@@ -7252,6 +9082,32 @@ const appConfig = {
                 <v-chip v-if="graphDrawerNode.certified" size="x-small" class="poweruser" variant="flat">Certified</v-chip>
               </div>
               <div class="asset-description" style="margin-top:12px;">{{ graphDrawerNode.description || 'No additional detail available.' }}</div>
+              <div
+                class="graph-semantic-panel"
+                v-if="(graphDrawerNode.glossaryTerms || []).length || (graphDrawerNode.propagatedGlossaryTerms || []).length"
+              >
+                <div v-if="(graphDrawerNode.glossaryTerms || []).length">
+                  <div class="graph-semantic-title">Direct Business Terms</div>
+                  <div class="graph-semantic-list">
+                    <button
+                      v-for="term in graphDrawerNode.glossaryTerms"
+                      :key="'graph-direct-term-' + term.slug"
+                      class="graph-semantic-chip direct"
+                      @click="graphDrawerOpen = false; onViewChange('glossary'); $nextTick(() => openGlossaryTerm(term.slug))"
+                    >{{ term.term }}</button>
+                  </div>
+                </div>
+                <div v-if="(graphDrawerNode.propagatedGlossaryTerms || []).length">
+                  <div class="graph-semantic-title">Propagated Through Lineage</div>
+                  <div class="graph-semantic-list">
+                    <span
+                      v-for="term in graphDrawerNode.propagatedGlossaryTerms"
+                      :key="'graph-prop-term-' + term.slug + '-' + term.inherited_from"
+                      class="graph-semantic-chip propagated"
+                    >{{ term.term }} from {{ term.inherited_from }}</span>
+                  </div>
+                </div>
+              </div>
               <div class="btn-row" style="margin-top:14px;">
                 <v-btn size="small" color="primary" @click="graphDrawerOpen = false; onViewChange('discovery')">Focus Graph</v-btn>
                 <v-btn size="small" variant="tonal" @click="graphDrawerOpen = false; loadObjectContext()">Open Catalog</v-btn>

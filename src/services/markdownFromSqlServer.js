@@ -2,6 +2,7 @@
  * Markdown Generator for SQL Server Metadata
  * Converts extracted metadata into governance-ready markdown files
  */
+import { applyDictionaryEnrichmentContract } from './markdownEnrichmentContract.js';
 
 function markdownScalar(value) {
   const text = String(value ?? '');
@@ -1001,7 +1002,7 @@ class MarkdownGenerator {
     const mediumConfidence = relationships.filter((r) => r.confidence >= 0.6 && r.confidence < 0.8);
     const lowConfidence = relationships.filter((r) => r.confidence < 0.6);
 
-    const frontmatter = {
+    const frontmatter = applyDictionaryEnrichmentContract({
       id: table.id,
       name: table.name,
       server: table.serverName || this.metadata.serverName || 'unknown',
@@ -1031,7 +1032,7 @@ class MarkdownGenerator {
       check_constraint_count: table.checkConstraints?.length || 0,
       extraction_warnings: extractionWarnings.map((warning) => warning.code),
       extracted_at: this.metadata.extractedAt,
-    };
+    }, { extractedAt: this.metadata.extractedAt });
 
     let markdown = renderFrontmatter(frontmatter);
 
@@ -1207,7 +1208,7 @@ class MarkdownGenerator {
     const { direct: dependsOn, contextual } = MarkdownGenerator.splitSqlReferences(rawReferences);
     const usedBy = Array.from(new Set((view.used_by || []).filter((ref) => !isNoiseSqlReference(ref))));
     const columnUsage = MarkdownGenerator.extractSqlColumnUsage(view.definition, view, this.metadata);
-    const frontmatter = {
+    const frontmatter = applyDictionaryEnrichmentContract({
       id: view.id,
       name: view.name,
       server: view.serverName || this.metadata.serverName || 'unknown',
@@ -1233,7 +1234,7 @@ class MarkdownGenerator {
       unresolved_column_usage: columnUsage.unresolved_column_usage,
       column_risk_flags: columnUsage.column_risk_flags,
       extracted_at: this.metadata.extractedAt,
-    };
+    }, { extractedAt: this.metadata.extractedAt });
 
     let markdown = renderFrontmatter(frontmatter);
 
@@ -1359,7 +1360,7 @@ class MarkdownGenerator {
     const readsFrom = MarkdownGenerator.excludeWriteTargets(rawReadsFrom, writesTo);
     const { direct: calls } = MarkdownGenerator.splitSqlReferences(callRefs);
     const columnUsage = MarkdownGenerator.extractSqlColumnUsage(proc.definition, proc, this.metadata);
-    const frontmatter = {
+    const frontmatter = applyDictionaryEnrichmentContract({
       id: proc.id,
       name: proc.name,
       server: proc.serverName || this.metadata.serverName || 'unknown',
@@ -1385,7 +1386,7 @@ class MarkdownGenerator {
       unresolved_column_usage: columnUsage.unresolved_column_usage,
       column_risk_flags: columnUsage.column_risk_flags,
       extracted_at: this.metadata.extractedAt,
-    };
+    }, { extractedAt: this.metadata.extractedAt });
 
     let markdown = renderFrontmatter(frontmatter);
 
@@ -1432,7 +1433,7 @@ class MarkdownGenerator {
   generateFunctionMarkdown(func) {
     const dependsOn = (func.dependencies || []).map((dep) => dep.referencedObject);
     const columnUsage = MarkdownGenerator.extractSqlColumnUsage(func.definition, func, this.metadata);
-    const frontmatter = {
+    const frontmatter = applyDictionaryEnrichmentContract({
       id: func.id,
       name: func.name,
       server: func.serverName || this.metadata.serverName || 'unknown',
@@ -1453,7 +1454,7 @@ class MarkdownGenerator {
       unresolved_column_usage: columnUsage.unresolved_column_usage,
       column_risk_flags: columnUsage.column_risk_flags,
       extracted_at: this.metadata.extractedAt,
-    };
+    }, { extractedAt: this.metadata.extractedAt });
 
     let markdown = renderFrontmatter(frontmatter);
 
@@ -1500,7 +1501,7 @@ class MarkdownGenerator {
   generateTriggerMarkdown(trigger) {
     const dependsOn = (trigger.dependencies || []).map((dep) => dep.referencedObject);
     const columnUsage = MarkdownGenerator.extractSqlColumnUsage(trigger.definition, trigger, this.metadata);
-    const frontmatter = {
+    const frontmatter = applyDictionaryEnrichmentContract({
       id: trigger.id,
       name: trigger.name,
       server: trigger.serverName || this.metadata.serverName || 'unknown',
@@ -1521,7 +1522,7 @@ class MarkdownGenerator {
       unresolved_column_usage: columnUsage.unresolved_column_usage,
       column_risk_flags: columnUsage.column_risk_flags,
       extracted_at: this.metadata.extractedAt,
-    };
+    }, { extractedAt: this.metadata.extractedAt });
 
     let markdown = renderFrontmatter(frontmatter);
 
@@ -1565,7 +1566,7 @@ class MarkdownGenerator {
       dependencies = [normalizeSynonymReference(synonym.baseObjectName)];
     }
 
-    const frontmatter = {
+    const frontmatter = applyDictionaryEnrichmentContract({
       id: synonym.id,
       name: synonym.name,
       server: synonym.serverName || this.metadata.serverName || 'unknown',
@@ -1581,7 +1582,7 @@ class MarkdownGenerator {
         unresolved_facts: 0,
       },
       extracted_at: this.metadata.extractedAt,
-    };
+    }, { extractedAt: this.metadata.extractedAt });
 
     let markdown = renderFrontmatter(frontmatter);
 
