@@ -27,6 +27,7 @@ const navSections = [
     items: [
       { key: 'glossary', label: 'Business Glossary', icon: 'mdi-book-open-variant' },
       { key: 'governance', label: 'Trust & Compliance', icon: 'mdi-shield-check' },
+      { key: 'governanceOps', label: 'Governance Ops', icon: 'mdi-clipboard-check' },
     ],
   },
   {
@@ -314,6 +315,20 @@ const appConfig = {
             description: '',
           },
         },
+      },
+      governanceOps: {
+        loading: false,
+        overview: null,
+        tasks: [],
+        incidents: [],
+        usage: null,
+        publication: null,
+        contextQuery: 'which governed assets mention revenue?',
+        contextAnswer: null,
+        taskAssetId: 'sales.orders',
+        taskTitle: 'Review governance metadata',
+        incidentAssetId: 'sales.orders',
+        incidentTitle: 'Data quality investigation',
       },
       productsCatalog: {
         products: [],
@@ -1840,6 +1855,10 @@ const appConfig = {
         await this.loadGovernanceSummary();
         return;
       }
+      if (view === 'governanceOps') {
+        await this.loadGovernanceOps();
+        return;
+      }
       if (view === 'discovery') {
         await nextTick();
         this.renderGraph();
@@ -3020,6 +3039,98 @@ const appConfig = {
         await this.loadQualityRulesPanel();
       } catch (err) {
         this.showToast(`Governance summary load failed: ${err.message}`);
+      }
+    },
+    async loadGovernanceOps() {
+      try {
+        this.governanceOps.loading = true;
+        const [overview, tasks, incidents, usage, publication] = await Promise.all([
+          this.api('/api/v1/governance-ops/overview'),
+          this.api('/api/v1/governance-ops/tasks'),
+          this.api('/api/v1/governance-ops/incidents'),
+          this.api('/api/v1/governance-ops/usage/analytics'),
+          this.api('/api/v1/governance-ops/publication/status'),
+        ]);
+        this.governanceOps.overview = overview.data || null;
+        this.governanceOps.tasks = tasks.data?.tasks || [];
+        this.governanceOps.incidents = incidents.data?.incidents || [];
+        this.governanceOps.usage = usage.data || null;
+        this.governanceOps.publication = publication.data || null;
+      } catch (err) {
+        this.showToast(`Governance Ops load failed: ${err.message}`);
+      } finally {
+        this.governanceOps.loading = false;
+      }
+    },
+    async generateGovernanceTasks() {
+      try {
+        this.governanceOps.loading = true;
+        const payload = await this.api('/api/v1/governance-ops/tasks/generate', {
+          method: 'POST',
+          body: JSON.stringify({ limit: 100 }),
+        });
+        this.showToast(`Generated ${payload.data?.count || 0} stewardship task(s).`);
+        await this.loadGovernanceOps();
+      } catch (err) {
+        this.showToast(`Task generation failed: ${err.message}`);
+      } finally {
+        this.governanceOps.loading = false;
+      }
+    },
+    async createGovernanceOpsTask() {
+      try {
+        await this.api('/api/v1/governance-ops/tasks', {
+          method: 'POST',
+          body: JSON.stringify({
+            assetId: this.governanceOps.taskAssetId,
+            title: this.governanceOps.taskTitle,
+            priority: 'medium',
+            type: 'stewardship',
+          }),
+        });
+        this.showToast('Governance task created.');
+        await this.loadGovernanceOps();
+      } catch (err) {
+        this.showToast(`Task create failed: ${err.message}`);
+      }
+    },
+    async transitionGovernanceOpsTask(task, status) {
+      if (!task?.taskId) return;
+      try {
+        await this.api(`/api/v1/governance-ops/tasks/${encodeURIComponent(task.taskId)}/transition`, {
+          method: 'POST',
+          body: JSON.stringify({ status }),
+        });
+        await this.loadGovernanceOps();
+      } catch (err) {
+        this.showToast(`Task update failed: ${err.message}`);
+      }
+    },
+    async createGovernanceIncident() {
+      try {
+        await this.api('/api/v1/governance-ops/incidents', {
+          method: 'POST',
+          body: JSON.stringify({
+            assetId: this.governanceOps.incidentAssetId,
+            title: this.governanceOps.incidentTitle,
+            severity: 'medium',
+          }),
+        });
+        this.showToast('Governance incident created.');
+        await this.loadGovernanceOps();
+      } catch (err) {
+        this.showToast(`Incident create failed: ${err.message}`);
+      }
+    },
+    async askGovernanceOpsContext() {
+      try {
+        const payload = await this.api('/api/v1/governance-ops/context/query', {
+          method: 'POST',
+          body: JSON.stringify({ query: this.governanceOps.contextQuery }),
+        });
+        this.governanceOps.contextAnswer = payload.data || null;
+      } catch (err) {
+        this.showToast(`Context query failed: ${err.message}`);
       }
     },
     formatTrendTimestamp(value) {
@@ -7169,6 +7280,163 @@ const appConfig = {
                         </div>
                         <div class="asset-actions">
                           <v-btn size="small" variant="outlined" @click="selectedObjectId = item.asset_id; onViewChange('browse'); $nextTick(loadObjectContext)">Open</v-btn>
+                        </div>
+                      </div>
+                    </div>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </div>
+
+            <div v-if="activeView === 'governanceOps'" class="governance-page">
+              <v-row>
+                <v-col cols="12">
+                  <v-card class="card" variant="outlined">
+                    <div class="section-header" style="margin-bottom:12px;">
+                      <div>
+                        <span class="section-title">Governance Operations</span>
+                        <p class="card-help">Stewardship, incidents, usage, publication readiness, and AI context activation from the shared Phase 7 service layer.</p>
+                      </div>
+                      <div class="btn-row">
+                        <v-btn size="small" variant="outlined" :loading="governanceOps.loading" @click="loadGovernanceOps">Refresh</v-btn>
+                        <v-btn size="small" color="primary" :loading="governanceOps.loading" @click="generateGovernanceTasks">Generate Tasks</v-btn>
+                      </div>
+                    </div>
+                    <v-row>
+                      <v-col cols="12" sm="6" md="3">
+                        <v-card class="card kpi" variant="outlined">
+                          <div class="value">{{ governanceOps.overview?.kpis?.totalAssets || 0 }}</div>
+                          <div class="label">Governed Assets</div>
+                        </v-card>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="3">
+                        <v-card class="card kpi" variant="outlined">
+                          <div class="value">{{ governanceOps.overview?.kpis?.averageTrustScore || 0 }}</div>
+                          <div class="label">Avg Trust</div>
+                        </v-card>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="3">
+                        <v-card class="card kpi" variant="outlined">
+                          <div class="value">{{ governanceOps.overview?.kpis?.openTasks || 0 }}</div>
+                          <div class="label">Open Tasks</div>
+                        </v-card>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="3">
+                        <v-card class="card kpi" variant="outlined">
+                          <div class="value">{{ governanceOps.overview?.kpis?.openIncidents || 0 }}</div>
+                          <div class="label">Open Incidents</div>
+                        </v-card>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-col>
+
+                <v-col cols="12" md="7">
+                  <v-card class="card" variant="outlined">
+                    <div class="section-header" style="margin-bottom:12px;">
+                      <span class="section-title">Stewardship Work Queue</span>
+                      <div class="btn-row">
+                        <v-text-field v-model="governanceOps.taskAssetId" density="compact" variant="outlined" hide-details placeholder="asset id"></v-text-field>
+                        <v-text-field v-model="governanceOps.taskTitle" density="compact" variant="outlined" hide-details placeholder="task title"></v-text-field>
+                        <v-btn size="small" color="primary" @click="createGovernanceOpsTask">Add</v-btn>
+                      </div>
+                    </div>
+                    <div class="table-wrap">
+                      <table class="data-table">
+                        <thead>
+                          <tr>
+                            <th>Asset</th>
+                            <th>Task</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="task in governanceOps.tasks.slice(0, 12)" :key="'govops-task-' + task.taskId">
+                            <td class="text-mono text-small">{{ task.assetId || '-' }}</td>
+                            <td>{{ task.title }}</td>
+                            <td><v-chip size="x-small" variant="tonal">{{ task.priority }}</v-chip></td>
+                            <td>{{ task.status }}</td>
+                            <td>
+                              <v-btn v-if="task.status !== 'done'" size="x-small" variant="outlined" @click="transitionGovernanceOpsTask(task, 'done')">Done</v-btn>
+                            </td>
+                          </tr>
+                          <tr v-if="!governanceOps.tasks.length">
+                            <td colspan="5" class="empty">No stewardship tasks yet. Generate tasks from metadata gaps to seed the queue.</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </v-card>
+                </v-col>
+
+                <v-col cols="12" md="5">
+                  <v-card class="card" variant="outlined">
+                    <div class="section-header" style="margin-bottom:12px;">
+                      <span class="section-title">Incidents</span>
+                    </div>
+                    <div class="form-row">
+                      <div class="col-5"><v-text-field v-model="governanceOps.incidentAssetId" density="compact" variant="outlined" hide-details placeholder="asset id"></v-text-field></div>
+                      <div class="col-5"><v-text-field v-model="governanceOps.incidentTitle" density="compact" variant="outlined" hide-details placeholder="incident title"></v-text-field></div>
+                      <div class="col-2"><v-btn size="small" color="primary" @click="createGovernanceIncident">Create</v-btn></div>
+                    </div>
+                    <div class="quality-incident-list">
+                      <div v-for="incident in governanceOps.incidents.slice(0, 6)" :key="'govops-incident-' + incident.incidentId" class="quality-incident-row">
+                        <strong>{{ incident.severity }}</strong>
+                        <span>{{ incident.assetId || 'unassigned' }} · {{ incident.title }}</span>
+                      </div>
+                      <div v-if="!governanceOps.incidents.length" class="policy-empty-row">No governance incidents are open.</div>
+                    </div>
+                  </v-card>
+                </v-col>
+
+                <v-col cols="12" md="4">
+                  <v-card class="card" variant="outlined">
+                    <div class="section-header" style="margin-bottom:12px;">
+                      <span class="section-title">Publication Readiness</span>
+                      <v-chip size="small" :color="governanceOps.publication?.ready ? 'success' : 'warning'" variant="tonal">
+                        {{ governanceOps.publication?.ready ? 'Ready' : 'Needs Checks' }}
+                      </v-chip>
+                    </div>
+                    <div class="policy-template-list">
+                      <div v-for="check in governanceOps.publication?.checks || []" :key="'pub-check-' + check.name" class="policy-template-row">
+                        <span>{{ check.name }}</span>
+                        <strong>{{ check.status }}</strong>
+                      </div>
+                    </div>
+                  </v-card>
+                </v-col>
+
+                <v-col cols="12" md="4">
+                  <v-card class="card" variant="outlined">
+                    <div class="section-header" style="margin-bottom:12px;">
+                      <span class="section-title">Adoption Leaders</span>
+                    </div>
+                    <div class="policy-gap-list">
+                      <div v-for="asset in governanceOps.overview?.adoptionLeaders || []" :key="'adoption-' + asset.assetId" class="policy-gap-row">
+                        <strong>{{ asset.assetId }}</strong>
+                        <span>Score {{ asset.adoptionScore }} · usage {{ asset.usageCount }} · downstream {{ asset.downstreamCount }}</span>
+                      </div>
+                    </div>
+                  </v-card>
+                </v-col>
+
+                <v-col cols="12" md="4">
+                  <v-card class="card" variant="outlined">
+                    <div class="section-header" style="margin-bottom:12px;">
+                      <span class="section-title">AI Context Lookup</span>
+                    </div>
+                    <div class="btn-row">
+                      <v-text-field v-model="governanceOps.contextQuery" density="compact" variant="outlined" hide-details placeholder="Ask a governance context question"></v-text-field>
+                      <v-btn size="small" color="primary" @click="askGovernanceOpsContext">Ask</v-btn>
+                    </div>
+                    <div v-if="governanceOps.contextAnswer" class="mt-8">
+                      <p class="card-help">{{ governanceOps.contextAnswer.answer }}</p>
+                      <div class="policy-gap-list">
+                        <div v-for="match in governanceOps.contextAnswer.matches || []" :key="'context-match-' + match.assetId" class="policy-gap-row">
+                          <strong>{{ match.assetId }}</strong>
+                          <span>{{ match.type }} · {{ match.owner }} · trust {{ match.trust?.score }}</span>
                         </div>
                       </div>
                     </div>
