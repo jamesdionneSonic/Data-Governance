@@ -131,4 +131,23 @@ describe('Phase 7 - Governance Operations API', () => {
 
     expect(checkResponse.status).toBe(200);
   });
+
+  test('exports store state and reports durable store status for admins', async () => {
+    await request(app)
+      .post('/api/v1/governance-ops/tasks')
+      .set(auth(['Admin']))
+      .send({ assetId: 'sales.orders', title: 'Export task' });
+
+    const statusResponse = await request(app)
+      .get('/api/v1/governance-ops/store/status')
+      .set(auth(['Admin']));
+
+    expect(statusResponse.status).toBe(200);
+    expect(statusResponse.body.data.counts.tasks).toBe(1);
+
+    const exportResponse = await request(app).get('/api/v1/governance-ops/export').set(auth(['Admin']));
+
+    expect(exportResponse.status).toBe(200);
+    expect(exportResponse.body.data.tasks).toHaveLength(1);
+  });
 });

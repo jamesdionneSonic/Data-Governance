@@ -51,4 +51,9 @@ test.describe('Playwright Smoke Suite', () => {
     const response = await request.get('/api/v1/dictionary');
     expect(response.status()).toBe(401);
   });
+
+  test('SMOKE-010: Governance Ops endpoint is reachable and protected', async ({ request }) => {
+    const response = await request.get('/api/v1/governance-ops/overview');
+    expect(response.status()).toBe(401);
+  });
 });
