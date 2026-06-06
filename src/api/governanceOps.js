@@ -24,6 +24,10 @@ import {
   evaluateServiceLevel,
   generateStewardshipTasks,
   getTrustActions,
+  getGovernanceOpsStoreStatus,
+  importGovernanceOpsState,
+  exportGovernanceOpsState,
+  listGovernanceOpsEventDeliveries,
   listAssetComments,
   listDecisions,
   listGovernanceTasks,
@@ -69,6 +73,17 @@ router.get('/overview', authenticate, async (_req, res) => {
   const terms = await loadAllTerms().catch(() => []);
   return ok(res, buildGovernanceOpsOverview(assetCache, lineageGraphCache, terms));
 });
+
+router.get('/store/status', authenticate, (_req, res) => ok(res, getGovernanceOpsStoreStatus()));
+
+router.get('/export', authenticate, requireAdmin, (_req, res) => ok(res, exportGovernanceOpsState()));
+
+router.post('/import', authenticate, requireAdmin, (req, res) => ok(res, importGovernanceOpsState(req.body)));
+
+router.get('/events/deliveries', authenticate, requireSteward, (req, res) => ok(res, {
+    count: listGovernanceOpsEventDeliveries(req.query).length,
+    deliveries: listGovernanceOpsEventDeliveries(req.query),
+  }));
 
 router.get('/kpis', authenticate, (_req, res) => ok(res, buildKpis(assetCache, lineageGraphCache)));
 

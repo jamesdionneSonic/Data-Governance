@@ -1,3 +1,6 @@
+import { mkdtemp, rm } from 'fs/promises';
+import { tmpdir } from 'os';
+import path from 'path';
 import {
   assessChangeRisk,
   buildAdoptionScorecards,
@@ -7,8 +10,12 @@ import {
   createIncident,
   detectSchemaChange,
   evaluateAnomaly,
+  exportGovernanceOpsState,
   generateStewardshipTasks,
+  getGovernanceOpsStoreStatus,
+  importGovernanceOpsState,
   recordUsageEvent,
+  setGovernanceOpsStorePath,
   transitionGovernanceTask,
 } from '../../src/services/governanceOpsService.js';
 
@@ -122,5 +129,32 @@ describe('Phase 7 - Governance Operations Service', () => {
     expect(kpis.totalAssets).toBe(2);
     expect(anomaly.severity).toBe('medium');
     expect(incident.status).toBe('open');
+  });
+
+  test('persists and restores governance ops workflow state', async () => {
+    const tempDir = await mkdtemp(path.join(tmpdir(), 'govops-'));
+    const tempPath = path.join(tempDir, 'state.json');
+    setGovernanceOpsStorePath(tempPath, { load: false });
+    clearGovernanceOps();
+
+    try {
+      const task = createGovernanceTask({ assetId: 'sales.orders', title: 'Persist me' }, { id: 'admin' });
+      const exported = exportGovernanceOpsState();
+
+      clearGovernanceOps();
+      expect(getGovernanceOpsStoreStatus().counts.tasks).toBe(0);
+
+      importGovernanceOpsState(exported);
+      const restored = exportGovernanceOpsState();
+
+      expect(restored.tasks[0][0]).toBe(task.taskId);
+      expect(getGovernanceOpsStoreStatus().exists).toBe(true);
+    } finally {
+      await rm(tempDir, { recursive: true, force: true });
+      setGovernanceOpsStorePath(path.resolve(process.cwd(), 'data/governance-ops/state.json'), {
+        load: false,
+        enablePersistence: false,
+      });
+    }
   });
 });

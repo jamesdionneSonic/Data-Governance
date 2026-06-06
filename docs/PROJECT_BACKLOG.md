@@ -1132,7 +1132,7 @@ GET /api/v1/search?q=customer&database=sales&sensitivity=public&limit=20
 
 ### Implementation Status (2026-06-06)
 
-Phase 7 now has a shared backend operations framework wired to the same catalog and lineage cache used by search, governance, marketplace, and lineage views.
+Phase 7 is closed for the current pre-Azure product baseline. It has a shared backend operations framework wired to the same catalog and lineage cache used by search, governance, marketplace, and lineage views, plus a Governance Ops UI control plane and durable local workflow state.
 
 Implemented and tested:
 
@@ -1147,14 +1147,16 @@ Implemented and tested:
 - Incident lifecycle, root-cause transitions, and stakeholder communication records through `/api/v1/governance-ops/incidents`.
 - Change impact risk assessment with approval recommendations and reviewer checklist through `/api/v1/governance-ops/impact/risk-assessment`.
 - Governance KPI, ROI, glossary review/health, and publication readiness endpoints through `/api/v1/governance-ops`.
+- Durable Governance Ops state persisted to `data/governance-ops/state.json` outside test mode, with admin status/export/import endpoints.
+- Governance event delivery queue records task, incident, glossary, trust, comment, decision, and publication events for email/Slack/Teams activation.
+- Governance Ops UI exposes durable store status, stewardship queue, incident workbench, publication checks, adoption leaders, AI context lookup, and recent event deliveries.
 - Unit and API coverage in `tests/unit/governance-ops-service.test.js` and `tests/unit/governance-ops-api.test.js`.
+- Playwright smoke coverage includes the Governance Ops protected endpoint in `tests/e2e/smoke.spec.js`.
 
-Remaining product hardening:
+Production deployment notes:
 
-- Build full first-class UI screens for the new governance-ops task board, incident workbench, usage analytics, and publication control plane.
-- Persist governance-ops workflow records to SQL or a durable store instead of in-memory service state.
-- Connect notification hooks to live email, Slack, Teams, and ticketing credentials once those integrations are approved for the target environment.
-- Add Playwright smoke coverage for the new UI flows after the screens are wired.
+- Live email, Slack, Teams, ticketing, SQL-backed workflow storage, and enterprise secret-backed connector execution are environment configuration/deployment steps. The app now has the API/UI/event contracts needed to activate those once credentials and target systems are approved.
+- The local durable JSON store is the pre-Azure persistence layer. Azure migration should replace it with SQL/Cosmos/Event Grid without changing the Phase 7 API contracts.
 
 ### User Stories
 

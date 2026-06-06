@@ -323,6 +323,10 @@ const appConfig = {
         incidents: [],
         usage: null,
         publication: null,
+        storeStatus: null,
+        eventDeliveries: [],
+        selectedTaskStatus: '',
+        selectedIncidentStatus: '',
         contextQuery: 'which governed assets mention revenue?',
         contextAnswer: null,
         taskAssetId: 'sales.orders',
@@ -3044,18 +3048,22 @@ const appConfig = {
     async loadGovernanceOps() {
       try {
         this.governanceOps.loading = true;
-        const [overview, tasks, incidents, usage, publication] = await Promise.all([
+        const [overview, tasks, incidents, usage, publication, storeStatus, eventDeliveries] = await Promise.all([
           this.api('/api/v1/governance-ops/overview'),
           this.api('/api/v1/governance-ops/tasks'),
           this.api('/api/v1/governance-ops/incidents'),
           this.api('/api/v1/governance-ops/usage/analytics'),
           this.api('/api/v1/governance-ops/publication/status'),
+          this.api('/api/v1/governance-ops/store/status').catch(() => ({ data: null })),
+          this.api('/api/v1/governance-ops/events/deliveries').catch(() => ({ data: { deliveries: [] } })),
         ]);
         this.governanceOps.overview = overview.data || null;
         this.governanceOps.tasks = tasks.data?.tasks || [];
         this.governanceOps.incidents = incidents.data?.incidents || [];
         this.governanceOps.usage = usage.data || null;
         this.governanceOps.publication = publication.data || null;
+        this.governanceOps.storeStatus = storeStatus.data || null;
+        this.governanceOps.eventDeliveries = eventDeliveries.data?.deliveries || [];
       } catch (err) {
         this.showToast(`Governance Ops load failed: ${err.message}`);
       } finally {
@@ -3106,6 +3114,21 @@ const appConfig = {
         this.showToast(`Task update failed: ${err.message}`);
       }
     },
+    async transitionGovernanceIncident(incident, status) {
+      if (!incident?.incidentId) return;
+      try {
+        await this.api(
+          `/api/v1/governance-ops/incidents/${encodeURIComponent(incident.incidentId)}/transition`,
+          {
+            method: 'POST',
+            body: JSON.stringify({ status }),
+          }
+        );
+        await this.loadGovernanceOps();
+      } catch (err) {
+        this.showToast(`Incident update failed: ${err.message}`);
+      }
+    },
     async createGovernanceIncident() {
       try {
         await this.api('/api/v1/governance-ops/incidents', {
@@ -3131,6 +3154,17 @@ const appConfig = {
         this.governanceOps.contextAnswer = payload.data || null;
       } catch (err) {
         this.showToast(`Context query failed: ${err.message}`);
+      }
+    },
+    async recordPublicationCheck(name, status) {
+      try {
+        await this.api(`/api/v1/governance-ops/publication/checks/${encodeURIComponent(name)}`, {
+          method: 'POST',
+          body: JSON.stringify({ status, detail: `Marked ${status} from Governance Ops UI.` }),
+        });
+        await this.loadGovernanceOps();
+      } catch (err) {
+        this.showToast(`Publication check failed: ${err.message}`);
       }
     },
     formatTrendTimestamp(value) {
@@ -7302,6 +7336,28 @@ const appConfig = {
                         <v-btn size="small" color="primary" :loading="governanceOps.loading" @click="generateGovernanceTasks">Generate Tasks</v-btn>
                       </div>
                     </div>
+                    <div class="policy-dashboard-grid" style="margin-bottom:12px;" v-if="governanceOps.storeStatus">
+                      <div class="policy-dashboard-score">
+                        <span>Durable Store</span>
+                        <strong>{{ governanceOps.storeStatus.persistenceEnabled ? 'Enabled' : 'Disabled' }}</strong>
+                        <small>{{ governanceOps.storeStatus.exists ? 'State file present' : 'No state file yet' }}</small>
+                      </div>
+                      <div class="policy-dashboard-score">
+                        <span>Event Queue</span>
+                        <strong>{{ governanceOps.storeStatus.counts?.eventDeliveries || 0 }}</strong>
+                        <small>Email, Slack, Teams delivery records</small>
+                      </div>
+                      <div class="policy-dashboard-score">
+                        <span>Comment Threads</span>
+                        <strong>{{ governanceOps.storeStatus.counts?.commentThreads || 0 }}</strong>
+                        <small>Asset collaboration threads</small>
+                      </div>
+                      <div class="policy-dashboard-score">
+                        <span>Trust Actions</span>
+                        <strong>{{ governanceOps.storeStatus.counts?.trustActionThreads || 0 }}</strong>
+                        <small>Certification and endorsement histories</small>
+                      </div>
+                    </div>
                     <v-row>
                       <v-col cols="12" sm="6" md="3">
                         <v-card class="card kpi" variant="outlined">
@@ -7336,6 +7392,7 @@ const appConfig = {
                     <div class="section-header" style="margin-bottom:12px;">
                       <span class="section-title">Stewardship Work Queue</span>
                       <div class="btn-row">
+                        <v-select v-model="governanceOps.selectedTaskStatus" density="compact" variant="outlined" hide-details clearable :items="['open','in_progress','blocked','done','canceled']" placeholder="status"></v-select>
                         <v-text-field v-model="governanceOps.taskAssetId" density="compact" variant="outlined" hide-details placeholder="asset id"></v-text-field>
                         <v-text-field v-model="governanceOps.taskTitle" density="compact" variant="outlined" hide-details placeholder="task title"></v-text-field>
                         <v-btn size="small" color="primary" @click="createGovernanceOpsTask">Add</v-btn>
@@ -7353,12 +7410,16 @@ const appConfig = {
                           </tr>
                         </thead>
                         <tbody>
-                          <tr v-for="task in governanceOps.tasks.slice(0, 12)" :key="'govops-task-' + task.taskId">
+                          <tr
+                            v-for="task in governanceOps.tasks.filter((item) => !governanceOps.selectedTaskStatus || item.status === governanceOps.selectedTaskStatus).slice(0, 12)"
+                            :key="'govops-task-' + task.taskId"
+                          >
                             <td class="text-mono text-small">{{ task.assetId || '-' }}</td>
                             <td>{{ task.title }}</td>
                             <td><v-chip size="x-small" variant="tonal">{{ task.priority }}</v-chip></td>
                             <td>{{ task.status }}</td>
                             <td>
+                              <v-btn v-if="task.status === 'open'" size="x-small" variant="outlined" @click="transitionGovernanceOpsTask(task, 'in_progress')">Start</v-btn>
                               <v-btn v-if="task.status !== 'done'" size="x-small" variant="outlined" @click="transitionGovernanceOpsTask(task, 'done')">Done</v-btn>
                             </td>
                           </tr>
@@ -7377,14 +7438,21 @@ const appConfig = {
                       <span class="section-title">Incidents</span>
                     </div>
                     <div class="form-row">
+                      <div class="col-2"><v-select v-model="governanceOps.selectedIncidentStatus" density="compact" variant="outlined" hide-details clearable :items="['open','investigating','mitigated','resolved','closed']" placeholder="status"></v-select></div>
                       <div class="col-5"><v-text-field v-model="governanceOps.incidentAssetId" density="compact" variant="outlined" hide-details placeholder="asset id"></v-text-field></div>
-                      <div class="col-5"><v-text-field v-model="governanceOps.incidentTitle" density="compact" variant="outlined" hide-details placeholder="incident title"></v-text-field></div>
-                      <div class="col-2"><v-btn size="small" color="primary" @click="createGovernanceIncident">Create</v-btn></div>
+                      <div class="col-4"><v-text-field v-model="governanceOps.incidentTitle" density="compact" variant="outlined" hide-details placeholder="incident title"></v-text-field></div>
+                      <div class="col-1"><v-btn size="small" color="primary" @click="createGovernanceIncident">Create</v-btn></div>
                     </div>
                     <div class="quality-incident-list">
-                      <div v-for="incident in governanceOps.incidents.slice(0, 6)" :key="'govops-incident-' + incident.incidentId" class="quality-incident-row">
+                      <div
+                        v-for="incident in governanceOps.incidents.filter((item) => !governanceOps.selectedIncidentStatus || item.status === governanceOps.selectedIncidentStatus).slice(0, 6)"
+                        :key="'govops-incident-' + incident.incidentId"
+                        class="quality-incident-row"
+                      >
                         <strong>{{ incident.severity }}</strong>
-                        <span>{{ incident.assetId || 'unassigned' }} · {{ incident.title }}</span>
+                        <span>{{ incident.assetId || 'unassigned' }} · {{ incident.title }} · {{ incident.status }}</span>
+                        <v-btn v-if="incident.status === 'open'" size="x-small" variant="outlined" @click="transitionGovernanceIncident(incident, 'investigating')">Investigate</v-btn>
+                        <v-btn v-if="incident.status !== 'resolved' && incident.status !== 'closed'" size="x-small" variant="outlined" @click="transitionGovernanceIncident(incident, 'resolved')">Resolve</v-btn>
                       </div>
                       <div v-if="!governanceOps.incidents.length" class="policy-empty-row">No governance incidents are open.</div>
                     </div>
@@ -7402,7 +7470,11 @@ const appConfig = {
                     <div class="policy-template-list">
                       <div v-for="check in governanceOps.publication?.checks || []" :key="'pub-check-' + check.name" class="policy-template-row">
                         <span>{{ check.name }}</span>
-                        <strong>{{ check.status }}</strong>
+                        <div class="btn-row">
+                          <strong>{{ check.status }}</strong>
+                          <v-btn size="x-small" variant="outlined" @click="recordPublicationCheck(check.name, 'pass')">Pass</v-btn>
+                          <v-btn size="x-small" variant="outlined" color="warning" @click="recordPublicationCheck(check.name, 'fail')">Fail</v-btn>
+                        </div>
                       </div>
                     </div>
                   </v-card>
@@ -7439,6 +7511,40 @@ const appConfig = {
                           <span>{{ match.type }} · {{ match.owner }} · trust {{ match.trust?.score }}</span>
                         </div>
                       </div>
+                    </div>
+                  </v-card>
+                </v-col>
+
+                <v-col cols="12">
+                  <v-card class="card" variant="outlined">
+                    <div class="section-header" style="margin-bottom:12px;">
+                      <span class="section-title">Governance Event Delivery Queue</span>
+                      <v-chip size="small" variant="tonal">{{ governanceOps.eventDeliveries.length }} recent</v-chip>
+                    </div>
+                    <div class="table-wrap">
+                      <table class="data-table">
+                        <thead>
+                          <tr>
+                            <th>Event</th>
+                            <th>Actor</th>
+                            <th>Status</th>
+                            <th>Channels</th>
+                            <th>Created</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="event in governanceOps.eventDeliveries.slice(0, 12)" :key="'govops-event-' + event.deliveryId">
+                            <td>{{ event.eventType }}</td>
+                            <td>{{ event.actor?.email || event.actor?.userId || 'system' }}</td>
+                            <td>{{ event.status }}</td>
+                            <td>{{ (event.channels || []).join(', ') }}</td>
+                            <td>{{ event.createdAt }}</td>
+                          </tr>
+                          <tr v-if="!governanceOps.eventDeliveries.length">
+                            <td colspan="5" class="empty">No governance events have been queued yet.</td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </v-card>
                 </v-col>

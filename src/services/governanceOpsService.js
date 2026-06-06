@@ -1,4 +1,6 @@
 import { randomUUID } from 'crypto';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
+import path from 'path';
 import { computeTrustScore, computeAllTrustScores } from './trustService.js';
 
 const taskStore = new Map();
@@ -9,6 +11,12 @@ const incidentStore = new Map();
 const glossaryReviewStore = new Map();
 const trustActionStore = new Map();
 const publicationChecks = new Map();
+const eventDeliveryStore = [];
+
+let storePath =
+  process.env.GOVERNANCE_OPS_STORE_PATH ||
+  path.resolve(process.cwd(), 'data/governance-ops/state.json');
+let explicitStorePath = Boolean(process.env.GOVERNANCE_OPS_STORE_PATH);
 
 const TASK_STATUSES = new Set(['open', 'in_progress', 'blocked', 'done', 'canceled']);
 const INCIDENT_STATUSES = new Set(['open', 'investigating', 'mitigated', 'resolved', 'closed']);
@@ -70,6 +78,130 @@ function addEvent(record, action, actor, details = {}) {
   });
 }
 
+function persistenceEnabled() {
+  if (process.env.GOVERNANCE_OPS_PERSISTENCE === 'false') return false;
+  if (process.env.NODE_ENV === 'test' && !explicitStorePath) return false;
+  return true;
+}
+
+function mapToEntries(map) {
+  return [...map.entries()];
+}
+
+function arrayMapToEntries(map) {
+  return [...map.entries()].map(([key, value]) => [key, Array.isArray(value) ? value : []]);
+}
+
+function entriesToMap(entries = []) {
+  return new Map(Array.isArray(entries) ? entries : []);
+}
+
+function governanceOpsState() {
+  return {
+    version: 1,
+    savedAt: nowIso(),
+    tasks: mapToEntries(taskStore),
+    comments: arrayMapToEntries(commentStore),
+    decisions: arrayMapToEntries(decisionStore),
+    usageEvents,
+    incidents: mapToEntries(incidentStore),
+    glossaryReviews: mapToEntries(glossaryReviewStore),
+    trustActions: arrayMapToEntries(trustActionStore),
+    publicationChecks: mapToEntries(publicationChecks),
+    eventDeliveries: eventDeliveryStore,
+  };
+}
+
+function replaceState(state = {}) {
+  taskStore.clear();
+  commentStore.clear();
+  decisionStore.clear();
+  usageEvents.length = 0;
+  incidentStore.clear();
+  glossaryReviewStore.clear();
+  trustActionStore.clear();
+  publicationChecks.clear();
+  eventDeliveryStore.length = 0;
+
+  for (const [key, value] of entriesToMap(state.tasks)) taskStore.set(key, value);
+  for (const [key, value] of entriesToMap(state.comments)) commentStore.set(key, value);
+  for (const [key, value] of entriesToMap(state.decisions)) decisionStore.set(key, value);
+  usageEvents.push(...(Array.isArray(state.usageEvents) ? state.usageEvents : []));
+  for (const [key, value] of entriesToMap(state.incidents)) incidentStore.set(key, value);
+  for (const [key, value] of entriesToMap(state.glossaryReviews)) glossaryReviewStore.set(key, value);
+  for (const [key, value] of entriesToMap(state.trustActions)) trustActionStore.set(key, value);
+  for (const [key, value] of entriesToMap(state.publicationChecks)) publicationChecks.set(key, value);
+  eventDeliveryStore.push(...(Array.isArray(state.eventDeliveries) ? state.eventDeliveries : []));
+}
+
+export function persistGovernanceOpsState() {
+  if (!persistenceEnabled()) return { persisted: false, path: storePath };
+  mkdirSync(path.dirname(storePath), { recursive: true });
+  writeFileSync(storePath, `${JSON.stringify(governanceOpsState(), null, 2)}\n`, 'utf8');
+  return { persisted: true, path: storePath };
+}
+
+export function loadGovernanceOpsState() {
+  if (!persistenceEnabled() || !existsSync(storePath)) {
+    return { loaded: false, path: storePath };
+  }
+  const state = JSON.parse(readFileSync(storePath, 'utf8'));
+  replaceState(state);
+  return { loaded: true, path: storePath, savedAt: state.savedAt || null };
+}
+
+export function setGovernanceOpsStorePath(nextPath, options = {}) {
+  storePath = path.resolve(nextPath);
+  explicitStorePath = options.enablePersistence !== false;
+  if (options.load !== false) {
+    return loadGovernanceOpsState();
+  }
+  return { loaded: false, path: storePath };
+}
+
+export function exportGovernanceOpsState() {
+  return governanceOpsState();
+}
+
+export function importGovernanceOpsState(state = {}) {
+  replaceState(state);
+  return persistGovernanceOpsState();
+}
+
+export function getGovernanceOpsStoreStatus() {
+  return {
+    path: storePath,
+    persistenceEnabled: persistenceEnabled(),
+    exists: existsSync(storePath),
+    counts: {
+      tasks: taskStore.size,
+      commentThreads: commentStore.size,
+      decisionLogs: decisionStore.size,
+      usageEvents: usageEvents.length,
+      incidents: incidentStore.size,
+      glossaryReviews: glossaryReviewStore.size,
+      trustActionThreads: trustActionStore.size,
+      publicationChecks: publicationChecks.size,
+      eventDeliveries: eventDeliveryStore.length,
+    },
+  };
+}
+
+function recordOpsEvent(eventType, payload = {}, actor = actorFrom()) {
+  const delivery = {
+    deliveryId: randomUUID(),
+    eventType,
+    payload,
+    actor,
+    status: 'queued',
+    channels: ['email', 'slack', 'teams'],
+    createdAt: nowIso(),
+  };
+  eventDeliveryStore.push(delivery);
+  if (eventDeliveryStore.length > 5000) eventDeliveryStore.shift();
+  return delivery;
+}
+
 function findAsset(assetId, objects = new Map()) {
   if (objects.has(assetId)) return objects.get(assetId);
   const lowered = String(assetId || '').toLowerCase();
@@ -91,6 +223,8 @@ export function clearGovernanceOps() {
   glossaryReviewStore.clear();
   trustActionStore.clear();
   publicationChecks.clear();
+  eventDeliveryStore.length = 0;
+  persistGovernanceOpsState();
 }
 
 export function createGovernanceTask(payload = {}, user = {}) {
@@ -114,6 +248,8 @@ export function createGovernanceTask(payload = {}, user = {}) {
   };
   addEvent(task, 'created', actor);
   taskStore.set(task.taskId, task);
+  recordOpsEvent('governance.task.created', { taskId: task.taskId, assetId: task.assetId }, actor);
+  persistGovernanceOpsState();
   return task;
 }
 
@@ -138,6 +274,8 @@ export function transitionGovernanceTask(taskId, payload = {}, user = {}) {
   task.updatedAt = nowIso();
   task.resolution = payload.resolution || task.resolution || null;
   addEvent(task, 'transitioned', actor, { status: nextStatus, note: payload.note || null });
+  recordOpsEvent('governance.task.transitioned', { taskId, status: nextStatus }, actor);
+  persistGovernanceOpsState();
   return task;
 }
 
@@ -196,6 +334,8 @@ export function addAssetComment(assetId, payload = {}, user = {}) {
   };
   if (!commentStore.has(assetId)) commentStore.set(assetId, []);
   commentStore.get(assetId).push(comment);
+  recordOpsEvent('governance.comment.created', { assetId, commentId: comment.commentId }, actor);
+  persistGovernanceOpsState();
   return comment;
 }
 
@@ -218,6 +358,8 @@ export function recordDecision(assetId, payload = {}, user = {}) {
   };
   if (!decisionStore.has(assetId)) decisionStore.set(assetId, []);
   decisionStore.get(assetId).push(decision);
+  recordOpsEvent('governance.decision.recorded', { assetId, decisionId: decision.decisionId }, decision.createdBy);
+  persistGovernanceOpsState();
   return decision;
 }
 
@@ -237,6 +379,7 @@ export function recordUsageEvent(payload = {}, user = {}) {
   };
   usageEvents.push(event);
   if (usageEvents.length > 100000) usageEvents.shift();
+  persistGovernanceOpsState();
   return event;
 }
 
@@ -393,6 +536,8 @@ export function createIncident(payload = {}, user = {}) {
   };
   addEvent(incident, 'created', actor);
   incidentStore.set(incident.incidentId, incident);
+  recordOpsEvent('governance.incident.created', { incidentId: incident.incidentId, assetId: incident.assetId }, actor);
+  persistGovernanceOpsState();
   return incident;
 }
 
@@ -419,6 +564,8 @@ export function transitionIncident(incidentId, payload = {}, user = {}) {
   incident.rootCause = payload.rootCause || incident.rootCause;
   incident.updatedAt = nowIso();
   addEvent(incident, 'transitioned', actor, { status: payload.status, note: payload.note || null });
+  recordOpsEvent('governance.incident.transitioned', { incidentId, status: payload.status }, actor);
+  persistGovernanceOpsState();
   return incident;
 }
 
@@ -435,6 +582,12 @@ export function addIncidentCommunication(incidentId, payload = {}, user = {}) {
   };
   incident.communications.push(communication);
   incident.updatedAt = nowIso();
+  recordOpsEvent(
+    'governance.incident.communication',
+    { incidentId, communicationId: communication.communicationId },
+    communication.sentBy
+  );
+  persistGovernanceOpsState();
   return communication;
 }
 
@@ -527,6 +680,8 @@ export function createGlossaryReview(payload = {}, user = {}) {
     decision: null,
   };
   glossaryReviewStore.set(review.reviewId, review);
+  recordOpsEvent('governance.glossary.review_requested', { reviewId: review.reviewId, termId: review.termId }, review.requestedBy);
+  persistGovernanceOpsState();
   return review;
 }
 
@@ -540,6 +695,8 @@ export function decideGlossaryReview(reviewId, payload = {}, user = {}) {
     decidedBy: actorFrom(user),
     decidedAt: nowIso(),
   };
+  recordOpsEvent('governance.glossary.review_decided', { reviewId, status: review.status }, review.decision.decidedBy);
+  persistGovernanceOpsState();
   return review;
 }
 
@@ -571,6 +728,8 @@ export function certifyAsset(assetId, payload = {}, user = {}) {
   };
   if (!trustActionStore.has(assetId)) trustActionStore.set(assetId, []);
   trustActionStore.get(assetId).push(action);
+  recordOpsEvent('governance.trust.certified', { assetId, actionId: action.actionId }, action.actor);
+  persistGovernanceOpsState();
   return action;
 }
 
@@ -586,6 +745,8 @@ export function endorseAsset(assetId, payload = {}, user = {}) {
   };
   if (!trustActionStore.has(assetId)) trustActionStore.set(assetId, []);
   trustActionStore.get(assetId).push(action);
+  recordOpsEvent('governance.trust.endorsed', { assetId, actionId: action.actionId }, action.actor);
+  persistGovernanceOpsState();
   return action;
 }
 
@@ -639,6 +800,8 @@ export function recordPublicationCheck(name, payload = {}) {
     checkedAt: nowIso(),
   };
   publicationChecks.set(name, check);
+  recordOpsEvent('governance.publication.check_recorded', { name, status: check.status });
+  persistGovernanceOpsState();
   return check;
 }
 
@@ -669,8 +832,21 @@ export function buildGovernanceOpsOverview(objects = new Map(), lineageGraph = n
   };
 }
 
+export function listGovernanceOpsEventDeliveries(options = {}) {
+  const limit = Number(options.limit || 100);
+  return eventDeliveryStore.slice(-limit).reverse();
+}
+
+loadGovernanceOpsState();
+
 export default {
   clearGovernanceOps,
+  persistGovernanceOpsState,
+  loadGovernanceOpsState,
+  setGovernanceOpsStorePath,
+  exportGovernanceOpsState,
+  importGovernanceOpsState,
+  getGovernanceOpsStoreStatus,
   createGovernanceTask,
   listGovernanceTasks,
   transitionGovernanceTask,
@@ -703,4 +879,5 @@ export default {
   recordPublicationCheck,
   buildPublicationStatus,
   buildGovernanceOpsOverview,
+  listGovernanceOpsEventDeliveries,
 };
