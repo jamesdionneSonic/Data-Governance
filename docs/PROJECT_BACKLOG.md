@@ -1378,6 +1378,140 @@ GET /api/v1/search?q=customer&database=sales&sensitivity=public&limit=20
 
 ---
 
+## Capability: Metric Logic Intelligence & Profile-Aware Chat Experience
+
+### Purpose
+
+Create a first-class experience where users and AI assistants can understand metric columns, explain the logic that creates them, evaluate the impact of formula changes, and use data profiling evidence in plain-English answers.
+
+This capability turns column metadata, column lineage, transformation evidence, quality signals, and profiling results into answerable governance context. It should be designed for both the UI and the Codex/agent runtime package.
+
+### Product Questions This Capability Must Answer
+
+- "Which columns in this table are metrics?"
+- "What logic creates this metric column?"
+- "Which source columns feed this metric?"
+- "Which procedure, SSIS package, BI semantic model, or transformation defines the formula?"
+- "What happens if we change the formula feeding this metric?"
+- "Which reports, dashboards, tables, procedures, packages, or downstream metrics are impacted?"
+- "What does the data profile say about this metric?"
+- "Has this metric drifted, spiked, gone stale, or changed distribution?"
+- "Can the chatbot explain the metric using lineage, formula evidence, confidence, and profile statistics?"
+
+### Design Principles
+
+- Metric answers must cite machine-readable evidence: source artifact, object ID, column ID, process ID, formula/expression, and confidence.
+- The chatbot should never imply a formula is known when only a metric inference exists.
+- Formula-change impact must separate semantic/reporting risk, data-quality risk, runtime/load failure risk, and downstream trust/certification risk.
+- Profiling should store statistics and run results as operational evidence while keeping raw data values out of the chatbot payload unless explicitly approved and masked.
+- The DevOps/Azure data pack should expose compact metric answer cards so chat answers do not need to scan full source files.
+
+### Epics
+
+#### METRIC-001: Metric Column Registry And Semantic Detection
+
+**Story**: Build a governed metric-column registry that identifies metric columns, distinguishes inferred metrics from confirmed metrics, and links each metric to business definitions and source evidence.  
+**Points**: 6  
+**Priority**: HIGH  
+**Status**: Planned
+
+**Acceptance Criteria**:
+
+- [ ] Metric registry records table/object ID, column ID, semantic type, business name, definition, owner/steward, confidence, and evidence source
+- [ ] Metric detection distinguishes confirmed metrics, inferred metrics, measure candidates, identifiers, dimensions, flags, dates, and attributes
+- [ ] Users can see why a column was classified as a metric, including name/type rules or explicit metadata
+- [ ] Metric registry links metrics to glossary terms, data products, dashboards/reports, and downstream consumers when available
+- [ ] Existing column semantic API is extended so metric answers include confidence, evidence, and caveats
+- [ ] Runtime package includes metric registry shards and lookup indexes by metric name, column ID, table, database, and glossary term
+
+**Dependencies**: PHASE7B-002, PHASE7D-002, PHASE7S-003
+
+---
+
+#### METRIC-002: Metric Logic Explainer
+
+**Story**: Explain what logic creates a metric column by tracing upstream column lineage, transformation expressions, stored procedure logic, SSIS mappings, BI semantic model measures, and source evidence.  
+**Points**: 8  
+**Priority**: CRITICAL  
+**Status**: Planned
+
+**Acceptance Criteria**:
+
+- [ ] Users can ask "what logic creates this metric column?" from chat, API, or asset detail
+- [ ] Answer identifies the metric column, creating process, upstream source columns, transformation type, formula/expression, and evidence snippets
+- [ ] Supports SQL procedures/views, SSIS data-flow mappings, dbt metrics/models, BI semantic measures, and connector-provided metric definitions when available
+- [ ] Distinguishes explicit formula evidence from inferred metric classification
+- [ ] Reports unresolved risks such as dynamic SQL, select-star, missing expression text, ambiguous aliases, or unresolved SSIS mappings
+- [ ] Produces a plain-English explanation and a structured answer card for the DevOps/Azure data pack
+- [ ] Golden prompt tests cover known metric columns, inferred metric columns without formula evidence, ambiguous metric names, and unresolved formula paths
+
+**Dependencies**: METRIC-001, PHASE7O-001, PHASE7S-004
+
+---
+
+#### METRIC-003: Formula Change Impact Analysis
+
+**Story**: Assess what happens if the formula feeding a metric changes, including downstream consumers, semantic risk, profile/quality risk, and governance communication requirements.  
+**Points**: 8  
+**Priority**: CRITICAL  
+**Status**: Planned
+
+**Acceptance Criteria**:
+
+- [ ] Users can ask "what happens if we change the formula feeding this metric?"
+- [ ] Impact answer lists downstream tables, views, procedures, SSIS packages, BI assets, dashboards, data products, and dependent metrics
+- [ ] Impact categories include semantic/reporting risk, data-quality risk, runtime/load failure risk, trust/certification risk, and compliance/policy risk
+- [ ] Answer recommends mitigation: regression tests, profile comparison, stakeholder notification, approval workflow, rollback plan, and post-change monitoring
+- [ ] Supports proposed formula-change payloads where users provide old/new formula text or changed source columns
+- [ ] Formula-change impact uses column lineage and metric registry evidence rather than object-name inference alone
+- [ ] Runtime package includes formula-impact answer cards and compact downstream blast-radius summaries for chat
+
+**Dependencies**: METRIC-002, PHASE7O-002, PHASE7I-003
+
+---
+
+#### METRIC-004: Data Profiling Foundation
+
+**Story**: Build data profiling for tables and metric columns so the platform can describe distributions, nulls, uniqueness, value ranges, freshness, drift, and anomaly signals.  
+**Points**: 10  
+**Priority**: CRITICAL  
+**Status**: Planned
+
+**Acceptance Criteria**:
+
+- [ ] Profiling supports row count, null %, distinct count, min/max, mean, median, standard deviation, percentiles, freshness, value length, pattern distribution, and top-value summaries where safe
+- [ ] Metric-column profiles include expected range, distribution shape, outliers, trend baseline, and recent-change summary
+- [ ] Profiling jobs can run on demand and on schedule through approved connectors
+- [ ] Raw values are not persisted in chatbot-visible payloads; sensitive values are masked, bucketed, or omitted
+- [ ] Profile results include run timestamp, source connector, sample/window definition, row count scanned, confidence, and limitations
+- [ ] Profile storage separates definitions/configuration from operational run results and is ready for SQL-backed history when available
+- [ ] Profile summaries are added to asset detail, metric detail, and data quality views
+
+**Dependencies**: PHASE7C-001, PHASE7D-001, PHASE7F-002
+
+---
+
+#### METRIC-005: Profile-Aware Chat And Runtime Packaging
+
+**Story**: Expose metric logic, formula impact, and data profiling to the chatbot through compact runtime answer cards and safe answer-generation rules.  
+**Points**: 8  
+**Priority**: CRITICAL  
+**Status**: Planned
+
+**Acceptance Criteria**:
+
+- [ ] DevOps/Azure data pack includes metric answer cards, metric profile cards, formula-impact cards, profile freshness metadata, and unresolved-risk fields
+- [ ] Chatbot answers combine metric definition, formula evidence, source columns, downstream impact, profile statistics, confidence, and caveats
+- [ ] Chatbot can answer "what does the data profile say about this metric?" without exposing raw sensitive values
+- [ ] Chatbot surfaces stale profile warnings when the latest profile run is outside the accepted freshness window
+- [ ] Chatbot distinguishes lineage confidence, metric-classification confidence, formula confidence, and profile confidence
+- [ ] Prompt validation suite covers metric logic, formula-change impact, profile summaries, stale profile warnings, missing profile data, and sensitive-value masking
+- [ ] Confluence pages link to metric/profile summaries for humans while directing AI/runtime use to the DevOps/Azure data pack
+
+**Dependencies**: METRIC-001, METRIC-002, METRIC-003, METRIC-004, PHASE7S-003, PHASE7S-004
+
+---
+
 ## Phase 7a: Business Glossary & Semantic Layer (3-4 weeks)
 
 ### Objectives
@@ -1396,23 +1530,31 @@ GET /api/v1/search?q=customer&database=sales&sensitivity=public&limit=20
 
 **Acceptance Criteria**:
 
-- [ ] Glossary terms support hierarchy (parent/child relationships)
-- [ ] Each term includes definition, steward, business owner, related terms, and synonyms
-- [ ] Terms can be linked to multiple data assets (tables, columns, dashboards)
-- [ ] Version history tracks term definition changes with effective dates
-- [ ] CRUD APIs for programmatic term management
-- [ ] Bulk import/export of glossary terms (CSV, JSON)
-- [ ] Search surfaces glossary matches prominently in discovery results
+- [x] Glossary terms support hierarchy (parent/child relationships)
+- [x] Each term includes definition, steward, business owner, related terms, and synonyms
+- [x] Terms can be linked to multiple data assets (tables, columns, dashboards)
+- [x] Version history tracks term definition changes with effective dates
+- [x] CRUD APIs for programmatic term management
+- [x] Bulk import/export of glossary terms (CSV, JSON)
+- [x] Search surfaces glossary matches prominently in discovery results
 
 **Tasks**:
 
-- Build glossary domain model and persistence layer
-- Create glossary CRUD APIs with versioning
-- Build glossary UI with term browser and editor
-- Implement term-to-asset linking
-- Add glossary search integration
-- Wire up bulk import/export
-- Add tests + documentation
+- [x] Build glossary domain model and persistence layer
+- [x] Create glossary CRUD APIs with versioning
+- [x] Build glossary UI with term browser and editor
+- [x] Implement term-to-asset linking
+- [x] Add glossary search integration
+- [x] Wire up bulk import/export
+- [x] Add tests + documentation
+
+**Implementation Notes (2026-06-05)**:
+
+- Added markdown-backed governed term metadata for hierarchy, business owner, steward, reviewers, synonyms, related terms, linked assets, effective dating, and bounded version history.
+- Added API endpoints for semantic resolution, CSV/JSON export, CSV/JSON import, version history, and asset mapping.
+- Added a glossary workspace upgrade that shows ownership, definitions, synonyms, related terms, mapped technical assets, and a semantic resolver.
+- Added glossary create/edit/delete controls plus asset search inside the mapping workflow so stewards can manage terms without editing markdown directly.
+- Added focused unit coverage for glossary normalization, CSV import/export, business-term resolution, and asset governance glossary links.
 
 **Dependencies**: PHASE3-001
 
@@ -1426,18 +1568,26 @@ GET /api/v1/search?q=customer&database=sales&sensitivity=public&limit=20
 
 **Acceptance Criteria**:
 
-- [ ] UI allows mapping glossary terms to columns/tables
-- [ ] Semantic mappings visible in asset detail pages and lineage views
-- [ ] API enables programmatic semantic enrichment
-- [ ] Search queries against business terms resolve to physical assets
-- [ ] Lineage respects semantic mappings (propagate term meanings through pipelines)
+- [x] UI allows mapping glossary terms to columns/tables
+- [x] Semantic mappings visible in asset detail pages and lineage views
+- [x] API enables programmatic semantic enrichment
+- [x] Search queries against business terms resolve to physical assets
+- [x] Lineage respects semantic mappings (propagate term meanings through pipelines)
 
 **Tasks**:
 
-- UI for mapping terms to assets
-- Semantic query resolution engine
-- Lineage enrichment with semantic meaning
-- Add tests
+- [x] UI for mapping terms to assets
+- [x] Semantic query resolution engine
+- [x] Lineage enrichment with semantic meaning
+- [x] Add tests
+
+**Implementation Notes (2026-06-05)**:
+
+- Semantic resolver links business terms and synonyms to physical assets using explicit glossary mappings first and catalog metadata as a secondary signal.
+- Search responses now include semantic matches and can surface linked physical assets ahead of plain text matches.
+- Asset governance context now exposes glossary links.
+- Lineage graph responses now enrich nodes and edges with direct glossary mappings plus propagated semantic terms across visible lineage edges, while preserving evidence labels so inferred propagation is not confused with explicit mappings.
+- Asset detail pages now surface business-term mappings prominently, and the lineage graph legend explains direct versus propagated semantic terms.
 
 **Dependencies**: PHASE7A-001
 
@@ -1461,20 +1611,20 @@ GET /api/v1/search?q=customer&database=sales&sensitivity=public&limit=20
 
 **Acceptance Criteria**:
 
-- [ ] Pre-built classification categories: Public, Confidential, Restricted, PII, PHI, GDPR, HIPAA, CCPA, Financial
-- [ ] Custom classification categories creatable by admins
-- [ ] Classifications support multi-level hierarchy
-- [ ] Bulk classification APIs for batch tagging
-- [ ] Classification appears in search facets and asset cards
-- [ ] Classifications are version-tracked with change history
+- [x] Pre-built classification categories: Public, Confidential, Restricted, PII, PHI, GDPR, HIPAA, CCPA, Financial
+- [x] Custom classification categories creatable by admins through the classification taxonomy API
+- [x] Classifications support multi-level hierarchy
+- [x] Bulk classification APIs for batch tagging
+- [x] Classification appears in search facets and asset cards
+- [x] Classifications are version-tracked with change history in `data/classification/taxonomy.yml`
 
 **Tasks**:
 
-- Define classification schema and domain model
-- Build admin UI for managing classification taxonomies
-- Create bulk classification APIs
-- Integrate classifications into search indexing
-- Add tests
+- [x] Define classification schema and domain model
+- [x] Build admin UI for managing classification taxonomies
+- [x] Create bulk classification APIs
+- [x] Integrate classifications into search indexing
+- [x] Add tests
 
 **Dependencies**: PHASE5-001
 
@@ -1488,22 +1638,26 @@ GET /api/v1/search?q=customer&database=sales&sensitivity=public&limit=20
 
 **Acceptance Criteria**:
 
-- [ ] Rule engine detects PII patterns (email, phone, SSN, name + address combinations)
-- [ ] Regex-based rules for custom pattern detection
-- [ ] Rules based on column naming conventions (e.g., columns containing "salary" → Financial)
-- [ ] Auto-propagate classifications downstream through lineage
-- [ ] Manual override capability with audit logging
-- [ ] Classification confidence scores and audit trail
-- [ ] Batch re-classification when rules change
+- [x] Rule engine detects PII patterns (email, phone, SSN, name + address combinations)
+- [x] Regex-based rules for custom pattern detection
+- [x] Rules based on column naming conventions (e.g., columns containing "salary" → Financial)
+- [x] Auto-propagate classifications downstream through lineage
+- [x] Manual override capability with audit logging
+- [x] Classification confidence scores and audit trail
+- [x] Batch re-classification when rules change
+- [x] Metadata-only PII policy engine returns masking plans and never stores raw PII values
+- [x] Column semantic classifier can answer metric-column questions when column metadata is present
 
 **Tasks**:
 
-- Build rule engine with pattern detection
-- Implement PII detection library integration
-- Create UI for managing classification rules
-- Build lineage propagation logic
-- Add observability + logging
-- Add tests
+- [x] Build rule engine with pattern detection
+- [x] Implement PII detection library integration (optional Presidio Analyzer REST bridge; metadata-only, disabled unless configured)
+- [x] Create UI for managing classification rules
+- [x] Build lineage propagation logic
+- [x] Build PII masking policy plan and masked sample-preview API
+- [x] Build column semantic classification API for metric/dimension/identifier detection
+- [x] Add observability + logging
+- [x] Add tests
 
 **Dependencies**: PHASE7B-001, PHASE4-001
 
@@ -1517,22 +1671,22 @@ GET /api/v1/search?q=customer&database=sales&sensitivity=public&limit=20
 
 **Acceptance Criteria**:
 
-- [ ] Policy templates for common scenarios (PII masking, GDPR encryption, financial audit trails)
-- [ ] Policies define actions: mask, encrypt, restrict access, log usage
-- [ ] Row-level security policies based on data classifications
-- [ ] Column-level masking policies (e.g., show last 4 digits only for credit cards)
-- [ ] Integration with database access controls
-- [ ] Audit logging of all policy-driven access decisions
-- [ ] Policy effectiveness dashboard
+- [x] Policy templates for common scenarios (PII masking, GDPR encryption, financial audit trails)
+- [x] Policies define actions: mask, encrypt, restrict access, log usage
+- [x] Row-level security policies based on data classifications
+- [x] Column-level masking policies (e.g., show last 4 digits only for credit cards)
+- [x] Integration with database access controls
+- [x] Audit logging of all policy-driven access decisions
+- [x] Policy effectiveness dashboard
 
 **Tasks**:
 
-- Define policy domain model
-- Build policy engine and enforcement layer
-- Create policy template library
-- Integrate with database security controls
-- Build policy effectiveness reporting
-- Add tests
+- [x] Define policy domain model
+- [x] Build policy engine and advisory enforcement layer
+- [x] Create policy template library
+- [x] Integrate with database security controls
+- [x] Build policy effectiveness reporting API/service
+- [x] Add tests for policy templates, effective policies, API decisions, and audit logging
 
 **Dependencies**: PHASE7B-001, PHASE5-001
 
@@ -1556,22 +1710,22 @@ GET /api/v1/search?q=customer&database=sales&sensitivity=public&limit=20
 
 **Acceptance Criteria**:
 
-- [ ] UI to define quality rules: null %, cardinality bounds, range checks, pattern matching, uniqueness
-- [ ] Rules support thresholds with severity levels (warning, critical, fail)
-- [ ] Rules can be triggered on schedule or on-demand
-- [ ] Execution shows pass/fail status with violation details
-- [ ] Failed rules generate incidents with alert routing
-- [ ] Rule versioning and deployment workflows
-- [ ] APIs for programmatic rule definition
+- [x] UI to define quality rules: null %, cardinality bounds, range checks, pattern matching, uniqueness
+- [x] Rules support thresholds with severity levels (warning, critical, fail)
+- [x] Rules can be triggered on schedule or on-demand
+- [x] Execution shows pass/fail status with violation details
+- [x] Failed rules generate incidents with alert routing
+- [x] Rule versioning and deployment workflows
+- [x] APIs for programmatic rule definition
 
 **Tasks**:
 
-- Build quality rules domain model
-- Create rule execution engine
-- Build UI for rule definition and management
-- Integrate with incident management
-- Add alert routing
-- Add tests
+- [x] Build quality rules domain model
+- [x] Create rule execution engine
+- [x] Build UI for rule definition and management
+- [x] Integrate with incident management
+- [x] Add alert routing
+- [x] Add tests
 
 **Dependencies**: PHASE4-001
 
@@ -1585,21 +1739,21 @@ GET /api/v1/search?q=customer&database=sales&sensitivity=public&limit=20
 
 **Acceptance Criteria**:
 
-- [ ] Auto-profiling generates statistics: distribution, null %, cardinality, min/max/mean
-- [ ] Anomaly detection flags unexpected patterns (e.g., unusual value distributions, sudden null spikes)
-- [ ] Data drift detection compares profiles over time (daily, weekly, monthly)
-- [ ] Findings surface in quality dashboard with trend lines
-- [ ] Configurable anomaly sensitivity
-- [ ] Export profiles for manual analysis
+- [x] Auto-profiling generates statistics: distribution, null %, cardinality, min/max/mean
+- [x] Anomaly detection flags unexpected patterns (e.g., unusual value distributions, sudden null spikes)
+- [x] Data drift detection compares profiles over time (daily, weekly, monthly)
+- [x] Findings surface in quality dashboard with trend lines
+- [x] Configurable anomaly sensitivity
+- [x] Export profiles for manual analysis
 
 **Tasks**:
 
-- Build profiling computation engine
-- Implement statistical anomaly detection
-- Create profiling scheduler
-- Build quality dashboard UI
-- Add visualization of drift trends
-- Add tests
+- [x] Build profiling computation engine
+- [x] Implement statistical anomaly detection
+- [x] Create profiling scheduler
+- [x] Build quality dashboard UI
+- [x] Add visualization of drift trends
+- [x] Add tests
 
 **Dependencies**: PHASE7C-001
 
@@ -1613,22 +1767,22 @@ GET /api/v1/search?q=customer&database=sales&sensitivity=public&limit=20
 
 **Acceptance Criteria**:
 
-- [ ] Quality score combines completeness, accuracy, timeliness, consistency metrics
-- [ ] Fitness for purpose ratings for common use cases (finance reporting, ML training, analytics)
-- [ ] Dataset-level and column-level quality scores
-- [ ] Quality trends visible in asset cards and detail pages
-- [ ] Quality scores factor into search ranking
-- [ ] Quality SLA agreements and breach alerts
-- [ ] Scorecard export for compliance reporting
+- [x] Quality score combines completeness, accuracy, timeliness, consistency metrics
+- [x] Fitness for purpose ratings for common use cases (finance reporting, ML training, analytics)
+- [x] Dataset-level and column-level quality scores
+- [x] Quality trends visible in asset cards and detail pages
+- [x] Quality scores factor into search ranking
+- [x] Quality SLA agreements and breach alerts
+- [x] Scorecard export for compliance reporting
 
 **Tasks**:
 
-- Define quality score formula
-- Implement scoring engine
-- Create fitness assessment framework
-- Build SLA logic and alerting
-- Integrate with search ranking
-- Add tests
+- [x] Define quality score formula
+- [x] Implement scoring engine
+- [x] Create fitness assessment framework
+- [x] Build SLA logic and alerting
+- [x] Integrate with search ranking
+- [x] Add tests
 
 **Dependencies**: PHASE7C-001, PHASE7C-002
 
@@ -1652,23 +1806,48 @@ GET /api/v1/search?q=customer&database=sales&sensitivity=public&limit=20
 
 **Acceptance Criteria**:
 
-- [ ] Connectors for: SQL Server, PostgreSQL, Snowflake, BigQuery, Databricks, Salesforce, SAP
-- [ ] Harvest table/column schemas, data types, constraints, indexes
-- [ ] Capture BI tool metadata (dashboards, reports, metrics definitions)
-- [ ] Capture API specifications (OpenAPI/Swagger)
+- [x] Connectors for: SQL Server, PostgreSQL, Snowflake, BigQuery, Databricks, Salesforce, SAP
+- [x] Managed connector registry includes industry-standard Azure, AWS, GCP, BI, API, pipeline, streaming, repo, ERP/CRM connector definitions
+- [x] Repository connector supports metadata discovery for Python scripts and code-based pipeline assets
+- [x] Harvest table/column schemas, data types, constraints, indexes through SQL Server, PostgreSQL, Snowflake, BigQuery, Databricks, and bridge-compatible metadata payloads/endpoints
+- [x] Capture BI tool metadata (dashboards, reports, metrics definitions) through first-pass REST/bridge clients for mainstream BI platforms
+- [x] Capture API specifications (OpenAPI/Swagger)
 - [ ] Scheduled sync (daily, hourly) to keep metadata current
 - [ ] Change detection and incremental updates
 - [ ] Metadata versioning with historical snapshots
-- [ ] Bulk import APIs for manual metadata injection
+- [x] Permissioned connector execution lets users run approved connectors without seeing stored credentials
+- [x] Connector credentials are masked/write-only in API and UI responses
+- [x] Bulk/manual metadata injection through `metadata_payload`, `seed_metadata`, `sample_metadata`, `metadata_endpoint`, and stream endpoint overrides
 
 **Tasks**:
 
-- Build connector framework
-- Implement system-specific connectors
-- Create scheduler for metadata harvesting
-- Build versioning and change tracking
-- Add metadata caching and optimization
-- Add tests + documentation
+- [x] Build connector framework
+- [x] Implement system-specific connector bridges and direct REST/signed/artifact clients
+- [ ] Create scheduler for metadata harvesting
+- [ ] Build versioning and change tracking
+- [ ] Add metadata caching and optimization
+- [x] Add tests
+- [x] Add documentation
+
+**Implementation Notes (2026-06-06)**:
+
+- Added a managed connector service with connector definitions for SQL Server, PostgreSQL, Snowflake, BigQuery, Databricks, Microsoft Purview, Azure Storage/ADLS, Azure Data Factory, AWS Glue, S3, Redshift, Google Dataplex/Data Catalog, GCS, Power BI, Tableau, Looker, Airflow, dbt, OpenAPI, Git repositories, Kafka, Salesforce, and SAP.
+- Expanded mainstream reporting and semantic-layer connector definitions for MicroStrategy Cloud, on-prem SSAS, Power BI Report Server, SSRS, Qlik Cloud, Qlik Sense, Domo, Sigma, Mode, Metabase, Superset, Redash, Amazon QuickSight, Grafana, IBM Cognos, SAP BusinessObjects, Oracle Analytics, ThoughtSpot, and Sisense.
+- Added permissioned connector execution so admins can store platform/service-account credential references once and grant users, roles, or groups `view/run/edit/admin` actions.
+- Added API routes for connector definitions, connector CRUD, permission grants, dry-run execution, run history, and metadata snapshots.
+- Added Connections UI controls for creating managed connectors, granting access, running dry-run harvests, and viewing snapshots.
+- Added repo metadata handling for Python scripts so ETL code can become governed catalog evidence without copying raw source content into the response.
+- Added connector extraction runtime with shared adapter contract, canonical metadata events, source-family adapters, extraction plans, stream execution, adapter coverage reporting, and actionable connector error handling.
+- Added source-specific first-pass stream plans for Power BI, MicroStrategy Cloud, SSAS, and Tableau; all other data, BI, cloud, repo, API, pipeline, streaming, ERP/CRM, and ML connector definitions are plumbed through family adapters.
+- Conformed existing SQL Server and SSIS extraction routes to the connector runtime. The existing ingestion UI remains compatible, but live metadata extraction now runs through `SqlServerLiveAdapter` and `SsisLiveAdapter` and returns framework status, stream results, canonical summaries, and connector errors.
+- Added unit coverage proving SQL Server and SSIS extractor metadata can be converted into canonical connector events without introducing a second extraction engine.
+- Added documented bridge adapters for every connector definition. Each bridge declares required config, accepted credential modes, documented source streams/endpoints, dry-run canonical event output, live-shaped metadata payload normalization, and actionable live-run remediation when `metadata_endpoint`, `catalog_endpoint`, `metadata_payload`, or `seed_metadata` is missing.
+- Added regression coverage proving every connector bridge is plumbed and can emit canonical dry-run metadata, and proving live bridge runs return useful remediation when metadata source configuration is incomplete.
+- Added direct source-client live harvest support for REST/JSON metadata APIs across Airflow, Azure Data Factory, Purview, Azure Storage/ADLS metadata manifests, AWS Glue/S3/Redshift signed endpoints, BigQuery, Databricks, Domo, Dataplex, GCS, GitHub/Azure DevOps repositories, Grafana, Looker, Metabase, MicroStrategy, Mode, OpenAPI, Power BI, Power BI Report Server, Qlik, QuickSight signed endpoints, Redash, SAP OData, Salesforce, SAP BusinessObjects, Sigma, SSRS, Superset, Tableau, ThoughtSpot, Oracle Analytics, Sisense, Kafka REST, and Schema Registry.
+- Added local artifact extraction for configured Git repository file inventories and dbt manifest/catalog-shaped metadata so repo and dbt connectors can extract real code/artifact metadata without sample events.
+- Added PostgreSQL and Snowflake native-driver paths that query information schema metadata when optional packages are installed, and return package-specific remediation (`pg`, `snowflake-sdk`) when they are not.
+- Remaining live extractor work is now isolated to the native/existing extractor families and hardening: SQL Server and SSIS are live through existing extractor bridges; PostgreSQL and Snowflake need installed native drivers and credential smoke tests; SSAS needs XMLA/ADOMD client support or a configured metadata endpoint; AWS signed clients need live Sonic credential smoke tests and operation-specific hardening.
+- Full local validation on 2026-06-06: `npm test -- --runInBand --coverage=false` passed 56 suites / 534 tests, `npm run test:e2e` passed 8 Playwright smoke tests, `npm run build` completed successfully, and connector coverage reported 43/43 bridge adapters plus 38 direct source clients.
 
 **Dependencies**: PHASE2-001
 
@@ -1682,22 +1861,32 @@ GET /api/v1/search?q=customer&database=sales&sensitivity=public&limit=20
 
 **Acceptance Criteria**:
 
-- [ ] Schema browser shows table hierarchies with filtering/searching
-- [ ] Column details include: data type, nullable, constraints, sample values, statistics
-- [ ] Column metadata includes: business definition, technical owner, usage frequency
-- [ ] Transformation logic shown for computed/derived columns
-- [ ] Links to documentation, owner contact info, related dashboards
+- [x] Schema browser shows table hierarchies with filtering/searching
+- [x] Column details include: data type, nullable, semantic role, sensitivity, and business description where metadata is present
+- [x] Column metadata includes business definition/semantic role and object ownership context
+- [x] Transformation logic shown for computed/derived columns when source expression metadata is present
+- [x] Links to documentation, owner contact info, related dashboards
 - [ ] Historical view of schema changes (when columns added/removed/modified)
-- [ ] Export schema documentation (PDF, HTML, Markdown)
+- [x] Export schema documentation as Markdown
+- [ ] Export schema documentation as PDF/HTML
 
 **Tasks**:
 
-- Build schema browser UI
-- Add column detail views with context
-- Implement schema history tracking
+- [x] Build schema browser UI
+- [x] Add column detail views with context
+- [ ] Implement schema history tracking
 - Add schema change notifications to stewards
-- Build schema export templates
-- Add tests
+- [x] Build schema export templates
+- [x] Add tests
+
+**Implementation Notes (2026-06-06)**:
+
+- Added `schemaDictionaryService` to build filterable schema hierarchies, object-level dictionaries, normalized column metadata, downstream/upstream context, completeness flags, and Markdown export output without exposing raw data values.
+- Added authenticated dictionary routes: `GET /api/v1/dictionary`, `GET /api/v1/dictionary/:assetId`, and `GET /api/v1/dictionary/:assetId/export.md`.
+- Catalog Search object detail now loads dictionary payloads, shows a column dictionary table, and provides a Markdown export action.
+- Added a generator-level dictionary enrichment contract so regenerated markdown includes conservative object business fields and column semantic/classification metadata from raw technical metadata.
+- Enriched the local markdown catalog on 2026-06-06: 7,224 files scanned, 7,223 changed, 131,313 columns reviewed, 6,981 metric inferences, 16,801 sensitive-column inferences, and 7,191 business-domain inferences.
+- Added unit/API/smoke coverage for the dictionary service and protected dictionary route.
 
 **Dependencies**: PHASE7D-001
 
@@ -1711,22 +1900,30 @@ GET /api/v1/search?q=customer&database=sales&sensitivity=public&limit=20
 
 **Acceptance Criteria**:
 
-- [ ] UI to add/edit business descriptions for tables and columns
-- [ ] Assign business owners, technical stewards, and domain managers
-- [ ] Add business justifications for why data exists ("supports revenue forecasting")
-- [ ] Tag with business domains and functional areas
-- [ ] Link to business processes and use cases
+- [x] UI to add/edit business descriptions for tables and columns
+- [x] Assign business owners, technical stewards, and domain managers
+- [x] Add business justifications for why data exists ("supports revenue forecasting")
+- [x] Tag with business domains and functional areas
+- [x] Link to business processes and use cases
 - [ ] Track who contributed business metadata (audit trail)
 - [ ] Bulk metadata enrichment via API/CSV import
 
 **Tasks**:
 
-- Build metadata editing UI
-- Create ownership and domain assignment workflows
-- Add business context linking
-- Build audit trail for metadata changes
+- [x] Build metadata editing UI
+- [x] Create ownership and domain assignment workflows
+- [x] Add business context linking
+- [ ] Build audit trail for metadata changes
 - Add bulk import capability
-- Add tests
+- [x] Add tests
+
+**Implementation Notes (2026-06-06)**:
+
+- Extended markdown-backed object metadata updates to accept `business_domain`, `business_justification`, `business_processes`, `use_cases`, `documentation_links`, and `related_dashboards`.
+- Catalog Search object detail now edits and saves those enrichment fields through the existing markdown metadata write path and runtime cache refresh.
+- Added `scripts/enrich-markdown-data-dictionary.mjs` and `npm run catalog:dictionary:enrich` so existing local markdown can be enriched from metadata-only raw/catalog signals without passing large corpora through Codex.
+- Wired the enrichment contract into `src/services/markdownFromSqlServer.js` and `scripts/rebuild-catalog-from-raw.mjs` so future SQL/SSIS/raw rebuilds keep the same dictionary-ready frontmatter.
+- Added `docs/DATA_DICTIONARY_AND_METADATA_ENRICHMENT.md` with the API contract, editable fields, UI behavior, and validation commands.
 
 **Dependencies**: PHASE7D-001
 
@@ -3019,19 +3216,21 @@ GET /api/v1/search?q=customer&database=sales&sensitivity=public&limit=20
 
 ---
 
-## Phase 7s: Confluence Lineage Repository & Codex MCP
+## Phase 7s: Lineage Publication, DevOps Data Pack, and Codex Skill Experience
 
 ### Objectives
 
-- Publish generated lineage markdown to the Sonic Data Lineage Confluence page.
-- Keep Confluence synchronized from the markdown source of truth without manual edits.
-- Enable Codex UI to answer lineage and column-impact questions through a read-only Confluence MCP.
+- Publish generated lineage documentation to the Sonic Data Lineage Confluence page in an industry-standard, easy-to-navigate information architecture.
+- Publish the machine-readable Azure data pack to DevOps as the primary runtime source for Codex skills and other automated consumers.
+- Keep Confluence, DevOps data packs, and generated manifests synchronized from the markdown source of truth without manual edits.
+- Improve the computer-readable lineage payloads and Codex skill behavior so lineage, impact, confidence, and unresolved-risk answers are clear, accurate, and useful in plain English.
+- Treat Confluence as the human documentation and navigation layer; treat the DevOps/Azure data pack as the authoritative machine-readable answer layer.
 
 ### User Stories
 
-#### PHASE7S-001: Confluence Export Package
+#### PHASE7S-001: Confluence Information Architecture And Export Package
 
-**Story**: Generate Confluence-ready summary pages, catalog shard pages, attachments, and a sync manifest from the markdown catalog.  
+**Story**: Generate Confluence-ready lineage documentation organized in an industry-standard structure that is easy for business, data, engineering, and governance users to browse.  
 **Points**: 5  
 **Priority**: HIGH  
 **Status**: In Progress
@@ -3039,14 +3238,18 @@ GET /api/v1/search?q=customer&database=sales&sensitivity=public&limit=20
 **Acceptance Criteria**:
 
 - [x] Export builds README, rebuild report, catalog manifest, source inventory, confidence guide, and object index pages
-- [x] Export creates Rovo-readable catalog shard pages with AI-readable YAML
 - [x] Export creates a full catalog bundle attachment
 - [x] Export writes a manifest with hashes and publish flags
 - [x] Export avoids one page per object by default
+- [ ] Confluence pages are reorganized into a clear hierarchy, such as overview, source systems, databases, domains, high-value assets, confidence/known gaps, and operating guides
+- [ ] Generated page titles, labels, breadcrumbs, and summaries follow consistent governance/catalog conventions
+- [ ] Pages support common user journeys: "find a database," "find an object," "understand lineage confidence," "review unresolved facts," and "open the machine-readable data pack"
+- [ ] Confluence content links to the DevOps/Azure data pack where appropriate instead of duplicating large machine-readable payloads in page bodies
+- [ ] Dry-run output shows the proposed page tree before publishing
 
 #### PHASE7S-002: Confluence Dry-Run And Live Sync
 
-**Story**: Publish the export package to the Sonic Data Lineage Confluence root page using safe dry-run and live-publish modes.  
+**Story**: Publish the organized Confluence documentation package to the Sonic Data Lineage root page using safe dry-run and live-publish modes.  
 **Points**: 5  
 **Priority**: HIGH  
 **Status**: In Progress
@@ -3056,23 +3259,43 @@ GET /api/v1/search?q=customer&database=sales&sensitivity=public&limit=20
 - [x] Dry-run mode requires no credentials and reports planned pages/attachments
 - [x] Live mode requires Confluence URL, space key, parent page ID, email, and API token
 - [x] Generated pages use `[AUTO]` titles and generated labels
-- [x] Catalog shard pages publish by default for Rovo/Codex page-body search
 - [x] Attachments include the object index and zipped markdown catalog as backup/export artifacts
+- [ ] Publish mode preserves the industry-standard page hierarchy and updates existing generated pages without breaking stable links
+- [ ] Publish mode clearly separates human-readable Confluence pages from machine-readable DevOps/Azure data pack artifacts
 - [ ] Live publish validated against the Sonic Data Lineage page
 
-#### PHASE7S-003: Codex MCP Integration
+#### PHASE7S-003: DevOps Azure Data Pack Publish
 
-**Story**: Connect Codex UI to the Confluence repository through the existing Confluence MCP.  
-**Points**: 3  
+**Story**: Publish a versioned Azure data pack to DevOps as the primary machine-readable lineage runtime for Codex skills and automated consumers.  
+**Points**: 5  
 **Priority**: HIGH  
-**Status**: Blocked Pending MCP Details
+**Status**: In Progress
 
 **Acceptance Criteria**:
 
-- [ ] Identify whether the MCP is HTTP or STDIO
-- [ ] Validate that Rovo MCP can search/fetch catalog shard page content
-- [ ] Configure Codex MCP settings without committing secrets
-- [ ] Validate prompts for table lineage, column impact, confidence, and unresolved facts
+- [ ] Data pack includes compact object context, registry/index files, answer cards, confidence metadata, unresolved-risk metadata, and source evidence paths
+- [ ] Data pack is versioned, checksummed, and published to the agreed DevOps location
+- [ ] Publish manifest records package version, build time, source hashes, object counts, and artifact paths
+- [ ] Package shape supports fast lookups by object name, object ID, database, schema, source system, and common aliases
+- [ ] DevOps publish can run in dry-run and live modes without committing secrets
+- [ ] Validation confirms the Codex skill can read the published DevOps package without relying on Confluence page-body search
+
+#### PHASE7S-004: Codex Skill Answer Experience
+
+**Story**: Enhance the Codex lineage skill and computer-readable payloads so users get strong plain-English answers from the DevOps/Azure data pack.  
+**Points**: 5  
+**Priority**: HIGH  
+**Status**: In Progress
+
+**Acceptance Criteria**:
+
+- [ ] Skill answers use the DevOps/Azure data pack as the primary source and cite package artifacts used for evidence
+- [ ] Skill distinguishes business consumers, maintenance/load-path reads, loaders, upstream sources, downstream impacts, and unresolved risks
+- [ ] Skill supports common prompts: "what uses this?", "what feeds this?", "what breaks if this changes?", "how many times is this used?", "show column impact," and "explain the confidence"
+- [ ] Computer-readable answer cards include enough semantic grouping for clear plain-English summaries without opening full object context every time
+- [ ] Confidence, truncation, ambiguity, stale-source, and unresolved-parser warnings are surfaced in user-friendly language
+- [ ] Prompt validation suite covers table lineage, column impact, database summaries, top-used objects, confidence explanations, and unresolved facts
+- [ ] Confluence remains a secondary human documentation layer, not a required runtime dependency for Codex answers
 
 ---
 

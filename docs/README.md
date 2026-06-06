@@ -45,10 +45,13 @@ This is the master index for platform documentation.
 ## Architecture, Product, and Engineering
 
 - [Enterprise Architecture](ENTERPRISE_ARCHITECTURE.md)
+- [Connector Extraction Framework](CONNECTOR_EXTRACTION_FRAMEWORK.md)
+- [Data Dictionary and Metadata Enrichment](DATA_DICTIONARY_AND_METADATA_ENRICHMENT.md)
 - [Product Requirements](PRODUCT_REQUIREMENTS.md)
 - [Project Backlog](PROJECT_BACKLOG.md)
 - [OpenAPI Spec](OPENAPI.yaml)
 - [QA Test Plan](QA_TEST_PLAN.md)
+- [End-To-End Validation 2026-06-06](END_TO_END_VALIDATION_2026-06-06.md)
 - [Phase 9 Test Matrix](PHASE9_TEST_MATRIX.md)
 - [Market Analysis](MARKET_ANALYSIS.md)
 

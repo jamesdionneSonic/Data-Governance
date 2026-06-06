@@ -11,6 +11,7 @@ import { classifyAsset } from '../services/classificationService.js';
 import { searchObjects } from '../services/indexService.js';
 import { createTtlCache } from '../utils/ttlCache.js';
 import { ensureCatalogCacheHydrated } from '../utils/catalogCacheHydrator.js';
+import { resolveBusinessQuery } from '../services/glossaryService.js';
 
 const router = createApiRouter();
 let objectCache = new Map();
@@ -44,10 +45,16 @@ function enrichSearchItem(item) {
     trust_level: trust.trust_level,
     certified: trust.certified,
     classifications: classifyAsset(item),
+    quality_score: readQualityScore(item),
   };
 
   enrichmentCache.set(cacheKey, enriched);
   return { ...item, ...enriched, downstreamCount: liveObj.downstreamCount || 0 };
+}
+
+function readClassifications(item) {
+  const existing = Array.isArray(item.classifications) ? item.classifications : [];
+  return [...new Set([...existing, ...classifyAsset(item)])];
 }
 
 function parseBoundedInt(value, fallback, min, max) {
@@ -73,6 +80,17 @@ function readTrustLevel(item) {
   return String(item.trust_level || computeTrustScore(item).trust_level || 'unrated').toLowerCase();
 }
 
+function readQualityScore(item) {
+  const value =
+    item.quality_score ??
+    item.qualityScore ??
+    item.quality?.score ??
+    item.quality?.overall_score ??
+    item.scorecard?.overall_score;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? Math.max(0, Math.min(100, parsed)) : 0;
+}
+
 function itemSearchText(item) {
   return [
     item.id,
@@ -85,6 +103,7 @@ function itemSearchText(item) {
     item.owner,
     item.sensitivity,
     item.description,
+    ...readClassifications(item),
     ...(item.tags || []),
     ...(item.depends_on || []),
     ...(item.reads_from || []),
@@ -119,6 +138,7 @@ function applyCatalogFilters(items, filters) {
   const sensitivities = normalizeList(filters.sensitivity);
   const requestedTags = normalizeList(filters.tags);
   const trustLevels = normalizeList(filters.trustLevel);
+  const classifications = normalizeList(filters.classification);
 
   return items.filter((item) => {
     const database = String(item.database || item.schema || '').toLowerCase();
@@ -127,6 +147,9 @@ function applyCatalogFilters(items, filters) {
     const sensitivity = String(item.sensitivity || '').toLowerCase();
     const itemTags = (item.tags || []).map((tag) => String(tag).toLowerCase());
     const trustLevel = readTrustLevel(item);
+    const itemClassifications = readClassifications(item).map((label) =>
+      String(label).toLowerCase()
+    );
 
     return (
       (databases.length === 0 || databases.includes(database)) &&
@@ -134,6 +157,8 @@ function applyCatalogFilters(items, filters) {
       (owners.length === 0 || owners.includes(owner)) &&
       (sensitivities.length === 0 || sensitivities.includes(sensitivity)) &&
       (trustLevels.length === 0 || trustLevels.includes(trustLevel)) &&
+      (classifications.length === 0 ||
+        classifications.every((label) => itemClassifications.includes(label))) &&
       (requestedTags.length === 0 ||
         requestedTags.every((tag) => itemTags.some((itemTag) => itemTag === tag)))
     );
@@ -217,6 +242,7 @@ function scoreCatalogItem(item, query) {
   if (owner.includes(normalizedQuery)) score += 25;
   if (description.includes(normalizedQuery)) score += 10;
   score += Math.min(40, (item.downstreamCount || 0) * 2);
+  score += Math.round(readQualityScore(item) / 10);
 
   return score;
 }
@@ -277,9 +303,7 @@ function buildFacetsResponse() {
     sensitivity: ['public', 'internal', 'confidential', 'restricted'],
     tags: [...new Set(values.flatMap((o) => o.tags || []))].sort(),
     quality: ['gold', 'silver', 'bronze', 'unrated'],
-    classifications: [
-      ...new Set(values.flatMap((o) => o.classifications || [])),
-    ].sort(),
+    classifications: [...new Set(values.flatMap((o) => readClassifications(o)))].sort(),
   };
 
   facetsCache.set('catalog-facets', facets);
@@ -361,6 +385,7 @@ router.get('/', authenticate, async (req, res) => {
       sensitivity,
       tags,
       trust_level: trustLevelFilter,
+      classification,
     } = req.query;
 
     const query = q.toLowerCase().trim();
@@ -373,6 +398,7 @@ router.get('/', authenticate, async (req, res) => {
       sensitivity,
       tags,
       trustLevel: trustLevelFilter,
+      classification,
     };
 
     let results = [];
@@ -395,6 +421,7 @@ router.get('/', authenticate, async (req, res) => {
         sensitivity: sensitivity || null,
         tags: tags || null,
         trust_level: trustLevelFilter || null,
+        classification: classification || null,
       });
 
       const cached = searchCache.get(cacheKey);
@@ -442,6 +469,7 @@ router.get('/', authenticate, async (req, res) => {
             sensitivity,
             tags,
             trust_level: trustLevelFilter,
+            classification,
           });
         } catch (err) {
           esError = err;
@@ -524,6 +552,36 @@ router.get('/', authenticate, async (req, res) => {
       totalHits = browsing.totalHits;
     }
 
+    let semanticResolution = null;
+    if (query && objectCache.size > 0) {
+      semanticResolution = await resolveBusinessQuery(q, objectCache, { limit: parsedLimit });
+
+      if (semanticResolution.assets.length > 0) {
+        const existingIds = new Set(results.map((item) => item.id || item.asset_id));
+        const semanticItems = semanticResolution.assets
+          .filter((match) => !existingIds.has(match.asset_id))
+          .map((match) => ({
+            ...(objectCache.get(match.asset_id) || {}),
+            id: match.asset_id,
+            name: objectCache.get(match.asset_id)?.name || match.name,
+            database: objectCache.get(match.asset_id)?.database || match.database,
+            schema: objectCache.get(match.asset_id)?.schema || match.schema,
+            type: objectCache.get(match.asset_id)?.type || match.type,
+            semantic_match: {
+              score: match.score,
+              reason: match.reason,
+              terms: match.terms,
+            },
+          }));
+
+        if (semanticItems.length > 0) {
+          results = [...semanticItems, ...results].slice(0, parsedLimit);
+          totalHits = Math.max(totalHits, results.length);
+          searchEngine = `${searchEngine}+semantic`;
+        }
+      }
+    }
+
     // Enrich the results with your platform's trust scores
     const enriched = results.map(enrichSearchItem);
 
@@ -544,7 +602,14 @@ router.get('/', authenticate, async (req, res) => {
         owner: owner || null,
         sensitivity: sensitivity || null,
         tags: tags ? tags.split(',') : [],
+        classification: classification || null,
       },
+      semantic_matches: semanticResolution
+        ? {
+            terms: semanticResolution.terms,
+            assets: semanticResolution.assets,
+          }
+        : null,
       results: enriched,
     });
   } catch (err) {

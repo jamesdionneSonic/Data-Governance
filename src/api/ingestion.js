@@ -21,6 +21,7 @@ import { resolveLineageCorpus } from '../services/lineageResolver.js';
 import { loadRuntimeCatalog } from '../services/catalogRuntimeService.js';
 import { indexObjects, createIndex, healthCheck } from '../services/indexService.js';
 import { initializeCache } from '../utils/cacheInitializer.js';
+import { runConnectorExtractionForConfig } from '../services/connectorService.js';
 
 const router = createApiRouter();
 const ingestionState = {
@@ -740,9 +741,7 @@ router.post('/validate', authenticate, requireAdmin, async (req, res) => {
  * Requires admin role
  */
 router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) => {
-  let extractor;
   try {
-    const SqlServerMetadataExtractor = (await import('../services/sqlServerExtractor.js')).default;
     const MarkdownGenerator = (await import('../services/markdownFromSqlServer.js')).default;
 
     // --> CHANGED: We now destructure excludeSchemas and excludeTables out of the request body
@@ -770,10 +769,6 @@ router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) 
 
     const { connConfig, sqlDriver } = connectionContext;
 
-    // Extract metadata with all object types
-    extractor = new SqlServerMetadataExtractor(connConfig, sqlDriver);
-    await extractor.connect();
-
     // Build scope: now tracking inclusions AND exclusions
     // --> CHANGED: Added exclusions to the scope object being sent to the extractor
     const scope = {
@@ -783,8 +778,33 @@ router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) 
       excludeTables: Array.isArray(excludeTables) ? excludeTables : [],
     };
 
-    const metadata = await extractor.extractAllMetadata(database, scope);
-    await extractor.disconnect();
+    const extraction = await runConnectorExtractionForConfig({
+      id: `legacy-sql-server-${database}`,
+      type: 'sql_server',
+      label: `Legacy SQL Server extraction - ${database}`,
+      config: {
+        ...scope,
+        connectionConfig: connConfig,
+        sqlDriver,
+        database,
+      },
+      credential: {
+        mode: req.body.authentication === 'windows' ? 'windows_integrated' : 'service_account',
+        secret_ref: 'legacy-request-body',
+      },
+      options: {
+        dry_run: false,
+        include_metadata: true,
+        fail_fast: false,
+      },
+    });
+
+    if (extraction.status === 'failed' || !extraction.metadata) {
+      const firstError = extraction.errors?.[0];
+      throw new Error(firstError?.message || 'SQL Server connector extraction failed before metadata was returned.');
+    }
+
+    const metadata = extraction.metadata;
 
     // 1. DETERMINE OUTPUT PATH
     const defaultBasePath = './data/markdown';
@@ -828,6 +848,13 @@ router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) 
         relationshipsDetected: metadata.relationships.length,
         confidentRelationships: metadata.relationships.filter((r) => r.confidence >= 0.75).length,
         extractionWarnings: metadata.extractionWarnings || [],
+        connectorExtraction: {
+          status: extraction.status,
+          adapter: extraction.adapter,
+          summary: extraction.summary,
+          streamResults: extraction.stream_results,
+          errors: extraction.errors,
+        },
         selectedSchemas,
         selectedTables,
         markdownFiles: metadata.allObjects.length,
@@ -851,14 +878,6 @@ router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) 
     return sendErrorResponse(res, req, 500, err.message, {
       code: isConnectionError ? 'SQL_SERVER_CONNECTION_ERROR' : 'SQL_SERVER_EXTRACTION_ERROR',
     });
-  } finally {
-    if (extractor) {
-      try {
-        await extractor.disconnect();
-      } catch (_disconnectErr) {
-        // no-op
-      }
-    }
   }
 });
 

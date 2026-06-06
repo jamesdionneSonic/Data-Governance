@@ -29,6 +29,7 @@ function seedSearchCatalog(app) {
         sensitivity: 'internal',
         description: 'Customer order fact table',
         tags: ['sales', 'critical'],
+        columns: [{ name: 'customer_email_address' }],
       },
     ],
     [
@@ -41,6 +42,21 @@ function seedSearchCatalog(app) {
         owner: 'analytics-team',
         sensitivity: 'internal',
         description: 'Customer KPIs and trend reporting',
+        quality_score: 95,
+        tags: ['analytics'],
+      },
+    ],
+    [
+      'analytics.customer_metrics_shadow',
+      {
+        id: 'analytics.customer_metrics_shadow',
+        name: 'Customer Metrics Shadow',
+        database: 'analytics',
+        type: 'view',
+        owner: 'analytics-team',
+        sensitivity: 'internal',
+        description: 'Customer KPIs and trend reporting',
+        quality_score: 10,
         tags: ['analytics'],
       },
     ],
@@ -111,8 +127,33 @@ describe('Search API', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.searchEngine).toBe('memory');
-    expect(res.body.pagination.total).toBe(3);
+    expect(res.body.pagination.total).toBe(4);
     expect(res.body.results).toHaveLength(2);
+  });
+
+  test('boosts otherwise similar search matches by quality score', async () => {
+    const res = await request(app)
+      .get('/api/v1/search?q=customer metrics&limit=10')
+      .set(authHeaders());
+
+    expect(res.status).toBe(200);
+    const ids = res.body.results.map((item) => item.id);
+    expect(ids.indexOf('analytics.customer_metrics')).toBeLessThan(
+      ids.indexOf('analytics.customer_metrics_shadow')
+    );
+    expect(res.body.results.find((item) => item.id === 'analytics.customer_metrics')).toMatchObject({
+      quality_score: 95,
+    });
+  });
+
+  test('filters search results by inferred classification facet', async () => {
+    const res = await request(app)
+      .get('/api/v1/search?classification=PII&limit=10')
+      .set(authHeaders());
+
+    expect(res.status).toBe(200);
+    expect(res.body.results.map((item) => item.id)).toContain('sales.orders');
+    expect(res.body.results.every((item) => item.classifications.includes('PII'))).toBe(true);
   });
 
   test('refreshes markdown catalog on memory miss for newly extracted JMA claims assets', async () => {

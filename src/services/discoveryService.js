@@ -69,14 +69,21 @@ export function getRecommendations(objects, lineageGraph) {
         title: 'Recently Added',
         description: 'New objects added to the system',
         items: Array.from(objects.values())
-          .sort((a, b) => b.createdAt - a.createdAt)
+          .sort((a, b) => {
+            const bTime = new Date(b.createdAt || b.created_at || b.last_updated || 0).getTime();
+            const aTime = new Date(a.createdAt || a.created_at || a.last_updated || 0).getTime();
+            return bTime - aTime;
+          })
           .slice(0, 5)
           .map((obj) => ({
             id: obj.id,
             name: obj.name,
             database: obj.database,
             type: obj.type,
-            createdAt: obj.createdAt,
+            description: obj.description || '',
+            owner: obj.owner || null,
+            sensitivity: obj.sensitivity || null,
+            createdAt: obj.createdAt || obj.created_at || obj.last_updated || null,
           })),
       },
     },
@@ -174,45 +181,150 @@ export function getLineageInsights(objects, lineageGraph) {
  * @returns {Object} Quality metrics
  */
 export function getQualityMetrics(objects, _lineageGraph) {
+  const objectList = Array.from(objects.values());
+  const total = objects.size;
+  const safePct = (count) => (total > 0 ? Math.round((count / total) * 1000) / 10 : 0);
+  const hasText = (value) => String(value || '').trim().length > 0;
+  const hasArray = (value) => Array.isArray(value) && value.length > 0;
+  const isKnown = (value) => {
+    const text = String(value || '').trim().toLowerCase();
+    return text && !['unknown', 'unassigned', 'n/a', 'none', '-'].includes(text);
+  };
+  const lineageGraph = _lineageGraph || new Map();
+  const downstreamCounts = new Map();
+  for (const neighbors of lineageGraph.values()) {
+    const values = neighbors instanceof Set ? Array.from(neighbors) : neighbors || [];
+    for (const id of values) {
+      downstreamCounts.set(id, (downstreamCounts.get(id) || 0) + 1);
+    }
+  }
+
+  const counts = {
+    descriptions: objectList.filter((obj) => hasText(obj.description)).length,
+    owners: objectList.filter((obj) => isKnown(obj.owner)).length,
+    stewards: objectList.filter((obj) => isKnown(obj.steward)).length,
+    tags: objectList.filter((obj) => hasArray(obj.tags)).length,
+    sensitivity: objectList.filter((obj) => isKnown(obj.sensitivity)).length,
+    lineage: objectList.filter((obj) => {
+      const upstream = lineageGraph.get(obj.id);
+      const upstreamCount = upstream instanceof Set ? upstream.size : Array.isArray(upstream) ? upstream.length : 0;
+      return upstreamCount > 0 || (downstreamCounts.get(obj.id) || 0) > 0 || obj.upstreamCount > 0 || obj.downstreamCount > 0;
+    }).length,
+    glossary: objectList.filter((obj) =>
+      hasArray(obj.glossary_terms) || hasArray(obj.semantic_terms) || hasArray(obj.business_terms)
+    ).length,
+    certified: objectList.filter((obj) => obj.certified === true || isKnown(obj.trust_level)).length,
+  };
+
+  const signals = [
+    {
+      key: 'descriptions',
+      label: 'Descriptions',
+      count: counts.descriptions,
+      total,
+      percentage: safePct(counts.descriptions),
+      threshold: 70,
+      category: 'completeness',
+    },
+    {
+      key: 'owners',
+      label: 'Owners',
+      count: counts.owners,
+      total,
+      percentage: safePct(counts.owners),
+      threshold: 70,
+      category: 'stewardship',
+    },
+    {
+      key: 'stewards',
+      label: 'Stewards',
+      count: counts.stewards,
+      total,
+      percentage: safePct(counts.stewards),
+      threshold: 50,
+      category: 'stewardship',
+    },
+    {
+      key: 'tags',
+      label: 'Tags',
+      count: counts.tags,
+      total,
+      percentage: safePct(counts.tags),
+      threshold: 50,
+      category: 'classification',
+    },
+    {
+      key: 'sensitivity',
+      label: 'Sensitivity',
+      count: counts.sensitivity,
+      total,
+      percentage: safePct(counts.sensitivity),
+      threshold: 80,
+      category: 'classification',
+    },
+    {
+      key: 'lineage',
+      label: 'Lineage',
+      count: counts.lineage,
+      total,
+      percentage: safePct(counts.lineage),
+      threshold: 50,
+      category: 'lineage',
+    },
+    {
+      key: 'glossary',
+      label: 'Business Terms',
+      count: counts.glossary,
+      total,
+      percentage: safePct(counts.glossary),
+      threshold: 20,
+      category: 'semantic',
+    },
+    {
+      key: 'certified',
+      label: 'Trust Signals',
+      count: counts.certified,
+      total,
+      percentage: safePct(counts.certified),
+      threshold: 30,
+      category: 'trust',
+    },
+  ].map((signal) => ({
+    ...signal,
+    value: `${signal.count}/${signal.total}`,
+    status: signal.percentage >= signal.threshold ? 'good' : 'warning',
+    passing: signal.percentage >= signal.threshold,
+  }));
+
+  const score =
+    signals.length > 0
+      ? Math.round(signals.reduce((sum, signal) => sum + signal.percentage, 0) / signals.length)
+      : 0;
+
+  const checks = Object.fromEntries(signals.map((signal) => [signal.key, signal.passing]));
   const metrics = {
     completeness: {
       title: 'Metadata Completeness',
-      checks: [],
+      checks: signals.filter((signal) => ['descriptions', 'tags'].includes(signal.key)),
     },
     consistency: {
       title: 'Data Consistency',
       checks: [],
     },
+    stewardship: {
+      title: 'Ownership & Stewardship',
+      checks: signals.filter((signal) => ['owners', 'stewards'].includes(signal.key)),
+    },
+    governance: {
+      title: 'Governance Signals',
+      checks: signals.filter((signal) => ['sensitivity', 'lineage', 'glossary', 'certified'].includes(signal.key)),
+    },
   };
-
-  // Check for objects with descriptions
-  const withDescription = Array.from(objects.values()).filter((obj) => obj.description).length;
-  const descriptionRate = ((withDescription / objects.size) * 100).toFixed(1);
-
-  metrics.completeness.checks.push({
-    name: 'Objects with Descriptions',
-    value: `${withDescription}/${objects.size}`,
-    percentage: parseFloat(descriptionRate),
-    status: descriptionRate >= 80 ? 'good' : 'warning',
-  });
-
-  // Check for objects with tags
-  const withTags = Array.from(objects.values()).filter(
-    (obj) => obj.tags && obj.tags.length > 0
-  ).length;
-  const tagRate = ((withTags / objects.size) * 100).toFixed(1);
-
-  metrics.completeness.checks.push({
-    name: 'Objects with Tags',
-    value: `${withTags}/${objects.size}`,
-    percentage: parseFloat(tagRate),
-    status: tagRate >= 60 ? 'good' : 'warning',
-  });
 
   // Check sensitivity classification
   const sensitivities = new Map();
-  for (const obj of objects.values()) {
-    sensitivities.set(obj.sensitivity, (sensitivities.get(obj.sensitivity) || 0) + 1);
+  for (const obj of objectList) {
+    sensitivities.set(obj.sensitivity || 'unknown', (sensitivities.get(obj.sensitivity || 'unknown') || 0) + 1);
   }
 
   metrics.consistency.checks.push({
@@ -221,7 +333,17 @@ export function getQualityMetrics(objects, _lineageGraph) {
     status: sensitivities.has('public') ? 'good' : 'warning',
   });
 
-  return metrics;
+  return {
+    score,
+    checks,
+    signals,
+    summary: {
+      total_objects: total,
+      passing_checks: signals.filter((signal) => signal.passing).length,
+      warning_checks: signals.filter((signal) => !signal.passing).length,
+    },
+    ...metrics,
+  };
 }
 
 /**
