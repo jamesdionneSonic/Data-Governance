@@ -8,6 +8,7 @@ import { setIntegrationCache } from '../api/integrations.js';
 import { setMarketplaceCache } from '../api/marketplace.js';
 import { setClassificationCache } from '../api/classification.js';
 import { setGovernanceCache } from '../api/governance.js';
+import { setGovernanceOpsCache } from '../api/governanceOps.js';
 import { setGlossaryCache } from '../api/glossary.js';
 import { setQualityCache } from '../api/quality.js';
 import { setCatalogRuntime, setRuntimeLineageGraph } from '../services/catalogRuntimeStore.js';
@@ -79,6 +80,7 @@ export function initializeCache(...args) {
   setMarketplaceCache(objects);
   setClassificationCache(objects);
   setGovernanceCache(objects, lineageGraph);
+  setGovernanceOpsCache(objects, lineageGraph);
   setGlossaryCache(objects);
   setQualityCache(objects);
 }

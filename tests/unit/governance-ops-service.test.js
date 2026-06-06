@@ -1,0 +1,126 @@
+import {
+  assessChangeRisk,
+  buildAdoptionScorecards,
+  buildKpis,
+  clearGovernanceOps,
+  createGovernanceTask,
+  createIncident,
+  detectSchemaChange,
+  evaluateAnomaly,
+  generateStewardshipTasks,
+  recordUsageEvent,
+  transitionGovernanceTask,
+} from '../../src/services/governanceOpsService.js';
+
+describe('Phase 7 - Governance Operations Service', () => {
+  let objects;
+  let lineageGraph;
+
+  beforeEach(() => {
+    clearGovernanceOps();
+    objects = new Map([
+      [
+        'sales.orders',
+        {
+          id: 'sales.orders',
+          name: 'orders',
+          type: 'table',
+          owner: 'owner@example.com',
+          steward: 'steward@example.com',
+          description: 'Certified sales order table used by executive revenue reporting.',
+          sensitivity: 'confidential',
+          tags: ['finance'],
+          certified: true,
+        },
+      ],
+      [
+        'sales.raw_orders',
+        {
+          id: 'sales.raw_orders',
+          name: 'raw_orders',
+          type: 'table',
+          owner: 'unknown',
+          description: '',
+          tags: [],
+        },
+      ],
+    ]);
+
+    lineageGraph = new Map([
+      ['sales.raw_orders', new Set(['sales.orders'])],
+      ['mart.revenue', new Set(['sales.orders'])],
+    ]);
+  });
+
+  test('creates and transitions stewardship tasks', () => {
+    const task = createGovernanceTask(
+      { assetId: 'sales.orders', title: 'Review certification', priority: 'high' },
+      { id: 'steward', roles: ['Steward'] }
+    );
+
+    const transitioned = transitionGovernanceTask(
+      task.taskId,
+      { status: 'done', note: 'Reviewed' },
+      { id: 'steward', roles: ['Steward'] }
+    );
+
+    expect(transitioned.status).toBe('done');
+    expect(transitioned.events).toHaveLength(2);
+  });
+
+  test('generates metadata completion work from catalog gaps', () => {
+    const result = generateStewardshipTasks(objects, { id: 'admin', roles: ['Admin'] });
+
+    expect(result.count).toBe(1);
+    expect(result.tasks[0].assetId).toBe('sales.raw_orders');
+    expect(result.tasks[0].description).toContain('owner');
+  });
+
+  test('scores change risk from downstream consumers and certified status', () => {
+    const risk = assessChangeRisk(
+      { assetId: 'sales.orders', changeTypes: ['drop_column'] },
+      objects,
+      lineageGraph
+    );
+
+    expect(risk.approvalRequired).toBe(true);
+    expect(risk.riskFactors).toContain('potentially breaking schema change');
+    expect(risk.downstreamCount).toBe(2);
+  });
+
+  test('detects breaking schema changes and writes migration guidance', () => {
+    const result = detectSchemaChange({
+      assetId: 'sales.orders',
+      beforeColumns: [
+        { name: 'order_id', type: 'int' },
+        { name: 'amount', type: 'decimal' },
+      ],
+      afterColumns: [
+        { name: 'order_id', type: 'bigint' },
+        { name: 'created_at', type: 'datetime' },
+      ],
+    });
+
+    expect(result.breaking).toBe(true);
+    expect(result.changes.removed).toContain('amount');
+    expect(result.changes.changed[0].name).toBe('order_id');
+  });
+
+  test('builds adoption, KPI, anomaly, and incident outputs', () => {
+    recordUsageEvent({ assetId: 'sales.orders', action: 'view' }, { id: 'viewer' });
+    const adoption = buildAdoptionScorecards(objects, lineageGraph);
+    const kpis = buildKpis(objects, lineageGraph);
+    const anomaly = evaluateAnomaly({
+      assetId: 'sales.orders',
+      baseline: { rowCount: 1000 },
+      current: { rowCount: 1500 },
+      tolerancePct: 20,
+    });
+    const incident = createIncident({ assetId: 'sales.orders', severity: 'high' }, { id: 'steward' });
+
+    expect(adoption[0].assetId).toBe('sales.orders');
+    expect(kpis.totalAssets).toBe(2);
+    expect(anomaly.severity).toBe('medium');
+    expect(incident.status).toBe('open');
+  });
+});

@@ -33,6 +33,7 @@ import productsRoutes from './api/products.js';
 import qualityRoutes from './api/quality.js';
 import connectorsRoutes from './api/connectors.js';
 import dictionaryRoutes from './api/dictionary.js';
+import governanceOpsRoutes from './api/governanceOps.js';
 
 // Import utilities and config
 import { validateEntraConfig } from './utils/entraConfig.js';
@@ -123,6 +124,7 @@ export default function createApp() {
   apiRouter.use('/quality', qualityRoutes);
   apiRouter.use('/connectors', connectorsRoutes);
   apiRouter.use('/dictionary', dictionaryRoutes);
+  apiRouter.use('/governance-ops', governanceOpsRoutes);
   apiRouter.use('/discovery', discoveryRoutes);
   apiRouter.use('/lineage', discoveryRoutes);
 
