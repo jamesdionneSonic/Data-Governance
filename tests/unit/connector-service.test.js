@@ -6,10 +6,12 @@ import {
   listConnectorDefinitions,
   listConnectors,
   planConnector,
+  planConnectorBiProfiling,
   planConnectorProfiling,
   resetConnectorStore,
   runConnectorExtractionForConfig,
   runConnector,
+  runConnectorBiProfiling,
   runConnectorProfiling,
   upsertConnector,
 } from '../../src/services/connectorService.js';
@@ -360,6 +362,135 @@ describe('connectorService', () => {
         }),
       ])
     );
+  });
+
+  test('plans and runs metadata-only BI profile for Power BI reporting artifacts', async () => {
+    upsertConnector(
+      {
+        id: 'powerbi-profile',
+        type: 'power_bi',
+        label: 'Power BI Tenant',
+        config: { tenant_id: 'tenant-1' },
+        credential: {
+          mode: 'service_principal',
+          secret_ref: 'kv://powerbi/sp',
+          client_secret: 'do-not-return',
+        },
+      },
+      admin
+    );
+    grantConnectorPermission(
+      'powerbi-profile',
+      { scope: 'roles', subject: 'Analyst', actions: ['view', 'run'] },
+      admin
+    );
+
+    const plan = await planConnectorBiProfiling('powerbi-profile', { streams: ['reports', 'datasets'] }, analyst);
+    expect(plan).toMatchObject({
+      profile_type: 'bi_report_profile',
+      captures_raw_report_data: false,
+      secret_exposed: false,
+    });
+    expect(plan.streams.map((stream) => stream.stream)).toEqual(['reports', 'datasets']);
+
+    const run = await runConnectorBiProfiling(
+      'powerbi-profile',
+      {
+        dry_run: false,
+        include_events: false,
+        streams: ['reports', 'dashboards', 'datasets', 'scanner_metadata', 'datasources', 'activity_events', 'lineage'],
+        metadata_payload: {
+          reports: [{ id: 'report-1', name: 'Sales Executive Report', datasetId: 'dataset-1', owner: 'finance' }],
+          dashboards: [{ id: 'dash-1', name: 'Sales Executive Dashboard' }],
+          datasets: [{ id: 'dataset-1', name: 'Sales Model', workspaceId: 'workspace-1' }],
+          scanner_metadata: [{ id: 'model-1', name: 'Sales Semantic Model', object_type: 'semantic_model' }],
+          datasources: [{ id: 'source-1', name: 'Sonic_DW', type: 'sql_server' }],
+          activity_events: [{ id: 'usage-1', name: 'ViewReport', reportId: 'report-1' }],
+          lineage: [{ id: 'edge-1', from: 'dataset-1', to: 'report-1', type: 'feeds' }],
+        },
+      },
+      analyst
+    );
+
+    expect(run.status).toBe('succeeded');
+    expect(run.summary).toMatchObject({
+      bi_profile_run: true,
+      raw_data_captured: false,
+      raw_report_data_captured: false,
+      report_count: 1,
+      dashboard_count: 1,
+      semantic_model_count: 1,
+      dataset_count: 1,
+      data_source_count: 1,
+      lineage_edge_count: 1,
+    });
+    expect(run.profile.answer.answer).toContain('metadata-only');
+    expect(run.profile.profile.coverage_score).toBeGreaterThanOrEqual(50);
+    const runJson = JSON.stringify(run);
+    expect(runJson).not.toContain('do-not-return');
+    expect(runJson).not.toContain('kv://powerbi/sp');
+  });
+
+  test('every reporting connector can produce a metadata-only BI profile through the shared framework', async () => {
+    const reportingDefinitions = listConnectorDefinitions({ category: 'business_intelligence' });
+
+    for (const definition of reportingDefinitions) {
+      upsertConnector(
+        {
+          id: `bi-profile-${definition.type}`,
+          type: definition.type,
+          label: `${definition.label} BI Profile`,
+          config: minimalConnectorConfig(definition.type),
+          credential: minimalCredential(definition.credentialKinds),
+        },
+        admin
+      );
+    }
+    const runs = await Promise.all(
+      reportingDefinitions.map((definition) =>
+        runConnectorBiProfiling(`bi-profile-${definition.type}`, { dry_run: true }, admin)
+      )
+    );
+
+    for (const run of runs) {
+      expect(run.status).toBe('succeeded');
+      expect(run.summary).toEqual(
+        expect.objectContaining({
+          bi_profile_run: true,
+          raw_data_captured: false,
+          raw_report_data_captured: false,
+        })
+      );
+      expect(run.profile.profile.inventory.length).toBeGreaterThan(0);
+    }
+  });
+
+  test('BI profile reports structured connector errors and coverage gaps', async () => {
+    upsertConnector(
+      {
+        id: 'bad-tableau-profile',
+        type: 'tableau',
+        label: 'Bad Tableau',
+        config: { base_url: 'https://tableau.example.com' },
+        credential: { mode: 'pat', secret_ref: 'kv://tableau' },
+      },
+      admin
+    );
+
+    const run = await runConnectorBiProfiling('bad-tableau-profile', { dry_run: true }, admin);
+    expect(run.status).toBe('failed');
+    expect(run.errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'CONNECTOR_CONFIG_ERROR',
+          remediation: expect.any(String),
+        }),
+      ])
+    );
+    expect(run.profile.answer).toMatchObject({
+      raw_values_retained: false,
+      report_result_rows_queried: false,
+    });
   });
 
   test('AWS signed source client requires resolved signing credentials', async () => {

@@ -206,4 +206,65 @@ describe('Connectors API', () => {
     expect(responseJson).not.toContain('profile-password');
     expect(responseJson).not.toContain('kv://sql');
   });
+
+  test('runs BI report profiling through managed connector API', async () => {
+    const app = createApp();
+    await request(app)
+      .post('/api/v1/connectors')
+      .set(authHeaders(admin))
+      .send({
+        id: 'powerbi-api',
+        type: 'power_bi',
+        label: 'Power BI API',
+        config: { tenant_id: 'tenant-1' },
+        credential: {
+          mode: 'service_principal',
+          secret_ref: 'kv://powerbi/api',
+          client_secret: 'hidden-client-secret',
+        },
+      });
+    await request(app)
+      .post('/api/v1/connectors/powerbi-api/permissions')
+      .set(authHeaders(admin))
+      .send({ scope: 'roles', subject: 'Analyst', actions: ['view', 'run'] });
+
+    const planRes = await request(app)
+      .post('/api/v1/connectors/powerbi-api/bi-profile/plan')
+      .set(authHeaders(analyst))
+      .send({ streams: ['reports', 'dashboards'] });
+
+    expect(planRes.status).toBe(200);
+    expect(planRes.body.plan).toMatchObject({
+      profile_type: 'bi_report_profile',
+      captures_raw_report_data: false,
+    });
+
+    const runRes = await request(app)
+      .post('/api/v1/connectors/powerbi-api/bi-profile/run')
+      .set(authHeaders(analyst))
+      .send({
+        dry_run: false,
+        include_events: false,
+        streams: ['reports', 'dashboards', 'datasets', 'lineage'],
+        metadata_payload: {
+          reports: [{ id: 'report-1', name: 'Executive Report', datasetId: 'dataset-1' }],
+          dashboards: [{ id: 'dashboard-1', name: 'Executive Dashboard' }],
+          datasets: [{ id: 'dataset-1', name: 'Executive Dataset' }],
+          lineage: [{ id: 'edge-1', from: 'dataset-1', to: 'report-1', type: 'feeds' }],
+        },
+      });
+
+    expect(runRes.status).toBe(200);
+    expect(runRes.body.run.summary).toMatchObject({
+      bi_profile_run: true,
+      raw_report_data_captured: false,
+      report_count: 1,
+      dashboard_count: 1,
+      dataset_count: 1,
+    });
+    expect(runRes.body.run.profile.answer.answer).toContain('metadata-only');
+    const responseJson = JSON.stringify(runRes.body);
+    expect(responseJson).not.toContain('hidden-client-secret');
+    expect(responseJson).not.toContain('kv://powerbi/api');
+  });
 });
