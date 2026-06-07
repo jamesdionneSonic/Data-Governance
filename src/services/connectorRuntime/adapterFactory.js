@@ -132,6 +132,12 @@ class DataWarehouseAdapter extends BaseConnectorAdapter {
     super(args);
     this.requiredConfig = ['database'];
     this.requiredCredentialModes = ['service_account', 'secret_reference', 'managed_identity', 'iam_role', 'workload_identity', 'key_pair'];
+    this.capability = {
+      ...this.capability,
+      supports_profiling: true,
+      supports_live_profile: false,
+      profile_framework: 'aggregate_profile_execution',
+    };
     this.streams = [
       stream('schemas', STREAM.object, 'information_schema.schemata', { metadata: ['schemas'] }),
       stream('tables', STREAM.object, 'information_schema.tables', { metadata: ['tables', 'views'] }),
@@ -156,6 +162,8 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
     this.capability = {
       ...this.capability,
       supports_live_read: true,
+      supports_profiling: true,
+      supports_live_profile: false,
       existing_extractor: 'SqlServerMetadataExtractor',
     };
     this.streams = [

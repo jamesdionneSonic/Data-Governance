@@ -3599,6 +3599,20 @@ img, video, iframe {
   padding: 16px;
 }
 
+.profile-sql-preview {
+  background: #0f172a;
+  border-radius: 8px;
+  color: #e2e8f0;
+  font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 10px 0 0;
+  max-height: 220px;
+  overflow: auto;
+  padding: 10px;
+  white-space: pre;
+}
+
 @media (max-width: 980px) {
   .lineage-object-picker-row {
     grid-template-columns: 1fr;

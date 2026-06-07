@@ -6,6 +6,7 @@ import {
 } from './connectorErrors.js';
 import { CANONICAL_EVENT_TYPES, canonicalEvent, warningEvent } from './canonicalMetadata.js';
 import { fetchSourceMetadata } from './sourceClients.js';
+import { buildProfilingPlan, executeProfilingPlan } from '../profilingExecutionService.js';
 
 function toArray(value) {
   if (Array.isArray(value)) return value.filter(Boolean);
@@ -30,6 +31,7 @@ export class BaseConnectorAdapter {
       supports_live_read: false,
       supports_schema: true,
       supports_lineage: true,
+      supports_profiling: false,
       captures_raw_data: false,
     };
   }
@@ -195,6 +197,23 @@ export class BaseConnectorAdapter {
       },
       plan: this.streamPlan(stream),
     };
+  }
+
+  async planProfiling(options = {}) {
+    return buildProfilingPlan(
+      {
+        ...options,
+        connector_id: this.id,
+        dialect: options.dialect || this.config.dialect || 'sql_server',
+        assets: options.assets || options.objects || [],
+      },
+      options.objectCache || new Map()
+    );
+  }
+
+  async runProfiling(options = {}) {
+    const plan = options.plan || (await this.planProfiling(options));
+    return executeProfilingPlan(plan, this.capability.supports_live_profile ? this : null);
   }
 
   sampleEventForStream(stream) {
