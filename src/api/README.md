@@ -25,6 +25,7 @@ This folder contains the Express route handlers for the backend-for-frontend API
 - `integrations.js` - integration settings and webhook workflows
 - `lineage.js` - lineage query endpoints
 - `marketplace.js` - access request workflows
+- `metrics.js` - metric registry, metric logic explanation, and formula-change impact
 - `objects.js` - object catalog endpoints
 - `products.js` - product catalog endpoints
 - `reporting.js` - reporting and export endpoints
