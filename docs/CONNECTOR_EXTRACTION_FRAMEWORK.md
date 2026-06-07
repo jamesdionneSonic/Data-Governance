@@ -95,7 +95,35 @@ Every BI profile returns the same enterprise-safe envelope:
 - Confluence-ready markdown summary
 - plain-English answer text for the assistant/Jarvis experience
 
-The current shared framework covers Power BI, Power BI Report Server, MicroStrategy Cloud, SSAS, SSRS, Tableau, Looker, Qlik Cloud, Qlik Sense, Domo, Sigma, Mode, Metabase, Superset, Redash, Amazon QuickSight, Grafana, IBM Cognos, SAP BusinessObjects, Oracle Analytics, ThoughtSpot, and Sisense. Salesforce report/dashboard metadata can be handled through extraction, but the explicit BI profile endpoint is reserved for BI/reporting category connectors unless the service later expands the BI profile support check.
+The current shared framework covers Power BI, Power BI Report Server, MicroStrategy Cloud, SSAS, SSRS, Tableau, Looker, Qlik Cloud, Qlik Sense, Domo, Sigma, Mode, Metabase, Superset, Redash, Amazon QuickSight, Grafana, IBM Cognos, SAP BusinessObjects, Oracle Analytics, ThoughtSpot, Sisense, and Salesforce report/dashboard metadata.
+
+## Connector Metadata Profile Framework
+
+Cloud storage, catalog platforms, pipeline/orchestration tools, code repositories, and Salesforce use a third profile contract: connector metadata profiles. These profiles are metadata-only and do not store raw source payload values.
+
+The managed connector API exposes:
+
+- `POST /api/v1/connectors/:id/metadata-profile/plan`
+- `POST /api/v1/connectors/:id/metadata-profile/run`
+
+Supported metadata-profile connectors:
+
+- Salesforce
+- Azure Storage / ADLS
+- Amazon S3
+- Google Cloud Storage
+- Microsoft Purview
+- AWS Glue Data Catalog
+- Google Dataplex / Data Catalog
+- Azure Data Factory
+- SQL Server Integration Services
+- Apache Airflow
+- dbt Core / Cloud
+- Git repositories
+
+The profile captures inventory objects, storage locations, schemas, columns, classifications, glossary terms, pipelines, tasks, jobs, datasets, connections, schedules, repositories, code assets, tests, reports, dashboards, lineage edges, coverage gaps, computer-friendly packages, Confluence-ready markdown, and assistant-ready answer text.
+
+The next pass intentionally remains: OpenAPI, Kafka, and SAP.
 
 ## Implementation Rule
 

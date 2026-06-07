@@ -39,8 +39,9 @@ Supported through the managed connector runtime:
 - Oracle Analytics
 - ThoughtSpot
 - Sisense
+- Salesforce report/dashboard metadata
 
-Salesforce report/dashboard metadata continues through the standard extraction runtime because Salesforce is classified as ERP/CRM in the connector registry.
+Salesforce also has a connector metadata profile path for CRM object inventory, fields, reports, dashboards, and report-object dependencies.
 
 ## Contract
 

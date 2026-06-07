@@ -267,4 +267,72 @@ describe('Connectors API', () => {
     expect(responseJson).not.toContain('hidden-client-secret');
     expect(responseJson).not.toContain('kv://powerbi/api');
   });
+
+  test('runs connector metadata profiling through managed connector API', async () => {
+    const app = createApp();
+    await request(app)
+      .post('/api/v1/connectors')
+      .set(authHeaders(admin))
+      .send({
+        id: 'adf-profile-api',
+        type: 'azure_data_factory',
+        label: 'ADF Profile API',
+        config: {
+          subscription_id: 'sub-1',
+          resource_group: 'rg-data',
+          factory_name: 'sonic-adf',
+        },
+        credential: {
+          mode: 'service_principal',
+          secret_ref: 'kv://adf/profile',
+          client_secret: 'hidden-client-secret',
+        },
+      });
+    await request(app)
+      .post('/api/v1/connectors/adf-profile-api/permissions')
+      .set(authHeaders(admin))
+      .send({ scope: 'roles', subject: 'Analyst', actions: ['view', 'run'] });
+
+    const planRes = await request(app)
+      .post('/api/v1/connectors/adf-profile-api/metadata-profile/plan')
+      .set(authHeaders(analyst))
+      .send({ streams: ['pipelines', 'datasets'] });
+
+    expect(planRes.status).toBe(200);
+    expect(planRes.body.plan).toMatchObject({
+      profile_type: 'connector_metadata_profile',
+      captures_raw_data: false,
+    });
+
+    const runRes = await request(app)
+      .post('/api/v1/connectors/adf-profile-api/metadata-profile/run')
+      .set(authHeaders(analyst))
+      .send({
+        dry_run: false,
+        include_events: false,
+        streams: ['pipelines', 'tasks', 'datasets', 'connections', 'lineage'],
+        metadata_payload: {
+          pipelines: [{ id: 'pipe-1', name: 'Load Claims' }],
+          tasks: [{ id: 'task-1', name: 'Copy Claims', pipelineId: 'pipe-1' }],
+          datasets: [{ id: 'dataset-1', name: 'Claims Stage' }],
+          connections: [{ id: 'conn-1', name: 'Sonic_DW' }],
+          lineage: [{ id: 'edge-1', from: 'conn-1', to: 'dataset-1', type: 'feeds' }],
+        },
+      });
+
+    expect(runRes.status).toBe(200);
+    expect(runRes.body.run.summary).toMatchObject({
+      metadata_profile_run: true,
+      pipeline_count: 1,
+      task_count: 1,
+      dataset_count: 1,
+      connection_count: 1,
+      lineage_edge_count: 1,
+      raw_payload_values_captured: false,
+    });
+    expect(runRes.body.run.profile.answer.answer).toContain('metadata-only');
+    const responseJson = JSON.stringify(runRes.body);
+    expect(responseJson).not.toContain('hidden-client-secret');
+    expect(responseJson).not.toContain('kv://adf/profile');
+  });
 });

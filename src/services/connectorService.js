@@ -8,8 +8,10 @@ import {
   buildAdapterCoverage,
   executeConnectorBiProfile,
   executeConnectorExtraction,
+  executeConnectorMetadataProfile,
   executeConnectorProfile,
   planConnectorBiProfile,
+  planConnectorMetadataProfile,
   planConnectorProfile,
   planConnectorExtraction,
 } from './connectorRuntime/extractionKernel.js';
@@ -867,6 +869,72 @@ export async function runConnectorBiProfiling(id, options = {}, user = {}) {
   return run;
 }
 
+export async function planConnectorMetadataProfiling(id, options = {}, user = {}) {
+  const connector = connectorStore.get(id);
+  if (!connector) {
+    throw new Error(`Connector '${id}' not found.`);
+  }
+  if (!canUseConnector(connector, user, CONNECTOR_ACTIONS.VIEW)) {
+    const error = new Error(`User is not allowed to view connector '${id}'.`);
+    error.code = 'CONNECTOR_FORBIDDEN';
+    throw error;
+  }
+  const definition = normalizeConnectorType(connector.type);
+  return planConnectorMetadataProfile({ connector, definition, options });
+}
+
+export async function runConnectorMetadataProfiling(id, options = {}, user = {}) {
+  const connector = connectorStore.get(id);
+  if (!connector) {
+    throw new Error(`Connector '${id}' not found.`);
+  }
+  if (!canUseConnector(connector, user, CONNECTOR_ACTIONS.RUN)) {
+    const error = new Error(`User is not allowed to run connector '${id}'.`);
+    error.code = 'CONNECTOR_FORBIDDEN';
+    throw error;
+  }
+  const started = nowIso();
+  const definition = normalizeConnectorType(connector.type);
+  const profileResult = await executeConnectorMetadataProfile({ connector, definition, options });
+  const run = {
+    id: randomUUID(),
+    connector_id: id,
+    connector_type: connector.type,
+    actor: actorId(user),
+    status: profileResult.status,
+    mode: options.dry_run === false ? 'connector_metadata_profile' : 'metadata_profile_dry_run',
+    started_at: started,
+    completed_at: nowIso(),
+    summary: {
+      ...(profileResult.profile?.summary || {}),
+      secret_exposed: false,
+      raw_data_captured: false,
+      raw_payload_values_captured: false,
+      profile_run: true,
+      metadata_profile_run: true,
+    },
+    profile: profileResult,
+    errors: profileResult.errors || [],
+    warnings: [
+      ...(options.dry_run === false ? [] : ['Dry run only: no external source was contacted and no raw source payload values were captured.']),
+      ...((profileResult.warnings || []).map((warning) => warning.attributes?.message || warning.name).filter(Boolean)),
+    ],
+  };
+  runHistoryStore.unshift(run);
+  runHistoryStore.splice(5000);
+  snapshotStore.set(id, {
+    ...(snapshotStore.get(id) || {}),
+    connector_id: id,
+    run_id: run.id,
+    captured_at: run.completed_at,
+    metadata_profile_summary: profileResult.profile?.summary || null,
+    metadata_profile_coverage_score: profileResult.profile?.coverage_score || 0,
+    metadata_inventory_count: profileResult.profile?.inventory?.length || 0,
+    metadata_lineage_edge_count: profileResult.profile?.lineage_edges?.length || 0,
+  });
+  return run;
+}
+
 export async function runConnectorExtractionForConfig({
   id,
   type,
@@ -956,10 +1024,12 @@ export default {
   listConnectors,
   planConnector,
   planConnectorBiProfiling,
+  planConnectorMetadataProfiling,
   planConnectorProfiling,
   resetConnectorStore,
   runConnectorBiProfiling,
   runConnectorExtractionForConfig,
+  runConnectorMetadataProfiling,
   runConnectorProfiling,
   runConnector,
   upsertConnector,
