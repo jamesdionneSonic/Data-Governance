@@ -17,8 +17,10 @@ import {
   listConnectorRuns,
   listConnectors,
   planConnector,
+  planConnectorBiProfiling,
   planConnectorProfiling,
   runConnector,
+  runConnectorBiProfiling,
   runConnectorProfiling,
   upsertConnector,
 } from '../services/connectorService.js';
@@ -140,6 +142,15 @@ router.post('/:id/profile/plan', authenticate, async (req, res) => {
   }
 });
 
+router.post('/:id/bi-profile/plan', authenticate, async (req, res) => {
+  try {
+    const plan = await planConnectorBiProfiling(req.params.id, req.body || {}, req.user);
+    return res.json({ status: 'success', plan });
+  } catch (err) {
+    return connectorError(res, req, err);
+  }
+});
+
 router.post('/:id/run', authenticate, async (req, res) => {
   try {
     const run = await runConnector(req.params.id, req.body || {}, req.user);
@@ -159,6 +170,21 @@ router.post('/:id/profile/run', authenticate, async (req, res) => {
   try {
     const run = await runConnectorProfiling(req.params.id, req.body || {}, req.user);
     logActivity(actorId(req.user), 'connector_profile_run', req.params.id, {
+      run_id: run.id,
+      status: run.status,
+      mode: run.mode,
+      summary: run.summary,
+    });
+    return res.json({ status: 'success', run });
+  } catch (err) {
+    return connectorError(res, req, err);
+  }
+});
+
+router.post('/:id/bi-profile/run', authenticate, async (req, res) => {
+  try {
+    const run = await runConnectorBiProfiling(req.params.id, req.body || {}, req.user);
+    logActivity(actorId(req.user), 'connector_bi_profile_run', req.params.id, {
       run_id: run.id,
       status: run.status,
       mode: run.mode,

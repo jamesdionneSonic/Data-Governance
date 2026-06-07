@@ -67,6 +67,36 @@ Connector errors must be actionable:
 
 Each error includes phase, connector id, connector type, stream, remediation, and details.
 
+## BI Report Profile Framework
+
+BI/reporting connectors use the extraction runtime to build a separate BI profile contract. This is intentionally different from database profiling:
+
+- Database profiling runs aggregate-safe queries against tables and returns counts, null rates, distinct counts, ranges, and freshness signals.
+- BI report profiling reads reporting metadata and returns report/dashboard inventory, semantic models, datasets, data sources, measures, fields, usage signals, refresh/subscription signals, and lineage relationships.
+- BI report profiling never queries report result rows and never stores raw values from reports.
+
+The managed connector API exposes:
+
+- `POST /api/v1/connectors/:id/bi-profile/plan`
+- `POST /api/v1/connectors/:id/bi-profile/run`
+
+Both endpoints use the same connector permission model as extraction. Admins can store service-account or managed-identity credential references once, grant users `view` and `run`, and users can profile approved BI sources without seeing source secrets.
+
+Every BI profile returns the same enterprise-safe envelope:
+
+- `profile_type: bi_report_profile`
+- `captures_raw_report_data: false`
+- `raw_values_retained: false`
+- `secret_exposed: false`
+- structured profile summary counts
+- coverage checks and gaps
+- top impact candidates
+- computer-friendly package output
+- Confluence-ready markdown summary
+- plain-English answer text for the assistant/Jarvis experience
+
+The current shared framework covers Power BI, Power BI Report Server, MicroStrategy Cloud, SSAS, SSRS, Tableau, Looker, Qlik Cloud, Qlik Sense, Domo, Sigma, Mode, Metabase, Superset, Redash, Amazon QuickSight, Grafana, IBM Cognos, SAP BusinessObjects, Oracle Analytics, ThoughtSpot, and Sisense. Salesforce report/dashboard metadata can be handled through extraction, but the explicit BI profile endpoint is reserved for BI/reporting category connectors unless the service later expands the BI profile support check.
+
 ## Implementation Rule
 
 The runtime is designed to harvest metadata, not business data. Connectors should collect object names, schemas, columns, measures, relationships, reports, dashboards, usage signals, lineage edges, and quality signals. They must not store raw PII values or unrestricted source data.

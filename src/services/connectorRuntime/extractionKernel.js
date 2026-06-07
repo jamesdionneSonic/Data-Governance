@@ -2,6 +2,13 @@ import { createConnectorAdapter, adapterCoverageReport } from './adapterFactory.
 import { serializeConnectorError } from './connectorErrors.js';
 import { summarizeCanonicalEvents, warningEvent } from './canonicalMetadata.js';
 import { buildComputerFriendlyProfilePackage, buildConfluenceProfileSummary, profilingAnswer } from '../profilingExecutionService.js';
+import {
+  biProfileAnswer,
+  buildBiConfluenceSummary,
+  buildBiProfileFromExtraction,
+  buildBiProfilePackage,
+  buildBiProfilePlan,
+} from '../biProfileService.js';
 
 export async function planConnectorExtraction({ connector, definition, options = {} }) {
   const adapter = createConnectorAdapter({ connector, definition });
@@ -133,6 +140,69 @@ export async function executeConnectorProfile({ connector, definition, options =
         raw_values_retained: false,
       },
       errors: [serialized],
+    };
+  }
+}
+
+export async function planConnectorBiProfile({ connector, definition, options = {} }) {
+  const adapter = createConnectorAdapter({ connector, definition });
+  return buildBiProfilePlan({ connector, definition, adapter, options });
+}
+
+export async function executeConnectorBiProfile({ connector, definition, options = {} }) {
+  const adapter = createConnectorAdapter({ connector, definition });
+  try {
+    const plan = buildBiProfilePlan({ connector, definition, adapter, options });
+    const extraction = await executeConnectorExtraction({
+      connector,
+      definition,
+      options: {
+        fail_fast: false,
+        ...options,
+      },
+    });
+    const profile = buildBiProfileFromExtraction({ connector, definition, adapter, extraction, options });
+    return {
+      status: profile.status,
+      connector_id: connector.id,
+      connector_type: connector.type,
+      adapter: adapter.constructor.name,
+      executed_at: new Date().toISOString(),
+      captures_raw_data: false,
+      captures_raw_report_data: false,
+      secret_exposed: false,
+      plan,
+      extraction: options.include_events === false ? { ...extraction, events: undefined } : extraction,
+      profile,
+      package: buildBiProfilePackage(profile),
+      confluence: buildBiConfluenceSummary(profile),
+      answer: biProfileAnswer(profile),
+      errors: profile.errors || [],
+      warnings: profile.warnings || [],
+    };
+  } catch (err) {
+    const serialized = serializeConnectorError(err);
+    return {
+      status: 'failed',
+      connector_id: connector.id,
+      connector_type: connector.type,
+      adapter: adapter.constructor.name,
+      executed_at: new Date().toISOString(),
+      captures_raw_data: false,
+      captures_raw_report_data: false,
+      secret_exposed: false,
+      plan: null,
+      extraction: null,
+      profile: null,
+      package: null,
+      confluence: null,
+      answer: {
+        answer: `BI profiling failed for connector ${connector.id}: ${serialized.message}`,
+        raw_values_retained: false,
+        report_result_rows_queried: false,
+      },
+      errors: [serialized],
+      warnings: [],
     };
   }
 }
