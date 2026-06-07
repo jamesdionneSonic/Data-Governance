@@ -25,6 +25,32 @@ const DEFAULT_SAFETY = Object.freeze({
   isolation_level: 'READ UNCOMMITTED',
 });
 
+const DIALECT_ALIASES = Object.freeze({
+  sqlserver: 'sql_server',
+  mssql: 'sql_server',
+  sql_server: 'sql_server',
+  azure_sql: 'sql_server',
+  synapse: 'sql_server',
+  postgresql: 'postgresql',
+  postgres: 'postgresql',
+  snowflake: 'snowflake',
+  bigquery: 'bigquery',
+  databricks: 'databricks',
+  spark: 'databricks',
+  spark_sql: 'databricks',
+  aws_redshift: 'redshift',
+  redshift: 'redshift',
+});
+
+const CONNECTOR_DIALECTS = Object.freeze({
+  sql_server: 'sql_server',
+  postgresql: 'postgresql',
+  snowflake: 'snowflake',
+  bigquery: 'bigquery',
+  databricks: 'databricks',
+  aws_redshift: 'redshift',
+});
+
 const PROFILE_MODES = new Set(['metadata_only', 'sample', 'full_scan']);
 const EXECUTION_MODES = new Set(['dry_run', 'simulate', 'live']);
 const NUMERIC_TYPE = /\b(bigint|int|smallint|tinyint|decimal|numeric|money|smallmoney|float|real|double|number)\b/i;
@@ -58,6 +84,16 @@ function normalizeBoolean(value, fallback = false) {
   return ['true', '1', 'yes', 'y'].includes(String(value).toLowerCase());
 }
 
+function normalizeDialect(input = {}) {
+  const requested =
+    input.dialect ||
+    input.source_dialect ||
+    input.sourceDialect ||
+    CONNECTOR_DIALECTS[input.connector_type || input.connectorType] ||
+    DEFAULT_SAFETY.dialect;
+  return DIALECT_ALIASES[String(requested || '').trim().toLowerCase()] || DEFAULT_SAFETY.dialect;
+}
+
 export function normalizeProfileSafety(input = {}) {
   const profileMode = PROFILE_MODES.has(input.profile_mode || input.profileMode)
     ? input.profile_mode || input.profileMode
@@ -67,7 +103,7 @@ export function normalizeProfileSafety(input = {}) {
     : DEFAULT_SAFETY.execution_mode;
   return {
     ...DEFAULT_SAFETY,
-    dialect: input.dialect || input.source_dialect || DEFAULT_SAFETY.dialect,
+    dialect: normalizeDialect(input),
     profile_mode: profileMode,
     execution_mode: executionMode,
     max_tables: clampNumber(input.max_tables ?? input.maxTables, 1, 500, DEFAULT_SAFETY.max_tables),
@@ -183,23 +219,160 @@ function columnKind(column = {}) {
   return 'other';
 }
 
-function bracketIdentifier(value) {
-  return `[${String(value || '').replace(/]/g, ']]')}]`;
-}
-
-function sqlServerObjectName(asset = {}) {
-  const database = objectDatabase(asset);
-  const schema = objectSchema(asset);
-  const table = asset.table || asset.table_name || asset.name || String(asset.id || '').split('.').pop();
-  return [database, schema, table].filter(Boolean).map(bracketIdentifier).join('.');
-}
-
 function sqlAlias(value) {
   return String(value || 'col')
     .replace(/[^a-z0-9_]+/gi, '_')
     .replace(/^_+|_+$/g, '')
     .slice(0, 90)
     .toLowerCase();
+}
+
+function tableName(asset = {}) {
+  return asset.table || asset.table_name || asset.name || String(asset.id || '').split('.').pop();
+}
+
+function quoteDouble(value) {
+  return `"${String(value || '').replace(/"/g, '""')}"`;
+}
+
+function quoteBacktick(value) {
+  return `\`${String(value || '').replace(/`/g, '\\`')}\``;
+}
+
+function quoteBracket(value) {
+  return `[${String(value || '').replace(/]/g, ']]')}]`;
+}
+
+function qualifiedName(asset, quoteIdentifier, options = {}) {
+  const database = objectDatabase(asset);
+  const schema = objectSchema(asset);
+  const table = tableName(asset);
+  const parts = options.includeDatabase === false ? [schema, table] : [database, schema, table];
+  return parts.filter(Boolean).map(quoteIdentifier).join('.');
+}
+
+function bigQueryObjectName(asset = {}) {
+  return quoteBacktick([objectDatabase(asset), objectSchema(asset), tableName(asset)].filter(Boolean).join('.'));
+}
+
+function selectExpressions(columns, dialect) {
+  const parts = [dialect.rowCountExpression()];
+  for (const column of columns) {
+    const colSql = dialect.quoteIdentifier(column.name);
+    const alias = sqlAlias(column.name);
+    if (column.actions.includes('null_count')) {
+      parts.push(`SUM(CASE WHEN ${colSql} IS NULL THEN 1 ELSE 0 END) AS ${dialect.quoteIdentifier(`${alias}__null_count`)}`);
+    }
+    if (column.actions.includes('distinct_count')) {
+      parts.push(`${dialect.distinctExpression(colSql)} AS ${dialect.quoteIdentifier(`${alias}__distinct_count`)}`);
+    }
+    if (column.actions.includes('min')) parts.push(`MIN(${colSql}) AS ${dialect.quoteIdentifier(`${alias}__min`)}`);
+    if (column.actions.includes('max')) parts.push(`MAX(${colSql}) AS ${dialect.quoteIdentifier(`${alias}__max`)}`);
+    if (column.actions.includes('mean')) parts.push(`${dialect.meanExpression(colSql)} AS ${dialect.quoteIdentifier(`${alias}__mean`)}`);
+  }
+  return parts;
+}
+
+function defaultFromClause(asset, dialect, safety) {
+  const objectSql = dialect.objectName(asset);
+  if (safety.profile_mode === 'sample' && dialect.sampleClause) {
+    return `FROM ${objectSql}${dialect.sampleClause(safety)}`;
+  }
+  return `FROM ${objectSql}${dialect.tableHint?.(safety) || ''}`;
+}
+
+function buildGenericProfileQuery(asset, columns, safety, dialect) {
+  const preamble = dialect.preamble?.(safety).filter(Boolean) || [];
+  const selectParts = selectExpressions(columns, dialect);
+  const sql = `SELECT ${selectParts.join(',\n       ')}\n${dialect.fromClause(asset, dialect, safety)};`;
+  return [...preamble, sql].join('\n');
+}
+
+const DIALECT_BUILDERS = Object.freeze({
+  sql_server: {
+    label: 'SQL Server',
+    quoteIdentifier: quoteBracket,
+    objectName: (asset) => qualifiedName(asset, quoteBracket),
+    rowCountExpression: () => 'COUNT_BIG(*) AS [row_count]',
+    distinctExpression: (columnSql) => `COUNT(DISTINCT ${columnSql})`,
+    meanExpression: (columnSql) => `AVG(CAST(${columnSql} AS float))`,
+    tableHint: (safety) => (safety.profile_mode === 'metadata_only' ? '' : ' WITH (READUNCOMMITTED)'),
+    sampleClause: (safety) => ` WITH (READUNCOMMITTED) TABLESAMPLE (${safety.sample_percent} PERCENT)`,
+    fromClause: defaultFromClause,
+    preamble: (safety) => [
+      `SET LOCK_TIMEOUT ${safety.lock_timeout_ms};`,
+      `SET TRANSACTION ISOLATION LEVEL ${safety.isolation_level};`,
+    ],
+    safety_notes: ['Uses LOCK_TIMEOUT and READ UNCOMMITTED hints for lower blocking risk.'],
+  },
+  postgresql: {
+    label: 'PostgreSQL',
+    quoteIdentifier: quoteDouble,
+    objectName: (asset) => qualifiedName(asset, quoteDouble, { includeDatabase: false }),
+    rowCountExpression: () => 'COUNT(*) AS "row_count"',
+    distinctExpression: (columnSql) => `COUNT(DISTINCT ${columnSql})`,
+    meanExpression: (columnSql) => `AVG(CAST(${columnSql} AS double precision))`,
+    sampleClause: (safety) => ` TABLESAMPLE SYSTEM (${safety.sample_percent})`,
+    fromClause: defaultFromClause,
+    preamble: (safety) => [
+      `SET statement_timeout = ${safety.query_timeout_ms};`,
+      `SET lock_timeout = ${safety.lock_timeout_ms};`,
+      'SET TRANSACTION READ ONLY;',
+    ],
+    safety_notes: ['Uses statement_timeout, lock_timeout, and read-only transaction intent.'],
+  },
+  snowflake: {
+    label: 'Snowflake',
+    quoteIdentifier: quoteDouble,
+    objectName: (asset) => qualifiedName(asset, quoteDouble),
+    rowCountExpression: () => 'COUNT(*) AS "row_count"',
+    distinctExpression: (columnSql) => `APPROX_COUNT_DISTINCT(${columnSql})`,
+    meanExpression: (columnSql) => `AVG(TRY_TO_DOUBLE(${columnSql}))`,
+    sampleClause: (safety) => ` SAMPLE (${safety.sample_percent})`,
+    fromClause: defaultFromClause,
+    preamble: (safety) => [`ALTER SESSION SET STATEMENT_TIMEOUT_IN_SECONDS = ${Math.ceil(safety.query_timeout_ms / 1000)};`],
+    safety_notes: ['Uses statement timeout and approximate distinct counts to reduce warehouse work.'],
+  },
+  bigquery: {
+    label: 'BigQuery',
+    quoteIdentifier: quoteBacktick,
+    objectName: bigQueryObjectName,
+    rowCountExpression: () => 'COUNT(*) AS `row_count`',
+    distinctExpression: (columnSql) => `APPROX_COUNT_DISTINCT(${columnSql})`,
+    meanExpression: (columnSql) => `AVG(SAFE_CAST(${columnSql} AS FLOAT64))`,
+    sampleClause: (safety) => ` TABLESAMPLE SYSTEM (${safety.sample_percent} PERCENT)`,
+    fromClause: defaultFromClause,
+    preamble: () => [],
+    safety_notes: ['Uses approximate distinct counts; enforce timeout and bytes limits in the BigQuery job config.'],
+  },
+  databricks: {
+    label: 'Databricks / Spark SQL',
+    quoteIdentifier: quoteBacktick,
+    objectName: (asset) => qualifiedName(asset, quoteBacktick),
+    rowCountExpression: () => 'COUNT(*) AS `row_count`',
+    distinctExpression: (columnSql) => `approx_count_distinct(${columnSql})`,
+    meanExpression: (columnSql) => `AVG(CAST(${columnSql} AS DOUBLE))`,
+    sampleClause: (safety) => ` TABLESAMPLE (${safety.sample_percent} PERCENT)`,
+    fromClause: defaultFromClause,
+    preamble: () => [],
+    safety_notes: ['Uses approximate distinct counts; enforce timeout and cluster policy in the Databricks SQL warehouse.'],
+  },
+  redshift: {
+    label: 'Amazon Redshift',
+    quoteIdentifier: quoteDouble,
+    objectName: (asset) => qualifiedName(asset, quoteDouble, { includeDatabase: false }),
+    rowCountExpression: () => 'COUNT(*) AS "row_count"',
+    distinctExpression: (columnSql) => `APPROXIMATE COUNT(DISTINCT ${columnSql})`,
+    meanExpression: (columnSql) => `AVG(CAST(${columnSql} AS DOUBLE PRECISION))`,
+    sampleClause: null,
+    fromClause: defaultFromClause,
+    preamble: (safety) => [`SET statement_timeout TO ${safety.query_timeout_ms};`],
+    safety_notes: ['Uses statement timeout and approximate distinct counts when supported; sampling should be enforced by workload management or connector SQL wrapper.'],
+  },
+});
+
+function dialectBuilder(name) {
+  return DIALECT_BUILDERS[normalizeDialect({ dialect: name })] || DIALECT_BUILDERS.sql_server;
 }
 
 function buildColumnActions(column, safety) {
@@ -221,37 +394,6 @@ function buildColumnActions(column, safety) {
       ? ['distinct_count', 'min', 'max', 'mean'].filter((stat) => !actions.includes(stat))
       : [],
   };
-}
-
-function buildSqlServerProfileQuery(asset, columns, safety) {
-  const objectSql = sqlServerObjectName(asset);
-  const hints = safety.profile_mode === 'metadata_only' ? '' : ' WITH (READUNCOMMITTED)';
-  const selectParts = ['COUNT_BIG(*) AS [row_count]'];
-
-  for (const column of columns) {
-    const colSql = bracketIdentifier(column.name);
-    const alias = sqlAlias(column.name);
-    if (column.actions.includes('null_count')) {
-      selectParts.push(`SUM(CASE WHEN ${colSql} IS NULL THEN 1 ELSE 0 END) AS [${alias}__null_count]`);
-    }
-    if (column.actions.includes('distinct_count')) {
-      selectParts.push(`COUNT(DISTINCT ${colSql}) AS [${alias}__distinct_count]`);
-    }
-    if (column.actions.includes('min')) selectParts.push(`MIN(${colSql}) AS [${alias}__min]`);
-    if (column.actions.includes('max')) selectParts.push(`MAX(${colSql}) AS [${alias}__max]`);
-    if (column.actions.includes('mean')) selectParts.push(`AVG(CAST(${colSql} AS float)) AS [${alias}__mean]`);
-  }
-
-  const fromClause =
-    safety.profile_mode === 'sample'
-      ? `FROM ${objectSql}${hints} TABLESAMPLE (${safety.sample_percent} PERCENT)`
-      : `FROM ${objectSql}${hints}`;
-
-  return [
-    `SET LOCK_TIMEOUT ${safety.lock_timeout_ms};`,
-    `SET TRANSACTION ISOLATION LEVEL ${safety.isolation_level};`,
-    `SELECT ${selectParts.join(',\n       ')}\n${fromClause};`,
-  ].join('\n');
 }
 
 function buildMetadataOnlyProfile(asset, columns, safety) {
@@ -339,7 +481,18 @@ export function buildProfilingContract() {
   return {
     version: '1.0',
     raw_values_retained: false,
-    supported_dialects: ['sql_server'],
+    supported_dialects: Object.keys(DIALECT_BUILDERS),
+    connector_dialects: { ...CONNECTOR_DIALECTS },
+    dialect_capabilities: Object.fromEntries(
+      Object.entries(DIALECT_BUILDERS).map(([key, dialect]) => [
+        key,
+        {
+          label: dialect.label,
+          supports_sampling: Boolean(dialect.sampleClause),
+          safety_notes: dialect.safety_notes,
+        },
+      ])
+    ),
     supported_execution_modes: Array.from(EXECUTION_MODES),
     supported_profile_modes: Array.from(PROFILE_MODES),
     safety_defaults: { ...DEFAULT_SAFETY },
@@ -355,7 +508,12 @@ export function buildProfilingContract() {
 }
 
 export function buildProfilingPlan(input = {}, objectCache = new Map()) {
-  const safety = normalizeProfileSafety(input.safety || input.options || input);
+  const safety = normalizeProfileSafety({
+    ...input,
+    ...(input.options || {}),
+    ...(input.safety || {}),
+  });
+  const dialect = dialectBuilder(safety.dialect);
   const assets = normalizeAssets(input, objectCache).slice(0, safety.max_tables);
   const skipped = [];
   const actions = [];
@@ -398,6 +556,9 @@ export function buildProfilingPlan(input = {}, objectCache = new Map()) {
     if (selectedColumns.some((column) => column.sensitive)) {
       warnings.push('Sensitive columns will only receive null-count style aggregate checks; value range/cardinality is suppressed.');
     }
+    if (safety.profile_mode === 'sample' && !dialect.sampleClause) {
+      warnings.push(`${dialect.label} does not have a portable TABLESAMPLE clause in this framework; enforce sampling in the connector or workload manager.`);
+    }
 
     const action = {
       action_id: randomUUID(),
@@ -413,16 +574,15 @@ export function buildProfilingPlan(input = {}, objectCache = new Map()) {
       raw_values_retained: false,
       columns: selectedColumns,
       warnings,
-      query:
-        safety.dialect === 'sql_server'
-          ? {
-              dialect: 'sql_server',
-              sql: buildSqlServerProfileQuery(asset, selectedColumns, safety),
-              timeout_ms: safety.query_timeout_ms,
-              lock_timeout_ms: safety.lock_timeout_ms,
-              read_only: true,
-            }
-          : null,
+      query: {
+        dialect: safety.dialect,
+        dialect_label: dialect.label,
+        sql: buildGenericProfileQuery(asset, selectedColumns, safety, dialect),
+        timeout_ms: safety.query_timeout_ms,
+        lock_timeout_ms: safety.lock_timeout_ms,
+        read_only: true,
+        safety_notes: dialect.safety_notes,
+      },
       asset,
     };
     actions.push(action);
@@ -603,7 +763,8 @@ export function buildConfluenceProfileSummary(run = {}) {
     '## Safety Controls',
     '',
     `- Profile mode: ${run.safety?.profile_mode || 'unknown'}`,
-    `- Isolation level: ${run.safety?.isolation_level || 'READ UNCOMMITTED'}`,
+    `- Dialect: ${run.safety?.dialect || DEFAULT_SAFETY.dialect}`,
+    `- Isolation level: ${run.safety?.isolation_level || 'dialect default'}`,
     `- Lock timeout: ${run.safety?.lock_timeout_ms || DEFAULT_SAFETY.lock_timeout_ms} ms`,
     `- Query timeout: ${run.safety?.query_timeout_ms || DEFAULT_SAFETY.query_timeout_ms} ms`,
     `- Full scans allowed: ${run.safety?.allow_full_scan ? 'yes' : 'no'}`,
@@ -642,7 +803,7 @@ export function profilingAnswer(run = {}) {
   return {
     answer:
       `The profiling framework ${status}. It retained no raw data, profiled ${assetCount} asset(s) and ${columnCount} column(s), ` +
-      `and skipped ${skipped} asset(s). SQL Server plans use read-only aggregate queries with lock timeout and ${run.safety?.isolation_level || 'READ UNCOMMITTED'} isolation.`,
+      `and skipped ${skipped} asset(s). ${run.safety?.dialect || 'Database'} plans use read-only aggregate queries with source-specific timeout and sampling guardrails.`,
     raw_values_retained: false,
     summary: run.summary,
     safety: run.safety,

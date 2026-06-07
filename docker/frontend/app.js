@@ -348,6 +348,7 @@ const appConfig = {
         runtimePack: null,
         profiling: {
           loading: false,
+          dialect: 'sql_server',
           mode: 'metadata_only',
           executionMode: 'dry_run',
           maxTables: 1,
@@ -2023,6 +2024,7 @@ const appConfig = {
     profilingRequestPayload(overrides = {}) {
       return {
         asset_id: this.metrics.objectId,
+        dialect: this.metrics.profiling.dialect,
         profile_mode: this.metrics.profiling.mode,
         execution_mode: this.metrics.profiling.executionMode,
         max_tables: Number(this.metrics.profiling.maxTables) || 1,
@@ -8063,7 +8065,8 @@ const appConfig = {
                         <v-btn size="small" color="primary" :loading="metrics.profiling.loading" @click="runMetricTableProfile">Run</v-btn>
                       </div>
                     </div>
-                    <div class="form-row" style="grid-template-columns:1fr 1fr; margin-bottom:10px;">
+                    <div class="form-row" style="grid-template-columns:1fr 1fr 1fr; margin-bottom:10px;">
+                      <v-select v-model="metrics.profiling.dialect" density="compact" variant="outlined" label="Dialect" :items="['sql_server','postgresql','snowflake','bigquery','databricks','redshift']" hide-details></v-select>
                       <v-select v-model="metrics.profiling.mode" density="compact" variant="outlined" label="Profile mode" :items="['metadata_only','sample','full_scan']" hide-details></v-select>
                       <v-select v-model="metrics.profiling.executionMode" density="compact" variant="outlined" label="Execution" :items="['dry_run','simulate','live']" hide-details></v-select>
                     </div>

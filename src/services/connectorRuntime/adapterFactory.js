@@ -137,6 +137,7 @@ class DataWarehouseAdapter extends BaseConnectorAdapter {
       supports_profiling: true,
       supports_live_profile: false,
       profile_framework: 'aggregate_profile_execution',
+      profile_dialect: args.connector?.type === 'aws_redshift' ? 'redshift' : args.connector?.type,
     };
     this.streams = [
       stream('schemas', STREAM.object, 'information_schema.schemata', { metadata: ['schemas'] }),

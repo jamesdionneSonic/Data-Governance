@@ -204,7 +204,8 @@ export class BaseConnectorAdapter {
       {
         ...options,
         connector_id: this.id,
-        dialect: options.dialect || this.config.dialect || 'sql_server',
+        connector_type: this.type,
+        dialect: options.dialect || this.config.dialect || this.type,
         assets: options.assets || options.objects || [],
       },
       options.objectCache || new Map()
