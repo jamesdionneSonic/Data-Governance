@@ -11,6 +11,9 @@ It profiles:
 - Catalog platform assets, classifications, glossary terms, schemas, and lineage
 - Pipeline/orchestration assets, tasks, datasets, connections, schedules, jobs, and lineage
 - Code repository assets, Python scripts, SQL files, notebooks, dbt artifacts, and code lineage
+- API endpoint contracts, operations, schemas, and API lineage
+- Kafka clusters, topics, schemas, consumers, and streaming lineage
+- SAP service catalogs, business objects, extractors, OData metadata, and ERP lineage
 
 It does not profile raw source values. The profile is metadata-only and returns no secrets, credential references, or unrestricted source payload values.
 
@@ -28,9 +31,6 @@ It does not profile raw source values. The profile is metadata-only and returns 
 - `airflow`
 - `dbt`
 - `git_repository`
-
-Next pass:
-
 - `openapi`
 - `kafka`
 - `sap`
@@ -71,6 +71,9 @@ Each run returns:
 - `tests`
 - `reports`
 - `dashboards`
+- `api_endpoints`
+- `streaming_assets`
+- `sap_extractors`
 - `lineage_edges`
 - `coverage_checks`
 - `gaps`
@@ -89,7 +92,29 @@ The framework uses the shared connector error model:
 - `CONNECTOR_STREAM_ERROR`
 - `CONNECTOR_RUNTIME_ERROR`
 
-Unsupported next-pass connectors return a `CONNECTOR_CONFIG_ERROR` with remediation that names the currently supported metadata-profile connector types and calls out `openapi`, `kafka`, and `sap` as next-pass work.
+Unsupported connectors return a `CONNECTOR_CONFIG_ERROR` with remediation that names the currently supported metadata-profile connector families. OpenAPI, Kafka, and SAP are now part of the supported metadata-profile set.
+
+## Scheduling
+
+Profile scheduling uses the managed connector scheduler instead of a separate job system:
+
+```http
+GET /api/v1/connectors/profile-schedules
+POST /api/v1/connectors/profile-schedules
+GET /api/v1/connectors/profile-schedules/:scheduleId
+PUT /api/v1/connectors/profile-schedules/:scheduleId
+DELETE /api/v1/connectors/profile-schedules/:scheduleId
+POST /api/v1/connectors/profile-schedules/:scheduleId/run
+POST /api/v1/connectors/profile-schedules/tick
+```
+
+Schedule type `auto` resolves to:
+
+- aggregate database profile for database and warehouse connectors
+- BI report profile for BI connectors
+- connector metadata profile for cloud, catalog, pipeline, repository, API, Kafka, Salesforce, and SAP connectors
+
+Schedules store sanitized options only. Inline payloads such as `metadata_payload`, test mocks, and credential-like fields are stripped or masked before the schedule is persisted.
 
 ## Architecture Rule
 

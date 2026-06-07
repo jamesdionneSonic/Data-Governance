@@ -432,9 +432,17 @@ export const CONNECTOR_TYPES = Object.freeze({
 const connectorStore = new Map();
 const runHistoryStore = [];
 const snapshotStore = new Map();
+const profileScheduleStore = new Map();
+
+const PROFILE_SCHEDULE_TYPES = new Set(['auto', 'aggregate', 'bi', 'metadata']);
+const PROFILE_SCHEDULE_STATUSES = new Set(['ACTIVE', 'PAUSED']);
 
 function nowIso() {
   return new Date().toISOString();
+}
+
+function addMinutes(date, minutes) {
+  return new Date(date.getTime() + minutes * 60_000);
 }
 
 function normalizeRoles(roles = []) {
@@ -503,6 +511,34 @@ function sanitizeConnector(connector) {
     config: sanitizeConfig(connector.config),
     credential: sanitizeCredential(connector.credential),
   };
+}
+
+function sanitizeProfileOptions(options = {}) {
+  const sanitized = sanitizeConfig(options || {});
+  delete sanitized.metadata_payload;
+  delete sanitized.metadataPayload;
+  delete sanitized.mockMetadata;
+  return sanitized;
+}
+
+function normalizeScheduleInterval(input = {}) {
+  const cadence = String(input.cadence || input.frequency || '').toLowerCase();
+  const intervalMinutes = Number(input.interval_minutes || input.intervalMinutes);
+  if (Number.isFinite(intervalMinutes) && intervalMinutes >= 5) return Math.round(intervalMinutes);
+  if (cadence === 'hourly') return 60;
+  if (cadence === 'daily') return 1440;
+  if (cadence === 'weekly') return 10080;
+  return 1440;
+}
+
+function computeNextRunAt(schedule = {}, from = new Date()) {
+  const start = schedule.start_at ? new Date(schedule.start_at) : null;
+  if (start && Number.isFinite(start.getTime()) && start > from) return start.toISOString();
+  return addMinutes(from, schedule.interval_minutes || 1440).toISOString();
+}
+
+function sanitizeProfileSchedule(schedule) {
+  return schedule ? { ...schedule, options: sanitizeProfileOptions(schedule.options || {}) } : null;
 }
 
 function permissionDefaults(createdBy) {
@@ -935,6 +971,208 @@ export async function runConnectorMetadataProfiling(id, options = {}, user = {})
   return run;
 }
 
+function inferProfileScheduleType(connector, requestedType = 'auto') {
+  const definition = normalizeConnectorType(connector.type);
+  const type = String(requestedType || 'auto').toLowerCase();
+  if (!PROFILE_SCHEDULE_TYPES.has(type)) {
+    const error = new Error(`Unsupported profile schedule type '${requestedType}'.`);
+    error.code = 'CONNECTOR_CONFIG_ERROR';
+    error.status = 400;
+    error.remediation = 'Use one of: auto, aggregate, bi, metadata.';
+    throw error;
+  }
+  if (type !== 'auto') return type;
+  if ([CONNECTOR_CATEGORIES.DATABASE, CONNECTOR_CATEGORIES.WAREHOUSE].includes(definition.category)) return 'aggregate';
+  if (definition.category === CONNECTOR_CATEGORIES.BI) return 'bi';
+  return 'metadata';
+}
+
+async function runConnectorProfileByType(connectorId, profileType, options, user) {
+  if (profileType === 'aggregate') return runConnectorProfiling(connectorId, options, user);
+  if (profileType === 'bi') return runConnectorBiProfiling(connectorId, options, user);
+  return runConnectorMetadataProfiling(connectorId, options, user);
+}
+
+export function upsertConnectorProfileSchedule(input = {}, actor = {}) {
+  const existing = input.id ? profileScheduleStore.get(input.id) : null;
+  const connectorId = input.connector_id || input.connectorId || existing?.connector_id;
+  const connector = connectorStore.get(connectorId);
+  if (!connector) {
+    throw new Error(`Connector '${connectorId || ''}' not found.`);
+  }
+  if (!isAdmin(actor) && !canUseConnector(connector, actor, CONNECTOR_ACTIONS.ADMIN)) {
+    const error = new Error(`User is not allowed to schedule connector '${connectorId}'.`);
+    error.code = 'CONNECTOR_FORBIDDEN';
+    throw error;
+  }
+  const id = input.id || `profile-schedule-${randomUUID().slice(0, 8)}`;
+  const now = nowIso();
+  const intervalMinutes = normalizeScheduleInterval(input);
+  const requestedStatus = String(input.status || '').toUpperCase();
+  const schedule = {
+    id,
+    connector_id: connectorId,
+    connector_type: connector.type,
+    name: input.name || existing?.name || `${connector.label || connector.id} profile schedule`,
+    profile_type: inferProfileScheduleType(connector, input.profile_type || input.profileType || existing?.profile_type || 'auto'),
+    status: PROFILE_SCHEDULE_STATUSES.has(requestedStatus) ? requestedStatus : existing?.status || 'ACTIVE',
+    cadence: input.cadence || input.frequency || existing?.cadence || 'daily',
+    interval_minutes: intervalMinutes,
+    timezone: input.timezone || existing?.timezone || 'UTC',
+    start_at: input.start_at || input.startAt || existing?.start_at || now,
+    next_run_at: input.next_run_at || input.nextRunAt || existing?.next_run_at || null,
+    max_failures: Number(input.max_failures || input.maxFailures || existing?.max_failures || 3),
+    options: sanitizeProfileOptions({
+      dry_run: true,
+      fail_fast: false,
+      ...(existing?.options || {}),
+      ...(input.options || {}),
+    }),
+    created_by: existing?.created_by || actorId(actor),
+    updated_by: actorId(actor),
+    created_at: existing?.created_at || now,
+    updated_at: now,
+    last_run_at: existing?.last_run_at || null,
+    last_status: existing?.last_status || null,
+    last_run_id: existing?.last_run_id || null,
+    run_count: existing?.run_count || 0,
+    failure_count: existing?.failure_count || 0,
+    last_error: existing?.last_error || null,
+  };
+  schedule.next_run_at = schedule.next_run_at || computeNextRunAt(schedule, new Date(schedule.start_at));
+  profileScheduleStore.set(id, schedule);
+  return sanitizeProfileSchedule(schedule);
+}
+
+export function listConnectorProfileSchedules(filters = {}, user = {}) {
+  return [...profileScheduleStore.values()]
+    .filter((schedule) => !filters.connector_id || schedule.connector_id === filters.connector_id)
+    .filter((schedule) => !filters.status || schedule.status === filters.status)
+    .filter((schedule) => {
+      const connector = connectorStore.get(schedule.connector_id);
+      return connector ? canUseConnector(connector, user, CONNECTOR_ACTIONS.VIEW) : isAdmin(user);
+    })
+    .map(sanitizeProfileSchedule);
+}
+
+export function getConnectorProfileSchedule(id, user = {}) {
+  const schedule = profileScheduleStore.get(id);
+  if (!schedule) return null;
+  const connector = connectorStore.get(schedule.connector_id);
+  if (connector && !canUseConnector(connector, user, CONNECTOR_ACTIONS.VIEW)) {
+    const error = new Error(`User is not allowed to view profile schedule '${id}'.`);
+    error.code = 'CONNECTOR_FORBIDDEN';
+    throw error;
+  }
+  return sanitizeProfileSchedule(schedule);
+}
+
+export function deleteConnectorProfileSchedule(id, actor = {}) {
+  const schedule = profileScheduleStore.get(id);
+  if (!schedule) return false;
+  const connector = connectorStore.get(schedule.connector_id);
+  if (connector && !isAdmin(actor) && !canUseConnector(connector, actor, CONNECTOR_ACTIONS.ADMIN)) {
+    const error = new Error(`User is not allowed to delete profile schedule '${id}'.`);
+    error.code = 'CONNECTOR_FORBIDDEN';
+    throw error;
+  }
+  return profileScheduleStore.delete(id);
+}
+
+export async function runConnectorProfileSchedule(id, actor = {}) {
+  const schedule = profileScheduleStore.get(id);
+  if (!schedule) {
+    throw new Error(`Profile schedule '${id}' not found.`);
+  }
+  if (schedule.status !== 'ACTIVE') {
+    const error = new Error(`Profile schedule '${id}' is not active.`);
+    error.code = 'CONNECTOR_CONFIG_ERROR';
+    error.status = 400;
+    error.remediation = 'Activate the schedule before running it.';
+    throw error;
+  }
+  const connector = connectorStore.get(schedule.connector_id);
+  if (!connector) {
+    throw new Error(`Connector '${schedule.connector_id}' not found.`);
+  }
+  const runnerUser = isAdmin(actor) ? actor : { id: 'profile-scheduler', email: 'scheduler@platform.local', roles: ['Admin'] };
+  const startedAt = nowIso();
+  try {
+    const run = await runConnectorProfileByType(schedule.connector_id, schedule.profile_type, schedule.options, runnerUser);
+    const completedAt = nowIso();
+    const succeeded = !['failed', 'partial_failure'].includes(run.status);
+    const updated = {
+      ...schedule,
+      last_run_at: completedAt,
+      last_status: run.status,
+      last_run_id: run.id,
+      run_count: schedule.run_count + 1,
+      failure_count: succeeded ? 0 : schedule.failure_count + 1,
+      last_error: run.errors?.[0] || null,
+      next_run_at: computeNextRunAt(schedule, new Date(completedAt)),
+      updated_at: completedAt,
+    };
+    if (updated.failure_count >= updated.max_failures) updated.status = 'PAUSED';
+    profileScheduleStore.set(id, updated);
+    return {
+      schedule: sanitizeProfileSchedule(updated),
+      run,
+      started_at: startedAt,
+      completed_at: completedAt,
+    };
+  } catch (err) {
+    const completedAt = nowIso();
+    const updated = {
+      ...schedule,
+      last_run_at: completedAt,
+      last_status: 'failed',
+      run_count: schedule.run_count + 1,
+      failure_count: schedule.failure_count + 1,
+      last_error: {
+        code: err.code || 'PROFILE_SCHEDULE_RUN_ERROR',
+        message: err.message,
+        remediation: err.remediation || 'Review connector permissions, profile type, schedule options, and source availability.',
+      },
+      next_run_at: computeNextRunAt(schedule, new Date(completedAt)),
+      updated_at: completedAt,
+    };
+    if (updated.failure_count >= updated.max_failures) updated.status = 'PAUSED';
+    profileScheduleStore.set(id, updated);
+    throw err;
+  }
+}
+
+export async function runDueConnectorProfileSchedules(options = {}, actor = {}) {
+  const now = options.now ? new Date(options.now) : new Date();
+  const due = [...profileScheduleStore.values()]
+    .filter((schedule) => schedule.status === 'ACTIVE')
+    .filter((schedule) => !schedule.next_run_at || new Date(schedule.next_run_at) <= now)
+    .slice(0, Number(options.limit || 25));
+  const results = [];
+  for (const schedule of due) {
+    try {
+      const result = await runConnectorProfileSchedule(schedule.id, actor);
+      const status = ['failed', 'partial_failure'].includes(result.run?.status) ? 'failed' : 'succeeded';
+      results.push({ schedule_id: schedule.id, status, result });
+    } catch (err) {
+      results.push({
+        schedule_id: schedule.id,
+        status: 'failed',
+        error: {
+          code: err.code || 'PROFILE_SCHEDULE_RUN_ERROR',
+          message: err.message,
+          remediation: err.remediation || 'Review profile schedule configuration and connector state.',
+        },
+      });
+    }
+  }
+  return {
+    ran_at: now.toISOString(),
+    due_count: due.length,
+    results,
+  };
+}
+
 export async function runConnectorExtractionForConfig({
   id,
   type,
@@ -1007,6 +1245,7 @@ export function resetConnectorStore() {
   connectorStore.clear();
   runHistoryStore.length = 0;
   snapshotStore.clear();
+  profileScheduleStore.clear();
 }
 
 export default {
@@ -1015,11 +1254,14 @@ export default {
   CONNECTOR_TYPES,
   canUseConnector,
   deleteConnector,
+  deleteConnectorProfileSchedule,
   getConnector,
+  getConnectorProfileSchedule,
   getConnectorSnapshot,
   grantConnectorPermission,
   getConnectorAdapterCoverage,
   listConnectorDefinitions,
+  listConnectorProfileSchedules,
   listConnectorRuns,
   listConnectors,
   planConnector,
@@ -1031,6 +1273,9 @@ export default {
   runConnectorExtractionForConfig,
   runConnectorMetadataProfiling,
   runConnectorProfiling,
+  runConnectorProfileSchedule,
+  runDueConnectorProfileSchedules,
   runConnector,
+  upsertConnectorProfileSchedule,
   upsertConnector,
 };

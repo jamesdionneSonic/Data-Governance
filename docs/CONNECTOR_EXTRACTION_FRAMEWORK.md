@@ -99,7 +99,7 @@ The current shared framework covers Power BI, Power BI Report Server, MicroStrat
 
 ## Connector Metadata Profile Framework
 
-Cloud storage, catalog platforms, pipeline/orchestration tools, code repositories, and Salesforce use a third profile contract: connector metadata profiles. These profiles are metadata-only and do not store raw source payload values.
+Cloud storage, catalog platforms, pipeline/orchestration tools, code repositories, OpenAPI, Kafka, Salesforce, and SAP use a third profile contract: connector metadata profiles. These profiles are metadata-only and do not store raw source payload values.
 
 The managed connector API exposes:
 
@@ -120,10 +120,25 @@ Supported metadata-profile connectors:
 - Apache Airflow
 - dbt Core / Cloud
 - Git repositories
+- OpenAPI
+- Apache Kafka
+- SAP OData / ERP metadata
 
-The profile captures inventory objects, storage locations, schemas, columns, classifications, glossary terms, pipelines, tasks, jobs, datasets, connections, schedules, repositories, code assets, tests, reports, dashboards, lineage edges, coverage gaps, computer-friendly packages, Confluence-ready markdown, and assistant-ready answer text.
+The profile captures inventory objects, storage locations, schemas, columns, classifications, glossary terms, pipelines, tasks, jobs, datasets, connections, schedules, repositories, code assets, tests, reports, dashboards, API endpoints, streaming assets, SAP extractors, lineage edges, coverage gaps, computer-friendly packages, Confluence-ready markdown, and assistant-ready answer text.
 
-The next pass intentionally remains: OpenAPI, Kafka, and SAP.
+## Managed Profile Scheduler
+
+All profile types can be automated through the managed connector scheduler:
+
+- `GET /api/v1/connectors/profile-schedules`
+- `POST /api/v1/connectors/profile-schedules`
+- `GET /api/v1/connectors/profile-schedules/:scheduleId`
+- `PUT /api/v1/connectors/profile-schedules/:scheduleId`
+- `DELETE /api/v1/connectors/profile-schedules/:scheduleId`
+- `POST /api/v1/connectors/profile-schedules/:scheduleId/run`
+- `POST /api/v1/connectors/profile-schedules/tick`
+
+The scheduler does not create a second extraction path. Schedule type `auto` routes to the same aggregate, BI report, or connector metadata profile service used by the manual API. Admins own schedule creation and execution, and stored schedule options are sanitized so secrets, credential references, raw metadata payloads, and test mocks are not persisted.
 
 ## Implementation Rule
 

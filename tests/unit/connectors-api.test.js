@@ -335,4 +335,84 @@ describe('Connectors API', () => {
     expect(responseJson).not.toContain('hidden-client-secret');
     expect(responseJson).not.toContain('kv://adf/profile');
   });
+
+  test('creates and runs connector profile schedules through managed connector API', async () => {
+    const app = createApp();
+    await request(app)
+      .post('/api/v1/connectors')
+      .set(authHeaders(admin))
+      .send({
+        id: 'openapi-schedule-api',
+        type: 'openapi',
+        label: 'OpenAPI Schedule API',
+        config: { spec_url: 'https://api.example.com/openapi.json' },
+        credential: {
+          mode: 'api_key',
+          secret_ref: 'kv://openapi/schedule',
+          api_key: 'hidden-api-key',
+        },
+      });
+
+    const scheduleRes = await request(app)
+      .post('/api/v1/connectors/profile-schedules')
+      .set(authHeaders(admin))
+      .send({
+        connector_id: 'openapi-schedule-api',
+        profile_type: 'auto',
+        cadence: 'hourly',
+        interval_minutes: 60,
+        start_at: '2026-06-07T00:00:00.000Z',
+        options: {
+          dry_run: true,
+          streams: ['endpoints', 'schemas', 'lineage'],
+          metadata_payload: {
+            endpoints: [{ id: 'GET /vehicles', name: 'GET /vehicles' }],
+          },
+          api_key: 'do-not-return',
+        },
+      });
+
+    expect(scheduleRes.status).toBe(201);
+    expect(scheduleRes.body.schedule).toEqual(
+      expect.objectContaining({
+        connector_id: 'openapi-schedule-api',
+        profile_type: 'metadata',
+        status: 'ACTIVE',
+      })
+    );
+    expect(JSON.stringify(scheduleRes.body)).not.toContain('do-not-return');
+
+    const listRes = await request(app).get('/api/v1/connectors/profile-schedules').set(authHeaders(admin));
+    expect(listRes.status).toBe(200);
+    expect(listRes.body.schedules).toHaveLength(1);
+
+    const runRes = await request(app)
+      .post(`/api/v1/connectors/profile-schedules/${scheduleRes.body.schedule.id}/run`)
+      .set(authHeaders(admin));
+    expect(runRes.status).toBe(200);
+    expect(runRes.body.result.run.status).toBe('succeeded');
+    expect(runRes.body.result.run.summary).toEqual(
+      expect.objectContaining({
+        metadata_profile_run: true,
+        api_endpoint_count: expect.any(Number),
+      })
+    );
+
+    const tickRes = await request(app)
+      .post('/api/v1/connectors/profile-schedules/tick')
+      .set(authHeaders(admin))
+      .send({ now: runRes.body.result.schedule.next_run_at });
+    expect(tickRes.status).toBe(200);
+    expect(tickRes.body.result.due_count).toBe(1);
+    expect(tickRes.body.result.results[0]).toEqual(expect.objectContaining({ status: 'succeeded' }));
+
+    const deleteRes = await request(app)
+      .delete(`/api/v1/connectors/profile-schedules/${scheduleRes.body.schedule.id}`)
+      .set(authHeaders(admin));
+    expect(deleteRes.status).toBe(200);
+    expect(deleteRes.body.deleted).toBe(true);
+    const responseJson = JSON.stringify({ scheduleRes: scheduleRes.body, runRes: runRes.body, tickRes: tickRes.body });
+    expect(responseJson).not.toContain('hidden-api-key');
+    expect(responseJson).not.toContain('kv://openapi/schedule');
+  });
 });

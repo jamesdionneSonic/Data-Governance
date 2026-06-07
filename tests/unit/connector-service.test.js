@@ -1,9 +1,12 @@
 import {
   canUseConnector,
+  deleteConnectorProfileSchedule,
+  getConnectorProfileSchedule,
   getConnectorSnapshot,
   getConnectorAdapterCoverage,
   grantConnectorPermission,
   listConnectorDefinitions,
+  listConnectorProfileSchedules,
   listConnectors,
   planConnector,
   planConnectorBiProfiling,
@@ -15,6 +18,9 @@ import {
   runConnectorBiProfiling,
   runConnectorMetadataProfiling,
   runConnectorProfiling,
+  runConnectorProfileSchedule,
+  runDueConnectorProfileSchedules,
+  upsertConnectorProfileSchedule,
   upsertConnector,
 } from '../../src/services/connectorService.js';
 import { jest } from '@jest/globals';
@@ -605,12 +611,12 @@ describe('connectorService', () => {
     }
   });
 
-  test('metadata profile rejects API, Kafka, and SAP connectors until the next pass', async () => {
+  test('metadata profile covers API, Kafka, and SAP connectors', async () => {
     for (const type of ['openapi', 'kafka', 'sap']) {
       const definition = listConnectorDefinitions().find((item) => item.type === type);
       upsertConnector(
         {
-          id: `unsupported-metadata-profile-${type}`,
+          id: `metadata-profile-${type}`,
           type,
           label: definition.label,
           config: minimalConnectorConfig(type),
@@ -622,22 +628,110 @@ describe('connectorService', () => {
 
     const runs = await Promise.all(
       ['openapi', 'kafka', 'sap'].map((type) =>
-        runConnectorMetadataProfiling(`unsupported-metadata-profile-${type}`, { dry_run: true }, admin)
+        runConnectorMetadataProfiling(`metadata-profile-${type}`, { dry_run: true }, admin)
       )
     );
 
     for (const run of runs) {
-      expect(run.status).toBe('failed');
-      expect(run.errors).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            code: 'CONNECTOR_CONFIG_ERROR',
-            message: expect.stringContaining('does not support metadata profiling yet'),
-            remediation: expect.stringContaining('next pass'),
-          }),
-        ])
+      expect(run.status).toBe('succeeded');
+      expect(run.summary).toEqual(
+        expect.objectContaining({
+          metadata_profile_run: true,
+          raw_data_captured: false,
+          raw_payload_values_captured: false,
+        })
       );
+      expect(run.profile.profile.inventory.length).toBeGreaterThan(0);
     }
+  });
+
+  test('connector profile scheduler creates, runs, ticks due schedules, and pauses repeated failures', async () => {
+    upsertConnector(
+      {
+        id: 'scheduled-powerbi',
+        type: 'power_bi',
+        label: 'Scheduled Power BI',
+        config: { tenant_id: 'tenant-1' },
+        credential: { mode: 'service_principal', secret_ref: 'kv://powerbi/schedule' },
+      },
+      admin
+    );
+
+    const schedule = upsertConnectorProfileSchedule(
+      {
+        connector_id: 'scheduled-powerbi',
+        profile_type: 'bi',
+        name: 'Power BI daily profile',
+        cadence: 'hourly',
+        interval_minutes: 60,
+        start_at: '2026-06-07T00:00:00.000Z',
+        options: {
+          dry_run: true,
+          streams: ['reports', 'dashboards'],
+          metadata_payload: { should_not_store: true },
+        },
+      },
+      admin
+    );
+
+    expect(schedule).toEqual(
+      expect.objectContaining({
+        connector_id: 'scheduled-powerbi',
+        profile_type: 'bi',
+        status: 'ACTIVE',
+      })
+    );
+    expect(JSON.stringify(schedule)).not.toContain('should_not_store');
+    expect(listConnectorProfileSchedules({}, admin)).toHaveLength(1);
+    expect(getConnectorProfileSchedule(schedule.id, admin)).toEqual(expect.objectContaining({ id: schedule.id }));
+
+    const immediate = await runConnectorProfileSchedule(schedule.id, admin);
+    expect(immediate.run.status).toBe('succeeded');
+    expect(immediate.schedule).toEqual(
+      expect.objectContaining({
+        run_count: 1,
+        last_status: 'succeeded',
+      })
+    );
+
+    const due = await runDueConnectorProfileSchedules({ now: immediate.schedule.next_run_at }, admin);
+    expect(due.due_count).toBe(1);
+    expect(due.results[0]).toEqual(expect.objectContaining({ status: 'succeeded' }));
+
+    upsertConnector(
+      {
+        id: 'scheduled-bad-openapi',
+        type: 'openapi',
+        label: 'Bad OpenAPI',
+        config: {},
+        credential: { mode: 'none' },
+      },
+      admin
+    );
+    const failing = upsertConnectorProfileSchedule(
+      {
+        connector_id: 'scheduled-bad-openapi',
+        profile_type: 'metadata',
+        interval_minutes: 5,
+        max_failures: 1,
+        start_at: '2026-06-07T00:00:00.000Z',
+        options: { dry_run: true },
+      },
+      admin
+    );
+
+    const failedTick = await runDueConnectorProfileSchedules({ now: failing.next_run_at }, admin);
+    const failedSchedule = getConnectorProfileSchedule(failing.id, admin);
+    expect(failedTick.results).toEqual(
+      expect.arrayContaining([expect.objectContaining({ schedule_id: failing.id, status: 'failed' })])
+    );
+    expect(failedSchedule).toEqual(
+      expect.objectContaining({
+        status: 'PAUSED',
+        failure_count: 1,
+      })
+    );
+    expect(deleteConnectorProfileSchedule(schedule.id, admin)).toBe(true);
   });
 
   test('AWS signed source client requires resolved signing credentials', async () => {

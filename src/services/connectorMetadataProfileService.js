@@ -17,7 +17,10 @@ const SUPPORTED_METADATA_PROFILE_TYPES = new Set([
   'airflow',
   'dbt',
   'git_repository',
+  'openapi',
+  'kafka',
   'salesforce',
+  'sap',
 ]);
 
 const PROFILE_BUCKETS = Object.freeze({
@@ -39,6 +42,9 @@ const PROFILE_BUCKETS = Object.freeze({
   TESTS: 'tests',
   REPORTS: 'reports',
   DASHBOARDS: 'dashboards',
+  API_ENDPOINTS: 'api_endpoints',
+  STREAMING_ASSETS: 'streaming_assets',
+  SAP_EXTRACTORS: 'sap_extractors',
   LINEAGE: 'lineage_edges',
   USAGE: 'usage',
   WARNINGS: 'warnings',
@@ -108,7 +114,7 @@ export function buildConnectorMetadataProfilePlan({ connector, definition, adapt
       raw_values_retained: false,
       credentials_returned: false,
       metadata_only: true,
-      unsupported_next_pass: ['openapi', 'kafka', 'sap'],
+      unsupported_next_pass: [],
     },
   };
 }
@@ -168,6 +174,9 @@ export function buildConnectorMetadataConfluenceSummary(profile) {
     `- Columns: ${summary.column_count}`,
     `- Pipelines/tasks/jobs: ${summary.pipeline_count + summary.task_count + summary.job_count}`,
     `- Code assets: ${summary.code_asset_count}`,
+    `- API endpoints: ${summary.api_endpoint_count}`,
+    `- Streaming assets: ${summary.streaming_asset_count}`,
+    `- SAP extractors: ${summary.sap_extractor_count}`,
     `- Reports/dashboards: ${summary.report_count + summary.dashboard_count}`,
     `- Classifications/glossary terms: ${summary.classification_count + summary.glossary_term_count}`,
     `- Lineage edges: ${summary.lineage_edge_count}`,
@@ -191,7 +200,9 @@ export function connectorMetadataProfileAnswer(profile) {
       `${profile.label} metadata profiling ${profileStatusText(profile.status)}. I captured ` +
       `${summary.inventory_count} inventory item(s), ${summary.storage_location_count} storage location(s), ` +
       `${summary.pipeline_count + summary.task_count + summary.job_count} pipeline/task/job item(s), ` +
-      `${summary.code_asset_count} code asset(s), ${summary.report_count + summary.dashboard_count} Salesforce/report item(s), ` +
+      `${summary.code_asset_count} code asset(s), ${summary.api_endpoint_count} API endpoint(s), ` +
+      `${summary.streaming_asset_count} streaming asset(s), ${summary.sap_extractor_count} SAP extractor item(s), ` +
+      `${summary.report_count + summary.dashboard_count} report/dashboard item(s), ` +
       `and ${summary.lineage_edge_count} lineage edge(s). The profile is metadata-only and retained no secrets or raw source payload values. Coverage score is ${profile.coverage_score}%.`,
     raw_values_retained: false,
     metadata_only: true,
@@ -207,10 +218,10 @@ function assertMetadataProfileSupport(connector, definition) {
     connector_id: connector.id,
     connector_type: connector.type,
     remediation:
-      'Use metadata profiling for Salesforce, cloud storage, catalog platforms, pipeline/orchestration tools, and code repositories. APIs, Kafka, and SAP are scheduled for the next pass.',
+      'Use metadata profiling for Salesforce, cloud storage, catalog platforms, pipeline/orchestration tools, code repositories, APIs, Kafka, and SAP.',
     details: {
       supported_connector_types: Array.from(SUPPORTED_METADATA_PROFILE_TYPES),
-      next_pass: ['openapi', 'kafka', 'sap'],
+      next_pass: [],
     },
   });
 }
@@ -250,6 +261,9 @@ function emptyProfile({ connector, definition, adapter, extraction, options }) {
     tests: [],
     reports: [],
     dashboards: [],
+    api_endpoints: [],
+    streaming_assets: [],
+    sap_extractors: [],
     lineage_edges: [],
     usage: [],
     warnings: [],
@@ -309,6 +323,9 @@ function classifyObjectEvent(event) {
   if (/schedule|trigger/.test(text)) return PROFILE_BUCKETS.SCHEDULES;
   if (/repository|repo/.test(text)) return PROFILE_BUCKETS.REPOSITORIES;
   if (/python|sql_file|sql files|notebook|dbt_artifact|script|code/.test(text)) return PROFILE_BUCKETS.CODE_ASSETS;
+  if (/openapi|endpoint|operation|path|swagger/.test(text)) return PROFILE_BUCKETS.API_ENDPOINTS;
+  if (/kafka|topic|schema|consumer|cluster|stream/.test(text)) return PROFILE_BUCKETS.STREAMING_ASSETS;
+  if (/sap|extractor|odata|servicecollection|business object/.test(text)) return PROFILE_BUCKETS.SAP_EXTRACTORS;
   if (/test/.test(text)) return PROFILE_BUCKETS.TESTS;
   return PROFILE_BUCKETS.OBJECTS;
 }
@@ -385,6 +402,9 @@ function buildInventory(profile) {
     ...profile.tests.map((item) => ({ ...item, role: 'test' })),
     ...profile.reports.map((item) => ({ ...item, role: 'report' })),
     ...profile.dashboards.map((item) => ({ ...item, role: 'dashboard' })),
+    ...profile.api_endpoints.map((item) => ({ ...item, role: 'api_endpoint' })),
+    ...profile.streaming_assets.map((item) => ({ ...item, role: 'streaming_asset' })),
+    ...profile.sap_extractors.map((item) => ({ ...item, role: 'sap_extractor' })),
   ];
 }
 
@@ -445,6 +465,9 @@ function buildSummary(profile, extraction) {
     test_count: profile.tests.length,
     report_count: profile.reports.length,
     dashboard_count: profile.dashboards.length,
+    api_endpoint_count: profile.api_endpoints.length,
+    streaming_asset_count: profile.streaming_assets.length,
+    sap_extractor_count: profile.sap_extractors.length,
     lineage_edge_count: profile.lineage_edges.length,
     warning_count: profile.warnings.length,
     error_count: profile.errors.length,
