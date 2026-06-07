@@ -1,5 +1,6 @@
 import {
   assessMetricFormulaImpact,
+  buildMetricProfileAnswer,
   buildMetricRegistry,
   buildTableMetricAnswer,
   explainMetricLogic,
@@ -19,7 +20,17 @@ function seedCatalog() {
         columns: [
           { name: 'order_id', data_type: 'int', primary_key: true },
           { name: 'gross_amount', data_type: 'decimal', semantic_type: 'metric' },
-          { name: 'margin_rate', data_type: 'decimal', expression: 'gross_amount - cost_amount' },
+          {
+            name: 'margin_rate',
+            data_type: 'decimal',
+            expression: 'gross_amount - cost_amount',
+            row_count: 1000,
+            null_percent: 1.5,
+            distinct_count: 25,
+            min: 0,
+            max: 100,
+            profiled_at: '2026-01-01T00:00:00.000Z',
+          },
         ],
       },
     ],
@@ -140,5 +151,29 @@ describe('metricRegistryService', () => {
     expect(impact.risk.recommended_actions).toEqual(
       expect.arrayContaining(['Run reconciliation before and after the formula change.'])
     );
+    expect(impact.risk.categories.map((category) => category.type)).toEqual(
+      expect.arrayContaining(['semantic_reporting_risk', 'trust_certification_risk'])
+    );
+    expect(impact.proposed_change.old_formula).toBeNull();
+  });
+
+  test('builds safe profile-aware metric answers with freshness caveats', () => {
+    const { objects, lineage } = seedCatalog();
+    const answer = buildMetricProfileAnswer(objects, lineage, {
+      object_id: 'sales.orders',
+      column_name: 'margin_rate',
+      freshness_days: 1,
+    });
+
+    expect(answer.answer).toContain('sales.dbo.orders.margin_rate profile summary');
+    expect(answer.profile.raw_values_retained).toBe(false);
+    expect(answer.profile.latest).toMatchObject({
+      row_count: 1000,
+      null_percent: 1.5,
+      distinct_count: 25,
+      min: 0,
+      max: 100,
+    });
+    expect(answer.caveats.join(' ')).toContain('freshness window');
   });
 });

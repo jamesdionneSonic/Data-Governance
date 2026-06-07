@@ -344,6 +344,7 @@ const appConfig = {
         tableAnswer: null,
         logicAnswer: null,
         impactAnswer: null,
+        profileAnswer: null,
         runtimePack: null,
       },
       productsCatalog: {
@@ -1984,6 +1985,25 @@ const appConfig = {
         this.metrics.impactAnswer = payload.data || null;
       } catch (err) {
         this.showToast(`Metric impact failed: ${err.message}`);
+      }
+    },
+    async loadSelectedMetricProfile() {
+      if (!this.metrics.objectId || !this.metrics.selectedColumn) {
+        this.showToast('Choose a table and metric column first.');
+        return;
+      }
+      try {
+        const payload = await this.api('/api/v1/metrics/profile', {
+          method: 'POST',
+          body: JSON.stringify({
+            object_id: this.metrics.objectId,
+            column_name: this.metrics.selectedColumn,
+            freshness_days: 30,
+          }),
+        });
+        this.metrics.profileAnswer = payload.data || null;
+      } catch (err) {
+        this.showToast(`Metric profile failed: ${err.message}`);
       }
     },
     async loadMetricRuntimePack() {
@@ -7926,6 +7946,7 @@ const appConfig = {
                       <span class="section-title">Logic &amp; Impact</span>
                       <div class="btn-row">
                         <v-btn size="small" variant="outlined" @click="explainSelectedMetric">Explain Logic</v-btn>
+                        <v-btn size="small" variant="outlined" @click="loadSelectedMetricProfile">Profile</v-btn>
                         <v-btn size="small" color="primary" @click="assessSelectedMetricImpact">Impact</v-btn>
                       </div>
                     </div>
@@ -7938,6 +7959,25 @@ const appConfig = {
                       <div class="mini-metric"><span>Risk</span><strong>{{ metrics.impactAnswer.risk?.severity }}</strong></div>
                       <div class="mini-metric"><span>Impacted Evidence</span><strong>{{ metrics.impactAnswer.risk?.impacted_count }}</strong></div>
                       <div class="mini-metric"><span>Unresolved Risks</span><strong>{{ metrics.impactAnswer.risk?.unresolved_risk_count }}</strong></div>
+                    </div>
+                    <p v-if="metrics.profileAnswer" class="lineage-answer-text" style="margin-top:10px;">{{ metrics.profileAnswer.answer }}</p>
+                    <div v-if="metrics.profileAnswer" class="mini-stack" style="margin-top:10px;">
+                      <div class="mini-metric"><span>Rows</span><strong>{{ metrics.profileAnswer.profile?.summary?.row_count || 0 }}</strong></div>
+                      <div class="mini-metric"><span>Null %</span><strong>{{ metrics.profileAnswer.profile?.latest?.null_percent ?? '-' }}</strong></div>
+                      <div class="mini-metric"><span>Distinct</span><strong>{{ metrics.profileAnswer.profile?.latest?.distinct_count ?? '-' }}</strong></div>
+                      <div class="mini-metric"><span>Raw Values</span><strong>{{ metrics.profileAnswer.profile?.raw_values_retained ? 'retained' : 'not retained' }}</strong></div>
+                    </div>
+                    <div v-if="metrics.profileAnswer?.caveats?.length" class="lineage-caveat-list">
+                      <div v-for="caveat in metrics.profileAnswer.caveats" :key="'metric-profile-caveat-' + caveat" class="lineage-caveat-item">{{ caveat }}</div>
+                    </div>
+                    <div v-if="metrics.impactAnswer?.risk?.categories?.length" class="lineage-help-panel" style="margin-top:10px;">
+                      <div class="lineage-help-title">Impact Categories</div>
+                      <div class="lineage-help-examples">
+                        <div v-for="category in metrics.impactAnswer.risk.categories" :key="'metric-impact-category-' + category.type" class="lineage-help-example">
+                          <strong>{{ category.type }}</strong>
+                          <span>{{ category.severity }} · {{ category.reason }}</span>
+                        </div>
+                      </div>
                     </div>
                     <div v-if="metrics.runtimePack" class="lineage-help-panel" style="margin-top:10px;">
                       <div class="lineage-help-title">Runtime Pack</div>
