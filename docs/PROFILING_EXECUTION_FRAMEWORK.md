@@ -28,9 +28,24 @@ It never stores raw row values. Sensitive columns are automatically limited to s
 | `sample` | Lightweight source validation. | Uses sampling and timeout settings. |
 | `full_scan` | High-confidence official profile. | Blocked unless `allow_full_scan` is explicitly true. |
 
-## SQL Server Safety Contract
+## Supported Database Dialects
 
-Generated SQL Server plans include:
+The framework is shared, but query generation is dialect-specific.
+
+| Connector Type | Profiling Dialect | Query Plan Status |
+| --- | --- | --- |
+| `sql_server` | `sql_server` | Built-in aggregate SQL with lock timeout and read-uncommitted hints. |
+| `postgresql` | `postgresql` | Built-in aggregate SQL with statement and lock timeout settings. |
+| `snowflake` | `snowflake` | Built-in aggregate SQL with statement timeout and approximate distinct counts. |
+| `bigquery` | `bigquery` | Built-in aggregate SQL with approximate distinct counts; byte/time limits must be enforced in the BigQuery job config. |
+| `databricks` | `databricks` | Built-in Spark SQL aggregate plan with approximate distinct counts; timeout is enforced by the SQL warehouse/client. |
+| `aws_redshift` | `redshift` | Built-in Redshift aggregate SQL with statement timeout and approximate distinct counts where supported. |
+
+Cloud catalogs, storage systems, BI tools, APIs, repositories, streams, and pipeline connectors can carry profile results through the same output contract, but they do not receive live SQL profile plans unless they expose a tabular database engine behind the connector.
+
+## SQL Safety Contract
+
+Generated plans include dialect-appropriate safety controls. SQL Server plans include:
 
 - `SET LOCK_TIMEOUT <ms>`
 - `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED`
@@ -39,7 +54,7 @@ Generated SQL Server plans include:
 - full-scan blocking unless explicitly allowed
 - max table, max column, max estimated-row guardrails
 
-These choices reduce blocking risk but do not make a live query mathematically impossible to affect a server. Production connectors should still use read-only credentials, a reporting replica when available, query governor/resource governor settings, and scheduled off-peak windows for larger profiles.
+PostgreSQL, Snowflake, BigQuery, Databricks, and Redshift use the equivalent safe aggregate pattern for their engines where portable syntax exists. These choices reduce blocking risk but do not make a live query mathematically impossible to affect a server. Production connectors should still use read-only credentials, a reporting replica when available, query governor/resource governor settings, warehouse/job timeout settings, and scheduled off-peak windows for larger profiles.
 
 ## Output Contract
 
@@ -88,4 +103,3 @@ Metric Intelligence now includes a Profile Execution panel. It can:
 - show safety status and no-raw-values status
 - preview generated SQL
 - show a Confluence summary preview
-

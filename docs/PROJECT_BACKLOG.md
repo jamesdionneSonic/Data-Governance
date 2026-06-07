@@ -1531,7 +1531,7 @@ This capability turns column metadata, column lineage, transformation evidence, 
 - No raw metric values are stored or exposed.
 - Added connector-agnostic profiling execution framework in `src/services/profilingExecutionService.js`.
 - Added `/api/v1/profiling/contract`, `/plan`, `/run`, `/execute-plan`, `/apply`, and `/confluence-summary`.
-- SQL Server plans generate aggregate-only read queries with lock timeout, read-uncommitted isolation, sampling/full-scan guardrails, and sensitive-column suppression.
+- SQL Server, PostgreSQL, Snowflake, BigQuery, Databricks/Spark SQL, and Redshift plans generate aggregate-only read queries with dialect-specific timeout/sampling/full-scan guardrails and sensitive-column suppression.
 - Metric Intelligence now includes a Profile Execution panel for planning, simulated runs, SQL preview, and Confluence-safe summary preview.
 - Full scheduled profiling, live source executors, and SQL-backed profile history remain rollout work.
 

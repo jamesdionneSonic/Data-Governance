@@ -48,6 +48,10 @@ describe('Profiling API', () => {
     expect(res.body.contract.supported_execution_modes).toEqual(
       expect.arrayContaining(['dry_run', 'simulate', 'live'])
     );
+    expect(res.body.contract.supported_dialects).toEqual(
+      expect.arrayContaining(['sql_server', 'postgresql', 'snowflake', 'bigquery', 'databricks', 'redshift'])
+    );
+    expect(res.body.contract.connector_dialects.aws_redshift).toBe('redshift');
   });
 
   test('plans safe profiling SQL from catalog objects', async () => {

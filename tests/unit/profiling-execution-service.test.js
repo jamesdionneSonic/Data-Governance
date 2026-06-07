@@ -55,6 +55,41 @@ describe('profiling execution service', () => {
     expect(plan.skipped[0].reason).toContain('Full-scan profiling is blocked');
   });
 
+  test.each([
+    ['postgresql', '"dbo"."Invoice"', 'SET lock_timeout = 5000;', 'TABLESAMPLE SYSTEM (2)'],
+    ['snowflake', '"finance"."dbo"."Invoice"', 'STATEMENT_TIMEOUT_IN_SECONDS', 'SAMPLE (2)'],
+    ['bigquery', '`finance.dbo.Invoice`', 'APPROX_COUNT_DISTINCT', 'TABLESAMPLE SYSTEM (2 PERCENT)'],
+    ['databricks', '`finance`.`dbo`.`Invoice`', 'approx_count_distinct', 'TABLESAMPLE (2 PERCENT)'],
+    ['redshift', '"dbo"."Invoice"', 'SET statement_timeout TO 30000;', 'APPROXIMATE COUNT(DISTINCT'],
+  ])('builds aggregate profile SQL for %s', (dialect, objectSql, expectedSafety, expectedSql) => {
+    const plan = buildProfilingPlan({
+      assets: [invoiceAsset],
+      dialect,
+      profile_mode: 'sample',
+      execution_mode: 'dry_run',
+      sample_percent: 2,
+    });
+
+    expect(plan.status).toBe('ready');
+    expect(plan.safety.dialect).toBe(dialect);
+    expect(plan.actions[0].query.dialect).toBe(dialect);
+    expect(plan.actions[0].query.sql).toContain(objectSql);
+    expect(plan.actions[0].query.sql).toContain(expectedSafety);
+    expect(plan.actions[0].query.sql).toContain(expectedSql);
+    expect(plan.actions[0].query.read_only).toBe(true);
+  });
+
+  test('maps connector types to database dialects', () => {
+    const plan = buildProfilingPlan({
+      assets: [invoiceAsset],
+      connector_type: 'aws_redshift',
+      profile_mode: 'metadata_only',
+    });
+
+    expect(plan.safety.dialect).toBe('redshift');
+    expect(plan.actions[0].query.dialect).toBe('redshift');
+  });
+
   test('dry run plans but does not execute profiles', async () => {
     const plan = buildProfilingPlan({ assets: [invoiceAsset], execution_mode: 'dry_run' });
     const run = await executeProfilingPlan(plan);
