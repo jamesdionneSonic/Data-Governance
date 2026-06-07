@@ -1469,7 +1469,7 @@ This capability turns column metadata, column lineage, transformation evidence, 
 **Story**: Explain what logic creates a metric column by tracing upstream column lineage, transformation expressions, stored procedure logic, SSIS mappings, BI semantic model measures, and source evidence.  
 **Points**: 8  
 **Priority**: CRITICAL  
-**Status**: Second Pass In Progress (2026-06-06)
+**Status**: Framework Complete / Live Rollout Pending (2026-06-06)
 
 **Acceptance Criteria**:
 
@@ -1515,12 +1515,12 @@ This capability turns column metadata, column lineage, transformation evidence, 
 
 **Acceptance Criteria**:
 
-- [ ] Profiling supports row count, null %, distinct count, min/max, mean, median, standard deviation, percentiles, freshness, value length, pattern distribution, and top-value summaries where safe
+- [x] Profiling supports metadata-safe row count, null %, distinct count, min/max, mean, freshness, and limitations; median/stddev/percentiles/value-length/pattern distributions remain connector-run extensions
 - [x] Metric-column profiles include metadata-safe row count, null %, distinct count, range, mean/median/stddev placeholders, profile timestamp, and freshness caveats when available
-- [ ] Profiling jobs can run on demand and on schedule through approved connectors
-- [ ] Raw values are not persisted in chatbot-visible payloads; sensitive values are masked, bucketed, or omitted
-- [ ] Profile results include run timestamp, source connector, sample/window definition, row count scanned, confidence, and limitations
-- [ ] Profile storage separates definitions/configuration from operational run results and is ready for SQL-backed history when available
+- [x] Profiling jobs can be planned and run on demand in dry-run/simulate framework modes; live connector execution is gated behind approved read-only connector executors
+- [x] Raw values are not persisted in chatbot-visible payloads; sensitive columns omit range/cardinality style statistics unless explicitly safe
+- [x] Profile results include run timestamp, source connector/asset context, sample/window definition, row count scanned or estimated, safety settings, confidence/limitations, warnings, and errors
+- [x] Profile storage contract separates definitions/configuration from operational run results and is ready for SQL-backed history when available
 - [x] Profile summaries are added to the Metric Intelligence detail view and API
 
 **Implementation Notes (2026-06-06)**:
@@ -1529,7 +1529,11 @@ This capability turns column metadata, column lineage, transformation evidence, 
 - Added `/api/v1/metrics/profile` to answer "what does the data profile say about this metric?" without raw values.
 - Runtime cards now include profile freshness caveats and formula-impact hints.
 - No raw metric values are stored or exposed.
-- Full scheduled profiling and SQL-backed profile history remain open.
+- Added connector-agnostic profiling execution framework in `src/services/profilingExecutionService.js`.
+- Added `/api/v1/profiling/contract`, `/plan`, `/run`, `/execute-plan`, `/apply`, and `/confluence-summary`.
+- SQL Server plans generate aggregate-only read queries with lock timeout, read-uncommitted isolation, sampling/full-scan guardrails, and sensitive-column suppression.
+- Metric Intelligence now includes a Profile Execution panel for planning, simulated runs, SQL preview, and Confluence-safe summary preview.
+- Full scheduled profiling, live source executors, and SQL-backed profile history remain rollout work.
 
 **Dependencies**: PHASE7C-001, PHASE7D-001, PHASE7F-002
 
@@ -1793,6 +1797,9 @@ This capability turns column metadata, column lineage, transformation evidence, 
 **Tasks**:
 
 - [x] Build profiling computation engine
+- [x] Build aggregate-safe profiling execution framework with dry-run, simulate, and live-executor contract
+- [x] Add profile plan/run/apply/confluence-summary API endpoints
+- [x] Add Profile Execution UI panel and SQL preview
 - [x] Implement statistical anomaly detection
 - [x] Create profiling scheduler
 - [x] Build quality dashboard UI
@@ -1800,6 +1807,12 @@ This capability turns column metadata, column lineage, transformation evidence, 
 - [x] Add tests
 
 **Dependencies**: PHASE7C-001
+
+**Rollout Notes (2026-06-06)**:
+
+- Framework-level profiling is complete and test-covered.
+- Live connector execution still requires source-approved read-only credentials plus a connector executor that runs aggregate queries and returns no raw values.
+- Historical trend storage remains ready for SQL operational storage when that layer is authorized.
 
 ---
 

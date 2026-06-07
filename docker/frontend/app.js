@@ -346,6 +346,20 @@ const appConfig = {
         impactAnswer: null,
         profileAnswer: null,
         runtimePack: null,
+        profiling: {
+          loading: false,
+          mode: 'metadata_only',
+          executionMode: 'dry_run',
+          maxTables: 1,
+          maxColumns: 40,
+          samplePercent: 1,
+          lockTimeoutMs: 5000,
+          queryTimeoutMs: 30000,
+          plan: null,
+          run: null,
+          answer: null,
+          confluence: null,
+        },
       },
       productsCatalog: {
         products: [],
@@ -2004,6 +2018,62 @@ const appConfig = {
         this.metrics.profileAnswer = payload.data || null;
       } catch (err) {
         this.showToast(`Metric profile failed: ${err.message}`);
+      }
+    },
+    profilingRequestPayload(overrides = {}) {
+      return {
+        asset_id: this.metrics.objectId,
+        profile_mode: this.metrics.profiling.mode,
+        execution_mode: this.metrics.profiling.executionMode,
+        max_tables: Number(this.metrics.profiling.maxTables) || 1,
+        max_columns_per_table: Number(this.metrics.profiling.maxColumns) || 40,
+        sample_percent: Number(this.metrics.profiling.samplePercent) || 1,
+        lock_timeout_ms: Number(this.metrics.profiling.lockTimeoutMs) || 5000,
+        query_timeout_ms: Number(this.metrics.profiling.queryTimeoutMs) || 30000,
+        ...overrides,
+      };
+    },
+    async planMetricTableProfile() {
+      if (!this.metrics.objectId) {
+        this.showToast('Choose a table object first.');
+        return;
+      }
+      try {
+        this.metrics.profiling.loading = true;
+        const payload = await this.api('/api/v1/profiling/plan', {
+          method: 'POST',
+          body: JSON.stringify(this.profilingRequestPayload()),
+        });
+        this.metrics.profiling.plan = payload.plan || null;
+        this.metrics.profiling.answer = null;
+        this.metrics.profiling.run = null;
+        this.showToast('Profiling plan generated.');
+      } catch (err) {
+        this.showToast(`Profiling plan failed: ${err.message}`);
+      } finally {
+        this.metrics.profiling.loading = false;
+      }
+    },
+    async runMetricTableProfile() {
+      if (!this.metrics.objectId) {
+        this.showToast('Choose a table object first.');
+        return;
+      }
+      try {
+        this.metrics.profiling.loading = true;
+        const payload = await this.api('/api/v1/profiling/run', {
+          method: 'POST',
+          body: JSON.stringify(this.profilingRequestPayload()),
+        });
+        this.metrics.profiling.plan = payload.data?.plan || null;
+        this.metrics.profiling.run = payload.data?.run || null;
+        this.metrics.profiling.answer = payload.data?.answer || null;
+        this.metrics.profiling.confluence = payload.data?.confluence || null;
+        this.showToast('Profiling framework run completed.');
+      } catch (err) {
+        this.showToast(`Profiling run failed: ${err.message}`);
+      } finally {
+        this.metrics.profiling.loading = false;
       }
     },
     async loadMetricRuntimePack() {
@@ -7983,6 +8053,46 @@ const appConfig = {
                       <div class="lineage-help-title">Runtime Pack</div>
                       <div class="lineage-help-copy">{{ metrics.runtimePack.summary?.total_metrics || 0 }} compact metric answer cards are available for chat/runtime use.</div>
                     </div>
+                  </v-card>
+
+                  <v-card class="card" variant="outlined" style="padding:12px; margin-top:12px;">
+                    <div class="section-header" style="margin-bottom:8px;">
+                      <span class="section-title">Profile Execution</span>
+                      <div class="btn-row">
+                        <v-btn size="small" variant="outlined" :loading="metrics.profiling.loading" @click="planMetricTableProfile">Plan</v-btn>
+                        <v-btn size="small" color="primary" :loading="metrics.profiling.loading" @click="runMetricTableProfile">Run</v-btn>
+                      </div>
+                    </div>
+                    <div class="form-row" style="grid-template-columns:1fr 1fr; margin-bottom:10px;">
+                      <v-select v-model="metrics.profiling.mode" density="compact" variant="outlined" label="Profile mode" :items="['metadata_only','sample','full_scan']" hide-details></v-select>
+                      <v-select v-model="metrics.profiling.executionMode" density="compact" variant="outlined" label="Execution" :items="['dry_run','simulate','live']" hide-details></v-select>
+                    </div>
+                    <div class="form-row" style="grid-template-columns:repeat(4, 1fr); margin-bottom:10px;">
+                      <v-text-field v-model="metrics.profiling.maxColumns" density="compact" variant="outlined" label="Columns" type="number" hide-details></v-text-field>
+                      <v-text-field v-model="metrics.profiling.samplePercent" density="compact" variant="outlined" label="Sample %" type="number" hide-details></v-text-field>
+                      <v-text-field v-model="metrics.profiling.lockTimeoutMs" density="compact" variant="outlined" label="Lock ms" type="number" hide-details></v-text-field>
+                      <v-text-field v-model="metrics.profiling.queryTimeoutMs" density="compact" variant="outlined" label="Query ms" type="number" hide-details></v-text-field>
+                    </div>
+                    <div class="lineage-caveat-item" style="margin-bottom:10px;">
+                      Aggregate profile runs retain no raw values. Live runs require approved read-only connector credentials; dry runs only generate the plan.
+                    </div>
+                    <p v-if="metrics.profiling.answer" class="lineage-answer-text">{{ metrics.profiling.answer.answer }}</p>
+                    <div v-if="metrics.profiling.plan || metrics.profiling.run" class="mini-stack" style="margin-top:10px;">
+                      <div class="mini-metric"><span>Plan Status</span><strong>{{ metrics.profiling.plan?.status || '-' }}</strong></div>
+                      <div class="mini-metric"><span>Planned Assets</span><strong>{{ metrics.profiling.plan?.summary?.planned_assets || 0 }}</strong></div>
+                      <div class="mini-metric"><span>Profiled Assets</span><strong>{{ metrics.profiling.run?.summary?.assets_profiled || 0 }}</strong></div>
+                      <div class="mini-metric"><span>Raw Values</span><strong>{{ metrics.profiling.run?.summary?.raw_values_retained ? 'retained' : 'not retained' }}</strong></div>
+                    </div>
+                    <div v-if="metrics.profiling.run?.errors?.length" class="lineage-caveat-list" style="margin-top:10px;">
+                      <div v-for="error in metrics.profiling.run.errors" :key="'profile-error-' + error.asset_id + error.message" class="lineage-caveat-item">
+                        {{ error.asset_id }}: {{ error.message }}
+                      </div>
+                    </div>
+                    <div v-if="metrics.profiling.confluence" class="lineage-help-panel" style="margin-top:10px;">
+                      <div class="lineage-help-title">Confluence Summary</div>
+                      <div class="lineage-help-copy">{{ metrics.profiling.confluence.content?.split('\n').slice(0, 8).join(' ') }}</div>
+                    </div>
+                    <pre v-if="metrics.profiling.plan?.actions?.[0]?.query?.sql" class="profile-sql-preview">{{ metrics.profiling.plan.actions[0].query.sql }}</pre>
                   </v-card>
                 </v-col>
               </v-row>

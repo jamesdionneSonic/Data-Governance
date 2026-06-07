@@ -12,6 +12,7 @@ import { setGovernanceOpsCache } from '../api/governanceOps.js';
 import { setGlossaryCache } from '../api/glossary.js';
 import { setQualityCache } from '../api/quality.js';
 import { setMetricCache } from '../api/metrics.js';
+import { setProfilingCache } from '../api/profiling.js';
 import { setCatalogRuntime, setRuntimeLineageGraph } from '../services/catalogRuntimeStore.js';
 
 function normalizeObjects(input) {
@@ -85,6 +86,7 @@ export function initializeCache(...args) {
   setGlossaryCache(objects);
   setQualityCache(objects);
   setMetricCache(objects, lineageGraph);
+  setProfilingCache(objects);
 }
 
 export default initializeCache;

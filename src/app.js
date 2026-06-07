@@ -35,6 +35,7 @@ import connectorsRoutes from './api/connectors.js';
 import dictionaryRoutes from './api/dictionary.js';
 import governanceOpsRoutes from './api/governanceOps.js';
 import metricsRoutes from './api/metrics.js';
+import profilingRoutes from './api/profiling.js';
 
 // Import utilities and config
 import { validateEntraConfig } from './utils/entraConfig.js';
@@ -127,6 +128,7 @@ export default function createApp() {
   apiRouter.use('/dictionary', dictionaryRoutes);
   apiRouter.use('/governance-ops', governanceOpsRoutes);
   apiRouter.use('/metrics', metricsRoutes);
+  apiRouter.use('/profiling', profilingRoutes);
   apiRouter.use('/discovery', discoveryRoutes);
   apiRouter.use('/lineage', discoveryRoutes);
 
@@ -165,6 +167,8 @@ export default function createApp() {
         governance: 'GET /governance/* – governance context and health summaries (requires auth)',
         products:
           'GET|POST|PUT /products* – markdown-backed data products marketplace (requires auth)',
+        profiling:
+          'GET|POST /profiling/* – metadata-safe aggregate profiling plans and execution results (requires auth)',
       },
     });
   });
