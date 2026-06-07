@@ -432,6 +432,24 @@ const appConfig = {
         connectorRuns: [],
         connectorSnapshot: null,
         connectorLoading: false,
+        profileSchedules: [],
+        profileScheduleLoading: false,
+        profileScheduleResult: null,
+        profileScheduleEditor: {
+          id: '',
+          connectorId: '',
+          name: '',
+          profileType: 'auto',
+          status: 'ACTIVE',
+          cadence: 'daily',
+          date: '',
+          time: '',
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
+          intervalMinutes: 1440,
+          maxFailures: 3,
+          streams: '',
+          dryRun: true,
+        },
         connectorEditor: {
           id: 'sonic-managed-connector',
           type: 'sql_server',
@@ -675,6 +693,37 @@ const appConfig = {
             ? this.currentUser.databases.join(', ')
             : 'All / Not Scoped',
         },
+      ];
+    },
+    profileScheduleStats() {
+      const schedules = this.integrations.profileSchedules || [];
+      return {
+        total: schedules.length,
+        active: schedules.filter((item) => item.status === 'ACTIVE').length,
+        paused: schedules.filter((item) => item.status === 'PAUSED').length,
+        dueSoon: schedules.filter((item) => this.isScheduleDueSoon(item)).length,
+      };
+    },
+    profileScheduleConnectorOptions() {
+      return (this.integrations.managedConnectors || []).map((connector) => ({
+        title: `${connector.label || connector.id} (${connector.type})`,
+        value: connector.id,
+      }));
+    },
+    profileScheduleTypeOptions() {
+      return [
+        { title: 'Auto route', value: 'auto' },
+        { title: 'Aggregate database profile', value: 'aggregate' },
+        { title: 'BI report profile', value: 'bi' },
+        { title: 'Metadata profile', value: 'metadata' },
+      ];
+    },
+    profileScheduleCadenceOptions() {
+      return [
+        { title: 'Every hour', value: 'hourly' },
+        { title: 'Daily', value: 'daily' },
+        { title: 'Weekly', value: 'weekly' },
+        { title: 'Custom minutes', value: 'custom' },
       ];
     },
     accessTokenPreview() {
@@ -4858,11 +4907,226 @@ const appConfig = {
         if (!this.integrations.connectorGrant.connectorId && this.integrations.managedConnectors.length) {
           this.integrations.connectorGrant.connectorId = this.integrations.managedConnectors[0].id;
         }
+        if (!this.integrations.profileScheduleEditor.connectorId && this.integrations.managedConnectors.length) {
+          this.integrations.profileScheduleEditor.connectorId = this.integrations.managedConnectors[0].id;
+        }
+        this.initializeProfileScheduleEditor();
+        await this.loadProfileSchedules();
       } catch (err) {
         this.showToast(`Managed connector load failed: ${err.message}`);
       } finally {
         this.integrations.connectorLoading = false;
       }
+    },
+    initializeProfileScheduleEditor(force = false) {
+      const editor = this.integrations.profileScheduleEditor;
+      if (!force && editor.date && editor.time) return;
+      const nextRun = new Date(Date.now() + 60 * 60 * 1000);
+      nextRun.setMinutes(0, 0, 0);
+      editor.date = this.formatDateInput(nextRun);
+      editor.time = this.formatTimeInput(nextRun);
+      if (!editor.connectorId && this.integrations.managedConnectors.length) {
+        editor.connectorId = this.integrations.managedConnectors[0].id;
+      }
+    },
+    formatDateInput(value) {
+      const date = value instanceof Date ? value : new Date(value);
+      if (Number.isNaN(date.getTime())) return '';
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    },
+    formatTimeInput(value) {
+      const date = value instanceof Date ? value : new Date(value);
+      if (Number.isNaN(date.getTime())) return '';
+      return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+    },
+    profileScheduleStartIso() {
+      const editor = this.integrations.profileScheduleEditor;
+      if (!editor.date || !editor.time) return null;
+      const date = new Date(`${editor.date}T${editor.time}:00`);
+      if (Number.isNaN(date.getTime())) return null;
+      return date.toISOString();
+    },
+    syncProfileScheduleInterval() {
+      const editor = this.integrations.profileScheduleEditor;
+      if (editor.cadence === 'hourly') editor.intervalMinutes = 60;
+      if (editor.cadence === 'daily') editor.intervalMinutes = 1440;
+      if (editor.cadence === 'weekly') editor.intervalMinutes = 10080;
+    },
+    profileScheduleOptionsPayload() {
+      const editor = this.integrations.profileScheduleEditor;
+      return {
+        dry_run: editor.dryRun !== false,
+        fail_fast: false,
+        streams: String(editor.streams || '')
+          .split(',')
+          .map((value) => value.trim())
+          .filter(Boolean),
+      };
+    },
+    async loadProfileSchedules() {
+      try {
+        this.integrations.profileScheduleLoading = true;
+        const payload = await this.api('/api/v1/connectors/profile-schedules');
+        this.integrations.profileSchedules = payload.schedules || [];
+      } catch (err) {
+        this.showToast(`Profile schedule load failed: ${err.message}`);
+      } finally {
+        this.integrations.profileScheduleLoading = false;
+      }
+    },
+    async saveProfileSchedule() {
+      const editor = this.integrations.profileScheduleEditor;
+      if (!editor.connectorId) {
+        this.showToast('Choose a connector before saving a schedule.');
+        return;
+      }
+      const startAt = this.profileScheduleStartIso();
+      if (!startAt) {
+        this.showToast('Choose a valid start date and time.');
+        return;
+      }
+      this.syncProfileScheduleInterval();
+      const method = editor.id ? 'PUT' : 'POST';
+      const path = editor.id
+        ? `/api/v1/connectors/profile-schedules/${encodeURIComponent(editor.id)}`
+        : '/api/v1/connectors/profile-schedules';
+      try {
+        this.integrations.profileScheduleLoading = true;
+        const payload = await this.api(path, {
+          method,
+          body: JSON.stringify({
+            connector_id: editor.connectorId,
+            name: editor.name || undefined,
+            profile_type: editor.profileType,
+            status: editor.status,
+            cadence: editor.cadence,
+            interval_minutes: Number(editor.intervalMinutes || 1440),
+            timezone: editor.timezone || 'UTC',
+            start_at: startAt,
+            max_failures: Number(editor.maxFailures || 3),
+            options: this.profileScheduleOptionsPayload(),
+          }),
+        });
+        this.integrations.profileScheduleResult = payload.schedule || null;
+        await this.loadProfileSchedules();
+        this.showToast(editor.id ? 'Profile schedule updated.' : 'Profile schedule created.');
+      } catch (err) {
+        this.showToast(`Profile schedule save failed: ${err.message}`);
+      } finally {
+        this.integrations.profileScheduleLoading = false;
+      }
+    },
+    editProfileSchedule(schedule) {
+      const editor = this.integrations.profileScheduleEditor;
+      const start = new Date(schedule.start_at || schedule.next_run_at || Date.now());
+      editor.id = schedule.id;
+      editor.connectorId = schedule.connector_id;
+      editor.name = schedule.name || '';
+      editor.profileType = schedule.profile_type || 'auto';
+      editor.status = schedule.status || 'ACTIVE';
+      editor.cadence = schedule.cadence || 'daily';
+      editor.date = this.formatDateInput(start);
+      editor.time = this.formatTimeInput(start);
+      editor.timezone = schedule.timezone || editor.timezone || 'UTC';
+      editor.intervalMinutes = schedule.interval_minutes || 1440;
+      editor.maxFailures = schedule.max_failures || 3;
+      editor.streams = (schedule.options?.streams || []).join(', ');
+      editor.dryRun = schedule.options?.dry_run !== false;
+      this.showToast(`Editing ${schedule.name || schedule.id}.`);
+    },
+    resetProfileScheduleEditor() {
+      const firstConnector = this.integrations.managedConnectors[0]?.id || '';
+      this.integrations.profileScheduleEditor = {
+        id: '',
+        connectorId: firstConnector,
+        name: '',
+        profileType: 'auto',
+        status: 'ACTIVE',
+        cadence: 'daily',
+        date: '',
+        time: '',
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
+        intervalMinutes: 1440,
+        maxFailures: 3,
+        streams: '',
+        dryRun: true,
+      };
+      this.initializeProfileScheduleEditor(true);
+    },
+    async runProfileSchedule(scheduleId) {
+      try {
+        this.integrations.profileScheduleLoading = true;
+        const payload = await this.api(`/api/v1/connectors/profile-schedules/${encodeURIComponent(scheduleId)}/run`, {
+          method: 'POST',
+        });
+        this.integrations.profileScheduleResult = payload.result || null;
+        await this.loadProfileSchedules();
+        this.showToast(`Schedule run ${payload.result?.run?.status || 'completed'}.`);
+      } catch (err) {
+        this.showToast(`Profile schedule run failed: ${err.message}`);
+      } finally {
+        this.integrations.profileScheduleLoading = false;
+      }
+    },
+    async tickProfileSchedules() {
+      try {
+        this.integrations.profileScheduleLoading = true;
+        const payload = await this.api('/api/v1/connectors/profile-schedules/tick', {
+          method: 'POST',
+          body: JSON.stringify({ limit: 25 }),
+        });
+        this.integrations.profileScheduleResult = payload.result || null;
+        await this.loadProfileSchedules();
+        this.showToast(`Scheduler tick processed ${payload.result?.due_count || 0} due schedule(s).`);
+      } catch (err) {
+        this.showToast(`Scheduler tick failed: ${err.message}`);
+      } finally {
+        this.integrations.profileScheduleLoading = false;
+      }
+    },
+    async updateProfileScheduleStatus(schedule, status) {
+      try {
+        this.integrations.profileScheduleLoading = true;
+        await this.api(`/api/v1/connectors/profile-schedules/${encodeURIComponent(schedule.id)}`, {
+          method: 'PUT',
+          body: JSON.stringify({ status }),
+        });
+        await this.loadProfileSchedules();
+        this.showToast(`Schedule ${status === 'ACTIVE' ? 'activated' : 'paused'}.`);
+      } catch (err) {
+        this.showToast(`Schedule status update failed: ${err.message}`);
+      } finally {
+        this.integrations.profileScheduleLoading = false;
+      }
+    },
+    async deleteProfileSchedule(scheduleId) {
+      try {
+        this.integrations.profileScheduleLoading = true;
+        await this.api(`/api/v1/connectors/profile-schedules/${encodeURIComponent(scheduleId)}`, {
+          method: 'DELETE',
+        });
+        if (this.integrations.profileScheduleEditor.id === scheduleId) this.resetProfileScheduleEditor();
+        await this.loadProfileSchedules();
+        this.showToast('Profile schedule deleted.');
+      } catch (err) {
+        this.showToast(`Schedule delete failed: ${err.message}`);
+      } finally {
+        this.integrations.profileScheduleLoading = false;
+      }
+    },
+    isScheduleDueSoon(schedule) {
+      const next = new Date(schedule.next_run_at || 0);
+      if (Number.isNaN(next.getTime())) return false;
+      const now = Date.now();
+      return schedule.status === 'ACTIVE' && next.getTime() <= now + 24 * 60 * 60 * 1000;
+    },
+    scheduleStatusColor(status) {
+      if (status === 'ACTIVE') return 'success';
+      if (status === 'PAUSED') return 'warning';
+      return 'secondary';
     },
     connectorDefinitionLabel(type) {
       const definition = this.integrations.connectorDefinitions.find((item) => item.type === type);
@@ -8913,6 +9177,122 @@ const appConfig = {
                         </tr>
                       </tbody>
                     </v-table>
+                  </div>
+                </div>
+              </v-card>
+
+              <v-card class="card span-12 profile-scheduler-card" variant="outlined">
+                <div class="section-header">
+                  <span class="section-title">Profile Scheduler</span>
+                  <div class="btn-row">
+                    <v-btn size="small" variant="outlined" :loading="integrations.profileScheduleLoading" @click="loadProfileSchedules">Refresh</v-btn>
+                    <v-btn size="small" variant="outlined" :loading="integrations.profileScheduleLoading" @click="tickProfileSchedules">Run Due</v-btn>
+                    <v-btn size="small" color="primary" :loading="integrations.profileScheduleLoading" @click="saveProfileSchedule">
+                      {{ integrations.profileScheduleEditor.id ? 'Update Schedule' : 'Create Schedule' }}
+                    </v-btn>
+                  </div>
+                </div>
+                <p class="card-help">Automate aggregate, BI report, and metadata profiles from approved managed connectors. Schedules use stored connector credentials and keep raw payloads out of saved options.</p>
+
+                <div class="profile-scheduler-stats">
+                  <div class="scheduler-stat"><span>Total</span><strong>{{ profileScheduleStats.total }}</strong></div>
+                  <div class="scheduler-stat"><span>Active</span><strong>{{ profileScheduleStats.active }}</strong></div>
+                  <div class="scheduler-stat"><span>Paused</span><strong>{{ profileScheduleStats.paused }}</strong></div>
+                  <div class="scheduler-stat"><span>Due in 24h</span><strong>{{ profileScheduleStats.dueSoon }}</strong></div>
+                </div>
+
+                <div class="profile-scheduler-layout">
+                  <div class="managed-connector-panel scheduler-editor-panel">
+                    <div class="panel-kicker">{{ integrations.profileScheduleEditor.id ? 'Edit Schedule' : 'New Schedule' }}</div>
+                    <div class="form-row">
+                      <div class="col-4"><v-label>Connector</v-label><v-select v-model="integrations.profileScheduleEditor.connectorId" density="compact" variant="outlined" hide-details :items="profileScheduleConnectorOptions"></v-select></div>
+                      <div class="col-4"><v-label>Name</v-label><v-text-field v-model="integrations.profileScheduleEditor.name" density="compact" variant="outlined" hide-details placeholder="Nightly metadata profile"></v-text-field></div>
+                      <div class="col-2"><v-label>Profile</v-label><v-select v-model="integrations.profileScheduleEditor.profileType" density="compact" variant="outlined" hide-details :items="profileScheduleTypeOptions"></v-select></div>
+                      <div class="col-2"><v-label>Status</v-label><v-select v-model="integrations.profileScheduleEditor.status" density="compact" variant="outlined" hide-details :items="['ACTIVE','PAUSED']"></v-select></div>
+                    </div>
+                    <div class="profile-date-time-grid mt-8">
+                      <div>
+                        <v-label>Start Date</v-label>
+                        <v-text-field v-model="integrations.profileScheduleEditor.date" type="date" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-calendar"></v-text-field>
+                      </div>
+                      <div>
+                        <v-label>Start Time</v-label>
+                        <v-text-field v-model="integrations.profileScheduleEditor.time" type="time" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-clock-outline"></v-text-field>
+                      </div>
+                      <div>
+                        <v-label>Cadence</v-label>
+                        <v-select v-model="integrations.profileScheduleEditor.cadence" density="compact" variant="outlined" hide-details :items="profileScheduleCadenceOptions" @update:model-value="syncProfileScheduleInterval"></v-select>
+                      </div>
+                      <div>
+                        <v-label>Minutes</v-label>
+                        <v-text-field v-model.number="integrations.profileScheduleEditor.intervalMinutes" type="number" min="5" density="compact" variant="outlined" hide-details :disabled="integrations.profileScheduleEditor.cadence !== 'custom'"></v-text-field>
+                      </div>
+                    </div>
+                    <div class="form-row mt-8">
+                      <div class="col-4"><v-label>Timezone Label</v-label><v-text-field v-model="integrations.profileScheduleEditor.timezone" density="compact" variant="outlined" hide-details></v-text-field></div>
+                      <div class="col-2"><v-label>Max Failures</v-label><v-text-field v-model.number="integrations.profileScheduleEditor.maxFailures" type="number" min="1" density="compact" variant="outlined" hide-details></v-text-field></div>
+                      <div class="col-4"><v-label>Streams</v-label><v-text-field v-model="integrations.profileScheduleEditor.streams" density="compact" variant="outlined" hide-details placeholder="reports, dashboards, lineage"></v-text-field></div>
+                      <div class="col-2 scheduler-switch-cell">
+                        <v-switch v-model="integrations.profileScheduleEditor.dryRun" color="primary" density="compact" hide-details label="Dry run"></v-switch>
+                      </div>
+                    </div>
+                    <div class="scheduler-guardrail mt-8">
+                      <v-icon size="small">mdi-shield-lock-outline</v-icon>
+                      <span>Saved schedules strip inline metadata payloads, mocks, tokens, secrets, and credential references before persistence.</span>
+                    </div>
+                    <div class="btn-row mt-8">
+                      <v-btn color="primary" :loading="integrations.profileScheduleLoading" @click="saveProfileSchedule">{{ integrations.profileScheduleEditor.id ? 'Update Schedule' : 'Create Schedule' }}</v-btn>
+                      <v-btn variant="tonal" @click="resetProfileScheduleEditor">Clear</v-btn>
+                    </div>
+                  </div>
+
+                  <div class="managed-connector-panel scheduler-list-panel">
+                    <div class="panel-kicker">Created Schedules</div>
+                    <div class="profile-schedule-list">
+                      <div v-for="schedule in integrations.profileSchedules" :key="'profile-schedule-' + schedule.id" class="profile-schedule-row">
+                        <div class="profile-schedule-main">
+                          <div class="profile-schedule-title">
+                            <strong>{{ schedule.name }}</strong>
+                            <v-chip size="x-small" variant="tonal" :color="scheduleStatusColor(schedule.status)">{{ schedule.status }}</v-chip>
+                            <v-chip size="x-small" variant="tonal">{{ schedule.profile_type }}</v-chip>
+                          </div>
+                          <div class="profile-schedule-meta">
+                            <span>{{ schedule.connector_id }}</span>
+                            <span>{{ schedule.cadence }} / {{ schedule.interval_minutes }} min</span>
+                            <span>next {{ formatTimestamp(schedule.next_run_at) }}</span>
+                          </div>
+                          <div class="profile-schedule-health">
+                            <span>Runs {{ schedule.run_count || 0 }}</span>
+                            <span>Failures {{ schedule.failure_count || 0 }}/{{ schedule.max_failures || 3 }}</span>
+                            <span>Last {{ schedule.last_status || 'never' }}</span>
+                          </div>
+                        </div>
+                        <div class="profile-schedule-actions">
+                          <v-btn size="small" variant="outlined" @click="editProfileSchedule(schedule)">Edit</v-btn>
+                          <v-btn size="small" color="primary" variant="tonal" :disabled="schedule.status !== 'ACTIVE'" @click="runProfileSchedule(schedule.id)">Run</v-btn>
+                          <v-btn v-if="schedule.status === 'ACTIVE'" size="small" variant="tonal" @click="updateProfileScheduleStatus(schedule, 'PAUSED')">Pause</v-btn>
+                          <v-btn v-else size="small" variant="tonal" @click="updateProfileScheduleStatus(schedule, 'ACTIVE')">Activate</v-btn>
+                          <v-btn size="small" color="error" variant="tonal" @click="deleteProfileSchedule(schedule.id)">Delete</v-btn>
+                        </div>
+                      </div>
+                      <div v-if="!integrations.profileSchedules.length" class="empty-state scheduler-empty">
+                        <div class="empty-state-icon"><v-icon>mdi-calendar-clock</v-icon></div>
+                        <h4>No profile schedules yet</h4>
+                        <p>Create a schedule from an approved connector to automate metadata, BI, or aggregate profile runs.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div v-if="integrations.profileScheduleResult" class="managed-connector-results">
+                  <div class="section-header">
+                    <span class="section-title">Last Scheduler Result</span>
+                  </div>
+                  <div class="mini-stack">
+                    <div class="mini-metric"><span>Status</span><strong>{{ integrations.profileScheduleResult.run?.status || integrations.profileScheduleResult.status || 'saved' }}</strong></div>
+                    <div class="mini-metric"><span>Due Count</span><strong>{{ integrations.profileScheduleResult.due_count ?? '-' }}</strong></div>
+                    <div class="mini-metric"><span>Run Count</span><strong>{{ integrations.profileScheduleResult.schedule?.run_count ?? integrations.profileScheduleResult.run_count ?? '-' }}</strong></div>
+                    <div class="mini-metric"><span>Next Run</span><strong>{{ formatTimestamp(integrations.profileScheduleResult.schedule?.next_run_at || integrations.profileScheduleResult.next_run_at) }}</strong></div>
                   </div>
                 </div>
               </v-card>
