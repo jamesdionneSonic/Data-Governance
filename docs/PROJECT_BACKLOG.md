@@ -1441,18 +1441,26 @@ This capability turns column metadata, column lineage, transformation evidence, 
 **Story**: Build a governed metric-column registry that identifies metric columns, distinguishes inferred metrics from confirmed metrics, and links each metric to business definitions and source evidence.  
 **Points**: 6  
 **Priority**: HIGH  
-**Status**: Planned
+**Status**: First Pass Complete (2026-06-06)
 
 **Acceptance Criteria**:
 
-- [ ] Metric registry records table/object ID, column ID, semantic type, business name, definition, owner/steward, confidence, and evidence source
-- [ ] Metric detection distinguishes confirmed metrics, inferred metrics, measure candidates, identifiers, dimensions, flags, dates, and attributes
-- [ ] Users can see why a column was classified as a metric, including name/type rules or explicit metadata
+- [x] Metric registry records table/object ID, column ID, semantic type, business name, definition, owner/steward, confidence, and evidence source
+- [x] Metric detection distinguishes confirmed metrics, inferred metrics, measure candidates, identifiers, dimensions, flags, dates, and attributes
+- [x] Users can see why a column was classified as a metric, including name/type rules or explicit metadata
 - [ ] Metric registry links metrics to glossary terms, data products, dashboards/reports, and downstream consumers when available
-- [ ] Existing column semantic API is extended so metric answers include confidence, evidence, and caveats
-- [ ] Runtime package includes metric registry shards and lookup indexes by metric name, column ID, table, database, and glossary term
+- [x] Existing column semantic API is extended through `/api/v1/metrics/*` so metric answers include confidence, evidence, and caveats
+- [x] Runtime API includes compact metric answer cards; DevOps shard/export integration remains a follow-up
 
 **Dependencies**: PHASE7B-002, PHASE7D-002, PHASE7S-003
+
+**Implementation Notes (2026-06-06)**:
+
+- Added `metricRegistryService` as the shared metric intelligence engine over markdown/catalog metadata.
+- Added `/api/v1/metrics/registry`, `/tables/:assetId`, `/logic`, `/formula-impact`, `/resolve`, and `/runtime-pack`.
+- Added Metric Intelligence UI page for registry search, per-table metric answers, logic explanation, and impact summary.
+- Added unit/API tests for metric detection, logic evidence, formula impact, and runtime cards.
+- Remaining work: glossary/data-product/dashboard links, persisted metric shards in DevOps/Azure package, and richer connector-provided BI measure definitions.
 
 ---
 
@@ -1461,16 +1469,16 @@ This capability turns column metadata, column lineage, transformation evidence, 
 **Story**: Explain what logic creates a metric column by tracing upstream column lineage, transformation expressions, stored procedure logic, SSIS mappings, BI semantic model measures, and source evidence.  
 **Points**: 8  
 **Priority**: CRITICAL  
-**Status**: Planned
+**Status**: First Pass In Progress (2026-06-06)
 
 **Acceptance Criteria**:
 
-- [ ] Users can ask "what logic creates this metric column?" from chat, API, or asset detail
-- [ ] Answer identifies the metric column, creating process, upstream source columns, transformation type, formula/expression, and evidence snippets
+- [x] Users can ask "what logic creates this metric column?" from API and Metric Intelligence UI
+- [x] Answer identifies the metric column, upstream/downstream column evidence, transformation type, formula/expression when available, and evidence snippets
 - [ ] Supports SQL procedures/views, SSIS data-flow mappings, dbt metrics/models, BI semantic measures, and connector-provided metric definitions when available
-- [ ] Distinguishes explicit formula evidence from inferred metric classification
+- [x] Distinguishes explicit formula evidence from inferred metric classification
 - [ ] Reports unresolved risks such as dynamic SQL, select-star, missing expression text, ambiguous aliases, or unresolved SSIS mappings
-- [ ] Produces a plain-English explanation and a structured answer card for the DevOps/Azure data pack
+- [x] Produces a plain-English explanation and a structured runtime answer card
 - [ ] Golden prompt tests cover known metric columns, inferred metric columns without formula evidence, ambiguous metric names, and unresolved formula paths
 
 **Dependencies**: METRIC-001, PHASE7O-001, PHASE7S-004
@@ -1482,16 +1490,16 @@ This capability turns column metadata, column lineage, transformation evidence, 
 **Story**: Assess what happens if the formula feeding a metric changes, including downstream consumers, semantic risk, profile/quality risk, and governance communication requirements.  
 **Points**: 8  
 **Priority**: CRITICAL  
-**Status**: Planned
+**Status**: First Pass In Progress (2026-06-06)
 
 **Acceptance Criteria**:
 
-- [ ] Users can ask "what happens if we change the formula feeding this metric?"
+- [x] Users can ask "what happens if we change the formula feeding this metric?" through API/UI
 - [ ] Impact answer lists downstream tables, views, procedures, SSIS packages, BI assets, dashboards, data products, and dependent metrics
 - [ ] Impact categories include semantic/reporting risk, data-quality risk, runtime/load failure risk, trust/certification risk, and compliance/policy risk
-- [ ] Answer recommends mitigation: regression tests, profile comparison, stakeholder notification, approval workflow, rollback plan, and post-change monitoring
+- [x] Answer recommends mitigation: regression tests, profile comparison, stakeholder notification, approval workflow, rollback plan, and post-change monitoring
 - [ ] Supports proposed formula-change payloads where users provide old/new formula text or changed source columns
-- [ ] Formula-change impact uses column lineage and metric registry evidence rather than object-name inference alone
+- [x] Formula-change impact uses column lineage and metric registry evidence rather than object-name inference alone
 - [ ] Runtime package includes formula-impact answer cards and compact downstream blast-radius summaries for chat
 
 **Dependencies**: METRIC-002, PHASE7O-002, PHASE7I-003
@@ -1503,7 +1511,7 @@ This capability turns column metadata, column lineage, transformation evidence, 
 **Story**: Build data profiling for tables and metric columns so the platform can describe distributions, nulls, uniqueness, value ranges, freshness, drift, and anomaly signals.  
 **Points**: 10  
 **Priority**: CRITICAL  
-**Status**: Planned
+**Status**: Planned; metadata-only profile hooks added (2026-06-06)
 
 **Acceptance Criteria**:
 
@@ -1515,6 +1523,12 @@ This capability turns column metadata, column lineage, transformation evidence, 
 - [ ] Profile storage separates definitions/configuration from operational run results and is ready for SQL-backed history when available
 - [ ] Profile summaries are added to asset detail, metric detail, and data quality views
 
+**Implementation Notes (2026-06-06)**:
+
+- Metric registry records safe profile placeholders from existing column metadata when present: row count, null count, distinct count, min, and max.
+- No raw metric values are stored or exposed.
+- Full scheduled profiling and SQL-backed profile history remain open.
+
 **Dependencies**: PHASE7C-001, PHASE7D-001, PHASE7F-002
 
 ---
@@ -1524,15 +1538,15 @@ This capability turns column metadata, column lineage, transformation evidence, 
 **Story**: Expose metric logic, formula impact, and data profiling to the chatbot through compact runtime answer cards and safe answer-generation rules.  
 **Points**: 8  
 **Priority**: CRITICAL  
-**Status**: Planned
+**Status**: First Pass In Progress (2026-06-06)
 
 **Acceptance Criteria**:
 
-- [ ] DevOps/Azure data pack includes metric answer cards, metric profile cards, formula-impact cards, profile freshness metadata, and unresolved-risk fields
-- [ ] Chatbot answers combine metric definition, formula evidence, source columns, downstream impact, profile statistics, confidence, and caveats
+- [x] Runtime endpoint includes compact metric answer cards; DevOps/Azure package export remains open
+- [x] Runtime/API answers combine metric definition, formula evidence where available, source/downstream evidence, profile placeholders, confidence, and caveats
 - [ ] Chatbot can answer "what does the data profile say about this metric?" without exposing raw sensitive values
 - [ ] Chatbot surfaces stale profile warnings when the latest profile run is outside the accepted freshness window
-- [ ] Chatbot distinguishes lineage confidence, metric-classification confidence, formula confidence, and profile confidence
+- [x] Runtime/API answers distinguish metric-classification confidence and column-impact evidence confidence where available
 - [ ] Prompt validation suite covers metric logic, formula-change impact, profile summaries, stale profile warnings, missing profile data, and sensitive-value masking
 - [ ] Confluence pages link to metric/profile summaries for humans while directing AI/runtime use to the DevOps/Azure data pack
 

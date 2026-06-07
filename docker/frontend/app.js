@@ -28,6 +28,7 @@ const navSections = [
       { key: 'glossary', label: 'Business Glossary', icon: 'mdi-book-open-variant' },
       { key: 'governance', label: 'Trust & Compliance', icon: 'mdi-shield-check' },
       { key: 'governanceOps', label: 'Governance Ops', icon: 'mdi-clipboard-check' },
+      { key: 'metrics', label: 'Metric Intelligence', icon: 'mdi-function-variant' },
     ],
   },
   {
@@ -333,6 +334,17 @@ const appConfig = {
         taskTitle: 'Review governance metadata',
         incidentAssetId: 'sales.orders',
         incidentTitle: 'Data quality investigation',
+      },
+      metrics: {
+        loading: false,
+        registry: null,
+        query: '',
+        objectId: '',
+        selectedColumn: '',
+        tableAnswer: null,
+        logicAnswer: null,
+        impactAnswer: null,
+        runtimePack: null,
       },
       productsCatalog: {
         products: [],
@@ -1863,6 +1875,10 @@ const appConfig = {
         await this.loadGovernanceOps();
         return;
       }
+      if (view === 'metrics') {
+        await this.loadMetricRegistry();
+        return;
+      }
       if (view === 'discovery') {
         await nextTick();
         this.renderGraph();
@@ -1900,6 +1916,84 @@ const appConfig = {
       }
 
       await this.loadOverview();
+    },
+    async loadMetricRegistry() {
+      try {
+        this.metrics.loading = true;
+        const params = new URLSearchParams();
+        if (this.metrics.query) params.set('q', this.metrics.query);
+        params.set('limit', '100');
+        const payload = await this.api(`/api/v1/metrics/registry?${params.toString()}`);
+        this.metrics.registry = payload.data || null;
+        if (!this.metrics.objectId && this.metrics.registry?.metrics?.length) {
+          this.metrics.objectId = this.metrics.registry.metrics[0].object_id;
+        }
+        await this.loadMetricTableAnswer({ silent: true });
+      } catch (err) {
+        this.showToast(`Metric registry load failed: ${err.message}`);
+      } finally {
+        this.metrics.loading = false;
+      }
+    },
+    async loadMetricTableAnswer({ silent = false } = {}) {
+      if (!this.metrics.objectId) return;
+      try {
+        const payload = await this.api(
+          `/api/v1/metrics/tables/${encodeURIComponent(this.metrics.objectId)}`
+        );
+        this.metrics.tableAnswer = payload.data || null;
+        if (!this.metrics.selectedColumn && this.metrics.tableAnswer?.rows?.length) {
+          this.metrics.selectedColumn = this.metrics.tableAnswer.rows[0].column;
+        }
+      } catch (err) {
+        if (!silent) this.showToast(`Metric table answer failed: ${err.message}`);
+      }
+    },
+    async explainSelectedMetric() {
+      if (!this.metrics.objectId || !this.metrics.selectedColumn) {
+        this.showToast('Choose a table and metric column first.');
+        return;
+      }
+      try {
+        const payload = await this.api('/api/v1/metrics/logic', {
+          method: 'POST',
+          body: JSON.stringify({
+            object_id: this.metrics.objectId,
+            column_name: this.metrics.selectedColumn,
+          }),
+        });
+        this.metrics.logicAnswer = payload.data || null;
+      } catch (err) {
+        this.showToast(`Metric logic failed: ${err.message}`);
+      }
+    },
+    async assessSelectedMetricImpact() {
+      if (!this.metrics.objectId || !this.metrics.selectedColumn) {
+        this.showToast('Choose a table and metric column first.');
+        return;
+      }
+      try {
+        const payload = await this.api('/api/v1/metrics/formula-impact', {
+          method: 'POST',
+          body: JSON.stringify({
+            object_id: this.metrics.objectId,
+            column_name: this.metrics.selectedColumn,
+            change_type: 'change_data_type',
+          }),
+        });
+        this.metrics.impactAnswer = payload.data || null;
+      } catch (err) {
+        this.showToast(`Metric impact failed: ${err.message}`);
+      }
+    },
+    async loadMetricRuntimePack() {
+      try {
+        const payload = await this.api('/api/v1/metrics/runtime-pack?limit=25');
+        this.metrics.runtimePack = payload.data || null;
+        this.showToast('Metric runtime pack loaded.');
+      } catch (err) {
+        this.showToast(`Metric runtime pack failed: ${err.message}`);
+      }
     },
     syncMarketplaceFormWithSelection() {
       const selected = this.selectedObjectDetail || {};
@@ -7720,6 +7814,138 @@ const appConfig = {
                   </aside>
                 </div>
               </div>
+            </div>
+
+            <div v-if="activeView === 'metrics'">
+              <v-row>
+                <v-col cols="12">
+                  <v-card class="card" variant="outlined" style="padding:16px;">
+                    <div class="section-header" style="margin-bottom:12px;">
+                      <span class="section-title">Metric Intelligence</span>
+                      <div class="btn-row">
+                        <v-btn size="small" variant="outlined" @click="loadMetricRuntimePack">Runtime Pack</v-btn>
+                        <v-btn size="small" color="primary" :loading="metrics.loading" @click="loadMetricRegistry">Refresh</v-btn>
+                      </div>
+                    </div>
+                    <div class="form-row" style="grid-template-columns:1fr auto; margin-bottom:12px;">
+                      <v-text-field
+                        v-model="metrics.query"
+                        placeholder="Search metric, table, business name, or definition"
+                        density="compact"
+                        variant="outlined"
+                        hide-details
+                        prepend-inner-icon="mdi-magnify"
+                        @keyup.enter="loadMetricRegistry"
+                      ></v-text-field>
+                      <v-btn variant="outlined" @click="loadMetricRegistry">Search</v-btn>
+                    </div>
+                    <div class="kpi-grid" style="margin-bottom:12px;">
+                      <v-card class="card kpi" variant="outlined"><div class="value">{{ metrics.registry?.summary?.total_metrics || 0 }}</div><div class="label">Metric Columns</div></v-card>
+                      <v-card class="card kpi" variant="outlined"><div class="value">{{ metrics.registry?.summary?.confirmed_metrics || 0 }}</div><div class="label">Confirmed</div></v-card>
+                      <v-card class="card kpi" variant="outlined"><div class="value">{{ metrics.registry?.summary?.metric_candidates || 0 }}</div><div class="label">Candidates</div></v-card>
+                      <v-card class="card kpi" variant="outlined"><div class="value">{{ metrics.registry?.summary?.tables_with_metrics || 0 }}</div><div class="label">Tables With Metrics</div></v-card>
+                    </div>
+                  </v-card>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col cols="12" md="7">
+                  <v-card class="card" variant="outlined" style="padding:12px;">
+                    <div class="section-header" style="margin-bottom:8px;">
+                      <span class="section-title">Registry</span>
+                      <span class="text-small">{{ metrics.registry?.pagination?.total || 0 }} result{{ (metrics.registry?.pagination?.total || 0) === 1 ? '' : 's' }}</span>
+                    </div>
+                    <div class="table-wrap" style="max-height:520px; overflow:auto;">
+                      <v-table density="compact">
+                        <thead>
+                          <tr>
+                            <th>Metric</th>
+                            <th>Table</th>
+                            <th>State</th>
+                            <th>Confidence</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="metric in metrics.registry?.metrics || []"
+                            :key="'metric-registry-' + metric.metric_id"
+                            style="cursor:pointer;"
+                            @click="metrics.objectId = metric.object_id; metrics.selectedColumn = metric.column_name; loadMetricTableAnswer();"
+                          >
+                            <td>
+                              <strong>{{ metric.column_name }}</strong>
+                              <div class="text-small">{{ metric.data_type }} · {{ metric.semantic_type }}</div>
+                            </td>
+                            <td>
+                              <span class="text-mono text-small">{{ metric.object_id }}</span>
+                              <div class="text-small">{{ metric.business_domain || metric.owner || '-' }}</div>
+                            </td>
+                            <td><v-chip size="x-small" variant="flat" :color="metric.metric_state === 'confirmed' ? 'success' : metric.metric_state === 'inferred' ? 'info' : 'warning'">{{ metric.metric_state }}</v-chip></td>
+                            <td>{{ metric.confidence_label }} · {{ metric.confidence }}</td>
+                          </tr>
+                          <tr v-if="!(metrics.registry?.metrics || []).length">
+                            <td colspan="4">No metric columns found for the current search.</td>
+                          </tr>
+                        </tbody>
+                      </v-table>
+                    </div>
+                  </v-card>
+                </v-col>
+
+                <v-col cols="12" md="5">
+                  <v-card class="card" variant="outlined" style="padding:12px; margin-bottom:12px;">
+                    <div class="section-header" style="margin-bottom:8px;">
+                      <span class="section-title">Ask About A Table</span>
+                      <v-btn size="small" variant="outlined" @click="loadMetricTableAnswer">Load</v-btn>
+                    </div>
+                    <div class="form-row" style="grid-template-columns:1fr; margin-bottom:10px;">
+                      <v-text-field v-model="metrics.objectId" placeholder="table object id, e.g. Sonic_DW.dbo.FactSales" density="compact" variant="outlined" hide-details></v-text-field>
+                    </div>
+                    <p class="lineage-answer-text" v-if="metrics.tableAnswer">{{ metrics.tableAnswer.answer }}</p>
+                    <div class="table-wrap" v-if="metrics.tableAnswer?.rows?.length" style="max-height:230px; overflow:auto;">
+                      <v-table density="compact">
+                        <thead><tr><th>Column</th><th>Why</th></tr></thead>
+                        <tbody>
+                          <tr
+                            v-for="row in metrics.tableAnswer.rows"
+                            :key="'metric-table-row-' + row.column"
+                            style="cursor:pointer;"
+                            @click="metrics.selectedColumn = row.column"
+                          >
+                            <td><strong>{{ row.column }}</strong><div class="text-small">{{ row.data_type }} · {{ row.state }}</div></td>
+                            <td class="text-small">{{ row.why || '-' }}</td>
+                          </tr>
+                        </tbody>
+                      </v-table>
+                    </div>
+                  </v-card>
+
+                  <v-card class="card" variant="outlined" style="padding:12px;">
+                    <div class="section-header" style="margin-bottom:8px;">
+                      <span class="section-title">Logic &amp; Impact</span>
+                      <div class="btn-row">
+                        <v-btn size="small" variant="outlined" @click="explainSelectedMetric">Explain Logic</v-btn>
+                        <v-btn size="small" color="primary" @click="assessSelectedMetricImpact">Impact</v-btn>
+                      </div>
+                    </div>
+                    <v-text-field v-model="metrics.selectedColumn" placeholder="Metric column" density="compact" variant="outlined" hide-details style="margin-bottom:10px;"></v-text-field>
+                    <p v-if="metrics.logicAnswer" class="lineage-answer-text">{{ metrics.logicAnswer.answer }}</p>
+                    <div v-if="metrics.logicAnswer?.caveats?.length" class="lineage-caveat-list">
+                      <div v-for="caveat in metrics.logicAnswer.caveats" :key="'metric-caveat-' + caveat" class="lineage-caveat-item">{{ caveat }}</div>
+                    </div>
+                    <div v-if="metrics.impactAnswer" class="mini-stack" style="margin-top:10px;">
+                      <div class="mini-metric"><span>Risk</span><strong>{{ metrics.impactAnswer.risk?.severity }}</strong></div>
+                      <div class="mini-metric"><span>Impacted Evidence</span><strong>{{ metrics.impactAnswer.risk?.impacted_count }}</strong></div>
+                      <div class="mini-metric"><span>Unresolved Risks</span><strong>{{ metrics.impactAnswer.risk?.unresolved_risk_count }}</strong></div>
+                    </div>
+                    <div v-if="metrics.runtimePack" class="lineage-help-panel" style="margin-top:10px;">
+                      <div class="lineage-help-title">Runtime Pack</div>
+                      <div class="lineage-help-copy">{{ metrics.runtimePack.summary?.total_metrics || 0 }} compact metric answer cards are available for chat/runtime use.</div>
+                    </div>
+                  </v-card>
+                </v-col>
+              </v-row>
             </div>
 
             <div v-if="activeView === 'discovery'">
