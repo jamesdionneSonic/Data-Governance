@@ -7,6 +7,10 @@ import {
   executeProfilingPlan,
   runProfiling,
 } from '../../src/services/profilingExecutionService.js';
+import {
+  firstExecutableSqlStatement,
+  redshiftResultRow,
+} from '../../src/services/connectorRuntime/profileExecutors.js';
 
 const invoiceAsset = {
   id: 'finance.dbo.Invoice',
@@ -88,6 +92,35 @@ describe('profiling execution service', () => {
 
     expect(plan.safety.dialect).toBe('redshift');
     expect(plan.actions[0].query.dialect).toBe('redshift');
+  });
+
+  test('maps Redshift Data API JSON result rows to aggregate aliases', () => {
+    const row = redshiftResultRow({
+      ColumnMetadata: [
+        { name: 'row_count' },
+        { name: 'total_amount__null_count' },
+        { name: 'total_amount__distinct_count' },
+        { name: 'total_amount__mean' },
+      ],
+      Records: [
+        [
+          { longValue: 200 },
+          { longValue: 4 },
+          { longValue: 120 },
+          { doubleValue: 25.5 },
+        ],
+      ],
+    });
+
+    expect(row).toEqual({
+      row_count: 200,
+      total_amount__null_count: 4,
+      total_amount__distinct_count: 120,
+      total_amount__mean: 25.5,
+    });
+    expect(firstExecutableSqlStatement('SET statement_timeout TO 30000; SELECT COUNT(*) AS row_count FROM t;')).toBe(
+      'SELECT COUNT(*) AS row_count FROM t'
+    );
   });
 
   test('dry run plans but does not execute profiles', async () => {

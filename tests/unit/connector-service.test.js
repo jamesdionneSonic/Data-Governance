@@ -223,7 +223,7 @@ describe('connectorService', () => {
     }
   });
 
-  test('documented bridge returns actionable live-harvest remediation when native driver dependency is missing', async () => {
+  test('documented bridge returns actionable live-harvest remediation when source connectivity fails', async () => {
     const extraction = await runConnectorExtractionForConfig({
       id: 'postgres-live-missing-driver',
       type: 'postgresql',
@@ -236,12 +236,9 @@ describe('connectorService', () => {
     expect(extraction.errors).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          code: 'CONNECTOR_RUNTIME_ERROR',
-          remediation: expect.stringContaining('npm install pg'),
-          details: expect.objectContaining({
-            required_package: 'pg',
-            required_client_family: 'postgresql-native-driver',
-          }),
+          code: 'ENOTFOUND',
+          message: expect.stringContaining('postgres.example.com'),
+          remediation: expect.stringContaining('Review connector logs'),
         }),
       ])
     );
@@ -322,19 +319,19 @@ describe('connectorService', () => {
     expect(runJson).not.toContain('kv://sql');
   });
 
-  test('connector-backed live profiling requires admin and reports missing native driver remediation', async () => {
+  test('connector-backed live profiling requires admin and reports Redshift Data API configuration remediation', async () => {
     upsertConnector(
       {
-        id: 'profile-postgres',
-        type: 'postgresql',
-        label: 'Profile Postgres',
-        config: { host: 'postgres.example.com', database: 'finance' },
-        credential: { mode: 'service_account', secret_ref: 'kv://postgres' },
+        id: 'profile-redshift',
+        type: 'aws_redshift',
+        label: 'Profile Redshift',
+        config: { region: 'us-east-1' },
+        credential: { mode: 'service_account', secret_ref: 'kv://redshift' },
       },
       admin
     );
     grantConnectorPermission(
-      'profile-postgres',
+      'profile-redshift',
       { scope: 'roles', subject: 'Analyst', actions: ['view', 'run'] },
       admin
     );
@@ -350,16 +347,16 @@ describe('connectorService', () => {
     ];
 
     await expect(
-      runConnectorProfiling('profile-postgres', { assets, execution_mode: 'live' }, analyst)
+      runConnectorProfiling('profile-redshift', { assets, execution_mode: 'live' }, analyst)
     ).rejects.toThrow(/admin/i);
 
-    const run = await runConnectorProfiling('profile-postgres', { assets, execution_mode: 'live' }, admin);
+    const run = await runConnectorProfiling('profile-redshift', { assets, execution_mode: 'live' }, admin);
     expect(run.status).toBe('failed');
     expect(run.errors).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           code: 'CONNECTOR_RUNTIME_ERROR',
-          remediation: expect.stringContaining('Install pg'),
+          remediation: expect.stringContaining('cluster_identifier/workgroup_name'),
         }),
       ])
     );

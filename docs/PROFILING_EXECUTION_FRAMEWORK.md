@@ -90,11 +90,11 @@ Supported live executor paths:
 | Connector Type | Live Executor Path | Notes |
 | --- | --- | --- |
 | `sql_server` | Direct `mssql` driver | Uses read-only aggregate SQL, one-connection pool, query timeout, and lock timeout. |
-| `postgresql` | Optional `pg` driver | Returns an install/configuration remediation when `pg` is unavailable. |
-| `snowflake` | Optional `snowflake-sdk` driver | Returns an install/configuration remediation when the SDK is unavailable. |
+| `postgresql` | Direct `pg` driver | Uses read-only aggregate SQL with statement and query timeout settings. |
+| `snowflake` | Direct `snowflake-sdk` driver | Uses the Snowflake Node driver and returns aggregate rows only. |
 | `bigquery` | BigQuery REST query API | Requires access token and `project_id`; does not retain raw values. |
 | `databricks` | Databricks SQL Statements REST API | Requires workspace URL, token/PAT, and SQL warehouse ID. |
-| `aws_redshift` | Profile endpoint sidecar | Uses a signed Redshift Data API sidecar/profile endpoint until AWS SDK execution is added directly. |
+| `aws_redshift` | Direct AWS SDK v3 Redshift Data API | Uses `ExecuteStatement`, polls `DescribeStatement`, and reads JSON aggregate results with `GetStatementResult`. An explicit `profile_endpoint` can still override this path. |
 
 The connector runtime also supports `mockProfileRows` for deterministic tests and demos. Mock rows must be aggregate rows only, with aliases like `row_count`, `<column>__null_count`, `<column>__distinct_count`, `<column>__min`, `<column>__max`, and `<column>__mean`.
 

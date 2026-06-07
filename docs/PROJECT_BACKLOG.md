@@ -19,7 +19,7 @@ This backlog contains the complete delivery history for MVP phases and the forwa
 ## Recent Capability 7 Update - June 7, 2026
 
 - Added managed connector-backed profiling plan/run APIs for database connectors.
-- Added live aggregate profile executor paths for SQL Server, PostgreSQL, Snowflake, BigQuery, Databricks, and Redshift profile-endpoint execution.
+- Added live aggregate profile executor paths for SQL Server, PostgreSQL, Snowflake, BigQuery, Databricks, and AWS Redshift Data API execution.
 - Preserved the no-raw-values contract: profile output stores aggregate statistics only and never returns credential values or vault references.
 - Added plain remediation errors for missing drivers, invalid source credentials, endpoint failures, and unsupported live profile paths.
 - Added browser memory-stability E2E coverage that cycles major app views and checks for page errors, failed non-favicon resources, and runaway heap growth.
@@ -1910,7 +1910,7 @@ This capability turns column metadata, column lineage, transformation evidence, 
 - Added regression coverage proving every connector bridge is plumbed and can emit canonical dry-run metadata, and proving live bridge runs return useful remediation when metadata source configuration is incomplete.
 - Added direct source-client live harvest support for REST/JSON metadata APIs across Airflow, Azure Data Factory, Purview, Azure Storage/ADLS metadata manifests, AWS Glue/S3/Redshift signed endpoints, BigQuery, Databricks, Domo, Dataplex, GCS, GitHub/Azure DevOps repositories, Grafana, Looker, Metabase, MicroStrategy, Mode, OpenAPI, Power BI, Power BI Report Server, Qlik, QuickSight signed endpoints, Redash, SAP OData, Salesforce, SAP BusinessObjects, Sigma, SSRS, Superset, Tableau, ThoughtSpot, Oracle Analytics, Sisense, Kafka REST, and Schema Registry.
 - Added local artifact extraction for configured Git repository file inventories and dbt manifest/catalog-shaped metadata so repo and dbt connectors can extract real code/artifact metadata without sample events.
-- Added PostgreSQL and Snowflake native-driver paths that query information schema metadata when optional packages are installed, and return package-specific remediation (`pg`, `snowflake-sdk`) when they are not.
+- Added PostgreSQL and Snowflake native-driver paths that query information schema metadata with installed `pg` and `snowflake-sdk` packages, and return source-specific remediation when credentials or connectivity fail.
 - Remaining live extractor work is now isolated to the native/existing extractor families and hardening: SQL Server and SSIS are live through existing extractor bridges; PostgreSQL and Snowflake need installed native drivers and credential smoke tests; SSAS needs XMLA/ADOMD client support or a configured metadata endpoint; AWS signed clients need live Sonic credential smoke tests and operation-specific hardening.
 - Full local validation on 2026-06-06: `npm test -- --runInBand --coverage=false` passed 56 suites / 534 tests, `npm run test:e2e` passed 8 Playwright smoke tests, `npm run build` completed successfully, and connector coverage reported 43/43 bridge adapters plus 38 direct source clients.
 
