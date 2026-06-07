@@ -10,6 +10,7 @@ import { getObjectsCache } from '../services/objectCacheStore.js';
 import { getLineageGraph } from '../services/catalogRuntimeStore.js';
 import {
   assessMetricFormulaImpact,
+  buildMetricProfileAnswer,
   buildMetricRegistry,
   buildMetricRuntimePack,
   buildTableMetricAnswer,
@@ -126,6 +127,22 @@ router.post('/formula-impact', authenticate, async (req, res) => {
     });
   } catch (err) {
     return sendErrorResponse(res, req, 500, err.message, { code: 'METRIC_IMPACT_ERROR' });
+  }
+});
+
+router.post('/profile', authenticate, async (req, res) => {
+  try {
+    const profile = buildMetricProfileAnswer(runtimeObjects(), runtimeLineageGraph(), req.body || {});
+    if (!profile) {
+      return sendErrorResponse(res, req, 404, 'Metric object was not found', { code: 'NOT_FOUND' });
+    }
+    return res.json({
+      status: 'success',
+      message: 'Metric profile answer retrieved',
+      data: profile,
+    });
+  } catch (err) {
+    return sendErrorResponse(res, req, 500, err.message, { code: 'METRIC_PROFILE_ERROR' });
   }
 });
 

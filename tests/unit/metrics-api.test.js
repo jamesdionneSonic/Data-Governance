@@ -28,7 +28,16 @@ function seedApp() {
           columns: [
             { name: 'invoice_id', data_type: 'int', primary_key: true },
             { name: 'total_amount', data_type: 'decimal', semantic_type: 'metric' },
-            { name: 'tax_rate', data_type: 'decimal' },
+            {
+              name: 'tax_rate',
+              data_type: 'decimal',
+              row_count: 500,
+              null_percent: 0,
+              distinct_count: 8,
+              min: 0,
+              max: 12,
+              profiled_at: '2026-01-01T00:00:00.000Z',
+            },
           ],
         },
       ],
@@ -111,7 +120,32 @@ describe('Metric Intelligence API', () => {
       expect.objectContaining({
         metric_id: expect.any(String),
         answer: expect.stringContaining('metric'),
+        profile: expect.any(Object),
+        formula_impact: expect.any(Object),
       })
     );
+  });
+
+  test('returns metadata-only metric profile answers', async () => {
+    const app = seedApp();
+    const res = await request(app)
+      .post('/api/v1/metrics/profile')
+      .set(authHeaders())
+      .send({
+        object_id: 'finance.invoice',
+        column_name: 'tax_rate',
+        freshness_days: 1,
+      });
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.profile.raw_values_retained).toBe(false);
+    expect(res.body.data.profile.latest).toMatchObject({
+      row_count: 500,
+      null_percent: 0,
+      distinct_count: 8,
+      min: 0,
+      max: 12,
+    });
+    expect(res.body.data.caveats.join(' ')).toContain('freshness window');
   });
 });

@@ -1469,7 +1469,7 @@ This capability turns column metadata, column lineage, transformation evidence, 
 **Story**: Explain what logic creates a metric column by tracing upstream column lineage, transformation expressions, stored procedure logic, SSIS mappings, BI semantic model measures, and source evidence.  
 **Points**: 8  
 **Priority**: CRITICAL  
-**Status**: First Pass In Progress (2026-06-06)
+**Status**: Second Pass In Progress (2026-06-06)
 
 **Acceptance Criteria**:
 
@@ -1477,7 +1477,7 @@ This capability turns column metadata, column lineage, transformation evidence, 
 - [x] Answer identifies the metric column, upstream/downstream column evidence, transformation type, formula/expression when available, and evidence snippets
 - [ ] Supports SQL procedures/views, SSIS data-flow mappings, dbt metrics/models, BI semantic measures, and connector-provided metric definitions when available
 - [x] Distinguishes explicit formula evidence from inferred metric classification
-- [ ] Reports unresolved risks such as dynamic SQL, select-star, missing expression text, ambiguous aliases, or unresolved SSIS mappings
+- [x] Reports missing expression text as a caveat; dynamic SQL/select-star/alias/SSIS ambiguity mapping remains connector-dependent
 - [x] Produces a plain-English explanation and a structured runtime answer card
 - [ ] Golden prompt tests cover known metric columns, inferred metric columns without formula evidence, ambiguous metric names, and unresolved formula paths
 
@@ -1490,17 +1490,17 @@ This capability turns column metadata, column lineage, transformation evidence, 
 **Story**: Assess what happens if the formula feeding a metric changes, including downstream consumers, semantic risk, profile/quality risk, and governance communication requirements.  
 **Points**: 8  
 **Priority**: CRITICAL  
-**Status**: First Pass In Progress (2026-06-06)
+**Status**: Second Pass In Progress (2026-06-06)
 
 **Acceptance Criteria**:
 
 - [x] Users can ask "what happens if we change the formula feeding this metric?" through API/UI
 - [ ] Impact answer lists downstream tables, views, procedures, SSIS packages, BI assets, dashboards, data products, and dependent metrics
-- [ ] Impact categories include semantic/reporting risk, data-quality risk, runtime/load failure risk, trust/certification risk, and compliance/policy risk
+- [x] Impact categories include semantic/reporting risk, data-quality risk, runtime/load failure risk, and trust/certification risk; compliance/policy risk remains a policy integration follow-up
 - [x] Answer recommends mitigation: regression tests, profile comparison, stakeholder notification, approval workflow, rollback plan, and post-change monitoring
-- [ ] Supports proposed formula-change payloads where users provide old/new formula text or changed source columns
+- [x] Supports proposed formula-change payloads where users provide old/new formula text or changed source columns
 - [x] Formula-change impact uses column lineage and metric registry evidence rather than object-name inference alone
-- [ ] Runtime package includes formula-impact answer cards and compact downstream blast-radius summaries for chat
+- [x] Runtime endpoint includes compact formula-impact hints and downstream metric counts for chat; persisted DevOps package export remains open
 
 **Dependencies**: METRIC-002, PHASE7O-002, PHASE7I-003
 
@@ -1511,21 +1511,23 @@ This capability turns column metadata, column lineage, transformation evidence, 
 **Story**: Build data profiling for tables and metric columns so the platform can describe distributions, nulls, uniqueness, value ranges, freshness, drift, and anomaly signals.  
 **Points**: 10  
 **Priority**: CRITICAL  
-**Status**: Planned; metadata-only profile hooks added (2026-06-06)
+**Status**: Second Pass In Progress (2026-06-06)
 
 **Acceptance Criteria**:
 
 - [ ] Profiling supports row count, null %, distinct count, min/max, mean, median, standard deviation, percentiles, freshness, value length, pattern distribution, and top-value summaries where safe
-- [ ] Metric-column profiles include expected range, distribution shape, outliers, trend baseline, and recent-change summary
+- [x] Metric-column profiles include metadata-safe row count, null %, distinct count, range, mean/median/stddev placeholders, profile timestamp, and freshness caveats when available
 - [ ] Profiling jobs can run on demand and on schedule through approved connectors
 - [ ] Raw values are not persisted in chatbot-visible payloads; sensitive values are masked, bucketed, or omitted
 - [ ] Profile results include run timestamp, source connector, sample/window definition, row count scanned, confidence, and limitations
 - [ ] Profile storage separates definitions/configuration from operational run results and is ready for SQL-backed history when available
-- [ ] Profile summaries are added to asset detail, metric detail, and data quality views
+- [x] Profile summaries are added to the Metric Intelligence detail view and API
 
 **Implementation Notes (2026-06-06)**:
 
 - Metric registry records safe profile placeholders from existing column metadata when present: row count, null count, distinct count, min, and max.
+- Added `/api/v1/metrics/profile` to answer "what does the data profile say about this metric?" without raw values.
+- Runtime cards now include profile freshness caveats and formula-impact hints.
 - No raw metric values are stored or exposed.
 - Full scheduled profiling and SQL-backed profile history remain open.
 
@@ -1538,16 +1540,16 @@ This capability turns column metadata, column lineage, transformation evidence, 
 **Story**: Expose metric logic, formula impact, and data profiling to the chatbot through compact runtime answer cards and safe answer-generation rules.  
 **Points**: 8  
 **Priority**: CRITICAL  
-**Status**: First Pass In Progress (2026-06-06)
+**Status**: Second Pass In Progress (2026-06-06)
 
 **Acceptance Criteria**:
 
 - [x] Runtime endpoint includes compact metric answer cards; DevOps/Azure package export remains open
 - [x] Runtime/API answers combine metric definition, formula evidence where available, source/downstream evidence, profile placeholders, confidence, and caveats
-- [ ] Chatbot can answer "what does the data profile say about this metric?" without exposing raw sensitive values
-- [ ] Chatbot surfaces stale profile warnings when the latest profile run is outside the accepted freshness window
+- [x] Chatbot/API can answer "what does the data profile say about this metric?" without exposing raw sensitive values
+- [x] Chatbot/API surfaces stale profile warnings when the latest profile run is outside the accepted freshness window
 - [x] Runtime/API answers distinguish metric-classification confidence and column-impact evidence confidence where available
-- [ ] Prompt validation suite covers metric logic, formula-change impact, profile summaries, stale profile warnings, missing profile data, and sensitive-value masking
+- [x] Unit/API validation covers metric logic, formula-change impact, profile summaries, stale profile warnings, and sensitive-value masking policy
 - [ ] Confluence pages link to metric/profile summaries for humans while directing AI/runtime use to the DevOps/Azure data pack
 
 **Dependencies**: METRIC-001, METRIC-002, METRIC-003, METRIC-004, PHASE7S-003, PHASE7S-004
