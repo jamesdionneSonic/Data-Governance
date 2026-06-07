@@ -9,11 +9,14 @@ import { sendErrorResponse } from '../middleware/errorHandler.js';
 import { logActivity } from '../services/activityService.js';
 import {
   deleteConnector,
+  deleteConnectorProfileSchedule,
   getConnector,
   getConnectorAdapterCoverage,
+  getConnectorProfileSchedule,
   getConnectorSnapshot,
   grantConnectorPermission,
   listConnectorDefinitions,
+  listConnectorProfileSchedules,
   listConnectorRuns,
   listConnectors,
   planConnector,
@@ -24,6 +27,9 @@ import {
   runConnectorBiProfiling,
   runConnectorMetadataProfiling,
   runConnectorProfiling,
+  runConnectorProfileSchedule,
+  runDueConnectorProfileSchedules,
+  upsertConnectorProfileSchedule,
   upsertConnector,
 } from '../services/connectorService.js';
 
@@ -91,6 +97,91 @@ router.post('/', authenticate, requireAdmin, (req, res) => {
       credential_status: connector.credential?.status,
     });
     return res.status(201).json({ status: 'success', connector });
+  } catch (err) {
+    return connectorError(res, req, err);
+  }
+});
+
+router.get('/profile-schedules', authenticate, (req, res) => {
+  try {
+    return res.json({
+      status: 'success',
+      schedules: listConnectorProfileSchedules(
+        {
+          connector_id: req.query.connector_id || req.query.connectorId,
+          status: req.query.status,
+        },
+        req.user
+      ),
+    });
+  } catch (err) {
+    return connectorError(res, req, err);
+  }
+});
+
+router.post('/profile-schedules', authenticate, requireAdmin, (req, res) => {
+  try {
+    const schedule = upsertConnectorProfileSchedule(req.body || {}, req.user);
+    logActivity(actorId(req.user), 'connector_profile_schedule_saved', schedule.id, {
+      connector_id: schedule.connector_id,
+      profile_type: schedule.profile_type,
+      status: schedule.status,
+    });
+    return res.status(201).json({ status: 'success', schedule });
+  } catch (err) {
+    return connectorError(res, req, err);
+  }
+});
+
+router.post('/profile-schedules/tick', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const result = await runDueConnectorProfileSchedules(req.body || {}, req.user);
+    return res.json({ status: 'success', result });
+  } catch (err) {
+    return connectorError(res, req, err);
+  }
+});
+
+router.get('/profile-schedules/:scheduleId', authenticate, (req, res) => {
+  try {
+    const schedule = getConnectorProfileSchedule(req.params.scheduleId, req.user);
+    if (!schedule) return connectorError(res, req, new Error(`Profile schedule '${req.params.scheduleId}' not found.`));
+    return res.json({ status: 'success', schedule });
+  } catch (err) {
+    return connectorError(res, req, err);
+  }
+});
+
+router.put('/profile-schedules/:scheduleId', authenticate, requireAdmin, (req, res) => {
+  try {
+    const schedule = upsertConnectorProfileSchedule({ ...(req.body || {}), id: req.params.scheduleId }, req.user);
+    return res.json({ status: 'success', schedule });
+  } catch (err) {
+    return connectorError(res, req, err);
+  }
+});
+
+router.delete('/profile-schedules/:scheduleId', authenticate, requireAdmin, (req, res) => {
+  try {
+    return res.json({
+      status: 'success',
+      deleted: deleteConnectorProfileSchedule(req.params.scheduleId, req.user),
+    });
+  } catch (err) {
+    return connectorError(res, req, err);
+  }
+});
+
+router.post('/profile-schedules/:scheduleId/run', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const result = await runConnectorProfileSchedule(req.params.scheduleId, req.user);
+    logActivity(actorId(req.user), 'connector_profile_schedule_run', req.params.scheduleId, {
+      connector_id: result.schedule.connector_id,
+      profile_type: result.schedule.profile_type,
+      run_id: result.run?.id,
+      status: result.run?.status,
+    });
+    return res.json({ status: 'success', result });
   } catch (err) {
     return connectorError(res, req, err);
   }

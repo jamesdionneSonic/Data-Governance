@@ -118,6 +118,22 @@ Managed connector profiling APIs:
 
 Live connector profile runs record `raw_data_captured: false`, `secret_exposed: false`, and `profile_run: true` in connector run history. Credential values and vault references are not returned in profile run payloads.
 
+## Scheduling
+
+Recurring profile work is handled by the managed connector profile scheduler:
+
+| Endpoint | Use |
+| --- | --- |
+| `GET /api/v1/connectors/profile-schedules` | List schedules visible to the caller. |
+| `POST /api/v1/connectors/profile-schedules` | Create an admin-owned profile schedule. |
+| `GET /api/v1/connectors/profile-schedules/:scheduleId` | Read one schedule. |
+| `PUT /api/v1/connectors/profile-schedules/:scheduleId` | Update cadence, status, type, or options. |
+| `DELETE /api/v1/connectors/profile-schedules/:scheduleId` | Delete a schedule. |
+| `POST /api/v1/connectors/profile-schedules/:scheduleId/run` | Run one active schedule now. |
+| `POST /api/v1/connectors/profile-schedules/tick` | Run all due active schedules up to a configured limit. |
+
+Schedule type `auto` resolves to the existing profile engines: aggregate profiling for database/warehouse connectors, BI report profiling for BI connectors, and metadata profiling for cloud/catalog/storage/pipeline/repository/API/Kafka/Salesforce/SAP connectors. Schedule options are sanitized before persistence so raw payloads, mocks, secrets, tokens, and vault references are not stored.
+
 ## UI
 
 Metric Intelligence now includes a Profile Execution panel. It can:
