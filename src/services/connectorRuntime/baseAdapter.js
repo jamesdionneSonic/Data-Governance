@@ -7,6 +7,7 @@ import {
 import { CANONICAL_EVENT_TYPES, canonicalEvent, warningEvent } from './canonicalMetadata.js';
 import { fetchSourceMetadata } from './sourceClients.js';
 import { buildProfilingPlan, executeProfilingPlan } from '../profilingExecutionService.js';
+import { createProfileExecutor, supportsConnectorLiveProfiling } from './profileExecutors.js';
 
 function toArray(value) {
   if (Array.isArray(value)) return value.filter(Boolean);
@@ -214,7 +215,12 @@ export class BaseConnectorAdapter {
 
   async runProfiling(options = {}) {
     const plan = options.plan || (await this.planProfiling(options));
-    return executeProfilingPlan(plan, this.capability.supports_live_profile ? this : null);
+    const executor = createProfileExecutor({ connector: this.connector, options });
+    return executeProfilingPlan(plan, executor);
+  }
+
+  supportsLiveProfiling() {
+    return supportsConnectorLiveProfiling(this.connector);
   }
 
   sampleEventForStream(stream) {

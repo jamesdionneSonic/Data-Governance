@@ -6,9 +6,11 @@ import {
   listConnectorDefinitions,
   listConnectors,
   planConnector,
+  planConnectorProfiling,
   resetConnectorStore,
   runConnectorExtractionForConfig,
   runConnector,
+  runConnectorProfiling,
   upsertConnector,
 } from '../../src/services/connectorService.js';
 import { jest } from '@jest/globals';
@@ -240,6 +242,124 @@ describe('connectorService', () => {
             required_package: 'pg',
             required_client_family: 'postgresql-native-driver',
           }),
+        }),
+      ])
+    );
+  });
+
+  test('plans and runs connector-backed profiling without exposing raw data', async () => {
+    upsertConnector(
+      {
+        id: 'profile-sql',
+        type: 'sql_server',
+        label: 'Profile SQL',
+        config: { server: 'sql.example.com', database: 'finance' },
+        credential: { mode: 'service_account', username: 'svc', password: 'profile-password', secret_ref: 'kv://sql' },
+      },
+      admin
+    );
+    grantConnectorPermission(
+      'profile-sql',
+      { scope: 'roles', subject: 'Analyst', actions: ['view', 'run'] },
+      admin
+    );
+    const assets = [
+      {
+        id: 'finance.dbo.Invoice',
+        database: 'finance',
+        schema: 'dbo',
+        name: 'Invoice',
+        type: 'table',
+        columns: [
+          { name: 'invoice_id', data_type: 'int' },
+          { name: 'total_amount', data_type: 'decimal' },
+        ],
+      },
+    ];
+
+    const plan = await planConnectorProfiling('profile-sql', { assets, profile_mode: 'sample' }, analyst);
+    expect(plan.plan.actions[0].query.sql).toContain('COUNT_BIG(*)');
+
+    const run = await runConnectorProfiling(
+      'profile-sql',
+      {
+        assets,
+        execution_mode: 'live',
+        profile_mode: 'sample',
+        mockProfileRows: {
+          row_count: 100,
+          invoice_id__null_count: 0,
+          invoice_id__distinct_count: 100,
+          total_amount__null_count: 2,
+          total_amount__distinct_count: 90,
+          total_amount__min: 1,
+          total_amount__max: 500,
+          total_amount__mean: 42.5,
+        },
+      },
+      admin
+    );
+
+    expect(run.status).toBe('succeeded');
+    expect(run.summary).toMatchObject({
+      profile_run: true,
+      raw_data_captured: false,
+      secret_exposed: false,
+    });
+    expect(run.profile.run.profiles['finance.dbo.Invoice'].columns.total_amount).toEqual(
+      expect.objectContaining({
+        null_count: 2,
+        null_percent: 2,
+        distinct_count: 90,
+        min: 1,
+        max: 500,
+        mean: 42.5,
+        raw_values_retained: false,
+      })
+    );
+    const runJson = JSON.stringify(run);
+    expect(runJson).not.toContain('profile-password');
+    expect(runJson).not.toContain('kv://sql');
+  });
+
+  test('connector-backed live profiling requires admin and reports missing native driver remediation', async () => {
+    upsertConnector(
+      {
+        id: 'profile-postgres',
+        type: 'postgresql',
+        label: 'Profile Postgres',
+        config: { host: 'postgres.example.com', database: 'finance' },
+        credential: { mode: 'service_account', secret_ref: 'kv://postgres' },
+      },
+      admin
+    );
+    grantConnectorPermission(
+      'profile-postgres',
+      { scope: 'roles', subject: 'Analyst', actions: ['view', 'run'] },
+      admin
+    );
+    const assets = [
+      {
+        id: 'finance.public.Invoice',
+        database: 'finance',
+        schema: 'public',
+        name: 'Invoice',
+        type: 'table',
+        columns: [{ name: 'total_amount', data_type: 'numeric' }],
+      },
+    ];
+
+    await expect(
+      runConnectorProfiling('profile-postgres', { assets, execution_mode: 'live' }, analyst)
+    ).rejects.toThrow(/admin/i);
+
+    const run = await runConnectorProfiling('profile-postgres', { assets, execution_mode: 'live' }, admin);
+    expect(run.status).toBe('failed');
+    expect(run.errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'CONNECTOR_RUNTIME_ERROR',
+          remediation: expect.stringContaining('Install pg'),
         }),
       ])
     );

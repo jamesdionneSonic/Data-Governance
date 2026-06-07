@@ -7,6 +7,8 @@ import { randomUUID } from 'crypto';
 import {
   buildAdapterCoverage,
   executeConnectorExtraction,
+  executeConnectorProfile,
+  planConnectorProfile,
   planConnectorExtraction,
 } from './connectorRuntime/extractionKernel.js';
 
@@ -740,6 +742,63 @@ export async function planConnector(id, options = {}, user = {}) {
   return planConnectorExtraction({ connector, definition, options });
 }
 
+export async function planConnectorProfiling(id, options = {}, user = {}) {
+  const connector = connectorStore.get(id);
+  if (!connector) {
+    throw new Error(`Connector '${id}' not found.`);
+  }
+  if (!canUseConnector(connector, user, CONNECTOR_ACTIONS.VIEW)) {
+    const error = new Error(`User is not allowed to view connector '${id}'.`);
+    error.code = 'CONNECTOR_FORBIDDEN';
+    throw error;
+  }
+  const definition = normalizeConnectorType(connector.type);
+  return planConnectorProfile({ connector, definition, options });
+}
+
+export async function runConnectorProfiling(id, options = {}, user = {}) {
+  const connector = connectorStore.get(id);
+  if (!connector) {
+    throw new Error(`Connector '${id}' not found.`);
+  }
+  if (!canUseConnector(connector, user, CONNECTOR_ACTIONS.RUN)) {
+    const error = new Error(`User is not allowed to run connector '${id}'.`);
+    error.code = 'CONNECTOR_FORBIDDEN';
+    throw error;
+  }
+  const requestedMode = options.execution_mode || options.executionMode || options.safety?.execution_mode;
+  if (requestedMode === 'live' && !isAdmin(user)) {
+    const error = new Error(`Live profiling requires Admin permission on connector '${id}'.`);
+    error.code = 'CONNECTOR_FORBIDDEN';
+    error.status = 403;
+    throw error;
+  }
+  const definition = normalizeConnectorType(connector.type);
+  const profile = await executeConnectorProfile({ connector, definition, options });
+  const run = {
+    id: randomUUID(),
+    connector_id: id,
+    connector_type: connector.type,
+    actor: actorId(user),
+    status: profile.status,
+    mode: requestedMode || profile.run?.safety?.execution_mode || 'dry_run',
+    started_at: profile.run?.started_at || profile.executed_at,
+    completed_at: profile.run?.completed_at || profile.executed_at,
+    summary: {
+      ...(profile.run?.summary || {}),
+      secret_exposed: false,
+      raw_data_captured: false,
+      profile_run: true,
+    },
+    profile,
+    errors: profile.errors || [],
+    warnings: profile.run?.warnings || [],
+  };
+  runHistoryStore.unshift(run);
+  runHistoryStore.splice(5000);
+  return run;
+}
+
 export async function runConnectorExtractionForConfig({
   id,
   type,
@@ -828,8 +887,10 @@ export default {
   listConnectorRuns,
   listConnectors,
   planConnector,
+  planConnectorProfiling,
   resetConnectorStore,
   runConnectorExtractionForConfig,
+  runConnectorProfiling,
   runConnector,
   upsertConnector,
 };

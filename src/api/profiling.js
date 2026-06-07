@@ -8,6 +8,10 @@ import { authenticate } from '../middleware/auth.js';
 import { sendErrorResponse } from '../middleware/errorHandler.js';
 import { getObjectsCache } from '../services/objectCacheStore.js';
 import {
+  planConnectorProfiling,
+  runConnectorProfiling,
+} from '../services/connectorService.js';
+import {
   applyProfileToAsset,
   buildConfluenceProfileSummary,
   buildProfilingContract,
@@ -39,8 +43,17 @@ router.get('/contract', authenticate, (_req, res) =>
     contract: buildProfilingContract(),
   }));
 
-router.post('/plan', authenticate, (req, res) => {
+router.post('/plan', authenticate, async (req, res) => {
   try {
+    if (req.body?.connector_id || req.body?.connectorId) {
+      const plan = await planConnectorProfiling(req.body.connector_id || req.body.connectorId, req.body || {}, req.user);
+      return res.json({
+        status: 'success',
+        message: 'Connector-backed profiling plan generated',
+        plan: plan.plan,
+        connector_plan: plan,
+      });
+    }
     const plan = buildProfilingPlan(req.body || {}, runtimeObjects());
     return res.json({
       status: 'success',
@@ -58,6 +71,15 @@ router.post('/run', authenticate, async (req, res) => {
     if (requestedMode === 'live' && !isAdmin(req.user)) {
       return sendErrorResponse(res, req, 403, 'Live profiling requires an Admin role.', {
         code: 'PROFILING_LIVE_FORBIDDEN',
+      });
+    }
+    if (req.body?.connector_id || req.body?.connectorId) {
+      const connectorRun = await runConnectorProfiling(req.body.connector_id || req.body.connectorId, req.body || {}, req.user);
+      return res.json({
+        status: 'success',
+        message: 'Connector-backed profiling run completed',
+        data: connectorRun.profile,
+        connector_run: connectorRun,
       });
     }
     const result = await runProfiling(req.body || {}, runtimeObjects());

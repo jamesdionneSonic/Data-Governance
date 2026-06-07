@@ -622,6 +622,58 @@ function normalizeExecutedProfile(action, result) {
   return null;
 }
 
+function normalizeAggregateRow(row = {}) {
+  return Object.fromEntries(
+    Object.entries(row || {}).map(([key, value]) => [String(key).replace(/^\[|\]$/g, '').toLowerCase(), value])
+  );
+}
+
+export function profileFromAggregateRow(action = {}, row = {}) {
+  const normalizedRow = normalizeAggregateRow(row);
+  const rowCount = asNumber(normalizedRow.row_count ?? normalizedRow.count, 0);
+  const columns = {};
+  for (const column of action.columns || []) {
+    const alias = sqlAlias(column.name);
+    const nullCount = normalizedRow[`${alias}__null_count`];
+    columns[column.name] = {
+      column_name: column.name,
+      data_type: column.data_type,
+      row_count: rowCount,
+      null_count: nullCount === undefined ? null : asNumber(nullCount, 0),
+      null_percent:
+        nullCount === undefined || rowCount === 0
+          ? null
+          : Math.round((asNumber(nullCount, 0) / rowCount) * 1000) / 10,
+      distinct_count:
+        normalizedRow[`${alias}__distinct_count`] === undefined
+          ? null
+          : asNumber(normalizedRow[`${alias}__distinct_count`], 0),
+      min: normalizedRow[`${alias}__min`] ?? null,
+      max: normalizedRow[`${alias}__max`] ?? null,
+      mean:
+        normalizedRow[`${alias}__mean`] === undefined
+          ? null
+          : asNumber(normalizedRow[`${alias}__mean`], 0),
+      raw_values_retained: false,
+      source: 'live_aggregate_query',
+      limitations: column.skipped_statistics?.length
+        ? [`Skipped sensitive/statistics: ${column.skipped_statistics.join(', ')}`]
+        : [],
+    };
+  }
+  return {
+    asset_id: action.asset_id,
+    object_name: action.object_name,
+    row_count: rowCount,
+    profile_mode: action.profile_mode,
+    generated_at: nowIso(),
+    raw_values_retained: false,
+    connector_id: action.connector_id || null,
+    source_dialect: action.query?.dialect || null,
+    columns,
+  };
+}
+
 export async function executeProfilingPlan(plan, executor = null) {
   const startedAt = nowIso();
   const run = {
@@ -667,9 +719,14 @@ export async function executeProfilingPlan(plan, executor = null) {
     } catch (err) {
       run.errors.push({
         asset_id: action.asset_id,
+        code: err.code || 'PROFILE_EXECUTION_ERROR',
         message: err.message,
+        phase: err.phase || 'profile_execution',
+        status: err.status || 500,
         remediation:
+          err.remediation ||
           'Verify read-only credentials, object permissions, query timeout, source availability, and that the connector implements profile execution.',
+        details: err.details || null,
       });
     }
   }
@@ -820,4 +877,5 @@ export default {
   buildComputerFriendlyProfilePackage,
   buildConfluenceProfileSummary,
   profilingAnswer,
+  profileFromAggregateRow,
 };
