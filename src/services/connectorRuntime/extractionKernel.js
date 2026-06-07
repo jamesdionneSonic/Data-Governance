@@ -9,6 +9,13 @@ import {
   buildBiProfilePackage,
   buildBiProfilePlan,
 } from '../biProfileService.js';
+import {
+  buildConnectorMetadataConfluenceSummary,
+  buildConnectorMetadataProfileFromExtraction,
+  buildConnectorMetadataProfilePackage,
+  buildConnectorMetadataProfilePlan,
+  connectorMetadataProfileAnswer,
+} from '../connectorMetadataProfileService.js';
 
 export async function planConnectorExtraction({ connector, definition, options = {} }) {
   const adapter = createConnectorAdapter({ connector, definition });
@@ -200,6 +207,69 @@ export async function executeConnectorBiProfile({ connector, definition, options
         answer: `BI profiling failed for connector ${connector.id}: ${serialized.message}`,
         raw_values_retained: false,
         report_result_rows_queried: false,
+      },
+      errors: [serialized],
+      warnings: [],
+    };
+  }
+}
+
+export async function planConnectorMetadataProfile({ connector, definition, options = {} }) {
+  const adapter = createConnectorAdapter({ connector, definition });
+  return buildConnectorMetadataProfilePlan({ connector, definition, adapter, options });
+}
+
+export async function executeConnectorMetadataProfile({ connector, definition, options = {} }) {
+  const adapter = createConnectorAdapter({ connector, definition });
+  try {
+    const plan = buildConnectorMetadataProfilePlan({ connector, definition, adapter, options });
+    const extraction = await executeConnectorExtraction({
+      connector,
+      definition,
+      options: {
+        fail_fast: false,
+        ...options,
+      },
+    });
+    const profile = buildConnectorMetadataProfileFromExtraction({ connector, definition, adapter, extraction, options });
+    return {
+      status: profile.status,
+      connector_id: connector.id,
+      connector_type: connector.type,
+      adapter: adapter.constructor.name,
+      executed_at: new Date().toISOString(),
+      captures_raw_data: false,
+      captures_payload_values: false,
+      secret_exposed: false,
+      plan,
+      extraction: options.include_events === false ? { ...extraction, events: undefined } : extraction,
+      profile,
+      package: buildConnectorMetadataProfilePackage(profile),
+      confluence: buildConnectorMetadataConfluenceSummary(profile),
+      answer: connectorMetadataProfileAnswer(profile),
+      errors: profile.errors || [],
+      warnings: profile.warnings || [],
+    };
+  } catch (err) {
+    const serialized = serializeConnectorError(err);
+    return {
+      status: 'failed',
+      connector_id: connector.id,
+      connector_type: connector.type,
+      adapter: adapter.constructor.name,
+      executed_at: new Date().toISOString(),
+      captures_raw_data: false,
+      captures_payload_values: false,
+      secret_exposed: false,
+      plan: null,
+      extraction: null,
+      profile: null,
+      package: null,
+      confluence: null,
+      answer: {
+        answer: `Metadata profiling failed for connector ${connector.id}: ${serialized.message}`,
+        raw_values_retained: false,
+        metadata_only: true,
       },
       errors: [serialized],
       warnings: [],

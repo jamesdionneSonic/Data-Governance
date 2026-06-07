@@ -7,11 +7,13 @@ import {
   listConnectors,
   planConnector,
   planConnectorBiProfiling,
+  planConnectorMetadataProfiling,
   planConnectorProfiling,
   resetConnectorStore,
   runConnectorExtractionForConfig,
   runConnector,
   runConnectorBiProfiling,
+  runConnectorMetadataProfiling,
   runConnectorProfiling,
   upsertConnector,
 } from '../../src/services/connectorService.js';
@@ -491,6 +493,151 @@ describe('connectorService', () => {
       raw_values_retained: false,
       report_result_rows_queried: false,
     });
+  });
+
+  test('runs Salesforce metadata profile for CRM objects plus reports and dashboards', async () => {
+    upsertConnector(
+      {
+        id: 'salesforce-profile',
+        type: 'salesforce',
+        label: 'Salesforce Org',
+        config: { base_url: 'https://sonic.my.salesforce.com' },
+        credential: {
+          mode: 'connected_app',
+          secret_ref: 'kv://salesforce/app',
+          client_secret: 'do-not-return',
+        },
+      },
+      admin
+    );
+    grantConnectorPermission(
+      'salesforce-profile',
+      { scope: 'roles', subject: 'Analyst', actions: ['view', 'run'] },
+      admin
+    );
+
+    const plan = await planConnectorMetadataProfiling('salesforce-profile', { streams: ['objects', 'reports'] }, analyst);
+    expect(plan).toMatchObject({
+      profile_type: 'connector_metadata_profile',
+      connector_type: 'salesforce',
+      captures_raw_data: false,
+    });
+
+    const run = await runConnectorMetadataProfiling(
+      'salesforce-profile',
+      {
+        dry_run: false,
+        include_events: false,
+        streams: ['objects', 'reports', 'dashboards', 'lineage'],
+        metadata_payload: {
+          objects: [{ id: 'Account', name: 'Account', object_type: 'sobject' }],
+          reports: [{ id: 'report-1', name: 'Pipeline Report' }],
+          dashboards: [{ id: 'dash-1', name: 'Sales Dashboard' }],
+          lineage: [{ id: 'edge-1', from: 'Account', to: 'report-1', type: 'feeds' }],
+        },
+      },
+      analyst
+    );
+
+    expect(run.status).toBe('succeeded');
+    expect(run.summary).toEqual(
+      expect.objectContaining({
+        metadata_profile_run: true,
+        asset_count: 1,
+        report_count: 1,
+        dashboard_count: 1,
+        lineage_edge_count: 1,
+        raw_data_captured: false,
+        raw_payload_values_captured: false,
+      })
+    );
+    const runJson = JSON.stringify(run);
+    expect(runJson).not.toContain('do-not-return');
+    expect(runJson).not.toContain('kv://salesforce/app');
+  });
+
+  test('metadata profile covers cloud storage, catalog platforms, pipelines, orchestration, dbt, and code repositories', async () => {
+    const profileTypes = [
+      'azure_storage',
+      'aws_s3',
+      'gcs',
+      'azure_purview',
+      'aws_glue',
+      'gcp_dataplex',
+      'azure_data_factory',
+      'ssis',
+      'airflow',
+      'dbt',
+      'git_repository',
+    ];
+
+    for (const type of profileTypes) {
+      const definition = listConnectorDefinitions().find((item) => item.type === type);
+      upsertConnector(
+        {
+          id: `metadata-profile-${type}`,
+          type,
+          label: `${definition.label} Metadata Profile`,
+          config: minimalConnectorConfig(type),
+          credential: minimalCredential(definition.credentialKinds),
+        },
+        admin
+      );
+    }
+
+    const runs = await Promise.all(
+      profileTypes.map((type) =>
+        runConnectorMetadataProfiling(`metadata-profile-${type}`, { dry_run: true }, admin)
+      )
+    );
+
+    for (const run of runs) {
+      expect(run.status).toBe('succeeded');
+      expect(run.summary).toEqual(
+        expect.objectContaining({
+          metadata_profile_run: true,
+          raw_data_captured: false,
+          raw_payload_values_captured: false,
+        })
+      );
+      expect(run.profile.profile.inventory.length).toBeGreaterThan(0);
+      expect(run.profile.answer.answer).toContain('metadata-only');
+    }
+  });
+
+  test('metadata profile rejects API, Kafka, and SAP connectors until the next pass', async () => {
+    for (const type of ['openapi', 'kafka', 'sap']) {
+      const definition = listConnectorDefinitions().find((item) => item.type === type);
+      upsertConnector(
+        {
+          id: `unsupported-metadata-profile-${type}`,
+          type,
+          label: definition.label,
+          config: minimalConnectorConfig(type),
+          credential: minimalCredential(definition.credentialKinds),
+        },
+        admin
+      );
+    }
+
+    const runs = await Promise.all(
+      ['openapi', 'kafka', 'sap'].map((type) =>
+        runConnectorMetadataProfiling(`unsupported-metadata-profile-${type}`, { dry_run: true }, admin)
+      )
+    );
+
+    for (const run of runs) {
+      expect(run.status).toBe('failed');
+      expect(run.errors).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            code: 'CONNECTOR_CONFIG_ERROR',
+            message: expect.stringContaining('does not support metadata profiling yet'),
+            remediation: expect.stringContaining('next pass'),
+          }),
+        ])
+      );
+    }
   });
 
   test('AWS signed source client requires resolved signing credentials', async () => {
