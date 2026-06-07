@@ -1,6 +1,7 @@
 import request from 'supertest';
 import createApp, { initializeCache } from '../../src/app.js';
 import { generateToken } from '../../src/utils/tokenManager.js';
+import { resetConnectorStore, upsertConnector } from '../../src/services/connectorService.js';
 
 function authHeaders(roles = ['Admin']) {
   const token = generateToken({
@@ -40,6 +41,10 @@ function seedApp() {
 }
 
 describe('Profiling API', () => {
+  beforeEach(() => {
+    resetConnectorStore();
+  });
+
   test('returns framework contract', async () => {
     const res = await request(seedApp()).get('/api/v1/profiling/contract').set(authHeaders());
 
@@ -121,5 +126,51 @@ describe('Profiling API', () => {
     expect(res.status).toBe(200);
     expect(res.body.asset.row_count).toBe(111);
     expect(res.body.asset.columns.find((column) => column.name === 'total_amount').null_count).toBe(1);
+  });
+
+  test('delegates profiling runs to managed connectors when connector_id is supplied', async () => {
+    upsertConnector(
+      {
+        id: 'profile-sql-generic',
+        type: 'sql_server',
+        label: 'Profile SQL Generic',
+        config: { server: 'sql.example.com', database: 'finance' },
+        credential: { mode: 'service_account', username: 'svc', password: 'secret', secret_ref: 'kv://sql' },
+      },
+      { id: 'admin', email: 'admin@example.com', roles: ['Admin'] }
+    );
+
+    const res = await request(seedApp())
+      .post('/api/v1/profiling/run')
+      .set(authHeaders())
+      .send({
+        connector_id: 'profile-sql-generic',
+        execution_mode: 'live',
+        assets: [
+          {
+            id: 'finance.dbo.Invoice',
+            database: 'finance',
+            schema: 'dbo',
+            name: 'Invoice',
+            type: 'table',
+            columns: [{ name: 'total_amount', data_type: 'decimal' }],
+          },
+        ],
+        mockProfileRows: {
+          row_count: 50,
+          total_amount__null_count: 5,
+          total_amount__distinct_count: 40,
+        },
+      });
+
+    expect(res.status).toBe(200);
+    expect(res.body.connector_run.status).toBe('succeeded');
+    expect(res.body.data.run.profiles['finance.dbo.Invoice'].columns.total_amount).toEqual(
+      expect.objectContaining({
+        null_count: 5,
+        null_percent: 10,
+        distinct_count: 40,
+      })
+    );
   });
 });

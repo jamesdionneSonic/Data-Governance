@@ -135,7 +135,7 @@ class DataWarehouseAdapter extends BaseConnectorAdapter {
     this.capability = {
       ...this.capability,
       supports_profiling: true,
-      supports_live_profile: false,
+      supports_live_profile: true,
       profile_framework: 'aggregate_profile_execution',
       profile_dialect: args.connector?.type === 'aws_redshift' ? 'redshift' : args.connector?.type,
     };
@@ -164,7 +164,7 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
       ...this.capability,
       supports_live_read: true,
       supports_profiling: true,
-      supports_live_profile: false,
+      supports_live_profile: true,
       existing_extractor: 'SqlServerMetadataExtractor',
     };
     this.streams = [

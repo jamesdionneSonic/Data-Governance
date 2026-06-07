@@ -16,6 +16,14 @@ This backlog contains the complete delivery history for MVP phases and the forwa
 **Recommended Team**: Core Platform (4-5 developers) + Governance Features (6-8 developers) + 1 architect + 2 QA + 1 Product Manager  
 **Total Estimated Effort**: MVP (100-130 person-days) + Governance Extensions (280-350 person-days) + Azure (80-120 person-days) = 460-600 person-days (~12-15 months for cross-functional team)
 
+## Recent Capability 7 Update - June 7, 2026
+
+- Added managed connector-backed profiling plan/run APIs for database connectors.
+- Added live aggregate profile executor paths for SQL Server, PostgreSQL, Snowflake, BigQuery, Databricks, and Redshift profile-endpoint execution.
+- Preserved the no-raw-values contract: profile output stores aggregate statistics only and never returns credential values or vault references.
+- Added plain remediation errors for missing drivers, invalid source credentials, endpoint failures, and unsupported live profile paths.
+- Added browser memory-stability E2E coverage that cycles major app views and checks for page errors, failed non-favicon resources, and runaway heap growth.
+
 > **Non-Negotiable Architecture Principles**:
 >
 > **Layer 1 – Markdown Source of Truth (the dominant layer — ~80% of all governance content)**

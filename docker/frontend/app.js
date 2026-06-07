@@ -246,6 +246,10 @@ const appConfig = {
           confidence: 0.9,
           notes: '',
         },
+      },
+      governance: {
+        summaries: [],
+        health: null,
         qualityRules: {
           rules: [],
           incidents: [],
@@ -281,10 +285,6 @@ const appConfig = {
             pattern_match_percent: '',
           },
         },
-      },
-      governance: {
-        summaries: [],
-        health: null,
         classification: {
           taxonomy: null,
           summary: null,
@@ -1340,6 +1340,12 @@ const appConfig = {
     },
     makeUiErrorId() {
       return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    },
+    confluenceSummaryPreview(content) {
+      return String(content || '')
+        .split(/\r?\n/)
+        .slice(0, 8)
+        .join(' ');
     },
     normalizeApiError({ path, method, status, payload, fallbackMessage }) {
       const errorNode = payload?.errorInfo || payload?.error;
@@ -6329,12 +6335,14 @@ const appConfig = {
                       <h4 style="margin:12px 0 8px;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;">Quality Checks</h4>
                       <div class="check-list" v-if="quality && (quality.signals?.length || quality.checks)">
                         <div v-for="signal in (quality.signals || [])" :key="signal.key" class="check-item" :class="signal.passing ? 'pass' : 'fail'">
-                          <span class="check-icon">{{ signal.passing ? '&#10003;' : '&#10007;' }}</span>
+                          <span v-if="signal.passing" class="check-icon">&#10003;</span>
+                          <span v-else class="check-icon">&#10007;</span>
                           <span class="check-label">{{ signal.label }} · {{ signal.value }}</span>
                           <v-chip size="x-small" :class="signal.passing ? 'analyst' : 'admin'" variant="flat">{{ signal.percentage }}%</v-chip>
                         </div>
                         <div v-if="!(quality.signals || []).length" v-for="(val, key) in quality.checks" :key="key" class="check-item" :class="val ? 'pass' : 'fail'">
-                          <span class="check-icon">{{ val ? '&#10003;' : '&#10007;' }}</span>
+                          <span v-if="val" class="check-icon">&#10003;</span>
+                          <span v-else class="check-icon">&#10007;</span>
                           <span class="check-label">{{ key.replace(/([A-Z])/g,' $1').replace(/^./,s=>s.toUpperCase()) }}</span>
                           <v-chip size="x-small" :class="val ? 'analyst' : 'admin'" variant="flat">{{ val ? 'Pass' : 'Fail' }}</v-chip>
                         </div>
@@ -8093,7 +8101,7 @@ const appConfig = {
                     </div>
                     <div v-if="metrics.profiling.confluence" class="lineage-help-panel" style="margin-top:10px;">
                       <div class="lineage-help-title">Confluence Summary</div>
-                      <div class="lineage-help-copy">{{ metrics.profiling.confluence.content?.split('\n').slice(0, 8).join(' ') }}</div>
+                      <div class="lineage-help-copy">{{ confluenceSummaryPreview(metrics.profiling.confluence.content) }}</div>
                     </div>
                     <pre v-if="metrics.profiling.plan?.actions?.[0]?.query?.sql" class="profile-sql-preview">{{ metrics.profiling.plan.actions[0].query.sql }}</pre>
                   </v-card>
@@ -9691,7 +9699,8 @@ const appConfig = {
                 <h3>Platform Health</h3>
                 <div class="health-grid" v-if="admin.dashboardHealth">
                   <div class="health-card" v-for="(val, svc) in admin.dashboardHealth" :key="svc">
-                    <span class="health-icon">{{ typeof val === 'boolean' || val === 'ok' || val === 'healthy' ? '&#9989;' : '&#10060;' }}</span>
+                    <span v-if="typeof val === 'boolean' || val === 'ok' || val === 'healthy'" class="health-icon">&#9989;</span>
+                    <span v-else class="health-icon">&#10060;</span>
                     <div>
                       <div class="health-name">{{ svc }}</div>
                       <div class="health-desc">{{ typeof val === 'object' ? (val.status || 'configured') : val }}</div>

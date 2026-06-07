@@ -134,4 +134,76 @@ describe('Connectors API', () => {
       remediation: expect.stringContaining('Review connector configuration'),
     });
   });
+
+  test('runs connector-backed profiling through managed permissions', async () => {
+    const app = createApp();
+    await request(app)
+      .post('/api/v1/connectors')
+      .set(authHeaders(admin))
+      .send({
+        id: 'profile-sql-api',
+        type: 'sql_server',
+        label: 'Profile SQL API',
+        config: { server: 'sql.example.com', database: 'finance' },
+        credential: { mode: 'service_account', username: 'svc', password: 'profile-password', secret_ref: 'kv://sql' },
+      });
+
+    const planRes = await request(app)
+      .post('/api/v1/connectors/profile-sql-api/profile/plan')
+      .set(authHeaders(admin))
+      .send({
+        assets: [
+          {
+            id: 'finance.dbo.Invoice',
+            database: 'finance',
+            schema: 'dbo',
+            name: 'Invoice',
+            type: 'table',
+            columns: [{ name: 'total_amount', data_type: 'decimal' }],
+          },
+        ],
+      });
+
+    expect(planRes.status).toBe(200);
+    expect(planRes.body.plan.plan.actions[0].query.sql).toContain('COUNT_BIG(*)');
+
+    const runRes = await request(app)
+      .post('/api/v1/connectors/profile-sql-api/profile/run')
+      .set(authHeaders(admin))
+      .send({
+        execution_mode: 'live',
+        assets: [
+          {
+            id: 'finance.dbo.Invoice',
+            database: 'finance',
+            schema: 'dbo',
+            name: 'Invoice',
+            type: 'table',
+            columns: [{ name: 'total_amount', data_type: 'decimal' }],
+          },
+        ],
+        mockProfileRows: {
+          row_count: 200,
+          total_amount__null_count: 4,
+          total_amount__distinct_count: 120,
+          total_amount__min: 1,
+          total_amount__max: 999,
+          total_amount__mean: 25,
+        },
+      });
+
+    expect(runRes.status).toBe(200);
+    expect(runRes.body.run.status).toBe('succeeded');
+    expect(runRes.body.run.profile.run.profiles['finance.dbo.Invoice'].columns.total_amount).toEqual(
+      expect.objectContaining({
+        null_count: 4,
+        null_percent: 2,
+        distinct_count: 120,
+        raw_values_retained: false,
+      })
+    );
+    const responseJson = JSON.stringify(runRes.body);
+    expect(responseJson).not.toContain('profile-password');
+    expect(responseJson).not.toContain('kv://sql');
+  });
 });

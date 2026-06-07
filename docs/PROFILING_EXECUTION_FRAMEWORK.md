@@ -83,7 +83,20 @@ The same aggregate profile can be merged back into an asset object with:
 
 ## Connector Integration
 
-Warehouse connectors advertise `supports_profiling: true`. Live execution remains `supports_live_profile: false` until a source-specific executor is attached. That is intentional: a connector should return a clear remediation error instead of pretending to profile a live source.
+Warehouse connectors advertise `supports_profiling: true`. Database-backed connectors can now run through the managed connector runtime with `supports_live_profile: true` when the connector type has a supported executor path.
+
+Supported live executor paths:
+
+| Connector Type | Live Executor Path | Notes |
+| --- | --- | --- |
+| `sql_server` | Direct `mssql` driver | Uses read-only aggregate SQL, one-connection pool, query timeout, and lock timeout. |
+| `postgresql` | Optional `pg` driver | Returns an install/configuration remediation when `pg` is unavailable. |
+| `snowflake` | Optional `snowflake-sdk` driver | Returns an install/configuration remediation when the SDK is unavailable. |
+| `bigquery` | BigQuery REST query API | Requires access token and `project_id`; does not retain raw values. |
+| `databricks` | Databricks SQL Statements REST API | Requires workspace URL, token/PAT, and SQL warehouse ID. |
+| `aws_redshift` | Profile endpoint sidecar | Uses a signed Redshift Data API sidecar/profile endpoint until AWS SDK execution is added directly. |
+
+The connector runtime also supports `mockProfileRows` for deterministic tests and demos. Mock rows must be aggregate rows only, with aliases like `row_count`, `<column>__null_count`, `<column>__distinct_count`, `<column>__min`, `<column>__max`, and `<column>__mean`.
 
 To make a connector live-profile capable, implement an executor with:
 
@@ -94,6 +107,17 @@ async runProfileAction(action) {
 }
 ```
 
+Managed connector profiling APIs:
+
+| Endpoint | Use |
+| --- | --- |
+| `POST /api/v1/connectors/:id/profile/plan` | Builds a source-specific aggregate profile plan for a managed connector. |
+| `POST /api/v1/connectors/:id/profile/run` | Runs connector-backed profiling with connector permissions and admin-only live execution. |
+| `POST /api/v1/profiling/plan` with `connector_id` | Delegates planning to the managed connector runtime. |
+| `POST /api/v1/profiling/run` with `connector_id` | Delegates execution to the managed connector runtime. |
+
+Live connector profile runs record `raw_data_captured: false`, `secret_exposed: false`, and `profile_run: true` in connector run history. Credential values and vault references are not returned in profile run payloads.
+
 ## UI
 
 Metric Intelligence now includes a Profile Execution panel. It can:
@@ -103,3 +127,13 @@ Metric Intelligence now includes a Profile Execution panel. It can:
 - show safety status and no-raw-values status
 - preview generated SQL
 - show a Confluence summary preview
+
+## Validation
+
+Automated coverage includes:
+
+- unit tests for dialect-specific plan generation and aggregate row parsing
+- connector service tests for managed connector profile plan/run, permission checks, and remediation errors
+- connector API tests for `/profile/plan` and `/profile/run`
+- profiling API tests for `connector_id` delegation
+- Playwright memory-stability coverage that cycles major app views and asserts no page errors, no non-favicon 4xx resources, and bounded heap growth
