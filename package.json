@@ -59,6 +59,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@aws-sdk/client-redshift-data": "^3.1063.0",
     "@elastic/elasticsearch": "^9.4.0",
     "@playwright/test": "^1.54.2",
     "adm-zip": "^0.5.17",
@@ -74,6 +75,8 @@
     "morgan": "^1.10.0",
     "mssql": "^12.5.2",
     "node-sql-parser": "^5.4.0",
+    "pg": "^8.21.0",
+    "snowflake-sdk": "^2.4.3",
     "uuid": "^9.0.1",
     "yaml": "^2.3.4"
   },

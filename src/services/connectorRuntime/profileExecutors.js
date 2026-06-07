@@ -257,15 +257,135 @@ async function runDatabricksProfile({ connector, action }) {
 
 async function runRedshiftProfile({ connector, action }) {
   const endpointUrl = endpoint(connector, 'profile_endpoint', 'redshift_data_endpoint');
-  if (!endpointUrl) {
+  if (endpointUrl) {
+    return runProfileEndpoint({ connector, action, options: { profile_endpoint: endpointUrl } });
+  }
+
+  let redshiftData;
+  try {
+    redshiftData = await import('@aws-sdk/client-redshift-data');
+  } catch {
     throw profileError(
       connector,
       action,
-      'Redshift live profiling requires a Redshift Data API profile_endpoint in this framework.',
-      'Configure a signed Redshift Data API sidecar/profile_endpoint, or add AWS SDK v3 Redshift Data execution support.'
+      'Redshift live profiling requires the @aws-sdk/client-redshift-data package.',
+      'Install @aws-sdk/client-redshift-data or configure profile_endpoint to execute approved aggregate profile SQL.'
     );
   }
-  return runProfileEndpoint({ connector, action, options: { profile_endpoint: endpointUrl } });
+
+  const {
+    RedshiftDataClient,
+    ExecuteStatementCommand,
+    DescribeStatementCommand,
+    GetStatementResultCommand,
+  } = redshiftData.default || redshiftData;
+  const region = connector.config.region || connector.config.aws_region;
+  const database = connector.config.database || action.database;
+  const clusterIdentifier = connector.config.cluster_identifier || connector.config.clusterIdentifier;
+  const workgroupName = connector.config.workgroup_name || connector.config.workgroupName;
+  const dbUser = credentialValue(connector, 'db_user', 'dbUser', 'username', 'user');
+  const secretArn = credentialValue(connector, 'secret_arn', 'secretArn');
+  const accessKeyId = credentialValue(connector, 'access_key_id', 'accessKeyId');
+  const secretAccessKey = credentialValue(connector, 'secret_access_key', 'secretAccessKey');
+  const sessionToken = credentialValue(connector, 'session_token', 'sessionToken');
+
+  if (!region || !database || (!clusterIdentifier && !workgroupName) || (!secretArn && !dbUser)) {
+    throw profileError(
+      connector,
+      action,
+      'Redshift live profiling requires region, database, cluster_identifier or workgroup_name, and secret_arn or db_user.',
+      'Configure a Redshift Data API connector with region, database, cluster_identifier/workgroup_name, and either secret_arn or db_user. Provide IAM credentials through the runtime environment or connector credential reference.'
+    );
+  }
+
+  const client = new RedshiftDataClient({
+    region,
+    ...(accessKeyId && secretAccessKey
+      ? { credentials: { accessKeyId, secretAccessKey, ...(sessionToken ? { sessionToken } : {}) } }
+      : {}),
+  });
+  const sqlText = firstExecutableSqlStatement(action.query.sql);
+  const executeInput = {
+    Database: database,
+    Sql: sqlText,
+    StatementName: `profile-${String(action.asset_id || 'asset').replace(/[^a-zA-Z0-9_-]/g, '-').slice(0, 400)}`,
+    ResultFormat: 'JSON',
+    ...(clusterIdentifier ? { ClusterIdentifier: clusterIdentifier } : {}),
+    ...(workgroupName ? { WorkgroupName: workgroupName } : {}),
+    ...(dbUser && !secretArn ? { DbUser: dbUser } : {}),
+    ...(secretArn ? { SecretArn: secretArn } : {}),
+  };
+  let executeResult;
+  try {
+    executeResult = await client.send(new ExecuteStatementCommand(executeInput));
+  } catch (err) {
+    throw profileError(
+      connector,
+      action,
+      `Redshift Data API ExecuteStatement failed: ${err.message}`,
+      'Check IAM permissions for redshift-data:ExecuteStatement, database access, cluster/workgroup identifiers, secret ARN/db user, and SQL syntax.',
+      { error: err.name || null }
+    );
+  }
+
+  const statementId = executeResult.Id;
+  const deadline = Date.now() + (action.query.timeout_ms || 30000);
+  let status = null;
+  while (Date.now() < deadline) {
+    const describe = await client.send(new DescribeStatementCommand({ Id: statementId }));
+    status = describe.Status;
+    if (status === 'FINISHED') break;
+    if (['FAILED', 'ABORTED'].includes(status)) {
+      throw profileError(
+        connector,
+        action,
+        `Redshift Data API statement ${status.toLowerCase()}: ${describe.Error || 'No error detail returned.'}`,
+        'Check Redshift SQL syntax, object permissions, warehouse availability, and query timeout settings.',
+        { statement_id: statementId, status }
+      );
+    }
+    await sleep(Math.min(1000, Math.max(250, deadline - Date.now())));
+  }
+  if (status !== 'FINISHED') {
+    throw profileError(
+      connector,
+      action,
+      'Redshift Data API profile statement timed out before returning results.',
+      'Reduce scope, increase query_timeout_ms, use sampling, or run profiling during a lower-load window.',
+      { statement_id: statementId, status: status || 'SUBMITTED' }
+    );
+  }
+
+  const result = await client.send(new GetStatementResultCommand({ Id: statementId }));
+  return profileFromAggregateRow(action, redshiftResultRow(result));
+}
+
+export function firstExecutableSqlStatement(sql = '') {
+  const statements = String(sql)
+    .split(';')
+    .map((part) => part.trim())
+    .filter(Boolean);
+  return statements.find((statement) => /^select\b/i.test(statement)) || statements[statements.length - 1] || String(sql);
+}
+
+export function redshiftFieldValue(field = {}) {
+  if (field.isNull) return null;
+  if (Object.prototype.hasOwnProperty.call(field, 'stringValue')) return field.stringValue;
+  if (Object.prototype.hasOwnProperty.call(field, 'longValue')) return field.longValue;
+  if (Object.prototype.hasOwnProperty.call(field, 'doubleValue')) return field.doubleValue;
+  if (Object.prototype.hasOwnProperty.call(field, 'booleanValue')) return field.booleanValue;
+  if (Object.prototype.hasOwnProperty.call(field, 'blobValue')) return field.blobValue;
+  return null;
+}
+
+export function redshiftResultRow(result = {}) {
+  const columns = result.ColumnMetadata || [];
+  const record = result.Records?.[0] || [];
+  return Object.fromEntries(columns.map((column, index) => [column.name, redshiftFieldValue(record[index])]));
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function runProfileEndpoint({ connector, action, options = {} }) {
