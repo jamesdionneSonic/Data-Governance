@@ -7,6 +7,7 @@ import createApp from './app.js';
 import { initializeCache } from './utils/cacheInitializer.js';
 import { resolveLineageCorpus } from './services/lineageResolver.js';
 import { loadRuntimeCatalog } from './services/catalogRuntimeService.js';
+import { startProfileSchedulerWorker, stopProfileSchedulerWorker } from './services/connectorService.js';
 
 // Load environment variables
 dotenv.config();
@@ -58,6 +59,7 @@ function shutdownWithTimeout(reason, exitCode = 0) {
 
   isShuttingDown = true;
   console.log(`${reason} received, shutting down gracefully...`);
+  stopProfileSchedulerWorker();
 
   const forceExitTimer = setTimeout(() => {
     console.error(`Forced shutdown after ${SHUTDOWN_TIMEOUT_MS}ms`);
@@ -93,6 +95,7 @@ const startServer = (port, attemptsRemaining = MAX_PORT_ATTEMPTS) => {
   server.listen(port, () => {
     activeServer = server;
     initializeMarkdownCacheInBackground();
+    startProfileSchedulerWorker();
     console.log(`✓ Data Governance Platform running on port ${port}`);
     console.log(`✓ Environment: ${NODE_ENV}`);
     console.log(`✓ Elasticsearch: ${process.env.ELASTICSEARCH_URL || 'https://localhost:9200'}`);

@@ -1,12 +1,14 @@
 import {
   canUseConnector,
   deleteConnectorProfileSchedule,
+  getProfileSchedulerStatus,
   getConnectorProfileSchedule,
   getConnectorSnapshot,
   getConnectorAdapterCoverage,
   grantConnectorPermission,
   listConnectorDefinitions,
   listConnectorProfileSchedules,
+  listConnectorProfileScheduleRuns,
   listConnectors,
   planConnector,
   planConnectorBiProfiling,
@@ -24,6 +26,9 @@ import {
   upsertConnector,
 } from '../../src/services/connectorService.js';
 import { jest } from '@jest/globals';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'fs';
+import { tmpdir } from 'os';
+import path from 'path';
 
 const admin = { id: 'admin-1', email: 'admin@example.com', roles: ['Admin'] };
 const analyst = { id: 'analyst-1', email: 'analyst@example.com', roles: ['Analyst'] };
@@ -32,6 +37,8 @@ const viewer = { id: 'viewer-1', email: 'viewer@example.com', roles: ['Viewer'] 
 describe('connectorService', () => {
   beforeEach(() => {
     resetConnectorStore();
+    delete process.env.PROFILE_SCHEDULER_PERSISTENCE;
+    delete process.env.PROFILE_RUNTIME_DIR;
   });
 
   test('lists industry connector definitions across Azure, AWS, GCP, BI, APIs, and repos', () => {
@@ -732,6 +739,83 @@ describe('connectorService', () => {
       })
     );
     expect(deleteConnectorProfileSchedule(schedule.id, admin)).toBe(true);
+  });
+
+  test('profile scheduler persists sanitized run artifacts and exposes run history', async () => {
+    const runtimeDir = mkdtempSync(path.join(tmpdir(), 'profile-scheduler-'));
+    process.env.PROFILE_SCHEDULER_PERSISTENCE = 'on';
+    process.env.PROFILE_RUNTIME_DIR = runtimeDir;
+    resetConnectorStore();
+
+    try {
+      upsertConnector(
+        {
+          id: 'scheduled-tableau-artifacts',
+          type: 'tableau',
+          label: 'Scheduled Tableau Artifacts',
+          config: { base_url: 'https://tableau.example.com', site_id: 'sonic' },
+          credential: {
+            mode: 'pat',
+            token: 'hidden-token-value',
+            secret_ref: 'kv://tableau/artifacts',
+          },
+        },
+        admin
+      );
+
+      const schedule = upsertConnectorProfileSchedule(
+        {
+          connector_id: 'scheduled-tableau-artifacts',
+          profile_type: 'bi',
+          interval_minutes: 60,
+          start_at: '2026-06-07T00:00:00.000Z',
+          options: {
+            dry_run: true,
+            streams: ['workbooks', 'views'],
+            metadata_payload: { raw: 'do-not-store' },
+            token: 'do-not-store-token',
+          },
+        },
+        admin
+      );
+
+      const result = await runConnectorProfileSchedule(schedule.id, admin);
+      expect(result.artifact).toEqual(
+        expect.objectContaining({
+          json_path: expect.stringMatching(/\.json$/),
+          markdown_path: expect.stringMatching(/\.md$/),
+        })
+      );
+      expect(existsSync(result.artifact.json_path)).toBe(true);
+      expect(existsSync(result.artifact.markdown_path)).toBe(true);
+
+      const artifactJson = readFileSync(result.artifact.json_path, 'utf8');
+      expect(artifactJson).not.toContain('hidden-token-value');
+      expect(artifactJson).not.toContain('kv://tableau/artifacts');
+      expect(artifactJson).not.toContain('do-not-store');
+
+      const history = listConnectorProfileScheduleRuns(schedule.id, admin);
+      expect(history).toHaveLength(1);
+      expect(history[0]).toEqual(
+        expect.objectContaining({
+          schedule_id: schedule.id,
+          status: 'succeeded',
+          artifact: expect.objectContaining({ markdown_path: result.artifact.markdown_path }),
+        })
+      );
+      expect(getProfileSchedulerStatus()).toEqual(
+        expect.objectContaining({
+          persistence_enabled: true,
+          schedule_count: 1,
+          history_count: 1,
+        })
+      );
+    } finally {
+      resetConnectorStore();
+      delete process.env.PROFILE_SCHEDULER_PERSISTENCE;
+      delete process.env.PROFILE_RUNTIME_DIR;
+      rmSync(runtimeDir, { recursive: true, force: true });
+    }
   });
 
   test('AWS signed source client requires resolved signing credentials', async () => {

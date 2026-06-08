@@ -130,9 +130,24 @@ Recurring profile work is handled by the managed connector profile scheduler:
 | `PUT /api/v1/connectors/profile-schedules/:scheduleId` | Update cadence, status, type, or options. |
 | `DELETE /api/v1/connectors/profile-schedules/:scheduleId` | Delete a schedule. |
 | `POST /api/v1/connectors/profile-schedules/:scheduleId/run` | Run one active schedule now. |
+| `GET /api/v1/connectors/profile-schedules/:scheduleId/runs` | Read sanitized run history for one schedule. |
+| `GET /api/v1/connectors/profile-schedules/status` | Read worker, persistence, and artifact status. |
+| `POST /api/v1/connectors/profile-schedules/worker/start` | Start the in-process scheduler worker. |
+| `POST /api/v1/connectors/profile-schedules/worker/stop` | Stop the in-process scheduler worker. |
 | `POST /api/v1/connectors/profile-schedules/tick` | Run all due active schedules up to a configured limit. |
 
 Schedule type `auto` resolves to the existing profile engines: aggregate profiling for database/warehouse connectors, BI report profiling for BI connectors, and metadata profiling for cloud/catalog/storage/pipeline/repository/API/Kafka/Salesforce/SAP connectors. Schedule options are sanitized before persistence so raw payloads, mocks, secrets, tokens, and vault references are not stored.
+
+The application starts an in-process worker on server boot unless `PROFILE_SCHEDULER_ENABLED=false` or the process is running tests. The worker ticks every `PROFILE_SCHEDULER_INTERVAL_MS` milliseconds, defaults to 60 seconds, and uses `PROFILE_SCHEDULER_TICK_LIMIT` to cap each pass.
+
+When SQL operational storage is not available, scheduler state is persisted locally under `data/_runtime/profiles` by default. Override with:
+
+- `PROFILE_SCHEDULER_PERSISTENCE=on|off`
+- `PROFILE_RUNTIME_DIR`
+- `PROFILE_SCHEDULER_STORE_PATH`
+- `PROFILE_ARTIFACT_DIR`
+
+Each schedule run writes sanitized JSON plus Confluence-ready markdown artifacts. The runtime store keeps connector status, schedules, run history, and snapshots, but strips or masks inline payloads, tokens, secrets, and vault references. This is a local operational store, not a markdown source-of-truth export.
 
 ## UI
 
@@ -152,4 +167,5 @@ Automated coverage includes:
 - connector service tests for managed connector profile plan/run, permission checks, and remediation errors
 - connector API tests for `/profile/plan` and `/profile/run`
 - profiling API tests for `connector_id` delegation
+- profile scheduler tests for schedule CRUD, due ticks, repeated-failure pause behavior, sanitized run history, status endpoints, and local artifact export
 - Playwright memory-stability coverage that cycles major app views and asserts no page errors, no non-favicon 4xx resources, and bounded heap growth

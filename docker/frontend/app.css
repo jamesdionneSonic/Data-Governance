@@ -3505,7 +3505,7 @@ img, video, iframe {
 .profile-scheduler-stats {
   display: grid;
   gap: 10px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   margin: 12px 0;
 }
 
@@ -3530,6 +3530,38 @@ img, video, iframe {
   color: #1d4ed8;
   font-size: 22px;
   line-height: 1;
+}
+
+.scheduler-runtime-bar {
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #dbe4f0;
+  border-radius: 8px;
+  color: #475569;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: -2px 0 12px;
+  padding: 8px 10px;
+}
+
+.scheduler-runtime-bar span {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 650;
+  max-width: 520px;
+  overflow: hidden;
+  padding: 4px 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scheduler-runtime-bar .scheduler-runtime-error {
+  background: #fff1f2;
+  border-color: #fecdd3;
+  color: #be123c;
 }
 
 .profile-scheduler-layout {
@@ -3631,6 +3663,16 @@ img, video, iframe {
   color: #64748b;
 }
 
+.profile-schedule-error {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: 7px;
+  color: #be123c;
+  font-size: 12px;
+  line-height: 1.35;
+  padding: 7px 8px;
+}
+
 .profile-schedule-actions {
   align-content: start;
   display: flex;
@@ -3643,6 +3685,37 @@ img, video, iframe {
 .scheduler-empty {
   min-height: 180px;
   padding: 24px;
+}
+
+.scheduler-artifact-paths {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.scheduler-artifact-paths span {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  color: #475569;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  overflow: hidden;
+  padding: 7px 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scheduler-history-panel .compact-table {
+  max-height: 280px;
+  overflow: auto;
+}
+
+.scheduler-history-panel table td {
+  max-width: 360px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .lineage-object-picker-row {

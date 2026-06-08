@@ -27,6 +27,7 @@ build/
 logs/
 playwright-report/
 test-results/
+test-results-*/
 test-results.txt
 
 # Local audit archive for files intentionally removed from repo tracking

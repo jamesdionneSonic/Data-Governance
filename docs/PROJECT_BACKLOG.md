@@ -27,6 +27,7 @@ This backlog contains the complete delivery history for MVP phases and the forwa
 - Added `/api/v1/connectors/:id/bi-profile/plan` and `/api/v1/connectors/:id/bi-profile/run` so approved users can profile managed BI connectors without seeing connector credentials.
 - Added the connector metadata profile framework for Salesforce, cloud storage, catalog platforms, pipeline/orchestration tools, dbt, code repositories, OpenAPI, Kafka, and SAP. New endpoints `/api/v1/connectors/:id/metadata-profile/plan` and `/api/v1/connectors/:id/metadata-profile/run` profile metadata-only inventory, storage locations, schemas, columns, classifications, glossary terms, pipelines, tasks, jobs, datasets, connections, schedules, code assets, reports, dashboards, API endpoints, streaming assets, SAP extractors, lineage, coverage gaps, Confluence summaries, and assistant-ready English.
 - Added the managed connector profile scheduler so admins can create, update, delete, manually run, and tick recurring aggregate, BI report, and metadata profile schedules through the same connector runtime without exposing credentials or storing raw payloads.
+- Added the scheduler operations layer: in-process worker lifecycle, local sanitized runtime persistence under `data/_runtime/profiles`, JSON and Confluence-ready markdown profile run artifacts, per-schedule run history, status APIs, UI worker controls, and tests for history/artifact scrubbing.
 
 > **Non-Negotiable Architecture Principles**:
 >
