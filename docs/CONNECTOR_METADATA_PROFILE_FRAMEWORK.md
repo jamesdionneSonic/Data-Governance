@@ -105,6 +105,10 @@ GET /api/v1/connectors/profile-schedules/:scheduleId
 PUT /api/v1/connectors/profile-schedules/:scheduleId
 DELETE /api/v1/connectors/profile-schedules/:scheduleId
 POST /api/v1/connectors/profile-schedules/:scheduleId/run
+GET /api/v1/connectors/profile-schedules/:scheduleId/runs
+GET /api/v1/connectors/profile-schedules/status
+POST /api/v1/connectors/profile-schedules/worker/start
+POST /api/v1/connectors/profile-schedules/worker/stop
 POST /api/v1/connectors/profile-schedules/tick
 ```
 
@@ -115,6 +119,8 @@ Schedule type `auto` resolves to:
 - connector metadata profile for cloud, catalog, pipeline, repository, API, Kafka, Salesforce, and SAP connectors
 
 Schedules store sanitized options only. Inline payloads such as `metadata_payload`, test mocks, and credential-like fields are stripped or masked before the schedule is persisted.
+
+The scheduler has an in-process worker plus a local runtime store for environments that do not yet have SQL operational storage. By default the store writes to `data/_runtime/profiles`, and each run exports sanitized JSON plus Confluence-ready markdown artifacts. Use `PROFILE_SCHEDULER_ENABLED`, `PROFILE_SCHEDULER_INTERVAL_MS`, `PROFILE_SCHEDULER_TICK_LIMIT`, `PROFILE_RUNTIME_DIR`, `PROFILE_SCHEDULER_STORE_PATH`, and `PROFILE_ARTIFACT_DIR` to control the worker and file locations.
 
 ## Architecture Rule
 

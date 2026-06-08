@@ -12,11 +12,13 @@ import {
   deleteConnectorProfileSchedule,
   getConnector,
   getConnectorAdapterCoverage,
+  getProfileSchedulerStatus,
   getConnectorProfileSchedule,
   getConnectorSnapshot,
   grantConnectorPermission,
   listConnectorDefinitions,
   listConnectorProfileSchedules,
+  listConnectorProfileScheduleRuns,
   listConnectorRuns,
   listConnectors,
   planConnector,
@@ -29,6 +31,8 @@ import {
   runConnectorProfiling,
   runConnectorProfileSchedule,
   runDueConnectorProfileSchedules,
+  startProfileSchedulerWorker,
+  stopProfileSchedulerWorker,
   upsertConnectorProfileSchedule,
   upsertConnector,
 } from '../services/connectorService.js';
@@ -133,10 +137,41 @@ router.post('/profile-schedules', authenticate, requireAdmin, (req, res) => {
   }
 });
 
+router.get('/profile-schedules/status', authenticate, requireAdmin, (_req, res) =>
+  res.json({
+    status: 'success',
+    scheduler: getProfileSchedulerStatus(),
+  }));
+
+router.post('/profile-schedules/worker/start', authenticate, requireAdmin, (req, res) =>
+  res.json({
+    status: 'success',
+    scheduler: startProfileSchedulerWorker({ ...(req.body || {}), enabled: true }),
+  }));
+
+router.post('/profile-schedules/worker/stop', authenticate, requireAdmin, (_req, res) =>
+  res.json({
+    status: 'success',
+    scheduler: stopProfileSchedulerWorker(),
+  }));
+
 router.post('/profile-schedules/tick', authenticate, requireAdmin, async (req, res) => {
   try {
     const result = await runDueConnectorProfileSchedules(req.body || {}, req.user);
     return res.json({ status: 'success', result });
+  } catch (err) {
+    return connectorError(res, req, err);
+  }
+});
+
+router.get('/profile-schedules/:scheduleId/runs', authenticate, (req, res) => {
+  try {
+    return res.json({
+      status: 'success',
+      runs: listConnectorProfileScheduleRuns(req.params.scheduleId, req.user, {
+        limit: req.query.limit,
+      }),
+    });
   } catch (err) {
     return connectorError(res, req, err);
   }

@@ -5,6 +5,13 @@
 
 import { randomUUID } from 'crypto';
 import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  writeFileSync,
+} from 'fs';
+import path from 'path';
+import {
   buildAdapterCoverage,
   executeConnectorBiProfile,
   executeConnectorExtraction,
@@ -433,9 +440,25 @@ const connectorStore = new Map();
 const runHistoryStore = [];
 const snapshotStore = new Map();
 const profileScheduleStore = new Map();
+const profileScheduleRunStore = [];
 
 const PROFILE_SCHEDULE_TYPES = new Set(['auto', 'aggregate', 'bi', 'metadata']);
 const PROFILE_SCHEDULE_STATUSES = new Set(['ACTIVE', 'PAUSED']);
+const PROFILE_SCHEDULER_DEFAULT_INTERVAL_MS = 60_000;
+const PROFILE_SCHEDULER_MAX_HISTORY = 1000;
+const PROFILE_CONNECTOR_MAX_HISTORY = 5000;
+const RUNTIME_USER = { id: 'profile-scheduler', email: 'scheduler@platform.local', roles: ['Admin'] };
+let runtimeStoreHydrated = false;
+let profileSchedulerTimer = null;
+let profileSchedulerStatus = {
+  enabled: false,
+  running: false,
+  interval_ms: PROFILE_SCHEDULER_DEFAULT_INTERVAL_MS,
+  started_at: null,
+  last_tick_at: null,
+  last_result: null,
+  last_error: null,
+};
 
 function nowIso() {
   return new Date().toISOString();
@@ -541,6 +564,174 @@ function sanitizeProfileSchedule(schedule) {
   return schedule ? { ...schedule, options: sanitizeProfileOptions(schedule.options || {}) } : null;
 }
 
+function runtimePersistenceEnabled() {
+  const explicit = String(process.env.PROFILE_SCHEDULER_PERSISTENCE || '').toLowerCase();
+  if (explicit === 'on' || explicit === 'true') return true;
+  if (explicit === 'off' || explicit === 'false') return false;
+  return process.env.NODE_ENV !== 'test' && !process.env.JEST_WORKER_ID;
+}
+
+function profileRuntimeDir() {
+  return process.env.PROFILE_RUNTIME_DIR || path.join(process.cwd(), 'data', '_runtime', 'profiles');
+}
+
+function profileSchedulerStorePath() {
+  return process.env.PROFILE_SCHEDULER_STORE_PATH || path.join(profileRuntimeDir(), 'profile-scheduler-store.json');
+}
+
+function profileRunArtifactDir() {
+  return process.env.PROFILE_ARTIFACT_DIR || path.join(profileRuntimeDir(), 'runs');
+}
+
+function sanitizeForPersistence(value) {
+  if (Array.isArray(value)) return value.map(sanitizeForPersistence);
+  if (!value || typeof value !== 'object') return value;
+  return Object.fromEntries(
+    Object.entries(value)
+      .filter(([key]) => !/metadata_payload|metadataPayload|mockMetadata/i.test(key))
+      .map(([key, nested]) => [
+        key,
+        SENSITIVE_FIELD_PATTERN.test(key) && typeof nested === 'string'
+          ? maskValue(nested)
+          : sanitizeForPersistence(nested),
+      ])
+  );
+}
+
+function connectorForPersistence(connector) {
+  if (!connector) return null;
+  const credential = sanitizeCredential(connector.credential || {});
+  return sanitizeForPersistence({
+    ...connector,
+    config: sanitizeConfig(connector.config || {}),
+    credential: {
+      ...credential,
+      secret_ref: credential.secret_ref ? 'stored_reference' : null,
+    },
+  });
+}
+
+function persistRuntimeStore() {
+  if (!runtimePersistenceEnabled()) return;
+  try {
+    const storePath = profileSchedulerStorePath();
+    mkdirSync(path.dirname(storePath), { recursive: true });
+    writeFileSync(
+      storePath,
+      JSON.stringify(
+        {
+          version: 1,
+          saved_at: nowIso(),
+          connectors: [...connectorStore.values()].map(connectorForPersistence),
+          connector_runs: runHistoryStore.slice(0, PROFILE_CONNECTOR_MAX_HISTORY).map(sanitizeForPersistence),
+          snapshots: [...snapshotStore.values()].map(sanitizeForPersistence),
+          profile_schedules: [...profileScheduleStore.values()].map(sanitizeProfileSchedule),
+          profile_schedule_runs: profileScheduleRunStore
+            .slice(0, PROFILE_SCHEDULER_MAX_HISTORY)
+            .map(sanitizeForPersistence),
+        },
+        null,
+        2
+      )
+    );
+  } catch (err) {
+    profileSchedulerStatus.last_error = {
+      code: 'PROFILE_SCHEDULER_STORE_WRITE_ERROR',
+      message: err.message,
+      remediation: 'Check PROFILE_RUNTIME_DIR permissions and available disk space.',
+    };
+  }
+}
+
+function hydrateRuntimeStore() {
+  if (runtimeStoreHydrated || !runtimePersistenceEnabled()) return;
+  runtimeStoreHydrated = true;
+  const storePath = profileSchedulerStorePath();
+  if (!existsSync(storePath)) return;
+  try {
+    const parsed = JSON.parse(readFileSync(storePath, 'utf8'));
+    for (const connector of parsed.connectors || []) {
+      if (connector?.id && !connectorStore.has(connector.id)) connectorStore.set(connector.id, connector);
+    }
+    for (const run of parsed.connector_runs || []) {
+      if (run?.id && !runHistoryStore.some((existing) => existing.id === run.id)) runHistoryStore.push(run);
+    }
+    for (const snapshot of parsed.snapshots || []) {
+      if (snapshot?.connector_id && !snapshotStore.has(snapshot.connector_id)) {
+        snapshotStore.set(snapshot.connector_id, snapshot);
+      }
+    }
+    for (const schedule of parsed.profile_schedules || []) {
+      if (schedule?.id && !profileScheduleStore.has(schedule.id)) profileScheduleStore.set(schedule.id, schedule);
+    }
+    for (const run of parsed.profile_schedule_runs || []) {
+      if (run?.id && !profileScheduleRunStore.some((existing) => existing.id === run.id)) {
+        profileScheduleRunStore.push(run);
+      }
+    }
+  } catch (err) {
+    profileSchedulerStatus.last_error = {
+      code: 'PROFILE_SCHEDULER_STORE_READ_ERROR',
+      message: err.message,
+      remediation: 'Validate or remove the local profile scheduler store JSON file.',
+    };
+  }
+}
+
+function exportProfileRunArtifacts(schedule, run, startedAt, completedAt) {
+  if (!runtimePersistenceEnabled()) return null;
+  try {
+    const runId = run?.id || randomUUID();
+    const scheduleDir = path.join(profileRunArtifactDir(), schedule.id);
+    mkdirSync(scheduleDir, { recursive: true });
+    const safeTimestamp = completedAt.replace(/[:.]/g, '-');
+    const basePath = path.join(scheduleDir, `${safeTimestamp}-${runId}`);
+    const payload = sanitizeForPersistence({
+      schedule: sanitizeProfileSchedule(schedule),
+      run,
+      started_at: startedAt,
+      completed_at: completedAt,
+    });
+    writeFileSync(`${basePath}.json`, JSON.stringify(payload, null, 2));
+    const summary = [
+      `# Profile Run ${runId}`,
+      '',
+      `- Schedule: ${schedule.name || schedule.id}`,
+      `- Connector: ${schedule.connector_id}`,
+      `- Profile type: ${schedule.profile_type}`,
+      `- Status: ${run?.status || 'failed'}`,
+      `- Started: ${startedAt}`,
+      `- Completed: ${completedAt}`,
+      `- Raw data captured: ${run?.summary?.raw_data_captured === true ? 'yes' : 'no'}`,
+      '',
+      '## Summary',
+      '',
+      '```json',
+      JSON.stringify(sanitizeForPersistence(run?.summary || {}), null, 2),
+      '```',
+    ].join('\n');
+    writeFileSync(`${basePath}.md`, summary);
+    return {
+      json_path: `${basePath}.json`,
+      markdown_path: `${basePath}.md`,
+      confluence_ready: true,
+    };
+  } catch (err) {
+    return {
+      error: {
+        code: 'PROFILE_RUN_ARTIFACT_WRITE_ERROR',
+        message: err.message,
+        remediation: 'Check PROFILE_ARTIFACT_DIR permissions and available disk space.',
+      },
+    };
+  }
+}
+
+function recordProfileScheduleRun(entry) {
+  profileScheduleRunStore.unshift(sanitizeForPersistence(entry));
+  profileScheduleRunStore.splice(PROFILE_SCHEDULER_MAX_HISTORY);
+}
+
 function permissionDefaults(createdBy) {
   return {
     users: createdBy ? { [createdBy]: [CONNECTOR_ACTIONS.VIEW, CONNECTOR_ACTIONS.RUN, CONNECTOR_ACTIONS.EDIT] } : {},
@@ -593,6 +784,7 @@ export function listConnectorDefinitions(filters = {}) {
 }
 
 export function upsertConnector(input = {}, actor = {}) {
+  hydrateRuntimeStore();
   const definition = normalizeConnectorType(input.type);
   const id = input.id || `connector-${definition.type}-${randomUUID().slice(0, 8)}`;
   const existing = connectorStore.get(id);
@@ -623,10 +815,12 @@ export function upsertConnector(input = {}, actor = {}) {
     updated_at: nowIso(),
   };
   connectorStore.set(id, connector);
+  persistRuntimeStore();
   return sanitizeConnector(connector);
 }
 
 export function listConnectors(filters = {}, user = {}) {
+  hydrateRuntimeStore();
   return [...connectorStore.values()]
     .filter((connector) => !filters.type || connector.type === filters.type)
     .filter((connector) => !filters.category || connector.category === filters.category)
@@ -636,6 +830,7 @@ export function listConnectors(filters = {}, user = {}) {
 }
 
 export function getConnector(id, user = {}, action = CONNECTOR_ACTIONS.VIEW) {
+  hydrateRuntimeStore();
   const connector = connectorStore.get(id);
   if (!connector) return null;
   if (!canUseConnector(connector, user, action)) {
@@ -647,6 +842,7 @@ export function getConnector(id, user = {}, action = CONNECTOR_ACTIONS.VIEW) {
 }
 
 export function grantConnectorPermission(id, grant = {}, actor = {}) {
+  hydrateRuntimeStore();
   const connector = connectorStore.get(id);
   if (!connector) {
     throw new Error(`Connector '${id}' not found.`);
@@ -674,6 +870,7 @@ export function grantConnectorPermission(id, grant = {}, actor = {}) {
   connector.updated_at = nowIso();
   connector.updated_by = actorId(actor);
   connectorStore.set(id, connector);
+  persistRuntimeStore();
   return sanitizeConnector(connector);
 }
 
@@ -711,6 +908,7 @@ function estimateHarvest(connector) {
 }
 
 export async function runConnector(id, options = {}, user = {}) {
+  hydrateRuntimeStore();
   const connector = connectorStore.get(id);
   if (!connector) {
     throw new Error(`Connector '${id}' not found.`);
@@ -753,7 +951,7 @@ export async function runConnector(id, options = {}, user = {}) {
     ],
   };
   runHistoryStore.unshift(run);
-  runHistoryStore.splice(5000);
+  runHistoryStore.splice(PROFILE_CONNECTOR_MAX_HISTORY);
   snapshotStore.set(id, {
     connector_id: id,
     run_id: run.id,
@@ -765,10 +963,12 @@ export async function runConnector(id, options = {}, user = {}) {
     stream_results: extraction.stream_results,
     python_scripts: estimate.python_scripts,
   });
+  persistRuntimeStore();
   return run;
 }
 
 export async function planConnector(id, options = {}, user = {}) {
+  hydrateRuntimeStore();
   const connector = connectorStore.get(id);
   if (!connector) {
     throw new Error(`Connector '${id}' not found.`);
@@ -783,6 +983,7 @@ export async function planConnector(id, options = {}, user = {}) {
 }
 
 export async function planConnectorProfiling(id, options = {}, user = {}) {
+  hydrateRuntimeStore();
   const connector = connectorStore.get(id);
   if (!connector) {
     throw new Error(`Connector '${id}' not found.`);
@@ -797,6 +998,7 @@ export async function planConnectorProfiling(id, options = {}, user = {}) {
 }
 
 export async function runConnectorProfiling(id, options = {}, user = {}) {
+  hydrateRuntimeStore();
   const connector = connectorStore.get(id);
   if (!connector) {
     throw new Error(`Connector '${id}' not found.`);
@@ -835,11 +1037,13 @@ export async function runConnectorProfiling(id, options = {}, user = {}) {
     warnings: profile.run?.warnings || [],
   };
   runHistoryStore.unshift(run);
-  runHistoryStore.splice(5000);
+  runHistoryStore.splice(PROFILE_CONNECTOR_MAX_HISTORY);
+  persistRuntimeStore();
   return run;
 }
 
 export async function planConnectorBiProfiling(id, options = {}, user = {}) {
+  hydrateRuntimeStore();
   const connector = connectorStore.get(id);
   if (!connector) {
     throw new Error(`Connector '${id}' not found.`);
@@ -854,6 +1058,7 @@ export async function planConnectorBiProfiling(id, options = {}, user = {}) {
 }
 
 export async function runConnectorBiProfiling(id, options = {}, user = {}) {
+  hydrateRuntimeStore();
   const connector = connectorStore.get(id);
   if (!connector) {
     throw new Error(`Connector '${id}' not found.`);
@@ -891,7 +1096,7 @@ export async function runConnectorBiProfiling(id, options = {}, user = {}) {
     ],
   };
   runHistoryStore.unshift(run);
-  runHistoryStore.splice(5000);
+  runHistoryStore.splice(PROFILE_CONNECTOR_MAX_HISTORY);
   snapshotStore.set(id, {
     ...(snapshotStore.get(id) || {}),
     connector_id: id,
@@ -902,10 +1107,12 @@ export async function runConnectorBiProfiling(id, options = {}, user = {}) {
     bi_artifact_count: profileResult.profile?.inventory?.length || 0,
     bi_lineage_edge_count: profileResult.profile?.lineage_edges?.length || 0,
   });
+  persistRuntimeStore();
   return run;
 }
 
 export async function planConnectorMetadataProfiling(id, options = {}, user = {}) {
+  hydrateRuntimeStore();
   const connector = connectorStore.get(id);
   if (!connector) {
     throw new Error(`Connector '${id}' not found.`);
@@ -920,6 +1127,7 @@ export async function planConnectorMetadataProfiling(id, options = {}, user = {}
 }
 
 export async function runConnectorMetadataProfiling(id, options = {}, user = {}) {
+  hydrateRuntimeStore();
   const connector = connectorStore.get(id);
   if (!connector) {
     throw new Error(`Connector '${id}' not found.`);
@@ -957,7 +1165,7 @@ export async function runConnectorMetadataProfiling(id, options = {}, user = {})
     ],
   };
   runHistoryStore.unshift(run);
-  runHistoryStore.splice(5000);
+  runHistoryStore.splice(PROFILE_CONNECTOR_MAX_HISTORY);
   snapshotStore.set(id, {
     ...(snapshotStore.get(id) || {}),
     connector_id: id,
@@ -968,6 +1176,7 @@ export async function runConnectorMetadataProfiling(id, options = {}, user = {})
     metadata_inventory_count: profileResult.profile?.inventory?.length || 0,
     metadata_lineage_edge_count: profileResult.profile?.lineage_edges?.length || 0,
   });
+  persistRuntimeStore();
   return run;
 }
 
@@ -994,6 +1203,7 @@ async function runConnectorProfileByType(connectorId, profileType, options, user
 }
 
 export function upsertConnectorProfileSchedule(input = {}, actor = {}) {
+  hydrateRuntimeStore();
   const existing = input.id ? profileScheduleStore.get(input.id) : null;
   const connectorId = input.connector_id || input.connectorId || existing?.connector_id;
   const connector = connectorStore.get(connectorId);
@@ -1041,10 +1251,12 @@ export function upsertConnectorProfileSchedule(input = {}, actor = {}) {
   };
   schedule.next_run_at = schedule.next_run_at || computeNextRunAt(schedule, new Date(schedule.start_at));
   profileScheduleStore.set(id, schedule);
+  persistRuntimeStore();
   return sanitizeProfileSchedule(schedule);
 }
 
 export function listConnectorProfileSchedules(filters = {}, user = {}) {
+  hydrateRuntimeStore();
   return [...profileScheduleStore.values()]
     .filter((schedule) => !filters.connector_id || schedule.connector_id === filters.connector_id)
     .filter((schedule) => !filters.status || schedule.status === filters.status)
@@ -1056,6 +1268,7 @@ export function listConnectorProfileSchedules(filters = {}, user = {}) {
 }
 
 export function getConnectorProfileSchedule(id, user = {}) {
+  hydrateRuntimeStore();
   const schedule = profileScheduleStore.get(id);
   if (!schedule) return null;
   const connector = connectorStore.get(schedule.connector_id);
@@ -1068,6 +1281,7 @@ export function getConnectorProfileSchedule(id, user = {}) {
 }
 
 export function deleteConnectorProfileSchedule(id, actor = {}) {
+  hydrateRuntimeStore();
   const schedule = profileScheduleStore.get(id);
   if (!schedule) return false;
   const connector = connectorStore.get(schedule.connector_id);
@@ -1076,10 +1290,13 @@ export function deleteConnectorProfileSchedule(id, actor = {}) {
     error.code = 'CONNECTOR_FORBIDDEN';
     throw error;
   }
-  return profileScheduleStore.delete(id);
+  const deleted = profileScheduleStore.delete(id);
+  persistRuntimeStore();
+  return deleted;
 }
 
 export async function runConnectorProfileSchedule(id, actor = {}) {
+  hydrateRuntimeStore();
   const schedule = profileScheduleStore.get(id);
   if (!schedule) {
     throw new Error(`Profile schedule '${id}' not found.`);
@@ -1095,7 +1312,7 @@ export async function runConnectorProfileSchedule(id, actor = {}) {
   if (!connector) {
     throw new Error(`Connector '${schedule.connector_id}' not found.`);
   }
-  const runnerUser = isAdmin(actor) ? actor : { id: 'profile-scheduler', email: 'scheduler@platform.local', roles: ['Admin'] };
+  const runnerUser = isAdmin(actor) ? actor : RUNTIME_USER;
   const startedAt = nowIso();
   try {
     const run = await runConnectorProfileByType(schedule.connector_id, schedule.profile_type, schedule.options, runnerUser);
@@ -1114,9 +1331,26 @@ export async function runConnectorProfileSchedule(id, actor = {}) {
     };
     if (updated.failure_count >= updated.max_failures) updated.status = 'PAUSED';
     profileScheduleStore.set(id, updated);
+    const artifact = exportProfileRunArtifacts(updated, run, startedAt, completedAt);
+    recordProfileScheduleRun({
+      id: `profile-schedule-run-${randomUUID().slice(0, 12)}`,
+      schedule_id: id,
+      connector_id: updated.connector_id,
+      connector_type: updated.connector_type,
+      profile_type: updated.profile_type,
+      run_id: run.id,
+      status: run.status,
+      started_at: startedAt,
+      completed_at: completedAt,
+      artifact,
+      summary: run.summary || {},
+      error: run.errors?.[0] || null,
+    });
+    persistRuntimeStore();
     return {
       schedule: sanitizeProfileSchedule(updated),
       run,
+      artifact,
       started_at: startedAt,
       completed_at: completedAt,
     };
@@ -1138,11 +1372,27 @@ export async function runConnectorProfileSchedule(id, actor = {}) {
     };
     if (updated.failure_count >= updated.max_failures) updated.status = 'PAUSED';
     profileScheduleStore.set(id, updated);
+    recordProfileScheduleRun({
+      id: `profile-schedule-run-${randomUUID().slice(0, 12)}`,
+      schedule_id: id,
+      connector_id: updated.connector_id,
+      connector_type: updated.connector_type,
+      profile_type: updated.profile_type,
+      run_id: null,
+      status: 'failed',
+      started_at: startedAt,
+      completed_at: completedAt,
+      artifact: null,
+      summary: {},
+      error: updated.last_error,
+    });
+    persistRuntimeStore();
     throw err;
   }
 }
 
 export async function runDueConnectorProfileSchedules(options = {}, actor = {}) {
+  hydrateRuntimeStore();
   const now = options.now ? new Date(options.now) : new Date();
   const due = [...profileScheduleStore.values()]
     .filter((schedule) => schedule.status === 'ACTIVE')
@@ -1173,6 +1423,84 @@ export async function runDueConnectorProfileSchedules(options = {}, actor = {}) 
   };
 }
 
+export function listConnectorProfileScheduleRuns(scheduleId, user = {}, filters = {}) {
+  hydrateRuntimeStore();
+  const schedule = profileScheduleStore.get(scheduleId);
+  if (!schedule) return [];
+  const connector = connectorStore.get(schedule.connector_id);
+  if (connector && !canUseConnector(connector, user, CONNECTOR_ACTIONS.VIEW)) {
+    const error = new Error(`User is not allowed to view profile schedule '${scheduleId}'.`);
+    error.code = 'CONNECTOR_FORBIDDEN';
+    throw error;
+  }
+  return profileScheduleRunStore
+    .filter((run) => run.schedule_id === scheduleId)
+    .slice(0, Number(filters.limit || 50));
+}
+
+export function getProfileSchedulerStatus() {
+  hydrateRuntimeStore();
+  return {
+    ...profileSchedulerStatus,
+    persistence_enabled: runtimePersistenceEnabled(),
+    store_path: runtimePersistenceEnabled() ? profileSchedulerStorePath() : null,
+    artifact_dir: runtimePersistenceEnabled() ? profileRunArtifactDir() : null,
+    schedule_count: profileScheduleStore.size,
+    history_count: profileScheduleRunStore.length,
+  };
+}
+
+export function startProfileSchedulerWorker(options = {}) {
+  const explicitEnabled = String(process.env.PROFILE_SCHEDULER_ENABLED || '').toLowerCase();
+  const enabled =
+    options.enabled === true ||
+    explicitEnabled === 'true' ||
+    explicitEnabled === 'on' ||
+    (explicitEnabled !== 'false' && explicitEnabled !== 'off' && process.env.NODE_ENV !== 'test');
+  const intervalMs = Math.max(
+    5_000,
+    Number(options.interval_ms || options.intervalMs || process.env.PROFILE_SCHEDULER_INTERVAL_MS || PROFILE_SCHEDULER_DEFAULT_INTERVAL_MS)
+  );
+  profileSchedulerStatus = {
+    ...profileSchedulerStatus,
+    enabled,
+    interval_ms: intervalMs,
+  };
+  if (!enabled || profileSchedulerTimer) return getProfileSchedulerStatus();
+  hydrateRuntimeStore();
+  profileSchedulerStatus.running = true;
+  profileSchedulerStatus.started_at = nowIso();
+  profileSchedulerTimer = setInterval(async () => {
+    try {
+      profileSchedulerStatus.last_tick_at = nowIso();
+      profileSchedulerStatus.last_result = await runDueConnectorProfileSchedules(
+        { limit: Number(process.env.PROFILE_SCHEDULER_TICK_LIMIT || 25) },
+        RUNTIME_USER
+      );
+      profileSchedulerStatus.last_error = null;
+    } catch (err) {
+      profileSchedulerStatus.last_error = {
+        code: err.code || 'PROFILE_SCHEDULER_WORKER_ERROR',
+        message: err.message,
+        remediation: err.remediation || 'Review scheduler store, connector configuration, and profile options.',
+      };
+    }
+  }, intervalMs);
+  if (typeof profileSchedulerTimer.unref === 'function') profileSchedulerTimer.unref();
+  return getProfileSchedulerStatus();
+}
+
+export function stopProfileSchedulerWorker() {
+  if (profileSchedulerTimer) clearInterval(profileSchedulerTimer);
+  profileSchedulerTimer = null;
+  profileSchedulerStatus = {
+    ...profileSchedulerStatus,
+    running: false,
+    enabled: false,
+  };
+  return getProfileSchedulerStatus();
+}
+
 export async function runConnectorExtractionForConfig({
   id,
   type,
@@ -1201,6 +1529,7 @@ export function getConnectorAdapterCoverage() {
 }
 
 export function listConnectorRuns(filters = {}, user = {}) {
+  hydrateRuntimeStore();
   return runHistoryStore
     .filter((run) => !filters.connector_id || run.connector_id === filters.connector_id)
     .filter((run) => {
@@ -1211,6 +1540,7 @@ export function listConnectorRuns(filters = {}, user = {}) {
 }
 
 export function getConnectorSnapshot(id, user = {}) {
+  hydrateRuntimeStore();
   const connector = connectorStore.get(id);
   if (!connector) return null;
   if (!canUseConnector(connector, user, CONNECTOR_ACTIONS.VIEW)) {
@@ -1229,6 +1559,7 @@ export function getConnectorSnapshot(id, user = {}) {
 }
 
 export function deleteConnector(id, actor = {}) {
+  hydrateRuntimeStore();
   const connector = connectorStore.get(id);
   if (!connector) return false;
   if (!isAdmin(actor) && !canUseConnector(connector, actor, CONNECTOR_ACTIONS.ADMIN)) {
@@ -1238,14 +1569,21 @@ export function deleteConnector(id, actor = {}) {
   }
   connectorStore.delete(id);
   snapshotStore.delete(id);
+  for (const [scheduleId, schedule] of profileScheduleStore.entries()) {
+    if (schedule.connector_id === id) profileScheduleStore.delete(scheduleId);
+  }
+  persistRuntimeStore();
   return true;
 }
 
 export function resetConnectorStore() {
+  stopProfileSchedulerWorker();
   connectorStore.clear();
   runHistoryStore.length = 0;
   snapshotStore.clear();
   profileScheduleStore.clear();
+  profileScheduleRunStore.length = 0;
+  runtimeStoreHydrated = false;
 }
 
 export default {
@@ -1255,6 +1593,7 @@ export default {
   canUseConnector,
   deleteConnector,
   deleteConnectorProfileSchedule,
+  getProfileSchedulerStatus,
   getConnector,
   getConnectorProfileSchedule,
   getConnectorSnapshot,
@@ -1262,6 +1601,7 @@ export default {
   getConnectorAdapterCoverage,
   listConnectorDefinitions,
   listConnectorProfileSchedules,
+  listConnectorProfileScheduleRuns,
   listConnectorRuns,
   listConnectors,
   planConnector,
@@ -1276,6 +1616,8 @@ export default {
   runConnectorProfileSchedule,
   runDueConnectorProfileSchedules,
   runConnector,
+  startProfileSchedulerWorker,
+  stopProfileSchedulerWorker,
   upsertConnectorProfileSchedule,
   upsertConnector,
 };

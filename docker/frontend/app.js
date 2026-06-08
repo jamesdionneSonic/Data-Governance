@@ -433,6 +433,9 @@ const appConfig = {
         connectorSnapshot: null,
         connectorLoading: false,
         profileSchedules: [],
+        profileSchedulerStatus: null,
+        profileScheduleRuns: [],
+        profileScheduleRunScheduleId: '',
         profileScheduleLoading: false,
         profileScheduleResult: null,
         profileScheduleEditor: {
@@ -4971,8 +4974,58 @@ const appConfig = {
         this.integrations.profileScheduleLoading = true;
         const payload = await this.api('/api/v1/connectors/profile-schedules');
         this.integrations.profileSchedules = payload.schedules || [];
+        await this.loadProfileSchedulerStatus();
       } catch (err) {
         this.showToast(`Profile schedule load failed: ${err.message}`);
+      } finally {
+        this.integrations.profileScheduleLoading = false;
+      }
+    },
+    async loadProfileSchedulerStatus() {
+      try {
+        const payload = await this.api('/api/v1/connectors/profile-schedules/status');
+        this.integrations.profileSchedulerStatus = payload.scheduler || null;
+      } catch (err) {
+        this.integrations.profileSchedulerStatus = {
+          running: false,
+          enabled: false,
+          last_error: { message: err.message },
+        };
+      }
+    },
+    async loadProfileScheduleRuns(scheduleId) {
+      if (!scheduleId) return;
+      try {
+        const payload = await this.api(`/api/v1/connectors/profile-schedules/${encodeURIComponent(scheduleId)}/runs?limit=25`);
+        this.integrations.profileScheduleRuns = payload.runs || [];
+        this.integrations.profileScheduleRunScheduleId = scheduleId;
+      } catch (err) {
+        this.showToast(`Schedule history load failed: ${err.message}`);
+      }
+    },
+    async startProfileSchedulerWorker() {
+      try {
+        this.integrations.profileScheduleLoading = true;
+        const payload = await this.api('/api/v1/connectors/profile-schedules/worker/start', {
+          method: 'POST',
+          body: JSON.stringify({ enabled: true }),
+        });
+        this.integrations.profileSchedulerStatus = payload.scheduler || null;
+        this.showToast('Profile scheduler worker started.');
+      } catch (err) {
+        this.showToast(`Scheduler start failed: ${err.message}`);
+      } finally {
+        this.integrations.profileScheduleLoading = false;
+      }
+    },
+    async stopProfileSchedulerWorker() {
+      try {
+        this.integrations.profileScheduleLoading = true;
+        const payload = await this.api('/api/v1/connectors/profile-schedules/worker/stop', { method: 'POST' });
+        this.integrations.profileSchedulerStatus = payload.scheduler || null;
+        this.showToast('Profile scheduler worker stopped.');
+      } catch (err) {
+        this.showToast(`Scheduler stop failed: ${err.message}`);
       } finally {
         this.integrations.profileScheduleLoading = false;
       }
@@ -5012,6 +5065,7 @@ const appConfig = {
         });
         this.integrations.profileScheduleResult = payload.schedule || null;
         await this.loadProfileSchedules();
+        if (payload.schedule?.id) await this.loadProfileScheduleRuns(payload.schedule.id);
         this.showToast(editor.id ? 'Profile schedule updated.' : 'Profile schedule created.');
       } catch (err) {
         this.showToast(`Profile schedule save failed: ${err.message}`);
@@ -5019,7 +5073,7 @@ const appConfig = {
         this.integrations.profileScheduleLoading = false;
       }
     },
-    editProfileSchedule(schedule) {
+    async editProfileSchedule(schedule) {
       const editor = this.integrations.profileScheduleEditor;
       const start = new Date(schedule.start_at || schedule.next_run_at || Date.now());
       editor.id = schedule.id;
@@ -5035,6 +5089,7 @@ const appConfig = {
       editor.maxFailures = schedule.max_failures || 3;
       editor.streams = (schedule.options?.streams || []).join(', ');
       editor.dryRun = schedule.options?.dry_run !== false;
+      await this.loadProfileScheduleRuns(schedule.id);
       this.showToast(`Editing ${schedule.name || schedule.id}.`);
     },
     resetProfileScheduleEditor() {
@@ -5055,6 +5110,8 @@ const appConfig = {
         dryRun: true,
       };
       this.initializeProfileScheduleEditor(true);
+      this.integrations.profileScheduleRuns = [];
+      this.integrations.profileScheduleRunScheduleId = '';
     },
     async runProfileSchedule(scheduleId) {
       try {
@@ -5064,6 +5121,7 @@ const appConfig = {
         });
         this.integrations.profileScheduleResult = payload.result || null;
         await this.loadProfileSchedules();
+        await this.loadProfileScheduleRuns(scheduleId);
         this.showToast(`Schedule run ${payload.result?.run?.status || 'completed'}.`);
       } catch (err) {
         this.showToast(`Profile schedule run failed: ${err.message}`);
@@ -5080,6 +5138,9 @@ const appConfig = {
         });
         this.integrations.profileScheduleResult = payload.result || null;
         await this.loadProfileSchedules();
+        if (this.integrations.profileScheduleRunScheduleId) {
+          await this.loadProfileScheduleRuns(this.integrations.profileScheduleRunScheduleId);
+        }
         this.showToast(`Scheduler tick processed ${payload.result?.due_count || 0} due schedule(s).`);
       } catch (err) {
         this.showToast(`Scheduler tick failed: ${err.message}`);
@@ -5109,6 +5170,10 @@ const appConfig = {
           method: 'DELETE',
         });
         if (this.integrations.profileScheduleEditor.id === scheduleId) this.resetProfileScheduleEditor();
+        if (this.integrations.profileScheduleRunScheduleId === scheduleId) {
+          this.integrations.profileScheduleRuns = [];
+          this.integrations.profileScheduleRunScheduleId = '';
+        }
         await this.loadProfileSchedules();
         this.showToast('Profile schedule deleted.');
       } catch (err) {
@@ -9186,6 +9251,8 @@ const appConfig = {
                   <span class="section-title">Profile Scheduler</span>
                   <div class="btn-row">
                     <v-btn size="small" variant="outlined" :loading="integrations.profileScheduleLoading" @click="loadProfileSchedules">Refresh</v-btn>
+                    <v-btn size="small" variant="outlined" :loading="integrations.profileScheduleLoading" @click="startProfileSchedulerWorker">Start Worker</v-btn>
+                    <v-btn size="small" variant="outlined" :loading="integrations.profileScheduleLoading" @click="stopProfileSchedulerWorker">Stop Worker</v-btn>
                     <v-btn size="small" variant="outlined" :loading="integrations.profileScheduleLoading" @click="tickProfileSchedules">Run Due</v-btn>
                     <v-btn size="small" color="primary" :loading="integrations.profileScheduleLoading" @click="saveProfileSchedule">
                       {{ integrations.profileScheduleEditor.id ? 'Update Schedule' : 'Create Schedule' }}
@@ -9199,6 +9266,16 @@ const appConfig = {
                   <div class="scheduler-stat"><span>Active</span><strong>{{ profileScheduleStats.active }}</strong></div>
                   <div class="scheduler-stat"><span>Paused</span><strong>{{ profileScheduleStats.paused }}</strong></div>
                   <div class="scheduler-stat"><span>Due in 24h</span><strong>{{ profileScheduleStats.dueSoon }}</strong></div>
+                  <div class="scheduler-stat"><span>Worker</span><strong>{{ integrations.profileSchedulerStatus?.running ? 'Running' : 'Stopped' }}</strong></div>
+                </div>
+
+                <div class="scheduler-runtime-bar">
+                  <span>Persistence {{ integrations.profileSchedulerStatus?.persistence_enabled ? 'on' : 'off' }}</span>
+                  <span>Interval {{ Math.round((integrations.profileSchedulerStatus?.interval_ms || 0) / 1000) || '-' }}s</span>
+                  <span>History {{ integrations.profileSchedulerStatus?.history_count ?? 0 }}</span>
+                  <span>Last tick {{ formatTimestamp(integrations.profileSchedulerStatus?.last_tick_at) }}</span>
+                  <span v-if="integrations.profileSchedulerStatus?.artifact_dir">Artifacts {{ integrations.profileSchedulerStatus.artifact_dir }}</span>
+                  <span v-if="integrations.profileSchedulerStatus?.last_error" class="scheduler-runtime-error">Error {{ integrations.profileSchedulerStatus.last_error.message }}</span>
                 </div>
 
                 <div class="profile-scheduler-layout">
@@ -9266,9 +9343,13 @@ const appConfig = {
                             <span>Failures {{ schedule.failure_count || 0 }}/{{ schedule.max_failures || 3 }}</span>
                             <span>Last {{ schedule.last_status || 'never' }}</span>
                           </div>
+                          <div v-if="schedule.last_error" class="profile-schedule-error">
+                            {{ schedule.last_error.message || schedule.last_error }}
+                          </div>
                         </div>
                         <div class="profile-schedule-actions">
                           <v-btn size="small" variant="outlined" @click="editProfileSchedule(schedule)">Edit</v-btn>
+                          <v-btn size="small" variant="outlined" @click="loadProfileScheduleRuns(schedule.id)">History</v-btn>
                           <v-btn size="small" color="primary" variant="tonal" :disabled="schedule.status !== 'ACTIVE'" @click="runProfileSchedule(schedule.id)">Run</v-btn>
                           <v-btn v-if="schedule.status === 'ACTIVE'" size="small" variant="tonal" @click="updateProfileScheduleStatus(schedule, 'PAUSED')">Pause</v-btn>
                           <v-btn v-else size="small" variant="tonal" @click="updateProfileScheduleStatus(schedule, 'ACTIVE')">Activate</v-btn>
@@ -9293,6 +9374,39 @@ const appConfig = {
                     <div class="mini-metric"><span>Due Count</span><strong>{{ integrations.profileScheduleResult.due_count ?? '-' }}</strong></div>
                     <div class="mini-metric"><span>Run Count</span><strong>{{ integrations.profileScheduleResult.schedule?.run_count ?? integrations.profileScheduleResult.run_count ?? '-' }}</strong></div>
                     <div class="mini-metric"><span>Next Run</span><strong>{{ formatTimestamp(integrations.profileScheduleResult.schedule?.next_run_at || integrations.profileScheduleResult.next_run_at) }}</strong></div>
+                  </div>
+                  <div v-if="integrations.profileScheduleResult.artifact" class="scheduler-artifact-paths">
+                    <span>JSON {{ integrations.profileScheduleResult.artifact.json_path || '-' }}</span>
+                    <span>Markdown {{ integrations.profileScheduleResult.artifact.markdown_path || '-' }}</span>
+                  </div>
+                </div>
+
+                <div v-if="integrations.profileScheduleRuns.length" class="managed-connector-results scheduler-history-panel">
+                  <div class="section-header">
+                    <span class="section-title">Schedule Run History</span>
+                    <v-chip size="x-small" variant="tonal">{{ integrations.profileScheduleRunScheduleId }}</v-chip>
+                  </div>
+                  <div class="table-wrap compact-table">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Status</th>
+                          <th>Completed</th>
+                          <th>Run</th>
+                          <th>Artifact</th>
+                          <th>Error</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="run in integrations.profileScheduleRuns" :key="run.id">
+                          <td><v-chip size="x-small" variant="tonal" :color="scheduleStatusColor(run.status === 'succeeded' ? 'ACTIVE' : 'PAUSED')">{{ run.status }}</v-chip></td>
+                          <td>{{ formatTimestamp(run.completed_at) }}</td>
+                          <td>{{ run.run_id || run.id }}</td>
+                          <td>{{ run.artifact?.markdown_path || run.artifact?.json_path || '-' }}</td>
+                          <td>{{ run.error?.message || '-' }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </v-card>

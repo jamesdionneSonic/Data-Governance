@@ -1,7 +1,12 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const e2ePort = process.env.PLAYWRIGHT_PORT || process.env.PORT || '3100';
+const e2eBaseURL = process.env.PLAYWRIGHT_BASE_URL || `http://127.0.0.1:${e2ePort}`;
+const e2eOutputDir = process.env.PLAYWRIGHT_OUTPUT_DIR || 'test-results';
+
 export default defineConfig({
   testDir: './tests/e2e',
+  outputDir: e2eOutputDir,
   timeout: 30000,
   expect: {
     timeout: 5000,
@@ -11,7 +16,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
-    baseURL: 'http://127.0.0.1:3100',
+    baseURL: e2eBaseURL,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -24,11 +29,11 @@ export default defineConfig({
   ],
   webServer: {
     command: 'node src/index.js',
-    url: 'http://127.0.0.1:3100/health',
+    url: `${e2eBaseURL}/health`,
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
     env: {
-      PORT: '3100',
+      PORT: e2ePort,
       NODE_ENV: 'test',
     },
   },

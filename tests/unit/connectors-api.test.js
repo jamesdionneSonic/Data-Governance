@@ -386,6 +386,17 @@ describe('Connectors API', () => {
     expect(listRes.status).toBe(200);
     expect(listRes.body.schedules).toHaveLength(1);
 
+    const statusRes = await request(app)
+      .get('/api/v1/connectors/profile-schedules/status')
+      .set(authHeaders(admin));
+    expect(statusRes.status).toBe(200);
+    expect(statusRes.body.scheduler).toEqual(
+      expect.objectContaining({
+        schedule_count: 1,
+        persistence_enabled: false,
+      })
+    );
+
     const runRes = await request(app)
       .post(`/api/v1/connectors/profile-schedules/${scheduleRes.body.schedule.id}/run`)
       .set(authHeaders(admin));
@@ -396,6 +407,19 @@ describe('Connectors API', () => {
         metadata_profile_run: true,
         api_endpoint_count: expect.any(Number),
       })
+    );
+
+    const runsRes = await request(app)
+      .get(`/api/v1/connectors/profile-schedules/${scheduleRes.body.schedule.id}/runs`)
+      .set(authHeaders(admin));
+    expect(runsRes.status).toBe(200);
+    expect(runsRes.body.runs).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          schedule_id: scheduleRes.body.schedule.id,
+          status: 'succeeded',
+        }),
+      ])
     );
 
     const tickRes = await request(app)
