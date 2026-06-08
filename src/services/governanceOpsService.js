@@ -20,6 +20,28 @@ let explicitStorePath = Boolean(process.env.GOVERNANCE_OPS_STORE_PATH);
 
 const TASK_STATUSES = new Set(['open', 'in_progress', 'blocked', 'done', 'canceled']);
 const INCIDENT_STATUSES = new Set(['open', 'investigating', 'mitigated', 'resolved', 'closed']);
+export const OWNERSHIP_ROLES = Object.freeze({
+  owner: {
+    label: 'Business Owner',
+    responsibility: 'Owns business purpose, criticality, certification decisions, and funding accountability.',
+    escalationRank: 2,
+  },
+  steward: {
+    label: 'Technical Steward',
+    responsibility: 'Maintains definitions, metadata completeness, lineage evidence, quality triage, and day-to-day governance tasks.',
+    escalationRank: 1,
+  },
+  domain_manager: {
+    label: 'Domain Manager',
+    responsibility: 'Resolves escalations across a domain and approves ownership gaps or cross-team conflicts.',
+    escalationRank: 3,
+  },
+  custodian: {
+    label: 'Data Custodian',
+    responsibility: 'Owns platform operations, access controls, storage posture, and source-system coordination.',
+    escalationRank: 0,
+  },
+});
 
 function nowIso() {
   return new Date().toISOString();
@@ -46,6 +68,115 @@ function assetDisplay(asset) {
 
 function hasValue(value) {
   return value !== undefined && value !== null && value !== '' && value !== 'unknown';
+}
+
+function normalizeIdentity(value) {
+  return hasValue(value) ? String(value).trim() : null;
+}
+
+function assetParentCandidates(asset = {}) {
+  return asArray(
+    asset.parent_asset_id ||
+      asset.parentAssetId ||
+      asset.parent ||
+      asset.database ||
+      asset.schema_id ||
+      asset.schema
+  ).filter(Boolean);
+}
+
+function resolveParentAsset(asset = {}, objects = new Map()) {
+  const candidates = assetParentCandidates(asset);
+  for (const candidate of candidates) {
+    if (objects.has(candidate)) return { id: candidate, asset: objects.get(candidate) };
+  }
+  const database = asset.database || asset.database_name;
+  const schema = asset.schema || asset.schema_name;
+  const fallbackIds = [
+    database && schema ? `${database}.${schema}` : null,
+    database ? String(database) : null,
+  ].filter(Boolean);
+  for (const candidate of fallbackIds) {
+    if (objects.has(candidate)) return { id: candidate, asset: objects.get(candidate) };
+  }
+  return null;
+}
+
+function roleValue(asset = {}, role) {
+  return normalizeIdentity(asset[role] || asset?.ownership?.[role]);
+}
+
+function resolveOwnership(asset = {}, objects = new Map(), depth = 0, visited = new Set()) {
+  const assetId = asset?.id || asset?.qualifiedName || asset?.name || `asset-${depth}`;
+  const roles = {};
+  const inherited = [];
+  for (const role of Object.keys(OWNERSHIP_ROLES)) {
+    const direct = roleValue(asset, role);
+    if (direct) {
+      roles[role] = {
+        value: direct,
+        source: 'direct',
+        sourceAssetId: assetId,
+      };
+    }
+  }
+  if (Object.keys(roles).length === Object.keys(OWNERSHIP_ROLES).length || depth >= 5) {
+    return { roles, inherited, complete: Object.keys(roles).length === Object.keys(OWNERSHIP_ROLES).length };
+  }
+  if (assetId) visited.add(String(assetId));
+  const parent = resolveParentAsset(asset, objects);
+  if (parent && !visited.has(String(parent.id))) {
+    const parentOwnership = resolveOwnership({ ...parent.asset, id: parent.id }, objects, depth + 1, visited);
+    for (const [role, assignment] of Object.entries(parentOwnership.roles)) {
+      if (!roles[role]) {
+        roles[role] = {
+          ...assignment,
+          source: 'inherited',
+          inheritedFrom: parent.id,
+        };
+        inherited.push({ role, from: parent.id, value: assignment.value });
+      }
+    }
+  }
+  return { roles, inherited, complete: Object.keys(roles).length === Object.keys(OWNERSHIP_ROLES).length };
+}
+
+function ownershipEscalationChain(ownership = {}) {
+  return Object.entries(ownership.roles || {})
+    .map(([role, assignment]) => ({
+      role,
+      label: OWNERSHIP_ROLES[role]?.label || role,
+      assignee: assignment.value,
+      source: assignment.source,
+      inheritedFrom: assignment.inheritedFrom || null,
+      responsibility: OWNERSHIP_ROLES[role]?.responsibility || '',
+      escalationRank: OWNERSHIP_ROLES[role]?.escalationRank || 0,
+    }))
+    .sort((a, b) => a.escalationRank - b.escalationRank);
+}
+
+function taskSla(task = {}, now = new Date()) {
+  const due = task.dueAt ? new Date(task.dueAt) : null;
+  if (!due || !Number.isFinite(due.getTime()) || ['done', 'canceled'].includes(task.status)) {
+    return { status: 'not_tracked', daysRemaining: null, overdue: false };
+  }
+  const diffDays = Math.ceil((due.getTime() - now.getTime()) / 86_400_000);
+  return {
+    status: diffDays < 0 ? 'breached' : diffDays <= 2 ? 'at_risk' : 'healthy',
+    daysRemaining: diffDays,
+    overdue: diffDays < 0,
+  };
+}
+
+function assignmentOwnerForAsset(asset = {}, objects = new Map()) {
+  const ownership = resolveOwnership(asset, objects);
+  return (
+    ownership.roles.steward?.value ||
+    ownership.roles.owner?.value ||
+    ownership.roles.domain_manager?.value ||
+    ownership.roles.custodian?.value ||
+    'unassigned'
+  );
 }
 
 function lineageCounts(assetId, lineageGraph = new Map()) {
@@ -229,6 +360,8 @@ export function clearGovernanceOps() {
 
 export function createGovernanceTask(payload = {}, user = {}) {
   const actor = actorFrom(user);
+  const dueDays = Number(payload.dueDays || (payload.priority === 'critical' ? 2 : payload.priority === 'high' ? 5 : 14));
+  const dueAt = payload.dueAt || new Date(Date.now() + dueDays * 86_400_000).toISOString();
   const task = {
     taskId: randomUUID(),
     assetId: payload.assetId || null,
@@ -238,7 +371,9 @@ export function createGovernanceTask(payload = {}, user = {}) {
     priority: payload.priority || 'medium',
     status: 'open',
     owner: payload.owner || actor.email || actor.userId,
-    dueAt: payload.dueAt || null,
+    assigneeRole: payload.assigneeRole || null,
+    escalationTo: payload.escalationTo || null,
+    dueAt,
     tags: asArray(payload.tags),
     evidence: asArray(payload.evidence),
     createdBy: actor,
@@ -258,8 +393,11 @@ export function listGovernanceTasks(filters = {}) {
   if (filters.status) tasks = tasks.filter((task) => task.status === filters.status);
   if (filters.assetId) tasks = tasks.filter((task) => task.assetId === filters.assetId);
   if (filters.owner) tasks = tasks.filter((task) => task.owner === filters.owner);
+  if (filters.assignee) tasks = tasks.filter((task) => task.owner === filters.assignee);
   if (filters.type) tasks = tasks.filter((task) => task.type === filters.type);
-  return tasks.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+  return tasks
+    .map((task) => ({ ...task, sla: taskSla(task) }))
+    .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
 }
 
 export function transitionGovernanceTask(taskId, payload = {}, user = {}) {
@@ -293,12 +431,17 @@ export function generateStewardshipTasks(objects = new Map(), user = {}, options
     if (!hasValue(asset.steward)) gaps.push('steward');
     if (!hasValue(asset.description)) gaps.push('description');
     if (asArray(asset.tags).length === 0) gaps.push('tags');
-    if (!hasValue(asset.sensitivity) && !hasValue(asset.classification)) gaps.push('sensitivity');
+    const assetType = String(asset.object_type || asset.type || '').toLowerCase();
+    const needsSensitivity = ['table', 'view', 'column', 'dataset', 'report', 'dashboard'].includes(assetType);
+    if (needsSensitivity && !hasValue(asset.sensitivity) && !hasValue(asset.classification)) gaps.push('sensitivity');
     if (gaps.length === 0) continue;
 
     const type = 'metadata_completion';
     const dedupeKey = `${id}:${type}:open`;
     if (existingKeys.has(dedupeKey)) continue;
+    const ownership = resolveOwnership({ ...asset, id }, objects);
+    const owner = assignmentOwnerForAsset({ ...asset, id }, objects);
+    const escalation = ownershipEscalationChain(ownership);
 
     generated.push(
       createGovernanceTask(
@@ -308,8 +451,14 @@ export function generateStewardshipTasks(objects = new Map(), user = {}, options
           title: `Complete governance metadata for ${assetDisplay(asset)}`,
           description: `Missing fields: ${gaps.join(', ')}`,
           priority: gaps.includes('owner') || gaps.includes('steward') ? 'high' : 'medium',
+          owner,
+          assigneeRole: ownership.roles.steward ? 'steward' : ownership.roles.owner ? 'owner' : null,
+          escalationTo: escalation.at(-1)?.assignee || null,
           tags: ['phase-7', 'stewardship', ...gaps],
-          evidence: gaps.map((gap) => ({ gap })),
+          evidence: [
+            ...gaps.map((gap) => ({ gap })),
+            ...ownership.inherited.map((item) => ({ inherited_role: item.role, from: item.from })),
+          ],
         },
         user
       )
@@ -317,6 +466,167 @@ export function generateStewardshipTasks(objects = new Map(), user = {}, options
     existingKeys.add(dedupeKey);
   }
   return { count: generated.length, tasks: generated };
+}
+
+export function getOwnershipRoleModel() {
+  return Object.entries(OWNERSHIP_ROLES).map(([role, config]) => ({
+    role,
+    ...config,
+  }));
+}
+
+export function buildOwnershipSummary(objects = new Map()) {
+  const total = objects.size;
+  const roleCounts = Object.fromEntries(Object.keys(OWNERSHIP_ROLES).map((role) => [role, 0]));
+  const inheritedCounts = Object.fromEntries(Object.keys(OWNERSHIP_ROLES).map((role) => [role, 0]));
+  const gaps = [];
+  const assignments = [];
+  for (const [id, asset] of objects.entries()) {
+    const ownership = resolveOwnership({ ...asset, id }, objects);
+    const chain = ownershipEscalationChain(ownership);
+    for (const role of Object.keys(OWNERSHIP_ROLES)) {
+      if (ownership.roles[role]) roleCounts[role] += 1;
+      if (ownership.roles[role]?.source === 'inherited') inheritedCounts[role] += 1;
+    }
+    const missing = Object.keys(OWNERSHIP_ROLES).filter((role) => !ownership.roles[role]);
+    if (missing.length) gaps.push({ assetId: id, name: assetDisplay(asset), missing, suggestedOwner: assignmentOwnerForAsset({ ...asset, id }, objects) });
+    assignments.push({
+      assetId: id,
+      name: assetDisplay(asset),
+      type: asset.object_type || asset.type || 'object',
+      roles: ownership.roles,
+      inherited: ownership.inherited,
+      escalationChain: chain,
+      complete: missing.length === 0,
+    });
+  }
+  return {
+    totalAssets: total,
+    coverage: Object.fromEntries(
+      Object.entries(roleCounts).map(([role, count]) => [
+        role,
+        {
+          count,
+          inherited: inheritedCounts[role],
+          pct: total ? Math.round((count / total) * 100) : 0,
+        },
+      ])
+    ),
+    completeAssets: assignments.filter((item) => item.complete).length,
+    gapCount: gaps.length,
+    gaps: gaps.slice(0, 100),
+    assignments: assignments.slice(0, 250),
+  };
+}
+
+export function buildStewardPortfolio(objects = new Map(), lineageGraph = new Map(), subject = '', options = {}) {
+  const normalized = String(subject || '').toLowerCase();
+  const includeAll = !normalized || normalized === 'all';
+  const assets = [];
+  for (const [id, asset] of objects.entries()) {
+    const ownership = resolveOwnership({ ...asset, id }, objects);
+    const roleMatches = Object.entries(ownership.roles || {}).filter(([, assignment]) =>
+      includeAll ? true : String(assignment.value || '').toLowerCase() === normalized
+    );
+    if (!roleMatches.length) continue;
+    const counts = lineageCounts(id, lineageGraph);
+    const trust = computeTrustScore(asset);
+    const openTasks = listGovernanceTasks({ assetId: id }).filter((task) => !['done', 'canceled'].includes(task.status));
+    const missing = Object.keys(OWNERSHIP_ROLES).filter((role) => !ownership.roles[role]);
+    if (!hasValue(asset.description)) missing.push('description');
+    if (asArray(asset.tags).length === 0) missing.push('tags');
+    if (!hasValue(asset.sensitivity) && !hasValue(asset.classification)) missing.push('sensitivity');
+    assets.push({
+      assetId: id,
+      name: assetDisplay(asset),
+      type: asset.object_type || asset.type || 'object',
+      roles: roleMatches.map(([role]) => role),
+      ownership,
+      trust,
+      downstreamCount: counts.downstream,
+      upstreamCount: counts.upstream,
+      openTaskCount: openTasks.length,
+      overdueTaskCount: openTasks.filter((task) => task.sla?.overdue).length,
+      metadataGaps: [...new Set(missing)],
+      qualityStatus: trust.score >= 75 ? 'healthy' : trust.score >= 50 ? 'watch' : 'needs_attention',
+    });
+  }
+  const tasks = listGovernanceTasks({ owner: includeAll ? undefined : subject })
+    .filter((task) => !['done', 'canceled'].includes(task.status))
+    .slice(0, Number(options.taskLimit || 50));
+  return {
+    subject: subject || 'all',
+    totalAssets: assets.length,
+    healthyAssets: assets.filter((asset) => asset.qualityStatus === 'healthy').length,
+    assetsAtRisk: assets.filter((asset) => asset.qualityStatus !== 'healthy' || asset.metadataGaps.length).length,
+    openTasks: tasks.length,
+    overdueTasks: tasks.filter((task) => task.sla?.overdue).length,
+    alerts: assets
+      .filter((asset) => asset.metadataGaps.length || asset.overdueTaskCount)
+      .slice(0, 50)
+      .map((asset) => ({
+        assetId: asset.assetId,
+        severity: asset.overdueTaskCount ? 'high' : asset.metadataGaps.includes('owner') || asset.metadataGaps.includes('steward') ? 'high' : 'medium',
+        message: asset.overdueTaskCount
+          ? `${asset.overdueTaskCount} overdue stewardship task(s).`
+          : `Metadata gaps: ${asset.metadataGaps.join(', ')}.`,
+      })),
+    assets: assets.slice(0, Number(options.assetLimit || 100)),
+    tasks,
+  };
+}
+
+export function planBulkOwnershipAssignment(payload = {}, objects = new Map(), user = {}) {
+  const assetIds = asArray(payload.assetIds || payload.assets || payload.asset_id);
+  const filters = payload.filters || {};
+  const matchedIds = assetIds.length
+    ? assetIds
+    : [...objects.entries()]
+        .filter(([, asset]) => !filters.database || asset.database === filters.database)
+        .filter(([, asset]) => !filters.domain || asset.business_domain === filters.domain)
+        .filter(([, asset]) => !filters.type || asset.type === filters.type || asset.object_type === filters.type)
+        .map(([id]) => id);
+  const assignments = {
+    owner: normalizeIdentity(payload.owner),
+    steward: normalizeIdentity(payload.steward),
+    domain_manager: normalizeIdentity(payload.domain_manager),
+    custodian: normalizeIdentity(payload.custodian),
+  };
+  const setRoles = Object.entries(assignments).filter(([, value]) => value);
+  const changes = matchedIds
+    .filter((id) => objects.has(id))
+    .map((id) => {
+      const asset = objects.get(id);
+      return {
+        assetId: id,
+        name: assetDisplay(asset),
+        before: Object.fromEntries(Object.keys(OWNERSHIP_ROLES).map((role) => [role, roleValue(asset, role)])),
+        after: Object.fromEntries(setRoles.map(([role, value]) => [role, value])),
+      };
+    });
+  const task = payload.createTask === false || changes.length === 0
+    ? null
+    : createGovernanceTask(
+        {
+          assetId: changes.length === 1 ? changes[0].assetId : null,
+          type: 'bulk_ownership_assignment',
+          title: `Apply ownership assignment to ${changes.length} asset${changes.length === 1 ? '' : 's'}`,
+          description: setRoles.map(([role, value]) => `${role}: ${value}`).join('; '),
+          priority: 'high',
+          owner: setRoles.find(([role]) => role === 'steward')?.[1] || setRoles[0]?.[1],
+          tags: ['phase-7', 'ownership', 'bulk-assignment'],
+          evidence: changes.map((change) => ({ assetId: change.assetId, before: change.before, after: change.after })),
+        },
+        user
+      );
+  return {
+    count: changes.length,
+    roles: Object.fromEntries(setRoles),
+    changes,
+    task,
+    markdownWriteRequired: true,
+    note: 'This endpoint creates an auditable assignment plan. Apply changes through the markdown metadata write path or catalog repo workflow.',
+  };
 }
 
 export function addAssetComment(assetId, payload = {}, user = {}) {
@@ -758,6 +1068,7 @@ export function buildKpis(objects = new Map(), lineageGraph = new Map()) {
   const total = objects.size;
   const trustScores = computeAllTrustScores(objects);
   const withOwner = [...objects.values()].filter((asset) => hasValue(asset.owner)).length;
+  const withSteward = [...objects.values()].filter((asset) => hasValue(asset.steward)).length;
   const withLineage = [...objects.keys()].filter((id) => lineageCounts(id, lineageGraph).upstream > 0).length;
   const openTasks = listGovernanceTasks({ status: 'open' }).length;
   const openIncidents = listIncidents({ status: 'open' }).length;
@@ -769,6 +1080,7 @@ export function buildKpis(objects = new Map(), lineageGraph = new Map()) {
     totalAssets: total,
     averageTrustScore: avgTrust,
     ownershipCoveragePct: total ? Math.round((withOwner / total) * 100) : 0,
+    stewardshipCoveragePct: total ? Math.round((withSteward / total) * 100) : 0,
     lineageCoveragePct: total ? Math.round((withLineage / total) * 100) : 0,
     openTasks,
     openIncidents,
@@ -821,9 +1133,12 @@ export function buildPublicationStatus(objects = new Map(), lineageGraph = new M
 }
 
 export function buildGovernanceOpsOverview(objects = new Map(), lineageGraph = new Map(), terms = []) {
+  const ownership = buildOwnershipSummary(objects);
   return {
     kpis: buildKpis(objects, lineageGraph),
+    ownership,
     glossaryHealth: buildGlossaryHealth(terms),
+    stewardPortfolio: buildStewardPortfolio(objects, lineageGraph, 'all', { assetLimit: 10, taskLimit: 10 }),
     openTasks: listGovernanceTasks({ status: 'open' }).slice(0, 10),
     openIncidents: listIncidents({ status: 'open' }).slice(0, 10),
     adoptionLeaders: buildAdoptionScorecards(objects, lineageGraph).slice(0, 10),
@@ -847,6 +1162,10 @@ export default {
   exportGovernanceOpsState,
   importGovernanceOpsState,
   getGovernanceOpsStoreStatus,
+  getOwnershipRoleModel,
+  buildOwnershipSummary,
+  buildStewardPortfolio,
+  planBulkOwnershipAssignment,
   createGovernanceTask,
   listGovernanceTasks,
   transitionGovernanceTask,

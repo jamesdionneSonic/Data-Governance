@@ -22,6 +22,20 @@ describe('Phase 7 - Governance Operations API', () => {
     app = createApp();
     const objects = new Map([
       [
+        'sales',
+        {
+          id: 'sales',
+          name: 'Sales domain',
+          type: 'domain',
+          owner: 'sales-owner@example.com',
+          steward: 'sales-steward@example.com',
+          domain_manager: 'sales-manager@example.com',
+          custodian: 'platform@example.com',
+          description: 'Sales governed domain.',
+          tags: ['domain'],
+        },
+      ],
+      [
         'sales.orders',
         {
           id: 'sales.orders',
@@ -33,9 +47,10 @@ describe('Phase 7 - Governance Operations API', () => {
           sensitivity: 'confidential',
           tags: ['finance'],
           certified: true,
+          database: 'sales',
         },
       ],
-      ['sales.raw_orders', { id: 'sales.raw_orders', name: 'raw_orders', owner: 'unknown', tags: [] }],
+      ['sales.raw_orders', { id: 'sales.raw_orders', name: 'raw_orders', owner: 'unknown', tags: [], database: 'sales' }],
     ]);
     const lineageGraph = new Map([['sales.raw_orders', new Set(['sales.orders'])]]);
     initializeCache(app, objects, lineageGraph);
@@ -52,8 +67,37 @@ describe('Phase 7 - Governance Operations API', () => {
     const response = await request(app).get('/api/v1/governance-ops/overview').set(auth());
 
     expect(response.status).toBe(200);
-    expect(response.body.data.kpis.totalAssets).toBe(2);
+    expect(response.body.data.kpis.totalAssets).toBe(3);
     expect(response.body.data.publication.ready).toBe(false);
+    expect(response.body.data.ownership.coverage.owner.count).toBeGreaterThan(0);
+  });
+
+  test('returns ownership role model, steward portfolio, and bulk assignment plans', async () => {
+    const modelResponse = await request(app).get('/api/v1/governance-ops/ownership/model').set(auth());
+    expect(modelResponse.status).toBe(200);
+    expect(modelResponse.body.data.roles.map((role) => role.role)).toEqual(
+      expect.arrayContaining(['owner', 'steward', 'domain_manager', 'custodian'])
+    );
+
+    const portfolioResponse = await request(app)
+      .get('/api/v1/governance-ops/ownership/portfolio?subject=sales-steward@example.com')
+      .set(auth(['Steward']));
+    expect(portfolioResponse.status).toBe(200);
+    expect(portfolioResponse.body.data.assets.map((asset) => asset.assetId)).toEqual(
+      expect.arrayContaining(['sales.raw_orders'])
+    );
+
+    const planResponse = await request(app)
+      .post('/api/v1/governance-ops/ownership/bulk-assignment-plan')
+      .set(auth(['Steward']))
+      .send({
+        assetIds: ['sales.raw_orders'],
+        owner: 'owner2@example.com',
+        steward: 'steward2@example.com',
+      });
+    expect(planResponse.status).toBe(200);
+    expect(planResponse.body.data.count).toBe(1);
+    expect(planResponse.body.data.task.type).toBe('bulk_ownership_assignment');
   });
 
   test('lets stewards create, transition, and list tasks', async () => {

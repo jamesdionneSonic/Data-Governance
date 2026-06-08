@@ -320,6 +320,16 @@ const appConfig = {
       governanceOps: {
         loading: false,
         overview: null,
+        ownershipModel: [],
+        ownershipSummary: null,
+        stewardPortfolio: null,
+        portfolioSubject: 'all',
+        bulkOwner: '',
+        bulkSteward: '',
+        bulkDomainManager: '',
+        bulkCustodian: '',
+        bulkAssetIds: '',
+        bulkAssignmentPlan: null,
         tasks: [],
         incidents: [],
         usage: null,
@@ -3292,7 +3302,18 @@ const appConfig = {
     async loadGovernanceOps() {
       try {
         this.governanceOps.loading = true;
-        const [overview, tasks, incidents, usage, publication, storeStatus, eventDeliveries] = await Promise.all([
+        const [
+          overview,
+          tasks,
+          incidents,
+          usage,
+          publication,
+          storeStatus,
+          eventDeliveries,
+          ownershipModel,
+          ownershipSummary,
+          stewardPortfolio,
+        ] = await Promise.all([
           this.api('/api/v1/governance-ops/overview'),
           this.api('/api/v1/governance-ops/tasks'),
           this.api('/api/v1/governance-ops/incidents'),
@@ -3300,8 +3321,14 @@ const appConfig = {
           this.api('/api/v1/governance-ops/publication/status'),
           this.api('/api/v1/governance-ops/store/status').catch(() => ({ data: null })),
           this.api('/api/v1/governance-ops/events/deliveries').catch(() => ({ data: { deliveries: [] } })),
+          this.api('/api/v1/governance-ops/ownership/model').catch(() => ({ data: { roles: [] } })),
+          this.api('/api/v1/governance-ops/ownership/summary').catch(() => ({ data: null })),
+          this.api(`/api/v1/governance-ops/ownership/portfolio?subject=${encodeURIComponent(this.governanceOps.portfolioSubject || 'all')}`).catch(() => ({ data: null })),
         ]);
         this.governanceOps.overview = overview.data || null;
+        this.governanceOps.ownershipModel = ownershipModel.data?.roles || [];
+        this.governanceOps.ownershipSummary = ownershipSummary.data || overview.data?.ownership || null;
+        this.governanceOps.stewardPortfolio = stewardPortfolio.data || overview.data?.stewardPortfolio || null;
         this.governanceOps.tasks = tasks.data?.tasks || [];
         this.governanceOps.incidents = incidents.data?.incidents || [];
         this.governanceOps.usage = usage.data || null;
@@ -3325,6 +3352,42 @@ const appConfig = {
         await this.loadGovernanceOps();
       } catch (err) {
         this.showToast(`Task generation failed: ${err.message}`);
+      } finally {
+        this.governanceOps.loading = false;
+      }
+    },
+    async loadStewardPortfolio() {
+      try {
+        this.governanceOps.loading = true;
+        const payload = await this.api(`/api/v1/governance-ops/ownership/portfolio?subject=${encodeURIComponent(this.governanceOps.portfolioSubject || 'all')}`);
+        this.governanceOps.stewardPortfolio = payload.data || null;
+      } catch (err) {
+        this.showToast(`Portfolio load failed: ${err.message}`);
+      } finally {
+        this.governanceOps.loading = false;
+      }
+    },
+    async planBulkOwnershipAssignment() {
+      try {
+        this.governanceOps.loading = true;
+        const payload = await this.api('/api/v1/governance-ops/ownership/bulk-assignment-plan', {
+          method: 'POST',
+          body: JSON.stringify({
+            assetIds: String(this.governanceOps.bulkAssetIds || '')
+              .split(',')
+              .map((value) => value.trim())
+              .filter(Boolean),
+            owner: this.governanceOps.bulkOwner || undefined,
+            steward: this.governanceOps.bulkSteward || undefined,
+            domain_manager: this.governanceOps.bulkDomainManager || undefined,
+            custodian: this.governanceOps.bulkCustodian || undefined,
+          }),
+        });
+        this.governanceOps.bulkAssignmentPlan = payload.data || null;
+        this.showToast(`Planned ownership assignment for ${payload.data?.count || 0} asset(s).`);
+        await this.loadGovernanceOps();
+      } catch (err) {
+        this.showToast(`Ownership assignment plan failed: ${err.message}`);
       } finally {
         this.governanceOps.loading = false;
       }
@@ -7907,6 +7970,89 @@ const appConfig = {
                         </v-card>
                       </v-col>
                     </v-row>
+                  </v-card>
+                </v-col>
+
+                <v-col cols="12">
+                  <v-card class="card" variant="outlined">
+                    <div class="section-header" style="margin-bottom:12px;">
+                      <div>
+                        <span class="section-title">Ownership & Stewardship Control</span>
+                        <p class="card-help">Resolve business owner, steward, domain manager, and custodian accountability, including inherited roles and escalation paths.</p>
+                      </div>
+                      <div class="btn-row">
+                        <v-text-field v-model="governanceOps.portfolioSubject" density="compact" variant="outlined" hide-details placeholder="owner, steward, or all"></v-text-field>
+                        <v-btn size="small" variant="outlined" :loading="governanceOps.loading" @click="loadStewardPortfolio">Load Portfolio</v-btn>
+                      </div>
+                    </div>
+                    <div class="policy-dashboard-grid" style="margin-bottom:12px;">
+                      <div
+                        v-for="role in governanceOps.ownershipModel"
+                        :key="'ownership-role-' + role.role"
+                        class="policy-dashboard-score"
+                      >
+                        <span>{{ role.label }}</span>
+                        <strong>{{ governanceOps.ownershipSummary?.coverage?.[role.role]?.pct || 0 }}%</strong>
+                        <small>{{ governanceOps.ownershipSummary?.coverage?.[role.role]?.count || 0 }} assigned · {{ governanceOps.ownershipSummary?.coverage?.[role.role]?.inherited || 0 }} inherited</small>
+                      </div>
+                    </div>
+                    <v-row>
+                      <v-col cols="12" md="7">
+                        <div class="table-wrap">
+                          <table class="data-table">
+                            <thead>
+                              <tr>
+                                <th>Asset</th>
+                                <th>Roles</th>
+                                <th>Risk</th>
+                                <th>Tasks</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr v-for="asset in governanceOps.stewardPortfolio?.assets || []" :key="'portfolio-' + asset.assetId">
+                                <td class="text-mono text-small">{{ asset.assetId }}</td>
+                                <td>
+                                  <v-chip v-for="role in asset.roles" :key="asset.assetId + role" size="x-small" variant="tonal">{{ role }}</v-chip>
+                                </td>
+                                <td>
+                                  <v-chip size="x-small" :color="asset.qualityStatus === 'healthy' ? 'success' : 'warning'" variant="tonal">{{ asset.qualityStatus }}</v-chip>
+                                </td>
+                                <td>{{ asset.openTaskCount }} open · {{ asset.overdueTaskCount }} overdue</td>
+                              </tr>
+                              <tr v-if="!(governanceOps.stewardPortfolio?.assets || []).length">
+                                <td colspan="4" class="empty">No owned or stewarded assets found for this subject.</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </v-col>
+                      <v-col cols="12" md="5">
+                        <div class="policy-gap-list">
+                          <div
+                            v-for="alert in governanceOps.stewardPortfolio?.alerts || []"
+                            :key="'portfolio-alert-' + alert.assetId"
+                            class="policy-gap-row"
+                          >
+                            <strong>{{ alert.severity }}</strong>
+                            <span>{{ alert.assetId }} · {{ alert.message }}</span>
+                          </div>
+                          <div v-if="!(governanceOps.stewardPortfolio?.alerts || []).length" class="policy-empty-row">No ownership alerts for this portfolio.</div>
+                        </div>
+                      </v-col>
+                    </v-row>
+                    <div class="form-row mt-8">
+                      <div class="col-3"><v-text-field v-model="governanceOps.bulkAssetIds" density="compact" variant="outlined" hide-details placeholder="asset ids, comma separated"></v-text-field></div>
+                      <div class="col-2"><v-text-field v-model="governanceOps.bulkOwner" density="compact" variant="outlined" hide-details placeholder="business owner"></v-text-field></div>
+                      <div class="col-2"><v-text-field v-model="governanceOps.bulkSteward" density="compact" variant="outlined" hide-details placeholder="steward"></v-text-field></div>
+                      <div class="col-2"><v-text-field v-model="governanceOps.bulkDomainManager" density="compact" variant="outlined" hide-details placeholder="domain manager"></v-text-field></div>
+                      <div class="col-2"><v-text-field v-model="governanceOps.bulkCustodian" density="compact" variant="outlined" hide-details placeholder="custodian"></v-text-field></div>
+                      <div class="col-1"><v-btn size="small" color="primary" :loading="governanceOps.loading" @click="planBulkOwnershipAssignment">Plan</v-btn></div>
+                    </div>
+                    <div v-if="governanceOps.bulkAssignmentPlan" class="scheduler-runtime-bar mt-8">
+                      <span>{{ governanceOps.bulkAssignmentPlan.count }} asset(s)</span>
+                      <span>{{ governanceOps.bulkAssignmentPlan.note }}</span>
+                      <span v-if="governanceOps.bulkAssignmentPlan.task">Task {{ governanceOps.bulkAssignmentPlan.task.taskId }}</span>
+                    </div>
                   </v-card>
                 </v-col>
 

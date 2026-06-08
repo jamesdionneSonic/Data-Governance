@@ -23,6 +23,7 @@ import {
   evaluateAnomaly,
   evaluateServiceLevel,
   generateStewardshipTasks,
+  getOwnershipRoleModel,
   getTrustActions,
   getGovernanceOpsStoreStatus,
   importGovernanceOpsState,
@@ -32,7 +33,10 @@ import {
   listDecisions,
   listGovernanceTasks,
   listIncidents,
+  buildOwnershipSummary,
+  buildStewardPortfolio,
   recommendRetirementCandidates,
+  planBulkOwnershipAssignment,
   recordDecision,
   recordPublicationCheck,
   recordUsageEvent,
@@ -86,6 +90,20 @@ router.get('/events/deliveries', authenticate, requireSteward, (req, res) => ok(
   }));
 
 router.get('/kpis', authenticate, (_req, res) => ok(res, buildKpis(assetCache, lineageGraphCache)));
+
+router.get('/ownership/model', authenticate, (_req, res) => ok(res, {
+  roles: getOwnershipRoleModel(),
+}));
+
+router.get('/ownership/summary', authenticate, (_req, res) => ok(res, buildOwnershipSummary(assetCache)));
+
+router.get('/ownership/portfolio', authenticate, (req, res) => {
+  const subject = req.query.subject || req.query.owner || req.user?.email || req.user?.id || 'all';
+  return ok(res, buildStewardPortfolio(assetCache, lineageGraphCache, subject, req.query));
+});
+
+router.post('/ownership/bulk-assignment-plan', authenticate, requireSteward, (req, res) =>
+  ok(res, planBulkOwnershipAssignment(req.body || {}, assetCache, req.user)));
 
 router.post('/tasks', authenticate, requireSteward, (req, res) => res.status(201).json({ status: 'success', data: createGovernanceTask(req.body, req.user) }));
 
