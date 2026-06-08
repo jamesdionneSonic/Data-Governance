@@ -5,6 +5,8 @@ import {
   assessChangeRisk,
   buildAdoptionScorecards,
   buildKpis,
+  buildOwnershipSummary,
+  buildStewardPortfolio,
   clearGovernanceOps,
   createGovernanceTask,
   createIncident,
@@ -14,6 +16,7 @@ import {
   generateStewardshipTasks,
   getGovernanceOpsStoreStatus,
   importGovernanceOpsState,
+  planBulkOwnershipAssignment,
   recordUsageEvent,
   setGovernanceOpsStorePath,
   transitionGovernanceTask,
@@ -27,6 +30,20 @@ describe('Phase 7 - Governance Operations Service', () => {
     clearGovernanceOps();
     objects = new Map([
       [
+        'sales',
+        {
+          id: 'sales',
+          name: 'Sales domain',
+          type: 'domain',
+          owner: 'sales-owner@example.com',
+          steward: 'sales-steward@example.com',
+          domain_manager: 'sales-manager@example.com',
+          custodian: 'platform@example.com',
+          description: 'Sales data domain.',
+          tags: ['domain'],
+        },
+      ],
+      [
         'sales.orders',
         {
           id: 'sales.orders',
@@ -38,6 +55,7 @@ describe('Phase 7 - Governance Operations Service', () => {
           sensitivity: 'confidential',
           tags: ['finance'],
           certified: true,
+          database: 'sales',
         },
       ],
       [
@@ -49,6 +67,7 @@ describe('Phase 7 - Governance Operations Service', () => {
           owner: 'unknown',
           description: '',
           tags: [],
+          database: 'sales',
         },
       ],
     ]);
@@ -126,9 +145,48 @@ describe('Phase 7 - Governance Operations Service', () => {
     const incident = createIncident({ assetId: 'sales.orders', severity: 'high' }, { id: 'steward' });
 
     expect(adoption[0].assetId).toBe('sales.orders');
-    expect(kpis.totalAssets).toBe(2);
+    expect(kpis.totalAssets).toBe(3);
     expect(anomaly.severity).toBe('medium');
     expect(incident.status).toBe('open');
+  });
+
+  test('builds ownership model with inherited roles, portfolio alerts, and assignment plans', () => {
+    const summary = buildOwnershipSummary(objects);
+    const rawOrders = summary.assignments.find((item) => item.assetId === 'sales.raw_orders');
+
+    expect(summary.coverage.domain_manager.pct).toBeGreaterThan(0);
+    expect(rawOrders.roles.steward).toEqual(
+      expect.objectContaining({
+        value: 'sales-steward@example.com',
+        source: 'inherited',
+        inheritedFrom: 'sales',
+      })
+    );
+    expect(rawOrders.escalationChain.map((item) => item.role)).toContain('domain_manager');
+
+    const portfolio = buildStewardPortfolio(objects, lineageGraph, 'sales-steward@example.com');
+    expect(portfolio.totalAssets).toBeGreaterThanOrEqual(2);
+    expect(portfolio.alerts).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          assetId: 'sales.raw_orders',
+          severity: expect.any(String),
+        }),
+      ])
+    );
+
+    const plan = planBulkOwnershipAssignment(
+      {
+        assetIds: ['sales.raw_orders'],
+        owner: 'new-owner@example.com',
+        steward: 'new-steward@example.com',
+      },
+      objects,
+      { id: 'admin', roles: ['Admin'] }
+    );
+    expect(plan.count).toBe(1);
+    expect(plan.task.type).toBe('bulk_ownership_assignment');
+    expect(plan.markdownWriteRequired).toBe(true);
   });
 
   test('persists and restores governance ops workflow state', async () => {
