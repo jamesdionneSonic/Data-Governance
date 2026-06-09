@@ -381,6 +381,133 @@ function normalizeLookupKey(value) {
     .toLowerCase();
 }
 
+function baseServerName(value) {
+  return String(value || '').split(',')[0].trim();
+}
+
+function parseProfileObjectIdentity(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return null;
+  const parts = raw.split('.').filter(Boolean);
+  if (parts.length >= 4) {
+    return {
+      raw,
+      server: parts[0],
+      database: parts[1],
+      schema: parts[2],
+      object_name: parts.slice(3).join('.'),
+    };
+  }
+  if (parts.length === 3) {
+    return {
+      raw,
+      server: '',
+      database: parts[0],
+      schema: parts[1],
+      object_name: parts[2],
+    };
+  }
+  return null;
+}
+
+function profileObjectResolverKey({ server = '', database = '', schema = '', object_name = '' } = {}, { includeServer = true } = {}) {
+  const parts = [];
+  if (includeServer) parts.push(normalizeLookupKey(baseServerName(server)));
+  parts.push(normalizeLookupKey(database));
+  parts.push(normalizeLookupKey(schema));
+  parts.push(normalizeLookupKey(object_name));
+  return parts.join('|');
+}
+
+function addToResolverMap(map, key, row) {
+  if (!key || /^(\|)+$/.test(key)) return;
+  if (!map.has(key)) map.set(key, []);
+  map.get(key).push(row);
+}
+
+function buildProfileObjectResolver(runtimeRows = []) {
+  const exactObjectId = new Map();
+  const byServerlessQualifiedName = new Map();
+  const byQualifiedName = new Map();
+  for (const row of runtimeRows) {
+    const objectIdKey = normalizeLookupKey(row.object_id);
+    if (objectIdKey) exactObjectId.set(objectIdKey, row);
+    addToResolverMap(
+      byServerlessQualifiedName,
+      profileObjectResolverKey(row, { includeServer: true }),
+      row
+    );
+    addToResolverMap(
+      byQualifiedName,
+      profileObjectResolverKey(row, { includeServer: false }),
+      row
+    );
+  }
+  return {
+    exactObjectId,
+    byServerlessQualifiedName,
+    byQualifiedName,
+  };
+}
+
+function firstUniqueResolverMatch(matches = []) {
+  return matches.length === 1 ? matches[0] : null;
+}
+
+function resolveProfileObjectRow({
+  assetId = '',
+  profile = {},
+  run = {},
+  connectorById = new Map(),
+  resolver = buildProfileObjectResolver([]),
+} = {}) {
+  const assetIdentity = parseProfileObjectIdentity(assetId);
+  const database =
+    profile.database ||
+    assetIdentity?.database ||
+    profileRunDatabase(run, connectorById) ||
+    '';
+  const schema = profile.schema || assetIdentity?.schema || '';
+  const object_name =
+    profile.object_name ||
+    profile.display_name ||
+    assetIdentity?.object_name ||
+    assetId;
+  const server =
+    profile.server ||
+    assetIdentity?.server ||
+    profileRunServer(run, connectorById) ||
+    '';
+  const exact = resolver.exactObjectId.get(normalizeLookupKey(assetId));
+  if (exact) return { row: exact, match_mode: 'exact_object_id' };
+  const byServerlessQualifiedName = firstUniqueResolverMatch(
+    resolver.byServerlessQualifiedName.get(
+      profileObjectResolverKey({ server, database, schema, object_name }, { includeServer: true })
+    ) || []
+  );
+  if (byServerlessQualifiedName) {
+    return { row: byServerlessQualifiedName, match_mode: 'serverless_qualified_name' };
+  }
+  const byQualifiedName = firstUniqueResolverMatch(
+    resolver.byQualifiedName.get(
+      profileObjectResolverKey({ database, schema, object_name }, { includeServer: false })
+    ) || []
+  );
+  if (byQualifiedName) {
+    return { row: byQualifiedName, match_mode: 'database_schema_object_name' };
+  }
+  return {
+    row: null,
+    match_mode: 'unresolved',
+    identity: {
+      server,
+      database,
+      schema,
+      object_name,
+    },
+  };
+}
+
 function ensureArray(value) {
   return Array.isArray(value) ? value : [];
 }
@@ -1847,8 +1974,30 @@ function profileCoverageSummary(entries = []) {
   };
 }
 
-function objectProfileShard(run = {}, assetId = '', profile = {}, connectorById = new Map(), sourceArtifactPath = '') {
+function objectProfileShard(
+  run = {},
+  assetId = '',
+  profile = {},
+  connectorById = new Map(),
+  sourceArtifactPath = '',
+  resolver = buildProfileObjectResolver([])
+) {
   const columns = profile.columns || {};
+  const resolved = resolveProfileObjectRow({
+    assetId,
+    profile,
+    run,
+    connectorById,
+    resolver,
+  });
+  const canonicalRow = resolved.row;
+  const parsedIdentity = parseProfileObjectIdentity(assetId);
+  const objectName =
+    canonicalRow?.object_name ||
+    profile.object_name ||
+    profile.display_name ||
+    parsedIdentity?.object_name ||
+    assetId;
   const columnRows = Object.entries(columns).map(([columnName, stats]) => ({
     column_name: columnName,
     row_count: stats.row_count ?? profile.row_count ?? null,
@@ -1863,18 +2012,18 @@ function objectProfileShard(run = {}, assetId = '', profile = {}, connectorById 
   }));
   return {
     schema_version: PROFILE_INDEX_SCHEMA_VERSION,
-    object_id: assetId,
-    display_name: profile.display_name || profile.object_name || assetId,
+    object_id: canonicalRow?.object_id || assetId,
+    display_name: canonicalRow?.display_name || profile.display_name || objectName,
     connector_id: run.connector_id || '',
     connector_type: run.connector_type || '',
     run_id: run.id,
     run_kind: profileRunKind(run),
     status: run.status || '',
-    server: profile.server || profileRunServer(run, connectorById),
-    database: profile.database || profileRunDatabase(run, connectorById),
-    schema: profile.schema || '',
-    object_name: profile.object_name || profile.display_name || assetId,
-    object_type: profile.object_type || 'table',
+    server: canonicalRow?.server || profile.server || parsedIdentity?.server || profileRunServer(run, connectorById),
+    database: canonicalRow?.database || profile.database || parsedIdentity?.database || profileRunDatabase(run, connectorById),
+    schema: canonicalRow?.schema || profile.schema || parsedIdentity?.schema || '',
+    object_name: objectName,
+    object_type: canonicalRow?.object_type || profile.object_type || 'table',
     profiled_at: profile.profiled_at || profile.generated_at || profileRunCompletedAt(run),
     raw_data_captured: false,
     raw_values_retained: false,
@@ -1887,6 +2036,8 @@ function objectProfileShard(run = {}, assetId = '', profile = {}, connectorById 
     },
     columns: columnRows,
     evidence: {
+      source_asset_id: assetId,
+      canonical_match_mode: resolved.match_mode,
       ...profileSourceEvidence(sourceArtifactPath, run),
     },
   };
@@ -2005,6 +2156,7 @@ async function buildProfileIndex(packageRoot, options = {}) {
     readProfileRunArtifacts(artifactRoot),
     readProfileRuntimeStore(storePath),
   ]);
+  const resolver = buildProfileObjectResolver(options.runtimeRows || []);
   const connectorById = new Map(runtimeStore.connectors.map((connector) => [connector.id, connector]));
   const runs = mergeProfileRuns(artifactRuns, runtimeStore.runs);
   const runShards = [];
@@ -2013,7 +2165,7 @@ async function buildProfileIndex(packageRoot, options = {}) {
   const objectNameMap = new Map();
   const columnNameMap = new Map();
   const connectorMap = new Map();
-  for (const directory of [
+  const profileIndexDirectories = [
     'profile-index/by-database',
     'profile-index/by-object-id',
     'profile-index/by-object-name',
@@ -2021,7 +2173,12 @@ async function buildProfileIndex(packageRoot, options = {}) {
     'profile-index/runs/by-run-id',
     'profile-index/runs/by-connector',
     'profile-index/flags',
-  ]) {
+  ];
+  for (const directory of profileIndexDirectories) {
+    // eslint-disable-next-line no-await-in-loop
+    await removeTreeIfExists(packageRoot, directory);
+  }
+  for (const directory of profileIndexDirectories) {
     // eslint-disable-next-line no-await-in-loop
     await mkdir(path.join(packageRoot, directory), { recursive: true });
   }
@@ -2037,14 +2194,16 @@ async function buildProfileIndex(packageRoot, options = {}) {
       connector_id: runShard.connector_id,
       run_kind: runShard.run_kind,
       status: runShard.status,
+      mode: runShard.mode,
       completed_at: runShard.completed_at,
+      counts: runShard.counts,
     }));
     addToMapArray(connectorMap, runShard.connector_id, runShard);
     addToMapArray(databaseMap, runShard.database || 'unknown', runShard);
 
     const profiles = profileRunProfiles(run);
     for (const [assetId, profile] of Object.entries(profiles)) {
-      const objectShard = objectProfileShard(run, assetId, profile, connectorById, sourceArtifactPath);
+      const objectShard = objectProfileShard(run, assetId, profile, connectorById, sourceArtifactPath, resolver);
       assertProfileIndexSafe(objectShard, `object:${assetId}`);
       objectShards.push(objectShard);
     }
@@ -2073,7 +2232,11 @@ async function buildProfileIndex(packageRoot, options = {}) {
       object_id: shard.object_id,
       display_name: shard.display_name,
       database: shard.database,
+      schema: shard.schema,
+      object_name: shard.object_name,
       object_type: shard.object_type,
+      run_kind: shard.run_kind,
+      status: shard.status,
       profiled_at: shard.profiled_at,
     });
     addToMapArray(objectNameMap, normalizeLookupKey(shard.object_name || shard.display_name || shard.object_id), objectReference);
@@ -2450,7 +2613,9 @@ async function main() {
   }
 
   const runtimeBuild = await buildRuntimeIndexes(packageRoot, canReusePackageRoot ? previousState : {});
-  const profileIndexManifest = await buildProfileIndex(packageRoot);
+  const profileIndexManifest = await buildProfileIndex(packageRoot, {
+    runtimeRows: runtimeBuild.runtimeRows || [],
+  });
   const profileTeaserBuild = await writeProfileTeaserCards(packageRoot, runtimeBuild.runtimeRows || []);
   const artifactManifest = await buildArtifactManifests(packageRoot, { runtimeBuild, profileIndexManifest });
   const compactPayload =
