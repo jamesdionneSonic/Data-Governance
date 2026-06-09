@@ -851,10 +851,40 @@ function npmCommand() {
   return process.platform === 'win32' ? 'npm.cmd' : 'npm';
 }
 
+function npmCliPath() {
+  if (process.env.npm_execpath) return process.env.npm_execpath;
+  if (process.platform !== 'win32') return null;
+  const nodeDir = path.dirname(process.execPath);
+  return path.join(nodeDir, 'node_modules', 'npm', 'bin', 'npm-cli.js');
+}
+
+function directScriptCommand(scriptName, args = []) {
+  const passthroughArgs = args.filter((arg) => arg !== '--');
+  const scriptMap = {
+    'lineage:runtime:package': ['scripts/build-lineage-runtime-package.mjs'],
+    'lineage:runtime:check': ['scripts/check-lineage-runtime-package.mjs'],
+    'lineage:runtime:sync': ['scripts/sync-lineage-runtime-to-catalog-repo.mjs'],
+    'lineage:runtime:publish': ['scripts/publish-lineage-runtime-package.mjs'],
+    'confluence:export': ['scripts/build-confluence-export.mjs'],
+    'confluence:check': ['scripts/check-confluence-export.mjs'],
+    'confluence:publish': ['scripts/sync-confluence-catalog.mjs', '--publish'],
+  };
+  const entry = scriptMap[scriptName];
+  if (!entry) return null;
+  return {
+    command: process.execPath,
+    args: [path.join(process.cwd(), entry[0]), ...entry.slice(1), ...passthroughArgs],
+  };
+}
+
 function runNpmScript(scriptName, args = []) {
   return new Promise((resolve) => {
     const startedAt = nowIso();
-    const child = spawn(npmCommand(), ['run', scriptName, ...args], {
+    const direct = directScriptCommand(scriptName, args);
+    const npmCli = direct ? null : npmCliPath();
+    const command = direct?.command || (npmCli ? process.execPath : npmCommand());
+    const commandArgs = direct?.args || (npmCli ? [npmCli, 'run', scriptName, ...args] : ['run', scriptName, ...args]);
+    const child = spawn(command, commandArgs, {
       cwd: process.cwd(),
       env: process.env,
       shell: false,
