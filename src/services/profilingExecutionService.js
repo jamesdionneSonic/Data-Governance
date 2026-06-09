@@ -56,7 +56,21 @@ const EXECUTION_MODES = new Set(['dry_run', 'simulate', 'live']);
 const NUMERIC_TYPE = /\b(bigint|int|smallint|tinyint|decimal|numeric|money|smallmoney|float|real|double|number)\b/i;
 const DATE_TYPE = /\b(date|datetime|datetime2|smalldatetime|time|timestamp)\b/i;
 const TEXT_TYPE = /\b(char|nchar|varchar|nvarchar|text|ntext|string|xml|json|uniqueidentifier|uuid)\b/i;
+const LEGACY_SQL_SERVER_TEXT_TYPE = /\b(text|ntext)\b/i;
 const SENSITIVE_NAME = /ssn|social|tax.?id|email|phone|address|dob|birth|name|vin|license|account|routing|card|token|secret|password/i;
+const ADAPTIVE_PROFILE_RULES = Object.freeze({
+  large_rows: 5_000_000,
+  huge_rows: 20_000_000,
+  wide_columns: 50,
+  very_wide_columns: 90,
+  chunk_columns_default: 40,
+  chunk_columns_large: 24,
+  chunk_columns_huge: 16,
+  sample_percent_large: 1,
+  sample_percent_huge: 0.25,
+  query_timeout_large_ms: 60_000,
+  query_timeout_huge_ms: 90_000,
+});
 
 function nowIso() {
   return new Date().toISOString();
@@ -296,8 +310,8 @@ const DIALECT_BUILDERS = Object.freeze({
     rowCountExpression: () => 'COUNT_BIG(*) AS [row_count]',
     distinctExpression: (columnSql) => `COUNT(DISTINCT ${columnSql})`,
     meanExpression: (columnSql) => `AVG(CAST(${columnSql} AS float))`,
-    tableHint: (safety) => (safety.profile_mode === 'metadata_only' ? '' : ' WITH (READUNCOMMITTED)'),
-    sampleClause: (safety) => ` WITH (READUNCOMMITTED) TABLESAMPLE (${safety.sample_percent} PERCENT)`,
+    tableHint: (safety) => (['metadata_only', 'sample'].includes(safety.profile_mode) ? '' : ' WITH (READUNCOMMITTED)'),
+    sampleClause: (safety) => ` TABLESAMPLE (${safety.sample_percent} PERCENT)`,
     fromClause: defaultFromClause,
     preamble: (safety) => [
       `SET LOCK_TIMEOUT ${safety.lock_timeout_ms};`,
@@ -378,21 +392,91 @@ function dialectBuilder(name) {
 function buildColumnActions(column, safety) {
   const sensitive = isSensitiveColumn(column);
   const kind = columnKind(column);
+  const sqlServerLegacyText =
+    safety.dialect === 'sql_server' && LEGACY_SQL_SERVER_TEXT_TYPE.test(String(column.data_type || column.type || ''));
   const actions = ['null_count'];
-  if (safety.include_distinct && !sensitive) actions.push('distinct_count');
+  if (safety.include_distinct && !sensitive && !sqlServerLegacyText) actions.push('distinct_count');
   if (safety.include_min_max && !sensitive && (kind === 'numeric' || kind === 'date' || safety.include_text_min_max)) {
     actions.push('min', 'max');
   }
   if (safety.include_mean && !sensitive && kind === 'numeric') actions.push('mean');
+  const skippedStatistics = [];
+  if (sensitive) {
+    skippedStatistics.push(...['distinct_count', 'min', 'max', 'mean'].filter((stat) => !actions.includes(stat)));
+  }
+  if (sqlServerLegacyText) skippedStatistics.push('distinct_count');
   return {
     name: column.name,
     data_type: column.data_type,
     kind,
     sensitive,
+    sql_server_legacy_text: sqlServerLegacyText,
     actions,
-    skipped_statistics: sensitive
-      ? ['distinct_count', 'min', 'max', 'mean'].filter((stat) => !actions.includes(stat))
-      : [],
+    skipped_statistics: [...new Set(skippedStatistics)],
+  };
+}
+
+function chunkArray(values = [], chunkSize = values.length || 1) {
+  const size = Math.max(1, Number(chunkSize) || values.length || 1);
+  const chunks = [];
+  for (let index = 0; index < values.length; index += size) {
+    chunks.push(values.slice(index, index + size));
+  }
+  return chunks;
+}
+
+function assetStrategy(asset = {}, columns = [], safety = {}, dialect = null) {
+  const estimatedRows = estimateRows(asset);
+  const columnCount = columns.length;
+  const nextSafety = { ...safety };
+  const warnings = [];
+  let strategy = 'standard';
+  let chunkColumns = Math.min(nextSafety.max_columns_per_table, ADAPTIVE_PROFILE_RULES.chunk_columns_default);
+
+  if (estimatedRows >= ADAPTIVE_PROFILE_RULES.large_rows || columnCount >= ADAPTIVE_PROFILE_RULES.wide_columns) {
+    strategy = 'large_table_sampling';
+    nextSafety.profile_mode = dialect?.sampleClause ? 'sample' : 'metadata_only';
+    nextSafety.query_timeout_ms = Math.max(nextSafety.query_timeout_ms, ADAPTIVE_PROFILE_RULES.query_timeout_large_ms);
+    nextSafety.lock_timeout_ms = Math.max(nextSafety.lock_timeout_ms, 10_000);
+    nextSafety.include_mean = false;
+    nextSafety.include_text_min_max = false;
+    chunkColumns = Math.min(chunkColumns, ADAPTIVE_PROFILE_RULES.chunk_columns_large);
+    warnings.push(
+      `Adaptive profiling downgraded ${objectName(asset)} to ${nextSafety.profile_mode} mode because it is large (${estimatedRows || 0} rows, ${columnCount} columns).`
+    );
+  }
+
+  if (estimatedRows >= ADAPTIVE_PROFILE_RULES.huge_rows || columnCount >= ADAPTIVE_PROFILE_RULES.very_wide_columns) {
+    strategy = 'huge_table_sampling';
+    nextSafety.profile_mode = dialect?.sampleClause ? 'sample' : 'metadata_only';
+    nextSafety.query_timeout_ms = Math.max(nextSafety.query_timeout_ms, ADAPTIVE_PROFILE_RULES.query_timeout_huge_ms);
+    nextSafety.sample_percent = Math.min(nextSafety.sample_percent, ADAPTIVE_PROFILE_RULES.sample_percent_huge);
+    nextSafety.include_distinct = false;
+    nextSafety.include_min_max = false;
+    nextSafety.include_mean = false;
+    chunkColumns = Math.min(chunkColumns, ADAPTIVE_PROFILE_RULES.chunk_columns_huge);
+    warnings.push(
+      `Adaptive profiling reduced statistics for ${objectName(asset)} because it is very large (${estimatedRows || 0} rows, ${columnCount} columns).`
+    );
+  } else if (strategy === 'large_table_sampling') {
+    nextSafety.sample_percent = Math.min(nextSafety.sample_percent, ADAPTIVE_PROFILE_RULES.sample_percent_large);
+    if (estimatedRows >= ADAPTIVE_PROFILE_RULES.large_rows) {
+      nextSafety.include_distinct = false;
+      warnings.push(`Distinct counts were disabled for ${objectName(asset)} to reduce timeout risk on a large object.`);
+    }
+  }
+
+  if (nextSafety.profile_mode === 'sample' && !dialect?.sampleClause) {
+    nextSafety.profile_mode = 'metadata_only';
+    warnings.push(`${dialect?.label || 'This dialect'} does not support portable TABLESAMPLE here, so profiling fell back to metadata-only mode.`);
+  }
+
+  return {
+    strategy,
+    estimatedRows,
+    warnings,
+    chunk_columns: Math.max(1, chunkColumns),
+    safety: nextSafety,
   };
 }
 
@@ -525,69 +609,87 @@ export function buildProfilingPlan(input = {}, objectCache = new Map()) {
     }
 
     const estimatedRows = estimateRows(asset);
-    if (safety.profile_mode === 'full_scan' && !safety.allow_full_scan) {
-      skipped.push(buildSkipped(asset, 'Full-scan profiling is blocked unless allow_full_scan is true.', 'error'));
-      continue;
-    }
-    if (safety.profile_mode !== 'metadata_only' && estimatedRows > safety.max_estimated_rows && !safety.allow_full_scan) {
-      skipped.push(
-        buildSkipped(
-          asset,
-          `Estimated rows ${estimatedRows} exceed max_estimated_rows ${safety.max_estimated_rows}; use metadata_only/sample or raise the limit.`,
-          'error'
-        )
-      );
-      continue;
-    }
-
     const columns = toArray(asset.columns).map(normalizeColumn).filter((column) => column.name);
     if (!columns.length) {
       skipped.push(buildSkipped(asset, 'No columns are available in the catalog metadata.'));
       continue;
     }
 
-    const selectedColumns = columns.slice(0, safety.max_columns_per_table).map((column) =>
-      buildColumnActions(column, safety)
-    );
-    const warnings = [];
+    const adaptive = assetStrategy(asset, columns, safety, dialect);
+    const actionSafety = adaptive.safety;
+    if (actionSafety.profile_mode === 'full_scan' && !actionSafety.allow_full_scan) {
+      skipped.push(buildSkipped(asset, 'Full-scan profiling is blocked unless allow_full_scan is true.', 'error'));
+      continue;
+    }
+    if (
+      !['metadata_only', 'sample'].includes(actionSafety.profile_mode) &&
+      estimatedRows > actionSafety.max_estimated_rows &&
+      !actionSafety.allow_full_scan
+    ) {
+      skipped.push(
+        buildSkipped(
+          asset,
+          `Estimated rows ${estimatedRows} exceed max_estimated_rows ${actionSafety.max_estimated_rows}; use metadata_only/sample or raise the limit.`,
+          'error'
+        )
+      );
+      continue;
+    }
+    const selectedColumns = columns
+      .slice(0, actionSafety.max_columns_per_table)
+      .map((column) => buildColumnActions(column, actionSafety));
+    const warnings = [...adaptive.warnings];
     if (columns.length > selectedColumns.length) {
       warnings.push(`Column list truncated from ${columns.length} to ${selectedColumns.length}.`);
     }
     if (selectedColumns.some((column) => column.sensitive)) {
       warnings.push('Sensitive columns will only receive null-count style aggregate checks; value range/cardinality is suppressed.');
     }
-    if (safety.profile_mode === 'sample' && !dialect.sampleClause) {
+    if (actionSafety.profile_mode === 'sample' && !dialect.sampleClause) {
       warnings.push(`${dialect.label} does not have a portable TABLESAMPLE clause in this framework; enforce sampling in the connector or workload manager.`);
     }
+    const columnChunks = chunkArray(selectedColumns, adaptive.chunk_columns);
+    if (columnChunks.length > 1) {
+      warnings.push(`Profile columns were split into ${columnChunks.length} batches to reduce timeout risk.`);
+    }
 
-    const action = {
-      action_id: randomUUID(),
-      connector_id: input.connector_id || input.connectorId || null,
-      asset_id: asset.id || objectName(asset),
-      object_name: objectName(asset),
-      object_type: objectType(asset),
-      database: objectDatabase(asset),
-      schema: objectSchema(asset),
-      estimated_rows: estimatedRows,
-      profile_mode: safety.profile_mode,
-      execution_mode: safety.execution_mode,
-      raw_values_retained: false,
-      columns: selectedColumns,
-      warnings,
-      query: {
-        dialect: safety.dialect,
-        dialect_label: dialect.label,
-        sql: buildGenericProfileQuery(asset, selectedColumns, safety, dialect),
-        timeout_ms: safety.query_timeout_ms,
-        lock_timeout_ms: safety.lock_timeout_ms,
-        read_only: true,
-        safety_notes: dialect.safety_notes,
-      },
-      asset,
-    };
-    actions.push(action);
+    columnChunks.forEach((columnChunk, chunkIndex) => {
+      const action = {
+        action_id: randomUUID(),
+        connector_id: input.connector_id || input.connectorId || null,
+        asset_id: asset.id || objectName(asset),
+        object_name: objectName(asset),
+        object_type: objectType(asset),
+        database: objectDatabase(asset),
+        schema: objectSchema(asset),
+        estimated_rows: estimatedRows,
+        profile_mode: actionSafety.profile_mode,
+        execution_mode: actionSafety.execution_mode,
+        raw_values_retained: false,
+        columns: columnChunk,
+        warnings: chunkIndex === 0 ? warnings : [],
+        strategy: adaptive.strategy,
+        chunk: {
+          index: chunkIndex + 1,
+          count: columnChunks.length,
+          column_count: columnChunk.length,
+        },
+        query: {
+          dialect: actionSafety.dialect,
+          dialect_label: dialect.label,
+          sql: buildGenericProfileQuery(asset, columnChunk, actionSafety, dialect),
+          timeout_ms: actionSafety.query_timeout_ms,
+          lock_timeout_ms: actionSafety.lock_timeout_ms,
+          read_only: true,
+          safety_notes: dialect.safety_notes,
+        },
+        asset,
+      };
+      actions.push(action);
+    });
   }
 
+  const plannedAssetIds = new Set(actions.map((action) => action.asset_id));
   return {
     plan_id: randomUUID(),
     generated_at: nowIso(),
@@ -595,7 +697,8 @@ export function buildProfilingPlan(input = {}, objectCache = new Map()) {
     safety,
     summary: {
       requested_assets: assets.length,
-      planned_assets: actions.length,
+      planned_assets: plannedAssetIds.size,
+      planned_actions: actions.length,
       skipped_assets: skipped.length,
       planned_columns: actions.reduce((sum, action) => sum + action.columns.length, 0),
       raw_values_retained: false,
@@ -620,6 +723,31 @@ function normalizeExecutedProfile(action, result) {
     };
   }
   return null;
+}
+
+function mergeProfileColumns(existing = {}, incoming = {}) {
+  return {
+    ...existing,
+    ...incoming,
+  };
+}
+
+function mergeProfiles(existing = null, incoming = null, action = {}) {
+  if (!incoming) return existing;
+  if (!existing) return incoming;
+  return {
+    ...existing,
+    ...incoming,
+    asset_id: existing.asset_id || incoming.asset_id || action.asset_id,
+    object_name: existing.object_name || incoming.object_name || action.object_name,
+    row_count: existing.row_count ?? incoming.row_count ?? 0,
+    profile_mode: existing.profile_mode || incoming.profile_mode || action.profile_mode,
+    generated_at: incoming.generated_at || existing.generated_at || nowIso(),
+    connector_id: incoming.connector_id || existing.connector_id || action.connector_id || null,
+    source_dialect: incoming.source_dialect || existing.source_dialect || action.query?.dialect || null,
+    raw_values_retained: false,
+    columns: mergeProfileColumns(existing.columns || {}, incoming.columns || {}),
+  };
 }
 
 function normalizeAggregateRow(row = {}) {
@@ -676,6 +804,8 @@ export function profileFromAggregateRow(action = {}, row = {}) {
 
 export async function executeProfilingPlan(plan, executor = null) {
   const startedAt = nowIso();
+  const profiledAssetIds = new Set();
+  const plannedAssetIds = new Set((plan.actions || []).map((action) => action.asset_id));
   const run = {
     run_id: randomUUID(),
     plan_id: plan.plan_id,
@@ -685,7 +815,8 @@ export async function executeProfilingPlan(plan, executor = null) {
     safety: { ...plan.safety, raw_values_retained: false },
     summary: {
       assets_profiled: 0,
-      assets_planned: plan.actions.length,
+      assets_planned: plannedAssetIds.size,
+      actions_planned: (plan.actions || []).length,
       assets_skipped: plan.skipped.length,
       columns_profiled: 0,
       warning_count: plan.actions.reduce((sum, action) => sum + action.warnings.length, 0),
@@ -713,9 +844,14 @@ export async function executeProfilingPlan(plan, executor = null) {
         throw new Error('Live profiling requires an executor with runProfileAction(action) that returns aggregate profile results.');
       }
       profile.raw_values_retained = false;
-      run.profiles[action.asset_id] = profile;
-      run.summary.assets_profiled += 1;
-      run.summary.columns_profiled += Object.keys(profile.columns || {}).length;
+      const mergedProfile = mergeProfiles(run.profiles[action.asset_id] || null, profile, action);
+      run.profiles[action.asset_id] = mergedProfile;
+      profiledAssetIds.add(action.asset_id);
+      run.summary.assets_profiled = profiledAssetIds.size;
+      run.summary.columns_profiled = Object.values(run.profiles).reduce(
+        (sum, item) => sum + Object.keys(item.columns || {}).length,
+        0
+      );
     } catch (err) {
       run.errors.push({
         asset_id: action.asset_id,
