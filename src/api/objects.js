@@ -13,6 +13,7 @@ import { ensureCatalogCacheHydrated } from '../utils/catalogCacheHydrator.js';
 import { getCatalogDataPath, getObjectFileIndex } from '../services/catalogRuntimeStore.js';
 import { loadObjectDetail, loadRuntimeCatalog } from '../services/catalogRuntimeService.js';
 import { normalizeBusinessMetadataUpdates } from '../services/schemaDictionaryService.js';
+import { databaseNameMatches, withCanonicalDatabase } from '../utils/catalogNaming.js';
 
 const router = createApiRouter();
 export { setObjectsCache };
@@ -32,7 +33,7 @@ router.get('/', authenticate, async (req, res) => {
     let results = Array.from(objectCache.values());
 
     if (database) {
-      results = results.filter((item) => item.database === database);
+      results = results.filter((item) => databaseNameMatches(item.database, database));
     }
 
     if (type) {
@@ -46,7 +47,9 @@ router.get('/', authenticate, async (req, res) => {
     const parsedOffset = parseInt(offset, 10);
     const parsedLimit = parseInt(limit, 10);
     const total = results.length;
-    const paged = results.slice(parsedOffset, parsedOffset + parsedLimit);
+    const paged = results
+      .slice(parsedOffset, parsedOffset + parsedLimit)
+      .map((item) => withCanonicalDatabase(item));
 
     return res.json({
       status: 'success',

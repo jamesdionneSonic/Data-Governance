@@ -144,6 +144,8 @@ The scheduler does not create a second extraction path. Schedule type `auto` rou
 
 The runtime is designed to harvest metadata, not business data. Connectors should collect object names, schemas, columns, measures, relationships, reports, dashboards, usage signals, lineage edges, and quality signals. They must not store raw PII values or unrestricted source data.
 
+Profile output and DevOps/Azure data pack publication must follow `docs/PROFILE_INDEX_SPEC.md`. Connector adapters may emit canonical events and sanitized aggregate/profile metadata, but they must not persist raw source payloads, sample values, report result rows, dashboard cell values, credentials, tokens, or vault references.
+
 Live SQL Server and SSIS adapters wrap the existing extractors so legacy ingestion and managed connectors do not become two competing engines. REST, signed HTTP, native-driver, repository, and artifact-based sources all run through the same adapter contract and emit the same canonical event model.
 
 ## Documented Bridge Adapters

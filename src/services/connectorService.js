@@ -4,6 +4,7 @@
  */
 
 import { randomUUID } from 'crypto';
+import { spawn } from 'child_process';
 import {
   existsSync,
   mkdirSync,
@@ -583,6 +584,14 @@ function profileRunArtifactDir() {
   return process.env.PROFILE_ARTIFACT_DIR || path.join(profileRuntimeDir(), 'runs');
 }
 
+function profileMarkdownDir() {
+  return process.env.PROFILE_MARKDOWN_DIR || path.join(process.cwd(), 'data', 'markdown', '_runtime', 'profile-runs');
+}
+
+function profilePublicationQueuePath() {
+  return path.join(profileMarkdownDir(), 'profile-publication-queue.json');
+}
+
 function sanitizeForPersistence(value) {
   if (Array.isArray(value)) return value.map(sanitizeForPersistence);
   if (!value || typeof value !== 'object') return value;
@@ -596,6 +605,461 @@ function sanitizeForPersistence(value) {
           : sanitizeForPersistence(nested),
       ])
   );
+}
+
+function safePathSegment(value) {
+  return String(value || 'unknown')
+    .replace(/[^a-z0-9_.-]+/gi, '_')
+    .replace(/^_+|_+$/g, '')
+    .slice(0, 120) || 'unknown';
+}
+
+function profileRunKind(run = {}) {
+  if (run.summary?.bi_profile_run) return 'bi_profile';
+  if (run.summary?.metadata_profile_run) return 'metadata_profile';
+  if (run.summary?.profile_run) return 'aggregate_profile';
+  return 'metadata_harvest';
+}
+
+function profileRowsFromRun(run = {}) {
+  const profiles = run.profile?.run?.profiles || run.profile?.profiles || {};
+  return Object.entries(profiles).map(([assetId, profile]) => ({
+    asset_id: assetId,
+    row_count: profile.row_count ?? '',
+    column_count: Object.keys(profile.columns || {}).length,
+    generated_at: profile.generated_at || profile.profiled_at || '',
+  }));
+}
+
+function columnRowsFromRun(run = {}) {
+  const profiles = run.profile?.run?.profiles || run.profile?.profiles || {};
+  return Object.entries(profiles).flatMap(([assetId, profile]) =>
+    Object.entries(profile.columns || {}).map(([columnName, stats]) => ({
+      asset_id: assetId,
+      column_name: columnName,
+      row_count: stats.row_count ?? profile.row_count ?? '',
+      null_count: stats.null_count ?? '',
+      null_percent: stats.null_percent ?? '',
+      distinct_count: stats.distinct_count ?? '',
+      min: stats.min ?? '',
+      max: stats.max ?? '',
+      mean: stats.mean ?? '',
+    }))
+  );
+}
+
+function successfulProfileAssetIds(run = {}) {
+  return profileRowsFromRun(run).map((row) => row.asset_id).filter(Boolean);
+}
+
+function failedProfileAssetIds(run = {}) {
+  const errors = run.errors || run.profile?.errors || run.profile?.run?.errors || [];
+  return [...new Set(errors
+    .map((error) => error?.asset_id || error?.assetId || error?.object_id || error?.objectId)
+    .filter(Boolean))];
+}
+
+function profilePublishState(run = {}) {
+  const successfulAssets = successfulProfileAssetIds(run);
+  const failedAssets = failedProfileAssetIds(run);
+  const existing = run.artifact?.profile_publish || {};
+  const hasSuccessfulProfiles = successfulAssets.length > 0;
+  const status = existing.status || (hasSuccessfulProfiles ? 'pending' : 'not_applicable');
+  return {
+    status,
+    successful_asset_count: successfulAssets.length,
+    failed_asset_count: failedAssets.length,
+    successful_assets: successfulAssets,
+    failed_assets: failedAssets,
+    published_asset_count: existing.published_asset_count || 0,
+    published_assets: existing.published_assets || [],
+    pending_assets: existing.pending_assets || successfulAssets,
+    last_attempt_at: existing.last_attempt_at || null,
+    last_published_at: existing.last_published_at || null,
+    last_error: existing.last_error || null,
+    targets: existing.targets || [],
+  };
+}
+
+function readPublicationQueue() {
+  const queuePath = profilePublicationQueuePath();
+  if (!existsSync(queuePath)) return { version: 1, updated_at: null, runs: [] };
+  try {
+    return JSON.parse(readFileSync(queuePath, 'utf8'));
+  } catch {
+    return { version: 1, updated_at: null, runs: [] };
+  }
+}
+
+function writePublicationQueue(queue) {
+  const queuePath = profilePublicationQueuePath();
+  mkdirSync(path.dirname(queuePath), { recursive: true });
+  writeFileSync(queuePath, JSON.stringify({ ...queue, updated_at: nowIso() }, null, 2));
+}
+
+function updateProfilePublicationQueue(run = {}) {
+  const publish = profilePublishState(run);
+  if (publish.successful_asset_count <= 0) return publish;
+  const queue = readPublicationQueue();
+  const entry = {
+    run_id: run.id,
+    connector_id: run.connector_id,
+    run_kind: profileRunKind(run),
+    status: publish.status,
+    successful_asset_count: publish.successful_asset_count,
+    failed_asset_count: publish.failed_asset_count,
+    successful_assets: publish.successful_assets,
+    failed_assets: publish.failed_assets,
+    markdown_path: run.artifact?.markdown_path || null,
+    json_path: run.artifact?.json_path || null,
+    updated_at: nowIso(),
+  };
+  queue.runs = [entry, ...(queue.runs || []).filter((item) => item.run_id !== run.id)];
+  writePublicationQueue(queue);
+  return publish;
+}
+
+function tableMarkdown(headers, rows) {
+  if (!rows.length) return '';
+  const header = `| ${headers.join(' | ')} |`;
+  const divider = `| ${headers.map(() => '---').join(' | ')} |`;
+  const body = rows.map((row) => `| ${headers.map((key) => String(row[key] ?? '').replace(/\|/g, '\\|')).join(' | ')} |`);
+  return [header, divider, ...body].join('\n');
+}
+
+function exportConnectorRunMarkdown(run = {}) {
+  try {
+    const root = profileMarkdownDir();
+    const connectorDir = path.join(root, safePathSegment(run.connector_id));
+    mkdirSync(connectorDir, { recursive: true });
+    const completed = run.completed_at || nowIso();
+    const fileBase = `${completed.replace(/[:.]/g, '-')}-${safePathSegment(run.id)}`;
+    const mdPath = path.join(connectorDir, `${fileBase}.md`);
+    const jsonPath = path.join(connectorDir, `${fileBase}.json`);
+    const summary = sanitizeForPersistence(run.summary || {});
+    const assetRows = profileRowsFromRun(run);
+    const columnRows = columnRowsFromRun(run);
+    const streamRows = (run.extraction?.stream_results || []).map((stream) => ({
+      stream: stream.stream,
+      status: stream.status,
+      event_count: stream.event_count ?? '',
+      endpoint: stream.plan?.endpoint || '',
+    }));
+    const markdown = [
+      '---',
+      `id: ${run.id}`,
+      `connector_id: ${run.connector_id}`,
+      `connector_type: ${run.connector_type}`,
+      `run_kind: ${profileRunKind(run)}`,
+      `status: ${run.status}`,
+      `mode: ${run.mode}`,
+      `profiled_at: ${completed}`,
+      'raw_data_captured: false',
+      'raw_values_retained: false',
+      'devops_upload_pending: true',
+      `profile_publish_status: ${profilePublishState(run).status}`,
+      '---',
+      '',
+      `# Connector Run ${run.id}`,
+      '',
+      `- Connector: ${run.connector_id}`,
+      `- Type: ${run.connector_type}`,
+      `- Kind: ${profileRunKind(run)}`,
+      `- Status: ${run.status}`,
+      `- Mode: ${run.mode}`,
+      `- Completed: ${completed}`,
+      '',
+      '## Summary',
+      '',
+      '```json',
+      JSON.stringify(summary, null, 2),
+      '```',
+      '',
+      assetRows.length ? '## Profiled Assets' : '',
+      assetRows.length ? tableMarkdown(['asset_id', 'row_count', 'column_count', 'generated_at'], assetRows) : '',
+      '',
+      columnRows.length ? '## Column Profile Results' : '',
+      columnRows.length
+        ? tableMarkdown(['asset_id', 'column_name', 'row_count', 'null_count', 'null_percent', 'distinct_count', 'min', 'max', 'mean'], columnRows)
+        : '',
+      '',
+      streamRows.length ? '## Metadata Streams' : '',
+      streamRows.length ? tableMarkdown(['stream', 'status', 'event_count', 'endpoint'], streamRows) : '',
+      '',
+      '## DevOps Upload',
+      '',
+      '- Status: pending',
+      '- Include this file in the next catalog/runtime export to DevOps.',
+      '',
+    ]
+      .filter((line) => line !== null && line !== undefined)
+      .join('\n');
+    const jsonPayload = sanitizeForPersistence({
+      run,
+      markdown_path: mdPath,
+      json_path: jsonPath,
+      devops_upload_pending: true,
+      profile_publish: profilePublishState(run),
+    });
+    writeFileSync(mdPath, markdown);
+    writeFileSync(jsonPath, JSON.stringify(jsonPayload, null, 2));
+    const pendingPath = path.join(root, 'devops-upload-pending.json');
+    const existing = existsSync(pendingPath) ? JSON.parse(readFileSync(pendingPath, 'utf8')) : { version: 1, runs: [] };
+    const entry = {
+      run_id: run.id,
+      connector_id: run.connector_id,
+      status: 'pending',
+      profile_publish_status: profilePublishState(run).status,
+      successful_asset_count: successfulProfileAssetIds(run).length,
+      failed_asset_count: failedProfileAssetIds(run).length,
+      markdown_path: mdPath,
+      json_path: jsonPath,
+      updated_at: nowIso(),
+    };
+    existing.runs = [entry, ...(existing.runs || []).filter((item) => item.run_id !== run.id)];
+    writeFileSync(pendingPath, JSON.stringify(existing, null, 2));
+    return {
+      markdown_path: mdPath,
+      json_path: jsonPath,
+      devops_upload_pending: true,
+      profile_publish: updateProfilePublicationQueue({
+        ...run,
+        artifact: {
+          ...(run.artifact || {}),
+          markdown_path: mdPath,
+          json_path: jsonPath,
+        },
+      }),
+    };
+  } catch (err) {
+    return {
+      error: {
+        code: 'CONNECTOR_RUN_MARKDOWN_EXPORT_ERROR',
+        message: err.message,
+        remediation: 'Check data/markdown/_runtime/profile-runs permissions and retry the connector/profile run.',
+      },
+    };
+  }
+}
+
+function shouldAutoPublishProfiles() {
+  const value = String(process.env.PROFILE_AUTO_PUBLISH_ON_RUN || '').toLowerCase();
+  return value === 'true' || value === 'on' || value === '1';
+}
+
+function npmCommand() {
+  return process.platform === 'win32' ? 'npm.cmd' : 'npm';
+}
+
+function runNpmScript(scriptName, args = []) {
+  return new Promise((resolve) => {
+    const startedAt = nowIso();
+    const child = spawn(npmCommand(), ['run', scriptName, ...args], {
+      cwd: process.cwd(),
+      env: process.env,
+      shell: false,
+    });
+    let stdout = '';
+    let stderr = '';
+    child.stdout?.on('data', (chunk) => {
+      stdout += chunk.toString();
+    });
+    child.stderr?.on('data', (chunk) => {
+      stderr += chunk.toString();
+    });
+    child.on('error', (error) => {
+      resolve({
+        script: scriptName,
+        args,
+        status: 'failed',
+        exit_code: 1,
+        started_at: startedAt,
+        completed_at: nowIso(),
+        stdout,
+        stderr: `${stderr}${error.message}`,
+      });
+    });
+    child.on('close', (code) => {
+      resolve({
+        script: scriptName,
+        args,
+        status: code === 0 ? 'succeeded' : 'failed',
+        exit_code: code,
+        started_at: startedAt,
+        completed_at: nowIso(),
+        stdout: stdout.slice(-8000),
+        stderr: stderr.slice(-8000),
+      });
+    });
+  });
+}
+
+function mergeRunPublishState(run, nextState) {
+  run.artifact = {
+    ...(run.artifact || {}),
+    devops_upload_pending: !['published', 'partial_published'].includes(nextState.status),
+    profile_publish: {
+      ...profilePublishState(run),
+      ...nextState,
+    },
+  };
+  updateProfilePublicationQueue(run);
+}
+
+function profileRunsEligibleForPublication(filters = {}, user = {}) {
+  hydrateRuntimeStore();
+  return runHistoryStore
+    .filter((run) => !filters.connector_id || run.connector_id === filters.connector_id)
+    .filter((run) => !filters.run_id || run.id === filters.run_id)
+    .filter((run) => profilePublishState(run).successful_asset_count > 0)
+    .filter((run) => {
+      const status = profilePublishState(run).status;
+      return filters.include_published === true || !['published', 'partial_published'].includes(status);
+    })
+    .filter((run) => {
+      const connector = connectorStore.get(run.connector_id);
+      return connector ? canUseConnector(connector, user, CONNECTOR_ACTIONS.ADMIN) : isAdmin(user);
+    });
+}
+
+function publicationTargets(options = {}) {
+  const rawTargets = Array.isArray(options.targets)
+    ? options.targets
+    : String(options.targets || 'devops,confluence').split(',');
+  return [...new Set(rawTargets.map((target) => String(target).trim().toLowerCase()).filter(Boolean))]
+    .filter((target) => ['devops', 'confluence'].includes(target));
+}
+
+export async function publishConnectorProfileRuns(options = {}, user = {}) {
+  hydrateRuntimeStore();
+  if (!isAdmin(user)) {
+    const error = new Error('Only Admin users can publish profile indexes to DevOps or Confluence.');
+    error.code = 'CONNECTOR_FORBIDDEN';
+    error.status = 403;
+    throw error;
+  }
+  const targets = publicationTargets(options);
+  const dryRun = options.dry_run === true || options.dryRun === true || process.env.NODE_ENV === 'test';
+  const eligibleRuns = profileRunsEligibleForPublication(
+    {
+      connector_id: options.connector_id || options.connectorId,
+      run_id: options.run_id || options.runId,
+      include_published: options.include_published === true || options.includePublished === true,
+    },
+    user
+  );
+  if (eligibleRuns.length === 0) {
+    return {
+      status: 'no_op',
+      dry_run: dryRun,
+      targets,
+      run_count: 0,
+      successful_asset_count: 0,
+      message: 'No unpublished successful profile assets were found.',
+      queue: readPublicationQueue(),
+    };
+  }
+
+  const attemptedAt = nowIso();
+  for (const run of eligibleRuns) {
+    mergeRunPublishState(run, {
+      status: dryRun ? 'publish_ready' : 'publishing',
+      last_attempt_at: attemptedAt,
+      targets,
+      last_error: null,
+    });
+  }
+  persistRuntimeStore();
+
+  const steps = [];
+  if (targets.includes('devops')) {
+    steps.push({ target: 'devops', script: 'lineage:runtime:package', args: [] });
+    steps.push({ target: 'devops', script: 'lineage:runtime:check', args: [] });
+    steps.push({ target: 'devops', script: 'lineage:runtime:sync', args: [] });
+    steps.push({ target: 'devops', script: 'lineage:runtime:publish', args: dryRun ? ['--', '--dry-run'] : [] });
+  }
+  if (targets.includes('confluence')) {
+    steps.push({ target: 'confluence', script: 'confluence:export', args: [] });
+    steps.push({ target: 'confluence', script: 'confluence:check', args: [] });
+    steps.push({ target: 'confluence', script: 'confluence:publish', args: dryRun ? ['--', '--dry-run'] : [] });
+  }
+
+  const results = [];
+  if (dryRun && options.execute_dry_run !== true && options.executeDryRun !== true) {
+    results.push(...steps.map((step) => ({
+      ...step,
+      status: 'planned',
+      exit_code: null,
+      stdout: '',
+      stderr: '',
+    })));
+  } else {
+    for (const step of steps) {
+      const result = await runNpmScript(step.script, step.args);
+      results.push({ target: step.target, ...result });
+      if (result.status !== 'succeeded') break;
+    }
+  }
+
+  const failedStep = results.find((result) => result.status === 'failed');
+  const completedAt = nowIso();
+  const finalStatus = failedStep
+    ? 'publish_failed'
+    : eligibleRuns.some((run) => failedProfileAssetIds(run).length > 0)
+      ? 'partial_published'
+      : 'published';
+  const allPublishedAssets = eligibleRuns.flatMap((run) => successfulProfileAssetIds(run));
+  for (const run of eligibleRuns) {
+    const successfulAssets = successfulProfileAssetIds(run);
+    mergeRunPublishState(run, {
+      status: dryRun ? 'publish_ready' : finalStatus,
+      published_asset_count: dryRun ? 0 : successfulAssets.length,
+      published_assets: dryRun ? [] : successfulAssets,
+      pending_assets: dryRun ? successfulAssets : [],
+      last_published_at: dryRun || failedStep ? null : completedAt,
+      last_error: failedStep
+        ? {
+            script: failedStep.script,
+            exit_code: failedStep.exit_code,
+            message: failedStep.stderr || failedStep.stdout || 'Profile publication step failed.',
+          }
+        : null,
+      targets,
+    });
+  }
+  persistRuntimeStore();
+
+  return {
+    status: dryRun ? 'planned' : finalStatus,
+    dry_run: dryRun,
+    targets,
+    run_count: eligibleRuns.length,
+    successful_asset_count: allPublishedAssets.length,
+    failed_asset_count: eligibleRuns.flatMap((run) => failedProfileAssetIds(run)).length,
+    runs: eligibleRuns.map((run) => sanitizeForPersistence({
+      id: run.id,
+      connector_id: run.connector_id,
+      status: run.status,
+      profile_publish: profilePublishState(run),
+    })),
+    steps: results,
+    queue: readPublicationQueue(),
+  };
+}
+
+function maybeAutoPublishProfiles(run, user) {
+  if (!shouldAutoPublishProfiles() || profilePublishState(run).successful_asset_count <= 0) return;
+  publishConnectorProfileRuns({ run_id: run.id, targets: ['devops', 'confluence'] }, user)
+    .catch((err) => {
+      mergeRunPublishState(run, {
+        status: 'publish_failed',
+        last_error: {
+          code: err.code || 'PROFILE_AUTO_PUBLISH_ERROR',
+          message: err.message,
+        },
+      });
+      persistRuntimeStore();
+    });
 }
 
 function connectorForPersistence(connector) {
@@ -654,7 +1118,10 @@ function hydrateRuntimeStore() {
       if (connector?.id && !connectorStore.has(connector.id)) connectorStore.set(connector.id, connector);
     }
     for (const run of parsed.connector_runs || []) {
-      if (run?.id && !runHistoryStore.some((existing) => existing.id === run.id)) runHistoryStore.push(run);
+      if (run?.id && !runHistoryStore.some((existing) => existing.id === run.id)) {
+        if (!run.artifact?.markdown_path) run.artifact = exportConnectorRunMarkdown(run);
+        runHistoryStore.push(run);
+      }
     }
     for (const snapshot of parsed.snapshots || []) {
       if (snapshot?.connector_id && !snapshotStore.has(snapshot.connector_id)) {
@@ -897,9 +1364,9 @@ function estimateHarvest(connector) {
   const repositoryScripts =
     connector.type === CONNECTOR_TYPES.GIT_REPOSITORY.type ? extractPythonScripts(connector.config) : [];
   return {
-    discovered_objects: base + repositoryScripts.length,
-    discovered_columns: connector.category === CONNECTOR_CATEGORIES.REPOSITORY ? 0 : base * 8,
-    discovered_lineage_edges:
+    planned_objects: base + repositoryScripts.length,
+    planned_columns: connector.category === CONNECTOR_CATEGORIES.REPOSITORY ? 0 : base * 8,
+    planned_lineage_edges:
       connector.category === CONNECTOR_CATEGORIES.PIPELINE || connector.category === CONNECTOR_CATEGORIES.REPOSITORY
         ? Math.max(1, base + repositoryScripts.length)
         : Math.max(0, Math.floor(base / 2)),
@@ -933,7 +1400,24 @@ export async function runConnector(id, options = {}, user = {}) {
     started_at: started,
     completed_at: nowIso(),
     summary: {
-      ...estimate,
+      ...(dryRun
+        ? {
+            planned_objects: estimate.planned_objects,
+            planned_columns: estimate.planned_columns,
+            planned_lineage_edges: estimate.planned_lineage_edges,
+            discovered_objects: 0,
+            discovered_columns: 0,
+            discovered_lineage_edges: 0,
+            dry_run_only: true,
+            source_contacted: false,
+          }
+        : {
+            discovered_objects: extraction.summary.object_count ?? estimate.planned_objects,
+            discovered_columns: extraction.summary.column_count ?? estimate.planned_columns,
+            discovered_lineage_edges: extraction.summary.lineage_edge_count ?? estimate.planned_lineage_edges,
+            dry_run_only: false,
+            source_contacted: true,
+          }),
       ...extraction.summary,
       credential_mode: sanitizeCredential(connector.credential).mode,
       secret_exposed: false,
@@ -950,19 +1434,22 @@ export async function runConnector(id, options = {}, user = {}) {
         .filter(Boolean),
     ],
   };
+  run.artifact = exportConnectorRunMarkdown(run);
   runHistoryStore.unshift(run);
   runHistoryStore.splice(PROFILE_CONNECTOR_MAX_HISTORY);
-  snapshotStore.set(id, {
-    connector_id: id,
-    run_id: run.id,
-    captured_at: run.completed_at,
-    object_count: estimate.discovered_objects,
-    column_count: estimate.discovered_columns,
-    lineage_edge_count: estimate.discovered_lineage_edges,
-    canonical_summary: extraction.summary,
-    stream_results: extraction.stream_results,
-    python_scripts: estimate.python_scripts,
-  });
+  if (!dryRun || connector.type === CONNECTOR_TYPES.GIT_REPOSITORY.type) {
+    snapshotStore.set(id, {
+      connector_id: id,
+      run_id: run.id,
+      captured_at: run.completed_at,
+      object_count: dryRun ? estimate.planned_objects : extraction.summary.object_count ?? estimate.planned_objects,
+      column_count: dryRun ? estimate.planned_columns : extraction.summary.column_count ?? estimate.planned_columns,
+      lineage_edge_count: dryRun ? estimate.planned_lineage_edges : extraction.summary.lineage_edge_count ?? estimate.planned_lineage_edges,
+      canonical_summary: extraction.summary,
+      stream_results: extraction.stream_results,
+      python_scripts: estimate.python_scripts,
+    });
+  }
   persistRuntimeStore();
   return run;
 }
@@ -1036,9 +1523,11 @@ export async function runConnectorProfiling(id, options = {}, user = {}) {
     errors: profile.errors || [],
     warnings: profile.run?.warnings || [],
   };
+  run.artifact = exportConnectorRunMarkdown(run);
   runHistoryStore.unshift(run);
   runHistoryStore.splice(PROFILE_CONNECTOR_MAX_HISTORY);
   persistRuntimeStore();
+  maybeAutoPublishProfiles(run, user);
   return run;
 }
 
@@ -1095,6 +1584,7 @@ export async function runConnectorBiProfiling(id, options = {}, user = {}) {
       ...((profileResult.warnings || []).map((warning) => warning.attributes?.message || warning.name).filter(Boolean)),
     ],
   };
+  run.artifact = exportConnectorRunMarkdown(run);
   runHistoryStore.unshift(run);
   runHistoryStore.splice(PROFILE_CONNECTOR_MAX_HISTORY);
   snapshotStore.set(id, {
@@ -1108,6 +1598,7 @@ export async function runConnectorBiProfiling(id, options = {}, user = {}) {
     bi_lineage_edge_count: profileResult.profile?.lineage_edges?.length || 0,
   });
   persistRuntimeStore();
+  maybeAutoPublishProfiles(run, user);
   return run;
 }
 
@@ -1164,6 +1655,7 @@ export async function runConnectorMetadataProfiling(id, options = {}, user = {})
       ...((profileResult.warnings || []).map((warning) => warning.attributes?.message || warning.name).filter(Boolean)),
     ],
   };
+  run.artifact = exportConnectorRunMarkdown(run);
   runHistoryStore.unshift(run);
   runHistoryStore.splice(PROFILE_CONNECTOR_MAX_HISTORY);
   snapshotStore.set(id, {
@@ -1177,6 +1669,7 @@ export async function runConnectorMetadataProfiling(id, options = {}, user = {})
     metadata_lineage_edge_count: profileResult.profile?.lineage_edges?.length || 0,
   });
   persistRuntimeStore();
+  maybeAutoPublishProfiles(run, user);
   return run;
 }
 
@@ -1530,13 +2023,28 @@ export function getConnectorAdapterCoverage() {
 
 export function listConnectorRuns(filters = {}, user = {}) {
   hydrateRuntimeStore();
-  return runHistoryStore
+  const runs = runHistoryStore
     .filter((run) => !filters.connector_id || run.connector_id === filters.connector_id)
     .filter((run) => {
       const connector = connectorStore.get(run.connector_id);
       return connector ? canUseConnector(connector, user, CONNECTOR_ACTIONS.VIEW) : isAdmin(user);
     })
     .slice(0, Number(filters.limit || 100));
+  let backfilled = false;
+  for (const run of runs) {
+    if (!run.artifact?.markdown_path) {
+      run.artifact = exportConnectorRunMarkdown(run);
+      backfilled = true;
+    } else if (!run.artifact?.profile_publish && profilePublishState(run).successful_asset_count > 0) {
+      run.artifact = {
+        ...(run.artifact || {}),
+        profile_publish: updateProfilePublicationQueue(run),
+      };
+      backfilled = true;
+    }
+  }
+  if (backfilled) persistRuntimeStore();
+  return runs.map(sanitizeForPersistence);
 }
 
 export function getConnectorSnapshot(id, user = {}) {
@@ -1616,6 +2124,7 @@ export default {
   runConnectorProfileSchedule,
   runDueConnectorProfileSchedules,
   runConnector,
+  publishConnectorProfileRuns,
   startProfileSchedulerWorker,
   stopProfileSchedulerWorker,
   upsertConnectorProfileSchedule,

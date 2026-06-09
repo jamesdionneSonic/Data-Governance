@@ -1,5 +1,11 @@
 import { ConnectorRuntimeError } from './connectorErrors.js';
 import { profileFromAggregateRow } from '../profilingExecutionService.js';
+import {
+  buildSqlServerConnectionConfig,
+  loadSqlServerDriver,
+  sqlServerCredentialMode,
+  sqlServerConnectionRuntimeError,
+} from './sqlServerConnection.js';
 
 const DATABASE_CONNECTORS = new Set([
   'sql_server',
@@ -66,36 +72,29 @@ export function createProfileExecutor({ connector, options = {} }) {
 }
 
 async function runSqlServerProfile({ connector, action }) {
+  const credentialMode = sqlServerCredentialMode(connector);
   let sql;
   try {
-    const sqlModule = await import('mssql');
-    sql = sqlModule.default || sqlModule;
+    sql = await loadSqlServerDriver(credentialMode);
   } catch {
     throw profileError(
       connector,
       action,
-      'SQL Server live profiling requires the mssql package.',
-      'Install/enable mssql and configure read-only SQL Server credentials.'
+      credentialMode === 'windows_integrated'
+        ? 'SQL Server Windows Integrated profiling requires mssql/msnodesqlv8 on a Windows host.'
+        : 'SQL Server live profiling requires the mssql package.',
+      credentialMode === 'windows_integrated'
+        ? 'Run the app on Windows as the intended user and install/enable msnodesqlv8. For hosted execution, use a service account connector.'
+        : 'Install/enable mssql and configure read-only SQL Server credentials.'
     );
   }
-  const config = {
-    server: connector.config.server || connector.config.host,
-    port: connector.config.port,
-    database: connector.config.database,
-    user: credentialValue(connector, 'username', 'user'),
-    password: credentialValue(connector, 'password'),
-    options: {
-      encrypt: connector.config.encrypt !== false,
-      trustServerCertificate: connector.config.trustServerCertificate !== false,
-      readOnlyIntent: true,
-      ...(connector.config.options || {}),
-    },
-    requestTimeout: action.query.timeout_ms,
-    connectionTimeout: connector.config.connectionTimeout || action.query.timeout_ms,
-    pool: { max: 1, min: 0, idleTimeoutMillis: 5000 },
-  };
+  const { config } = buildSqlServerConnectionConfig(connector, action.query.timeout_ms);
   const pool = new sql.ConnectionPool(config);
-  await pool.connect();
+  try {
+    await pool.connect();
+  } catch (err) {
+    throw sqlServerConnectionRuntimeError(err, connector, 'profile_connection');
+  }
   try {
     const request = pool.request();
     request.timeout = action.query.timeout_ms;

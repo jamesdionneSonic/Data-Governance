@@ -2,6 +2,12 @@ import { BaseConnectorAdapter } from './baseAdapter.js';
 import { CANONICAL_EVENT_TYPES, canonicalEvent } from './canonicalMetadata.js';
 import { ConnectorConfigError, ConnectorRuntimeError } from './connectorErrors.js';
 import { hasDirectSourceClient } from './sourceClients.js';
+import {
+  buildSqlServerConnectionConfig,
+  loadSqlServerDriver,
+  sqlServerCredentialMode,
+  sqlServerConnectionRuntimeError,
+} from './sqlServerConnection.js';
 
 const STREAM = {
   object: CANONICAL_EVENT_TYPES.OBJECT,
@@ -188,8 +194,11 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
     if (options.dry_run !== false) return null;
     this.metadataPromise = (async () => {
       const SqlServerMetadataExtractor = (await import('../sqlServerExtractor.js')).default;
-      const connectionConfig = this.config.connectionConfig || this.config;
-      const extractor = new SqlServerMetadataExtractor(connectionConfig, this.config.sqlDriver);
+      const credentialMode = sqlServerCredentialMode(this.connector);
+      const sqlDriver = this.config.sqlDriver || (await loadSqlServerDriver(credentialMode));
+      const connectionConfig =
+        this.config.connectionConfig || buildSqlServerConnectionConfig(this.connector).config;
+      const extractor = new SqlServerMetadataExtractor(connectionConfig, sqlDriver);
       await extractor.connect();
       try {
         const metadata = await extractor.extractAllMetadata(this.config.database, {
@@ -204,11 +213,8 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
         await extractor.disconnect().catch(() => {});
       }
     })().catch((err) => {
-      throw new ConnectorRuntimeError(`SQL Server extraction failed: ${err.message}`, {
-        connector_id: this.id,
-        connector_type: this.type,
-        details: { original_error: err.message },
-      });
+      if (err instanceof ConnectorRuntimeError) throw err;
+      throw sqlServerConnectionRuntimeError(err, this.connector, 'metadata_connection');
     });
     return this.metadataPromise;
   }

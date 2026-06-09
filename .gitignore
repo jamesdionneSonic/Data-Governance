@@ -45,3 +45,9 @@ repomix-*.xml
 !/data/classification/
 /data/classification/*
 !/data/classification/taxonomy.yml
+!/data/markdown/
+/data/markdown/*
+!/data/markdown/_runtime/
+/data/markdown/_runtime/*
+!/data/markdown/_runtime/profile-runs/
+/data/markdown/_runtime/profile-runs/**

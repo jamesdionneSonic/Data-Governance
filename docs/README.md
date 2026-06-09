@@ -46,6 +46,10 @@ This is the master index for platform documentation.
 
 - [Enterprise Architecture](ENTERPRISE_ARCHITECTURE.md)
 - [Connector Extraction Framework](CONNECTOR_EXTRACTION_FRAMEWORK.md)
+- [Profiling Execution Framework](PROFILING_EXECUTION_FRAMEWORK.md)
+- [Profile Index Safety And Storage Specification](PROFILE_INDEX_SPEC.md)
+- [BI Profile Framework](BI_PROFILE_FRAMEWORK.md)
+- [Connector Metadata Profile Framework](CONNECTOR_METADATA_PROFILE_FRAMEWORK.md)
 - [Data Dictionary and Metadata Enrichment](DATA_DICTIONARY_AND_METADATA_ENRICHMENT.md)
 - [Product Requirements](PRODUCT_REQUIREMENTS.md)
 - [Project Backlog](PROJECT_BACKLOG.md)
@@ -67,6 +71,9 @@ This is the master index for platform documentation.
 
 ## Governance, Release, and Audit Records
 
+- [ADR-001: Store Sanitized Profile Indexes In The DevOps Azure Data Pack](adr/ADR-001-Profile-Indexes-In-DevOps-Azure-Data-Pack.md)
+- [ADR-002: Separate Profile Run Artifacts From Queryable Profile Indexes](adr/ADR-002-Separate-Profile-Run-Artifacts-From-Queryable-Profile-Indexes.md)
+- [ADR-003: Codex Skills Use The DevOps Profile Index First](adr/ADR-003-Codex-Skills-Use-DevOps-Profile-Index-First.md)
 - [Release Notes v0.6.0](RELEASE_NOTES_v0.6.0.md)
 - [Release Notes v1.0.0](RELEASE_NOTES_v1.0.0.md)
 - [Vuetify Final Audit 2026-05-10](VUETIFY_FINAL_AUDIT_2026-05-10.md)

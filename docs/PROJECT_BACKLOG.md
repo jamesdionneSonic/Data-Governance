@@ -3352,6 +3352,9 @@ This capability turns column metadata, column lineage, transformation evidence, 
 - [ ] Package shape supports fast lookups by object name, object ID, database, schema, source system, and common aliases
 - [ ] DevOps publish can run in dry-run and live modes without committing secrets
 - [ ] Validation confirms the Codex skill can read the published DevOps package without relying on Confluence page-body search
+- [ ] Data pack includes sanitized `profile-index/` shards for database profiles, BI profiles, connector metadata profiles, metric candidates, sensitivity flags, quality gaps, and stale-profile warnings
+- [ ] Profile index export follows `docs/PROFILE_INDEX_SPEC.md` and fails validation if raw values, sample values, report result rows, source payloads, credentials, tokens, vault references, or connection strings are present
+- [ ] Profile index manifest records source run ids, source artifact paths, object/column counts, checksums, safety validation status, and build timestamp
 
 #### PHASE7S-004: Codex Skill Answer Experience
 
@@ -3363,6 +3366,7 @@ This capability turns column metadata, column lineage, transformation evidence, 
 **Acceptance Criteria**:
 
 - [ ] Skill answers use the DevOps/Azure data pack as the primary source and cite package artifacts used for evidence
+- [ ] Skill reads `profile-index/` before run markdown or Confluence for profile, quality, metric, sensitivity, and freshness questions
 - [ ] Skill distinguishes business consumers, maintenance/load-path reads, loaders, upstream sources, downstream impacts, and unresolved risks
 - [ ] Skill supports common prompts: "what uses this?", "what feeds this?", "what breaks if this changes?", "how many times is this used?", "show column impact," and "explain the confidence"
 - [ ] Computer-readable answer cards include enough semantic grouping for clear plain-English summaries without opening full object context every time

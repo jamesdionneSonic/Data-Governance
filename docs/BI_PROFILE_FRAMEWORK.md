@@ -60,6 +60,8 @@ BI profile responses always carry these safety fields:
 
 The framework profiles metadata only. It does not keep report output rows, dashboard cell values, user-entered filters, credential values, or vault references.
 
+BI profile persistence, markdown summaries, profile indexes, and DevOps/Azure data pack publication must follow `docs/PROFILE_INDEX_SPEC.md`. BI profile indexes may store report inventory, semantic model metadata, metric definitions, lineage, usage/refresh signals, and coverage gaps. They must not store report result rows, dashboard cell values, or raw business values.
+
 ## API
 
 ```http

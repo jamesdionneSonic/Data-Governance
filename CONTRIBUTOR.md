@@ -17,11 +17,24 @@ Welcome to the Data Governance project! This document outlines the best practice
 7. [Infrastructure as Code (IaC) First](#infrastructure-as-code-iac-first)
 8. [CI/CD Integration](#cicd-integration)
 9. [Documentation Standards](#documentation-standards)
-10. [Submission Process](#submission-process)
+10. [Profile Index Safety Rules](#profile-index-safety-rules)
+11. [Submission Process](#submission-process)
 
 ---
 #### Data lineage rules
 Whenever you are asked to modify data extraction, graph resolution, or SSIS parsing, you MUST strictly adhere to the rules defined in docs/LINEAGE_ENGINE_SPEC.md.
+
+#### Profile index and raw-data safety rules
+Whenever you are asked to modify profiling, connector output, DevOps/Azure data pack export, markdown profile summaries, skill runtime packages, metric profile evidence, PII detection, or data-quality indexes, you MUST strictly adhere to the rules defined in docs/PROFILE_INDEX_SPEC.md.
+
+The short version:
+
+- Do not persist raw row values, sample values, report result rows, dashboard cell values, unrestricted source payloads, credentials, tokens, vault references, or connection strings.
+- Profile run artifacts and profile indexes must be aggregate metadata only.
+- Markdown is allowed for human-readable profile summaries, but it is not the primary Azure-scale profile index.
+- The DevOps/Azure data pack may contain sanitized profile indexes, not raw source data.
+- Codex skills must read compact profile indexes first for profile questions and use markdown only as evidence or explanation.
+- If connector APIs return raw values, discard, aggregate, mask, or classify them before persistence.
 
 ## Architecture & Design Principles
 
@@ -734,6 +747,49 @@ Document all changes:
 
 ---
 
+## Profile Index Safety Rules
+
+Profile index work is governed by [docs/PROFILE_INDEX_SPEC.md](docs/PROFILE_INDEX_SPEC.md). These rules apply to database profiles, BI profiles, connector metadata profiles, metric profile evidence, data-quality indexes, DevOps/Azure data pack publishing, and Codex skill runtime packages.
+
+### Approved Profile Persistence
+
+You may persist metadata-safe aggregate profile intelligence:
+
+- row counts, column counts, null counts, null percentages, and distinct counts
+- non-sensitive numeric/date min, max, mean, median, standard deviation, and range
+- freshness timestamps, run ids, connector ids, source object ids, and evidence paths
+- PII, PHI, confidential, financial, and sensitivity flags
+- metric candidates, quality gaps, drift flags, stale-profile warnings, and structured remediation errors
+
+### Forbidden Profile Persistence
+
+Never persist:
+
+- raw rows or unrestricted source payloads
+- sample values, example values, preview data, or raw report output
+- customer names, emails, phone numbers, VINs, addresses, SSNs, or other PII values
+- dashboard cell values or report result rows
+- user-entered report filters when they contain business data
+- secrets, tokens, credential values, vault references, connection strings, or authorization headers
+- sensitive text min/max values that could expose business or personal data
+
+### Required Implementation Guardrails
+
+- Write profile run evidence as sanitized JSON plus human-readable markdown.
+- Build queryable profile indexes as compact computer-friendly shards, not large markdown scans.
+- Keep operational run state, run artifacts, and profile indexes separate.
+- Include `raw_data_captured: false`, `raw_values_retained: false`, `secret_exposed: false`, and `profile_index_safe: true` in persisted profile index outputs.
+- Add or update tests when a new profile output path is introduced.
+- Reject or fail export when forbidden fields such as `sample_values`, `raw_rows`, `preview_data`, `example_value`, `raw_payload`, `credential`, `token`, `secret`, or `connection_string` appear in persisted profile index output.
+
+### Skill And DevOps Rules
+
+- Codex skills must use the DevOps/Azure profile index as the primary source for profile, quality, metric, sensitivity, and freshness questions.
+- Run markdown may be used as citation or human-readable explanation, not as the primary large-scale index.
+- Confluence is a human navigation and explanation layer. It is not the primary machine-readable profile-answer source.
+
+---
+
 ## Submission Process
 
 ### Before Creating PR
@@ -751,6 +807,7 @@ Document all changes:
 - [ ] BFF boundaries are respected (UI calls BFF, not downstream services)
 - [ ] Infrastructure changes are done through IaC (no manual portal drift)
 - [ ] IaC validation and plan output are attached for infra changes
+- [ ] Profile/index changes follow `docs/PROFILE_INDEX_SPEC.md` and do not persist forbidden raw values or secrets
 
 ### PR Requirements
 

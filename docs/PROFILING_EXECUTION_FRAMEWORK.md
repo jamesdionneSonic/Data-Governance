@@ -12,6 +12,8 @@ The profiling framework produces metadata-safe aggregate statistics for governed
 
 It never stores raw row values. Sensitive columns are automatically limited to safer aggregate checks.
 
+Profile persistence, DevOps/Azure data pack publication, markdown summaries, and Codex skill access are governed by `docs/PROFILE_INDEX_SPEC.md`. That specification is the authoritative safety contract for what profile artifacts and profile indexes may store.
+
 ## Execution Modes
 
 | Mode | What It Does | Source Impact |
@@ -64,6 +66,14 @@ The API returns a computer-friendly package:
 - `package`: JSON export contract suitable for `profiles/<asset-id>.profile.json`
 - `confluence`: human-safe markdown summary
 - `answer`: plain-English status for UI or assistant responses
+
+Profile output is intentionally split into separate storage layers:
+
+- operational run store for local connector/scheduler state
+- sanitized run artifacts for JSON/markdown evidence
+- compact profile indexes for app, skill, and DevOps/Azure data pack lookup
+
+Do not use large markdown summaries as the primary Azure-scale profile index.
 
 The same aggregate profile can be merged back into an asset object with:
 
@@ -149,6 +159,8 @@ When SQL operational storage is not available, scheduler state is persisted loca
 
 Each schedule run writes sanitized JSON plus Confluence-ready markdown artifacts. The runtime store keeps connector status, schedules, run history, and snapshots, but strips or masks inline payloads, tokens, secrets, and vault references. This is a local operational store, not a markdown source-of-truth export.
 
+Published profile indexes should be generated into the lineage runtime package under `profile-index/` and included in the DevOps/Azure data pack only after safety validation confirms no forbidden raw values or secrets are present.
+
 ## UI
 
 Metric Intelligence now includes a Profile Execution panel. It can:
@@ -169,3 +181,4 @@ Automated coverage includes:
 - profiling API tests for `connector_id` delegation
 - profile scheduler tests for schedule CRUD, due ticks, repeated-failure pause behavior, sanitized run history, status endpoints, and local artifact export
 - Playwright memory-stability coverage that cycles major app views and asserts no page errors, no non-favicon 4xx resources, and bounded heap growth
+- profile index safety tests that fail when forbidden fields such as `sample_values`, `raw_rows`, `preview_data`, `example_value`, `raw_payload`, `credential`, `token`, `secret`, or `connection_string` appear in persisted profile index output

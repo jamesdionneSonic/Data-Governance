@@ -38,14 +38,45 @@ const HASH_FILES = [
   'registry/duplicate-objects.jsonl',
   'registry/unresolved-server-objects.jsonl',
   'registry/database-index.json',
+  'registry/database-artifact-index.json',
+  'registry/object-path-index.json',
   'answers/catalog/databases.json',
+  'indexes/artifact-manifest.json',
   'registry/object-registry-summary.json',
   'indexes/index-manifest.json',
+  'profile-index/manifest.json',
+  'profile-index/latest-summary.json',
   'AI_README.md',
 ];
 const RANKING_LIMIT = 500;
 const TOP_USED_LIMIT = 100;
 const DIRECT_EDGE_LIMIT = 120;
+const DEFAULT_PROFILE_RUNTIME_STORE = './data/_runtime/profiles/profile-scheduler-store.json';
+const DEFAULT_PROFILE_RUN_ARTIFACT_ROOT = './data/markdown/_runtime/profile-runs';
+const PROFILE_INDEX_SCHEMA_VERSION = 1;
+const PROFILE_INDEX_FORBIDDEN_KEYS = new Set([
+  'sample_values',
+  'sample_value',
+  'raw_rows',
+  'raw_row',
+  'preview_data',
+  'example_value',
+  'example_values',
+  'raw_payload',
+  'source_payload',
+  'report_result_rows',
+  'dashboard_cell_values',
+  'connection_string',
+  'authorization',
+  'password',
+  'token',
+  'access_token',
+  'refresh_token',
+  'credential',
+  'credentials',
+  'vault_reference',
+  'vault_ref',
+]);
 
 function argValue(name) {
   const prefix = `${name}=`;
@@ -55,6 +86,17 @@ function argValue(name) {
 
 function hasFlag(name) {
   return process.argv.slice(2).includes(name);
+}
+
+function payloadMode() {
+  const mode = (
+    argValue('--mode') ||
+    argValue('--payload-mode') ||
+    process.env.LINEAGE_RUNTIME_PAYLOAD_MODE ||
+    'compat'
+  ).toLowerCase();
+  if (['compat', 'compact', 'full'].includes(mode)) return mode;
+  throw new Error(`Unsupported runtime payload mode '${mode}'. Use compat, compact, or full.`);
 }
 
 function normalizePath(value) {
@@ -146,6 +188,13 @@ async function removeIfExists(root, relativePath) {
   const filePath = path.join(root, relativePath);
   if (!(await fileExists(filePath))) return false;
   await rm(filePath, { force: true });
+  return true;
+}
+
+async function removeTreeIfExists(root, relativePath) {
+  const filePath = path.join(root, relativePath);
+  if (!(await fileExists(filePath))) return false;
+  await rm(filePath, { recursive: true, force: true, maxRetries: 8, retryDelay: 300 });
   return true;
 }
 
@@ -275,6 +324,30 @@ function runtimeContentHash({ sourceManifest, objects }) {
   );
 }
 
+function profileIndexHash(profileIndexManifest = {}) {
+  return sha256Text(
+    JSON.stringify({
+      schema_version: profileIndexManifest.schema_version || 0,
+      source_run_ids: profileIndexManifest.source_run_ids || [],
+      counts: profileIndexManifest.counts || {},
+      safety: profileIndexManifest.safety || {},
+    })
+  );
+}
+
+function runtimeContentHashWithProfiles({ sourceManifest, objects, profileIndexManifest, mode = 'compat' }) {
+  return sha256Text(
+    JSON.stringify({
+      builder_version: RUNTIME_BUILDER_VERSION,
+      payload_mode: mode,
+      catalog_generated_at: sourceManifest.generated_at || '',
+      catalog_schema_version: sourceManifest.schema_version || 0,
+      object_fingerprints: sortedObjectFingerprintRows(objects),
+      profile_index_hash: profileIndexHash(profileIndexManifest),
+    })
+  );
+}
+
 function safeSegment(value, fallback = 'value') {
   const raw = String(value || fallback).trim() || fallback;
   const safe = raw
@@ -283,6 +356,16 @@ function safeSegment(value, fallback = 'value') {
     .replace(/_+/g, '_')
     .replace(/^_+|_+$/g, '');
   return `${safe.slice(0, 90) || fallback}--${hashValue(raw, 10)}`;
+}
+
+function safeProfileSegment(value, fallback = 'value') {
+  const raw = String(value || fallback).trim() || fallback;
+  const normalized = raw
+    .replace(/[<>:"/\\|?*\u0000-\u001f]/g, '_')
+    .replace(/\s+/g, '_')
+    .replace(/_+/g, '_')
+    .replace(/^_+|_+$/g, '');
+  return `${(normalized || fallback).slice(0, 100)}--${hashValue(raw, 10)}`;
 }
 
 function normalizeLookupKey(value) {
@@ -412,6 +495,43 @@ function indexObject(row) {
     unresolved_server: row.runtime_unresolved_server === true,
     compact_context_pack_path: normalizePath(row.compact_context_pack_path || ''),
   };
+}
+
+function compactRegistryRow(row) {
+  return {
+    ...row,
+    context_pack_json_path: normalizePath(row.compact_context_pack_path || row.context_pack_json_path || ''),
+    context_pack_path: '',
+    runtime_payload_mode: 'compact',
+  };
+}
+
+function csvEscape(value) {
+  const text = String(value ?? '');
+  return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
+function registryCsv(rows) {
+  const headers = [
+    'object_id',
+    'display_name',
+    'server',
+    'database',
+    'schema',
+    'object_name',
+    'object_type',
+    'confidence',
+    'upstream_count',
+    'downstream_count',
+    'column_count',
+    'context_pack_json_path',
+    'compact_context_pack_path',
+    'source_markdown_path',
+  ];
+  return [
+    headers.join(','),
+    ...rows.map((row) => headers.map((header) => csvEscape(row[header])).join(',')),
+  ].join('\n') + '\n';
 }
 
 function sortObjectsForLookup(a, b) {
@@ -1021,7 +1141,15 @@ async function buildRuntimeIndexes(packageRoot, previousState = {}) {
   if (indexManifestResult.written) stats.indexFilesWritten += 1;
   else stats.indexFilesSkipped += 1;
 
-  return { indexManifest, objects: nextObjects, stats };
+  return {
+    indexManifest,
+    objects: nextObjects,
+    stats,
+    runtimeRows: [...runtimeRowsById.values()].map(compactRegistryRow),
+    canonicalRows: canonicalRows.map(compactRegistryRow),
+    duplicateRows: duplicateRows.map(compactRegistryRow),
+    unresolvedRows: unresolvedRows.map(compactRegistryRow),
+  };
 }
 
 async function buildHashes(packageRoot) {
@@ -1035,6 +1163,748 @@ async function buildHashes(packageRoot) {
     }
   }
   return hashes;
+}
+
+async function pathEntry(packageRoot, relativePath, kind = 'file') {
+  const normalized = normalizePath(relativePath);
+  if (!normalized) {
+    return { available: false, path: null, kind };
+  }
+  const absolutePath = path.join(packageRoot, normalized);
+  if (!(await fileExists(absolutePath))) {
+    return { available: false, path: normalized, kind };
+  }
+  const entryStat = await stat(absolutePath);
+  return {
+    available: true,
+    path: normalized,
+    kind: entryStat.isDirectory() ? 'directory' : kind,
+    byte_count: entryStat.isFile() ? entryStat.size : undefined,
+    content_hash: entryStat.isFile() ? await sha256File(absolutePath) : undefined,
+  };
+}
+
+async function directoryFileCount(packageRoot, relativePath) {
+  const absolutePath = path.join(packageRoot, normalizePath(relativePath));
+  if (!(await fileExists(absolutePath))) return 0;
+  return (await listFilesRecursive(absolutePath)).length;
+}
+
+function availablePath(entry) {
+  return entry.available ? entry.path : null;
+}
+
+async function buildArtifactManifests(packageRoot, { runtimeBuild, profileIndexManifest }) {
+  const databaseIndex = await readJson(path.join(packageRoot, 'registry/database-index.json'));
+  const generatedAt = new Date().toISOString();
+  const runtimeRows = runtimeBuild.runtimeRows || [];
+  const objectPaths = {};
+  for (const row of runtimeRows) {
+    objectPaths[row.object_id] = {
+      object_id: row.object_id,
+      display_name: row.display_name || row.object_name || row.object_id,
+      database: row.database || '',
+      schema: row.schema || '',
+      object_name: row.object_name || row.display_name || '',
+      object_type: row.object_type || '',
+      counts: {
+        upstream: Number(row.upstream_count || 0),
+        downstream: Number(row.downstream_count || 0),
+        columns: Number(row.column_count || 0),
+      },
+      paths: {
+        compact_context_pack: normalizePath(row.compact_context_pack_path || ''),
+        context_pack_json: normalizePath(row.context_pack_json_path || ''),
+        context_pack_markdown: normalizePath(row.context_pack_path || ''),
+        source_markdown: normalizePath(row.source_markdown_path || ''),
+        usage_answer: normalizePath(row.answer_cards?.usage_count || ''),
+        upstream_answer: normalizePath(row.answer_cards?.upstream || ''),
+        downstream_answer: normalizePath(row.answer_cards?.downstream || ''),
+        profile: null,
+      },
+      confidence: {
+        score: row.confidence ?? null,
+        label: row.confidence_label || '',
+      },
+    };
+  }
+
+  const databases = {};
+  for (const [database, info] of Object.entries(databaseIndex.databases || {})) {
+    const databaseKey = safeSegment(database);
+    const profileKey = safeProfileSegment(database, 'database');
+    const byDatabase = await pathEntry(packageRoot, `indexes/by-database/${databaseKey}.json`);
+    const topUsed = await pathEntry(packageRoot, `indexes/top-used/${databaseKey}.json`);
+    const rankingDownstream = await pathEntry(
+      packageRoot,
+      `indexes/rankings/${databaseKey}/tables-by-downstream-count.json`
+    );
+    const rankingUpstream = await pathEntry(
+      packageRoot,
+      `indexes/rankings/${databaseKey}/tables-by-upstream-count.json`
+    );
+    const profile = await pathEntry(packageRoot, `profile-index/by-database/${profileKey}.json`);
+    databases[database] = {
+      database,
+      database_key: databaseKey,
+      object_count: info.object_count || 0,
+      types: info.types || {},
+      paths: {
+        context_readme: normalizePath(info.context_readme_path || ''),
+        by_database_index: availablePath(byDatabase),
+        top_used: availablePath(topUsed),
+        tables_by_downstream_count: availablePath(rankingDownstream),
+        tables_by_upstream_count: availablePath(rankingUpstream),
+        profile_index: availablePath(profile),
+      },
+      availability: {
+        by_database_index: byDatabase.available,
+        top_used: topUsed.available,
+        tables_by_downstream_count: rankingDownstream.available,
+        tables_by_upstream_count: rankingUpstream.available,
+        profile_index: profile.available,
+      },
+    };
+  }
+
+  await writeJson(packageRoot, 'registry/object-path-index.json', {
+    schema_version: 1,
+    generated_at: generatedAt,
+    object_count: Object.keys(objectPaths).length,
+    objects: objectPaths,
+  });
+  await writeJson(packageRoot, 'registry/database-artifact-index.json', {
+    schema_version: 1,
+    generated_at: generatedAt,
+    database_count: Object.keys(databases).length,
+    databases,
+  });
+
+  const entrypoints = {
+    manifest: { available: true, path: 'manifest.json', kind: 'file' },
+    latest: { available: true, path: 'latest.json', kind: 'file' },
+    catalog_manifest: await pathEntry(packageRoot, 'catalog-manifest.json'),
+    database_index: await pathEntry(packageRoot, 'registry/database-index.json'),
+    database_artifact_index: await pathEntry(packageRoot, 'registry/database-artifact-index.json'),
+    object_path_index: await pathEntry(packageRoot, 'registry/object-path-index.json'),
+    object_registry: await pathEntry(packageRoot, 'registry/object-registry.jsonl'),
+    canonical_registry: await pathEntry(packageRoot, 'registry/canonical-objects.jsonl'),
+    index_manifest: await pathEntry(packageRoot, 'indexes/index-manifest.json'),
+    artifact_manifest: { available: true, path: 'indexes/artifact-manifest.json', kind: 'file' },
+    catalog_databases_answer: await pathEntry(packageRoot, 'answers/catalog/databases.json'),
+    profile_manifest: await pathEntry(packageRoot, 'profile-index/manifest.json'),
+    profile_latest_summary: await pathEntry(packageRoot, 'profile-index/latest-summary.json'),
+  };
+
+  const artifactManifest = {
+    schema_version: 1,
+    generated_at: generatedAt,
+    purpose: 'Advertises exact runtime artifact paths so consumers never guess path variants.',
+    capabilities: {
+      catalog_answers: {
+        available: entrypoints.catalog_databases_answer.available,
+        path: entrypoints.catalog_databases_answer.path,
+      },
+      object_contexts: {
+        available: (await directoryFileCount(packageRoot, 'context-packs/objects/by-id')) > 0,
+        path: 'context-packs/objects/by-id/',
+        count: runtimeRows.length,
+      },
+      object_answer_cards: {
+        available: (await directoryFileCount(packageRoot, 'answers/usage-count/by-object-id')) > 0,
+        paths: {
+          usage_count: 'answers/usage-count/by-object-id/',
+          upstream: 'answers/upstream/by-object-id/',
+          downstream: 'answers/downstream/by-object-id/',
+        },
+        count: runtimeRows.length * 3,
+      },
+      rankings: {
+        available: (await directoryFileCount(packageRoot, 'indexes/rankings')) > 0,
+        path: 'indexes/rankings/',
+      },
+      top_used: {
+        available: (await directoryFileCount(packageRoot, 'indexes/top-used')) > 0,
+        path: 'indexes/top-used/',
+      },
+      profile_index: {
+        available: entrypoints.profile_manifest.available && entrypoints.profile_latest_summary.available,
+        manifest_path: entrypoints.profile_manifest.path,
+        latest_summary_path: entrypoints.profile_latest_summary.path,
+        counts: profileIndexManifest.counts || {},
+      },
+    },
+    entrypoints,
+    indexes: {
+      databases: 'registry/database-artifact-index.json',
+      objects: 'registry/object-path-index.json',
+      lookup_manifest: 'indexes/index-manifest.json',
+    },
+    missing_policy: 'If a path is null or availability is false, consumers must not probe path variants.',
+  };
+
+  await writeJson(packageRoot, 'indexes/artifact-manifest.json', artifactManifest);
+
+  return artifactManifest;
+}
+
+function forbiddenProfileKey(key) {
+  const normalized = normalizeLookupKey(key).replace(/[^a-z0-9_]/g, '_');
+  return PROFILE_INDEX_FORBIDDEN_KEYS.has(normalized);
+}
+
+function assertProfileIndexSafe(value, location = 'profile-index') {
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => assertProfileIndexSafe(item, `${location}[${index}]`));
+    return;
+  }
+  if (!value || typeof value !== 'object') return;
+  for (const [key, nested] of Object.entries(value)) {
+    if (forbiddenProfileKey(key)) {
+      throw new Error(`Forbidden profile-index field '${key}' at ${location}.${key}`);
+    }
+    assertProfileIndexSafe(nested, `${location}.${key}`);
+  }
+}
+
+function profileRunKind(run = {}) {
+  if (run.summary?.bi_profile_run) return 'bi_profile';
+  if (run.summary?.metadata_profile_run) return 'metadata_profile';
+  if (run.summary?.profile_run) return 'aggregate_profile';
+  return 'metadata_harvest';
+}
+
+function profileRunCompletedAt(run = {}) {
+  return run.completed_at || run.profile?.run?.completed_at || run.profile?.executed_at || run.extraction?.extracted_at || '';
+}
+
+function profileRunProfiles(run = {}) {
+  return run.profile?.run?.profiles || run.profile?.profiles || {};
+}
+
+function profileConnectorConfig(run = {}, connectorById = new Map()) {
+  const connector = connectorById.get(run.connector_id) || {};
+  return connector.config || {};
+}
+
+function profileRunDatabase(run = {}, connectorById = new Map()) {
+  const config = profileConnectorConfig(run, connectorById);
+  return config.database || run.database || run.summary?.database || '';
+}
+
+function profileRunServer(run = {}, connectorById = new Map()) {
+  const config = profileConnectorConfig(run, connectorById);
+  return config.server || run.server || run.summary?.server || '';
+}
+
+function profileRunShard(run = {}, connectorById = new Map(), sourceArtifactPath = '') {
+  const summary = run.summary || {};
+  return {
+    schema_version: PROFILE_INDEX_SCHEMA_VERSION,
+    run_id: run.id,
+    connector_id: run.connector_id || '',
+    connector_type: run.connector_type || '',
+    run_kind: profileRunKind(run),
+    status: run.status || '',
+    mode: run.mode || '',
+    completed_at: profileRunCompletedAt(run),
+    server: profileRunServer(run, connectorById),
+    database: profileRunDatabase(run, connectorById),
+    raw_data_captured: false,
+    raw_values_retained: false,
+    secret_exposed: false,
+    profile_index_safe: true,
+    counts: {
+      assets_profiled: Number(summary.assets_profiled || 0),
+      assets_planned: Number(summary.assets_planned || 0),
+      assets_skipped: Number(summary.assets_skipped || 0),
+      columns_profiled: Number(summary.columns_profiled || 0),
+      discovered_objects: Number(summary.discovered_objects || summary.object_count || 0),
+      discovered_columns: Number(summary.discovered_columns || summary.column_count || 0),
+      discovered_lineage_edges: Number(summary.discovered_lineage_edges || summary.lineage_edge_count || 0),
+      warnings: Number(summary.warning_count || 0),
+    },
+    evidence: {
+      source_artifact_path: normalizePath(sourceArtifactPath),
+      markdown_path: run.artifact?.markdown_path ? workspaceRelativePath(run.artifact.markdown_path) : '',
+      json_path: workspaceRelativePath(run.artifact?.json_path || sourceArtifactPath || ''),
+    },
+    caveats: profileRunKind(run) === 'metadata_harvest'
+      ? ['This run harvested metadata. It did not execute aggregate table profiling.']
+      : [],
+  };
+}
+
+function isExecutedAggregateProfileRun(runOrShard = {}) {
+  return (
+    runOrShard.run_kind === 'aggregate_profile' &&
+    ['succeeded', 'partial_failure'].includes(String(runOrShard.status || '').toLowerCase()) &&
+    Number(runOrShard.counts?.assets_profiled || runOrShard.summary?.assets_profiled || 0) > 0
+  );
+}
+
+function isPlannedAggregateProfileRun(runOrShard = {}) {
+  return (
+    runOrShard.run_kind === 'aggregate_profile' &&
+    ['planned', 'dry_run'].includes(String(runOrShard.status || runOrShard.mode || '').toLowerCase())
+  );
+}
+
+function profileCoverageSummary(entries = []) {
+  const runs = entries.filter((entry) => entry.run_id && !entry.object_id);
+  const executedAggregateRuns = runs.filter(isExecutedAggregateProfileRun);
+  const plannedAggregateRuns = runs.filter(isPlannedAggregateProfileRun);
+  const metadataHarvestRuns = runs.filter((run) => run.run_kind === 'metadata_harvest');
+  const objectProfiles = entries.filter((entry) => entry.object_id && entry.run_kind === 'aggregate_profile');
+  const metadataObjects = entries.filter((entry) => entry.object_id && entry.run_kind === 'metadata_harvest');
+  const status = executedAggregateRuns.length
+    ? 'live_aggregate_profile_available'
+    : plannedAggregateRuns.length
+      ? 'profile_planned_not_executed'
+      : metadataHarvestRuns.length || metadataObjects.length
+        ? 'metadata_inventory_only'
+        : 'no_profile_evidence';
+  return {
+    status,
+    executed_aggregate_run_count: executedAggregateRuns.length,
+    planned_aggregate_run_count: plannedAggregateRuns.length,
+    metadata_harvest_run_count: metadataHarvestRuns.length,
+    aggregate_profile_object_count: objectProfiles.length,
+    metadata_inventory_object_count: metadataObjects.length,
+    caveat:
+      status === 'live_aggregate_profile_available'
+        ? ''
+        : status === 'profile_planned_not_executed'
+          ? 'Aggregate profiling has been planned, but no live/simulated aggregate profile results are available yet.'
+          : status === 'metadata_inventory_only'
+            ? 'Only metadata harvest/schema inventory evidence is available; row/null/distinct/min/max profile statistics are not present.'
+            : 'No profile evidence is available in the packaged profile index.',
+  };
+}
+
+function objectProfileShard(run = {}, assetId = '', profile = {}, connectorById = new Map(), sourceArtifactPath = '') {
+  const columns = profile.columns || {};
+  const columnRows = Object.entries(columns).map(([columnName, stats]) => ({
+    column_name: columnName,
+    row_count: stats.row_count ?? profile.row_count ?? null,
+    null_count: stats.null_count ?? null,
+    null_percent: stats.null_percent ?? null,
+    distinct_count: stats.distinct_count ?? null,
+    min: stats.min ?? null,
+    max: stats.max ?? null,
+    mean: stats.mean ?? null,
+    profiled_at: stats.profiled_at || profile.profiled_at || profile.generated_at || profileRunCompletedAt(run),
+    raw_values_retained: false,
+  }));
+  return {
+    schema_version: PROFILE_INDEX_SCHEMA_VERSION,
+    object_id: assetId,
+    display_name: profile.display_name || profile.object_name || assetId,
+    connector_id: run.connector_id || '',
+    connector_type: run.connector_type || '',
+    run_id: run.id,
+    run_kind: profileRunKind(run),
+    status: run.status || '',
+    server: profile.server || profileRunServer(run, connectorById),
+    database: profile.database || profileRunDatabase(run, connectorById),
+    schema: profile.schema || '',
+    object_name: profile.object_name || profile.display_name || assetId,
+    object_type: profile.object_type || 'table',
+    profiled_at: profile.profiled_at || profile.generated_at || profileRunCompletedAt(run),
+    raw_data_captured: false,
+    raw_values_retained: false,
+    secret_exposed: false,
+    profile_index_safe: true,
+    profile_summary: {
+      row_count: profile.row_count ?? null,
+      column_count: Object.keys(columns).length,
+      warning_count: Array.isArray(profile.warnings) ? profile.warnings.length : 0,
+    },
+    columns: columnRows,
+    evidence: {
+      source_artifact_path: normalizePath(sourceArtifactPath),
+      markdown_path: run.artifact?.markdown_path ? workspaceRelativePath(run.artifact.markdown_path) : '',
+      json_path: workspaceRelativePath(run.artifact?.json_path || sourceArtifactPath || ''),
+    },
+  };
+}
+
+function eventObjectShard(run = {}, event = {}, connectorById = new Map(), sourceArtifactPath = '') {
+  const attributes = event.attributes || {};
+  const name = event.name || attributes.name || event.external_id || event.id || '';
+  return {
+    schema_version: PROFILE_INDEX_SCHEMA_VERSION,
+    object_id: event.id || event.external_id || name,
+    display_name: name,
+    connector_id: run.connector_id || event.connector_id || '',
+    connector_type: run.connector_type || event.connector_type || '',
+    run_id: run.id,
+    run_kind: profileRunKind(run),
+    status: run.status || '',
+    server: profileRunServer(run, connectorById),
+    database: profileRunDatabase(run, connectorById),
+    schema: attributes.schema || '',
+    object_name: name,
+    object_type: event.object_type || attributes.object_type || event.stream || event.type || '',
+    profiled_at: profileRunCompletedAt(run),
+    raw_data_captured: false,
+    raw_values_retained: false,
+    secret_exposed: false,
+    profile_index_safe: true,
+    profile_summary: {
+      row_count: null,
+      column_count: event.type === 'metadata.column' ? 1 : null,
+      warning_count: 0,
+    },
+    columns: [],
+    evidence: {
+      source_artifact_path: normalizePath(sourceArtifactPath),
+      stream: event.stream || '',
+      markdown_path: run.artifact?.markdown_path ? workspaceRelativePath(run.artifact.markdown_path) : '',
+      json_path: workspaceRelativePath(run.artifact?.json_path || sourceArtifactPath || ''),
+    },
+    caveats: ['Metadata inventory record only; aggregate row/null statistics are not present for this object.'],
+  };
+}
+
+async function readProfileRunArtifacts(artifactRoot) {
+  if (!(await fileExists(artifactRoot))) return [];
+  const files = await listFilesRecursive(artifactRoot);
+  const runs = [];
+  for (const relativePath of files.filter((file) => file.endsWith('.json') && !file.endsWith('devops-upload-pending.json'))) {
+    const filePath = path.join(artifactRoot, relativePath);
+    // eslint-disable-next-line no-await-in-loop
+    const parsed = await readJson(filePath);
+    const run = parsed.run || parsed;
+    if (!run?.id) continue;
+    run.artifact = {
+      ...(run.artifact || {}),
+      markdown_path: run.artifact?.markdown_path || parsed.markdown_path || '',
+      json_path: run.artifact?.json_path || parsed.json_path || normalizePath(path.relative(process.cwd(), filePath)),
+      devops_upload_pending: run.artifact?.devops_upload_pending ?? parsed.devops_upload_pending ?? false,
+    };
+    runs.push({
+      run,
+      sourceArtifactPath: normalizePath(path.relative(process.cwd(), filePath)),
+    });
+  }
+  return runs;
+}
+
+async function readProfileRuntimeStore(storePath) {
+  if (!(await fileExists(storePath))) return { connectors: [], runs: [] };
+  const parsed = await readJson(storePath);
+  return {
+    connectors: Array.isArray(parsed.connectors) ? parsed.connectors : [],
+    runs: Array.isArray(parsed.connector_runs) ? parsed.connector_runs : [],
+  };
+}
+
+function mergeProfileRuns(artifactRuns = [], runtimeRuns = []) {
+  const byId = new Map();
+  for (const item of artifactRuns) byId.set(item.run.id, item);
+  for (const run of runtimeRuns) {
+    if (!run?.id || byId.has(run.id)) continue;
+    byId.set(run.id, { run, sourceArtifactPath: '' });
+  }
+  return [...byId.values()].sort((a, b) =>
+    String(profileRunCompletedAt(b.run)).localeCompare(String(profileRunCompletedAt(a.run)))
+  );
+}
+
+function addToMapArray(map, key, value) {
+  const normalized = key || 'unknown';
+  if (!map.has(normalized)) map.set(normalized, []);
+  map.get(normalized).push(value);
+}
+
+function profileIndexShardReference(relativePath, summary = {}) {
+  return {
+    path: normalizePath(relativePath),
+    ...summary,
+  };
+}
+
+function workspaceRelativePath(filePath) {
+  const resolved = path.isAbsolute(String(filePath || '')) ? filePath : path.resolve(process.cwd(), String(filePath || ''));
+  const relative = path.relative(process.cwd(), resolved);
+  return normalizePath(relative && !relative.startsWith('..') && !path.isAbsolute(relative) ? relative : filePath);
+}
+
+async function buildProfileIndex(packageRoot, options = {}) {
+  const artifactRoot = path.resolve(
+    process.cwd(),
+    options.artifactRoot || process.env.PROFILE_RUN_ARTIFACT_ROOT || DEFAULT_PROFILE_RUN_ARTIFACT_ROOT
+  );
+  const storePath = path.resolve(
+    process.cwd(),
+    options.storePath || process.env.PROFILE_SCHEDULER_STORE_PATH || DEFAULT_PROFILE_RUNTIME_STORE
+  );
+  const [artifactRuns, runtimeStore] = await Promise.all([
+    readProfileRunArtifacts(artifactRoot),
+    readProfileRuntimeStore(storePath),
+  ]);
+  const connectorById = new Map(runtimeStore.connectors.map((connector) => [connector.id, connector]));
+  const runs = mergeProfileRuns(artifactRuns, runtimeStore.runs);
+  const runShards = [];
+  const objectShards = [];
+  const databaseMap = new Map();
+  const objectNameMap = new Map();
+  const columnNameMap = new Map();
+  const connectorMap = new Map();
+  for (const directory of [
+    'profile-index/by-database',
+    'profile-index/by-object-id',
+    'profile-index/by-object-name',
+    'profile-index/by-column-name',
+    'profile-index/runs/by-run-id',
+    'profile-index/runs/by-connector',
+    'profile-index/flags',
+  ]) {
+    // eslint-disable-next-line no-await-in-loop
+    await mkdir(path.join(packageRoot, directory), { recursive: true });
+  }
+
+  for (const { run, sourceArtifactPath } of runs) {
+    const runShard = profileRunShard(run, connectorById, sourceArtifactPath);
+    assertProfileIndexSafe(runShard, `run:${run.id}`);
+    const runRelativePath = `profile-index/runs/by-run-id/${safeProfileSegment(run.id, 'run')}.json`;
+    // eslint-disable-next-line no-await-in-loop
+    await writeJson(packageRoot, runRelativePath, runShard);
+    runShards.push(profileIndexShardReference(runRelativePath, {
+      run_id: run.id,
+      connector_id: runShard.connector_id,
+      run_kind: runShard.run_kind,
+      status: runShard.status,
+      completed_at: runShard.completed_at,
+    }));
+    addToMapArray(connectorMap, runShard.connector_id, runShard);
+    addToMapArray(databaseMap, runShard.database || 'unknown', runShard);
+
+    const profiles = profileRunProfiles(run);
+    for (const [assetId, profile] of Object.entries(profiles)) {
+      const objectShard = objectProfileShard(run, assetId, profile, connectorById, sourceArtifactPath);
+      assertProfileIndexSafe(objectShard, `object:${assetId}`);
+      objectShards.push(objectShard);
+    }
+
+    for (const event of run.extraction?.events || []) {
+      if (!event?.id || (event.type !== 'metadata.object' && event.type !== 'metadata.column')) continue;
+      const objectShard = eventObjectShard(run, event, connectorById, sourceArtifactPath);
+      assertProfileIndexSafe(objectShard, `event:${event.id}`);
+      objectShards.push(objectShard);
+    }
+  }
+
+  const latestByObject = new Map();
+  for (const shard of objectShards) {
+    const existing = latestByObject.get(shard.object_id);
+    if (!existing || String(shard.profiled_at || '').localeCompare(String(existing.profiled_at || '')) >= 0) {
+      latestByObject.set(shard.object_id, shard);
+    }
+  }
+
+  for (const shard of latestByObject.values()) {
+    const objectPath = `profile-index/by-object-id/${safeProfileSegment(shard.object_id, 'object')}.json`;
+    // eslint-disable-next-line no-await-in-loop
+    await writeJson(packageRoot, objectPath, shard);
+    const objectReference = profileIndexShardReference(objectPath, {
+      object_id: shard.object_id,
+      display_name: shard.display_name,
+      database: shard.database,
+      object_type: shard.object_type,
+      profiled_at: shard.profiled_at,
+    });
+    addToMapArray(objectNameMap, normalizeLookupKey(shard.object_name || shard.display_name || shard.object_id), objectReference);
+    addToMapArray(databaseMap, shard.database || 'unknown', objectReference);
+    for (const column of shard.columns || []) {
+      addToMapArray(columnNameMap, normalizeLookupKey(column.column_name), {
+        ...objectReference,
+        column_name: column.column_name,
+        null_percent: column.null_percent,
+        distinct_count: column.distinct_count,
+      });
+    }
+  }
+
+  for (const [connectorId, connectorRuns] of connectorMap.entries()) {
+    const connectorPath = `profile-index/runs/by-connector/${safeProfileSegment(connectorId, 'connector')}.json`;
+    const payload = {
+      schema_version: PROFILE_INDEX_SCHEMA_VERSION,
+      connector_id: connectorId,
+      profile_index_safe: true,
+      raw_data_captured: false,
+      raw_values_retained: false,
+      secret_exposed: false,
+      profile_coverage: profileCoverageSummary(connectorRuns),
+      runs: connectorRuns,
+    };
+    assertProfileIndexSafe(payload, `connector:${connectorId}`);
+    // eslint-disable-next-line no-await-in-loop
+    await writeJson(packageRoot, connectorPath, payload);
+  }
+
+  for (const [database, entries] of databaseMap.entries()) {
+    const databasePath = `profile-index/by-database/${safeProfileSegment(database, 'database')}.json`;
+    const payload = {
+      schema_version: PROFILE_INDEX_SCHEMA_VERSION,
+      database,
+      profile_index_safe: true,
+      raw_data_captured: false,
+      raw_values_retained: false,
+      secret_exposed: false,
+      profile_coverage: profileCoverageSummary(entries),
+      entries,
+    };
+    assertProfileIndexSafe(payload, `database:${database}`);
+    // eslint-disable-next-line no-await-in-loop
+    await writeJson(packageRoot, databasePath, payload);
+  }
+
+  for (const [objectName, entries] of objectNameMap.entries()) {
+    const objectNamePath = `profile-index/by-object-name/${safeProfileSegment(objectName, 'object-name')}.json`;
+    // eslint-disable-next-line no-await-in-loop
+    await writeJson(packageRoot, objectNamePath, {
+      schema_version: PROFILE_INDEX_SCHEMA_VERSION,
+      lookup_key: objectName,
+      profile_index_safe: true,
+      raw_data_captured: false,
+      raw_values_retained: false,
+      secret_exposed: false,
+      matches: entries,
+    });
+  }
+
+  for (const [columnName, entries] of columnNameMap.entries()) {
+    const columnNamePath = `profile-index/by-column-name/${safeProfileSegment(columnName, 'column-name')}.json`;
+    // eslint-disable-next-line no-await-in-loop
+    await writeJson(packageRoot, columnNamePath, {
+      schema_version: PROFILE_INDEX_SCHEMA_VERSION,
+      lookup_key: columnName,
+      profile_index_safe: true,
+      raw_data_captured: false,
+      raw_values_retained: false,
+      secret_exposed: false,
+      matches: entries,
+    });
+  }
+
+  const flags = {
+    'profile-index/flags/pii.json': { flag: 'pii', matches: [] },
+    'profile-index/flags/metrics.json': { flag: 'metrics', matches: [] },
+    'profile-index/flags/quality-gaps.json': { flag: 'quality-gaps', matches: [] },
+    'profile-index/flags/stale-profiles.json': { flag: 'stale-profiles', matches: [] },
+  };
+  for (const [relativePath, payload] of Object.entries(flags)) {
+    // eslint-disable-next-line no-await-in-loop
+    await writeJson(packageRoot, relativePath, {
+      schema_version: PROFILE_INDEX_SCHEMA_VERSION,
+      profile_index_safe: true,
+      raw_data_captured: false,
+      raw_values_retained: false,
+      secret_exposed: false,
+      ...payload,
+    });
+  }
+
+  const manifest = {
+    schema_version: PROFILE_INDEX_SCHEMA_VERSION,
+    generated_at: new Date().toISOString(),
+    source_store_path: workspaceRelativePath(storePath),
+    source_artifact_root: workspaceRelativePath(artifactRoot),
+    source_run_ids: runs.map(({ run }) => run.id).filter(Boolean).sort(),
+    counts: {
+      run_count: runs.length,
+      aggregate_profile_run_count: runs.filter(({ run }) => profileRunKind(run) === 'aggregate_profile').length,
+      executed_aggregate_profile_run_count: runShards.filter(isExecutedAggregateProfileRun).length,
+      planned_aggregate_profile_run_count: runShards.filter(isPlannedAggregateProfileRun).length,
+      metadata_harvest_run_count: runs.filter(({ run }) => profileRunKind(run) === 'metadata_harvest').length,
+      bi_profile_run_count: runs.filter(({ run }) => profileRunKind(run) === 'bi_profile').length,
+      metadata_profile_run_count: runs.filter(({ run }) => profileRunKind(run) === 'metadata_profile').length,
+      object_profile_count: latestByObject.size,
+      aggregate_profile_object_count: [...latestByObject.values()].filter((shard) => shard.run_kind === 'aggregate_profile').length,
+      metadata_inventory_object_count: [...latestByObject.values()].filter((shard) => shard.run_kind === 'metadata_harvest').length,
+      object_name_index_count: objectNameMap.size,
+      column_name_index_count: columnNameMap.size,
+      database_index_count: databaseMap.size,
+      connector_index_count: connectorMap.size,
+    },
+    entrypoints: {
+      latest_summary: 'profile-index/latest-summary.json',
+      by_database: 'profile-index/by-database/',
+      by_object_id: 'profile-index/by-object-id/',
+      by_object_name: 'profile-index/by-object-name/',
+      by_column_name: 'profile-index/by-column-name/',
+      runs_by_id: 'profile-index/runs/by-run-id/',
+      runs_by_connector: 'profile-index/runs/by-connector/',
+      flags: 'profile-index/flags/',
+    },
+    safety: {
+      raw_data_captured: false,
+      raw_values_retained: false,
+      secret_exposed: false,
+      profile_index_safe: true,
+      validation_status: 'passed',
+      forbidden_field_count: 0,
+    },
+  };
+  assertProfileIndexSafe(manifest, 'profile-index:manifest');
+  await writeJson(packageRoot, 'profile-index/manifest.json', manifest);
+  await writeJson(packageRoot, 'profile-index/latest-summary.json', {
+    schema_version: PROFILE_INDEX_SCHEMA_VERSION,
+    generated_at: manifest.generated_at,
+    profile_index_safe: true,
+    raw_data_captured: false,
+    raw_values_retained: false,
+    secret_exposed: false,
+    counts: manifest.counts,
+    profile_coverage: profileCoverageSummary([...runShards, ...latestByObject.values()]),
+    latest_runs: runShards.slice(0, 20),
+    caveats: [
+      'Aggregate row/null profile statistics appear only for runs that executed an aggregate profile.',
+      'Metadata harvest runs contribute inventory and coverage evidence, not table row counts.',
+    ],
+  });
+  return manifest;
+}
+
+async function applyCompactPayloadMode(packageRoot, runtimeBuild) {
+  const runtimeRows = runtimeBuild.runtimeRows || [];
+  await writeJsonl(packageRoot, 'registry/object-registry.jsonl', runtimeRows);
+  await writeJsonl(packageRoot, 'registry/canonical-objects.jsonl', runtimeBuild.canonicalRows || []);
+  await writeJsonl(packageRoot, 'registry/duplicate-objects.jsonl', runtimeBuild.duplicateRows || []);
+  await writeJsonl(packageRoot, 'registry/unresolved-server-objects.jsonl', runtimeBuild.unresolvedRows || []);
+  await writeText(packageRoot, 'registry/object-registry.csv', registryCsv(runtimeRows));
+
+  const removed = [];
+  for (const relativePath of [
+    'servers',
+    'ssis',
+    'reports',
+    'context-packs/databases',
+  ]) {
+    // eslint-disable-next-line no-await-in-loop
+    if (await removeTreeIfExists(packageRoot, relativePath)) removed.push(relativePath);
+  }
+  return {
+    mode: 'compact',
+    registry_rows_rewritten: runtimeRows.length,
+    removed_paths: removed,
+    retained_paths: [
+      'manifest.json',
+      'latest.json',
+      'AI_README.md',
+      'README.md',
+      'catalog-manifest.json',
+      'schemas/',
+      'docs/',
+      'registry/',
+      'indexes/',
+      'answers/',
+      'context-packs/objects/',
+      'profile-index/',
+    ],
+  };
 }
 
 async function renderPackageReadme({ packageName, version, sourceManifest }) {
@@ -1052,7 +1922,8 @@ This bundle is optimized for AI and automation runtime lookup. It is built from 
 3. Search \`registry/canonical-objects.jsonl\` before the full compatibility registry.
 4. Open the matching row's compact object context pack under \`context-packs/objects/by-id/\`, then open the original context pack only when detail is needed.
 5. Use \`answers/**/by-object-id/\` for upstream, downstream, and usage-count questions when an answer card path is available.
-6. Use Confluence only for governance explanation, policy, stewardship, or curated narrative.
+6. Use \`profile-index/\` first for profile, quality, metric, sensitivity, and freshness questions.
+7. Use Confluence only for governance explanation, policy, stewardship, or curated narrative.
 
 ## Current Counts
 
@@ -1068,6 +1939,8 @@ This bundle is optimized for AI and automation runtime lookup. It is built from 
 - Do not infer relationships that are not present in a context pack or answer card.
 - Report confidence labels when answering lineage questions.
 - Treat raw SQL rows with server \`unknown\` and database \`Sonic_DW\` as forbidden stale lineage data.
+- Never treat profile run markdown as the primary large-scale profile index.
+- Never expose raw rows, sample values, report result rows, unrestricted source payloads, credentials, tokens, connection strings, or vault references.
 `;
 }
 
@@ -1091,13 +1964,25 @@ Use this package when an assistant or script needs fast Sonic lineage lookup wit
 - \`indexes/index-manifest.json\`
 - \`indexes/by-name/**\`
 - \`indexes/rankings/**\`
+- \`profile-index/manifest.json\`
+- \`profile-index/latest-summary.json\`
+- \`profile-index/by-database/**\`
+- \`profile-index/by-object-id/**\`
+- \`profile-index/by-object-name/**\`
+- \`profile-index/by-column-name/**\`
 - \`answers/**\`
 - \`context-packs/**\`
 - \`ssis/**\`
 
 ## AI Routing
 
-AI assistants should read \`manifest.json\`, then use the smallest relevant index. The registry row contains exact context pack and answer-card paths to read. Confluence is secondary and should be used only for human-friendly governance context.
+AI assistants should read \`manifest.json\`, then use the smallest relevant index. The registry row contains exact context pack and answer-card paths to read. For profile, quality, metric, sensitivity, and freshness questions, use \`profile-index/\` before profile run markdown or Confluence. Confluence is secondary and should be used only for human-friendly governance context.
+
+## Profile Index
+
+The \`profile-index/\` folder is the machine-readable profile payload. It is built from sanitized connector/profile run artifacts and operational profile state. It is safe for DevOps publication only when \`npm run lineage:runtime:check\` passes.
+
+Profile-index shards must not contain raw row values, sample values, report result rows, unrestricted source payloads, credentials, tokens, connection strings, or vault references.
 
 ## Local Validation
 
@@ -1111,6 +1996,7 @@ npm run lineage:runtime:check
 
 async function main() {
   const forceRebuild = hasFlag('--force') || hasFlag('--full-rebuild');
+  const mode = payloadMode();
   const sourceRoot = path.resolve(
     process.cwd(),
     argValue('--source') || process.env.LINEAGE_RUNTIME_SOURCE_REPO || process.env.CATALOG_REPO_PATH || DEFAULT_SOURCE_REPO
@@ -1178,10 +2064,21 @@ async function main() {
   }
 
   const runtimeBuild = await buildRuntimeIndexes(packageRoot, canReusePackageRoot ? previousState : {});
+  const profileIndexManifest = await buildProfileIndex(packageRoot);
+  const artifactManifest = await buildArtifactManifests(packageRoot, { runtimeBuild, profileIndexManifest });
+  const compactPayload =
+    mode === 'compact'
+      ? await applyCompactPayloadMode(packageRoot, runtimeBuild)
+      : { mode, registry_rows_rewritten: 0, removed_paths: [], retained_paths: [] };
   const { indexManifest } = runtimeBuild;
   const registryCount = await countJsonl(path.join(packageRoot, 'registry/object-registry.jsonl'));
   const contentHashes = await buildHashes(packageRoot);
-  const runtimeHash = runtimeContentHash({ sourceManifest, objects: runtimeBuild.objects });
+  const runtimeHash = runtimeContentHashWithProfiles({
+    sourceManifest,
+    objects: runtimeBuild.objects,
+    profileIndexManifest,
+    mode,
+  });
 
   const manifest = {
     schema_version: PACKAGE_SCHEMA_VERSION,
@@ -1218,9 +2115,13 @@ async function main() {
         indexManifest.counts.ranking_files,
       answer_card_file_count: indexManifest.counts.answer_card_files,
       compact_context_pack_count: indexManifest.counts.compact_context_pack_files,
+      profile_index_run_count: profileIndexManifest.counts.run_count,
+      profile_index_object_count: profileIndexManifest.counts.object_profile_count,
+      profile_index_database_count: profileIndexManifest.counts.database_index_count,
     },
     build: {
       builder_version: RUNTIME_BUILDER_VERSION,
+      payload_mode: mode,
       incremental_enabled: true,
       reused_previous_package_root: canReusePackageRoot,
       force_rebuild: forceRebuild,
@@ -1258,6 +2159,17 @@ async function main() {
     compact_context_packs: {
       by_object_id: 'context-packs/objects/by-id/',
     },
+    profile_index: {
+      manifest: 'profile-index/manifest.json',
+      latest_summary: 'profile-index/latest-summary.json',
+      by_database: 'profile-index/by-database/',
+      by_object_id: 'profile-index/by-object-id/',
+      by_object_name: 'profile-index/by-object-name/',
+      by_column_name: 'profile-index/by-column-name/',
+      runs_by_id: 'profile-index/runs/by-run-id/',
+      runs_by_connector: 'profile-index/runs/by-connector/',
+      flags: 'profile-index/flags/',
+    },
     entrypoints: {
       registry_jsonl: 'registry/object-registry.jsonl',
       canonical_registry_jsonl: 'registry/canonical-objects.jsonl',
@@ -1265,9 +2177,14 @@ async function main() {
       unresolved_server_registry_jsonl: 'registry/unresolved-server-objects.jsonl',
       registry_csv: 'registry/object-registry.csv',
       database_index: 'registry/database-index.json',
+      database_artifact_index: 'registry/database-artifact-index.json',
+      object_path_index: 'registry/object-path-index.json',
       database_catalog_answer: 'answers/catalog/databases.json',
       registry_summary: 'registry/object-registry-summary.json',
       index_manifest: 'indexes/index-manifest.json',
+      artifact_manifest: 'indexes/artifact-manifest.json',
+      profile_index_manifest: 'profile-index/manifest.json',
+      profile_index_latest_summary: 'profile-index/latest-summary.json',
       catalog_manifest: 'catalog-manifest.json',
       ai_readme: 'AI_README.md',
       runtime_guide: 'docs/runtime-package-guide.md',
@@ -1276,6 +2193,7 @@ async function main() {
       'manifest.json',
       'indexes/by-name, indexes/aliases, indexes/by-database, indexes/by-schema, or indexes/rankings',
       'registry/canonical-objects.jsonl before registry/object-registry.jsonl',
+      'profile-index/ for profile, quality, metric, sensitivity, and freshness questions',
       'row.compact_context_pack_path, row.answer_cards, or row.context_pack_json_path',
       'Confluence only for human governance explanation',
     ],
@@ -1284,7 +2202,12 @@ async function main() {
       unknown_sonic_dw_blocked: true,
       require_context_pack_paths: true,
       require_case_insensitive_unique_paths: true,
+      require_profile_index_safety: true,
+      compact_payload_registry_points_to_compact_context: mode === 'compact',
     },
+    payload: compactPayload,
+    artifact_manifest: artifactManifest,
+    profile_index_manifest: profileIndexManifest,
     runtime_content_hash: runtimeHash,
     content_hashes: contentHashes,
   };
@@ -1302,7 +2225,10 @@ async function main() {
     canonical_registry_path: manifest.entrypoints.canonical_registry_jsonl,
     database_index_path: manifest.entrypoints.database_index,
     index_manifest_path: manifest.entrypoints.index_manifest,
+    profile_index_manifest_path: manifest.entrypoints.profile_index_manifest,
+    profile_index_latest_summary_path: manifest.entrypoints.profile_index_latest_summary,
     indexes: manifest.indexes,
+    profile_index: manifest.profile_index,
   });
 
   const nextState = {
@@ -1310,6 +2236,7 @@ async function main() {
     builder_version: RUNTIME_BUILDER_VERSION,
     package_name: packageName,
     package_root: normalizePath(packageRoot),
+    payload_mode: mode,
     source_root: normalizePath(sourceRoot),
     version,
     generated_at: manifest.generated_at,
@@ -1322,6 +2249,8 @@ async function main() {
     copied_files: nextCopyState,
     objects: runtimeBuild.objects,
     latest_build: manifest.build,
+    latest_payload: manifest.payload,
+    profile_index_manifest: profileIndexManifest,
   };
   await mkdir(path.dirname(buildStatePath), { recursive: true });
   await writeFile(buildStatePath, `${JSON.stringify(nextState, null, 2)}\n`, 'utf8');
