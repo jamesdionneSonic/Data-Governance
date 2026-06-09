@@ -897,6 +897,14 @@ const appConfig = {
         this.integrations.profileScheduleEditor.connectorId;
       return (this.integrations.managedConnectors || []).find((connector) => connector.id === selectedId) || null;
     },
+    selectedConnectorSchedules() {
+      const connectorId = this.selectedManagedConnector?.id;
+      if (!connectorId) return [];
+      return (this.integrations.profileSchedules || []).filter((schedule) => schedule.connector_id === connectorId);
+    },
+    selectedConnectorActiveSchedule() {
+      return this.selectedConnectorSchedules.find((schedule) => schedule.status === 'ACTIVE') || null;
+    },
     selectedConnectorSupportsProfiling() {
       const connector = this.selectedManagedConnector;
       return ['sql_server', 'postgresql', 'snowflake', 'bigquery', 'databricks', 'aws_redshift'].includes(
@@ -906,9 +914,7 @@ const appConfig = {
     connectorWorkflowSteps() {
       const hasConnector = Boolean(this.selectedManagedConnector);
       const hasProfile = Boolean(this.integrations.profileRunResult);
-      const hasSchedule = (this.integrations.profileSchedules || []).some(
-        (schedule) => schedule.connector_id === this.selectedManagedConnector?.id
-      );
+      const hasSchedule = this.selectedConnectorSchedules.length > 0;
       return [
         { key: 'connection', label: '1. Save connection', done: hasConnector },
         { key: 'run', label: '2. Run one-time profile', done: hasProfile },
@@ -5425,6 +5431,7 @@ const appConfig = {
     profileScheduleOptionsPayload() {
       const editor = this.integrations.profileScheduleEditor;
       const payload = {
+        execution_mode: editor.dryRun ? 'dry_run' : (editor.profileType === 'aggregate' || editor.profileType === 'auto' ? 'live' : 'dry_run'),
         dry_run: editor.dryRun !== false,
         fail_fast: false,
         ids: String(editor.assetIds || '')
@@ -10373,6 +10380,24 @@ const appConfig = {
                     <div class="col-3"><v-label>Subject</v-label><v-text-field v-model="integrations.connectorGrant.subject" density="compact" variant="outlined" hide-details></v-text-field></div>
                     <div class="col-3"><v-label>Actions</v-label><v-text-field v-model="integrations.connectorGrant.actions" density="compact" variant="outlined" hide-details></v-text-field></div>
                     <div class="col-1" style="display:flex;align-items:end;"><v-btn size="small" color="primary" @click="grantManagedConnectorPermission">Grant</v-btn></div>
+                  </div>
+                </div>
+
+                <div class="managed-connector-results" v-if="selectedManagedConnector">
+                  <div class="mini-stack">
+                    <div class="mini-metric"><span>Queue Worker</span><strong>{{ integrations.profileSchedulerStatus?.running ? 'Running' : 'Stopped' }}</strong></div>
+                    <div class="mini-metric"><span>Selected Connector</span><strong>{{ selectedManagedConnector.id }}</strong></div>
+                    <div class="mini-metric"><span>Schedules</span><strong>{{ selectedConnectorSchedules.length }}</strong></div>
+                    <div class="mini-metric"><span>Active Queue</span><strong>{{ selectedConnectorActiveSchedule ? 'Yes' : 'No' }}</strong></div>
+                    <div class="mini-metric"><span>Next Run</span><strong>{{ formatTimestamp(selectedConnectorActiveSchedule?.next_run_at) }}</strong></div>
+                  </div>
+                  <div class="connector-guardrail mt-8" v-if="!selectedConnectorActiveSchedule">
+                    <v-icon size="small">mdi-alert-circle-outline</v-icon>
+                    <span>No active profile schedule exists yet for {{ selectedManagedConnector.id }}. The queue will not run automatically until you create or activate one.</span>
+                  </div>
+                  <div class="connector-guardrail mt-8" v-else-if="!integrations.profileSchedulerStatus?.running">
+                    <v-icon size="small">mdi-pause-circle-outline</v-icon>
+                    <span>{{ selectedManagedConnector.id }} has an active schedule, but the scheduler worker is stopped, so the queue is not advancing yet.</span>
                   </div>
                 </div>
 

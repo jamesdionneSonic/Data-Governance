@@ -1883,7 +1883,20 @@ function inferProfileScheduleType(connector, requestedType = 'auto') {
 }
 
 async function runConnectorProfileByType(connectorId, profileType, options, user) {
-  if (profileType === 'aggregate') return runConnectorProfiling(connectorId, options, user);
+  if (profileType === 'aggregate') {
+    const executionMode =
+      options.execution_mode ||
+      options.executionMode ||
+      (options.dry_run === false ? 'live' : 'dry_run');
+    return runConnectorProfiling(
+      connectorId,
+      {
+        ...options,
+        execution_mode: executionMode,
+      },
+      user
+    );
+  }
   if (profileType === 'bi') return runConnectorBiProfiling(connectorId, options, user);
   return runConnectorMetadataProfiling(connectorId, options, user);
 }
