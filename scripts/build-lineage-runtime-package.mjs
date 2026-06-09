@@ -18,7 +18,7 @@ const DEFAULT_SOURCE_REPO = '../Sonic-data-lineage';
 const DEFAULT_PACKAGE_ROOT = './data/lineage-runtime-package/sonic-data-lineage-runtime';
 const DEFAULT_PACKAGE_NAME = 'sonic-data-lineage-runtime';
 const PACKAGE_SCHEMA_VERSION = 1;
-const RUNTIME_BUILDER_VERSION = 3;
+const RUNTIME_BUILDER_VERSION = 4;
 const COPY_ENTRIES = [
   '.gitattributes',
   'AI_README.md',
@@ -41,6 +41,8 @@ const HASH_FILES = [
   'registry/database-artifact-index.json',
   'registry/object-path-index.json',
   'answers/catalog/databases.json',
+  'indexes/entrypoints.json',
+  'indexes/path-contract.json',
   'indexes/artifact-manifest.json',
   'registry/object-registry-summary.json',
   'indexes/index-manifest.json',
@@ -387,6 +389,11 @@ function compactLookupKey(value) {
   return normalizeLookupKey(value).replace(/[^a-z0-9]/g, '');
 }
 
+function resolverFileKey(value, fallback = 'unknown') {
+  const compact = compactLookupKey(value || fallback);
+  return (compact || fallback).slice(0, 180);
+}
+
 function camelWords(value) {
   return String(value || '')
     .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
@@ -494,6 +501,69 @@ function indexObject(row) {
     duplicate: row.runtime_duplicate === true,
     unresolved_server: row.runtime_unresolved_server === true,
     compact_context_pack_path: normalizePath(row.compact_context_pack_path || ''),
+    answer_cards: row.answer_cards || undefined,
+  };
+}
+
+function objectSummaryAnswerCard(row, contextPack, relationIndex = {}) {
+  const semanticLineage = deriveSemanticLineageGroups(row.object_id, contextPack, relationIndex);
+  const upstreamCount = Number(row.upstream_count || contextPack?.lineage?.upstream_count || 0);
+  const downstreamCount = Number(row.downstream_count || contextPack?.lineage?.downstream_count || 0);
+  return {
+    schema_version: 1,
+    question_type: 'object-summary',
+    object: briefObject(row),
+    answer: {
+      summary: `${row.display_name || row.object_name || row.object_id} is a ${row.object_type || 'catalog object'} in ${[row.database, row.schema].filter(Boolean).join('.') || 'the catalog'}.`,
+      upstream_count: upstreamCount,
+      downstream_count: downstreamCount,
+      column_count: Number(row.column_count || contextPack?.columns?.count || 0),
+      confidence_label: row.confidence_label || '',
+      has_logic_summary: Boolean(contextPack?.logic_summary),
+      semantic_downstream_counts: semanticLineage.counts || {},
+    },
+    recommended_next_cards: {
+      usage_count: normalizePath(row.answer_cards?.usage_count || ''),
+      upstream: normalizePath(row.answer_cards?.upstream || ''),
+      downstream: normalizePath(row.answer_cards?.downstream || ''),
+      profile_teaser: normalizePath(row.answer_cards?.profile_teaser || ''),
+    },
+    context_pack_json_path: normalizePath(row.compact_context_pack_path || row.context_pack_json_path || ''),
+  };
+}
+
+async function profileTeaserAnswerCard(packageRoot, row) {
+  const profileByObjectIdPath = `profile-index/by-object-id/${safeProfileSegment(row.object_id, 'object')}.json`;
+  const profileByObjectNamePath = `profile-index/by-object-name/${safeProfileSegment(normalizeLookupKey(row.object_name || row.display_name || row.object_id), 'object-name')}.json`;
+  const profileByObjectId = await pathEntry(packageRoot, profileByObjectIdPath);
+  const profileByObjectName = await pathEntry(packageRoot, profileByObjectNamePath);
+  let profileSummary = null;
+  if (profileByObjectId.available) {
+    const profile = await readJson(path.join(packageRoot, profileByObjectIdPath));
+    profileSummary = {
+      status: profile.status || '',
+      run_kind: profile.run_kind || '',
+      profiled_at: profile.profiled_at || '',
+      row_count: profile.profile_summary?.row_count ?? null,
+      column_count: profile.profile_summary?.column_count ?? null,
+      warning_count: profile.profile_summary?.warning_count ?? null,
+      raw_values_retained: false,
+    };
+  }
+  return {
+    schema_version: 1,
+    question_type: 'profile-teaser',
+    object: briefObject(row),
+    answer: {
+      profile_available: Boolean(profileByObjectId.available),
+      profile_match_mode: profileByObjectId.available ? 'object_id' : profileByObjectName.available ? 'object_name_candidates' : 'none',
+      raw_values_retained: false,
+      profile_summary: profileSummary,
+    },
+    paths: {
+      by_object_id: availablePath(profileByObjectId),
+      by_object_name: availablePath(profileByObjectName),
+    },
   };
 }
 
@@ -845,6 +915,7 @@ async function buildRuntimeIndexes(packageRoot, previousState = {}) {
   const byAlias = new Map();
   const byDatabase = new Map();
   const bySchema = new Map();
+  const byQualifiedName = new Map();
   let answerCardFileCount = 0;
   let compactContextFileCount = 0;
 
@@ -857,9 +928,11 @@ async function buildRuntimeIndexes(packageRoot, previousState = {}) {
     const objectFingerprint = sha256Text(`${RUNTIME_BUILDER_VERSION}|${rowHash}|${contextHash}`);
     const objectHash = hashValue(row.object_id, 16);
     const answerCards = {
+      summary: `answers/summary/by-object-id/${objectHash}.json`,
       usage_count: `answers/usage-count/by-object-id/${objectHash}.json`,
       upstream: `answers/upstream/by-object-id/${objectHash}.json`,
       downstream: `answers/downstream/by-object-id/${objectHash}.json`,
+      profile_teaser: `answers/profile-teaser/by-object-id/${objectHash}.json`,
     };
     row.answer_cards = answerCards;
     row.compact_context_pack_path = `context-packs/objects/by-id/${objectHash}.json`;
@@ -870,7 +943,11 @@ async function buildRuntimeIndexes(packageRoot, previousState = {}) {
       Array.isArray(previousObject.lookup_keys) &&
       Array.isArray(previousObject.alias_keys) &&
       previousObject.compact_context_pack_path === row.compact_context_pack_path &&
+      previousObject.answer_cards?.summary === answerCards.summary &&
       previousObject.answer_cards?.usage_count === answerCards.usage_count &&
+      previousObject.answer_cards?.profile_teaser === answerCards.profile_teaser &&
+      // eslint-disable-next-line no-await-in-loop
+      (await fileExists(path.join(packageRoot, answerCards.summary))) &&
       // eslint-disable-next-line no-await-in-loop
       (await fileExists(path.join(packageRoot, row.compact_context_pack_path))) &&
       // eslint-disable-next-line no-await-in-loop
@@ -878,19 +955,23 @@ async function buildRuntimeIndexes(packageRoot, previousState = {}) {
       // eslint-disable-next-line no-await-in-loop
       (await fileExists(path.join(packageRoot, answerCards.upstream))) &&
       // eslint-disable-next-line no-await-in-loop
-      (await fileExists(path.join(packageRoot, answerCards.downstream)));
+      (await fileExists(path.join(packageRoot, answerCards.downstream))) &&
+      // eslint-disable-next-line no-await-in-loop
+      (await fileExists(path.join(packageRoot, answerCards.profile_teaser)));
 
     if (reusable) {
       row.lookup_keys = previousObject.lookup_keys;
       row.alias_keys = previousObject.alias_keys;
       stats.objectsReused += 1;
-      stats.objectFilesSkipped += 4;
+      stats.objectFilesSkipped += 6;
     } else {
       // eslint-disable-next-line no-await-in-loop
       const contextPack = contextPackByObjectId.get(row.object_id) || null;
       row.lookup_keys = lookupKeysForRow(row, contextPack);
       row.alias_keys = aliasKeysForRow(row, contextPack);
 
+      // eslint-disable-next-line no-await-in-loop
+      const summaryResult = await writeJsonIfChanged(packageRoot, answerCards.summary, objectSummaryAnswerCard(row, contextPack, relationIndex));
       // eslint-disable-next-line no-await-in-loop
       const usageResult = await writeJsonIfChanged(packageRoot, answerCards.usage_count, usageAnswerCard(row));
       // eslint-disable-next-line no-await-in-loop
@@ -899,7 +980,24 @@ async function buildRuntimeIndexes(packageRoot, previousState = {}) {
       const downstreamResult = await writeJsonIfChanged(packageRoot, answerCards.downstream, directionAnswerCard(row, 'downstream', contextPack, relationIndex));
       // eslint-disable-next-line no-await-in-loop
       const compactResult = await writeJsonIfChanged(packageRoot, row.compact_context_pack_path, compactContextPack(row, contextPack, answerCards, relationIndex));
-      for (const result of [usageResult, upstreamResult, downstreamResult, compactResult]) {
+      // Profile teaser is overwritten after profile-index generation; this placeholder keeps incremental reuse valid.
+      // eslint-disable-next-line no-await-in-loop
+      const profileTeaserResult = await writeJsonIfChanged(packageRoot, answerCards.profile_teaser, {
+        schema_version: 1,
+        question_type: 'profile-teaser',
+        object: briefObject(row),
+        answer: {
+          profile_available: false,
+          profile_match_mode: 'pending_profile_index',
+          raw_values_retained: false,
+          profile_summary: null,
+        },
+        paths: {
+          by_object_id: null,
+          by_object_name: null,
+        },
+      });
+      for (const result of [summaryResult, usageResult, upstreamResult, downstreamResult, compactResult, profileTeaserResult]) {
         if (result.written) stats.objectFilesWritten += 1;
         else stats.objectFilesSkipped += 1;
       }
@@ -916,13 +1014,22 @@ async function buildRuntimeIndexes(packageRoot, previousState = {}) {
       answer_cards: answerCards,
     };
 
-    answerCardFileCount += 3;
+    answerCardFileCount += 5;
     compactContextFileCount += 1;
 
     for (const key of row.lookup_keys) addToMapList(byName, key, row);
     for (const key of row.alias_keys) addToMapList(byAlias, key, row);
     addToMapList(byDatabase, row.database || 'unknown', row);
     addToMapList(bySchema, `${row.database || 'unknown'}.${row.schema || 'unknown'}`, row);
+    for (const key of [
+      row.object_id,
+      `${row.schema || ''}.${row.object_name || row.display_name || ''}`,
+      `${row.database || ''}.${row.schema || ''}.${row.object_name || row.display_name || ''}`,
+      `${row.server || ''}.${row.database || ''}.${row.schema || ''}.${row.object_name || row.display_name || ''}`,
+    ]) {
+      const normalized = normalizeLookupKey(key);
+      if (normalized) addToMapList(byQualifiedName, normalized, row);
+    }
   }
 
   for (const [objectId, previousObject] of Object.entries(previousObjects)) {
@@ -931,8 +1038,10 @@ async function buildRuntimeIndexes(packageRoot, previousState = {}) {
     const stalePaths = [
       previousObject.compact_context_pack_path,
       previousObject.answer_cards?.usage_count,
+      previousObject.answer_cards?.summary,
       previousObject.answer_cards?.upstream,
       previousObject.answer_cards?.downstream,
+      previousObject.answer_cards?.profile_teaser,
     ].filter(Boolean);
     for (const relativePath of stalePaths) {
       // eslint-disable-next-line no-await-in-loop
@@ -940,7 +1049,7 @@ async function buildRuntimeIndexes(packageRoot, previousState = {}) {
     }
   }
 
-  for (const rowsForKey of [...byName.values(), ...byAlias.values(), ...byDatabase.values(), ...bySchema.values()]) {
+  for (const rowsForKey of [...byName.values(), ...byAlias.values(), ...byDatabase.values(), ...bySchema.values(), ...byQualifiedName.values()]) {
     rowsForKey.sort(sortObjectsForLookup);
   }
 
@@ -981,6 +1090,23 @@ async function buildRuntimeIndexes(packageRoot, previousState = {}) {
       objects: matches.map((row) => indexObject(row)),
     };
   }, stats);
+  await removeTreeIfExists(packageRoot, 'indexes/resolve/by-qualified-name');
+  let qualifiedResolverFileCount = 0;
+  for (const [lookupKey, matches] of byQualifiedName.entries()) {
+    const relativePath = `indexes/resolve/by-qualified-name/${resolverFileKey(lookupKey)}.json`;
+    // eslint-disable-next-line no-await-in-loop
+    const result = await writeJsonIfChanged(packageRoot, relativePath, {
+      schema_version: 1,
+      index_type: 'resolve-by-qualified-name',
+      lookup_key: lookupKey,
+      file_key: resolverFileKey(lookupKey),
+      match_count: matches.length,
+      matches: matches.map((row) => indexObject(row)),
+    });
+    if (result.written) stats.indexFilesWritten += 1;
+    else stats.indexFilesSkipped += 1;
+    qualifiedResolverFileCount += 1;
+  }
 
   let topUsedFileCount = 0;
   let rankingFileCount = 0;
@@ -1101,15 +1227,20 @@ async function buildRuntimeIndexes(packageRoot, previousState = {}) {
       by_name_shard_strategy: 'first two normalized alphanumeric characters of lookup key',
       by_database: 'indexes/by-database/',
       by_schema: 'indexes/by-schema/',
+      resolve_by_qualified_name: 'indexes/resolve/by-qualified-name/',
+      resolve_by_qualified_name_strategy:
+        'compact normalized object id, schema.object, database.schema.object, or server.database.schema.object',
       aliases: 'indexes/aliases/',
       aliases_shard_strategy: 'first two normalized alphanumeric characters of alias',
       top_used: 'indexes/top-used/',
       rankings: 'indexes/rankings/',
     },
     answer_cards: {
+      summary_by_object_id: 'answers/summary/by-object-id/',
       usage_count_by_object_id: 'answers/usage-count/by-object-id/',
       upstream_by_object_id: 'answers/upstream/by-object-id/',
       downstream_by_object_id: 'answers/downstream/by-object-id/',
+      profile_teaser_by_object_id: 'answers/profile-teaser/by-object-id/',
       catalog_databases: 'answers/catalog/databases.json',
     },
     context_packs: {
@@ -1125,6 +1256,7 @@ async function buildRuntimeIndexes(packageRoot, previousState = {}) {
       alias_files: aliasFileCount,
       by_database_files: byDatabaseFileCount,
       by_schema_files: bySchemaFileCount,
+      qualified_resolver_files: qualifiedResolverFileCount,
       top_used_files: topUsedFileCount,
       ranking_files: rankingFileCount,
       answer_card_files: answerCardFileCount,
@@ -1194,12 +1326,145 @@ function availablePath(entry) {
   return entry.available ? entry.path : null;
 }
 
+function lineageIntentCards() {
+  const baseResolutionOrder = [
+    'indexes/entrypoints.json',
+    'indexes/path-contract.json',
+    'indexes/artifact-manifest.json',
+    'indexes/index-manifest.json',
+  ];
+  return [
+    {
+      file: 'answers/intents/catalog.databases.json',
+      intent: 'catalog.databases',
+      purpose: 'List cataloged databases without reading object registries.',
+      primary_entrypoint: 'answers/catalog/databases.json',
+      resolution_order: [...baseResolutionOrder, 'answers/catalog/databases.json'],
+    },
+    {
+      file: 'answers/intents/database.most_used_tables.json',
+      intent: 'database.most_used_tables',
+      purpose: 'Answer most-used table questions for a database.',
+      primary_entrypoint: 'indexes/rankings/{database}/tables-by-downstream-count.json',
+      resolution_order: [...baseResolutionOrder, 'indexes/top-used/{database}.json', 'indexes/rankings/{database}/tables-by-downstream-count.json'],
+    },
+    {
+      file: 'answers/intents/table.tell_me_about.json',
+      intent: 'table.tell_me_about',
+      purpose: 'Answer a concise object summary question.',
+      primary_entrypoint: 'answers/summary/by-object-id/{object_hash}.json',
+      resolution_order: [
+        ...baseResolutionOrder,
+        'indexes/resolve/by-qualified-name/{compact_lookup_key}.json',
+        'answers/summary/by-object-id/{object_hash}.json',
+        'context-packs/objects/by-id/{object_hash}.json',
+      ],
+    },
+    {
+      file: 'answers/intents/table.profile_summary.json',
+      intent: 'table.profile_summary',
+      purpose: 'Answer whether profile data exists and where the safe profile shard is.',
+      primary_entrypoint: 'answers/profile-teaser/by-object-id/{object_hash}.json',
+      resolution_order: [
+        ...baseResolutionOrder,
+        'indexes/resolve/by-qualified-name/{compact_lookup_key}.json',
+        'answers/profile-teaser/by-object-id/{object_hash}.json',
+        'profile-index/by-object-id/{profile_key}.json',
+      ],
+    },
+    {
+      file: 'answers/intents/object.where_used.json',
+      intent: 'object.where_used',
+      purpose: 'Answer downstream usage and consumer questions.',
+      primary_entrypoint: 'answers/downstream/by-object-id/{object_hash}.json',
+      resolution_order: [
+        ...baseResolutionOrder,
+        'indexes/resolve/by-qualified-name/{compact_lookup_key}.json',
+        'answers/downstream/by-object-id/{object_hash}.json',
+        'context-packs/objects/by-id/{object_hash}.json',
+      ],
+    },
+    {
+      file: 'answers/intents/object.what_feeds.json',
+      intent: 'object.what_feeds',
+      purpose: 'Answer upstream/source/producer questions.',
+      primary_entrypoint: 'answers/upstream/by-object-id/{object_hash}.json',
+      resolution_order: [
+        ...baseResolutionOrder,
+        'indexes/resolve/by-qualified-name/{compact_lookup_key}.json',
+        'answers/upstream/by-object-id/{object_hash}.json',
+        'context-packs/objects/by-id/{object_hash}.json',
+      ],
+    },
+    {
+      file: 'answers/intents/object.impact.json',
+      intent: 'object.impact',
+      purpose: 'Answer what would be impacted if an object changes.',
+      primary_entrypoint: 'answers/downstream/by-object-id/{object_hash}.json',
+      resolution_order: [
+        ...baseResolutionOrder,
+        'indexes/resolve/by-qualified-name/{compact_lookup_key}.json',
+        'answers/downstream/by-object-id/{object_hash}.json',
+        'context-packs/objects/by-id/{object_hash}.json',
+      ],
+    },
+    {
+      file: 'answers/intents/package.what_runs.json',
+      intent: 'package.what_runs',
+      purpose: 'Answer SSIS/package orchestration questions.',
+      primary_entrypoint: 'answers/summary/by-object-id/{object_hash}.json',
+      resolution_order: [
+        ...baseResolutionOrder,
+        'indexes/resolve/by-qualified-name/{compact_lookup_key}.json',
+        'answers/summary/by-object-id/{object_hash}.json',
+        'answers/downstream/by-object-id/{object_hash}.json',
+      ],
+    },
+    {
+      file: 'answers/intents/procedure.business_logic.json',
+      intent: 'procedure.business_logic',
+      purpose: 'Answer concise stored procedure dependency and logic-summary questions.',
+      primary_entrypoint: 'context-packs/objects/by-id/{object_hash}.json',
+      resolution_order: [
+        ...baseResolutionOrder,
+        'indexes/resolve/by-qualified-name/{compact_lookup_key}.json',
+        'answers/summary/by-object-id/{object_hash}.json',
+        'context-packs/objects/by-id/{object_hash}.json',
+      ],
+    },
+  ];
+}
+
+async function writeIntentCards(packageRoot, generatedAt) {
+  const cards = lineageIntentCards();
+  for (const card of cards) {
+    // eslint-disable-next-line no-await-in-loop
+    await writeJson(packageRoot, card.file, {
+      schema_version: 1,
+      generated_at: generatedAt,
+      question_type: 'intent-route',
+      intent: card.intent,
+      purpose: card.purpose,
+      primary_entrypoint: card.primary_entrypoint,
+      resolution_order: card.resolution_order,
+      fallback_policy: 'do_not_probe_missing_paths',
+      missing_policy: 'Use only advertised paths. If an advertised path is absent or unavailable, report that artifact as unavailable.',
+    });
+  }
+  return cards.length;
+}
+
 async function buildArtifactManifests(packageRoot, { runtimeBuild, profileIndexManifest }) {
   const databaseIndex = await readJson(path.join(packageRoot, 'registry/database-index.json'));
   const generatedAt = new Date().toISOString();
+  const intentCardCount = await writeIntentCards(packageRoot, generatedAt);
   const runtimeRows = runtimeBuild.runtimeRows || [];
   const objectPaths = {};
   for (const row of runtimeRows) {
+    const profileByObjectId = await pathEntry(packageRoot, `profile-index/by-object-id/${safeProfileSegment(row.object_id, 'object')}.json`);
+    const qualifiedKey = normalizeLookupKey(
+      `${row.database || ''}.${row.schema || ''}.${row.object_name || row.display_name || ''}`
+    );
     objectPaths[row.object_id] = {
       object_id: row.object_id,
       display_name: row.display_name || row.object_name || row.object_id,
@@ -1217,10 +1482,15 @@ async function buildArtifactManifests(packageRoot, { runtimeBuild, profileIndexM
         context_pack_json: normalizePath(row.context_pack_json_path || ''),
         context_pack_markdown: normalizePath(row.context_pack_path || ''),
         source_markdown: normalizePath(row.source_markdown_path || ''),
+        summary_answer: normalizePath(row.answer_cards?.summary || ''),
         usage_answer: normalizePath(row.answer_cards?.usage_count || ''),
         upstream_answer: normalizePath(row.answer_cards?.upstream || ''),
         downstream_answer: normalizePath(row.answer_cards?.downstream || ''),
-        profile: null,
+        profile_teaser: normalizePath(row.answer_cards?.profile_teaser || ''),
+        profile: availablePath(profileByObjectId),
+        qualified_name_resolver: qualifiedKey
+          ? `indexes/resolve/by-qualified-name/${resolverFileKey(qualifiedKey)}.json`
+          : null,
       },
       confidence: {
         score: row.confidence ?? null,
@@ -1280,6 +1550,73 @@ async function buildArtifactManifests(packageRoot, { runtimeBuild, profileIndexM
     databases,
   });
 
+  const routingEntrypoints = {
+    schema_version: 1,
+    generated_at: generatedAt,
+    purpose: 'Small routing manifest for low-token lineage lookup. Start here, then use exact advertised paths only.',
+    intents_path: 'answers/intents/',
+    intent_card_count: intentCardCount,
+    common_intents: Object.fromEntries(lineageIntentCards().map((card) => [card.intent, card.file])),
+    object_resolution: {
+      exact_qualified_name: 'indexes/resolve/by-qualified-name/{compact_lookup_key}.json',
+      by_name_shards: 'indexes/by-name/{first_two_chars}.json',
+      aliases: 'indexes/aliases/{first_two_chars}.json',
+      object_path_index: 'registry/object-path-index.json',
+    },
+    database_questions: {
+      catalog: 'answers/catalog/databases.json',
+      artifact_index: 'registry/database-artifact-index.json',
+      top_used: 'indexes/top-used/{database_key}.json',
+      table_rankings: 'indexes/rankings/{database_key}/tables-by-downstream-count.json',
+    },
+    object_answer_cards: {
+      summary: 'answers/summary/by-object-id/{object_hash}.json',
+      usage_count: 'answers/usage-count/by-object-id/{object_hash}.json',
+      upstream: 'answers/upstream/by-object-id/{object_hash}.json',
+      downstream: 'answers/downstream/by-object-id/{object_hash}.json',
+      profile_teaser: 'answers/profile-teaser/by-object-id/{object_hash}.json',
+    },
+    profiles: {
+      teaser_first: 'answers/profile-teaser/by-object-id/{object_hash}.json',
+      safe_index_by_object_id: 'profile-index/by-object-id/{profile_key}.json',
+      safe_index_by_object_name: 'profile-index/by-object-name/{profile_key}.json',
+      unpublished_profile_run_artifacts: 'data/markdown/_runtime/profile-runs/**',
+    },
+    policy: {
+      missing_paths: 'do_not_probe_variants',
+      local_profile_run_artifacts_published: false,
+    },
+  };
+
+  const pathContract = {
+    schema_version: 1,
+    generated_at: generatedAt,
+    purpose: 'Declares supported runtime artifact paths and forbidden probe patterns.',
+    supported_patterns: {
+      route_manifest: 'indexes/entrypoints.json',
+      path_contract: 'indexes/path-contract.json',
+      artifact_manifest: 'indexes/artifact-manifest.json',
+      index_manifest: 'indexes/index-manifest.json',
+      intent_cards: 'answers/intents/*.json',
+      object_resolver: 'indexes/resolve/by-qualified-name/{compact_lookup_key}.json',
+      summary_answer: 'answers/summary/by-object-id/{object_hash}.json',
+      usage_answer: 'answers/usage-count/by-object-id/{object_hash}.json',
+      upstream_answer: 'answers/upstream/by-object-id/{object_hash}.json',
+      downstream_answer: 'answers/downstream/by-object-id/{object_hash}.json',
+      profile_teaser: 'answers/profile-teaser/by-object-id/{object_hash}.json',
+      compact_context_pack: 'context-packs/objects/by-id/{object_hash}.json',
+      profile_index_object: 'profile-index/by-object-id/{profile_key}.json',
+    },
+    unpublished_patterns: [
+      'data/markdown/_runtime/profile-runs/**',
+      'data/_runtime/profiles/**',
+    ],
+    missing_policy: 'If a path is null, unavailable, or not listed here, consumers must not probe path variants.',
+  };
+
+  await writeJson(packageRoot, 'indexes/entrypoints.json', routingEntrypoints);
+  await writeJson(packageRoot, 'indexes/path-contract.json', pathContract);
+
   const entrypoints = {
     manifest: { available: true, path: 'manifest.json', kind: 'file' },
     latest: { available: true, path: 'latest.json', kind: 'file' },
@@ -1291,6 +1628,9 @@ async function buildArtifactManifests(packageRoot, { runtimeBuild, profileIndexM
     canonical_registry: await pathEntry(packageRoot, 'registry/canonical-objects.jsonl'),
     index_manifest: await pathEntry(packageRoot, 'indexes/index-manifest.json'),
     artifact_manifest: { available: true, path: 'indexes/artifact-manifest.json', kind: 'file' },
+    routing_entrypoints: await pathEntry(packageRoot, 'indexes/entrypoints.json'),
+    path_contract: await pathEntry(packageRoot, 'indexes/path-contract.json'),
+    intent_cards: await pathEntry(packageRoot, 'answers/intents', 'directory'),
     catalog_databases_answer: await pathEntry(packageRoot, 'answers/catalog/databases.json'),
     profile_manifest: await pathEntry(packageRoot, 'profile-index/manifest.json'),
     profile_latest_summary: await pathEntry(packageRoot, 'profile-index/latest-summary.json'),
@@ -1313,11 +1653,22 @@ async function buildArtifactManifests(packageRoot, { runtimeBuild, profileIndexM
       object_answer_cards: {
         available: (await directoryFileCount(packageRoot, 'answers/usage-count/by-object-id')) > 0,
         paths: {
+          summary: 'answers/summary/by-object-id/',
           usage_count: 'answers/usage-count/by-object-id/',
           upstream: 'answers/upstream/by-object-id/',
           downstream: 'answers/downstream/by-object-id/',
+          profile_teaser: 'answers/profile-teaser/by-object-id/',
         },
-        count: runtimeRows.length * 3,
+        count: runtimeRows.length * 5,
+      },
+      intent_routes: {
+        available: entrypoints.intent_cards.available,
+        path: entrypoints.intent_cards.path,
+        count: intentCardCount,
+      },
+      direct_object_resolution: {
+        available: (await directoryFileCount(packageRoot, 'indexes/resolve/by-qualified-name')) > 0,
+        path: 'indexes/resolve/by-qualified-name/',
       },
       rankings: {
         available: (await directoryFileCount(packageRoot, 'indexes/rankings')) > 0,
@@ -1339,6 +1690,9 @@ async function buildArtifactManifests(packageRoot, { runtimeBuild, profileIndexM
       databases: 'registry/database-artifact-index.json',
       objects: 'registry/object-path-index.json',
       lookup_manifest: 'indexes/index-manifest.json',
+      routing_entrypoints: 'indexes/entrypoints.json',
+      path_contract: 'indexes/path-contract.json',
+      qualified_name_resolver: 'indexes/resolve/by-qualified-name/',
     },
     missing_policy: 'If a path is null or availability is false, consumers must not probe path variants.',
   };
@@ -1397,6 +1751,19 @@ function profileRunServer(run = {}, connectorById = new Map()) {
   return config.server || run.server || run.summary?.server || '';
 }
 
+function profileSourceEvidence(sourceArtifactPath = '', run = {}) {
+  const artifactPath = normalizePath(sourceArtifactPath);
+  const jsonPath = workspaceRelativePath(run.artifact?.json_path || sourceArtifactPath || '');
+  const markdownPath = run.artifact?.markdown_path ? workspaceRelativePath(run.artifact.markdown_path) : '';
+  const referenceBasis = [artifactPath, jsonPath, markdownPath].filter(Boolean).join('|');
+  return {
+    source_artifact_published: false,
+    source_artifact_reference: referenceBasis ? hashValue(referenceBasis, 16) : '',
+    source_artifact_note:
+      'Source profile-run artifacts are local build provenance and are not published to the DevOps runtime package.',
+  };
+}
+
 function profileRunShard(run = {}, connectorById = new Map(), sourceArtifactPath = '') {
   const summary = run.summary || {};
   return {
@@ -1425,9 +1792,7 @@ function profileRunShard(run = {}, connectorById = new Map(), sourceArtifactPath
       warnings: Number(summary.warning_count || 0),
     },
     evidence: {
-      source_artifact_path: normalizePath(sourceArtifactPath),
-      markdown_path: run.artifact?.markdown_path ? workspaceRelativePath(run.artifact.markdown_path) : '',
-      json_path: workspaceRelativePath(run.artifact?.json_path || sourceArtifactPath || ''),
+      ...profileSourceEvidence(sourceArtifactPath, run),
     },
     caveats: profileRunKind(run) === 'metadata_harvest'
       ? ['This run harvested metadata. It did not execute aggregate table profiling.']
@@ -1522,9 +1887,7 @@ function objectProfileShard(run = {}, assetId = '', profile = {}, connectorById 
     },
     columns: columnRows,
     evidence: {
-      source_artifact_path: normalizePath(sourceArtifactPath),
-      markdown_path: run.artifact?.markdown_path ? workspaceRelativePath(run.artifact.markdown_path) : '',
-      json_path: workspaceRelativePath(run.artifact?.json_path || sourceArtifactPath || ''),
+      ...profileSourceEvidence(sourceArtifactPath, run),
     },
   };
 }
@@ -1558,10 +1921,8 @@ function eventObjectShard(run = {}, event = {}, connectorById = new Map(), sourc
     },
     columns: [],
     evidence: {
-      source_artifact_path: normalizePath(sourceArtifactPath),
       stream: event.stream || '',
-      markdown_path: run.artifact?.markdown_path ? workspaceRelativePath(run.artifact.markdown_path) : '',
-      json_path: workspaceRelativePath(run.artifact?.json_path || sourceArtifactPath || ''),
+      ...profileSourceEvidence(sourceArtifactPath, run),
     },
     caveats: ['Metadata inventory record only; aggregate row/null statistics are not present for this object.'],
   };
@@ -1810,8 +2171,11 @@ async function buildProfileIndex(packageRoot, options = {}) {
   const manifest = {
     schema_version: PROFILE_INDEX_SCHEMA_VERSION,
     generated_at: new Date().toISOString(),
-    source_store_path: workspaceRelativePath(storePath),
-    source_artifact_root: workspaceRelativePath(artifactRoot),
+    source_store_published: false,
+    source_store_reference: hashValue(workspaceRelativePath(storePath), 16),
+    source_artifact_root_published: false,
+    source_artifact_root_reference: hashValue(workspaceRelativePath(artifactRoot), 16),
+    source_artifact_root_note: 'Local profile-run artifact root is intentionally not published in the runtime package.',
     source_run_ids: runs.map(({ run }) => run.id).filter(Boolean).sort(),
     counts: {
       run_count: runs.length,
@@ -1866,6 +2230,28 @@ async function buildProfileIndex(packageRoot, options = {}) {
     ],
   });
   return manifest;
+}
+
+async function writeProfileTeaserCards(packageRoot, runtimeRows = []) {
+  let written = 0;
+  let skipped = 0;
+  for (const row of runtimeRows) {
+    if (!row.answer_cards?.profile_teaser) continue;
+    // eslint-disable-next-line no-await-in-loop
+    const card = await profileTeaserAnswerCard(packageRoot, row);
+    // eslint-disable-next-line no-await-in-loop
+    const result = await writeJsonIfChanged(
+      packageRoot,
+      row.answer_cards.profile_teaser,
+      card
+    );
+    if (result.written) written += 1;
+    else skipped += 1;
+  }
+  return {
+    profile_teaser_files_written: written,
+    profile_teaser_files_skipped: skipped,
+  };
 }
 
 async function applyCompactPayloadMode(packageRoot, runtimeBuild) {
@@ -2065,6 +2451,7 @@ async function main() {
 
   const runtimeBuild = await buildRuntimeIndexes(packageRoot, canReusePackageRoot ? previousState : {});
   const profileIndexManifest = await buildProfileIndex(packageRoot);
+  const profileTeaserBuild = await writeProfileTeaserCards(packageRoot, runtimeBuild.runtimeRows || []);
   const artifactManifest = await buildArtifactManifests(packageRoot, { runtimeBuild, profileIndexManifest });
   const compactPayload =
     mode === 'compact'
@@ -2111,9 +2498,11 @@ async function main() {
         indexManifest.counts.alias_files +
         indexManifest.counts.by_database_files +
         indexManifest.counts.by_schema_files +
+        indexManifest.counts.qualified_resolver_files +
         indexManifest.counts.top_used_files +
         indexManifest.counts.ranking_files,
       answer_card_file_count: indexManifest.counts.answer_card_files,
+      qualified_resolver_file_count: indexManifest.counts.qualified_resolver_files,
       compact_context_pack_count: indexManifest.counts.compact_context_pack_files,
       profile_index_run_count: profileIndexManifest.counts.run_count,
       profile_index_object_count: profileIndexManifest.counts.object_profile_count,
@@ -2137,6 +2526,8 @@ async function main() {
       removed_generated_object_file_count: runtimeBuild.stats.objectFilesRemoved,
       changed_index_file_count: runtimeBuild.stats.indexFilesWritten,
       skipped_index_file_count: runtimeBuild.stats.indexFilesSkipped,
+      profile_teaser_files_written: profileTeaserBuild.profile_teaser_files_written,
+      profile_teaser_files_skipped: profileTeaserBuild.profile_teaser_files_skipped,
     },
     registry_path: 'registry/object-registry.jsonl',
     indexes: {
@@ -2144,6 +2535,7 @@ async function main() {
       object_name_shard_strategy: 'first two normalized alphanumeric characters of lookup key',
       database: 'indexes/by-database/',
       schema: 'indexes/by-schema/',
+      qualified_name_resolver: 'indexes/resolve/by-qualified-name/',
       aliases: 'indexes/aliases/',
       aliases_shard_strategy: 'first two normalized alphanumeric characters of alias',
       top_used: 'indexes/top-used/',
@@ -2151,10 +2543,13 @@ async function main() {
       manifest: 'indexes/index-manifest.json',
     },
     answer_cards: {
+      summary: 'answers/summary/by-object-id/',
       usage_count: 'answers/usage-count/by-object-id/',
       upstream: 'answers/upstream/by-object-id/',
       downstream: 'answers/downstream/by-object-id/',
+      profile_teaser: 'answers/profile-teaser/by-object-id/',
       catalog_databases: 'answers/catalog/databases.json',
+      intent_cards: 'answers/intents/',
     },
     compact_context_packs: {
       by_object_id: 'context-packs/objects/by-id/',
@@ -2183,6 +2578,9 @@ async function main() {
       registry_summary: 'registry/object-registry-summary.json',
       index_manifest: 'indexes/index-manifest.json',
       artifact_manifest: 'indexes/artifact-manifest.json',
+      routing_entrypoints: 'indexes/entrypoints.json',
+      path_contract: 'indexes/path-contract.json',
+      intent_cards: 'answers/intents/',
       profile_index_manifest: 'profile-index/manifest.json',
       profile_index_latest_summary: 'profile-index/latest-summary.json',
       catalog_manifest: 'catalog-manifest.json',
@@ -2191,8 +2589,11 @@ async function main() {
     },
     retrieval_order: [
       'manifest.json',
+      'indexes/entrypoints.json and indexes/path-contract.json',
       'indexes/by-name, indexes/aliases, indexes/by-database, indexes/by-schema, or indexes/rankings',
+      'indexes/resolve/by-qualified-name for exact object names',
       'registry/canonical-objects.jsonl before registry/object-registry.jsonl',
+      'answers/summary, usage-count, upstream, downstream, and profile-teaser by object id',
       'profile-index/ for profile, quality, metric, sensitivity, and freshness questions',
       'row.compact_context_pack_path, row.answer_cards, or row.context_pack_json_path',
       'Confluence only for human governance explanation',
@@ -2225,6 +2626,8 @@ async function main() {
     canonical_registry_path: manifest.entrypoints.canonical_registry_jsonl,
     database_index_path: manifest.entrypoints.database_index,
     index_manifest_path: manifest.entrypoints.index_manifest,
+    routing_entrypoints_path: manifest.entrypoints.routing_entrypoints,
+    path_contract_path: manifest.entrypoints.path_contract,
     profile_index_manifest_path: manifest.entrypoints.profile_index_manifest,
     profile_index_latest_summary_path: manifest.entrypoints.profile_index_latest_summary,
     indexes: manifest.indexes,
