@@ -6,7 +6,7 @@ import {
 } from './connectorErrors.js';
 import { CANONICAL_EVENT_TYPES, canonicalEvent, warningEvent } from './canonicalMetadata.js';
 import { fetchSourceMetadata } from './sourceClients.js';
-import { buildProfilingPlan, executeProfilingPlan } from '../profilingExecutionService.js';
+import { applyMinimumCoverageProfiles, buildProfilingPlan, executeProfilingPlan } from '../profilingExecutionService.js';
 import { createProfileExecutor, supportsConnectorLiveProfiling } from './profileExecutors.js';
 
 function toArray(value) {
@@ -71,6 +71,66 @@ function filterRequestedAssets(assets = [], options = {}) {
   const requested = toArray(options.asset_id || options.assetId || options.object_id || options.objectId || options.ids);
   if (!requested.length) return assets;
   return assets.filter((asset) => requested.some((id) => matchesRequestedAsset(asset, id)));
+}
+
+function coverageMode(options = {}) {
+  const value = String(
+    options.coverage_mode ||
+    options.coverageMode ||
+    options.profile_scope ||
+    options.profileScope ||
+    ''
+  ).toLowerCase();
+  return ['all_tables', 'table_coverage', 'database_coverage', 'minimum_all_tables'].includes(value)
+    ? value
+    : '';
+}
+
+function coverageIncludesViews(options = {}) {
+  return options.include_views === true || options.includeViews === true;
+}
+
+function coverageLiveTableLimit(options = {}, fallback = 25) {
+  const raw = Number(
+    options.max_live_tables ??
+    options.maxLiveTables ??
+    options.live_table_limit ??
+    options.liveTableLimit ??
+    fallback
+  );
+  return Number.isFinite(raw) && raw > 0 ? Math.round(raw) : fallback;
+}
+
+function coveragePriority(options = {}) {
+  const value = String(options.live_priority || options.livePriority || 'smallest_first').toLowerCase();
+  return ['smallest_first', 'largest_first', 'alphabetical'].includes(value) ? value : 'smallest_first';
+}
+
+function assetRowEstimate(asset = {}) {
+  return Number(
+    asset.row_count ??
+    asset.rowCount ??
+    asset.estimated_rows ??
+    asset.estimatedRows ??
+    0
+  ) || 0;
+}
+
+function sortCoverageAssets(assets = [], priority = 'smallest_first') {
+  const sorted = [...assets];
+  sorted.sort((left, right) => {
+    if (priority === 'alphabetical') {
+      return `${left.schema || 'dbo'}.${left.name || left.object_name || left.id || ''}`
+        .localeCompare(`${right.schema || 'dbo'}.${right.name || right.object_name || right.id || ''}`);
+    }
+    const rowDelta = assetRowEstimate(left) - assetRowEstimate(right);
+    const columnDelta = (left.columns?.length || 0) - (right.columns?.length || 0);
+    const lexical = `${left.schema || 'dbo'}.${left.name || left.object_name || left.id || ''}`
+      .localeCompare(`${right.schema || 'dbo'}.${right.name || right.object_name || right.id || ''}`);
+    if (priority === 'largest_first') return rowDelta !== 0 ? -rowDelta : (columnDelta !== 0 ? -columnDelta : lexical);
+    return rowDelta !== 0 ? rowDelta : (columnDelta !== 0 ? columnDelta : lexical);
+  });
+  return sorted;
 }
 
 export class BaseConnectorAdapter {
@@ -257,30 +317,62 @@ export class BaseConnectorAdapter {
 
   async planProfiling(options = {}) {
     let assets = options.assets || options.objects || [];
+    let coverageAssets = [];
+    const requestedCoverageMode = coverageMode(options);
     const needsResolvedAssets =
       !assets.length || toArray(options.asset_id || options.assetId || options.object_id || options.objectId || options.ids).length > 0;
     if (needsResolvedAssets && !this.lastMetadata && options.dry_run === false && typeof this.loadMetadata === 'function') {
       await this.loadMetadata({ ...options, dry_run: false });
     }
     if (needsResolvedAssets && this.lastMetadata) {
-      assets = filterRequestedAssets(metadataProfileAssets(this.lastMetadata, this.connector), options);
+      const resolvedAssets = filterRequestedAssets(metadataProfileAssets(this.lastMetadata, this.connector), options);
+      if (requestedCoverageMode) {
+        coverageAssets = resolvedAssets.filter((asset) =>
+          coverageIncludesViews(options) ? ['table', 'view'].includes(String(asset.object_type || '').toLowerCase()) : String(asset.object_type || '').toLowerCase() === 'table'
+        );
+        const priority = coveragePriority(options);
+        const sortedCoverageAssets = sortCoverageAssets(coverageAssets, priority);
+        assets = sortedCoverageAssets.slice(0, coverageLiveTableLimit(options, 25));
+      } else {
+        assets = resolvedAssets;
+      }
     }
-    return buildProfilingPlan(
+    const plan = buildProfilingPlan(
       {
         ...options,
         connector_id: this.id,
         connector_type: this.type,
         dialect: options.dialect || this.config.dialect || this.type,
+        max_tables: requestedCoverageMode ? Math.max(1, assets.length || coverageLiveTableLimit(options, 25)) : options.max_tables,
         assets,
       },
       options.objectCache || new Map()
     );
+    if (requestedCoverageMode) {
+      plan.coverage = {
+        enabled: true,
+        mode: requestedCoverageMode,
+        include_views: coverageIncludesViews(options),
+        live_priority: coveragePriority(options),
+        live_asset_limit: coverageLiveTableLimit(options, 25),
+        assets: coverageAssets,
+        live_assets: assets.map((asset) => asset.id || asset.object_id || asset.name),
+        total_assets: coverageAssets.length,
+        metadata_only_assets: Math.max(0, coverageAssets.length - assets.length),
+      };
+      plan.summary.requested_assets = coverageAssets.length;
+      plan.summary.coverage_assets_total = coverageAssets.length;
+      plan.summary.coverage_live_assets = assets.length;
+      plan.summary.coverage_metadata_only_assets = Math.max(0, coverageAssets.length - assets.length);
+    }
+    return plan;
   }
 
   async runProfiling(options = {}) {
     const plan = options.plan || (await this.planProfiling(options));
     const executor = createProfileExecutor({ connector: this.connector, options });
-    return executeProfilingPlan(plan, executor);
+    const run = await executeProfilingPlan(plan, executor);
+    return applyMinimumCoverageProfiles(run, plan);
   }
 
   supportsLiveProfiling() {
