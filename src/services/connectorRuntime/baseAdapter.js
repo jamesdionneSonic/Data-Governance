@@ -4,10 +4,14 @@ import {
   ConnectorRuntimeError,
   ConnectorStreamError,
 } from './connectorErrors.js';
+import { existsSync, readFileSync } from 'fs';
+import path from 'path';
 import { CANONICAL_EVENT_TYPES, canonicalEvent, warningEvent } from './canonicalMetadata.js';
 import { fetchSourceMetadata } from './sourceClients.js';
 import { applyMinimumCoverageProfiles, buildProfilingPlan, executeProfilingPlan } from '../profilingExecutionService.js';
 import { createProfileExecutor, supportsConnectorLiveProfiling } from './profileExecutors.js';
+
+let lineageUsageCache = null;
 
 function toArray(value) {
   if (Array.isArray(value)) return value.filter(Boolean);
@@ -22,6 +26,10 @@ function objectName(object = {}) {
   return object.name || object.objectName || object.object_name || object.table_name || object.tableName || object.id || 'unknown';
 }
 
+function objectType(object = {}) {
+  return String(object.object_type || object.objectType || object.type || '').toLowerCase();
+}
+
 function normalizeProfileAsset(asset = {}, connector = {}) {
   const name = objectName(asset);
   return {
@@ -29,17 +37,26 @@ function normalizeProfileAsset(asset = {}, connector = {}) {
     id: asset.id || asset.object_id || asset.qualified_name || asset.qualifiedName || name,
     name,
     object_name: asset.object_name || name,
-    object_type: asset.object_type || asset.objectType || asset.type || 'table',
+    object_type: objectType(asset) || 'table',
     database: asset.database || asset.database_name || connector.config?.database || '',
     schema: asset.schema || asset.schema_name || asset.owner_schema || 'dbo',
     columns: Array.isArray(asset.columns) ? asset.columns : [],
+    parameters: Array.isArray(asset.parameters) ? asset.parameters : [],
   };
 }
 
 function metadataProfileAssets(metadata = {}, connector = {}) {
-  return [...(metadata.tables || []), ...(metadata.views || [])]
-    .map((asset) => normalizeProfileAsset(asset, connector))
-    .filter((asset) => asset.columns.length);
+  const groups = [
+    { items: metadata.tables || [], object_type: 'table' },
+    { items: metadata.views || [], object_type: 'view' },
+    { items: metadata.storedProcedures || metadata.stored_procedures || metadata.procedures || [], object_type: 'stored_procedure' },
+    { items: metadata.functions || [], object_type: 'function' },
+    { items: metadata.triggers || [], object_type: 'trigger' },
+    { items: metadata.synonyms || [], object_type: 'synonym' },
+  ];
+  return groups
+    .flatMap(({ items, object_type }) => items.map((asset) => normalizeProfileAsset({ ...asset, object_type }, connector)))
+    .filter((asset, index, all) => all.findIndex((candidate) => candidate.id === asset.id) === index);
 }
 
 function lookupKey(value) {
@@ -81,13 +98,18 @@ function coverageMode(options = {}) {
     options.profileScope ||
     ''
   ).toLowerCase();
-  return ['all_tables', 'table_coverage', 'database_coverage', 'minimum_all_tables'].includes(value)
+  return ['all_tables', 'table_coverage', 'database_coverage', 'minimum_all_tables', 'all_objects', 'minimum_all_objects'].includes(value)
     ? value
     : '';
 }
 
 function coverageIncludesViews(options = {}) {
   return options.include_views === true || options.includeViews === true;
+}
+
+function coverageIncludesAllObjects(options = {}) {
+  const mode = coverageMode(options);
+  return mode === 'all_objects' || mode === 'minimum_all_objects';
 }
 
 function coverageLiveTableLimit(options = {}, fallback = 25) {
@@ -103,7 +125,7 @@ function coverageLiveTableLimit(options = {}, fallback = 25) {
 
 function coveragePriority(options = {}) {
   const value = String(options.live_priority || options.livePriority || 'smallest_first').toLowerCase();
-  return ['smallest_first', 'largest_first', 'alphabetical'].includes(value) ? value : 'smallest_first';
+  return ['smallest_first', 'largest_first', 'alphabetical', 'most_used_first'].includes(value) ? value : 'smallest_first';
 }
 
 function assetRowEstimate(asset = {}) {
@@ -116,9 +138,133 @@ function assetRowEstimate(asset = {}) {
   ) || 0;
 }
 
-function sortCoverageAssets(assets = [], priority = 'smallest_first') {
+function normalizeDependencyId(value = '') {
+  return String(value || '').trim().toLowerCase();
+}
+
+function stripServerPort(value = '') {
+  return String(value || '').replace(/^([^.,]+),\d+\./, '$1.').trim();
+}
+
+function dependencyReferenceId(dependency = {}) {
+  return normalizeDependencyId(
+    dependency.referencedObject ||
+    dependency.referenced_object ||
+    dependency.toTable ||
+    dependency.to_table ||
+    dependency.object_id ||
+    dependency.id
+  );
+}
+
+function buildDependencyUsageCounts(metadata = {}) {
+  const counts = new Map();
+  const bump = (id) => {
+    const key = normalizeDependencyId(id);
+    if (!key) return;
+    counts.set(key, (counts.get(key) || 0) + 1);
+  };
+
+  for (const object of metadata.allObjects || []) {
+    for (const dependency of Array.isArray(object.dependencies) ? object.dependencies : []) {
+      bump(dependencyReferenceId(dependency));
+    }
+  }
+
+  for (const relationship of metadata.relationships || []) {
+    bump(relationship.toTable || relationship.to_table);
+  }
+
+  return counts;
+}
+
+function readLineageUsageCounts() {
+  if (lineageUsageCache instanceof Map) return lineageUsageCache;
+  const registryPath = path.join(
+    process.cwd(),
+    'data',
+    'lineage-runtime-package',
+    'sonic-data-lineage-runtime',
+    'registry',
+    'object-registry.jsonl'
+  );
+  const counts = new Map();
+  if (!existsSync(registryPath)) {
+    lineageUsageCache = counts;
+    return counts;
+  }
+  const lines = readFileSync(registryPath, 'utf8').split(/\r?\n/).filter(Boolean);
+  for (const line of lines) {
+    try {
+      const row = JSON.parse(line);
+      const score = Number(row.downstream_count || 0) || 0;
+      const objectId = normalizeDependencyId(row.object_id || row.id);
+      if (!objectId) continue;
+      counts.set(objectId, score);
+      counts.set(normalizeDependencyId(stripServerPort(objectId)), score);
+    } catch {
+      // ignore malformed lines; local ranking is best-effort
+    }
+  }
+  lineageUsageCache = counts;
+  return counts;
+}
+
+function assetUsageCount(asset = {}, usageCounts = new Map()) {
+  const candidates = [
+    asset.id,
+    asset.object_id,
+    asset.qualified_name,
+    asset.qualifiedName,
+    [asset.serverName || asset.server || '', asset.database || '', asset.schema || '', asset.name || asset.object_name || '']
+      .filter(Boolean)
+      .join('.'),
+    stripServerPort(asset.id || asset.object_id || ''),
+  ];
+  for (const candidate of candidates) {
+    const score = usageCounts.get(normalizeDependencyId(candidate));
+    if (score !== undefined) return score;
+  }
+  return Number(asset.downstream_count || asset.downstreamCount || 0) || 0;
+}
+
+function isLiveProfileEligible(asset = {}) {
+  return ['table', 'view'].includes(objectType(asset));
+}
+
+function groupCoverageCounts(assets = []) {
+  return assets.reduce((summary, asset) => {
+    const key = objectType(asset) || 'unknown';
+    summary[key] = (summary[key] || 0) + 1;
+    return summary;
+  }, {});
+}
+
+function buildLiveUpgradeQueue(eligibleAssets = [], selectedAssets = [], options = {}) {
+  const selectedIds = new Set(selectedAssets.map((asset) => asset.id || asset.object_id || asset.name));
+  const targetTier = String(options.target_live_tier || options.targetLiveTier || 'standard_live').toLowerCase();
+  const usageCounts = options.usage_counts instanceof Map ? options.usage_counts : new Map();
+  return eligibleAssets
+    .filter((asset) => !selectedIds.has(asset.id || asset.object_id || asset.name))
+    .map((asset, index) => ({
+      asset_id: asset.id || asset.object_id || asset.name,
+      object_name: asset.name || asset.object_name || asset.id,
+      object_type: objectType(asset) || 'unknown',
+      schema: asset.schema || 'dbo',
+      estimated_rows: assetRowEstimate(asset),
+      column_count: Array.isArray(asset.columns) ? asset.columns.length : 0,
+      downstream_count: assetUsageCount(asset, usageCounts),
+      current_tier: 'metadata_only',
+      target_tier: targetTier,
+      queue_rank: index + 1,
+    }));
+}
+
+function sortCoverageAssets(assets = [], priority = 'smallest_first', usageCounts = new Map()) {
   const sorted = [...assets];
   sorted.sort((left, right) => {
+    const usageDelta = assetUsageCount(right, usageCounts) - assetUsageCount(left, usageCounts);
+    if (priority === 'most_used_first' && usageDelta !== 0) return usageDelta;
     if (priority === 'alphabetical') {
       return `${left.schema || 'dbo'}.${left.name || left.object_name || left.id || ''}`
         .localeCompare(`${right.schema || 'dbo'}.${right.name || right.object_name || right.id || ''}`);
@@ -327,12 +473,23 @@ export class BaseConnectorAdapter {
     if (needsResolvedAssets && this.lastMetadata) {
       const resolvedAssets = filterRequestedAssets(metadataProfileAssets(this.lastMetadata, this.connector), options);
       if (requestedCoverageMode) {
-        coverageAssets = resolvedAssets.filter((asset) =>
-          coverageIncludesViews(options) ? ['table', 'view'].includes(String(asset.object_type || '').toLowerCase()) : String(asset.object_type || '').toLowerCase() === 'table'
-        );
+        const usageCounts = coveragePriority(options) === 'most_used_first'
+          ? readLineageUsageCounts()
+          : buildDependencyUsageCounts(this.lastMetadata);
+        coverageAssets = resolvedAssets.filter((asset) => {
+          if (coverageIncludesAllObjects(options)) return true;
+          if (coverageIncludesViews(options)) return ['table', 'view'].includes(objectType(asset));
+          return objectType(asset) === 'table';
+        });
         const priority = coveragePriority(options);
-        const sortedCoverageAssets = sortCoverageAssets(coverageAssets, priority);
+        const liveEligibleAssets = coverageAssets.filter((asset) =>
+          coverageIncludesViews(options) || coverageIncludesAllObjects(options)
+            ? isLiveProfileEligible(asset)
+            : objectType(asset) === 'table'
+        );
+        const sortedCoverageAssets = sortCoverageAssets(liveEligibleAssets, priority, usageCounts);
         assets = sortedCoverageAssets.slice(0, coverageLiveTableLimit(options, 25));
+        options = { ...options, usage_counts: usageCounts };
       } else {
         assets = resolvedAssets;
       }
@@ -349,21 +506,50 @@ export class BaseConnectorAdapter {
       options.objectCache || new Map()
     );
     if (requestedCoverageMode) {
+      const usageCounts =
+        options.usage_counts instanceof Map
+          ? options.usage_counts
+          : coveragePriority(options) === 'most_used_first'
+            ? readLineageUsageCounts()
+            : buildDependencyUsageCounts(this.lastMetadata || {});
+      const liveEligibleAssets = coverageAssets.filter((asset) =>
+        coverageIncludesViews(options) || coverageIncludesAllObjects(options)
+          ? isLiveProfileEligible(asset)
+          : objectType(asset) === 'table'
+      );
+      const sortedLiveEligibleAssets = sortCoverageAssets(liveEligibleAssets, coveragePriority(options), usageCounts);
+      const liveQueue = buildLiveUpgradeQueue(sortedLiveEligibleAssets, assets, { ...options, usage_counts: usageCounts });
       plan.coverage = {
         enabled: true,
         mode: requestedCoverageMode,
         include_views: coverageIncludesViews(options),
+        include_all_objects: coverageIncludesAllObjects(options),
         live_priority: coveragePriority(options),
         live_asset_limit: coverageLiveTableLimit(options, 25),
         assets: coverageAssets,
         live_assets: assets.map((asset) => asset.id || asset.object_id || asset.name),
+        live_eligible_assets: liveEligibleAssets.map((asset) => asset.id || asset.object_id || asset.name),
         total_assets: coverageAssets.length,
         metadata_only_assets: Math.max(0, coverageAssets.length - assets.length),
+        asset_counts_by_type: groupCoverageCounts(coverageAssets),
+        live_eligible_counts_by_type: groupCoverageCounts(liveEligibleAssets),
+        live_upgrade_queue: liveQueue,
+        queue_status: {
+          total_assets: coverageAssets.length,
+          live_eligible_assets: liveEligibleAssets.length,
+          selected_for_this_run: assets.length,
+          pending_live_queue: liveQueue.length,
+          completed_live_assets: 0,
+          failed_live_assets: 0,
+          metadata_only_assets: Math.max(0, coverageAssets.length - assets.length),
+        },
       };
       plan.summary.requested_assets = coverageAssets.length;
       plan.summary.coverage_assets_total = coverageAssets.length;
       plan.summary.coverage_live_assets = assets.length;
       plan.summary.coverage_metadata_only_assets = Math.max(0, coverageAssets.length - assets.length);
+      plan.summary.coverage_asset_types = groupCoverageCounts(coverageAssets);
+      plan.summary.coverage_live_queue = liveQueue.length;
     }
     return plan;
   }

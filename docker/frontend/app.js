@@ -549,6 +549,10 @@ const appConfig = {
           executionMode: 'live',
           assetIds: '',
           streams: '',
+          coverageMode: 'all_objects',
+          includeViews: true,
+          livePriority: 'most_used_first',
+          maxLiveTables: 1,
         },
         profileSchedules: [],
         profileSchedulerStatus: null,
@@ -570,6 +574,11 @@ const appConfig = {
           maxFailures: 3,
           streams: '',
           dryRun: true,
+          assetIds: '',
+          coverageMode: 'all_objects',
+          includeViews: true,
+          livePriority: 'most_used_first',
+          maxLiveTables: 1,
         },
         connectorEditor: {
           id: 'sonic-managed-connector',
@@ -5415,10 +5424,10 @@ const appConfig = {
     },
     profileScheduleOptionsPayload() {
       const editor = this.integrations.profileScheduleEditor;
-      return {
+      const payload = {
         dry_run: editor.dryRun !== false,
         fail_fast: false,
-        ids: String(this.integrations.profileRunEditor.assetIds || '')
+        ids: String(editor.assetIds || '')
           .split(/[\n,]+/)
           .map((value) => value.trim())
           .filter(Boolean),
@@ -5427,6 +5436,13 @@ const appConfig = {
           .map((value) => value.trim())
           .filter(Boolean),
       };
+      if (editor.profileType === 'aggregate' || editor.profileType === 'auto') {
+        payload.coverage_mode = editor.coverageMode || 'all_objects';
+        payload.include_views = editor.includeViews === true;
+        payload.live_priority = editor.livePriority || 'most_used_first';
+        payload.max_live_tables = Math.max(1, Number(editor.maxLiveTables || 1));
+      }
+      return payload;
     },
     async loadProfileSchedules() {
       try {
@@ -5548,6 +5564,11 @@ const appConfig = {
       editor.maxFailures = schedule.max_failures || 3;
       editor.streams = (schedule.options?.streams || []).join(', ');
       editor.dryRun = schedule.options?.dry_run !== false;
+      editor.assetIds = (schedule.options?.ids || []).join('\n');
+      editor.coverageMode = schedule.options?.coverage_mode || 'all_objects';
+      editor.includeViews = schedule.options?.include_views !== false;
+      editor.livePriority = schedule.options?.live_priority || 'most_used_first';
+      editor.maxLiveTables = Math.max(1, Number(schedule.options?.max_live_tables || 1));
       await this.loadProfileScheduleRuns(schedule.id);
       this.showToast(`Editing ${schedule.name || schedule.id}.`);
     },
@@ -5567,6 +5588,11 @@ const appConfig = {
         maxFailures: 3,
         streams: '',
         dryRun: true,
+        assetIds: '',
+        coverageMode: 'all_objects',
+        includeViews: true,
+        livePriority: 'most_used_first',
+        maxLiveTables: 1,
       };
       this.initializeProfileScheduleEditor(true);
       this.integrations.profileScheduleRuns = [];
@@ -5652,6 +5678,50 @@ const appConfig = {
       if (status === 'PAUSED') return 'warning';
       return 'secondary';
     },
+    profileCoverageModeOptions() {
+      return [
+        { title: 'All objects', value: 'all_objects' },
+        { title: 'All tables', value: 'all_tables' },
+      ];
+    },
+    profileLivePriorityOptions() {
+      return [
+        { title: 'Most used first', value: 'most_used_first' },
+        { title: 'Smallest first', value: 'smallest_first' },
+        { title: 'Largest first', value: 'largest_first' },
+        { title: 'Alphabetical', value: 'alphabetical' },
+      ];
+    },
+    profileCoverageModeLabel(value) {
+      if (value === 'all_objects') return 'All objects';
+      if (value === 'all_tables') return 'All tables';
+      return value || 'Default';
+    },
+    profileLivePriorityLabel(value) {
+      if (value === 'most_used_first') return 'Most used first';
+      if (value === 'smallest_first') return 'Smallest first';
+      if (value === 'largest_first') return 'Largest first';
+      if (value === 'alphabetical') return 'Alphabetical';
+      return value || 'Default';
+    },
+    connectorRunQueueStatus(run) {
+      return run?.summary?.coverage_queue_status || null;
+    },
+    connectorRunCoverageCounts(run) {
+      return {
+        live: Number(run?.summary?.coverage_assets_live || 0),
+        metadataOnly: Number(run?.summary?.coverage_assets_metadata_only || 0),
+        total: Number(run?.summary?.coverage_assets_total || 0),
+      };
+    },
+    scheduleQueueSummary(schedule) {
+      const options = schedule?.options || {};
+      return {
+        coverageMode: options.coverage_mode || 'all_objects',
+        livePriority: options.live_priority || 'most_used_first',
+        maxLiveTables: Number(options.max_live_tables || 1) || 1,
+      };
+    },
     connectorDefinitionLabel(type) {
       const definition = this.integrations.connectorDefinitions.find((item) => item.type === type);
       return definition ? `${definition.label} (${definition.cloud})` : type;
@@ -5685,7 +5755,7 @@ const appConfig = {
         .split(/[\n,]+/)
         .map((value) => value.trim())
         .filter(Boolean);
-      return {
+      const payload = {
         execution_mode: editor.executionMode,
         dry_run: editor.executionMode !== 'live',
         fail_fast: false,
@@ -5695,6 +5765,13 @@ const appConfig = {
           .map((value) => value.trim())
           .filter(Boolean),
       };
+      if (editor.profileType === 'aggregate') {
+        payload.coverage_mode = editor.coverageMode || 'all_objects';
+        payload.include_views = editor.includeViews === true;
+        payload.live_priority = editor.livePriority || 'most_used_first';
+        payload.max_live_tables = Math.max(1, Number(editor.maxLiveTables || 1));
+      }
+      return payload;
     },
     profileRunEndpoint(connectorId) {
       const type = this.integrations.profileRunEditor.profileType;
@@ -5813,7 +5890,12 @@ const appConfig = {
       this.integrations.profileScheduleEditor.profileType = this.integrations.profileRunEditor.profileType;
       this.integrations.profileScheduleEditor.dryRun =
         this.integrations.profileRunEditor.executionMode !== 'live';
+      this.integrations.profileScheduleEditor.assetIds = this.integrations.profileRunEditor.assetIds || '';
       this.integrations.profileScheduleEditor.streams = this.integrations.profileRunEditor.streams || '';
+      this.integrations.profileScheduleEditor.coverageMode = this.integrations.profileRunEditor.coverageMode || 'all_objects';
+      this.integrations.profileScheduleEditor.includeViews = this.integrations.profileRunEditor.includeViews === true;
+      this.integrations.profileScheduleEditor.livePriority = this.integrations.profileRunEditor.livePriority || 'most_used_first';
+      this.integrations.profileScheduleEditor.maxLiveTables = Math.max(1, Number(this.integrations.profileRunEditor.maxLiveTables || 1));
       this.initializeProfileScheduleEditor(true);
       this.integrations.connectorWorkflowTab = 'schedule';
     },
@@ -10195,6 +10277,15 @@ const appConfig = {
                       <div class="col-8"><v-label>Tables / Object IDs</v-label><v-textarea v-model="integrations.profileRunEditor.assetIds" rows="4" density="compact" variant="outlined" hide-details placeholder="Optional for metadata/BI. For aggregate database profiling, enter one table object id per line, such as GPA.dbo.SomeTable."></v-textarea></div>
                       <div class="col-4"><v-label>Streams</v-label><v-text-field v-model="integrations.profileRunEditor.streams" density="compact" variant="outlined" hide-details placeholder="reports, dashboards, lineage"></v-text-field><div class="field-hint">Use streams for BI, catalog, pipeline, or metadata profiles. Leave blank for aggregate SQL profiling.</div></div>
                     </div>
+                    <div class="form-row mt-8" v-if="integrations.profileRunEditor.profileType === 'aggregate'">
+                      <div class="col-3"><v-label>Coverage Mode</v-label><v-select v-model="integrations.profileRunEditor.coverageMode" density="compact" variant="outlined" hide-details :items="profileCoverageModeOptions()"></v-select></div>
+                      <div class="col-3"><v-label>Live Queue Order</v-label><v-select v-model="integrations.profileRunEditor.livePriority" density="compact" variant="outlined" hide-details :items="profileLivePriorityOptions()"></v-select></div>
+                      <div class="col-2"><v-label>Live Batch Size</v-label><v-text-field v-model.number="integrations.profileRunEditor.maxLiveTables" type="number" min="1" max="25" density="compact" variant="outlined" hide-details></v-text-field></div>
+                      <div class="col-2 scheduler-switch-cell"><v-switch v-model="integrations.profileRunEditor.includeViews" color="primary" density="compact" hide-details label="Include views"></v-switch></div>
+                      <div class="col-2">
+                        <div class="field-hint" style="padding-top: 28px;">Use `1` for a careful daytime queue, then raise off-hours.</div>
+                      </div>
+                    </div>
                     <div class="connector-action-strip mt-8">
                       <v-btn variant="tonal" :disabled="!integrations.profileRunEditor.connectorId" @click="prepareScheduleForSelectedConnector">Schedule this profile</v-btn>
                       <v-btn variant="outlined" :disabled="!integrations.profileRunEditor.connectorId" @click="loadManagedConnectorRuns(integrations.profileRunEditor.connectorId)">Refresh History</v-btn>
@@ -10206,6 +10297,8 @@ const appConfig = {
                       <div><span>Connection</span><strong>{{ selectedManagedConnector?.label || 'Choose a saved connection' }}</strong></div>
                       <div><span>Profile</span><strong>{{ integrations.profileRunEditor.profileType }}</strong></div>
                       <div><span>Mode</span><strong>{{ integrations.profileRunEditor.executionMode === 'live' ? 'Live aggregate query' : 'Dry run / plan' }}</strong></div>
+                      <div v-if="integrations.profileRunEditor.profileType === 'aggregate'"><span>Queue Order</span><strong>{{ profileLivePriorityLabel(integrations.profileRunEditor.livePriority) }}</strong></div>
+                      <div v-if="integrations.profileRunEditor.profileType === 'aggregate'"><span>Live Batch</span><strong>{{ integrations.profileRunEditor.maxLiveTables }}</strong></div>
                       <div><span>Raw data retained</span><strong>No</strong></div>
                     </div>
                     <div class="connector-guardrail">
@@ -10238,8 +10331,17 @@ const appConfig = {
                       <div class="col-2"><v-label>Max Failures</v-label><v-text-field v-model.number="integrations.profileScheduleEditor.maxFailures" type="number" min="1" density="compact" variant="outlined" hide-details></v-text-field></div>
                       <div class="col-2 scheduler-switch-cell"><v-switch v-model="integrations.profileScheduleEditor.dryRun" color="primary" density="compact" hide-details label="Dry run"></v-switch></div>
                     </div>
+                    <div class="form-row mt-8" v-if="integrations.profileScheduleEditor.profileType === 'aggregate' || integrations.profileScheduleEditor.profileType === 'auto'">
+                      <div class="col-3"><v-label>Coverage Mode</v-label><v-select v-model="integrations.profileScheduleEditor.coverageMode" density="compact" variant="outlined" hide-details :items="profileCoverageModeOptions()"></v-select></div>
+                      <div class="col-3"><v-label>Live Queue Order</v-label><v-select v-model="integrations.profileScheduleEditor.livePriority" density="compact" variant="outlined" hide-details :items="profileLivePriorityOptions()"></v-select></div>
+                      <div class="col-2"><v-label>Live Batch Size</v-label><v-text-field v-model.number="integrations.profileScheduleEditor.maxLiveTables" type="number" min="1" max="25" density="compact" variant="outlined" hide-details></v-text-field></div>
+                      <div class="col-2 scheduler-switch-cell"><v-switch v-model="integrations.profileScheduleEditor.includeViews" color="primary" density="compact" hide-details label="Include views"></v-switch></div>
+                      <div class="col-2">
+                        <div class="field-hint" style="padding-top: 28px;">Hourly with `1` is the gentlest default.</div>
+                      </div>
+                    </div>
                     <div class="form-row mt-8">
-                      <div class="col-12"><v-label>Tables / Object IDs</v-label><v-textarea v-model="integrations.profileRunEditor.assetIds" rows="3" density="compact" variant="outlined" hide-details placeholder="Optional schedule scope. Enter one table object id per line for aggregate profiling."></v-textarea></div>
+                      <div class="col-12"><v-label>Tables / Object IDs</v-label><v-textarea v-model="integrations.profileScheduleEditor.assetIds" rows="3" density="compact" variant="outlined" hide-details placeholder="Optional schedule scope. Enter one table object id per line for aggregate profiling."></v-textarea></div>
                     </div>
                     <div class="connector-action-strip mt-8">
                       <v-btn color="primary" :loading="integrations.profileScheduleLoading" @click="saveProfileSchedule">{{ integrations.profileScheduleEditor.id ? 'Update Schedule' : 'Create Schedule' }}</v-btn>
@@ -10345,6 +10447,19 @@ const appConfig = {
                       <div><span>Profile publish</span><strong>{{ connectorRunPublishStatus(integrations.selectedConnectorRun) }}</strong></div>
                       <div><span>Assets / objects</span><strong>{{ connectorRunFoundCount(integrations.selectedConnectorRun) }}</strong></div>
                       <div><span>Columns found</span><strong>{{ integrations.selectedConnectorRun.summary?.discovered_columns ?? '-' }}</strong></div>
+                      <div v-if="connectorRunQueueStatus(integrations.selectedConnectorRun)"><span>Live completed</span><strong>{{ connectorRunQueueStatus(integrations.selectedConnectorRun).completed_live_assets }}</strong></div>
+                      <div v-if="connectorRunQueueStatus(integrations.selectedConnectorRun)"><span>Live failed</span><strong>{{ connectorRunQueueStatus(integrations.selectedConnectorRun).failed_live_assets }}</strong></div>
+                      <div v-if="connectorRunQueueStatus(integrations.selectedConnectorRun)"><span>Metadata-only</span><strong>{{ connectorRunQueueStatus(integrations.selectedConnectorRun).metadata_only_assets }}</strong></div>
+                      <div v-if="connectorRunQueueStatus(integrations.selectedConnectorRun)"><span>Queue remaining</span><strong>{{ connectorRunQueueStatus(integrations.selectedConnectorRun).pending_live_queue }}</strong></div>
+                    </div>
+                    <div class="connector-guardrail" v-if="connectorRunQueueStatus(integrations.selectedConnectorRun)">
+                      <strong>Queue progress</strong>
+                      <span>
+                        {{ connectorRunQueueStatus(integrations.selectedConnectorRun).completed_live_assets }} live completed,
+                        {{ connectorRunQueueStatus(integrations.selectedConnectorRun).failed_live_assets }} failed live,
+                        {{ connectorRunQueueStatus(integrations.selectedConnectorRun).metadata_only_assets }} metadata-only,
+                        {{ connectorRunQueueStatus(integrations.selectedConnectorRun).pending_live_queue }} still queued.
+                      </span>
                     </div>
                     <div class="connector-guardrail" v-if="connectorRunKind(integrations.selectedConnectorRun) === 'Metadata harvest'">
                       This run discovered objects, columns, and lineage metadata. It did not execute aggregate data profiling, so row counts, null counts, and distinct counts will appear only after running a one-time or scheduled aggregate profile.
@@ -10476,6 +10591,20 @@ const appConfig = {
                         <v-switch v-model="integrations.profileScheduleEditor.dryRun" color="primary" density="compact" hide-details label="Dry run"></v-switch>
                       </div>
                     </div>
+                    <div class="form-row mt-8" v-if="integrations.profileScheduleEditor.profileType === 'aggregate' || integrations.profileScheduleEditor.profileType === 'auto'">
+                      <div class="col-3"><v-label>Coverage Mode</v-label><v-select v-model="integrations.profileScheduleEditor.coverageMode" density="compact" variant="outlined" hide-details :items="profileCoverageModeOptions()"></v-select></div>
+                      <div class="col-3"><v-label>Live Queue Order</v-label><v-select v-model="integrations.profileScheduleEditor.livePriority" density="compact" variant="outlined" hide-details :items="profileLivePriorityOptions()"></v-select></div>
+                      <div class="col-2"><v-label>Live Batch Size</v-label><v-text-field v-model.number="integrations.profileScheduleEditor.maxLiveTables" type="number" min="1" max="25" density="compact" variant="outlined" hide-details></v-text-field></div>
+                      <div class="col-2 scheduler-switch-cell">
+                        <v-switch v-model="integrations.profileScheduleEditor.includeViews" color="primary" density="compact" hide-details label="Include views"></v-switch>
+                      </div>
+                      <div class="col-2">
+                        <div class="field-hint" style="padding-top: 28px;">Most-used-first with batch `1` is the safest live queue.</div>
+                      </div>
+                    </div>
+                    <div class="form-row mt-8">
+                      <div class="col-12"><v-label>Tables / Object IDs</v-label><v-textarea v-model="integrations.profileScheduleEditor.assetIds" rows="3" density="compact" variant="outlined" hide-details placeholder="Optional schedule scope. Leave blank for full queue coverage, or pin one object id per line."></v-textarea></div>
+                    </div>
                     <div class="scheduler-guardrail mt-8">
                       <v-icon size="small">mdi-shield-lock-outline</v-icon>
                       <span>Saved schedules strip inline metadata payloads, mocks, tokens, secrets, and credential references before persistence.</span>
@@ -10505,6 +10634,11 @@ const appConfig = {
                             <span>Runs {{ schedule.run_count || 0 }}</span>
                             <span>Failures {{ schedule.failure_count || 0 }}/{{ schedule.max_failures || 3 }}</span>
                             <span>Last {{ schedule.last_status || 'never' }}</span>
+                          </div>
+                          <div class="profile-schedule-health">
+                            <span>{{ profileCoverageModeLabel(scheduleQueueSummary(schedule).coverageMode) }}</span>
+                            <span>{{ profileLivePriorityLabel(scheduleQueueSummary(schedule).livePriority) }}</span>
+                            <span>Batch {{ scheduleQueueSummary(schedule).maxLiveTables }}</span>
                           </div>
                           <div v-if="schedule.last_error" class="profile-schedule-error">
                             {{ schedule.last_error.message || schedule.last_error }}
@@ -10537,6 +10671,9 @@ const appConfig = {
                     <div class="mini-metric"><span>Due Count</span><strong>{{ integrations.profileScheduleResult.due_count ?? '-' }}</strong></div>
                     <div class="mini-metric"><span>Run Count</span><strong>{{ integrations.profileScheduleResult.schedule?.run_count ?? integrations.profileScheduleResult.run_count ?? '-' }}</strong></div>
                     <div class="mini-metric"><span>Next Run</span><strong>{{ formatTimestamp(integrations.profileScheduleResult.schedule?.next_run_at || integrations.profileScheduleResult.next_run_at) }}</strong></div>
+                    <div class="mini-metric" v-if="integrations.profileScheduleResult.run?.summary?.coverage_queue_status"><span>Live Done</span><strong>{{ integrations.profileScheduleResult.run.summary.coverage_queue_status.completed_live_assets }}</strong></div>
+                    <div class="mini-metric" v-if="integrations.profileScheduleResult.run?.summary?.coverage_queue_status"><span>Live Failed</span><strong>{{ integrations.profileScheduleResult.run.summary.coverage_queue_status.failed_live_assets }}</strong></div>
+                    <div class="mini-metric" v-if="integrations.profileScheduleResult.run?.summary?.coverage_queue_status"><span>Queue Left</span><strong>{{ integrations.profileScheduleResult.run.summary.coverage_queue_status.pending_live_queue }}</strong></div>
                   </div>
                   <div v-if="integrations.profileScheduleResult.artifact" class="scheduler-artifact-paths">
                     <span>JSON {{ integrations.profileScheduleResult.artifact.json_path || '-' }}</span>

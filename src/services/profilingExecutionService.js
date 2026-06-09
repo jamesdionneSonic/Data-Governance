@@ -482,6 +482,9 @@ function assetStrategy(asset = {}, columns = [], safety = {}, dialect = null) {
 
 function buildMetadataOnlyProfile(asset, columns, safety) {
   const rowCount = estimateRows(asset);
+  const assetType = objectType(asset) || 'unknown';
+  const parameterCount = toArray(asset.parameters).length;
+  const metadataOnlyObject = assetType !== 'table' && assetType !== 'view';
   const profileColumns = {};
   for (const column of columns) {
     const assetNullPercent = column.null_percent ?? column.null_pct;
@@ -509,11 +512,26 @@ function buildMetadataOnlyProfile(asset, columns, safety) {
   return {
     asset_id: asset.id || objectName(asset),
     object_name: objectName(asset),
-    row_count: rowCount,
-    profile_mode: safety.profile_mode,
+    object_type: assetType,
+    database: objectDatabase(asset),
+    schema: objectSchema(asset),
+    row_count: metadataOnlyObject ? null : rowCount,
+    profile_mode: 'metadata_only',
+    profile_tier: 'metadata_only',
+    profile_status: 'succeeded',
     generated_at: nowIso(),
     raw_values_retained: false,
     columns: profileColumns,
+    metadata_summary: {
+      object_type: assetType,
+      column_count: columns.length,
+      parameter_count: parameterCount,
+      row_count_estimate: rowCount || null,
+      live_profile_eligible: ['table', 'view'].includes(assetType),
+    },
+    limitations: metadataOnlyObject
+      ? [`${assetType} objects receive metadata-only profiles in this run; live row profiling is reserved for tables/views.`]
+      : ['metadata-only profile; not queried from source during this run'],
   };
 }
 
@@ -554,8 +572,13 @@ function simulateProfile(asset, columns, safety) {
   return {
     asset_id: asset.id || objectName(asset),
     object_name: objectName(asset),
+    object_type: objectType(asset),
+    database: objectDatabase(asset),
+    schema: objectSchema(asset),
     row_count: sampleRows,
     profile_mode: safety.profile_mode,
+    profile_tier: safety.profile_mode === 'sample' ? 'sample_live' : 'standard_live',
+    profile_status: 'succeeded',
     generated_at: nowIso(),
     raw_values_retained: false,
     columns: profileColumns,
@@ -725,8 +748,13 @@ function normalizeExecutedProfile(action, result) {
     return {
       asset_id: profile.asset_id || action.asset_id,
       object_name: profile.object_name || action.object_name,
+      object_type: profile.object_type || action.object_type,
+      database: profile.database || action.database,
+      schema: profile.schema || action.schema,
       row_count: asNumber(profile.row_count ?? profile.rowCount, 0),
       profile_mode: action.profile_mode,
+      profile_tier: profile.profile_tier || (action.profile_mode === 'sample' ? 'sample_live' : 'standard_live'),
+      profile_status: profile.profile_status || 'succeeded',
       generated_at: profile.generated_at || profile.profiled_at || nowIso(),
       raw_values_retained: false,
       columns: profile.columns || {},
@@ -750,8 +778,13 @@ function mergeProfiles(existing = null, incoming = null, action = {}) {
     ...incoming,
     asset_id: existing.asset_id || incoming.asset_id || action.asset_id,
     object_name: existing.object_name || incoming.object_name || action.object_name,
+    object_type: existing.object_type || incoming.object_type || action.object_type,
+    database: existing.database || incoming.database || action.database,
+    schema: existing.schema || incoming.schema || action.schema,
     row_count: existing.row_count ?? incoming.row_count ?? 0,
     profile_mode: existing.profile_mode || incoming.profile_mode || action.profile_mode,
+    profile_tier: incoming.profile_tier || existing.profile_tier || (action.profile_mode === 'sample' ? 'sample_live' : 'standard_live'),
+    profile_status: incoming.profile_status || existing.profile_status || 'succeeded',
     generated_at: incoming.generated_at || existing.generated_at || nowIso(),
     connector_id: incoming.connector_id || existing.connector_id || action.connector_id || null,
     source_dialect: incoming.source_dialect || existing.source_dialect || action.query?.dialect || null,
@@ -802,8 +835,13 @@ export function profileFromAggregateRow(action = {}, row = {}) {
   return {
     asset_id: action.asset_id,
     object_name: action.object_name,
+    object_type: action.object_type,
+    database: action.database,
+    schema: action.schema,
     row_count: rowCount,
     profile_mode: action.profile_mode,
+    profile_tier: action.profile_mode === 'sample' ? 'sample_live' : 'standard_live',
+    profile_status: 'succeeded',
     generated_at: nowIso(),
     raw_values_retained: false,
     connector_id: action.connector_id || null,
@@ -911,11 +949,24 @@ export function applyMinimumCoverageProfiles(run = {}, plan = {}) {
   nextRun.summary.coverage_assets_total = coverageAssets.length;
   nextRun.summary.coverage_assets_metadata_only = metadataOnlyCount;
   nextRun.summary.coverage_assets_live = Math.max(0, allProfiles.length - metadataOnlyCount);
+  nextRun.summary.coverage_asset_types = plan.summary?.coverage_asset_types || {};
+  nextRun.summary.coverage_live_queue = plan.summary?.coverage_live_queue || 0;
+  const failedLiveAssets = [...new Set((nextRun.errors || []).map((error) => error.asset_id).filter(Boolean))];
+  nextRun.summary.coverage_queue_status = {
+    total_assets: coverageAssets.length,
+    live_eligible_assets: plan.coverage?.live_eligible_assets?.length || 0,
+    selected_for_this_run: plan.coverage?.live_assets?.length || 0,
+    completed_live_assets: nextRun.summary.coverage_assets_live,
+    failed_live_assets: failedLiveAssets.length,
+    metadata_only_assets: nextRun.summary.coverage_assets_metadata_only,
+    pending_live_queue: Math.max(0, plan.summary?.coverage_live_queue || 0),
+    last_run_status: nextRun.status,
+  };
 
   if (metadataOnlyCount > 0) {
     nextRun.warnings.push({
       asset_id: null,
-      message: `Minimum metadata-only coverage was added for ${metadataOnlyCount} asset(s) so every targeted table has a safe profile.`,
+      message: `Minimum metadata-only coverage was added for ${metadataOnlyCount} asset(s) so every targeted object has a safe profile.`,
     });
   }
 
@@ -942,6 +993,7 @@ export function applyProfileToAsset(asset = {}, profile = {}) {
     profile_summary: {
       raw_values_retained: false,
       profile_mode: profile.profile_mode || 'unknown',
+      profile_tier: profile.profile_tier || 'unknown',
       generated_at: profile.generated_at || profile.profiled_at || nowIso(),
       column_count: Object.keys(profile.columns || {}).length,
     },
@@ -1042,10 +1094,13 @@ export function profilingAnswer(run = {}) {
   const assetCount = run.summary?.assets_profiled || 0;
   const columnCount = run.summary?.columns_profiled || 0;
   const skipped = run.summary?.assets_skipped || 0;
+  const metadataOnlyCount = run.summary?.coverage_assets_metadata_only || 0;
+  const liveCount = run.summary?.coverage_assets_live || 0;
   return {
     answer:
       `The profiling framework ${status}. It retained no raw data, profiled ${assetCount} asset(s) and ${columnCount} column(s), ` +
-      `and skipped ${skipped} asset(s). ${run.safety?.dialect || 'Database'} plans use read-only aggregate queries with source-specific timeout and sampling guardrails.`,
+      `and skipped ${skipped} asset(s). Coverage currently includes ${liveCount} live-profiled asset(s) and ${metadataOnlyCount} metadata-only asset(s). ` +
+      `${run.safety?.dialect || 'Database'} plans use read-only aggregate queries with source-specific timeout and sampling guardrails.`,
     raw_values_retained: false,
     summary: run.summary,
     safety: run.safety,
