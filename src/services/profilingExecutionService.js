@@ -517,6 +517,16 @@ function buildMetadataOnlyProfile(asset, columns, safety) {
   };
 }
 
+export function metadataOnlyProfileForAsset(asset = {}, safety = {}) {
+  const effectiveSafety = {
+    ...normalizeProfileSafety(safety),
+    profile_mode: 'metadata_only',
+    raw_values_retained: false,
+  };
+  const columns = toArray(asset.columns).map(normalizeColumn).filter((column) => column.name);
+  return buildMetadataOnlyProfile(asset, columns, effectiveSafety);
+}
+
 function simulateProfile(asset, columns, safety) {
   const baseRows = estimateRows(asset) || 10_000;
   const sampleRows =
@@ -873,6 +883,45 @@ export async function executeProfilingPlan(plan, executor = null) {
   return run;
 }
 
+export function applyMinimumCoverageProfiles(run = {}, plan = {}) {
+  const coverageAssets = toArray(plan.coverage?.assets);
+  if (!coverageAssets.length) return run;
+
+  const nextRun = {
+    ...run,
+    profiles: { ...(run.profiles || {}) },
+    summary: { ...(run.summary || {}) },
+    warnings: [...(run.warnings || [])],
+  };
+
+  let metadataOnlyCount = 0;
+  for (const asset of coverageAssets) {
+    const assetId = asset.id || objectName(asset);
+    if (nextRun.profiles[assetId]) continue;
+    nextRun.profiles[assetId] = metadataOnlyProfileForAsset(asset, plan.safety || {});
+    metadataOnlyCount += 1;
+  }
+
+  const allProfiles = Object.values(nextRun.profiles || {});
+  nextRun.summary.assets_profiled = allProfiles.length;
+  nextRun.summary.columns_profiled = allProfiles.reduce(
+    (sum, profile) => sum + Object.keys(profile.columns || {}).length,
+    0
+  );
+  nextRun.summary.coverage_assets_total = coverageAssets.length;
+  nextRun.summary.coverage_assets_metadata_only = metadataOnlyCount;
+  nextRun.summary.coverage_assets_live = Math.max(0, allProfiles.length - metadataOnlyCount);
+
+  if (metadataOnlyCount > 0) {
+    nextRun.warnings.push({
+      asset_id: null,
+      message: `Minimum metadata-only coverage was added for ${metadataOnlyCount} asset(s) so every targeted table has a safe profile.`,
+    });
+  }
+
+  return nextRun;
+}
+
 export async function runProfiling(input = {}, objectCache = new Map(), executor = null) {
   const plan = buildProfilingPlan(input, objectCache);
   const run = await executeProfilingPlan(plan, executor);
@@ -1008,10 +1057,12 @@ export default {
   buildProfilingContract,
   buildProfilingPlan,
   executeProfilingPlan,
+  applyMinimumCoverageProfiles,
   runProfiling,
   applyProfileToAsset,
   buildComputerFriendlyProfilePackage,
   buildConfluenceProfileSummary,
   profilingAnswer,
   profileFromAggregateRow,
+  metadataOnlyProfileForAsset,
 };
