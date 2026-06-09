@@ -693,8 +693,32 @@ function readPublicationQueue() {
 
 function writePublicationQueue(queue) {
   const queuePath = profilePublicationQueuePath();
+  const legacyQueuePath = path.join(profileMarkdownDir(), 'devops-upload-pending.json');
   mkdirSync(path.dirname(queuePath), { recursive: true });
-  writeFileSync(queuePath, JSON.stringify({ ...queue, updated_at: nowIso() }, null, 2));
+  const normalized = { ...queue, updated_at: nowIso() };
+  writeFileSync(queuePath, JSON.stringify(normalized, null, 2));
+  writeFileSync(
+    legacyQueuePath,
+    JSON.stringify(
+      {
+        version: normalized.version || 1,
+        updated_at: normalized.updated_at,
+        runs: (normalized.runs || []).map((entry) => ({
+          run_id: entry.run_id,
+          connector_id: entry.connector_id,
+          status: entry.status === 'published' ? 'published' : 'pending',
+          profile_publish_status: entry.status,
+          successful_asset_count: entry.successful_asset_count || 0,
+          failed_asset_count: entry.failed_asset_count || 0,
+          markdown_path: entry.markdown_path || null,
+          json_path: entry.json_path || null,
+          updated_at: entry.updated_at || normalized.updated_at,
+        })),
+      },
+      null,
+      2
+    )
+  );
 }
 
 function updateProfilePublicationQueue(run = {}) {
@@ -858,6 +882,36 @@ function npmCliPath() {
   return path.join(nodeDir, 'node_modules', 'npm', 'bin', 'npm-cli.js');
 }
 
+function runtimeBuildStatePath() {
+  return path.join(process.cwd(), 'data', 'lineage-runtime-package', '.build-state.json');
+}
+
+function runtimePackageVersionPrefix(date = new Date()) {
+  return `${date.getUTCFullYear()}.${date.getUTCMonth() + 1}.${date.getUTCDate()}-`;
+}
+
+function nextRuntimePackageVersion() {
+  const prefix = runtimePackageVersionPrefix();
+  let maxSuffix = 0;
+
+  try {
+    const buildStatePath = runtimeBuildStatePath();
+    if (existsSync(buildStatePath)) {
+      const buildState = JSON.parse(readFileSync(buildStatePath, 'utf8'));
+      for (const candidate of [buildState.version, buildState.last_published_version]) {
+        const match = String(candidate || '').match(/^(\d{4}\.\d{1,2}\.\d{1,2})-(\d+)$/);
+        if (match && `${match[1]}-` === prefix) {
+          maxSuffix = Math.max(maxSuffix, Number(match[2]) || 0);
+        }
+      }
+    }
+  } catch {
+    // Fall back to today's first suffix if the build state is unreadable.
+  }
+
+  return `${prefix}${Math.max(1, maxSuffix + 1)}`;
+}
+
 function directScriptCommand(scriptName, args = []) {
   const passthroughArgs = args.filter((arg) => arg !== '--');
   const scriptMap = {
@@ -936,6 +990,44 @@ function mergeRunPublishState(run, nextState) {
   updateProfilePublicationQueue(run);
 }
 
+function refreshPublishedRunArtifacts(run = {}) {
+  const markdownPath = run.artifact?.markdown_path;
+  const jsonPath = run.artifact?.json_path;
+  if (!markdownPath || !jsonPath || !existsSync(markdownPath) || !existsSync(jsonPath)) return;
+
+  try {
+    const publish = profilePublishState(run);
+    const pending = publish.pending_assets.length > 0;
+    const publishedAt = publish.last_published_at || 'not yet published';
+    const statusLine = `profile_publish_status: ${publish.status}`;
+    const devopsPendingLine = `devops_upload_pending: ${pending ? 'true' : 'false'}`;
+    const devopsSection = [
+      '## DevOps Upload',
+      '',
+      `- Status: ${publish.status}`,
+      `- Last published at: ${publishedAt}`,
+      `- Pending assets: ${publish.pending_assets.length}`,
+      `- Published assets: ${publish.published_asset_count}`,
+      publish.last_error?.message ? `- Last error: ${publish.last_error.message}` : '- Last error: none',
+      '',
+    ].join('\n');
+
+    const markdown = readFileSync(markdownPath, 'utf8')
+      .replace(/profile_publish_status:\s*.*/u, statusLine)
+      .replace(/devops_upload_pending:\s*.*/u, devopsPendingLine)
+      .replace(/## DevOps Upload[\s\S]*$/u, devopsSection);
+
+    writeFileSync(markdownPath, markdown, 'utf8');
+
+    const payload = JSON.parse(readFileSync(jsonPath, 'utf8'));
+    payload.devops_upload_pending = pending;
+    payload.profile_publish = publish;
+    writeFileSync(jsonPath, JSON.stringify(payload, null, 2));
+  } catch {
+    // Keep publication state updates resilient even if artifact refresh fails.
+  }
+}
+
 function profileRunsEligibleForPublication(filters = {}, user = {}) {
   hydrateRuntimeStore();
   return runHistoryStore
@@ -991,6 +1083,7 @@ export async function publishConnectorProfileRuns(options = {}, user = {}) {
   }
 
   const attemptedAt = nowIso();
+  const runtimePackageVersion = targets.includes('devops') ? nextRuntimePackageVersion() : null;
   for (const run of eligibleRuns) {
     mergeRunPublishState(run, {
       status: dryRun ? 'publish_ready' : 'publishing',
@@ -1003,10 +1096,15 @@ export async function publishConnectorProfileRuns(options = {}, user = {}) {
 
   const steps = [];
   if (targets.includes('devops')) {
-    steps.push({ target: 'devops', script: 'lineage:runtime:package', args: [] });
+    const versionArgs = runtimePackageVersion ? [`--version=${runtimePackageVersion}`] : [];
+    steps.push({ target: 'devops', script: 'lineage:runtime:package', args: versionArgs });
     steps.push({ target: 'devops', script: 'lineage:runtime:check', args: [] });
     steps.push({ target: 'devops', script: 'lineage:runtime:sync', args: [] });
-    steps.push({ target: 'devops', script: 'lineage:runtime:publish', args: dryRun ? ['--', '--dry-run'] : [] });
+    steps.push({
+      target: 'devops',
+      script: 'lineage:runtime:publish',
+      args: [...versionArgs, ...(dryRun ? ['--', '--dry-run'] : [])],
+    });
   }
   if (targets.includes('confluence')) {
     steps.push({ target: 'confluence', script: 'confluence:export', args: [] });
@@ -1041,11 +1139,12 @@ export async function publishConnectorProfileRuns(options = {}, user = {}) {
   const allPublishedAssets = eligibleRuns.flatMap((run) => successfulProfileAssetIds(run));
   for (const run of eligibleRuns) {
     const successfulAssets = successfulProfileAssetIds(run);
+    const existing = profilePublishState(run);
     mergeRunPublishState(run, {
       status: dryRun ? 'publish_ready' : finalStatus,
-      published_asset_count: dryRun ? 0 : successfulAssets.length,
-      published_assets: dryRun ? [] : successfulAssets,
-      pending_assets: dryRun ? successfulAssets : [],
+      published_asset_count: dryRun || failedStep ? existing.published_asset_count : successfulAssets.length,
+      published_assets: dryRun || failedStep ? existing.published_assets : successfulAssets,
+      pending_assets: dryRun || failedStep ? successfulAssets : [],
       last_published_at: dryRun || failedStep ? null : completedAt,
       last_error: failedStep
         ? {
@@ -1056,6 +1155,7 @@ export async function publishConnectorProfileRuns(options = {}, user = {}) {
         : null,
       targets,
     });
+    refreshPublishedRunArtifacts(run);
   }
   persistRuntimeStore();
 
@@ -1063,6 +1163,7 @@ export async function publishConnectorProfileRuns(options = {}, user = {}) {
     status: dryRun ? 'planned' : finalStatus,
     dry_run: dryRun,
     targets,
+    runtime_package_version: runtimePackageVersion,
     run_count: eligibleRuns.length,
     successful_asset_count: allPublishedAssets.length,
     failed_asset_count: eligibleRuns.flatMap((run) => failedProfileAssetIds(run)).length,
@@ -1073,6 +1174,68 @@ export async function publishConnectorProfileRuns(options = {}, user = {}) {
       profile_publish: profilePublishState(run),
     })),
     steps: results,
+    queue: readPublicationQueue(),
+  };
+}
+
+export function recordPublishedConnectorProfileRuns(options = {}, user = {}) {
+  hydrateRuntimeStore();
+  if (!isAdmin(user)) {
+    const error = new Error('Only Admin users can record profile publication state.');
+    error.code = 'CONNECTOR_FORBIDDEN';
+    error.status = 403;
+    throw error;
+  }
+
+  const targets = publicationTargets(options);
+  const eligibleRuns = profileRunsEligibleForPublication(
+    {
+      connector_id: options.connector_id || options.connectorId,
+      run_id: options.run_id || options.runId,
+      include_published: options.include_published === true || options.includePublished === true,
+    },
+    user
+  );
+
+  if (eligibleRuns.length === 0) {
+    return {
+      status: 'no_op',
+      run_count: 0,
+      successful_asset_count: 0,
+      message: 'No unpublished successful profile assets were found.',
+      queue: readPublicationQueue(),
+    };
+  }
+
+  const completedAt = nowIso();
+  for (const run of eligibleRuns) {
+    const successfulAssets = successfulProfileAssetIds(run);
+    mergeRunPublishState(run, {
+      status: failedProfileAssetIds(run).length > 0 ? 'partial_published' : 'published',
+      published_asset_count: successfulAssets.length,
+      published_assets: successfulAssets,
+      pending_assets: [],
+      last_attempt_at: completedAt,
+      last_published_at: completedAt,
+      last_error: null,
+      targets,
+    });
+    refreshPublishedRunArtifacts(run);
+  }
+  persistRuntimeStore();
+
+  return {
+    status: eligibleRuns.some((run) => failedProfileAssetIds(run).length > 0) ? 'partial_published' : 'published',
+    targets,
+    run_count: eligibleRuns.length,
+    successful_asset_count: eligibleRuns.flatMap((run) => successfulProfileAssetIds(run)).length,
+    failed_asset_count: eligibleRuns.flatMap((run) => failedProfileAssetIds(run)).length,
+    runs: eligibleRuns.map((run) => sanitizeForPersistence({
+      id: run.id,
+      connector_id: run.connector_id,
+      status: run.status,
+      profile_publish: profilePublishState(run),
+    })),
     queue: readPublicationQueue(),
   };
 }
@@ -2154,6 +2317,7 @@ export default {
   runConnectorProfileSchedule,
   runDueConnectorProfileSchedules,
   runConnector,
+  recordPublishedConnectorProfileRuns,
   publishConnectorProfileRuns,
   startProfileSchedulerWorker,
   stopProfileSchedulerWorker,
