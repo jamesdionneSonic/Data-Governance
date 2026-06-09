@@ -10283,7 +10283,7 @@ const appConfig = {
                       <div class="col-2"><v-label>Live Batch Size</v-label><v-text-field v-model.number="integrations.profileRunEditor.maxLiveTables" type="number" min="1" max="25" density="compact" variant="outlined" hide-details></v-text-field></div>
                       <div class="col-2 scheduler-switch-cell"><v-switch v-model="integrations.profileRunEditor.includeViews" color="primary" density="compact" hide-details label="Include views"></v-switch></div>
                       <div class="col-2">
-                        <div class="field-hint" style="padding-top: 28px;">Use `1` for a careful daytime queue, then raise off-hours.</div>
+                        <div class="field-hint" style="padding-top: 28px;">Use 1 for a careful daytime queue, then raise off-hours.</div>
                       </div>
                     </div>
                     <div class="connector-action-strip mt-8">
@@ -10337,7 +10337,7 @@ const appConfig = {
                       <div class="col-2"><v-label>Live Batch Size</v-label><v-text-field v-model.number="integrations.profileScheduleEditor.maxLiveTables" type="number" min="1" max="25" density="compact" variant="outlined" hide-details></v-text-field></div>
                       <div class="col-2 scheduler-switch-cell"><v-switch v-model="integrations.profileScheduleEditor.includeViews" color="primary" density="compact" hide-details label="Include views"></v-switch></div>
                       <div class="col-2">
-                        <div class="field-hint" style="padding-top: 28px;">Hourly with `1` is the gentlest default.</div>
+                        <div class="field-hint" style="padding-top: 28px;">Hourly with 1 is the gentlest default.</div>
                       </div>
                     </div>
                     <div class="form-row mt-8">
@@ -10599,7 +10599,7 @@ const appConfig = {
                         <v-switch v-model="integrations.profileScheduleEditor.includeViews" color="primary" density="compact" hide-details label="Include views"></v-switch>
                       </div>
                       <div class="col-2">
-                        <div class="field-hint" style="padding-top: 28px;">Most-used-first with batch `1` is the safest live queue.</div>
+                        <div class="field-hint" style="padding-top: 28px;">Most-used-first with batch 1 is the safest live queue.</div>
                       </div>
                     </div>
                     <div class="form-row mt-8">
