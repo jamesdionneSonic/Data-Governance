@@ -18,12 +18,40 @@ const REQUIRED_FILES = [
   'registry/duplicate-objects.jsonl',
   'registry/unresolved-server-objects.jsonl',
   'registry/database-index.json',
+  'registry/database-artifact-index.json',
+  'registry/object-path-index.json',
   'registry/object-registry-summary.json',
+  'indexes/artifact-manifest.json',
   'indexes/index-manifest.json',
+  'profile-index/manifest.json',
+  'profile-index/latest-summary.json',
   'docs/ai-usage-guide.md',
   'docs/runtime-package-guide.md',
 ];
 const FORBIDDEN_PATTERNS = ['unknown.Sonic_DW'];
+const PROFILE_INDEX_FORBIDDEN_KEYS = new Set([
+  'sample_values',
+  'sample_value',
+  'raw_rows',
+  'raw_row',
+  'preview_data',
+  'example_value',
+  'example_values',
+  'raw_payload',
+  'source_payload',
+  'report_result_rows',
+  'dashboard_cell_values',
+  'connection_string',
+  'authorization',
+  'password',
+  'token',
+  'access_token',
+  'refresh_token',
+  'credential',
+  'credentials',
+  'vault_reference',
+  'vault_ref',
+]);
 const PACKAGE_FILE_WARNING_LIMIT = 50000;
 
 function argValue(name) {
@@ -34,6 +62,10 @@ function argValue(name) {
 
 function normalizePath(value) {
   return String(value || '').replace(/\\/g, '/');
+}
+
+function normalizeKey(value) {
+  return String(value || '').trim().toLowerCase().replace(/[^a-z0-9_]/g, '_');
 }
 
 async function fileExists(filePath) {
@@ -106,7 +138,77 @@ async function scanFileForForbiddenPatterns(filePath) {
   return matches;
 }
 
-async function validateRegistry(packageRoot, failures) {
+function validateProfileIndexValue(value, failures, location = 'profile-index') {
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => validateProfileIndexValue(item, failures, `${location}[${index}]`));
+    return;
+  }
+  if (!value || typeof value !== 'object') return;
+  for (const [key, nested] of Object.entries(value)) {
+    if (PROFILE_INDEX_FORBIDDEN_KEYS.has(normalizeKey(key))) {
+      failures.push(`Forbidden profile-index field '${key}' at ${location}.${key}`);
+    }
+    validateProfileIndexValue(nested, failures, `${location}.${key}`);
+  }
+}
+
+async function validateProfileIndex(packageRoot, manifest, failures) {
+  const profileIndexManifest = await readJson(path.join(packageRoot, 'profile-index/manifest.json'));
+  const latestSummary = await readJson(path.join(packageRoot, 'profile-index/latest-summary.json'));
+  validateProfileIndexValue(profileIndexManifest, failures, 'profile-index/manifest.json');
+  validateProfileIndexValue(latestSummary, failures, 'profile-index/latest-summary.json');
+
+  if (profileIndexManifest.safety?.profile_index_safe !== true) {
+    failures.push('Profile index manifest missing safety.profile_index_safe=true.');
+  }
+  if (profileIndexManifest.safety?.raw_data_captured !== false) {
+    failures.push('Profile index manifest must declare safety.raw_data_captured=false.');
+  }
+  if (profileIndexManifest.safety?.raw_values_retained !== false) {
+    failures.push('Profile index manifest must declare safety.raw_values_retained=false.');
+  }
+  if (profileIndexManifest.safety?.secret_exposed !== false) {
+    failures.push('Profile index manifest must declare safety.secret_exposed=false.');
+  }
+
+  const requiredDirectories = [
+    manifest.profile_index?.by_database,
+    manifest.profile_index?.by_object_id,
+    manifest.profile_index?.by_object_name,
+    manifest.profile_index?.by_column_name,
+    manifest.profile_index?.runs_by_id,
+    manifest.profile_index?.runs_by_connector,
+    manifest.profile_index?.flags,
+  ].filter(Boolean);
+
+  for (const directory of requiredDirectories) {
+    // eslint-disable-next-line no-await-in-loop
+    if (!(await fileExists(path.join(packageRoot, directory)))) {
+      failures.push(`Missing profile index directory from manifest: ${directory}`);
+    }
+  }
+
+  const files = await listFilesRecursive(path.join(packageRoot, 'profile-index'));
+  for (const file of files.filter((item) => item.endsWith('.json'))) {
+    // eslint-disable-next-line no-await-in-loop
+    const payload = await readJson(path.join(packageRoot, 'profile-index', file));
+    validateProfileIndexValue(payload, failures, `profile-index/${file}`);
+    if (payload.profile_index_safe !== true && !file.endsWith('manifest.json')) {
+      failures.push(`Profile index file missing profile_index_safe=true: profile-index/${file}`);
+    }
+    if (payload.raw_data_captured !== false && !file.endsWith('manifest.json')) {
+      failures.push(`Profile index file must declare raw_data_captured=false: profile-index/${file}`);
+    }
+    if (payload.raw_values_retained !== false && !file.endsWith('manifest.json')) {
+      failures.push(`Profile index file must declare raw_values_retained=false: profile-index/${file}`);
+    }
+    if (payload.secret_exposed !== false && !file.endsWith('manifest.json')) {
+      failures.push(`Profile index file must declare secret_exposed=false: profile-index/${file}`);
+    }
+  }
+}
+
+async function validateRegistry(packageRoot, failures, manifest = {}) {
   const registryPath = path.join(packageRoot, 'registry/object-registry.jsonl');
   const rows = createInterface({
     input: createReadStream(registryPath, { encoding: 'utf8' }),
@@ -142,7 +244,11 @@ async function validateRegistry(packageRoot, failures) {
     }
     objectIds.add(row.object_id);
 
-    for (const key of ['context_pack_path', 'context_pack_json_path']) {
+    const requiredContextKeys =
+      manifest.build?.payload_mode === 'compact'
+        ? ['context_pack_json_path']
+        : ['context_pack_path', 'context_pack_json_path'];
+    for (const key of requiredContextKeys) {
       const value = normalizePath(row[key]);
       if (!value) {
         failures.push(`Registry row ${row.object_id} missing ${key}.`);
@@ -190,6 +296,9 @@ async function validateRuntimeEnhancements(packageRoot, manifest, registryCount,
   }
 
   const indexManifest = await readJson(path.join(packageRoot, 'indexes/index-manifest.json'));
+  const artifactManifest = await readJson(path.join(packageRoot, 'indexes/artifact-manifest.json'));
+  const objectPathIndex = await readJson(path.join(packageRoot, 'registry/object-path-index.json'));
+  const databaseArtifactIndex = await readJson(path.join(packageRoot, 'registry/database-artifact-index.json'));
   const requiredDirectories = [
     manifest.indexes?.object_name,
     manifest.indexes?.database,
@@ -220,6 +329,27 @@ async function validateRuntimeEnhancements(packageRoot, manifest, registryCount,
     failures.push(
       `Compact context pack count ${indexManifest.counts?.compact_context_pack_files || 0} does not equal registry ${registryCount}.`
     );
+  }
+  if ((objectPathIndex.object_count || 0) !== registryCount) {
+    failures.push(`Object path index count ${objectPathIndex.object_count || 0} does not equal registry ${registryCount}.`);
+  }
+  if ((databaseArtifactIndex.database_count || 0) !== (manifest.counts?.database_count || 0)) {
+    failures.push(
+      `Database artifact index count ${databaseArtifactIndex.database_count || 0} does not equal manifest database count ${manifest.counts?.database_count || 0}.`
+    );
+  }
+  if (artifactManifest.missing_policy !== 'If a path is null or availability is false, consumers must not probe path variants.') {
+    failures.push('Artifact manifest missing no-path-fishing missing_policy.');
+  }
+  for (const [name, entry] of Object.entries(artifactManifest.entrypoints || {})) {
+    if (!entry?.available || !entry?.path) {
+      failures.push(`Artifact manifest entrypoint is unavailable: ${name}`);
+      continue;
+    }
+    // eslint-disable-next-line no-await-in-loop
+    if (!(await fileExists(path.join(packageRoot, normalizePath(entry.path))))) {
+      failures.push(`Artifact manifest entrypoint points to missing file: ${name} -> ${entry.path}`);
+    }
   }
   for (const [label, count] of Object.entries({
     by_name_files: indexManifest.counts?.by_name_files || 0,
@@ -253,6 +383,19 @@ async function validateRuntimeEnhancements(packageRoot, manifest, registryCount,
     }
     break;
   }
+
+  const firstObjectPath = Object.values(objectPathIndex.objects || {})[0];
+  for (const relativePath of [
+    firstObjectPath?.paths?.compact_context_pack,
+    firstObjectPath?.paths?.usage_answer,
+    firstObjectPath?.paths?.upstream_answer,
+    firstObjectPath?.paths?.downstream_answer,
+  ].filter(Boolean)) {
+    // eslint-disable-next-line no-await-in-loop
+    if (!(await fileExists(path.join(packageRoot, normalizePath(relativePath))))) {
+      failures.push(`Object path index points to missing runtime file: ${relativePath}`);
+    }
+  }
 }
 
 async function main() {
@@ -279,9 +422,10 @@ async function main() {
     latest = await readJson(path.join(packageRoot, 'latest.json'));
   }
 
-  const registryCount = failures.length === 0 ? await validateRegistry(packageRoot, failures) : 0;
+  const registryCount = failures.length === 0 ? await validateRegistry(packageRoot, failures, manifest) : 0;
   if (failures.length === 0) {
     await validateRuntimeEnhancements(packageRoot, manifest, registryCount, failures);
+    await validateProfileIndex(packageRoot, manifest, failures);
   }
 
   if (manifest.package_name !== latest.package_name) {

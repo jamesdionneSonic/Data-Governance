@@ -73,14 +73,44 @@ This register captures a full inventory pass of the documentation library and ho
 - Add quarterly IA regression checks for sidebar grouping and help copy parity.
 - Verify in-app docs navigator content remains aligned with user workflows.
 
+## 2026 Profile Index Safety Audit
+
+### Findings
+
+- Profile safety rules existed across profiling, connector, BI, metadata-profile, and backlog documents, but they were not centralized.
+- The project needed an explicit distinction between operational run state, per-run artifacts, markdown summaries, and queryable profile indexes.
+- DevOps/Azure data pack storage needed formal rules so AI agents and developers do not accidentally persist raw values, sample values, report result rows, source payloads, credentials, tokens, or vault references.
+- Codex skill access needed an explicit source-order rule for profile questions.
+
+### Remediation Applied
+
+- Added [PROFILE_INDEX_SPEC.md](PROFILE_INDEX_SPEC.md) as the authoritative profile index safety and storage specification.
+- Added ADRs for DevOps/Azure profile-index storage, separation of run artifacts from query indexes, and Codex skill profile-index-first access.
+- Updated [CONTRIBUTOR.md](../CONTRIBUTOR.md) with non-negotiable profile/index safety rules and PR checklist coverage.
+- Cross-linked the profile-index safety contract from profiling, connector extraction, BI profile, and connector metadata profile framework docs.
+- Updated [PROJECT_BACKLOG.md](PROJECT_BACKLOG.md) so DevOps/Azure data pack and skill work includes profile-index shards and safety validation.
+
+### Next Audit Checks
+
+- Add automated profile-index safety tests before building the profile-index converter.
+- Confirm DevOps/Azure publish dry-run reports profile-index paths, checksums, source run ids, and safety validation status.
+- Confirm the Sonic data lineage skill reads `profile-index/` before run markdown or Confluence for profile, quality, metric, sensitivity, and freshness questions.
+
 ## Inventory Matrix
 
 | Document                           | Primary Audience    | Category        | In-App Surface | Status  |
 | ---------------------------------- | ------------------- | --------------- | -------------- | ------- |
 | ADMIN_GUIDE.md                     | Admin               | Operations      | Yes            | Current |
+| ADR-001-Profile-Indexes-In-DevOps-Azure-Data-Pack.md | Engineering/Governance | Architecture Decision | No | Current |
+| ADR-002-Separate-Profile-Run-Artifacts-From-Queryable-Profile-Indexes.md | Engineering/Governance | Architecture Decision | No | Current |
+| ADR-003-Codex-Skills-Use-DevOps-Profile-Index-First.md | Engineering/Governance | Architecture Decision | No | Current |
+| BI_PROFILE_FRAMEWORK.md            | Engineering/Governance | Technical Guide | No             | Current |
 | BRANCH_PROTECTION_SETUP.md         | Engineering         | DevOps          | No             | Current |
 | CLOUD_MIGRATION_RUNBOOK.md         | Operations          | Runbook         | No             | Current |
 | COMPETITIVE_UX_ANALYSIS.md         | Product/Design      | Research        | No             | Current |
+| CONNECTOR_EXTRACTION_FRAMEWORK.md  | Engineering         | Technical Guide | No             | Current |
+| CONNECTOR_METADATA_PROFILE_FRAMEWORK.md | Engineering/Governance | Technical Guide | No             | Current |
+| DATA_DICTIONARY_AND_METADATA_ENRICHMENT.md | Engineering/Governance | Technical Guide | No             | Current |
 | DEPLOYMENT_GUIDE.md                | Operations          | Deployment      | No             | Current |
 | DOCUMENTATION_VISUAL_AUDIT_2026.md | Product/Design      | Audit           | No             | Current |
 | ENTERPRISE_ARCHITECTURE.md         | Engineering         | Architecture    | No             | Current |
@@ -94,6 +124,8 @@ This register captures a full inventory pass of the documentation library and ho
 | MARKET_ANALYSIS.md                 | Product             | Research        | No             | Current |
 | OPENAPI.yaml                       | Engineering         | API Reference   | No             | Current |
 | PHASE9_TEST_MATRIX.md              | QA/Engineering      | Testing         | No             | Current |
+| PROFILE_INDEX_SPEC.md              | Engineering/Governance | Specification | No             | Current |
+| PROFILING_EXECUTION_FRAMEWORK.md   | Engineering/Governance | Technical Guide | No             | Current |
 | PRODUCT_REQUIREMENTS.md            | Product             | Requirements    | No             | Current |
 | PROJECT_BACKLOG.md                 | Product/Engineering | Planning        | No             | Current |
 | QA_TEST_PLAN.md                    | QA                  | Testing         | No             | Current |

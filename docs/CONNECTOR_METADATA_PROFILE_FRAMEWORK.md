@@ -17,6 +17,8 @@ It profiles:
 
 It does not profile raw source values. The profile is metadata-only and returns no secrets, credential references, or unrestricted source payload values.
 
+Connector metadata profile persistence, markdown summaries, profile indexes, and DevOps/Azure data pack publication must follow `docs/PROFILE_INDEX_SPEC.md`. Metadata profile indexes may store inventory, schemas, classifications, relationships, lineage, coverage gaps, and remediation errors. They must not store raw source payloads, sample values, credentials, tokens, or unrestricted business data.
+
 ## Supported Connectors
 
 - `salesforce`

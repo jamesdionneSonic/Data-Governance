@@ -25,6 +25,7 @@ import {
   planConnectorBiProfiling,
   planConnectorMetadataProfiling,
   planConnectorProfiling,
+  publishConnectorProfileRuns,
   runConnector,
   runConnectorBiProfiling,
   runConnectorMetadataProfiling,
@@ -222,6 +223,22 @@ router.post('/profile-schedules/:scheduleId/run', authenticate, requireAdmin, as
   }
 });
 
+router.post('/profile-publications/publish', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const result = await publishConnectorProfileRuns(req.body || {}, req.user);
+    logActivity(actorId(req.user), 'connector_profile_publish', 'pending', {
+      status: result.status,
+      targets: result.targets,
+      run_count: result.run_count,
+      successful_asset_count: result.successful_asset_count,
+      dry_run: result.dry_run,
+    });
+    return res.json({ status: 'success', publication: result });
+  } catch (err) {
+    return connectorError(res, req, err);
+  }
+});
+
 router.get('/:id', authenticate, (req, res) => {
   try {
     return res.json({ status: 'success', connector: getConnector(req.params.id, req.user) });
@@ -343,6 +360,29 @@ router.post('/:id/metadata-profile/run', authenticate, async (req, res) => {
       summary: run.summary,
     });
     return res.json({ status: 'success', run });
+  } catch (err) {
+    return connectorError(res, req, err);
+  }
+});
+
+router.post('/:id/runs/:runId/publish', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const result = await publishConnectorProfileRuns(
+      {
+        ...(req.body || {}),
+        connector_id: req.params.id,
+        run_id: req.params.runId,
+      },
+      req.user
+    );
+    logActivity(actorId(req.user), 'connector_profile_publish', req.params.id, {
+      run_id: req.params.runId,
+      status: result.status,
+      targets: result.targets,
+      successful_asset_count: result.successful_asset_count,
+      dry_run: result.dry_run,
+    });
+    return res.json({ status: 'success', publication: result });
   } catch (err) {
     return connectorError(res, req, err);
   }

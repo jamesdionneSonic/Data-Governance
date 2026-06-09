@@ -12,6 +12,11 @@ import { searchObjects } from '../services/indexService.js';
 import { createTtlCache } from '../utils/ttlCache.js';
 import { ensureCatalogCacheHydrated } from '../utils/catalogCacheHydrator.js';
 import { resolveBusinessQuery } from '../services/glossaryService.js';
+import {
+  canonicalDatabaseName,
+  databaseNameMatches,
+  withCanonicalDatabase,
+} from '../utils/catalogNaming.js';
 
 const router = createApiRouter();
 let objectCache = new Map();
@@ -141,7 +146,7 @@ function applyCatalogFilters(items, filters) {
   const classifications = normalizeList(filters.classification);
 
   return items.filter((item) => {
-    const database = String(item.database || item.schema || '').toLowerCase();
+    const itemDatabase = item.database || item.schema || '';
     const type = normalizeType(item.type);
     const owner = String(item.owner || '').toLowerCase();
     const sensitivity = String(item.sensitivity || '').toLowerCase();
@@ -152,7 +157,8 @@ function applyCatalogFilters(items, filters) {
     );
 
     return (
-      (databases.length === 0 || databases.includes(database)) &&
+      (databases.length === 0 ||
+        databases.some((database) => databaseNameMatches(itemDatabase, database))) &&
       (types.length === 0 || types.includes(type)) &&
       (owners.length === 0 || owners.includes(owner)) &&
       (sensitivities.length === 0 || sensitivities.includes(sensitivity)) &&
@@ -190,7 +196,7 @@ function scoreCatalogItem(item, query) {
   const idCompact = compactSearchText(item.id);
   const nameCompact = compactSearchText(item.name);
   const packageNameCompact = compactSearchText(item.packageName);
-  const database = normalizeSearchText(item.database);
+  const database = normalizeSearchText(canonicalDatabaseName(item.database));
   const owner = normalizeSearchText(item.owner);
   const description = normalizeSearchText(item.description);
   let score = 0;
@@ -252,7 +258,7 @@ function searchCatalogCache({ query, limit, offset, filters }) {
 
   if (!query) {
     const results = filtered.slice(offset, offset + limit).map((item, index) => ({
-      ...item,
+      ...withCanonicalDatabase(item),
       score: 0,
       resultIndex: offset + index,
     }));
@@ -277,7 +283,7 @@ function searchCatalogCache({ query, limit, offset, filters }) {
 
   const totalHits = ranked.length;
   const results = ranked.slice(offset, offset + limit).map((entry) => ({
-    ...entry.item,
+    ...withCanonicalDatabase(entry.item),
     score: entry.score,
     resultIndex: entry.index,
   }));
@@ -290,8 +296,23 @@ function buildFacetsResponse() {
   if (cached) return cached;
 
   const values = Array.from(objectCache.values());
+  const countValues = (reader) =>
+    values.reduce((counts, item) => {
+      const value = reader(item);
+      if (!value) return counts;
+      counts[value] = (counts[value] || 0) + 1;
+      return counts;
+    }, {});
+  const countArrayValues = (reader) =>
+    values.reduce((counts, item) => {
+      for (const value of reader(item) || []) {
+        if (!value) continue;
+        counts[value] = (counts[value] || 0) + 1;
+      }
+      return counts;
+    }, {});
   const facets = {
-    databases: [...new Set(values.map((o) => o.database))]
+    databases: [...new Set(values.map((o) => canonicalDatabaseName(o.database)))]
       .filter(Boolean)
       .sort(),
     types: [...new Set(values.map((o) => o.type))]
@@ -304,6 +325,16 @@ function buildFacetsResponse() {
     tags: [...new Set(values.flatMap((o) => o.tags || []))].sort(),
     quality: ['gold', 'silver', 'bronze', 'unrated'],
     classifications: [...new Set(values.flatMap((o) => readClassifications(o)))].sort(),
+    counts: {
+      databases: countValues((item) => canonicalDatabaseName(item.database)),
+      types: countValues((item) => item.type),
+      owners: countValues((item) => item.owner),
+      sensitivity: countValues((item) => item.sensitivity),
+      tags: countArrayValues((item) => item.tags),
+      quality: countValues((item) => readTrustLevel(item)),
+      classifications: countArrayValues((item) => readClassifications(item)),
+      total: values.length,
+    },
   };
 
   facetsCache.set('catalog-facets', facets);

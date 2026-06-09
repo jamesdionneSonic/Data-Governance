@@ -13,17 +13,17 @@ const vuetify = createVuetify({
 const navSections = [
   {
     key: 'workspace',
-    label: 'Workspace',
+    label: 'Find & Understand',
     items: [
       { key: 'overview', label: 'Command Center', icon: 'mdi-view-dashboard' },
-      { key: 'browse', label: 'Catalog Search', icon: 'mdi-magnify' },
+      { key: 'browse', label: 'Search', icon: 'mdi-magnify' },
       { key: 'lineageAsk', label: 'Lineage Assistant', icon: 'mdi-message-question' },
       { key: 'discovery', label: 'Lineage Explorer', icon: 'mdi-graphql' },
     ],
   },
   {
     key: 'govern',
-    label: 'Govern',
+    label: 'Govern & Improve',
     items: [
       { key: 'glossary', label: 'Business Glossary', icon: 'mdi-book-open-variant' },
       { key: 'governance', label: 'Trust & Compliance', icon: 'mdi-shield-check' },
@@ -33,7 +33,7 @@ const navSections = [
   },
   {
     key: 'deliver',
-    label: 'Deliver',
+    label: 'Package & Report',
     items: [
       { key: 'products', label: 'Data Products', icon: 'mdi-package-variant-closed' },
       { key: 'reports', label: 'Governance Insights', icon: 'mdi-chart-box' },
@@ -41,11 +41,12 @@ const navSections = [
   },
   {
     key: 'operate',
-    label: 'Operate',
+    label: 'Connect & Operate',
     items: [
-      { key: 'integrations', label: 'Connections', icon: 'mdi-swap-horizontal' },
-      { key: 'import', label: 'Metadata Ingestion', icon: 'mdi-database-import' },
-      { key: 'admin', label: 'Administration', icon: 'mdi-cog' },
+      { key: 'integrations', label: 'Connector Admin', icon: 'mdi-swap-horizontal' },
+      { key: 'import', label: 'Ingestion Studio', icon: 'mdi-database-import' },
+      { key: 'scheduler', label: 'Profile Scheduler', icon: 'mdi-calendar-clock' },
+      { key: 'admin', label: 'Platform Admin', icon: 'mdi-cog' },
     ],
   },
   {
@@ -56,6 +57,99 @@ const navSections = [
 ];
 
 const navItems = navSections.flatMap((section) => section.items);
+
+const pageWorkflowMeta = {
+  overview: {
+    title: 'Command Center',
+    subtitle: 'Start with health, coverage, recent activity, and the next best governance action.',
+    workflow: 'Orient',
+    primaryAction: 'Run next step',
+  },
+  browse: {
+    title: 'Search',
+    subtitle: 'Find governed assets, inspect metadata, and jump into lineage or stewardship work.',
+    workflow: 'Find',
+    primaryAction: 'Search catalog',
+  },
+  lineageAsk: {
+    title: 'Lineage Assistant',
+    subtitle: 'Ask plain-English lineage questions and get source-backed impacted object tables.',
+    workflow: 'Ask',
+    primaryAction: 'Ask question',
+  },
+  discovery: {
+    title: 'Lineage Explorer',
+    subtitle: 'Trace producers, consumers, SSIS packages, load procedures, and blast radius.',
+    workflow: 'Trace',
+    primaryAction: 'Render graph',
+  },
+  glossary: {
+    title: 'Business Glossary',
+    subtitle: 'Define business language and connect terms to technical assets.',
+    workflow: 'Define',
+    primaryAction: 'Search terms',
+  },
+  governance: {
+    title: 'Trust & Compliance',
+    subtitle: 'Manage classification, masking policy, data quality, and compliance coverage.',
+    workflow: 'Control',
+    primaryAction: 'Run rules',
+  },
+  governanceOps: {
+    title: 'Governance Ops',
+    subtitle: 'Route ownership, stewardship tasks, trust actions, exceptions, and publication readiness.',
+    workflow: 'Operate',
+    primaryAction: 'Refresh ops',
+  },
+  metrics: {
+    title: 'Metric Intelligence',
+    subtitle: 'Resolve metric columns, business formulas, profile evidence, and change impact.',
+    workflow: 'Measure',
+    primaryAction: 'Analyze metric',
+  },
+  products: {
+    title: 'Data Products',
+    subtitle: 'Package certified assets, contracts, access posture, and product readiness.',
+    workflow: 'Package',
+    primaryAction: 'Review products',
+  },
+  reports: {
+    title: 'Governance Insights',
+    subtitle: 'Review impact analysis, generated reports, leaderboards, and executive evidence.',
+    workflow: 'Report',
+    primaryAction: 'Refresh reports',
+  },
+  integrations: {
+    title: 'Connector Admin',
+    subtitle: 'Create reusable source connections, run one-time profiles, schedule refreshes, and grant safe access.',
+    workflow: 'Connect',
+    primaryAction: 'Save connection',
+  },
+  import: {
+    title: 'Ingestion Studio',
+    subtitle: 'Extract metadata, generate markdown, validate, index, and publish governance evidence.',
+    workflow: 'Ingest',
+    primaryAction: 'Run next step',
+  },
+  scheduler: {
+    title: 'Profile Scheduler',
+    subtitle: 'Create, monitor, and run recurring aggregate, BI, and metadata profile jobs.',
+    workflow: 'Schedule',
+    primaryAction: 'Create schedule',
+  },
+  admin: {
+    title: 'Platform Admin',
+    subtitle: 'Manage users, audit trail, platform health, settings, and API diagnostics.',
+    workflow: 'Administer',
+    primaryAction: 'Review health',
+  },
+  docs: {
+    title: 'Help Center',
+    subtitle: 'Find operating guides, implementation references, and user help.',
+    workflow: 'Learn',
+    primaryAction: 'Open guide',
+  },
+};
 
 const demoSnapshot = {
   overview: {
@@ -182,6 +276,7 @@ const appConfig = {
       browseSearchTotal: null,
       browseCatalogTotal: null,
       browseLoadError: '',
+      browseMode: 'search',
       searchFacets: null,
       browseSort: 'relevance',
       selectedFacetFilters: {
@@ -360,7 +455,7 @@ const appConfig = {
           loading: false,
           dialect: 'sql_server',
           mode: 'metadata_only',
-          executionMode: 'dry_run',
+          executionMode: 'live',
           maxTables: 1,
           maxColumns: 40,
           samplePercent: 1,
@@ -442,6 +537,19 @@ const appConfig = {
         connectorRuns: [],
         connectorSnapshot: null,
         connectorLoading: false,
+        connectorPublishLoading: false,
+        connectorPublicationResult: null,
+        selectedConnectorRun: null,
+        connectorWorkflowTab: 'connection',
+        selectedConnectorId: '',
+        profileRunResult: null,
+        profileRunEditor: {
+          connectorId: '',
+          profileType: 'aggregate',
+          executionMode: 'live',
+          assetIds: '',
+          streams: '',
+        },
         profileSchedules: [],
         profileSchedulerStatus: null,
         profileScheduleRuns: [],
@@ -469,8 +577,8 @@ const appConfig = {
           label: 'Sonic Managed Connector',
           description: '',
           configJson: '{\n  "server": "L1-5FSQL-01",\n  "database": "Sonic_DW"\n}',
-          credentialMode: 'service_account',
-          secretRef: 'kv://metadata/sonic-managed-connector',
+          credentialMode: 'windows_integrated',
+          secretRef: '',
           rawSecret: '',
         },
         connectorGrant: {
@@ -656,6 +764,40 @@ const appConfig = {
         ) || null
       );
     },
+    activePageMeta() {
+      return pageWorkflowMeta[this.activeView] || {
+        title: this.activeNavItem?.label || 'Workspace',
+        subtitle: 'Review the selected governance workflow.',
+        workflow: this.activeNavSection?.label || 'Workspace',
+        primaryAction: this.recommendedWorkflowAction?.label || 'Run next step',
+      };
+    },
+    pageQuickActions() {
+      const actions = {
+        overview: [
+          { label: 'Search Catalog', icon: 'mdi-magnify', view: 'browse' },
+          { label: 'Ask Lineage', icon: 'mdi-message-question', view: 'lineageAsk' },
+          { label: 'Ingest Metadata', icon: 'mdi-database-import', view: 'import' },
+        ],
+        browse: [
+          { label: 'Lineage Explorer', icon: 'mdi-graphql', view: 'discovery' },
+          { label: 'Governance Ops', icon: 'mdi-clipboard-check', view: 'governanceOps' },
+        ],
+        integrations: [
+          { label: 'Ingestion Studio', icon: 'mdi-database-import', view: 'import' },
+          { label: 'Profile Scheduler', icon: 'mdi-calendar-clock', view: 'scheduler' },
+        ],
+        scheduler: [
+          { label: 'Connector Admin', icon: 'mdi-swap-horizontal', view: 'integrations' },
+          { label: 'Governance Ops', icon: 'mdi-clipboard-check', view: 'governanceOps' },
+        ],
+        import: [
+          { label: 'Connector Admin', icon: 'mdi-swap-horizontal', view: 'integrations' },
+          { label: 'Lineage Explorer', icon: 'mdi-graphql', view: 'discovery' },
+        ],
+      };
+      return actions[this.activeView] || [];
+    },
     isAuthenticated() {
       return !!this.token;
     },
@@ -737,6 +879,33 @@ const appConfig = {
         { title: 'Daily', value: 'daily' },
         { title: 'Weekly', value: 'weekly' },
         { title: 'Custom minutes', value: 'custom' },
+      ];
+    },
+    selectedManagedConnector() {
+      const selectedId =
+        this.integrations.selectedConnectorId ||
+        this.integrations.profileRunEditor.connectorId ||
+        this.integrations.profileScheduleEditor.connectorId;
+      return (this.integrations.managedConnectors || []).find((connector) => connector.id === selectedId) || null;
+    },
+    selectedConnectorSupportsProfiling() {
+      const connector = this.selectedManagedConnector;
+      return ['sql_server', 'postgresql', 'snowflake', 'bigquery', 'databricks', 'aws_redshift'].includes(
+        connector?.type
+      );
+    },
+    connectorWorkflowSteps() {
+      const hasConnector = Boolean(this.selectedManagedConnector);
+      const hasProfile = Boolean(this.integrations.profileRunResult);
+      const hasSchedule = (this.integrations.profileSchedules || []).some(
+        (schedule) => schedule.connector_id === this.selectedManagedConnector?.id
+      );
+      return [
+        { key: 'connection', label: '1. Save connection', done: hasConnector },
+        { key: 'run', label: '2. Run one-time profile', done: hasProfile },
+        { key: 'schedule', label: '3. Schedule refresh', done: hasSchedule },
+        { key: 'access', label: '4. Grant access', done: hasConnector },
+        { key: 'history', label: '5. Review history', done: this.integrations.connectorRuns.length > 0 },
       ];
     },
     accessTokenPreview() {
@@ -1071,7 +1240,95 @@ const appConfig = {
       if (this.browseSearchSubmitted) {
         return this.browseResults;
       }
-      return this.browseResults.length ? this.browseResults : this.objectList;
+      if (this.browseMode === 'browse' && this.selectedFacetFilters.databases.length) {
+        return this.objectList;
+      }
+      return [];
+    },
+    catalogSearchHasStarted() {
+      return this.browseSearchSubmitted || this.browseMode === 'browse';
+    },
+    selectedBrowseDatabase() {
+      return this.selectedFacetFilters.databases[0] || '';
+    },
+    catalogDatabaseOptions() {
+      const facetCounts = this.searchFacets?.counts?.databases || {};
+      const counts = new Map(Object.entries(facetCounts));
+      if (counts.size === 0 && Array.isArray(this.searchFacets?.databases)) {
+        return this.searchFacets.databases
+          .filter(Boolean)
+          .map((database) => this.catalogDatabaseLabel(database))
+          .filter((database, index, values) => values.indexOf(database) === index)
+          .sort((a, b) => a.localeCompare(b))
+          .map((database) => ({
+            title: database,
+            value: database,
+            count: null,
+          }));
+      }
+      if (counts.size === 0 && this.browseMode === 'browse') {
+        (this.objectList || []).forEach((item) => {
+          const database = this.catalogDatabaseLabel(item.database || item.schema);
+          if (!database) return;
+          counts.set(database, (counts.get(database) || 0) + 1);
+        });
+      }
+      return Array.from(counts.entries())
+        .filter(([, count]) => count > 0)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([database, count]) => ({
+          title: `${this.catalogDatabaseLabel(database)} (${count})`,
+          value: this.catalogDatabaseLabel(database),
+          count,
+        }));
+    },
+    browseTypeTabs() {
+      const counts = this.browseFacetCounts.types || {};
+      const labels = {
+        storedProcedure: 'Procedures',
+        table: 'Tables',
+        view: 'Views',
+        function: 'Functions',
+        package: 'Packages',
+        dataset: 'Datasets',
+        column: 'Columns',
+      };
+      return Object.entries(counts)
+        .filter(([, count]) => count > 0)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([type, count]) => ({
+          type,
+          label: labels[type] || type.charAt(0).toUpperCase() + type.slice(1),
+          count,
+        }));
+    },
+    catalogResultSummary() {
+      if (this.browseMode === 'browse') {
+        if (!this.selectedBrowseDatabase) return 'Choose a database to browse catalog objects.';
+        const total = this.browseSearchTotal ?? this.filteredCatalogResults.length;
+        const visible = this.filteredCatalogResults.length;
+        return `Showing ${visible} of ${total} object(s) in ${this.catalogDatabaseLabel(this.selectedBrowseDatabase)}.`;
+      }
+      if (!this.browseSearchSubmitted) return 'Search by object name, column, owner, tag, or business meaning.';
+      const query = String(this.browseQuery || '').trim();
+      return `Showing ${this.filteredCatalogResults.length} result(s)${query ? ` for "${query}"` : ''}.`;
+    },
+    catalogSearchPlaceholder() {
+      const selectedTypes = this.selectedFacetFilters.types || [];
+      if (selectedTypes.includes('table')) return 'Enter a table name, like DimVehicle...';
+      if (selectedTypes.includes('column')) return 'Enter a column name, like email, amount, or customer_id...';
+      if (selectedTypes.includes('storedProcedure')) return 'Enter a procedure name, like usp_DimVehicle...';
+      return 'Search tables, columns, procedures, owners, tags...';
+    },
+    catalogHelperActions() {
+      return [
+        { key: 'find-table', label: 'Find table', icon: 'mdi-table', description: 'Search only table assets.' },
+        { key: 'find-column', label: 'Find column', icon: 'mdi-table-column', description: 'Search column names and metadata.' },
+        { key: 'find-pii', label: 'Find PII', icon: 'mdi-shield-lock', description: 'Look for sensitive or restricted data.' },
+        { key: 'find-metric', label: 'Find metric', icon: 'mdi-function-variant', description: 'Search for metric columns and measures.' },
+        { key: 'browse-database', label: 'Browse database', icon: 'mdi-database-search', description: 'Choose a database and browse its objects.' },
+        { key: 'needs-owner', label: 'Needs owner', icon: 'mdi-account-alert', description: 'Find assets missing owner or steward context.' },
+      ];
     },
     overviewRecentObjects() {
       const candidates = [
@@ -1160,8 +1417,8 @@ const appConfig = {
         ? this.searchFacets.types.map((value) => normalizeType(value)).filter(Boolean)
         : Array.from(sourceTypes);
       const facetDatabases = this.searchFacets?.databases
-        ? this.searchFacets.databases.filter(Boolean)
-        : Array.from(sourceDatabases);
+        ? this.searchFacets.databases.filter(Boolean).map((database) => this.catalogDatabaseLabel(database))
+        : Array.from(sourceDatabases).map((database) => this.catalogDatabaseLabel(database));
 
       return {
         types: [...new Set(facetTypes)].sort(),
@@ -1260,12 +1517,15 @@ const appConfig = {
       const filtered = (this.catalogBaseResults || []).filter((item) => {
         const itemType = normalizeType(item.type);
         const itemQuality = trustLevel(item);
-        const itemDatabase = item.database || item.schema || '';
+        const itemDatabase = this.catalogDatabaseLabel(item.database || item.schema || '');
 
         const typeMatch = selectedTypes.length === 0 || selectedTypes.includes(itemType);
         const qualityMatch = selectedQuality.length === 0 || selectedQuality.includes(itemQuality);
         const databaseMatch =
-          selectedDatabases.length === 0 || selectedDatabases.includes(itemDatabase);
+          selectedDatabases.length === 0 ||
+          selectedDatabases.some((database) =>
+            this.catalogDatabaseMatches(itemDatabase, database)
+          );
 
         return typeMatch && qualityMatch && databaseMatch && matchesQuery(item);
       });
@@ -1328,7 +1588,7 @@ const appConfig = {
       source.forEach((item) => {
         const type = normalizeType(item.type);
         const quality = trustLevel(item);
-        const database = item.database || item.schema || 'unknown';
+        const database = this.catalogDatabaseLabel(item.database || item.schema || 'unknown');
 
         countByGroup.types[type] = (countByGroup.types[type] || 0) + 1;
         countByGroup.quality[quality] = (countByGroup.quality[quality] || 0) + 1;
@@ -1983,6 +2243,14 @@ const appConfig = {
         await Promise.allSettled([
           this.loadIntegrations(),
           this.loadLinks(),
+        ]);
+        return;
+      }
+      if (view === 'scheduler') {
+        await Promise.allSettled([
+          this.loadManagedConnectors(),
+          this.loadProfileSchedules(),
+          this.loadProfileSchedulerStatus(),
         ]);
         return;
       }
@@ -2672,6 +2940,116 @@ const appConfig = {
       await nextTick();
       this.renderBlastRadiusChart();
     },
+    catalogDatabaseLabel(value) {
+      const raw = String(value || '').trim();
+      if (!raw) return raw;
+      const key = raw.toLowerCase().replace(/[^a-z0-9]+/g, '');
+      if (key === 'dbsonicdw' || key === 'sonicdw') return 'SONIC_DW';
+      return raw;
+    },
+    catalogDatabaseMatches(actual, requested) {
+      const normalize = (value) =>
+        this.catalogDatabaseLabel(value)
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '');
+      return normalize(actual) === normalize(requested);
+    },
+    setBrowseMode(mode) {
+      this.browseMode = mode === 'browse' ? 'browse' : 'search';
+      this.browseSearchWarning = '';
+      this.browseSearchEngine = '';
+      this.browseSearchTotal = null;
+      if (this.browseMode === 'search') {
+        this.selectedFacetFilters.databases = [];
+        this.browseResults = [];
+        this.browseSearchSubmitted = false;
+      } else {
+        this.browseQuery = '';
+        this.browseResults = [];
+        this.browseSearchSubmitted = false;
+      }
+    },
+    async selectBrowseDatabase(database) {
+      this.browseMode = 'browse';
+      this.selectedFacetFilters = {
+        ...this.selectedFacetFilters,
+        databases: database ? [database] : [],
+      };
+      this.browseQuery = '';
+      this.browseResults = [];
+      this.browseSearchSubmitted = false;
+      this.browseSearchWarning = '';
+      this.browseSearchEngine = '';
+      this.browseSearchTotal = null;
+      if (!database) return;
+      await this.loadBrowseDatabaseObjects(database);
+    },
+    async loadBrowseDatabaseObjects(database) {
+      try {
+        this.browseSearchLoading = true;
+        const payload = await this.api(
+          `/api/v1/objects?database=${encodeURIComponent(database)}&limit=500`
+        );
+        this.objectList = payload.data || [];
+        this.browseSearchTotal = payload.pagination?.total ?? this.objectList.length;
+      } catch (err) {
+        this.browseLoadError = err.message;
+        this.showToast(`Database browse failed: ${err.message}`);
+      } finally {
+        this.browseSearchLoading = false;
+      }
+    },
+    async applyCatalogHelper(actionKey) {
+      const resetSearch = () => {
+        this.browseMode = 'search';
+        this.browseResults = [];
+        this.browseSearchSubmitted = false;
+        this.browseSearchWarning = '';
+        this.browseSearchEngine = '';
+        this.browseSearchTotal = null;
+      };
+
+      if (actionKey === 'browse-database') {
+        this.setBrowseMode('browse');
+        return;
+      }
+
+      resetSearch();
+      this.selectedFacetFilters = {
+        types: [],
+        quality: [],
+        databases: [],
+        owners: [],
+        sensitivity: [],
+        tags: [],
+      };
+
+      if (actionKey === 'find-table') {
+        this.selectedFacetFilters.types = ['table'];
+        this.browseQuery = '';
+        return;
+      }
+      if (actionKey === 'find-column') {
+        this.selectedFacetFilters.types = ['column'];
+        this.browseQuery = '';
+        return;
+      }
+      if (actionKey === 'find-pii') {
+        this.selectedFacetFilters.sensitivity = ['confidential', 'restricted'];
+        this.browseQuery = 'pii';
+        await this.runSearch();
+        return;
+      }
+      if (actionKey === 'find-metric') {
+        this.browseQuery = 'metric measure amount count total revenue';
+        await this.runSearch();
+        return;
+      }
+      if (actionKey === 'needs-owner') {
+        this.browseQuery = 'unassigned owner steward';
+        await this.runSearch();
+      }
+    },
     hasBrowseSearchCriteria() {
       const hasQuery = String(this.browseQuery || '').trim().length > 0;
       const hasFilters = Object.values(this.selectedFacetFilters || {}).some(
@@ -2757,7 +3135,11 @@ const appConfig = {
         }
 
         if (!this.hasBrowseSearchCriteria()) {
-          await this.loadBrowse();
+          this.browseResults = [];
+          this.browseSearchSubmitted = false;
+          this.browseSearchWarning = '';
+          this.browseSearchEngine = '';
+          this.browseSearchTotal = null;
           return;
         }
 
@@ -2802,7 +3184,7 @@ const appConfig = {
       items.forEach((item) => {
         const parts = String(item.id || '').split('.');
         const server = parts.length > 3 ? parts[0] : item.server || 'local';
-        const database = item.database || parts[0] || 'default';
+        const database = this.catalogDatabaseLabel(item.database || parts[0] || 'default');
         const schema = item.schema || parts[Math.max(0, parts.length - 2)] || 'dbo';
         const key = `${server}.${database}.${schema}`;
         if (!roots.has(key)) {
@@ -2823,6 +3205,9 @@ const appConfig = {
       } else {
         this.selectedFacetFilters[group] = [...existing, value];
       }
+      if (this.browseMode === 'browse') {
+        return;
+      }
       this.queueBrowseSearch();
     },
     async clearBrowseFacets() {
@@ -2836,6 +3221,7 @@ const appConfig = {
       };
       this.browseSort = 'relevance';
       this.browseQuery = '';
+      this.browseMode = 'search';
       this.browseResults = [];
       this.browseSearchSubmitted = false;
       this.browseSearchWarning = '';
@@ -4970,6 +5356,12 @@ const appConfig = {
         ]);
         this.integrations.connectorDefinitions = definitions.definitions || [];
         this.integrations.managedConnectors = connectors.connectors || [];
+        if (!this.integrations.selectedConnectorId && this.integrations.managedConnectors.length) {
+          this.integrations.selectedConnectorId = this.integrations.managedConnectors[0].id;
+        }
+        if (!this.integrations.profileRunEditor.connectorId && this.integrations.managedConnectors.length) {
+          this.integrations.profileRunEditor.connectorId = this.integrations.selectedConnectorId;
+        }
         if (!this.integrations.connectorGrant.connectorId && this.integrations.managedConnectors.length) {
           this.integrations.connectorGrant.connectorId = this.integrations.managedConnectors[0].id;
         }
@@ -5026,6 +5418,10 @@ const appConfig = {
       return {
         dry_run: editor.dryRun !== false,
         fail_fast: false,
+        ids: String(this.integrations.profileRunEditor.assetIds || '')
+          .split(/[\n,]+/)
+          .map((value) => value.trim())
+          .filter(Boolean),
         streams: String(editor.streams || '')
           .split(',')
           .map((value) => value.trim())
@@ -5260,12 +5656,252 @@ const appConfig = {
       const definition = this.integrations.connectorDefinitions.find((item) => item.type === type);
       return definition ? `${definition.label} (${definition.cloud})` : type;
     },
-    async saveManagedConnector() {
-      const editor = this.integrations.connectorEditor;
-      const config = this.parseConnectorConfigJson();
-      if (!config) return;
+    useManagedConnector(connector) {
+      if (!connector) return;
+      this.integrations.selectedConnectorId = connector.id;
+      this.integrations.profileRunEditor.connectorId = connector.id;
+      this.integrations.profileScheduleEditor.connectorId = connector.id;
+      this.integrations.connectorGrant.connectorId = connector.id;
+      this.loadManagedConnectorRuns(connector.id);
+    },
+    editManagedConnector(connector) {
+      if (!connector) return;
+      this.useManagedConnector(connector);
+      this.integrations.connectorWorkflowTab = 'connection';
+      this.integrations.connectorEditor.id = connector.id;
+      this.integrations.connectorEditor.type = connector.type;
+      this.integrations.connectorEditor.label = connector.label || connector.id;
+      this.integrations.connectorEditor.description = connector.description || '';
+      this.integrations.connectorEditor.credentialMode = connector.credential?.mode || 'secret_reference';
+      this.integrations.connectorEditor.secretRef =
+        connector.credential?.secret_ref === 'stored_reference' ? '' : connector.credential?.secret_ref || '';
+      this.integrations.connectorEditor.rawSecret = '';
+      this.integrations.connectorEditor.configJson = JSON.stringify(connector.config || {}, null, 2);
+      this.syncConnectorCredentialMode();
+    },
+    profileRunOptionsPayload() {
+      const editor = this.integrations.profileRunEditor;
+      const values = String(editor.assetIds || '')
+        .split(/[\n,]+/)
+        .map((value) => value.trim())
+        .filter(Boolean);
+      return {
+        execution_mode: editor.executionMode,
+        dry_run: editor.executionMode !== 'live',
+        fail_fast: false,
+        ids: values,
+        streams: String(editor.streams || '')
+          .split(',')
+          .map((value) => value.trim())
+          .filter(Boolean),
+      };
+    },
+    profileRunEndpoint(connectorId) {
+      const type = this.integrations.profileRunEditor.profileType;
+      if (type === 'bi') return `/api/v1/connectors/${encodeURIComponent(connectorId)}/bi-profile/run`;
+      if (type === 'metadata') return `/api/v1/connectors/${encodeURIComponent(connectorId)}/metadata-profile/run`;
+      return `/api/v1/connectors/${encodeURIComponent(connectorId)}/profile/run`;
+    },
+    async runOneTimeProfile() {
+      const editor = this.integrations.profileRunEditor;
+      if (!editor.connectorId) {
+        this.showToast('Select a saved connector before running a profile.');
+        return;
+      }
       try {
         this.integrations.connectorLoading = true;
+        const payload = await this.api(this.profileRunEndpoint(editor.connectorId), {
+          method: 'POST',
+          body: JSON.stringify(this.profileRunOptionsPayload()),
+        });
+        const run = payload.run || null;
+        this.integrations.profileRunResult = run;
+        this.integrations.connectorRuns = [run, ...this.integrations.connectorRuns.filter(Boolean)].slice(0, 10);
+        this.integrations.selectedConnectorRun = run;
+        this.integrations.connectorWorkflowTab = 'history';
+        this.showToast(`Profile run ${run?.status || 'completed'}.`);
+      } catch (err) {
+        this.showToast(`Profile run failed: ${err.message}`);
+      } finally {
+        this.integrations.connectorLoading = false;
+      }
+    },
+    connectorRunFailedAssetIds(run) {
+      const errors = run?.errors || run?.profile?.errors || run?.profile?.run?.errors || [];
+      return [...new Set(errors
+        .map((error) => error?.asset_id || error?.assetId || error?.object_id || error?.objectId)
+        .filter(Boolean))];
+    },
+    canRerunFailedAssets(run) {
+      return this.connectorRunKind(run) === 'Aggregate profile' && this.connectorRunFailedAssetIds(run).length > 0;
+    },
+    connectorRunPublishState(run) {
+      return run?.artifact?.profile_publish || {};
+    },
+    connectorRunPublishStatus(run) {
+      const state = this.connectorRunPublishState(run);
+      if (state.status) return state.status;
+      if ((state.successful_asset_count || 0) > 0 || run?.artifact?.devops_upload_pending) return 'pending';
+      return 'not_applicable';
+    },
+    connectorRunCanPublish(run) {
+      const state = this.connectorRunPublishState(run);
+      return (state.successful_asset_count || 0) > 0 && !['published', 'partial_published', 'publishing'].includes(this.connectorRunPublishStatus(run));
+    },
+    connectorRunPublishColor(run) {
+      const status = this.connectorRunPublishStatus(run);
+      if (['published', 'partial_published'].includes(status)) return 'success';
+      if (['publish_failed'].includes(status)) return 'error';
+      if (['pending', 'publish_ready', 'publishing'].includes(status)) return 'warning';
+      return 'default';
+    },
+    async rerunFailedProfileAssets(run) {
+      const failedAssetIds = this.connectorRunFailedAssetIds(run);
+      if (!failedAssetIds.length) {
+        this.showToast('This run does not have failed profile assets to rerun.');
+        return;
+      }
+      const connectorId =
+        run?.connector_id ||
+        this.integrations.selectedConnectorId ||
+        this.integrations.profileRunEditor.connectorId;
+      if (!connectorId) {
+        this.showToast('Select the saved connector before rerunning failed assets.');
+        return;
+      }
+      this.selectConnectorRun(run);
+      this.integrations.selectedConnectorId = connectorId;
+      this.integrations.profileRunEditor.connectorId = connectorId;
+      this.integrations.profileRunEditor.profileType = 'aggregate';
+      this.integrations.profileRunEditor.executionMode = 'live';
+      this.integrations.profileRunEditor.assetIds = failedAssetIds.join('\n');
+      this.integrations.profileRunEditor.streams = '';
+      this.showToast(`Rerunning ${failedAssetIds.length} failed asset${failedAssetIds.length === 1 ? '' : 's'}.`);
+      await this.runOneTimeProfile();
+    },
+    async publishConnectorProfiles(run = null) {
+      const connectorId = run?.connector_id || this.integrations.selectedConnectorId || this.integrations.profileRunEditor.connectorId;
+      const body = {
+        targets: ['devops', 'confluence'],
+        dry_run: false,
+      };
+      const endpoint = run?.id && connectorId
+        ? `/api/v1/connectors/${encodeURIComponent(connectorId)}/runs/${encodeURIComponent(run.id)}/publish`
+        : '/api/v1/connectors/profile-publications/publish';
+      try {
+        this.integrations.connectorPublishLoading = true;
+        const payload = await this.api(endpoint, {
+          method: 'POST',
+          body: JSON.stringify(body),
+        });
+        this.integrations.connectorPublicationResult = payload.publication || null;
+        if (connectorId) await this.loadManagedConnectorRuns(connectorId);
+        this.showToast(`Profile publish ${payload.publication?.status || 'submitted'}.`);
+      } catch (err) {
+        this.showToast(`Profile publish failed: ${err.message}`);
+      } finally {
+        this.integrations.connectorPublishLoading = false;
+      }
+    },
+    prepareScheduleForSelectedConnector() {
+      const connectorId =
+        this.integrations.profileRunEditor.connectorId ||
+        this.integrations.selectedConnectorId ||
+        this.integrations.managedConnectors[0]?.id ||
+        '';
+      this.integrations.profileScheduleEditor.connectorId = connectorId;
+      this.integrations.profileScheduleEditor.profileType = this.integrations.profileRunEditor.profileType;
+      this.integrations.profileScheduleEditor.dryRun =
+        this.integrations.profileRunEditor.executionMode !== 'live';
+      this.integrations.profileScheduleEditor.streams = this.integrations.profileRunEditor.streams || '';
+      this.initializeProfileScheduleEditor(true);
+      this.integrations.connectorWorkflowTab = 'schedule';
+    },
+    selectedConnectorDefinition() {
+      return this.integrations.connectorDefinitions.find(
+        (item) => item.type === this.integrations.connectorEditor.type
+      ) || null;
+    },
+    connectorCredentialModeOptions() {
+      const modes = this.selectedConnectorDefinition()?.credentialKinds || [
+        'managed_identity',
+        'service_account',
+        'secret_reference',
+        'none',
+      ];
+      const labels = {
+        windows_integrated: 'Windows Integrated Auth',
+        service_account: 'Service Account',
+        managed_identity: 'Managed Identity',
+        service_principal: 'Service Principal',
+        secret_reference: 'Secret Reference',
+        pat_reference: 'PAT Reference',
+        oauth_app: 'OAuth App',
+        iam_role: 'AWS IAM Role',
+        workload_identity: 'Workload Identity',
+        key_pair: 'Key Pair',
+        sas_reference: 'SAS Reference',
+        api_key_reference: 'API Key Reference',
+        api_token_reference: 'API Token Reference',
+        bearer_token_reference: 'Bearer Token Reference',
+        basic_auth: 'Basic Auth',
+        repo_reference: 'Repository Reference',
+        connected_app: 'Connected App',
+        oauth: 'OAuth',
+        none: 'None',
+      };
+      return modes.map((mode) => ({
+        title: labels[mode] || mode,
+        value: mode,
+      }));
+    },
+    connectorCredentialModeHint() {
+      const mode = this.integrations.connectorEditor.credentialMode;
+      if (mode === 'windows_integrated') {
+        return 'Uses the Windows account running this app process. Leave Secret Reference and One-time Secret Value blank.';
+      }
+      if (mode === 'service_account' || mode === 'secret_reference') {
+        return 'Use a Key Vault or secret-store reference for production service credentials.';
+      }
+      if (mode === 'managed_identity' || mode === 'iam_role' || mode === 'workload_identity') {
+        return 'Uses the runtime identity assigned to the host environment; no password is stored here.';
+      }
+      return 'Select the credential pattern supported by this source system.';
+    },
+    connectorSecretReferenceRequired() {
+      const mode = this.integrations.connectorEditor.credentialMode;
+      return !['windows_integrated', 'managed_identity', 'iam_role', 'workload_identity', 'none'].includes(mode);
+    },
+    syncConnectorCredentialMode() {
+      const editor = this.integrations.connectorEditor;
+      const options = this.connectorCredentialModeOptions().map((item) => item.value);
+      if (!options.includes(editor.credentialMode)) {
+        editor.credentialMode =
+          options.includes('windows_integrated') ? 'windows_integrated' : options[0] || 'none';
+      }
+      if (editor.credentialMode === 'windows_integrated') {
+        editor.secretRef = '';
+        editor.rawSecret = '';
+      }
+    },
+    async saveManagedConnector() {
+      const editor = this.integrations.connectorEditor;
+      this.syncConnectorCredentialMode();
+      const config = this.parseConnectorConfigJson();
+      if (!config) return;
+      if (this.connectorSecretReferenceRequired() && !editor.secretRef && !editor.rawSecret) {
+        this.showToast('Secret Reference or One-time Secret Value is required for this credential mode.');
+        return;
+      }
+      try {
+        this.integrations.connectorLoading = true;
+        const credential = {
+          mode: editor.credentialMode,
+        };
+        if (this.connectorSecretReferenceRequired()) {
+          credential.secret_ref = editor.secretRef;
+          credential.secret = editor.rawSecret || undefined;
+        }
         await this.api('/api/v1/connectors', {
           method: 'POST',
           body: JSON.stringify({
@@ -5274,15 +5910,16 @@ const appConfig = {
             label: editor.label,
             description: editor.description,
             config,
-            credential: {
-              mode: editor.credentialMode,
-              secret_ref: editor.secretRef,
-              secret: editor.rawSecret || undefined,
-            },
+            credential,
           }),
         });
         editor.rawSecret = '';
         await this.loadManagedConnectors();
+        this.integrations.selectedConnectorId = editor.id;
+        this.integrations.profileRunEditor.connectorId = editor.id;
+        this.integrations.profileScheduleEditor.connectorId = editor.id;
+        this.integrations.connectorGrant.connectorId = editor.id;
+        this.integrations.connectorWorkflowTab = 'run';
         this.showToast('Managed connector saved.');
       } catch (err) {
         this.showToast(`Managed connector save failed: ${err.message}`);
@@ -5320,7 +5957,10 @@ const appConfig = {
         });
         this.integrations.connectorRuns = [payload.run, ...this.integrations.connectorRuns].slice(0, 10);
         await this.loadManagedConnectorSnapshot(connectorId);
-        this.showToast(`Connector run ${payload.run.status}: ${payload.run.summary.discovered_objects} metadata object(s).`);
+        const planned = payload.run.summary?.planned_objects ?? 0;
+        const discovered = payload.run.summary?.discovered_objects ?? 0;
+        const suffix = payload.run.summary?.dry_run_only ? `${planned} stream/object type(s) planned; source not contacted.` : `${discovered} metadata object(s) harvested.`;
+        this.showToast(`Connector run ${payload.run.status}: ${suffix}`);
       } catch (err) {
         this.showToast(`Connector run failed: ${err.message}`);
       } finally {
@@ -5334,6 +5974,66 @@ const appConfig = {
       } catch (err) {
         this.showToast(`Connector snapshot failed: ${err.message}`);
       }
+    },
+    async loadManagedConnectorRuns(connectorId) {
+      if (!connectorId) return;
+      try {
+        const payload = await this.api(`/api/v1/connectors/${encodeURIComponent(connectorId)}/runs?limit=10`);
+        this.integrations.connectorRuns = payload.runs || [];
+        this.integrations.selectedConnectorRun = this.integrations.connectorRuns[0] || null;
+      } catch (err) {
+        this.showToast(`Connector run history failed: ${err.message}`);
+      }
+    },
+    selectConnectorRun(run) {
+      this.integrations.selectedConnectorRun = run || null;
+    },
+    connectorRunKind(run) {
+      if (run?.summary?.bi_profile_run) return 'BI profile';
+      if (run?.summary?.metadata_profile_run) return 'Metadata profile';
+      if (run?.summary?.profile_run) return 'Aggregate profile';
+      return 'Metadata harvest';
+    },
+    connectorRunFoundCount(run) {
+      if (!run) return 0;
+      if (run.summary?.assets_profiled !== undefined) return run.summary.assets_profiled;
+      if (run.summary?.reports_profiled !== undefined) return run.summary.reports_profiled;
+      if (run.summary?.records_profiled !== undefined) return run.summary.records_profiled;
+      if (run.summary?.dry_run_only) return `${run.summary?.planned_objects ?? 0} planned`;
+      return run.summary?.discovered_objects ?? 0;
+    },
+    connectorRunProfileRows(run) {
+      const profiles = run?.profile?.run?.profiles || run?.profile?.profiles || {};
+      return Object.entries(profiles).map(([assetId, profile]) => ({
+        assetId,
+        rowCount: profile.row_count ?? '-',
+        columnCount: Object.keys(profile.columns || {}).length,
+        generatedAt: profile.generated_at || profile.profiled_at || '-',
+      }));
+    },
+    connectorRunColumnRows(run) {
+      const profiles = run?.profile?.run?.profiles || run?.profile?.profiles || {};
+      return Object.entries(profiles).flatMap(([assetId, profile]) =>
+        Object.entries(profile.columns || {}).map(([columnName, stats]) => ({
+          assetId,
+          columnName,
+          rowCount: stats.row_count ?? profile.row_count ?? '-',
+          nullCount: stats.null_count ?? '-',
+          nullPercent: stats.null_percent ?? '-',
+          distinctCount: stats.distinct_count ?? '-',
+          min: stats.min ?? '-',
+          max: stats.max ?? '-',
+          mean: stats.mean ?? '-',
+        }))
+      );
+    },
+    connectorRunStreamRows(run) {
+      return (run?.extraction?.stream_results || []).map((stream) => ({
+        stream: stream.stream,
+        status: stream.status,
+        eventCount: stream.event_count ?? 0,
+        endpoint: stream.plan?.endpoint || '-',
+      }));
     },
     async saveNotificationChannel() {
       const channel = this.integrations.notifyChannel;
@@ -6398,6 +7098,7 @@ const appConfig = {
         'governance',
         'integrations',
         'import',
+        'scheduler',
         'docs',
         'admin',
       ].includes(requestedView)
@@ -6500,13 +7201,10 @@ const appConfig = {
                   <v-icon>{{ sidebarCollapsed ? 'mdi-chevron-right' : 'mdi-chevron-left' }}</v-icon>
                 </v-btn>
               </div>
-              <div class="mb-2">
-              <h4 style="margin-bottom:6px; letter-spacing:0.01em;">{{ activeNavItem?.label || 'Workspace' }}</h4>
-              <div class="user-meta" style="font-size:12px; line-height:1.6; color:#64748b;">{{ activeNavSection?.label || 'Workspace' }} · {{ currentUser?.email }} · {{ (currentUser?.roles || []).join(', ') }}</div>
-              <div class="workflow-inline" style="margin-top:2px;">
-                <span class="workflow-inline-label">{{ workflowProgressPercent }}% complete</span>
-                <span class="workflow-inline-next">→ {{ recommendedWorkflowAction.label }}</span>
-              </div>
+              <div class="topbar-title-block">
+                <div class="topbar-kicker">{{ activeNavSection?.label || 'Workspace' }}</div>
+                <h4>{{ activePageMeta.title }}</h4>
+                <div class="user-meta">{{ currentUser?.email }} · {{ (currentUser?.roles || []).join(', ') }}</div>
               </div>
             </div>
             <div class="d-flex align-center" style="gap: 12px; flex-wrap: wrap;">
@@ -6609,22 +7307,42 @@ const appConfig = {
             </div>
           </v-app-bar>
 
-          <div class="telemetry-banner">
-            <div class="telemetry-card">
-              <span>Ingestion Health</span>
-              <strong>{{ importer.status?.status || 'monitoring' }}</strong>
-            </div>
-            <div class="telemetry-card">
-              <span>Pipeline Progress</span>
-              <strong>{{ workflowProgressPercent }}%</strong>
-            </div>
-            <div class="telemetry-card">
-              <span>Elasticsearch</span>
-              <strong>{{ elasticsearchStatusLabel }}</strong>
-            </div>
-          </div>
+          <v-container fluid :class="['content', 'workflow-surface', 'page-' + activeView]">
+            <section class="page-intro">
+              <div class="page-intro-main">
+                <span class="page-kicker">{{ activePageMeta.workflow }}</span>
+                <h1>{{ activePageMeta.title }}</h1>
+                <p>{{ activePageMeta.subtitle }}</p>
+              </div>
+              <div class="page-intro-actions">
+                <v-chip size="small" variant="flat" color="primary">{{ workflowProgressPercent }}% pipeline</v-chip>
+                <v-chip size="small" variant="tonal" :color="isElasticsearchHealthy ? 'success' : 'warning'">{{ elasticsearchStatusLabel }}</v-chip>
+                <v-btn
+                  v-for="action in pageQuickActions"
+                  :key="'page-action-' + action.view"
+                  size="small"
+                  variant="outlined"
+                  :prepend-icon="action.icon"
+                  @click="onViewChange(action.view)"
+                >{{ action.label }}</v-btn>
+              </div>
+            </section>
 
-          <v-container fluid class="content">
+            <div class="telemetry-banner">
+              <div class="telemetry-card">
+                <span>Ingestion Health</span>
+                <strong>{{ importer.status?.status || 'monitoring' }}</strong>
+              </div>
+              <div class="telemetry-card">
+                <span>Pipeline Progress</span>
+                <strong>{{ workflowProgressPercent }}%</strong>
+              </div>
+              <div class="telemetry-card">
+                <span>Search Index</span>
+                <strong>{{ elasticsearchStatusLabel }}</strong>
+              </div>
+            </div>
+
             <div v-if="activeView === 'overview'">
               <div class="search-hero" style="margin-bottom:14px;">
                 <h2>🔍 Find anything in your data catalog</h2>
@@ -6842,22 +7560,68 @@ const appConfig = {
             </div>
 
             <div v-if="activeView === 'browse'">
-              <div class="search-hero" style="margin-bottom:14px;">
-                <h2>&#125; Search &amp; Catalog</h2>
-                <p>Find, explore, and understand every asset in your data ecosystem</p>
-                <div class="search-bar-wrap">
+              <div class="search-hero catalog-search-panel" style="margin-bottom:14px;">
+                <div class="catalog-search-mode-row">
+                  <v-btn-toggle v-model="browseMode" density="comfortable" mandatory variant="outlined">
+                    <v-btn value="search" prepend-icon="mdi-magnify" @click="setBrowseMode('search')">Search</v-btn>
+                    <v-btn value="browse" prepend-icon="mdi-database-search" @click="setBrowseMode('browse')">Browse by Database</v-btn>
+                  </v-btn-toggle>
+                  <v-btn size="small" variant="outlined" :loading="browseLoading || bootstrapInProgress" @click="bootstrapData">Refresh Catalog</v-btn>
+                </div>
+
+                <div v-if="browseMode === 'search'">
+                  <h2>Search</h2>
+                  <p>Start with what you know: a table, column, owner, term, tag, or business concept.</p>
+                  <div class="search-bar-wrap catalog-search-bar">
                   <v-text-field
                     v-model="browseQuery"
-                    placeholder="Search assets, owners, schemas, tags..."
+                    :placeholder="catalogSearchPlaceholder"
                     variant="outlined"
                     density="comfortable"
                     hide-details
                     @keyup.enter="runSearch"
                   ></v-text-field>
                   <v-btn color="primary" :loading="browseSearchLoading" @click="runSearch">Search</v-btn>
+                  </div>
                 </div>
+
+                <div v-else>
+                  <h2>Browse by database</h2>
+                  <p>Choose a cataloged database to inspect its schemas and objects. Empty databases are hidden from this list.</p>
+                  <div class="search-bar-wrap catalog-search-bar">
+                    <v-select
+                      :model-value="selectedBrowseDatabase"
+                      :items="catalogDatabaseOptions"
+                      item-title="title"
+                      item-value="value"
+                      placeholder="Choose a database..."
+                      variant="outlined"
+                      density="comfortable"
+                      hide-details
+                      @update:model-value="selectBrowseDatabase"
+                    ></v-select>
+                    <v-btn color="primary" :disabled="!selectedBrowseDatabase" @click="selectBrowseDatabase(selectedBrowseDatabase)">Open</v-btn>
+                  </div>
+                </div>
+
+                <div class="catalog-helper-grid">
+                  <button
+                    v-for="helper in catalogHelperActions"
+                    :key="'catalog-helper-' + helper.key"
+                    type="button"
+                    class="catalog-helper-card"
+                    @click="applyCatalogHelper(helper.key)"
+                  >
+                    <v-icon size="18">{{ helper.icon }}</v-icon>
+                    <span>
+                      <strong>{{ helper.label }}</strong>
+                      <small>{{ helper.description }}</small>
+                    </span>
+                  </button>
+                </div>
+
                 <div class="search-hint">
-                  {{ filteredCatalogResults.length }} visible · {{ catalogBaseResults.length }} total candidates · {{ browseCatalogStatusText }}
+                  {{ catalogResultSummary }} · {{ browseCatalogStatusText }}
                 </div>
                 <div v-if="browseSearchWarning" class="search-hint" style="color:#fbbf24;">{{ browseSearchWarning }}</div>
                 <div v-if="browseLoadError" class="search-hint" style="color:#f87171;">Catalog load issue: {{ browseLoadError }}</div>
@@ -6871,32 +7635,33 @@ const appConfig = {
               </div>
 
               <v-row>
-                <v-col cols="12" md="3" lg="2">
+                <v-col v-if="catalogSearchHasStarted && browseMode === 'search'" cols="12" md="3" lg="2">
                 <div class="facet-rail">
                   <div class="facet-rail-title">Filters</div>
 
-                  <div class="facet-group">
+                  <div class="facet-group" v-if="browseTypeTabs.length">
                     <div class="facet-group-title">Asset Type</div>
                     <div class="btn-row" style="gap:6px;flex-wrap:wrap;">
                       <v-chip
-                        v-for="typeName in browseFacetOptions.types"
-                        :key="typeName"
+                        v-for="tab in browseTypeTabs"
+                        :key="tab.type"
                         size="small"
-                        :color="selectedFacetFilters.types.includes(typeName) ? 'primary' : undefined"
-                        :variant="selectedFacetFilters.types.includes(typeName) ? 'flat' : 'outlined'"
+                        :color="selectedFacetFilters.types.includes(tab.type) ? 'primary' : undefined"
+                        :variant="selectedFacetFilters.types.includes(tab.type) ? 'flat' : 'outlined'"
                         style="cursor:pointer;"
-                        @click="toggleBrowseFacet('types', typeName)"
+                        @click="toggleBrowseFacet('types', tab.type)"
                       >
-                        {{ typeName === 'storedProcedure' ? 'Procedure' : typeName.charAt(0).toUpperCase() + typeName.slice(1) }} ({{ browseFacetCounts.types[typeName] || 0 }})
+                        {{ tab.label }} ({{ tab.count }})
                       </v-chip>
                     </div>
                   </div>
 
-                  <div class="facet-group">
+                  <div class="facet-group" v-if="browseFacetOptions.quality.some((qualityName) => (browseFacetCounts.quality[qualityName] || 0) > 0)">
                     <div class="facet-group-title">Quality</div>
                     <div class="btn-row" style="gap:6px;flex-wrap:wrap;">
                       <v-chip
                         v-for="qualityName in browseFacetOptions.quality"
+                        v-show="(browseFacetCounts.quality[qualityName] || 0) > 0"
                         :key="qualityName"
                         size="small"
                         :color="selectedFacetFilters.quality.includes(qualityName) ? 'primary' : undefined"
@@ -6912,6 +7677,7 @@ const appConfig = {
                     <div class="btn-row" style="gap:6px;flex-wrap:wrap;">
                       <v-chip
                         v-for="dbName in browseFacetOptions.databases"
+                        v-show="(browseFacetCounts.databases[dbName] || 0) > 0"
                         :key="dbName"
                         size="small"
                         :color="selectedFacetFilters.databases.includes(dbName) ? 'primary' : undefined"
@@ -6919,14 +7685,6 @@ const appConfig = {
                         style="cursor:pointer;"
                         @click="toggleBrowseFacet('databases', dbName)"
                       >{{ dbName }} ({{ browseFacetCounts.databases[dbName] || 0 }})</v-chip>
-                    </div>
-                  </div>
-
-                  <div class="facet-group" v-if="searchFacets">
-                    <div class="facet-group-title">Type Distribution</div>
-                    <div class="facet-item" v-for="(cnt, typ) in (searchFacets.types || {})" :key="typ">
-                      <span>{{ typ }}</span>
-                      <span class="facet-count">{{ cnt }}</span>
                     </div>
                   </div>
 
@@ -6978,19 +7736,19 @@ const appConfig = {
                 </div>
                 </v-col>
 
-                <v-col cols="12" md="9" lg="10">
+                <v-col cols="12" :md="catalogSearchHasStarted && browseMode === 'search' ? 9 : 12" :lg="catalogSearchHasStarted && browseMode === 'search' ? 10 : 12">
                 <div>
                   <div class="section-header" style="margin-bottom:10px;">
                     <span class="section-title">
-                      {{ filteredCatalogResults.length }} filtered results
+                      {{ catalogResultSummary }}
                     </span>
                     <div class="btn-row">
-                      <v-btn size="small" variant="outlined" append-icon="mdi-refresh" :loading="browseSearchLoading" @click="runSearch">Refresh</v-btn>
-                      <v-btn size="small" variant="outlined" :loading="browseLoading || bootstrapInProgress" @click="bootstrapData">Load Catalog</v-btn>
+                      <v-btn v-if="browseSearchSubmitted" size="small" variant="outlined" append-icon="mdi-refresh" :loading="browseSearchLoading" @click="runSearch">Refresh Results</v-btn>
+                      <v-btn v-if="catalogSearchHasStarted" size="small" variant="outlined" @click="clearBrowseFacets">Clear</v-btn>
                     </div>
                   </div>
 
-                  <div v-if="browseTreeRoots().length" class="schema-explorer" style="margin-bottom:14px;padding:16px;border:1px solid rgba(255,255,255,0.08);border-radius:18px;background:rgba(15,23,42,0.52);backdrop-filter:blur(12px);">
+                  <div v-if="browseMode === 'browse' && selectedBrowseDatabase && browseTreeRoots().length" class="schema-explorer catalog-schema-explorer" style="margin-bottom:14px;">
                     <div class="section-header" style="margin-bottom:10px;">
                       <span class="section-title">Schema Explorer</span>
                       <span class="text-small">{{ browseTreeRoots().length }} namespaces</span>
@@ -7022,7 +7780,7 @@ const appConfig = {
                     </v-expansion-panels>
                   </div>
 
-                  <div class="asset-results" v-if="filteredCatalogResults.length > 0">
+                  <div class="asset-results" v-if="catalogSearchHasStarted && filteredCatalogResults.length > 0">
                     <div
                       v-for="item in filteredCatalogResults"
                       :key="item.id || item.name"
@@ -7069,13 +7827,17 @@ const appConfig = {
                   <div v-else class="card">
                     <div class="empty-state">
                       <div class="empty-state-icon">&#128269;</div>
-                      <h4>No catalog objects found</h4>
+                      <h4 v-if="!catalogSearchHasStarted">Start with search or browse</h4>
+                      <h4 v-else-if="browseMode === 'browse' && !selectedBrowseDatabase">Choose a database</h4>
+                      <h4 v-else>No catalog objects found</h4>
                       <p v-if="browseLoadError">The catalog API did not load: {{ browseLoadError }}</p>
                       <p v-else-if="hasStaleDemoCatalogState">This browser was holding demo results. Reload the catalog to replace them with markdown data.</p>
+                      <p v-else-if="!catalogSearchHasStarted">Search for an asset, use a helper, or switch to Browse by Database to inspect cataloged databases.</p>
+                      <p v-else-if="browseMode === 'browse' && !selectedBrowseDatabase">Only databases with cataloged objects appear in the dropdown above.</p>
                       <p v-else-if="browseSearchSubmitted">No markdown catalog objects matched this search. Try a broader term or clear filters.</p>
-                      <p v-else>Adjust filters or connect to SQL Server to extract metadata and populate your catalog.</p>
-                      <v-btn color="primary" @click="clearBrowseFacets">Clear Search &amp; Filters</v-btn>
-                      <v-btn style="margin-left:8px;" variant="outlined" :loading="browseLoading || bootstrapInProgress" @click="bootstrapData">Load Catalog</v-btn>
+                      <p v-else>No objects matched the selected database and filters.</p>
+                      <v-btn v-if="catalogSearchHasStarted" color="primary" @click="clearBrowseFacets">Clear Search &amp; Filters</v-btn>
+                      <v-btn style="margin-left:8px;" variant="outlined" :loading="browseLoading || bootstrapInProgress" @click="bootstrapData">Refresh Catalog</v-btn>
                     </div>
                   </div>
 
@@ -9294,8 +10056,8 @@ const appConfig = {
               </v-card>
             </div>
 
-            <div v-if="activeView === 'integrations'" class="grid">
-              <v-card class="card span-12 help-strip" variant="outlined">
+            <div v-if="activeView === 'integrations'" class="grid integrations-secondary-grid">
+              <v-card v-if="integrations.connectorWorkflowTab === 'integrations'" class="card span-12 help-strip" variant="outlined">
                 <div class="section-header">
                   <span class="section-title">Integrations Guide</span>
                   <v-btn size="small" variant="outlined" @click="onViewChange('docs'); openDocByKey('help-center')">Open Help Center</v-btn>
@@ -9313,60 +10075,216 @@ const appConfig = {
                   <span class="section-title">Managed Metadata Connectors</span>
                   <div class="btn-row">
                     <v-btn size="small" variant="outlined" :loading="integrations.connectorLoading" @click="loadManagedConnectors">Refresh</v-btn>
-                    <v-btn size="small" color="primary" :loading="integrations.connectorLoading" @click="saveManagedConnector">Save Connector</v-btn>
                   </div>
                 </div>
-                <p class="card-help">Admins store connector credentials once, grant users or roles permission, and users run approved metadata harvesting without seeing secrets.</p>
-                <div class="managed-connector-grid">
-                  <div class="managed-connector-panel">
-                    <div class="panel-kicker">Connector Builder</div>
+                <p class="card-help">Create a reusable source connection, then run an immediate profile or schedule a recurring refresh from that same saved connector.</p>
+                <div class="connector-workflow-rail">
+                  <button
+                    v-for="step in connectorWorkflowSteps"
+                    :key="'connector-step-' + step.key"
+                    type="button"
+                    class="connector-workflow-step"
+                    :class="{ active: integrations.connectorWorkflowTab === step.key, done: step.done }"
+                    @click="integrations.connectorWorkflowTab = step.key"
+                  >
+                    <span>{{ step.done ? 'Done' : 'Next' }}</span>
+                    <strong>{{ step.label }}</strong>
+                  </button>
+                </div>
+                <div class="connector-workflow-tabs">
+                  <v-btn-toggle v-model="integrations.connectorWorkflowTab" mandatory density="compact" variant="outlined">
+                    <v-btn value="connection" prepend-icon="mdi-database-cog">Connection</v-btn>
+                    <v-btn value="run" prepend-icon="mdi-play-circle">Run Profile Now</v-btn>
+                    <v-btn value="schedule" prepend-icon="mdi-calendar-clock">Schedule Refresh</v-btn>
+                    <v-btn value="access" prepend-icon="mdi-account-key">Access</v-btn>
+                    <v-btn value="history" prepend-icon="mdi-history">History</v-btn>
+                    <v-btn value="integrations" prepend-icon="mdi-bell">Notifications</v-btn>
+                  </v-btn-toggle>
+                </div>
+
+                <div v-if="integrations.connectorWorkflowTab === 'connection'" class="connector-workspace-grid">
+                  <div class="managed-connector-panel connector-builder-panel">
+                    <div class="panel-kicker">Connection Setup</div>
+                    <h3>Create or edit a source connection</h3>
+                    <p class="card-help">Save the connection first. Profiling and schedules both use this saved connector.</p>
                     <div class="form-row">
                       <div class="col-4"><v-label>ID</v-label><v-text-field v-model="integrations.connectorEditor.id" density="compact" variant="outlined" hide-details></v-text-field></div>
-                      <div class="col-4"><v-label>Type</v-label><v-select v-model="integrations.connectorEditor.type" density="compact" variant="outlined" hide-details :items="integrations.connectorDefinitions.map((item) => ({ title: connectorDefinitionLabel(item.type), value: item.type }))"></v-select></div>
+                      <div class="col-4"><v-label>Type</v-label><v-select v-model="integrations.connectorEditor.type" density="compact" variant="outlined" hide-details :items="integrations.connectorDefinitions.map((item) => ({ title: connectorDefinitionLabel(item.type), value: item.type }))" @update:model-value="syncConnectorCredentialMode"></v-select></div>
                       <div class="col-4"><v-label>Label</v-label><v-text-field v-model="integrations.connectorEditor.label" density="compact" variant="outlined" hide-details></v-text-field></div>
                     </div>
                     <div class="form-row mt-8">
-                      <div class="col-6"><v-label>Credential Mode</v-label><v-select v-model="integrations.connectorEditor.credentialMode" density="compact" variant="outlined" hide-details :items="['managed_identity','service_account','service_principal','secret_reference','pat_reference','oauth_app','iam_role','workload_identity','none']"></v-select></div>
-                      <div class="col-6"><v-label>Secret Reference</v-label><v-text-field v-model="integrations.connectorEditor.secretRef" density="compact" variant="outlined" hide-details placeholder="kv://metadata/source-name"></v-text-field></div>
+                      <div class="col-6">
+                        <v-label>Credential Mode</v-label>
+                        <v-select
+                          v-model="integrations.connectorEditor.credentialMode"
+                          density="compact"
+                          variant="outlined"
+                          hide-details
+                          :items="connectorCredentialModeOptions()"
+                          item-title="title"
+                          item-value="value"
+                          @update:model-value="syncConnectorCredentialMode"
+                        ></v-select>
+                        <div class="field-hint">{{ connectorCredentialModeHint() }}</div>
+                      </div>
+                      <div class="col-6">
+                        <v-label>Secret Reference</v-label>
+                        <v-text-field
+                          v-model="integrations.connectorEditor.secretRef"
+                          density="compact"
+                          variant="outlined"
+                          hide-details
+                          placeholder="kv://metadata/source-name"
+                          :disabled="!connectorSecretReferenceRequired()"
+                        ></v-text-field>
+                      </div>
                     </div>
-                    <div class="form-row mt-8">
+                    <div class="form-row mt-8" v-if="connectorSecretReferenceRequired()">
                       <div class="col-12"><v-label>One-time Secret Value</v-label><v-text-field v-model="integrations.connectorEditor.rawSecret" density="compact" variant="outlined" hide-details type="password" placeholder="Write-only; not displayed after save"></v-text-field></div>
                     </div>
                     <div class="form-row mt-8">
                       <div class="col-12"><v-label>Connector Config JSON</v-label><v-textarea v-model="integrations.connectorEditor.configJson" rows="7" density="compact" variant="outlined" hide-details></v-textarea></div>
                     </div>
+                    <div class="connector-action-strip mt-8">
+                      <v-btn color="primary" :loading="integrations.connectorLoading" @click="saveManagedConnector">Save Connection</v-btn>
+                      <v-btn variant="outlined" :disabled="!integrations.connectorEditor.id" :loading="integrations.connectorLoading" @click="runManagedConnector(integrations.connectorEditor.id)">Validate Setup</v-btn>
+                      <v-btn variant="tonal" :disabled="!selectedManagedConnector" @click="integrations.connectorWorkflowTab = 'run'">Run Profile Now</v-btn>
+                    </div>
                   </div>
 
                   <div class="managed-connector-panel">
-                    <div class="panel-kicker">Available Connectors</div>
+                    <div class="panel-kicker">Saved Connections</div>
                     <div class="managed-connector-list">
-                      <div v-for="connector in integrations.managedConnectors" :key="'managed-connector-' + connector.id" class="managed-connector-row">
+                      <div
+                        v-for="connector in integrations.managedConnectors"
+                        :key="'managed-connector-' + connector.id"
+                        class="managed-connector-row"
+                        :class="{ selected: integrations.selectedConnectorId === connector.id }"
+                      >
                         <div>
                           <strong>{{ connector.label }}</strong>
-                          <span>{{ connector.id }} · {{ connector.provider }} · {{ connector.category }} · {{ connector.cloud }}</span>
+                          <span>{{ connector.id }} · {{ connector.type }} · {{ connector.credential?.mode || 'credential not set' }}</span>
                         </div>
                         <div class="btn-row">
                           <v-chip size="x-small" variant="tonal" :color="connector.credential?.status === 'stored_reference' || connector.credential?.status === 'configured' ? 'success' : 'warning'">{{ connector.credential?.status || 'unknown' }}</v-chip>
-                          <v-btn size="small" variant="outlined" @click="runManagedConnector(connector.id)">Run</v-btn>
+                          <v-btn size="small" variant="outlined" @click="useManagedConnector(connector)">Use</v-btn>
+                          <v-btn size="small" variant="outlined" @click="editManagedConnector(connector)">Edit</v-btn>
                           <v-btn size="small" variant="tonal" @click="loadManagedConnectorSnapshot(connector.id)">Snapshot</v-btn>
                         </div>
                       </div>
-                      <div v-if="!integrations.managedConnectors.length" class="empty">No managed connectors available to this user.</div>
-                    </div>
-                    <div class="managed-connector-permissions">
-                      <div class="panel-kicker">Grant Access</div>
-                      <div class="form-row">
-                        <div class="col-3"><v-label>Connector</v-label><v-select v-model="integrations.connectorGrant.connectorId" density="compact" variant="outlined" hide-details :items="integrations.managedConnectors.map((item) => item.id)"></v-select></div>
-                        <div class="col-2"><v-label>Scope</v-label><v-select v-model="integrations.connectorGrant.scope" density="compact" variant="outlined" hide-details :items="['users','roles','groups']"></v-select></div>
-                        <div class="col-3"><v-label>Subject</v-label><v-text-field v-model="integrations.connectorGrant.subject" density="compact" variant="outlined" hide-details></v-text-field></div>
-                        <div class="col-3"><v-label>Actions</v-label><v-text-field v-model="integrations.connectorGrant.actions" density="compact" variant="outlined" hide-details></v-text-field></div>
-                        <div class="col-1" style="display:flex;align-items:end;"><v-btn size="small" color="primary" @click="grantManagedConnectorPermission">Grant</v-btn></div>
+                      <div v-if="!integrations.managedConnectors.length" class="connector-empty-path">
+                        <strong>No connection saved yet.</strong>
+                        <span>Fill out Connection Setup, then click Save Connection.</span>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div class="managed-connector-results" v-if="integrations.connectorSnapshot || integrations.connectorRuns.length">
+                <div v-if="integrations.connectorWorkflowTab === 'run'" class="connector-workspace-grid">
+                  <div class="managed-connector-panel">
+                    <div class="panel-kicker">One-Time Profile</div>
+                    <h3>Run an immediate profile</h3>
+                    <p class="card-help">Use this for testing a new connection or profiling a table/database now. Dry run validates the profile plan. Live runs aggregate-only profiling queries.</p>
+                    <div class="form-row">
+                      <div class="col-4"><v-label>Saved Connection</v-label><v-select v-model="integrations.profileRunEditor.connectorId" density="compact" variant="outlined" hide-details :items="profileScheduleConnectorOptions" @update:model-value="integrations.selectedConnectorId = integrations.profileRunEditor.connectorId"></v-select></div>
+                      <div class="col-3"><v-label>Profile Type</v-label><v-select v-model="integrations.profileRunEditor.profileType" density="compact" variant="outlined" hide-details :items="profileScheduleTypeOptions"></v-select></div>
+                      <div class="col-3"><v-label>Run Mode</v-label><v-select v-model="integrations.profileRunEditor.executionMode" density="compact" variant="outlined" hide-details :items="[{ title: 'Dry run / plan only', value: 'dry_run' }, { title: 'Live aggregate profile', value: 'live' }]"></v-select></div>
+                      <div class="col-2" style="display:flex;align-items:end;"><v-btn block color="primary" :loading="integrations.connectorLoading" :disabled="!integrations.profileRunEditor.connectorId" @click="runOneTimeProfile">Run Now</v-btn></div>
+                    </div>
+                    <div class="form-row mt-8">
+                      <div class="col-8"><v-label>Tables / Object IDs</v-label><v-textarea v-model="integrations.profileRunEditor.assetIds" rows="4" density="compact" variant="outlined" hide-details placeholder="Optional for metadata/BI. For aggregate database profiling, enter one table object id per line, such as GPA.dbo.SomeTable."></v-textarea></div>
+                      <div class="col-4"><v-label>Streams</v-label><v-text-field v-model="integrations.profileRunEditor.streams" density="compact" variant="outlined" hide-details placeholder="reports, dashboards, lineage"></v-text-field><div class="field-hint">Use streams for BI, catalog, pipeline, or metadata profiles. Leave blank for aggregate SQL profiling.</div></div>
+                    </div>
+                    <div class="connector-action-strip mt-8">
+                      <v-btn variant="tonal" :disabled="!integrations.profileRunEditor.connectorId" @click="prepareScheduleForSelectedConnector">Schedule this profile</v-btn>
+                      <v-btn variant="outlined" :disabled="!integrations.profileRunEditor.connectorId" @click="loadManagedConnectorRuns(integrations.profileRunEditor.connectorId)">Refresh History</v-btn>
+                    </div>
+                  </div>
+                  <div class="managed-connector-panel">
+                    <div class="panel-kicker">What will happen</div>
+                    <div class="connector-next-summary">
+                      <div><span>Connection</span><strong>{{ selectedManagedConnector?.label || 'Choose a saved connection' }}</strong></div>
+                      <div><span>Profile</span><strong>{{ integrations.profileRunEditor.profileType }}</strong></div>
+                      <div><span>Mode</span><strong>{{ integrations.profileRunEditor.executionMode === 'live' ? 'Live aggregate query' : 'Dry run / plan' }}</strong></div>
+                      <div><span>Raw data retained</span><strong>No</strong></div>
+                    </div>
+                    <div class="connector-guardrail">
+                      <v-icon size="small">mdi-shield-lock-outline</v-icon>
+                      <span>Profiles store counts, nulls, min/max, distinct counts, and classification signals. Raw values are not stored.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div v-if="integrations.connectorWorkflowTab === 'schedule'" class="connector-workspace-grid">
+                  <div class="managed-connector-panel">
+                    <div class="panel-kicker">Scheduled Profile Refresh</div>
+                    <h3>Create a recurring profile</h3>
+                    <p class="card-help">Use schedules to keep profile metadata fresh. The scheduler runs against the saved connector and keeps secrets hidden.</p>
+                    <div class="form-row">
+                      <div class="col-4"><v-label>Connection</v-label><v-select v-model="integrations.profileScheduleEditor.connectorId" density="compact" variant="outlined" hide-details :items="profileScheduleConnectorOptions"></v-select></div>
+                      <div class="col-4"><v-label>Name</v-label><v-text-field v-model="integrations.profileScheduleEditor.name" density="compact" variant="outlined" hide-details placeholder="Nightly GPA profile"></v-text-field></div>
+                      <div class="col-2"><v-label>Profile</v-label><v-select v-model="integrations.profileScheduleEditor.profileType" density="compact" variant="outlined" hide-details :items="profileScheduleTypeOptions"></v-select></div>
+                      <div class="col-2"><v-label>Status</v-label><v-select v-model="integrations.profileScheduleEditor.status" density="compact" variant="outlined" hide-details :items="['ACTIVE','PAUSED']"></v-select></div>
+                    </div>
+                    <div class="profile-date-time-grid mt-8">
+                      <div><v-label>Start Date</v-label><v-text-field v-model="integrations.profileScheduleEditor.date" type="date" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-calendar"></v-text-field></div>
+                      <div><v-label>Start Time</v-label><v-text-field v-model="integrations.profileScheduleEditor.time" type="time" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-clock-outline"></v-text-field></div>
+                      <div><v-label>Cadence</v-label><v-select v-model="integrations.profileScheduleEditor.cadence" density="compact" variant="outlined" hide-details :items="profileScheduleCadenceOptions" @update:model-value="syncProfileScheduleInterval"></v-select></div>
+                      <div><v-label>Minutes</v-label><v-text-field v-model.number="integrations.profileScheduleEditor.intervalMinutes" type="number" min="5" density="compact" variant="outlined" hide-details :disabled="integrations.profileScheduleEditor.cadence !== 'custom'"></v-text-field></div>
+                    </div>
+                    <div class="form-row mt-8">
+                      <div class="col-4"><v-label>Streams</v-label><v-text-field v-model="integrations.profileScheduleEditor.streams" density="compact" variant="outlined" hide-details placeholder="reports, dashboards, lineage"></v-text-field></div>
+                      <div class="col-4"><v-label>Timezone Label</v-label><v-text-field v-model="integrations.profileScheduleEditor.timezone" density="compact" variant="outlined" hide-details></v-text-field></div>
+                      <div class="col-2"><v-label>Max Failures</v-label><v-text-field v-model.number="integrations.profileScheduleEditor.maxFailures" type="number" min="1" density="compact" variant="outlined" hide-details></v-text-field></div>
+                      <div class="col-2 scheduler-switch-cell"><v-switch v-model="integrations.profileScheduleEditor.dryRun" color="primary" density="compact" hide-details label="Dry run"></v-switch></div>
+                    </div>
+                    <div class="form-row mt-8">
+                      <div class="col-12"><v-label>Tables / Object IDs</v-label><v-textarea v-model="integrations.profileRunEditor.assetIds" rows="3" density="compact" variant="outlined" hide-details placeholder="Optional schedule scope. Enter one table object id per line for aggregate profiling."></v-textarea></div>
+                    </div>
+                    <div class="connector-action-strip mt-8">
+                      <v-btn color="primary" :loading="integrations.profileScheduleLoading" @click="saveProfileSchedule">{{ integrations.profileScheduleEditor.id ? 'Update Schedule' : 'Create Schedule' }}</v-btn>
+                      <v-btn variant="tonal" @click="resetProfileScheduleEditor">Clear</v-btn>
+                      <v-btn variant="outlined" @click="onViewChange('scheduler')">Open Full Scheduler</v-btn>
+                    </div>
+                  </div>
+                  <div class="managed-connector-panel">
+                    <div class="panel-kicker">Existing Schedules</div>
+                    <div class="profile-schedule-list">
+                      <div v-for="schedule in integrations.profileSchedules.slice(0, 6)" :key="'connector-sched-' + schedule.id" class="profile-schedule-row">
+                        <div class="profile-schedule-main">
+                          <div class="profile-schedule-title"><strong>{{ schedule.name }}</strong><v-chip size="x-small" variant="tonal" :color="scheduleStatusColor(schedule.status)">{{ schedule.status }}</v-chip></div>
+                          <span>{{ schedule.connector_id }} · next {{ formatTimestamp(schedule.next_run_at) }}</span>
+                        </div>
+                        <div class="btn-row"><v-btn size="small" variant="outlined" @click="editProfileSchedule(schedule)">Edit</v-btn><v-btn size="small" variant="tonal" @click="runProfileSchedule(schedule.id)">Run</v-btn></div>
+                      </div>
+                      <div v-if="!integrations.profileSchedules.length" class="connector-empty-path"><strong>No schedules yet.</strong><span>Create one here or run a one-time profile first.</span></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div v-if="integrations.connectorWorkflowTab === 'access'" class="managed-connector-panel">
+                  <div class="panel-kicker">Grant Access</div>
+                  <p class="card-help">After a connector is saved, grant users, groups, or roles permission to view/run it without seeing secrets.</p>
+                  <div class="form-row">
+                    <div class="col-3"><v-label>Connector</v-label><v-select v-model="integrations.connectorGrant.connectorId" density="compact" variant="outlined" hide-details :items="integrations.managedConnectors.map((item) => item.id)"></v-select></div>
+                    <div class="col-2"><v-label>Scope</v-label><v-select v-model="integrations.connectorGrant.scope" density="compact" variant="outlined" hide-details :items="['users','roles','groups']"></v-select></div>
+                    <div class="col-3"><v-label>Subject</v-label><v-text-field v-model="integrations.connectorGrant.subject" density="compact" variant="outlined" hide-details></v-text-field></div>
+                    <div class="col-3"><v-label>Actions</v-label><v-text-field v-model="integrations.connectorGrant.actions" density="compact" variant="outlined" hide-details></v-text-field></div>
+                    <div class="col-1" style="display:flex;align-items:end;"><v-btn size="small" color="primary" @click="grantManagedConnectorPermission">Grant</v-btn></div>
+                  </div>
+                </div>
+
+                <div class="managed-connector-results" v-if="integrations.connectorWorkflowTab === 'history'">
+                  <div class="section-header">
+                    <div>
+                      <span class="section-title">Run History & Results</span>
+                      <p class="card-help mb-0">Open a run to see whether it harvested metadata, captured aggregate profile results, and where its markdown artifact was written for DevOps upload.</p>
+                    </div>
+                    <div class="btn-row">
+                      <v-btn size="small" variant="tonal" color="primary" :loading="integrations.connectorPublishLoading" :disabled="integrations.connectorPublishLoading" @click="publishConnectorProfiles()">Publish Pending Profiles</v-btn>
+                      <v-btn size="small" variant="outlined" :loading="integrations.connectorLoading" @click="loadManagedConnectorRuns(integrations.selectedConnectorId)">Refresh</v-btn>
+                    </div>
+                  </div>
                   <div class="mini-stack" v-if="integrations.connectorSnapshot">
                     <div class="mini-metric"><span>Snapshot Connector</span><strong>{{ integrations.connectorSnapshot.connector_id }}</strong></div>
                     <div class="mini-metric"><span>Objects</span><strong>{{ integrations.connectorSnapshot.object_count }}</strong></div>
@@ -9376,22 +10294,121 @@ const appConfig = {
                   </div>
                   <div class="table-wrap mt-8" v-if="integrations.connectorRuns.length">
                     <v-table density="compact">
-                      <thead><tr><th>Run</th><th>Connector</th><th>Mode</th><th>Status</th><th>Objects</th><th>Secrets</th></tr></thead>
+                      <thead><tr><th>Run</th><th>Kind</th><th>Mode</th><th>Status</th><th>Assets / Objects</th><th>Markdown</th><th>Publish</th><th></th></tr></thead>
                       <tbody>
-                        <tr v-for="run in integrations.connectorRuns" :key="'connector-run-' + run.id">
+                        <tr v-for="run in integrations.connectorRuns" :key="'connector-run-' + run.id" class="connector-run-row" :class="{ selected: integrations.selectedConnectorRun?.id === run.id }" @click="selectConnectorRun(run)">
                           <td class="mono">{{ run.id }}</td>
-                          <td>{{ run.connector_id }}</td>
+                          <td>{{ connectorRunKind(run) }}</td>
                           <td>{{ run.mode }}</td>
-                          <td><v-chip size="x-small" variant="tonal" color="success">{{ run.status }}</v-chip></td>
-                          <td>{{ run.summary?.discovered_objects || 0 }}</td>
-                          <td>{{ run.summary?.secret_exposed ? 'exposed' : 'masked' }}</td>
+                          <td><v-chip size="x-small" variant="tonal" :color="run.status === 'failed' ? 'error' : (run.status === 'partial_failure' ? 'warning' : 'success')">{{ run.status }}</v-chip></td>
+                          <td>{{ connectorRunFoundCount(run) }}</td>
+                          <td>
+                            <v-chip size="x-small" variant="tonal" :color="run.artifact?.markdown_path ? 'success' : 'warning'">
+                              {{ run.artifact?.markdown_path ? 'exported' : 'not exported' }}
+                            </v-chip>
+                          </td>
+                          <td>
+                            <v-chip size="x-small" variant="tonal" :color="connectorRunPublishColor(run)">
+                              {{ connectorRunPublishStatus(run) }}
+                            </v-chip>
+                          </td>
+                          <td>
+                            <div class="btn-row connector-run-actions">
+                              <v-btn v-if="connectorRunCanPublish(run)" size="small" variant="tonal" color="primary" :loading="integrations.connectorPublishLoading && integrations.selectedConnectorRun?.id === run.id" :disabled="integrations.connectorPublishLoading || integrations.connectorLoading" @click.stop="publishConnectorProfiles(run)">Publish</v-btn>
+                              <v-btn v-if="canRerunFailedAssets(run)" size="small" variant="tonal" color="warning" :loading="integrations.connectorLoading && integrations.selectedConnectorRun?.id === run.id" :disabled="integrations.connectorLoading" @click.stop="rerunFailedProfileAssets(run)">Rerun Failed</v-btn>
+                              <v-btn size="small" variant="outlined" @click.stop="selectConnectorRun(run)">Details</v-btn>
+                            </div>
+                          </td>
                         </tr>
                       </tbody>
                     </v-table>
                   </div>
+                  <div class="empty-state compact-empty" v-else>
+                    <strong>No connector run history yet</strong>
+                    <span>Save a connector, then run a metadata harvest or one-time profile to create drilldown results.</span>
+                  </div>
+                  <div class="connector-run-detail" v-if="integrations.selectedConnectorRun">
+                    <div class="section-header">
+                      <span class="section-title">Run Details</span>
+                      <div class="btn-row">
+                        <v-chip size="small" variant="tonal" color="primary">{{ connectorRunKind(integrations.selectedConnectorRun) }}</v-chip>
+                        <v-chip size="small" variant="tonal" :color="connectorRunPublishColor(integrations.selectedConnectorRun)">{{ connectorRunPublishStatus(integrations.selectedConnectorRun) }}</v-chip>
+                        <v-btn v-if="connectorRunCanPublish(integrations.selectedConnectorRun)" size="small" variant="tonal" color="primary" :loading="integrations.connectorPublishLoading" :disabled="integrations.connectorPublishLoading || integrations.connectorLoading" @click="publishConnectorProfiles(integrations.selectedConnectorRun)">Publish Successful Profiles</v-btn>
+                        <v-btn v-if="canRerunFailedAssets(integrations.selectedConnectorRun)" size="small" variant="tonal" color="warning" :loading="integrations.connectorLoading" :disabled="integrations.connectorLoading" @click="rerunFailedProfileAssets(integrations.selectedConnectorRun)">Rerun {{ connectorRunFailedAssetIds(integrations.selectedConnectorRun).length }} Failed</v-btn>
+                      </div>
+                    </div>
+                    <div class="connector-next-summary">
+                      <div><span>Run</span><strong>{{ integrations.selectedConnectorRun.id }}</strong></div>
+                      <div><span>Status</span><strong>{{ integrations.selectedConnectorRun.status }}</strong></div>
+                      <div><span>Completed</span><strong>{{ formatTimestamp(integrations.selectedConnectorRun.completed_at) }}</strong></div>
+                      <div><span>DevOps upload</span><strong>{{ integrations.selectedConnectorRun.artifact?.devops_upload_pending ? 'Pending' : 'Not flagged' }}</strong></div>
+                      <div><span>Profile publish</span><strong>{{ connectorRunPublishStatus(integrations.selectedConnectorRun) }}</strong></div>
+                      <div><span>Assets / objects</span><strong>{{ connectorRunFoundCount(integrations.selectedConnectorRun) }}</strong></div>
+                      <div><span>Columns found</span><strong>{{ integrations.selectedConnectorRun.summary?.discovered_columns ?? '-' }}</strong></div>
+                    </div>
+                    <div class="connector-guardrail" v-if="connectorRunKind(integrations.selectedConnectorRun) === 'Metadata harvest'">
+                      This run discovered objects, columns, and lineage metadata. It did not execute aggregate data profiling, so row counts, null counts, and distinct counts will appear only after running a one-time or scheduled aggregate profile.
+                    </div>
+                    <div class="connector-guardrail error-guardrail" v-if="(integrations.selectedConnectorRun.errors || []).length">
+                      <strong>{{ integrations.selectedConnectorRun.errors[0].message }}</strong>
+                      <span v-if="integrations.selectedConnectorRun.errors[0].remediation">{{ integrations.selectedConnectorRun.errors[0].remediation }}</span>
+                    </div>
+                    <div class="scheduler-artifact-paths mt-8" v-if="integrations.selectedConnectorRun.artifact">
+                      <span>Markdown {{ integrations.selectedConnectorRun.artifact.markdown_path || '-' }}</span>
+                      <span>JSON {{ integrations.selectedConnectorRun.artifact.json_path || '-' }}</span>
+                    </div>
+                    <div class="table-wrap mt-8" v-if="connectorRunProfileRows(integrations.selectedConnectorRun).length">
+                      <v-table density="compact">
+                        <thead><tr><th>Asset</th><th>Rows</th><th>Columns</th><th>Profiled At</th></tr></thead>
+                        <tbody>
+                          <tr v-for="row in connectorRunProfileRows(integrations.selectedConnectorRun)" :key="'profile-asset-' + row.assetId">
+                            <td class="mono">{{ row.assetId }}</td>
+                            <td>{{ row.rowCount }}</td>
+                            <td>{{ row.columnCount }}</td>
+                            <td>{{ row.generatedAt }}</td>
+                          </tr>
+                        </tbody>
+                      </v-table>
+                    </div>
+                    <div class="table-wrap mt-8" v-if="connectorRunColumnRows(integrations.selectedConnectorRun).length">
+                      <v-table density="compact">
+                        <thead><tr><th>Asset</th><th>Column</th><th>Rows</th><th>Nulls</th><th>Null %</th><th>Distinct</th><th>Min</th><th>Max</th><th>Mean</th></tr></thead>
+                        <tbody>
+                          <tr v-for="row in connectorRunColumnRows(integrations.selectedConnectorRun).slice(0, 100)" :key="'profile-col-' + row.assetId + '-' + row.columnName">
+                            <td class="mono">{{ row.assetId }}</td>
+                            <td>{{ row.columnName }}</td>
+                            <td>{{ row.rowCount }}</td>
+                            <td>{{ row.nullCount }}</td>
+                            <td>{{ row.nullPercent }}</td>
+                            <td>{{ row.distinctCount }}</td>
+                            <td>{{ row.min }}</td>
+                            <td>{{ row.max }}</td>
+                            <td>{{ row.mean }}</td>
+                          </tr>
+                        </tbody>
+                      </v-table>
+                    </div>
+                    <div class="table-wrap mt-8" v-if="connectorRunStreamRows(integrations.selectedConnectorRun).length">
+                      <v-table density="compact">
+                        <thead><tr><th>Stream</th><th>Status</th><th>Events</th><th>Endpoint</th></tr></thead>
+                        <tbody>
+                          <tr v-for="row in connectorRunStreamRows(integrations.selectedConnectorRun)" :key="'stream-' + row.stream">
+                            <td>{{ row.stream }}</td>
+                            <td>{{ row.status }}</td>
+                            <td>{{ row.eventCount }}</td>
+                            <td>{{ row.endpoint }}</td>
+                          </tr>
+                        </tbody>
+                      </v-table>
+                    </div>
+                    <div class="code-block mt-8">Summary: {{ JSON.stringify(integrations.selectedConnectorRun.summary || {}, null, 2) }}</div>
+                  </div>
                 </div>
               </v-card>
 
+            </div>
+
+            <div v-if="activeView === 'scheduler'" class="workflow-page scheduler-page">
               <v-card class="card span-12 profile-scheduler-card" variant="outlined">
                 <div class="section-header">
                   <span class="section-title">Profile Scheduler</span>
@@ -9557,6 +10574,9 @@ const appConfig = {
                 </div>
               </v-card>
 
+            </div>
+
+            <div v-if="activeView === 'integrations' && integrations.connectorWorkflowTab === 'integrations'" class="grid">
               <v-card class="card span-6" variant="outlined">
                 <h3>Notification Channels</h3>
                 <p class="card-help">Choose a channel and event type, then save settings and send a test event.</p>

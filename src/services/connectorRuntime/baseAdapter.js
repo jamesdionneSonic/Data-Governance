@@ -18,6 +18,61 @@ function toArray(value) {
     .filter(Boolean);
 }
 
+function objectName(object = {}) {
+  return object.name || object.objectName || object.object_name || object.table_name || object.tableName || object.id || 'unknown';
+}
+
+function normalizeProfileAsset(asset = {}, connector = {}) {
+  const name = objectName(asset);
+  return {
+    ...asset,
+    id: asset.id || asset.object_id || asset.qualified_name || asset.qualifiedName || name,
+    name,
+    object_name: asset.object_name || name,
+    object_type: asset.object_type || asset.objectType || asset.type || 'table',
+    database: asset.database || asset.database_name || connector.config?.database || '',
+    schema: asset.schema || asset.schema_name || asset.owner_schema || 'dbo',
+    columns: Array.isArray(asset.columns) ? asset.columns : [],
+  };
+}
+
+function metadataProfileAssets(metadata = {}, connector = {}) {
+  return [...(metadata.tables || []), ...(metadata.views || [])]
+    .map((asset) => normalizeProfileAsset(asset, connector))
+    .filter((asset) => asset.columns.length);
+}
+
+function lookupKey(value) {
+  return String(value || '')
+    .replace(/[\[\]`"']/g, '')
+    .replace(/\s*\.\s*/g, '.')
+    .trim()
+    .toLowerCase();
+}
+
+function matchesRequestedAsset(asset = {}, requested = '') {
+  const target = lookupKey(requested);
+  if (!target) return false;
+  const candidates = [
+    asset.id,
+    asset.object_id,
+    asset.qualified_name,
+    asset.qualifiedName,
+    asset.full_name,
+    asset.name,
+    asset.object_name,
+    [asset.database, asset.schema, asset.name || asset.object_name].filter(Boolean).join('.'),
+    [asset.schema, asset.name || asset.object_name].filter(Boolean).join('.'),
+  ].map(lookupKey);
+  return candidates.includes(target) || candidates.some((candidate) => candidate.endsWith(`.${target}`));
+}
+
+function filterRequestedAssets(assets = [], options = {}) {
+  const requested = toArray(options.asset_id || options.assetId || options.object_id || options.objectId || options.ids);
+  if (!requested.length) return assets;
+  return assets.filter((asset) => requested.some((id) => matchesRequestedAsset(asset, id)));
+}
+
 export class BaseConnectorAdapter {
   constructor({ connector, definition }) {
     this.connector = connector;
@@ -201,13 +256,22 @@ export class BaseConnectorAdapter {
   }
 
   async planProfiling(options = {}) {
+    let assets = options.assets || options.objects || [];
+    const needsResolvedAssets =
+      !assets.length || toArray(options.asset_id || options.assetId || options.object_id || options.objectId || options.ids).length > 0;
+    if (needsResolvedAssets && !this.lastMetadata && options.dry_run === false && typeof this.loadMetadata === 'function') {
+      await this.loadMetadata({ ...options, dry_run: false });
+    }
+    if (needsResolvedAssets && this.lastMetadata) {
+      assets = filterRequestedAssets(metadataProfileAssets(this.lastMetadata, this.connector), options);
+    }
     return buildProfilingPlan(
       {
         ...options,
         connector_id: this.id,
         connector_type: this.type,
         dialect: options.dialect || this.config.dialect || this.type,
-        assets: options.assets || options.objects || [],
+        assets,
       },
       options.objectCache || new Map()
     );

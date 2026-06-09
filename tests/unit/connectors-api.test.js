@@ -205,6 +205,36 @@ describe('Connectors API', () => {
     const responseJson = JSON.stringify(runRes.body);
     expect(responseJson).not.toContain('profile-password');
     expect(responseJson).not.toContain('kv://sql');
+
+    const historyRes = await request(app)
+      .get('/api/v1/connectors/profile-sql-api/runs')
+      .set(authHeaders(admin));
+    expect(historyRes.body.runs[0].artifact.profile_publish).toMatchObject({
+      status: 'pending',
+      successful_asset_count: 1,
+      failed_asset_count: 0,
+    });
+
+    const publishRes = await request(app)
+      .post(`/api/v1/connectors/profile-sql-api/runs/${runRes.body.run.id}/publish`)
+      .set(authHeaders(admin))
+      .send({ targets: ['devops', 'confluence'], dry_run: true });
+    expect(publishRes.status).toBe(200);
+    expect(publishRes.body.publication).toMatchObject({
+      status: 'planned',
+      dry_run: true,
+      run_count: 1,
+      successful_asset_count: 1,
+    });
+    expect(publishRes.body.publication.steps.map((step) => step.script)).toEqual(
+      expect.arrayContaining([
+        'lineage:runtime:package',
+        'lineage:runtime:check',
+        'lineage:runtime:sync',
+        'lineage:runtime:publish',
+        'confluence:publish',
+      ])
+    );
   });
 
   test('runs BI report profiling through managed connector API', async () => {
