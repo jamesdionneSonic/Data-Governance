@@ -139,6 +139,61 @@ describe('Rebuild confidence report and SSIS endpoint gates', () => {
     );
   });
 
+  test('canonicalizes dbSonicDW SSIS-observed endpoints to Sonic_DW', () => {
+    const rawSourceId = '192.224.101.80.dbSonicDW.dbo.dwFullTextConversation';
+    const canonicalSourceId = '192.224.101.80.Sonic_DW.dbo.dwFullTextConversation';
+    const packageId = 'V1-SSIS25-01, 11040.SSISDB.FOCUS.TextPerformance.TextPerformance.dtsx';
+    const records = new Map([
+      [
+        packageId.toLowerCase(),
+        {
+          id: packageId,
+          type: 'package',
+          frontmatter: {
+            id: packageId,
+            name: 'TextPerformance.dtsx',
+            database: 'ssisdb',
+            type: 'package',
+            reads_from: [rawSourceId],
+            writes_to: [],
+            ssis_column_mappings: [
+              {
+                package_id: packageId,
+                source_object: 'dbo.dwFullTextConversation',
+                input_column: 'ConversationID',
+                output_column: 'ConversationID',
+                validation_status: 'validated',
+              },
+            ],
+          },
+        },
+      ],
+    ]);
+
+    const endpoints = [...buildSsisSqlEndpointRecords(records)];
+
+    expect(endpoints).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: canonicalSourceId,
+          server: '192.224.101.80',
+          database: 'Sonic_DW',
+          schema: 'dbo',
+          name: 'dwFullTextConversation',
+          frontmatter: expect.objectContaining({
+            database: 'Sonic_DW',
+            columns: [
+              expect.objectContaining({
+                column_id: `${canonicalSourceId}.ConversationID`,
+              }),
+            ],
+          }),
+        }),
+      ])
+    );
+    expect(endpoints.map((endpoint) => endpoint.id)).not.toContain(rawSourceId);
+  });
+
   test('builds rebuild report with distribution, deltas, regressions, and gates', () => {
     const packageId = 'SSIS01.SSISDB.Claims.CopyClaims.CopyClaims.dtsx';
     const recordList = [

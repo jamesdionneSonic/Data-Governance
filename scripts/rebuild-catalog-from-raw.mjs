@@ -62,8 +62,10 @@ const RAW_SCAN_SKIP_DIRS = new Set(['_quarantine', '_runtime', '_drafts', '_rebu
 const QUARANTINED_SQL_SAMPLE_LIMIT = 25;
 
 const DB_CASE = new Map([
+  ['dbsonicdw', 'Sonic_DW'],
   ['etl_staging', 'ETL_Staging'],
   ['sonic_dw', 'Sonic_DW'],
+  ['sonicdw', 'Sonic_DW'],
   ['stagingdb', 'StagingDB'],
   ['vendordata', 'VendorData'],
   ['ssisdb', 'SSISDB'],
@@ -924,17 +926,27 @@ function parseSqlId(id) {
   if (parts.length >= 7 && startsWithIpv4Parts(parts)) {
     return {
       server: joinDotSegments(parts, 0, 4),
-      database: parts[4],
+      database: canonicalDatabase(parts[4]),
       schema: parts[5],
       name: joinDotSegments(parts, 6),
     };
   }
   return {
     server: parts[0],
-    database: parts[1],
+    database: canonicalDatabase(parts[1]),
     schema: parts[2],
     name: joinDotSegments(parts, 3),
   };
+}
+
+function canonicalSqlIdFromParsedSqlId(parsed) {
+  if (!parsed?.name || !parsed.database || !parsed.schema) return '';
+  return makeSqlId(
+    parsed.server || 'unknown',
+    parsed.database,
+    parsed.schema,
+    parsed.name
+  );
 }
 
 const LINEAGE_TOKEN_STOP_WORDS = new Set([
@@ -1003,10 +1015,12 @@ function normalizeSsisReference(value, aliases, referenceIndex) {
   }
 
   if (parts.length >= 4) {
-    const database = canonicalDatabase(parts[1]);
-    const server = canonicalServer(parts[0], database, aliases);
-    const schema = parts[2] || 'dbo';
-    const name = joinDotSegments(parts, 3);
+    const parsed = parseSqlId(cleaned);
+    if (!parsed?.name || !parsed.database || !parsed.schema) return cleaned;
+    const database = parsed.database;
+    const server = canonicalServer(parsed.server, database, aliases);
+    const schema = parsed.schema || 'dbo';
+    const name = parsed.name;
     return qualifyReference(makeSqlId(server, database, schema, name), {
       server,
       database,
@@ -1594,15 +1608,15 @@ function addSsisEndpointColumn(endpoint, columnName, mapping = {}, role = 'sourc
 }
 
 function ensureSsisSqlEndpoint(endpoints, endpointId, packageIdValue, role) {
-  const normalizedId = String(endpointId || '').toLowerCase();
-  if (!normalizedId) return null;
-
   const parsed = parseSqlId(endpointId);
   if (!parsed?.name || !parsed.database || !parsed.schema) return null;
+  const canonicalEndpointId = canonicalSqlIdFromParsedSqlId(parsed);
+  const normalizedId = canonicalEndpointId.toLowerCase();
+  if (!normalizedId) return null;
 
   if (!endpoints.has(normalizedId)) {
     endpoints.set(normalizedId, {
-      id: endpointId,
+      id: canonicalEndpointId,
       server: parsed.server || 'unknown',
       database: parsed.database,
       schema: parsed.schema,

@@ -75,6 +75,20 @@ function seedSearchCatalog(app) {
         tags: ['ssis', 'orders'],
       },
     ],
+    [
+      '192.224.101.80.dbSonicDW.dbo.dwFullTextConversation',
+      {
+        id: '192.224.101.80.dbSonicDW.dbo.dwFullTextConversation',
+        name: 'dwFullTextConversation',
+        database: 'dbSonicDW',
+        schema: 'dbo',
+        type: 'table',
+        owner: 'etl-team',
+        sensitivity: 'internal',
+        description: 'SSIS-observed text conversation endpoint',
+        tags: ['ssis-observed'],
+      },
+    ],
   ]);
 
   initializeCache(app, objects, new Map());
@@ -127,8 +141,51 @@ describe('Search API', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.searchEngine).toBe('memory');
-    expect(res.body.pagination.total).toBe(4);
+    expect(res.body.pagination.total).toBe(5);
     expect(res.body.results).toHaveLength(2);
+  });
+
+  test('returns full catalog facet counts for database browse lists', async () => {
+    const res = await request(app).get('/api/v1/search/facets').set(authHeaders());
+
+    expect(res.status).toBe(200);
+    expect(res.body.facets.databases).toEqual(['SSISDB', 'Sonic_DW', 'analytics', 'sales']);
+    expect(res.body.facets.counts.databases).toEqual({
+      Sonic_DW: 1,
+      SSISDB: 1,
+      analytics: 2,
+      sales: 1,
+    });
+    expect(res.body.facets.counts.total).toBe(5);
+  });
+
+  test('canonicalizes dbSonicDW as Sonic_DW for catalog browse filters', async () => {
+    const searchRes = await request(app)
+      .get('/api/v1/search?database=SONIC_DW&limit=10')
+      .set(authHeaders());
+
+    expect(searchRes.status).toBe(200);
+    expect(searchRes.body.pagination.total).toBe(1);
+    expect(searchRes.body.results[0]).toEqual(
+      expect.objectContaining({
+        id: '192.224.101.80.dbSonicDW.dbo.dwFullTextConversation',
+        raw_database: 'dbSonicDW',
+        database: 'Sonic_DW',
+      })
+    );
+
+    const objectsRes = await request(app)
+      .get('/api/v1/objects?database=SONIC_DW&limit=10')
+      .set(authHeaders());
+
+    expect(objectsRes.status).toBe(200);
+    expect(objectsRes.body.pagination.total).toBe(1);
+    expect(objectsRes.body.data[0]).toEqual(
+      expect.objectContaining({
+        raw_database: 'dbSonicDW',
+        database: 'Sonic_DW',
+      })
+    );
   });
 
   test('boosts otherwise similar search matches by quality score', async () => {
