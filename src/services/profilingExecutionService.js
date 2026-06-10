@@ -14,7 +14,7 @@ const DEFAULT_SAFETY = Object.freeze({
   max_columns_per_table: 80,
   max_estimated_rows: 5_000_000,
   sample_percent: 1,
-  query_timeout_ms: 30_000,
+  query_timeout_ms: 120_000,
   lock_timeout_ms: 5_000,
   allow_full_scan: false,
   include_distinct: true,
@@ -68,8 +68,8 @@ const ADAPTIVE_PROFILE_RULES = Object.freeze({
   chunk_columns_huge: 16,
   sample_percent_large: 1,
   sample_percent_huge: 0.25,
-  query_timeout_large_ms: 60_000,
-  query_timeout_huge_ms: 90_000,
+  query_timeout_large_ms: 180_000,
+  query_timeout_huge_ms: 300_000,
 });
 
 function nowIso() {
