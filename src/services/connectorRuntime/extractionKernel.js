@@ -54,7 +54,7 @@ export async function executeConnectorExtraction({ connector, definition, option
         details: serialized,
       })
     );
-    return buildExtractionResult({ connector, adapter, events, streamResults, errors, status: 'failed', options });
+    return buildExtractionResult({ connector, adapter, events, streamResults, errors, status: 'failed', options, connectionCheck: null });
   }
 
   for (const stream of adapter.selectedStreams(options)) {
@@ -91,7 +91,7 @@ export async function executeConnectorExtraction({ connector, definition, option
   }
 
   const status = errors.length ? 'partial_failure' : 'succeeded';
-  return buildExtractionResult({ connector, adapter, events, streamResults, errors, status, options });
+  return buildExtractionResult({ connector, adapter, events, streamResults, errors, status, options, connectionCheck });
 }
 
 export async function planConnectorProfile({ connector, definition, options = {} }) {
@@ -277,7 +277,7 @@ export async function executeConnectorMetadataProfile({ connector, definition, o
   }
 }
 
-function buildExtractionResult({ connector, adapter, events, streamResults, errors, status, options = {} }) {
+function buildExtractionResult({ connector, adapter, events, streamResults, errors, status, options = {}, connectionCheck = null }) {
   const summary = summarizeCanonicalEvents(events);
   return {
     status,
@@ -291,6 +291,7 @@ function buildExtractionResult({ connector, adapter, events, streamResults, erro
     stream_results: streamResults,
     errors,
     events,
+    connection_check: connectionCheck,
     metadata: options.include_metadata ? adapter.lastMetadata || null : undefined,
   };
 }

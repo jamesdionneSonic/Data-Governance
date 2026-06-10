@@ -43,9 +43,9 @@ const navSections = [
     key: 'operate',
     label: 'Connect & Operate',
     items: [
-      { key: 'integrations', label: 'Connector Admin', icon: 'mdi-swap-horizontal' },
+      { key: 'integrations', label: 'Profile Operations', icon: 'mdi-swap-horizontal' },
       { key: 'import', label: 'Ingestion Studio', icon: 'mdi-database-import' },
-      { key: 'scheduler', label: 'Profile Scheduler', icon: 'mdi-calendar-clock' },
+      { key: 'scheduler', label: 'Queues & Schedules', icon: 'mdi-calendar-clock' },
       { key: 'admin', label: 'Platform Admin', icon: 'mdi-cog' },
     ],
   },
@@ -120,8 +120,8 @@ const pageWorkflowMeta = {
     primaryAction: 'Refresh reports',
   },
   integrations: {
-    title: 'Connector Admin',
-    subtitle: 'Create reusable source connections, run one-time profiles, schedule refreshes, and grant safe access.',
+    title: 'Profile Operations',
+    subtitle: 'Run source profiles, manage live queues, publish results, and grant safe access without exposing secrets.',
     workflow: 'Connect',
     primaryAction: 'Save connection',
   },
@@ -132,10 +132,10 @@ const pageWorkflowMeta = {
     primaryAction: 'Run next step',
   },
   scheduler: {
-    title: 'Profile Scheduler',
-    subtitle: 'Create, monitor, and run recurring aggregate, BI, and metadata profile jobs.',
-    workflow: 'Schedule',
-    primaryAction: 'Create schedule',
+    title: 'Queues & Schedules',
+    subtitle: 'Operate recurring profile queues, see what runs next, and tune live profiling safely.',
+    workflow: 'Operate',
+    primaryAction: 'Review queues',
   },
   admin: {
     title: 'Platform Admin',
@@ -541,7 +541,7 @@ const appConfig = {
         connectorPublicationResult: null,
         selectedConnectorRun: null,
         connectorWorkflowTab: 'connection',
-        selectedConnectorId: '',
+        selectedConnectorId: localStorage.getItem('dg_profile_connector_id') || '',
         profileRunResult: null,
         profileRunEditor: {
           connectorId: '',
@@ -559,8 +559,9 @@ const appConfig = {
         profileScheduleRuns: [],
         profileScheduleRunScheduleId: '',
         profileQueuePreview: null,
-        profileQueueScheduleId: '',
+        profileQueueScheduleId: localStorage.getItem('dg_profile_queue_schedule_id') || '',
         profileQueueLoading: false,
+        schedulerOpsTab: localStorage.getItem('dg_profile_ops_tab') || 'overview',
         profileScheduleLoading: false,
         profileScheduleResult: null,
         profileScheduleEditor: {
@@ -586,14 +587,27 @@ const appConfig = {
           publishTargets: ['devops'],
         },
         connectorEditor: {
-          id: 'sonic-managed-connector',
-          type: 'sql_server',
-          label: 'Sonic Managed Connector',
+          id: '',
+          type: '',
+          label: '',
           description: '',
-          configJson: '{\n  "server": "L1-5FSQL-01",\n  "database": "Sonic_DW"\n}',
-          credentialMode: 'windows_integrated',
+          configJson: '{}',
+          credentialMode: 'secret_reference',
           secretRef: '',
           rawSecret: '',
+          draftMode: false,
+          lastResetAt: null,
+          availableDatabases: [],
+          discoveringDatabases: false,
+          databaseDiscoveryError: '',
+          wizardStep: 0,
+          showAdvancedJson: false,
+          rawJsonEdited: false,
+          metadataTargets: [],
+          formValues: {},
+          testSummary: null,
+          discoverySummary: null,
+          lastValidationAt: null,
         },
         connectorGrant: {
           connectorId: '',
@@ -799,14 +813,14 @@ const appConfig = {
         ],
         integrations: [
           { label: 'Ingestion Studio', icon: 'mdi-database-import', view: 'import' },
-          { label: 'Profile Scheduler', icon: 'mdi-calendar-clock', view: 'scheduler' },
+          { label: 'Queues & Schedules', icon: 'mdi-calendar-clock', view: 'scheduler' },
         ],
         scheduler: [
-          { label: 'Connector Admin', icon: 'mdi-swap-horizontal', view: 'integrations' },
+          { label: 'Profile Operations', icon: 'mdi-swap-horizontal', view: 'integrations' },
           { label: 'Governance Ops', icon: 'mdi-clipboard-check', view: 'governanceOps' },
         ],
         import: [
-          { label: 'Connector Admin', icon: 'mdi-swap-horizontal', view: 'integrations' },
+          { label: 'Profile Operations', icon: 'mdi-swap-horizontal', view: 'integrations' },
           { label: 'Lineage Explorer', icon: 'mdi-graphql', view: 'discovery' },
         ],
       };
@@ -908,22 +922,189 @@ const appConfig = {
         this.integrations.profileScheduleEditor.connectorId;
       return (this.integrations.managedConnectors || []).find((connector) => connector.id === selectedId) || null;
     },
+    selectedConnectorDefinition() {
+      return this.integrations.connectorDefinitions.find(
+        (item) => item.type === this.integrations.connectorEditor.type
+      ) || null;
+    },
+    selectedConnectorWizard() {
+      const wizard = this.selectedConnectorDefinition?.wizard || {};
+      return {
+        supports_test: wizard.supports_test !== false,
+        supports_discovery: wizard.supports_discovery === true,
+        recommended_test_options: wizard.recommended_test_options || { dry_run: false },
+        auth_modes: Array.isArray(wizard.auth_modes) ? wizard.auth_modes : [],
+        basic_fields: Array.isArray(wizard.basic_fields) ? wizard.basic_fields : [],
+        advanced_fields: Array.isArray(wizard.advanced_fields) ? wizard.advanced_fields : [],
+      };
+    },
+    connectorWizardStepDefinitions() {
+      const steps = [
+        { key: 'type', label: '1. Choose type' },
+        { key: 'auth', label: '2. Authentication' },
+        { key: 'connection', label: '3. Connection' },
+        { key: 'test', label: '4. Test' },
+      ];
+      if (this.selectedConnectorWizard.supports_discovery) {
+        steps.push({ key: 'discovery', label: '5. Discover' });
+      }
+      steps.push({ key: 'advanced', label: this.selectedConnectorWizard.supports_discovery ? '6. Advanced' : '5. Advanced' });
+      steps.push({ key: 'save', label: this.selectedConnectorWizard.supports_discovery ? '7. Save' : '6. Save' });
+      return steps;
+    },
+    currentConnectorWizardStep() {
+      const index = Math.max(0, Math.min(this.integrations.connectorEditor.wizardStep || 0, this.connectorWizardStepDefinitions.length - 1));
+      return this.connectorWizardStepDefinitions[index] || this.connectorWizardStepDefinitions[0];
+    },
+    visibleConnectorBasicFields() {
+      return this.selectedConnectorWizard.basic_fields.filter((field) => this.connectorWizardFieldVisible(field));
+    },
+    visibleConnectorAdvancedFields() {
+      return this.selectedConnectorWizard.advanced_fields.filter((field) => this.connectorWizardFieldVisible(field));
+    },
+    selectedConnectorAuthModeMeta() {
+      return this.selectedConnectorWizard.auth_modes.find((mode) => mode.value === this.integrations.connectorEditor.credentialMode) || null;
+    },
+    connectorCredentialFields() {
+      return this.connectorCredentialFieldsForMode(this.integrations.connectorEditor.credentialMode);
+    },
+    connectorGeneratedConfigPreview() {
+      return JSON.stringify(this.buildConnectorConfigFromWizard(), null, 2);
+    },
+    connectorWizardNextLabel() {
+      const step = this.currentConnectorWizardStep?.key;
+      const labels = {
+        type: 'Continue to Authentication',
+        auth: 'Continue to Connection',
+        connection: 'Continue to Test',
+        test: this.selectedConnectorWizard.supports_discovery ? 'Continue to Discovery' : 'Continue to Advanced',
+        discovery: 'Continue to Advanced',
+        advanced: 'Continue to Review',
+      };
+      return labels[step] || 'Next';
+    },
+    connectorAdvancedConfigPreview() {
+      try {
+        return JSON.parse(this.integrations.connectorEditor.configJson || '{}');
+      } catch (_err) {
+        return null;
+      }
+    },
+    connectorWizardManagedConfigKeys() {
+      const keys = new Set();
+      [...this.selectedConnectorWizard.basic_fields, ...this.selectedConnectorWizard.advanced_fields].forEach((field) => {
+        if (field.config_key) keys.add(field.config_key);
+      });
+      if (this.integrations.connectorEditor.type === 'sql_server' || this.integrations.connectorEditor.type === 'ssis') {
+        keys.add('server');
+      }
+      return [...keys];
+    },
+    connectorAdvancedExtraKeys() {
+      const advanced = this.connectorAdvancedConfigPreview;
+      if (!advanced || typeof advanced !== 'object' || Array.isArray(advanced)) return [];
+      const managed = new Set(this.connectorWizardManagedConfigKeys);
+      return Object.keys(advanced).filter((key) => !managed.has(key)).sort();
+    },
+    connectorDiscoveryCollections() {
+      const snapshot = this.integrations.connectorEditor.discoverySummary || {};
+      return Object.entries(snapshot)
+        .filter(([key, value]) => key !== 'summary' && Array.isArray(value) && value.length)
+        .map(([key, value]) => ({
+          key,
+          count: value.length,
+        }))
+        .sort((left, right) => right.count - left.count)
+        .slice(0, 8);
+    },
+    connectorDatabaseOptions() {
+      return this.integrations.connectorEditor.availableDatabases || [];
+    },
+    connectorDatabaseHint() {
+      const editor = this.integrations.connectorEditor;
+      if (!(editor.type === 'sql_server' || editor.type === 'ssis')) return '';
+      if (editor.discoveringDatabases) return 'Refreshing database list for the current server...';
+      if (editor.databaseDiscoveryError) return `Database discovery failed: ${editor.databaseDiscoveryError}. You can still type a database name manually.`;
+      if (editor.availableDatabases.length > 0) return `${editor.availableDatabases.length} database(s) found. Pick one or type a name manually.`;
+      return 'Authenticate first, then refresh databases for this server.';
+    },
     selectedConnectorSchedules() {
       const connectorId = this.selectedManagedConnector?.id;
       if (!connectorId) return [];
       return (this.integrations.profileSchedules || []).filter((schedule) => schedule.connector_id === connectorId);
     },
+    operatorScheduleCandidates() {
+      const selectedConnectorId = this.selectedManagedConnector?.id || '';
+      return [...(this.integrations.profileSchedules || [])].sort((left, right) => {
+        const leftSelected = left.connector_id === selectedConnectorId ? 1 : 0;
+        const rightSelected = right.connector_id === selectedConnectorId ? 1 : 0;
+        if (leftSelected !== rightSelected) return rightSelected - leftSelected;
+        const leftActive = left.status === 'ACTIVE' ? 1 : 0;
+        const rightActive = right.status === 'ACTIVE' ? 1 : 0;
+        if (leftActive !== rightActive) return rightActive - leftActive;
+        const leftLastRun = left.last_run_at ? new Date(left.last_run_at).getTime() : 0;
+        const rightLastRun = right.last_run_at ? new Date(right.last_run_at).getTime() : 0;
+        if (leftLastRun !== rightLastRun) return rightLastRun - leftLastRun;
+        const leftNextRun = left.next_run_at ? new Date(left.next_run_at).getTime() : Number.MAX_SAFE_INTEGER;
+        const rightNextRun = right.next_run_at ? new Date(right.next_run_at).getTime() : Number.MAX_SAFE_INTEGER;
+        if (leftNextRun !== rightNextRun) return leftNextRun - rightNextRun;
+        return String(left.name || left.id || '').localeCompare(String(right.name || right.id || ''));
+      });
+    },
     selectedConnectorActiveSchedule() {
       return this.selectedConnectorSchedules.find((schedule) => schedule.status === 'ACTIVE') || null;
     },
-    focusedProfileSchedule() {
-      const scheduleId =
+    preferredProfileScheduleId() {
+      return (
         this.integrations.profileQueueScheduleId ||
         this.selectedConnectorActiveSchedule?.id ||
         this.selectedConnectorSchedules[0]?.id ||
-        this.integrations.profileSchedules[0]?.id ||
-        '';
+        this.operatorScheduleCandidates[0]?.id ||
+        ''
+      );
+    },
+    focusedProfileSchedule() {
+      const scheduleId = this.preferredProfileScheduleId;
       return (this.integrations.profileSchedules || []).find((schedule) => schedule.id === scheduleId) || null;
+    },
+    focusedProfileQueueStatus() {
+      return this.integrations.profileQueuePreview?.queue_status || null;
+    },
+    focusedProfileRecentRun() {
+      return this.integrations.profileQueuePreview?.recent_runs?.[0] || null;
+    },
+    focusedQueueNextAssets() {
+      return this.integrations.profileQueuePreview?.next_assets || [];
+    },
+    focusedQueueQueuedAssets() {
+      return this.integrations.profileQueuePreview?.queued_assets || [];
+    },
+    focusedQueueFreshSkippedAssets() {
+      return this.integrations.profileQueuePreview?.fresh_skipped_assets || [];
+    },
+    focusedQueueTimeoutAssets() {
+      return this.integrations.profileQueuePreview?.timeout_penalty_assets || [];
+    },
+    focusedQueueDeferredAssets() {
+      return this.focusedQueueQueuedAssets
+        .filter((asset) => !this.focusedQueueNextAssets.some((nextAsset) => nextAsset.asset_id === asset.asset_id))
+        .slice(0, 12);
+    },
+    connectorPendingPublishRuns() {
+      return (this.integrations.connectorRuns || []).filter((run) => this.connectorRunCanPublish(run));
+    },
+    connectorPublishFailures() {
+      return (this.integrations.connectorRuns || []).filter((run) => this.connectorRunPublishStatus(run) === 'publish_failed');
+    },
+    connectorRecentPublishedRuns() {
+      return (this.integrations.connectorRuns || []).filter((run) => ['published', 'partial_published'].includes(this.connectorRunPublishStatus(run))).slice(0, 5);
+    },
+    focusedQueueHeader() {
+      if (!this.focusedProfileSchedule) return 'No queue selected';
+      return `${this.focusedProfileSchedule.connector_id} live queue`;
+    },
+    schedulerFocusedConnectorId() {
+      return this.focusedProfileSchedule?.connector_id || this.integrations.selectedConnectorId || '-';
     },
     selectedConnectorSupportsProfiling() {
       const connector = this.selectedManagedConnector;
@@ -938,9 +1119,9 @@ const appConfig = {
       return [
         { key: 'connection', label: '1. Save connection', done: hasConnector },
         { key: 'run', label: '2. Run one-time profile', done: hasProfile },
-        { key: 'schedule', label: '3. Schedule refresh', done: hasSchedule },
+        { key: 'schedule', label: '3. Configure queue', done: hasSchedule },
         { key: 'access', label: '4. Grant access', done: hasConnector },
-        { key: 'history', label: '5. Review history', done: this.integrations.connectorRuns.length > 0 },
+        { key: 'history', label: '5. Review runs', done: this.integrations.connectorRuns.length > 0 },
       ];
     },
     accessTokenPreview() {
@@ -1672,6 +1853,15 @@ const appConfig = {
     browseQuery() {
       this.queueBrowseSearch();
     },
+    'integrations.selectedConnectorId'() {
+      this.persistProfileOpsFocus();
+    },
+    'integrations.profileQueueScheduleId'() {
+      this.persistProfileOpsFocus();
+    },
+    'integrations.schedulerOpsTab'(value) {
+      localStorage.setItem('dg_profile_ops_tab', value || 'overview');
+    },
     'importer.sqlServer.server': 'handleSqlServerConnectionChange',
     'importer.sqlServer.port': 'handleSqlServerConnectionChange',
     'importer.sqlServer.authentication': 'handleSqlServerConnectionChange',
@@ -1730,6 +1920,10 @@ const appConfig = {
     },
     clearApiErrors() {
       this.apiErrors = [];
+    },
+    persistProfileOpsFocus() {
+      localStorage.setItem('dg_profile_connector_id', this.integrations.selectedConnectorId || '');
+      localStorage.setItem('dg_profile_queue_schedule_id', this.integrations.profileQueueScheduleId || '');
     },
     decodeTokenPayload(token) {
       if (!token || typeof token !== 'string') {
@@ -5393,6 +5587,7 @@ const appConfig = {
         this.integrations.managedConnectors = connectors.connectors || [];
         if (!this.integrations.selectedConnectorId && this.integrations.managedConnectors.length) {
           this.integrations.selectedConnectorId = this.integrations.managedConnectors[0].id;
+          this.persistProfileOpsFocus();
         }
         if (!this.integrations.profileRunEditor.connectorId && this.integrations.managedConnectors.length) {
           this.integrations.profileRunEditor.connectorId = this.integrations.selectedConnectorId;
@@ -5403,6 +5598,8 @@ const appConfig = {
         if (!this.integrations.profileScheduleEditor.connectorId && this.integrations.managedConnectors.length) {
           this.integrations.profileScheduleEditor.connectorId = this.integrations.managedConnectors[0].id;
         }
+        this.syncConnectorCredentialMode();
+        this.hydrateConnectorEditorFromDefinition();
         this.initializeProfileScheduleEditor();
         await this.loadProfileSchedules();
       } catch (err) {
@@ -5410,6 +5607,473 @@ const appConfig = {
       } finally {
         this.integrations.connectorLoading = false;
       }
+    },
+    connectorWizardFieldVisible(field = {}) {
+      const credentialMode = this.integrations.connectorEditor.credentialMode;
+      if (Array.isArray(field.show_for_modes) && field.show_for_modes.length && !field.show_for_modes.includes(credentialMode)) {
+        return false;
+      }
+      if (Array.isArray(field.hide_for_modes) && field.hide_for_modes.includes(credentialMode)) {
+        return false;
+      }
+      return true;
+    },
+    connectorFieldInputType(field = {}) {
+      if (field.input === 'password') return 'password';
+      if (field.input === 'number') return 'number';
+      return 'text';
+    },
+    connectorFieldItems(field = {}) {
+      return Array.isArray(field.options) ? field.options : [];
+    },
+    connectorFieldValue(key, fallback = '') {
+      const value = this.integrations.connectorEditor.formValues?.[key];
+      return value === undefined || value === null ? fallback : value;
+    },
+    connectorEditorFieldError(key) {
+      const editor = this.integrations.connectorEditor;
+      if (key === 'id' && !String(editor.id || '').trim()) return 'Connection ID is required.';
+      if (key === 'label' && !String(editor.label || '').trim()) return 'Display label is required.';
+      return '';
+    },
+    connectorWizardFieldError(field = {}) {
+      if (!field?.required) return '';
+      const value = this.connectorFieldValue(field.key, field.input === 'toggle' ? false : '');
+      if (field.input === 'toggle') return '';
+      if (String(value || '').trim()) return '';
+      return `${field.label} is required.`;
+    },
+    connectorCredentialFieldError(field = {}) {
+      if (!field?.required) return '';
+      const value = this.connectorFieldValue(field.key, '');
+      if (String(value || '').trim()) return '';
+      return `${field.label} is required.`;
+    },
+    connectorValidationChecklist() {
+      const editor = this.integrations.connectorEditor;
+      const items = [];
+      if (!String(editor.id || '').trim()) items.push('Add a connection ID');
+      if (!String(editor.label || '').trim()) items.push('Add a display label');
+      if (!String(editor.type || '').trim()) items.push('Choose a connector type');
+      this.visibleConnectorBasicFields.forEach((field) => {
+        const error = this.connectorWizardFieldError(field);
+        if (error) items.push(error);
+      });
+      this.connectorCredentialFields.forEach((field) => {
+        const error = this.connectorCredentialFieldError(field);
+        if (error) items.push(error);
+      });
+      if (this.integrations.connectorEditor.showAdvancedJson && !this.connectorAdvancedConfigPreview) {
+        items.push('Advanced config JSON must be valid JSON.');
+      }
+      return items;
+    },
+    setConnectorFieldValue(key, value) {
+      this.integrations.connectorEditor.formValues = {
+        ...(this.integrations.connectorEditor.formValues || {}),
+        [key]: value,
+      };
+      this.refreshConnectorConfigPreview();
+    },
+    connectorCredentialFieldsForMode(mode) {
+      const normalized = String(mode || '').toLowerCase();
+      const fieldSets = {
+        windows_integrated: [],
+        managed_identity: [
+          { key: 'managed_identity_client_id', label: 'Managed identity client ID (optional)', input: 'text', target: 'credential', credential_key: 'client_id' },
+        ],
+        service_account: [
+          { key: 'credential_username', label: 'Username', input: 'text', target: 'credential', credential_key: 'username' },
+          { key: 'credential_password', label: 'Password', input: 'password', target: 'credential', credential_key: 'password' },
+          { key: 'credential_secret_ref', label: 'Secret reference', input: 'text', target: 'credential', credential_key: 'secret_ref', placeholder: 'kv://metadata/source-password' },
+        ],
+        secret_reference: [
+          { key: 'credential_username', label: 'Username', input: 'text', target: 'credential', credential_key: 'username' },
+          { key: 'credential_secret_ref', label: 'Secret reference', input: 'text', target: 'credential', credential_key: 'secret_ref', placeholder: 'kv://metadata/source-password', required: true },
+        ],
+        service_principal: [
+          { key: 'credential_client_id', label: 'Client ID', input: 'text', target: 'credential', credential_key: 'client_id', required: true },
+          { key: 'credential_client_secret', label: 'Client secret', input: 'password', target: 'credential', credential_key: 'client_secret' },
+          { key: 'credential_secret_ref', label: 'Secret reference', input: 'text', target: 'credential', credential_key: 'secret_ref', placeholder: 'kv://metadata/client-secret' },
+        ],
+        delegated_oauth: [
+          { key: 'credential_client_id', label: 'Client ID', input: 'text', target: 'credential', credential_key: 'client_id' },
+          { key: 'credential_secret_ref', label: 'Token reference', input: 'text', target: 'credential', credential_key: 'secret_ref', placeholder: 'kv://metadata/oauth-token' },
+        ],
+        oauth: [
+          { key: 'credential_client_id', label: 'Client ID', input: 'text', target: 'credential', credential_key: 'client_id' },
+          { key: 'credential_client_secret', label: 'Client secret', input: 'password', target: 'credential', credential_key: 'client_secret' },
+          { key: 'credential_secret_ref', label: 'Secret reference', input: 'text', target: 'credential', credential_key: 'secret_ref' },
+        ],
+        oauth_app: [
+          { key: 'credential_client_id', label: 'App / client ID', input: 'text', target: 'credential', credential_key: 'client_id' },
+          { key: 'credential_client_secret', label: 'App secret', input: 'password', target: 'credential', credential_key: 'client_secret' },
+          { key: 'credential_secret_ref', label: 'Secret reference', input: 'text', target: 'credential', credential_key: 'secret_ref' },
+        ],
+        api_client: [
+          { key: 'credential_client_id', label: 'Client ID', input: 'text', target: 'credential', credential_key: 'client_id' },
+          { key: 'credential_client_secret', label: 'Client secret', input: 'password', target: 'credential', credential_key: 'client_secret' },
+          { key: 'credential_secret_ref', label: 'Secret reference', input: 'text', target: 'credential', credential_key: 'secret_ref' },
+        ],
+        api_token_reference: [
+          { key: 'credential_token', label: 'API token', input: 'password', target: 'credential', credential_key: 'token' },
+          { key: 'credential_secret_ref', label: 'Token reference', input: 'text', target: 'credential', credential_key: 'secret_ref', required: false },
+        ],
+        api_key_reference: [
+          { key: 'credential_api_key', label: 'API key', input: 'password', target: 'credential', credential_key: 'api_key' },
+          { key: 'credential_secret_ref', label: 'API key reference', input: 'text', target: 'credential', credential_key: 'secret_ref' },
+        ],
+        bearer_token_reference: [
+          { key: 'credential_token', label: 'Bearer token', input: 'password', target: 'credential', credential_key: 'token' },
+          { key: 'credential_secret_ref', label: 'Token reference', input: 'text', target: 'credential', credential_key: 'secret_ref' },
+        ],
+        pat: [
+          { key: 'credential_token', label: 'Personal access token', input: 'password', target: 'credential', credential_key: 'token' },
+          { key: 'credential_secret_ref', label: 'PAT reference', input: 'text', target: 'credential', credential_key: 'secret_ref' },
+        ],
+        pat_reference: [
+          { key: 'credential_secret_ref', label: 'PAT reference', input: 'text', target: 'credential', credential_key: 'secret_ref', required: true },
+        ],
+        key_pair: [
+          { key: 'credential_username', label: 'Username', input: 'text', target: 'credential', credential_key: 'username' },
+          { key: 'credential_private_key', label: 'Private key', input: 'textarea', target: 'credential', credential_key: 'private_key' },
+          { key: 'credential_secret_ref', label: 'Private key reference', input: 'text', target: 'credential', credential_key: 'secret_ref' },
+        ],
+        sas_reference: [
+          { key: 'credential_token', label: 'SAS token', input: 'password', target: 'credential', credential_key: 'token' },
+          { key: 'credential_secret_ref', label: 'SAS reference', input: 'text', target: 'credential', credential_key: 'secret_ref' },
+        ],
+        ssh_key_reference: [
+          { key: 'credential_secret_ref', label: 'SSH key reference', input: 'text', target: 'credential', credential_key: 'secret_ref', required: true },
+        ],
+        none: [],
+      };
+      return fieldSets[normalized] || [];
+    },
+    splitSqlServerEndpoint(serverValue = '') {
+      const text = String(serverValue || '').trim();
+      if (!text) return { host: '', instance: '', port: '' };
+      const [hostAndInstance, portPart] = text.split(',');
+      const slashIndex = hostAndInstance.indexOf('\\');
+      return {
+        host: slashIndex >= 0 ? hostAndInstance.slice(0, slashIndex) : hostAndInstance,
+        instance: slashIndex >= 0 ? hostAndInstance.slice(slashIndex + 1) : '',
+        port: portPart || '',
+      };
+    },
+    hydrateConnectorEditorFromDefinition(definition = null, connector = null) {
+      const editor = this.integrations.connectorEditor;
+      const activeDefinition = definition || this.selectedConnectorDefinition;
+      const wizard = activeDefinition?.wizard || {};
+      const config = connector?.config || {};
+      const credential = connector?.credential || {};
+      const formValues = {};
+      const populate = (field) => {
+        if (field.config_group === 'sql_server_endpoint') {
+          const endpoint = this.splitSqlServerEndpoint(config.server || config.serverName || config.dataSource || '');
+          formValues.server_host = endpoint.host;
+          formValues.instance_name = endpoint.instance;
+          if (!formValues.port && endpoint.port) formValues.port = endpoint.port;
+          return;
+        }
+        const sourceKey = field.config_key;
+        const value = config?.[sourceKey];
+        if (field.value_format === 'newline_array') {
+          formValues[field.key] = Array.isArray(value) ? value.join('\n') : (value || '');
+          return;
+        }
+        if (field.input === 'toggle') {
+          formValues[field.key] = value === true;
+          return;
+        }
+        formValues[field.key] = value ?? '';
+      };
+      [...(wizard.basic_fields || []), ...(wizard.advanced_fields || [])].forEach(populate);
+      this.connectorCredentialFieldsForMode(editor.credentialMode).forEach((field) => {
+        const value = credential?.values?.[field.credential_key] ?? credential?.[field.credential_key];
+        formValues[field.key] = value ?? '';
+      });
+      if (credential?.secret_ref) {
+        formValues.credential_secret_ref = credential.secret_ref;
+      }
+      editor.formValues = formValues;
+      editor.metadataTargets = Array.isArray(connector?.metadata_targets)
+        ? [...connector.metadata_targets]
+        : [...(activeDefinition?.metadata || [])];
+      editor.availableDatabases = [];
+      editor.discoveringDatabases = false;
+      editor.databaseDiscoveryError = '';
+      editor.configJson = JSON.stringify(config || {}, null, 2);
+      editor.rawJsonEdited = false;
+      editor.showAdvancedJson = false;
+      editor.testSummary = null;
+      editor.discoverySummary = connector?.id === this.integrations.connectorSnapshot?.connector_id
+        ? this.integrations.connectorSnapshot
+        : null;
+      this.refreshConnectorConfigPreview();
+    },
+    refreshConnectorConfigPreview() {
+      if (this.integrations.connectorEditor.rawJsonEdited) return;
+      this.integrations.connectorEditor.configJson = JSON.stringify(this.buildConnectorConfigFromWizard(), null, 2);
+    },
+    buildConnectorConfigFromWizard() {
+      const editor = this.integrations.connectorEditor;
+      const config = {};
+      const applyField = (field) => {
+        if (!this.connectorWizardFieldVisible(field)) return;
+        if (field.config_group === 'sql_server_endpoint') return;
+        const raw = this.connectorFieldValue(field.key, field.input === 'toggle' ? false : '');
+        if (field.input === 'toggle') {
+          if (raw === true) config[field.config_key] = true;
+          return;
+        }
+        if (field.value_format === 'newline_array') {
+          const values = String(raw || '')
+            .split(/\r?\n/)
+            .map((value) => value.trim())
+            .filter(Boolean);
+          if (values.length) config[field.config_key] = values;
+          return;
+        }
+        if (raw !== '' && raw !== null && raw !== undefined) {
+          config[field.config_key] = field.input === 'number' ? Number(raw) : raw;
+        }
+      };
+      [...this.selectedConnectorWizard.basic_fields, ...this.selectedConnectorWizard.advanced_fields].forEach(applyField);
+      const host = this.connectorFieldValue('server_host', '').trim();
+      const instance = this.connectorFieldValue('instance_name', '').trim();
+      const serverPort = this.connectorFieldValue('port', '').trim();
+      if (host) {
+        const base = instance ? `${host}\\${instance}` : host;
+        config.server = serverPort && !config.port ? `${base},${serverPort}` : base;
+      }
+      return config;
+    },
+    buildConnectorCredentialFromWizard() {
+      const editor = this.integrations.connectorEditor;
+      const credential = { mode: editor.credentialMode };
+      this.connectorCredentialFields.forEach((field) => {
+        const value = this.connectorFieldValue(field.key, '');
+        if (value !== '' && value !== null && value !== undefined) {
+          credential[field.credential_key] = value;
+        }
+      });
+      if (!credential.secret_ref && editor.secretRef) credential.secret_ref = editor.secretRef;
+      if (!credential.secret && editor.rawSecret) credential.secret = editor.rawSecret;
+      return credential;
+    },
+    wizardSqlDiscoveryPayload() {
+      const editor = this.integrations.connectorEditor;
+      const credential = this.buildConnectorCredentialFromWizard();
+      const authenticationMap = {
+        windows_integrated: 'windows',
+        service_account: 'sql-server',
+        secret_reference: 'sql-server',
+        managed_identity: 'azure-ad',
+      };
+      return {
+        server: this.buildConnectorConfigFromWizard().server || '',
+        port: Number(this.connectorFieldValue('port', 1433)) || 1433,
+        database: 'master',
+        authentication: authenticationMap[editor.credentialMode] || 'sql-server',
+        useIntegratedAuth: editor.credentialMode === 'windows_integrated',
+        username: credential.username || '',
+        password: credential.password || credential.secret || '',
+        domain: credential.domain || '',
+        clientId: credential.client_id || '',
+        clientSecret: credential.client_secret || credential.secret || '',
+        tenantId: credential.tenant_id || '',
+        encrypt: this.connectorFieldValue('encrypt', true) !== false,
+        trustServerCertificate: this.connectorFieldValue('trustServerCertificate', false) === true,
+      };
+    },
+    canDiscoverWizardDatabases() {
+      const editor = this.integrations.connectorEditor;
+      if (!(editor.type === 'sql_server' || editor.type === 'ssis')) return false;
+      const server = this.buildConnectorConfigFromWizard().server || '';
+      if (!server) return false;
+      if (editor.credentialMode === 'windows_integrated') return true;
+      if (editor.credentialMode === 'service_account' || editor.credentialMode === 'secret_reference') {
+        return Boolean(this.connectorFieldValue('credential_username', '').trim())
+          && Boolean((this.connectorFieldValue('credential_password', '') || editor.rawSecret).trim());
+      }
+      return false;
+    },
+    async refreshWizardDatabases({ silent = false } = {}) {
+      if (!this.canDiscoverWizardDatabases()) {
+        if (!silent) this.showToast('Enter server and authentication details before refreshing databases.');
+        return;
+      }
+      try {
+        this.integrations.connectorEditor.discoveringDatabases = true;
+        this.integrations.connectorEditor.databaseDiscoveryError = '';
+        const payload = await this.api('/api/v1/ingestion/connect-sql-server/databases', {
+          method: 'POST',
+          body: JSON.stringify(this.wizardSqlDiscoveryPayload()),
+        });
+        const databases = (payload?.data?.databases || []).map((db) => ({ title: db, value: db }));
+        this.integrations.connectorEditor.availableDatabases = databases;
+        const currentDatabase = this.connectorFieldValue('database', '');
+        if (currentDatabase && !databases.some((db) => db.value === currentDatabase)) {
+          this.setConnectorFieldValue('database', '');
+        }
+        if (!silent) {
+          this.showToast(databases.length
+            ? `Discovered ${databases.length} database(s).`
+            : 'No databases were found. You can still type a database name manually.');
+        }
+      } catch (err) {
+        this.integrations.connectorEditor.availableDatabases = [];
+        this.integrations.connectorEditor.databaseDiscoveryError = err.message;
+        if (!silent) this.showToast(`Database discovery failed: ${err.message}`);
+      } finally {
+        this.integrations.connectorEditor.discoveringDatabases = false;
+      }
+    },
+    resetConnectorEditor() {
+      this.integrations.connectorEditor = {
+        ...this.integrations.connectorEditor,
+        id: '',
+        type: '',
+        label: '',
+        description: '',
+        configJson: '{}',
+        credentialMode: 'secret_reference',
+        secretRef: '',
+        rawSecret: '',
+        draftMode: true,
+        lastResetAt: new Date().toISOString(),
+        availableDatabases: [],
+        discoveringDatabases: false,
+        databaseDiscoveryError: '',
+        wizardStep: 0,
+        showAdvancedJson: false,
+        rawJsonEdited: false,
+        metadataTargets: [],
+        formValues: {},
+        testSummary: null,
+        discoverySummary: null,
+        lastValidationAt: null,
+      };
+      this.syncConnectorCredentialMode();
+      this.hydrateConnectorEditorFromDefinition();
+      this.showToast('Started a new blank connector draft.');
+    },
+    parseAdvancedConnectorConfig() {
+      try {
+        return JSON.parse(this.integrations.connectorEditor.configJson || '{}');
+      } catch (_err) {
+        this.showToast('Advanced config JSON must be valid JSON.');
+        return null;
+      }
+    },
+    connectorDiscoveryHeadline() {
+      const summary = this.integrations.connectorEditor.discoverySummary?.summary || {};
+      const count = summary.object_count ?? this.integrations.connectorEditor.testSummary?.summary?.discovered_objects ?? 0;
+      if (!count) return 'Run a connection test to capture discovery details.';
+      const streams = summary.streams?.length ? `${summary.streams.length} stream${summary.streams.length === 1 ? '' : 's'}` : null;
+      return [ `${count} discovered object${count === 1 ? '' : 's'}`, streams ].filter(Boolean).join(' across ');
+    },
+    connectorTestErrors() {
+      return (this.integrations.connectorEditor.testSummary?.errors || [])
+        .map((error) => error?.message || error?.code)
+        .filter(Boolean)
+        .slice(0, 5);
+    },
+    connectorTestHealth() {
+      const summary = this.integrations.connectorEditor.testSummary?.summary || {};
+      return {
+        config: this.integrations.connectorEditor.id && this.integrations.connectorEditor.type ? 'Ready' : 'Incomplete',
+        connection: summary.live_connection_valid ? 'Passed' : (this.integrations.connectorEditor.testSummary ? 'Failed' : 'Pending'),
+        discovery: summary.metadata_discovery_valid ? 'Passed' : (this.integrations.connectorEditor.testSummary ? 'Blocked' : 'Pending'),
+      };
+    },
+    connectorEditorSavedRecord() {
+      return (this.integrations.managedConnectors || []).find(
+        (connector) => connector.id === this.integrations.connectorEditor.id
+      ) || null;
+    },
+    connectorTestDetailPairs() {
+      const details = this.integrations.connectorEditor.testSummary?.summary?.connection_details || {};
+      const saved = this.connectorEditorSavedRecord();
+      const config = saved?.config || {};
+      return [
+        ['Server', details.server_name || config.server],
+        ['Database', details.database_name || config.database],
+        ['Login', details.login_name],
+        ['Credential Mode', details.credential_mode || saved?.credential?.mode || this.integrations.connectorEditor.credentialMode],
+      ].filter(([, value]) => value);
+    },
+    buildConnectorSavePayload() {
+      const editor = this.integrations.connectorEditor;
+      const advancedConfig = this.parseAdvancedConnectorConfig();
+      if (!advancedConfig) return null;
+      const generatedConfig = this.buildConnectorConfigFromWizard();
+      return {
+        id: editor.id,
+        type: editor.type,
+        label: editor.label,
+        description: editor.description,
+        metadata_targets: Array.isArray(editor.metadataTargets) && editor.metadataTargets.length
+          ? editor.metadataTargets
+          : (this.selectedConnectorDefinition?.metadata || []),
+        config: {
+          ...advancedConfig,
+          ...generatedConfig,
+        },
+        credential: this.buildConnectorCredentialFromWizard(),
+      };
+    },
+    onConnectorTypeChanged() {
+      const editor = this.integrations.connectorEditor;
+      editor.wizardStep = 0;
+      editor.rawSecret = '';
+      editor.testSummary = null;
+      editor.discoverySummary = null;
+      editor.availableDatabases = [];
+      editor.discoveringDatabases = false;
+      editor.databaseDiscoveryError = '';
+      this.syncConnectorCredentialMode();
+      this.hydrateConnectorEditorFromDefinition(this.selectedConnectorDefinition);
+    },
+    connectorWizardCanAdvance() {
+      const editor = this.integrations.connectorEditor;
+      const step = this.currentConnectorWizardStep?.key;
+      if (step === 'type') return Boolean(editor.type);
+      if (step === 'connection') {
+        return this.visibleConnectorBasicFields.every((field) => !this.connectorWizardFieldError(field));
+      }
+      if (step === 'auth') {
+        return this.connectorCredentialFields.every((field) => !this.connectorCredentialFieldError(field));
+      }
+      return true;
+    },
+    async advanceConnectorWizard() {
+      if (!this.connectorWizardCanAdvance()) {
+        this.showToast('Complete the required fields before moving to the next step.');
+        return;
+      }
+      const nextStepIndex = Math.min(
+        this.integrations.connectorEditor.wizardStep + 1,
+        this.connectorWizardStepDefinitions.length - 1
+      );
+      this.integrations.connectorEditor.wizardStep = nextStepIndex;
+    },
+    goToConnectorWizardStep(index) {
+      const targetIndex = Math.max(0, Math.min(index, this.connectorWizardStepDefinitions.length - 1));
+      const currentIndex = this.integrations.connectorEditor.wizardStep || 0;
+      if (targetIndex <= currentIndex) {
+        this.integrations.connectorEditor.wizardStep = targetIndex;
+        return;
+      }
+      if (!this.connectorWizardCanAdvance()) {
+        this.showToast('Complete the required fields before moving to the next step.');
+        return;
+      }
+      this.integrations.connectorEditor.wizardStep = targetIndex;
+    },
+    backConnectorWizard() {
+      this.integrations.connectorEditor.wizardStep = Math.max(this.integrations.connectorEditor.wizardStep - 1, 0);
     },
     initializeProfileScheduleEditor(force = false) {
       const editor = this.integrations.profileScheduleEditor;
@@ -5481,11 +6145,7 @@ const appConfig = {
         const payload = await this.api('/api/v1/connectors/profile-schedules');
         this.integrations.profileSchedules = payload.schedules || [];
         await this.loadProfileSchedulerStatus();
-        const preferredScheduleId =
-          this.integrations.profileQueueScheduleId ||
-          this.selectedConnectorActiveSchedule?.id ||
-          this.selectedConnectorSchedules[0]?.id ||
-          this.integrations.profileSchedules[0]?.id;
+        const preferredScheduleId = this.preferredProfileScheduleId;
         if (preferredScheduleId) await this.loadProfileScheduleQueuePreview(preferredScheduleId);
       } catch (err) {
         this.showToast(`Profile schedule load failed: ${err.message}`);
@@ -5522,12 +6182,35 @@ const appConfig = {
         const payload = await this.api(`/api/v1/connectors/profile-schedules/${encodeURIComponent(scheduleId)}/queue?limit=25&history_limit=10`);
         this.integrations.profileQueuePreview = payload.preview || null;
         this.integrations.profileQueueScheduleId = scheduleId;
+        if (payload.preview?.schedule?.connector_id) {
+          this.integrations.selectedConnectorId = payload.preview.schedule.connector_id;
+        }
+        this.persistProfileOpsFocus();
       } catch (err) {
         this.integrations.profileQueuePreview = null;
+        if (/not found/i.test(String(err.message || ''))) {
+          this.integrations.profileQueueScheduleId = '';
+          this.integrations.profileQueuePreview = null;
+          this.persistProfileOpsFocus();
+          return;
+        }
         this.showToast(`Queue preview failed: ${err.message}`);
       } finally {
         this.integrations.profileQueueLoading = false;
       }
+    },
+    async focusProfileSchedule(schedule) {
+      const scheduleId = typeof schedule === 'string' ? schedule : schedule?.id;
+      const scheduleConnectorId =
+        typeof schedule === 'string'
+          ? (this.integrations.profileSchedules || []).find((item) => item.id === schedule)?.connector_id
+          : schedule?.connector_id;
+      if (!scheduleId) return;
+      if (scheduleConnectorId) this.integrations.selectedConnectorId = scheduleConnectorId;
+      this.persistProfileOpsFocus();
+      await this.loadProfileScheduleQueuePreview(scheduleId);
+      await this.loadProfileScheduleRuns(scheduleId);
+      if (scheduleConnectorId) await this.loadManagedConnectorRuns(scheduleConnectorId);
     },
     async startProfileSchedulerWorker() {
       try {
@@ -5625,8 +6308,7 @@ const appConfig = {
       editor.publishTargets = Array.isArray(schedule.options?.auto_publish_targets) && schedule.options.auto_publish_targets.length
         ? schedule.options.auto_publish_targets
         : ['devops'];
-      await this.loadProfileScheduleRuns(schedule.id);
-      await this.loadProfileScheduleQueuePreview(schedule.id);
+      await this.focusProfileSchedule(schedule);
       this.showToast(`Editing ${schedule.name || schedule.id}.`);
     },
     resetProfileScheduleEditor() {
@@ -5658,6 +6340,7 @@ const appConfig = {
       this.integrations.profileScheduleRunScheduleId = '';
       this.integrations.profileQueuePreview = null;
       this.integrations.profileQueueScheduleId = '';
+      this.persistProfileOpsFocus();
     },
     async runProfileSchedule(scheduleId) {
       try {
@@ -5727,6 +6410,7 @@ const appConfig = {
         if (this.integrations.profileQueueScheduleId === scheduleId) {
           this.integrations.profileQueuePreview = null;
           this.integrations.profileQueueScheduleId = '';
+          this.persistProfileOpsFocus();
         }
         await this.loadProfileSchedules();
         this.showToast('Profile schedule deleted.');
@@ -5773,6 +6457,21 @@ const appConfig = {
       if (value === 'alphabetical') return 'Alphabetical';
       return value || 'Default';
     },
+    queueObjectTypeLabel(value) {
+      const normalized = String(value || '').toLowerCase();
+      if (!normalized) return 'Object';
+      if (normalized === 'table') return 'Table';
+      if (normalized === 'view') return 'View';
+      if (normalized === 'stored_procedure') return 'Stored procedure';
+      if (normalized === 'function') return 'Function';
+      if (normalized === 'trigger') return 'Trigger';
+      return normalized.replace(/_/g, ' ');
+    },
+    formatEstimatedRows(value) {
+      const count = Number(value);
+      if (!Number.isFinite(count) || count < 0) return '-';
+      return count.toLocaleString();
+    },
     connectorRunQueueStatus(run) {
       return run?.summary?.coverage_queue_status || null;
     },
@@ -5795,22 +6494,15 @@ const appConfig = {
       const definition = this.integrations.connectorDefinitions.find((item) => item.type === type);
       return definition ? `${definition.label} (${definition.cloud})` : type;
     },
-    useManagedConnector(connector) {
+    applyManagedConnectorSelection(connector, { focusWorkflow = false } = {}) {
       if (!connector) return;
       this.integrations.selectedConnectorId = connector.id;
       this.integrations.profileRunEditor.connectorId = connector.id;
       this.integrations.profileScheduleEditor.connectorId = connector.id;
       this.integrations.connectorGrant.connectorId = connector.id;
-      this.loadManagedConnectorRuns(connector.id);
-      const activeSchedule = (this.integrations.profileSchedules || []).find(
-        (schedule) => schedule.connector_id === connector.id && schedule.status === 'ACTIVE'
-      );
-      if (activeSchedule) this.loadProfileScheduleQueuePreview(activeSchedule.id);
-    },
-    editManagedConnector(connector) {
-      if (!connector) return;
-      this.useManagedConnector(connector);
-      this.integrations.connectorWorkflowTab = 'connection';
+      if (focusWorkflow) {
+        this.integrations.connectorWorkflowTab = 'connection';
+      }
       this.integrations.connectorEditor.id = connector.id;
       this.integrations.connectorEditor.type = connector.type;
       this.integrations.connectorEditor.label = connector.label || connector.id;
@@ -5819,8 +6511,94 @@ const appConfig = {
       this.integrations.connectorEditor.secretRef =
         connector.credential?.secret_ref === 'stored_reference' ? '' : connector.credential?.secret_ref || '';
       this.integrations.connectorEditor.rawSecret = '';
-      this.integrations.connectorEditor.configJson = JSON.stringify(connector.config || {}, null, 2);
+      this.integrations.connectorEditor.draftMode = false;
+      this.integrations.connectorEditor.lastResetAt = null;
       this.syncConnectorCredentialMode();
+      this.hydrateConnectorEditorFromDefinition(this.selectedConnectorDefinition, connector);
+      this.integrations.connectorEditor.wizardStep = Math.min(
+        3,
+        Math.max(0, this.connectorWizardStepDefinitions.length - 1)
+      );
+      this.persistProfileOpsFocus();
+      this.loadManagedConnectorRuns(connector.id);
+      const activeSchedule = (this.integrations.profileSchedules || []).find(
+        (schedule) => schedule.connector_id === connector.id && schedule.status === 'ACTIVE'
+      );
+      if (activeSchedule) this.focusProfileSchedule(activeSchedule);
+    },
+    useManagedConnector(connector) {
+      this.applyManagedConnectorSelection(connector);
+    },
+    editManagedConnector(connector) {
+      if (!connector) return;
+      this.applyManagedConnectorSelection(connector, { focusWorkflow: true });
+      this.integrations.connectorEditor.wizardStep = Math.min(
+        3,
+        Math.max(0, this.connectorWizardStepDefinitions.length - 1)
+      );
+    },
+    primeConnectorTestState(connector) {
+      this.integrations.connectorEditor.testSummary = null;
+      this.integrations.connectorEditor.discoverySummary = null;
+      this.integrations.connectorSnapshot = null;
+      this.integrations.connectorEditor.lastValidationAt = new Date().toISOString();
+      this.showToast(`Testing ${connector.label || connector.id}...`);
+    },
+    async runSavedConnectorTest(connector) {
+      if (!connector) {
+        this.showToast('Choose a saved connector first.');
+        return;
+      }
+      this.applyManagedConnectorSelection(connector, { focusWorkflow: true });
+      this.primeConnectorTestState(connector);
+      await this.runManagedConnector(
+        connector.id,
+        this.selectedConnectorWizard.recommended_test_options || { dry_run: false }
+      );
+      if (this.selectedConnectorWizard.supports_discovery) {
+        this.integrations.connectorEditor.discoverySummary = this.integrations.connectorSnapshot || null;
+      }
+    },
+    buildConnectorRunFailureSummary(connector, err) {
+      const saved = connector || this.connectorEditorSavedRecord() || {};
+      const config = saved.config || {};
+      const credentialMode = saved.credential?.mode || this.integrations.connectorEditor.credentialMode || 'unknown';
+      return {
+        id: `failed-${Date.now()}`,
+        connector_id: saved.id || this.integrations.connectorEditor.id || '',
+        connector_type: saved.type || this.integrations.connectorEditor.type || '',
+        status: 'failed',
+        completed_at: new Date().toISOString(),
+        summary: {
+          planned_objects: 0,
+          discovered_objects: 0,
+          discovered_columns: 0,
+          discovered_lineage_edges: 0,
+          dry_run_only: false,
+          source_contacted: false,
+          connection_status: 'failed',
+          live_connection_valid: false,
+          metadata_discovery_valid: false,
+          connection_details: {
+            server_name: config.server || '',
+            database_name: config.database || '',
+            credential_mode: credentialMode,
+          },
+          credential_mode: credentialMode,
+        },
+        errors: [
+          {
+            code: err?.code || 'CONNECTOR_RUN_FAILED',
+            message: err?.message || 'Connector run failed.',
+          },
+        ],
+      };
+    },
+    async testManagedConnector(connector) {
+      await this.runSavedConnectorTest(connector);
+    },
+    async retestSelectedManagedConnector() {
+      await this.runSavedConnectorTest(this.selectedManagedConnector);
     },
     profileRunOptionsPayload() {
       const editor = this.integrations.profileRunEditor;
@@ -5974,13 +6752,8 @@ const appConfig = {
       this.initializeProfileScheduleEditor(true);
       this.integrations.connectorWorkflowTab = 'schedule';
     },
-    selectedConnectorDefinition() {
-      return this.integrations.connectorDefinitions.find(
-        (item) => item.type === this.integrations.connectorEditor.type
-      ) || null;
-    },
     connectorCredentialModeOptions() {
-      const modes = this.selectedConnectorDefinition()?.credentialKinds || [
+      const modes = this.selectedConnectorDefinition?.credentialKinds || [
         'managed_identity',
         'service_account',
         'secret_reference',
@@ -6040,35 +6813,34 @@ const appConfig = {
         editor.secretRef = '';
         editor.rawSecret = '';
       }
+      const nextValues = { ...(editor.formValues || {}) };
+      this.connectorCredentialFieldsForMode(editor.credentialMode).forEach((field) => {
+        if (!(field.key in nextValues)) nextValues[field.key] = '';
+      });
+      editor.formValues = nextValues;
     },
-    async saveManagedConnector() {
+    async saveManagedConnector(options = {}) {
       const editor = this.integrations.connectorEditor;
+      const keepWorkflowTab = options.keepWorkflowTab === true;
       this.syncConnectorCredentialMode();
-      const config = this.parseConnectorConfigJson();
-      if (!config) return;
-      if (this.connectorSecretReferenceRequired() && !editor.secretRef && !editor.rawSecret) {
-        this.showToast('Secret Reference or One-time Secret Value is required for this credential mode.');
+      const payload = this.buildConnectorSavePayload();
+      if (!payload) return;
+      if (!payload.id || !payload.type || !payload.label) {
+        this.showToast('ID, connector type, and label are required.');
+        return;
+      }
+      const missingCredential = this.connectorCredentialFields.find(
+        (field) => field.required && String(this.connectorFieldValue(field.key, '')).trim() === ''
+      );
+      if (missingCredential) {
+        this.showToast(`${missingCredential.label} is required.`);
         return;
       }
       try {
         this.integrations.connectorLoading = true;
-        const credential = {
-          mode: editor.credentialMode,
-        };
-        if (this.connectorSecretReferenceRequired()) {
-          credential.secret_ref = editor.secretRef;
-          credential.secret = editor.rawSecret || undefined;
-        }
         await this.api('/api/v1/connectors', {
           method: 'POST',
-          body: JSON.stringify({
-            id: editor.id,
-            type: editor.type,
-            label: editor.label,
-            description: editor.description,
-            config,
-            credential,
-          }),
+          body: JSON.stringify(payload),
         });
         editor.rawSecret = '';
         await this.loadManagedConnectors();
@@ -6076,13 +6848,34 @@ const appConfig = {
         this.integrations.profileRunEditor.connectorId = editor.id;
         this.integrations.profileScheduleEditor.connectorId = editor.id;
         this.integrations.connectorGrant.connectorId = editor.id;
-        this.integrations.connectorWorkflowTab = 'run';
+        editor.draftMode = false;
+        editor.lastResetAt = null;
+        if (!keepWorkflowTab) this.integrations.connectorWorkflowTab = 'run';
         this.showToast('Managed connector saved.');
+        return true;
       } catch (err) {
         this.showToast(`Managed connector save failed: ${err.message}`);
+        return false;
       } finally {
         this.integrations.connectorLoading = false;
       }
+    },
+    async testManagedConnectorDraft() {
+      const editor = this.integrations.connectorEditor;
+      if (!editor.id || !editor.type || !editor.label) {
+        this.showToast('Save-ready connector details are required before testing.');
+        return;
+      }
+      const saved = await this.saveManagedConnector({ keepWorkflowTab: true });
+      if (!saved || !editor.id) return;
+      const connector = this.connectorEditorSavedRecord() || {
+        id: editor.id,
+        label: editor.label,
+        type: editor.type,
+        description: editor.description || '',
+        credential: { mode: editor.credentialMode },
+      };
+      await this.runSavedConnectorTest(connector);
     },
     async grantManagedConnectorPermission() {
       const grant = this.integrations.connectorGrant;
@@ -6105,20 +6898,27 @@ const appConfig = {
         this.showToast(`Connector permission failed: ${err.message}`);
       }
     },
-    async runManagedConnector(connectorId) {
+    async runManagedConnector(connectorId, options = null) {
       try {
         this.integrations.connectorLoading = true;
         const payload = await this.api(`/api/v1/connectors/${encodeURIComponent(connectorId)}/run`, {
           method: 'POST',
-          body: JSON.stringify({ dry_run: true }),
+          body: JSON.stringify(options || { dry_run: true }),
         });
         this.integrations.connectorRuns = [payload.run, ...this.integrations.connectorRuns].slice(0, 10);
         await this.loadManagedConnectorSnapshot(connectorId);
+        this.integrations.connectorEditor.testSummary = payload.run || null;
+        this.integrations.connectorEditor.discoverySummary = this.integrations.connectorSnapshot || null;
         const planned = payload.run.summary?.planned_objects ?? 0;
         const discovered = payload.run.summary?.discovered_objects ?? 0;
         const suffix = payload.run.summary?.dry_run_only ? `${planned} stream/object type(s) planned; source not contacted.` : `${discovered} metadata object(s) harvested.`;
         this.showToast(`Connector run ${payload.run.status}: ${suffix}`);
       } catch (err) {
+        this.integrations.connectorEditor.testSummary = this.buildConnectorRunFailureSummary(
+          this.connectorEditorSavedRecord() || { id: connectorId },
+          err
+        );
+        this.integrations.connectorEditor.discoverySummary = null;
         this.showToast(`Connector run failed: ${err.message}`);
       } finally {
         this.integrations.connectorLoading = false;
@@ -10252,59 +11052,434 @@ const appConfig = {
                   <v-btn-toggle v-model="integrations.connectorWorkflowTab" mandatory density="compact" variant="outlined">
                     <v-btn value="connection" prepend-icon="mdi-database-cog">Connection</v-btn>
                     <v-btn value="run" prepend-icon="mdi-play-circle">Run Profile Now</v-btn>
-                    <v-btn value="schedule" prepend-icon="mdi-calendar-clock">Schedule Refresh</v-btn>
+                    <v-btn value="schedule" prepend-icon="mdi-calendar-clock">Queues</v-btn>
                     <v-btn value="access" prepend-icon="mdi-account-key">Access</v-btn>
-                    <v-btn value="history" prepend-icon="mdi-history">History</v-btn>
+                    <v-btn value="history" prepend-icon="mdi-history">Runs</v-btn>
                     <v-btn value="integrations" prepend-icon="mdi-bell">Notifications</v-btn>
                   </v-btn-toggle>
                 </div>
 
                 <div v-if="integrations.connectorWorkflowTab === 'connection'" class="connector-workspace-grid">
                   <div class="managed-connector-panel connector-builder-panel">
-                    <div class="panel-kicker">Connection Setup</div>
+                    <div class="panel-kicker">Connection Wizard</div>
                     <h3>Create or edit a source connection</h3>
-                    <p class="card-help">Save the connection first. Profiling and schedules both use this saved connector.</p>
-                    <div class="form-row">
-                      <div class="col-4"><v-label>ID</v-label><v-text-field v-model="integrations.connectorEditor.id" density="compact" variant="outlined" hide-details></v-text-field></div>
-                      <div class="col-4"><v-label>Type</v-label><v-select v-model="integrations.connectorEditor.type" density="compact" variant="outlined" hide-details :items="integrations.connectorDefinitions.map((item) => ({ title: connectorDefinitionLabel(item.type), value: item.type }))" @update:model-value="syncConnectorCredentialMode"></v-select></div>
-                      <div class="col-4"><v-label>Label</v-label><v-text-field v-model="integrations.connectorEditor.label" density="compact" variant="outlined" hide-details></v-text-field></div>
+                    <p class="card-help">Common sources use a guided setup. Advanced JSON is still available when you need it.</p>
+                    <div class="connector-step-chip-row">
+                      <v-chip
+                        v-for="(step, index) in connectorWizardStepDefinitions"
+                        :key="'connector-step-' + step.key"
+                        size="small"
+                        variant="tonal"
+                        :color="index === integrations.connectorEditor.wizardStep ? 'primary' : (index < integrations.connectorEditor.wizardStep ? 'success' : 'default')"
+                        :prepend-icon="index === integrations.connectorEditor.wizardStep ? 'mdi-circle-slice-8' : (index < integrations.connectorEditor.wizardStep ? 'mdi-check-circle' : 'mdi-circle-outline')"
+                        @click="goToConnectorWizardStep(index)"
+                        style="cursor:pointer;"
+                      >
+                        {{ step.label }}
+                      </v-chip>
                     </div>
-                    <div class="form-row mt-8">
-                      <div class="col-6">
-                        <v-label>Credential Mode</v-label>
-                        <v-select
-                          v-model="integrations.connectorEditor.credentialMode"
-                          density="compact"
-                          variant="outlined"
-                          hide-details
-                          :items="connectorCredentialModeOptions()"
-                          item-title="title"
-                          item-value="value"
-                          @update:model-value="syncConnectorCredentialMode"
-                        ></v-select>
-                        <div class="field-hint">{{ connectorCredentialModeHint() }}</div>
+
+                    <div class="connector-guardrail" v-if="integrations.connectorEditor.draftMode">
+                      <v-icon size="small">mdi-pencil-box-outline</v-icon>
+                      <span>New unsaved connector draft. Nothing has been saved yet{{ integrations.connectorEditor.lastResetAt ? ' as of ' + formatTimestamp(integrations.connectorEditor.lastResetAt) : '' }}.</span>
+                    </div>
+
+                    <div v-if="currentConnectorWizardStep?.key === 'type'" class="mt-8">
+                      <div class="form-row">
+                        <div class="col-6">
+                          <v-label>Connector Type</v-label>
+                          <v-select
+                            v-model="integrations.connectorEditor.type"
+                            density="compact"
+                            variant="outlined"
+                            hide-details
+                            :items="integrations.connectorDefinitions.map((item) => ({ title: connectorDefinitionLabel(item.type), value: item.type }))"
+                            @update:model-value="onConnectorTypeChanged"
+                          ></v-select>
+                        </div>
+                        <div class="col-6">
+                          <div class="connector-next-summary">
+                            <div><span>Category</span><strong>{{ selectedConnectorDefinition?.category || '-' }}</strong></div>
+                            <div><span>Cloud</span><strong>{{ selectedConnectorDefinition?.cloud || '-' }}</strong></div>
+                            <div><span>Discovery</span><strong>{{ selectedConnectorWizard.supports_discovery ? 'Supported' : 'Not included' }}</strong></div>
+                            <div><span>Testing</span><strong>{{ selectedConnectorWizard.supports_test ? 'Supported' : 'Save only' }}</strong></div>
+                          </div>
+                        </div>
                       </div>
-                      <div class="col-6">
-                        <v-label>Secret Reference</v-label>
-                        <v-text-field
-                          v-model="integrations.connectorEditor.secretRef"
-                          density="compact"
-                          variant="outlined"
-                          hide-details
-                          placeholder="kv://metadata/source-name"
-                          :disabled="!connectorSecretReferenceRequired()"
-                        ></v-text-field>
+                    </div>
+
+                    <div v-else-if="currentConnectorWizardStep?.key === 'auth'" class="mt-8">
+                      <div class="form-row">
+                        <div class="col-6">
+                          <v-label>Authentication Method</v-label>
+                          <v-select
+                            v-model="integrations.connectorEditor.credentialMode"
+                            density="compact"
+                            variant="outlined"
+                            hide-details
+                            :items="connectorCredentialModeOptions()"
+                            item-title="title"
+                            item-value="value"
+                            @update:model-value="syncConnectorCredentialMode"
+                          ></v-select>
+                          <div class="field-hint">{{ selectedConnectorAuthModeMeta?.help || connectorCredentialModeHint() }}</div>
+                        </div>
+                        <div class="col-6">
+                          <div class="connector-next-summary">
+                            <div><span>Selected Mode</span><strong>{{ selectedConnectorAuthModeMeta?.title || integrations.connectorEditor.credentialMode }}</strong></div>
+                            <div><span>Secret storage</span><strong>{{ connectorSecretReferenceRequired() ? 'Reference or one-time secret' : 'Not required' }}</strong></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-row mt-8">
+                        <div
+                          v-for="field in connectorCredentialFields"
+                          :key="'connector-credential-' + field.key"
+                          :class="field.input === 'textarea' ? 'col-12' : 'col-6'"
+                        >
+                          <v-label>{{ field.label }}</v-label>
+                          <v-textarea
+                            v-if="field.input === 'textarea'"
+                            :model-value="connectorFieldValue(field.key, '')"
+                            rows="3"
+                            density="compact"
+                            variant="outlined"
+                            hide-details
+                            :placeholder="field.placeholder || ''"
+                            @update:model-value="setConnectorFieldValue(field.key, $event)"
+                          ></v-textarea>
+                          <v-text-field
+                            v-else
+                            :model-value="connectorFieldValue(field.key, '')"
+                            :type="connectorFieldInputType(field)"
+                            density="compact"
+                            variant="outlined"
+                            hide-details="auto"
+                            :error="Boolean(connectorCredentialFieldError(field))"
+                            :error-messages="connectorCredentialFieldError(field)"
+                            :placeholder="field.placeholder || ''"
+                            @update:model-value="setConnectorFieldValue(field.key, $event)"
+                          ></v-text-field>
+                          <div v-if="field.required && !connectorCredentialFieldError(field)" class="field-hint">Required</div>
+                        </div>
+                        <div class="col-12" v-if="connectorSecretReferenceRequired()">
+                          <v-label>One-time Secret Value (optional)</v-label>
+                          <v-text-field
+                            v-model="integrations.connectorEditor.rawSecret"
+                            density="compact"
+                            variant="outlined"
+                            hide-details
+                            type="password"
+                            placeholder="Use for a one-time test or first save. It is not shown again after save."
+                          ></v-text-field>
+                        </div>
                       </div>
                     </div>
-                    <div class="form-row mt-8" v-if="connectorSecretReferenceRequired()">
-                      <div class="col-12"><v-label>One-time Secret Value</v-label><v-text-field v-model="integrations.connectorEditor.rawSecret" density="compact" variant="outlined" hide-details type="password" placeholder="Write-only; not displayed after save"></v-text-field></div>
+
+                    <div v-else-if="currentConnectorWizardStep?.key === 'connection'" class="mt-8">
+                      <div class="connector-guardrail" v-if="integrations.connectorEditor.type === 'sql_server' || integrations.connectorEditor.type === 'ssis'">
+                        <v-icon size="small">mdi-database-sync-outline</v-icon>
+                        <span>Authentication comes first here so the wizard can refresh available databases from the server instead of making you guess them.</span>
+                      </div>
+                      <div class="form-row">
+                        <div
+                          v-for="field in visibleConnectorBasicFields"
+                          :key="'connector-basic-' + field.key"
+                          :class="field.input === 'textarea' ? 'col-12' : 'col-6'"
+                        >
+                          <v-label>{{ field.label }}</v-label>
+                          <div v-if="(integrations.connectorEditor.type === 'sql_server' || integrations.connectorEditor.type === 'ssis') && field.key === 'database'">
+                            <div class="btn-row" style="align-items:flex-end; gap:8px;">
+                              <v-combobox
+                                :model-value="connectorFieldValue(field.key, '')"
+                                density="compact"
+                                variant="outlined"
+                                hide-details="auto"
+                                :items="connectorDatabaseOptions"
+                                item-title="title"
+                                item-value="value"
+                                :loading="integrations.connectorEditor.discoveringDatabases"
+                                :error="Boolean(connectorWizardFieldError(field))"
+                                :error-messages="connectorWizardFieldError(field)"
+                                :placeholder="field.placeholder || ''"
+                                style="flex:1;"
+                                @update:model-value="setConnectorFieldValue(field.key, typeof $event === 'string' ? $event : ($event?.value || ''))"
+                              ></v-combobox>
+                              <v-btn
+                                variant="outlined"
+                                :loading="integrations.connectorEditor.discoveringDatabases"
+                                :disabled="!canDiscoverWizardDatabases()"
+                                @click="refreshWizardDatabases()"
+                              >Refresh Databases</v-btn>
+                            </div>
+                            <div class="field-hint">{{ connectorDatabaseHint() }}</div>
+                          </div>
+                          <v-select
+                            v-else-if="field.input === 'select'"
+                            :model-value="connectorFieldValue(field.key, '')"
+                            density="compact"
+                            variant="outlined"
+                            hide-details
+                            :items="connectorFieldItems(field)"
+                            item-title="title"
+                            item-value="value"
+                            @update:model-value="setConnectorFieldValue(field.key, $event)"
+                          ></v-select>
+                          <v-switch
+                            v-else-if="field.input === 'toggle'"
+                            :model-value="connectorFieldValue(field.key, false)"
+                            color="primary"
+                            density="compact"
+                            hide-details
+                            :label="field.label"
+                            @update:model-value="setConnectorFieldValue(field.key, $event)"
+                          ></v-switch>
+                          <v-textarea
+                            v-else-if="field.input === 'textarea'"
+                            :model-value="connectorFieldValue(field.key, '')"
+                            rows="3"
+                            density="compact"
+                            variant="outlined"
+                            hide-details
+                            :placeholder="field.placeholder || ''"
+                            @update:model-value="setConnectorFieldValue(field.key, $event)"
+                          ></v-textarea>
+                          <v-text-field
+                            v-else
+                            :model-value="connectorFieldValue(field.key, '')"
+                            :type="connectorFieldInputType(field)"
+                            density="compact"
+                            variant="outlined"
+                            hide-details="auto"
+                            :error="Boolean(connectorWizardFieldError(field))"
+                            :error-messages="connectorWizardFieldError(field)"
+                            :placeholder="field.placeholder || ''"
+                            @update:model-value="setConnectorFieldValue(field.key, $event)"
+                          ></v-text-field>
+                          <div v-if="field.required && !connectorWizardFieldError(field)" class="field-hint">Required</div>
+                        </div>
+                      </div>
+                      <div class="connector-guardrail" v-if="integrations.connectorEditor.type === 'sql_server' || integrations.connectorEditor.type === 'ssis'">
+                        <v-icon size="small">mdi-auto-fix</v-icon>
+                        <span>Server, instance, and database fields generate the connector config automatically. No hand-written JSON needed for the common case.</span>
+                      </div>
                     </div>
-                    <div class="form-row mt-8">
-                      <div class="col-12"><v-label>Connector Config JSON</v-label><v-textarea v-model="integrations.connectorEditor.configJson" rows="7" density="compact" variant="outlined" hide-details></v-textarea></div>
+
+                    <div v-else-if="currentConnectorWizardStep?.key === 'test'" class="mt-8">
+                      <div class="form-row">
+                        <div class="col-4"><v-label>Connection ID</v-label><v-text-field v-model="integrations.connectorEditor.id" density="compact" variant="outlined" hide-details="auto" placeholder="vendordata-sql" :error="Boolean(connectorEditorFieldError('id'))" :error-messages="connectorEditorFieldError('id')"></v-text-field></div>
+                        <div class="col-4"><v-label>Display Label</v-label><v-text-field v-model="integrations.connectorEditor.label" density="compact" variant="outlined" hide-details="auto" placeholder="VendorData SQL Server" :error="Boolean(connectorEditorFieldError('label'))" :error-messages="connectorEditorFieldError('label')"></v-text-field></div>
+                        <div class="col-4"><v-label>Description</v-label><v-text-field v-model="integrations.connectorEditor.description" density="compact" variant="outlined" hide-details placeholder="Optional"></v-text-field></div>
+                      </div>
+                      <div class="field-hint">These fields name the saved connector that testing, schedules, and permissions will use.</div>
+                      <div class="connector-next-summary">
+                        <div><span>Type</span><strong>{{ connectorDefinitionLabel(integrations.connectorEditor.type) }}</strong></div>
+                        <div><span>Connection</span><strong>{{ integrations.connectorEditor.label || integrations.connectorEditor.id || 'Unsaved draft' }}</strong></div>
+                        <div><span>Last test</span><strong>{{ integrations.connectorEditor.lastValidationAt ? formatTimestamp(integrations.connectorEditor.lastValidationAt) : 'Not run yet' }}</strong></div>
+                        <div><span>Status</span><strong>{{ integrations.connectorEditor.testSummary?.status || 'Pending' }}</strong></div>
+                      </div>
+                      <div class="field-hint mt-4" v-if="integrations.connectorLoading">
+                        Testing {{ integrations.connectorEditor.label || integrations.connectorEditor.id || 'connector' }}. The result card below will refresh when the live check finishes.
+                      </div>
+                      <div class="connector-next-summary mt-4" v-if="integrations.connectorEditor.testSummary">
+                        <div><span>Config</span><strong>{{ connectorTestHealth().config }}</strong></div>
+                        <div><span>Live Connection</span><strong>{{ connectorTestHealth().connection }}</strong></div>
+                        <div><span>Discovery</span><strong>{{ connectorTestHealth().discovery }}</strong></div>
+                        <div><span>Mode</span><strong>{{ integrations.connectorEditor.testSummary.summary?.credential_mode || integrations.connectorEditor.credentialMode || 'n/a' }}</strong></div>
+                      </div>
+                      <div class="connector-action-strip mt-8">
+                        <button
+                          type="button"
+                          class="native-connector-btn native-connector-btn-primary"
+                          style="border:0;border-radius:12px;padding:12px 18px;background:#2563eb;color:#fff;font-weight:700;cursor:pointer;"
+                          :disabled="integrations.connectorLoading"
+                          @click="testManagedConnectorDraft"
+                        >{{ integrations.connectorLoading ? 'Testing...' : 'Save Then Test Saved Connector' }}</button>
+                        <button
+                          type="button"
+                          class="native-connector-btn native-connector-btn-secondary"
+                          style="border:1px solid #cbd5e1;border-radius:12px;padding:12px 18px;background:#fff;color:#1e293b;font-weight:600;cursor:pointer;"
+                          :disabled="!selectedManagedConnector || integrations.connectorLoading"
+                          @click="retestSelectedManagedConnector"
+                        >Retest {{ selectedManagedConnector?.label || 'Saved Connector' }}</button>
+                      </div>
+                      <div v-if="integrations.connectorEditor.testSummary" class="mt-8">
+                        <div class="field-hint">
+                          Planned objects: {{ integrations.connectorEditor.testSummary.summary?.planned_objects ?? 0 }} ·
+                          Discovered objects: {{ integrations.connectorEditor.testSummary.summary?.discovered_objects ?? 0 }} ·
+                          Dry run only: {{ integrations.connectorEditor.testSummary.summary?.dry_run_only ? 'Yes' : 'No' }}
+                        </div>
+                        <div class="mini-stack mt-4" v-if="connectorTestDetailPairs().length">
+                          <div class="mini-metric" v-for="item in connectorTestDetailPairs()" :key="'connector-test-detail-' + item[0]">
+                            <span>{{ item[0] }}</span>
+                            <strong>{{ item[1] }}</strong>
+                          </div>
+                        </div>
+                        <div v-if="connectorTestErrors().length" class="connector-empty-path mt-8">
+                          <strong>Connection test reported issues.</strong>
+                          <span v-for="error in connectorTestErrors()" :key="'connector-test-error-' + error">{{ error }}</span>
+                        </div>
+                        <div class="field-hint mt-4" v-if="integrations.connectorEditor.testSummary?.status === 'failed'">
+                          This panel now reports only the saved connector runtime result. A failed result means the actual extractor path could not reach the saved server/database with the saved auth mode.
+                        </div>
+                      </div>
                     </div>
+
+                    <div v-else-if="currentConnectorWizardStep?.key === 'discovery'" class="mt-8">
+                      <div class="connector-next-summary">
+                        <div><span>Snapshot captured</span><strong>{{ integrations.connectorEditor.discoverySummary ? 'Yes' : 'Run test first' }}</strong></div>
+                        <div><span>Objects discovered</span><strong>{{ integrations.connectorEditor.discoverySummary?.summary?.object_count ?? integrations.connectorEditor.testSummary?.summary?.discovered_objects ?? 0 }}</strong></div>
+                        <div><span>Metadata targets</span><strong>{{ integrations.connectorEditor.metadataTargets.length }}</strong></div>
+                      </div>
+                      <div class="connector-guardrail">
+                        <v-icon size="small">mdi-radar</v-icon>
+                        <span>{{ connectorDiscoveryHeadline() }}</span>
+                      </div>
+                      <div class="form-row mt-8" v-if="connectorDiscoveryCollections.length">
+                        <div class="col-12">
+                          <div class="panel-kicker">Discovered Collections</div>
+                          <div class="mini-stack">
+                            <div class="mini-metric" v-for="item in connectorDiscoveryCollections" :key="'discovery-' + item.key">
+                              <span>{{ item.key }}</span>
+                              <strong>{{ item.count }}</strong>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-row mt-8">
+                        <div class="col-12">
+                          <v-label>Metadata To Harvest</v-label>
+                          <v-select
+                            v-model="integrations.connectorEditor.metadataTargets"
+                            density="compact"
+                            variant="outlined"
+                            hide-details
+                            :items="(selectedConnectorDefinition?.metadata || []).map((item) => ({ title: item, value: item }))"
+                            multiple
+                            chips
+                          ></v-select>
+                          <div class="field-hint">Choose what this connector should harvest after the connection is saved.</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div v-else-if="currentConnectorWizardStep?.key === 'advanced'" class="mt-8">
+                      <div class="form-row">
+                        <div
+                          v-for="field in visibleConnectorAdvancedFields"
+                          :key="'connector-advanced-' + field.key"
+                          :class="field.input === 'textarea' ? 'col-12' : 'col-6'"
+                        >
+                          <v-label>{{ field.label }}</v-label>
+                          <v-select
+                            v-if="field.input === 'select'"
+                            :model-value="connectorFieldValue(field.key, '')"
+                            density="compact"
+                            variant="outlined"
+                            hide-details
+                            :items="connectorFieldItems(field)"
+                            item-title="title"
+                            item-value="value"
+                            @update:model-value="setConnectorFieldValue(field.key, $event)"
+                          ></v-select>
+                          <v-switch
+                            v-else-if="field.input === 'toggle'"
+                            :model-value="connectorFieldValue(field.key, false)"
+                            color="primary"
+                            density="compact"
+                            hide-details
+                            :label="field.label"
+                            @update:model-value="setConnectorFieldValue(field.key, $event)"
+                          ></v-switch>
+                          <v-textarea
+                            v-else-if="field.input === 'textarea'"
+                            :model-value="connectorFieldValue(field.key, '')"
+                            rows="3"
+                            density="compact"
+                            variant="outlined"
+                            hide-details
+                            :placeholder="field.placeholder || ''"
+                            @update:model-value="setConnectorFieldValue(field.key, $event)"
+                          ></v-textarea>
+                          <v-text-field
+                            v-else
+                            :model-value="connectorFieldValue(field.key, '')"
+                            :type="connectorFieldInputType(field)"
+                            density="compact"
+                            variant="outlined"
+                            hide-details
+                            :placeholder="field.placeholder || ''"
+                            @update:model-value="setConnectorFieldValue(field.key, $event)"
+                          ></v-text-field>
+                        </div>
+                      </div>
+                      <div class="form-row mt-8">
+                        <div class="col-12">
+                          <v-switch
+                            v-model="integrations.connectorEditor.showAdvancedJson"
+                            color="primary"
+                            density="compact"
+                            hide-details
+                            label="Show raw config JSON"
+                          ></v-switch>
+                          <div class="field-hint">Use this only for uncommon options or existing connector configs the wizard does not expose yet.</div>
+                        </div>
+                        <div class="col-12" v-if="integrations.connectorEditor.showAdvancedJson">
+                          <v-label>Advanced Config JSON</v-label>
+                          <v-textarea
+                            v-model="integrations.connectorEditor.configJson"
+                            rows="7"
+                            density="compact"
+                            variant="outlined"
+                            hide-details="auto"
+                            :error="integrations.connectorEditor.showAdvancedJson && !connectorAdvancedConfigPreview"
+                            :error-messages="integrations.connectorEditor.showAdvancedJson && !connectorAdvancedConfigPreview ? 'Advanced config JSON must be valid JSON.' : ''"
+                            @update:model-value="integrations.connectorEditor.rawJsonEdited = true"
+                          ></v-textarea>
+                        </div>
+                        <div class="col-12" v-if="connectorAdvancedExtraKeys.length">
+                          <div class="panel-kicker">Advanced-only keys</div>
+                          <div class="field-hint">These keys are not modeled by the wizard, but they will still be preserved on save.</div>
+                          <div class="btn-row mt-8">
+                            <v-chip v-for="key in connectorAdvancedExtraKeys" :key="'advanced-extra-' + key" size="small" variant="tonal">{{ key }}</v-chip>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div v-else-if="currentConnectorWizardStep?.key === 'save'" class="mt-8">
+                      <div class="connector-next-summary">
+                        <div><span>Connection</span><strong>{{ integrations.connectorEditor.label || integrations.connectorEditor.id || '-' }}</strong></div>
+                        <div><span>Type</span><strong>{{ connectorDefinitionLabel(integrations.connectorEditor.type) }}</strong></div>
+                        <div><span>Credential mode</span><strong>{{ selectedConnectorAuthModeMeta?.title || integrations.connectorEditor.credentialMode }}</strong></div>
+                        <div><span>Metadata targets</span><strong>{{ integrations.connectorEditor.metadataTargets.length || 0 }}</strong></div>
+                      </div>
+                      <div class="form-row mt-8">
+                        <div class="col-12">
+                          <v-label>Generated Config Preview</v-label>
+                          <v-textarea :model-value="connectorGeneratedConfigPreview" rows="6" density="compact" variant="outlined" hide-details readonly></v-textarea>
+                        </div>
+                      </div>
+                      <div class="connector-empty-path mt-8" v-if="connectorValidationChecklist().length">
+                        <strong>Before saving</strong>
+                        <span v-for="item in connectorValidationChecklist()" :key="'connector-validation-' + item">{{ item }}</span>
+                      </div>
+                    </div>
+
                     <div class="connector-action-strip mt-8">
-                      <v-btn color="primary" :loading="integrations.connectorLoading" @click="saveManagedConnector">Save Connection</v-btn>
-                      <v-btn variant="outlined" :disabled="!integrations.connectorEditor.id" :loading="integrations.connectorLoading" @click="runManagedConnector(integrations.connectorEditor.id)">Validate Setup</v-btn>
+                      <v-btn variant="tonal" @click="resetConnectorEditor">New Connection</v-btn>
+                      <v-btn variant="outlined" :disabled="integrations.connectorEditor.wizardStep === 0" @click="backConnectorWizard">Back</v-btn>
+                      <v-btn
+                        v-if="currentConnectorWizardStep?.key !== 'save'"
+                        color="primary"
+                        size="large"
+                        prepend-icon="mdi-arrow-right"
+                        min-width="220"
+                        style="font-weight: 700; letter-spacing: 0; color: white;"
+                        :disabled="!connectorWizardCanAdvance()"
+                        @click="advanceConnectorWizard"
+                      >{{ connectorWizardNextLabel() }}</v-btn>
+                      <v-btn v-else color="primary" :loading="integrations.connectorLoading" @click="saveManagedConnector">Save Connection</v-btn>
                       <v-btn variant="tonal" :disabled="!selectedManagedConnector" @click="integrations.connectorWorkflowTab = 'run'">Run Profile Now</v-btn>
                     </div>
                   </div>
@@ -10324,9 +11499,16 @@ const appConfig = {
                         </div>
                         <div class="btn-row">
                           <v-chip size="x-small" variant="tonal" :color="connector.credential?.status === 'stored_reference' || connector.credential?.status === 'configured' ? 'success' : 'warning'">{{ connector.credential?.status || 'unknown' }}</v-chip>
-                          <v-btn size="small" variant="outlined" @click="useManagedConnector(connector)">Use</v-btn>
-                          <v-btn size="small" variant="outlined" @click="editManagedConnector(connector)">Edit</v-btn>
-                          <v-btn size="small" variant="tonal" @click="loadManagedConnectorSnapshot(connector.id)">Snapshot</v-btn>
+                          <button type="button" class="native-connector-btn native-connector-btn-secondary native-connector-btn-small" style="border:1px solid #cbd5e1;border-radius:10px;padding:6px 12px;background:#fff;color:#1e293b;font-weight:600;cursor:pointer;" @click="useManagedConnector(connector)">Use</button>
+                          <button
+                            type="button"
+                            class="native-connector-btn native-connector-btn-primary native-connector-btn-small"
+                            style="border:0;border-radius:10px;padding:6px 12px;background:#2563eb;color:#fff;font-weight:700;cursor:pointer;"
+                            :disabled="integrations.connectorLoading"
+                            @click="testManagedConnector(connector)"
+                          >{{ integrations.connectorLoading && integrations.connectorEditor.id === connector.id ? 'Testing...' : 'Test' }}</button>
+                          <button type="button" class="native-connector-btn native-connector-btn-secondary native-connector-btn-small" style="border:1px solid #cbd5e1;border-radius:10px;padding:6px 12px;background:#fff;color:#1e293b;font-weight:600;cursor:pointer;" @click="editManagedConnector(connector)">Edit</button>
+                          <button type="button" class="native-connector-btn native-connector-btn-secondary native-connector-btn-small" style="border:1px solid #cbd5e1;border-radius:10px;padding:6px 12px;background:#fff;color:#1e293b;font-weight:600;cursor:pointer;" @click="loadManagedConnectorSnapshot(connector.id)">Snapshot</button>
                         </div>
                       </div>
                       <div v-if="!integrations.managedConnectors.length" class="connector-empty-path">
@@ -10385,7 +11567,7 @@ const appConfig = {
 
                 <div v-if="integrations.connectorWorkflowTab === 'schedule'" class="connector-workspace-grid">
                   <div class="managed-connector-panel">
-                    <div class="panel-kicker">Scheduled Profile Refresh</div>
+                    <div class="panel-kicker">Queue Schedule</div>
                     <h3>Create a recurring profile</h3>
                     <p class="card-help">Use schedules to keep profile metadata fresh. The scheduler runs against the saved connector and keeps secrets hidden.</p>
                     <div class="form-row">
@@ -10432,14 +11614,14 @@ const appConfig = {
                     </div>
                   </div>
                   <div class="managed-connector-panel">
-                    <div class="panel-kicker">Existing Schedules</div>
+                    <div class="panel-kicker">Existing Queues</div>
                     <div class="profile-schedule-list">
-                      <div v-for="schedule in integrations.profileSchedules.slice(0, 6)" :key="'connector-sched-' + schedule.id" class="profile-schedule-row">
+                      <div v-for="schedule in operatorScheduleCandidates.slice(0, 6)" :key="'connector-sched-' + schedule.id" class="profile-schedule-row">
                         <div class="profile-schedule-main">
                           <div class="profile-schedule-title"><strong>{{ schedule.name }}</strong><v-chip size="x-small" variant="tonal" :color="scheduleStatusColor(schedule.status)">{{ schedule.status }}</v-chip></div>
                           <span>{{ schedule.connector_id }} · next {{ formatTimestamp(schedule.next_run_at) }}</span>
                         </div>
-                        <div class="btn-row"><v-btn size="small" variant="outlined" @click="editProfileSchedule(schedule)">Edit</v-btn><v-btn size="small" variant="outlined" @click="loadProfileScheduleQueuePreview(schedule.id)">Queue</v-btn><v-btn size="small" variant="tonal" @click="runProfileSchedule(schedule.id)">Run</v-btn></div>
+                        <div class="btn-row"><v-btn size="small" variant="outlined" @click="editProfileSchedule(schedule)">Edit</v-btn><v-btn size="small" variant="outlined" @click="focusProfileSchedule(schedule)">Open Queue</v-btn><v-btn size="small" variant="tonal" @click="runProfileSchedule(schedule.id)">Run</v-btn></div>
                       </div>
                       <div v-if="!integrations.profileSchedules.length" class="connector-empty-path"><strong>No schedules yet.</strong><span>Create one here or run a one-time profile first.</span></div>
                     </div>
@@ -10460,12 +11642,12 @@ const appConfig = {
 
                 <div class="managed-connector-results" v-if="selectedManagedConnector">
                   <div class="mini-stack">
-                    <div class="mini-metric"><span>Queue Worker</span><strong>{{ integrations.profileSchedulerStatus?.running ? 'Running' : 'Stopped' }}</strong></div>
-                    <div class="mini-metric"><span>Selected Connector</span><strong>{{ selectedManagedConnector.id }}</strong></div>
-                    <div class="mini-metric"><span>Focused Schedule</span><strong>{{ focusedProfileSchedule?.connector_id || '-' }}</strong></div>
-                    <div class="mini-metric"><span>Schedules</span><strong>{{ selectedConnectorSchedules.length }}</strong></div>
-                    <div class="mini-metric"><span>Active Queue</span><strong>{{ selectedConnectorActiveSchedule ? 'Yes' : 'No' }}</strong></div>
-                    <div class="mini-metric"><span>Next Run</span><strong>{{ formatTimestamp(selectedConnectorActiveSchedule?.next_run_at) }}</strong></div>
+                    <div class="mini-metric"><span>Worker</span><strong>{{ integrations.profileSchedulerStatus?.running ? 'Running' : 'Stopped' }}</strong></div>
+                    <div class="mini-metric"><span>Current Source</span><strong>{{ selectedManagedConnector.id }}</strong></div>
+                    <div class="mini-metric"><span>Active Queue</span><strong>{{ focusedProfileSchedule?.name || '-' }}</strong></div>
+                    <div class="mini-metric"><span>Queue Status</span><strong>{{ focusedProfileSchedule?.status || '-' }}</strong></div>
+                    <div class="mini-metric"><span>Next Run</span><strong>{{ formatTimestamp(focusedProfileSchedule?.next_run_at) }}</strong></div>
+                    <div class="mini-metric"><span>Queue Remaining</span><strong>{{ focusedProfileQueueStatus?.pending_live_queue ?? '-' }}</strong></div>
                   </div>
                   <div class="connector-guardrail mt-8" v-if="!selectedConnectorActiveSchedule">
                     <v-icon size="small">mdi-alert-circle-outline</v-icon>
@@ -10480,69 +11662,32 @@ const appConfig = {
                 <div class="managed-connector-results" v-if="integrations.connectorWorkflowTab === 'history'">
                   <div class="section-header">
                     <div>
-                      <span class="section-title">Run History & Results</span>
-                      <p class="card-help mb-0">Open a run to see whether it harvested metadata, captured aggregate profile results, and where its markdown artifact was written for DevOps upload.</p>
+                      <span class="section-title">Runs & Publishing</span>
+                      <p class="card-help mb-0">See what the queue is doing, what will run next, and which completed profiles still need publication.</p>
                     </div>
                     <div class="btn-row">
                       <v-btn size="small" variant="tonal" color="primary" :loading="integrations.connectorPublishLoading" :disabled="integrations.connectorPublishLoading" @click="publishConnectorProfiles()">Publish Pending Profiles</v-btn>
                       <v-btn size="small" variant="outlined" :loading="integrations.connectorLoading" @click="loadManagedConnectorRuns(integrations.selectedConnectorId)">Refresh</v-btn>
                     </div>
                   </div>
-                  <div class="managed-connector-results" v-if="focusedProfileSchedule">
+                  <div class="managed-connector-results">
                     <div class="section-header">
                       <div>
-                        <span class="section-title">Queue Preview</span>
-                        <p class="card-help mb-0">See which schedule is active, what it will try next, and how the live queue is moving.</p>
+                        <span class="section-title">Queue Console</span>
+                        <p class="card-help mb-0">Detailed queue monitoring now lives in Queues & Schedules so setup and operations are not fighting each other on this page.</p>
                       </div>
                       <div class="btn-row">
-                        <v-chip size="x-small" variant="tonal">{{ focusedProfileSchedule.connector_id }}</v-chip>
-                        <v-chip size="x-small" variant="tonal">{{ focusedProfileSchedule.id }}</v-chip>
-                        <v-btn size="small" variant="outlined" :loading="integrations.profileQueueLoading" @click="loadProfileScheduleQueuePreview(focusedProfileSchedule.id)">Refresh Queue</v-btn>
+                        <v-btn size="small" variant="outlined" @click="integrations.schedulerOpsTab = 'overview'; onViewChange('scheduler')">Open Overview</v-btn>
+                        <v-btn size="small" variant="outlined" @click="integrations.schedulerOpsTab = 'queues'; onViewChange('scheduler')">Open Queues</v-btn>
+                        <v-btn size="small" variant="outlined" @click="integrations.schedulerOpsTab = 'runs'; onViewChange('scheduler')">Open Runs</v-btn>
+                        <v-btn size="small" variant="outlined" @click="integrations.schedulerOpsTab = 'publishing'; onViewChange('scheduler')">Open Publishing</v-btn>
                       </div>
                     </div>
-                    <div class="mini-stack" v-if="integrations.profileQueuePreview">
-                      <div class="mini-metric"><span>Queue Order</span><strong>{{ profileLivePriorityLabel(integrations.profileQueuePreview.queue_options?.live_priority) }}</strong></div>
-                      <div class="mini-metric"><span>Batch Size</span><strong>{{ integrations.profileQueuePreview.queue_options?.max_live_tables || '-' }}</strong></div>
-                      <div class="mini-metric"><span>Freshness Skip</span><strong>{{ integrations.profileQueuePreview.queue_options?.live_profile_stale_days || 30 }} days</strong></div>
-                      <div class="mini-metric"><span>Live Eligible</span><strong>{{ integrations.profileQueuePreview.queue_status?.live_eligible_assets ?? '-' }}</strong></div>
-                      <div class="mini-metric"><span>Queue Remaining</span><strong>{{ integrations.profileQueuePreview.queue_status?.pending_live_queue ?? '-' }}</strong></div>
-                      <div class="mini-metric"><span>Selected This Run</span><strong>{{ integrations.profileQueuePreview.queue_status?.selected_for_this_run ?? '-' }}</strong></div>
-                    </div>
-                    <div class="table-wrap compact-table" v-if="integrations.profileQueuePreview?.next_assets?.length">
-                      <table>
-                        <thead>
-                          <tr><th>Next Live Objects</th></tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="assetId in integrations.profileQueuePreview.next_assets" :key="'queue-next-' + assetId">
-                            <td>{{ assetId }}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="table-wrap compact-table" v-if="integrations.profileQueuePreview?.recent_runs?.length">
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Completed</th>
-                            <th>Status</th>
-                            <th>Selected</th>
-                            <th>Live Done</th>
-                            <th>Queue Left</th>
-                            <th>Error</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="run in integrations.profileQueuePreview.recent_runs" :key="'queue-run-' + run.id">
-                            <td>{{ formatTimestamp(run.completed_at) }}</td>
-                            <td>{{ run.status }}</td>
-                            <td>{{ run.queue_status?.selected_for_this_run ?? '-' }}</td>
-                            <td>{{ run.queue_status?.completed_live_assets ?? '-' }}</td>
-                            <td>{{ run.queue_status?.pending_live_queue ?? '-' }}</td>
-                            <td>{{ run.error?.message || '-' }}</td>
-                          </tr>
-                        </tbody>
-                      </table>
+                    <div class="mini-stack">
+                      <div class="mini-metric"><span>Focused Queue</span><strong>{{ focusedProfileSchedule?.name || '-' }}</strong></div>
+                      <div class="mini-metric"><span>Focused Source</span><strong>{{ focusedProfileSchedule?.connector_id || selectedManagedConnector.id }}</strong></div>
+                      <div class="mini-metric"><span>Pending Publish Runs</span><strong>{{ connectorPendingPublishRuns.length }}</strong></div>
+                      <div class="mini-metric"><span>Publish Failures</span><strong>{{ connectorPublishFailures.length }}</strong></div>
                     </div>
                   </div>
                   <div class="mini-stack" v-if="integrations.connectorSnapshot">
@@ -10684,7 +11829,7 @@ const appConfig = {
             <div v-if="activeView === 'scheduler'" class="workflow-page scheduler-page">
               <v-card class="card span-12 profile-scheduler-card" variant="outlined">
                 <div class="section-header">
-                  <span class="section-title">Profile Scheduler</span>
+                  <span class="section-title">Queues & Schedules</span>
                   <div class="btn-row">
                     <v-btn size="small" variant="outlined" :loading="integrations.profileScheduleLoading" @click="loadProfileSchedules">Refresh</v-btn>
                     <v-btn size="small" variant="outlined" :loading="integrations.profileScheduleLoading" @click="startProfileSchedulerWorker">Start Worker</v-btn>
@@ -10695,7 +11840,7 @@ const appConfig = {
                     </v-btn>
                   </div>
                 </div>
-                <p class="card-help">Automate aggregate, BI report, and metadata profiles from approved managed connectors. Schedules use stored connector credentials and keep raw payloads out of saved options.</p>
+                <p class="card-help">Operate live profiling as a queue: see which source is active, what runs next, what is blocked, and how the batch settings will behave before you save changes.</p>
 
                 <div class="profile-scheduler-stats">
                   <div class="scheduler-stat"><span>Total</span><strong>{{ profileScheduleStats.total }}</strong></div>
@@ -10714,12 +11859,157 @@ const appConfig = {
                   <span v-if="integrations.profileSchedulerStatus?.last_error" class="scheduler-runtime-error">Error {{ integrations.profileSchedulerStatus.last_error.message }}</span>
                 </div>
 
-                <div class="profile-scheduler-layout">
-                  <div class="managed-connector-panel scheduler-editor-panel">
-                    <div class="panel-kicker">{{ integrations.profileScheduleEditor.id ? 'Edit Schedule' : 'New Schedule' }}</div>
+                <div class="connector-workflow-tabs" style="margin-top: 12px;">
+                  <v-btn-toggle v-model="integrations.schedulerOpsTab" mandatory density="compact" variant="outlined">
+                    <v-btn value="overview" prepend-icon="mdi-view-dashboard-outline">Overview</v-btn>
+                    <v-btn value="queues" prepend-icon="mdi-format-list-bulleted-square">Queues</v-btn>
+                    <v-btn value="runs" prepend-icon="mdi-history">Runs</v-btn>
+                    <v-btn value="publishing" prepend-icon="mdi-upload">Publishing</v-btn>
+                    <v-btn value="settings" prepend-icon="mdi-cog-outline">Settings</v-btn>
+                  </v-btn-toggle>
+                </div>
+
+                <div class="managed-connector-results" v-if="focusedProfileSchedule && ['overview', 'queues'].includes(integrations.schedulerOpsTab)">
+                  <div class="section-header">
+                    <div>
+                      <span class="section-title">Active Queue Workspace</span>
+                      <p class="card-help mb-0">This is the operator view: pick a queue, see the next objects, and verify the worker is aiming at the right source.</p>
+                    </div>
+                    <div class="btn-row">
+                      <v-chip size="x-small" variant="tonal">{{ focusedProfileSchedule.connector_id }}</v-chip>
+                      <v-chip size="x-small" variant="tonal">{{ focusedProfileSchedule.status }}</v-chip>
+                      <v-btn size="small" variant="outlined" :loading="integrations.profileQueueLoading" @click="focusProfileSchedule(focusedProfileSchedule)">Refresh Queue</v-btn>
+                    </div>
+                  </div>
+                  <div class="mini-stack">
+                    <div class="mini-metric"><span>Worker</span><strong>{{ integrations.profileSchedulerStatus?.running ? 'Running' : 'Stopped' }}</strong></div>
+                    <div class="mini-metric"><span>Queue</span><strong>{{ focusedProfileSchedule.name }}</strong></div>
+                    <div class="mini-metric"><span>Source</span><strong>{{ focusedProfileSchedule.connector_id }}</strong></div>
+                    <div class="mini-metric"><span>Next Run</span><strong>{{ formatTimestamp(focusedProfileSchedule.next_run_at) }}</strong></div>
+                    <div class="mini-metric"><span>Fresh Skips</span><strong>{{ focusedProfileQueueStatus?.fresh_skipped_assets ?? '-' }}</strong></div>
+                    <div class="mini-metric"><span>Queue Remaining</span><strong>{{ focusedProfileQueueStatus?.pending_live_queue ?? '-' }}</strong></div>
+                    <div class="mini-metric"><span>Selected This Run</span><strong>{{ focusedProfileQueueStatus?.selected_for_this_run ?? '-' }}</strong></div>
+                    <div class="mini-metric"><span>Timeout-Penalized</span><strong>{{ focusedProfileQueueStatus?.timeout_penalty_assets ?? '-' }}</strong></div>
+                  </div>
+                  <div class="profile-schedule-list">
+                    <div
+                      v-for="schedule in operatorScheduleCandidates"
+                      :key="'scheduler-queue-focus-' + schedule.id"
+                      class="profile-schedule-row"
+                      :class="{ selected: focusedProfileSchedule?.id === schedule.id }"
+                    >
+                      <div class="profile-schedule-main">
+                        <div class="profile-schedule-title">
+                          <strong>{{ schedule.name }}</strong>
+                          <v-chip size="x-small" variant="tonal" :color="scheduleStatusColor(schedule.status)">{{ schedule.status }}</v-chip>
+                        </div>
+                        <div class="profile-schedule-meta">
+                          <span>{{ schedule.connector_id }}</span>
+                          <span>{{ profileLivePriorityLabel(scheduleQueueSummary(schedule).livePriority) }}</span>
+                          <span>Batch {{ scheduleQueueSummary(schedule).maxLiveTables }}</span>
+                        </div>
+                      </div>
+                      <div class="btn-row">
+                        <v-btn size="small" variant="outlined" @click="focusProfileSchedule(schedule)">Open Queue</v-btn>
+                        <v-btn size="small" variant="outlined" @click="editProfileSchedule(schedule)">Edit</v-btn>
+                        <v-btn size="small" variant="tonal" :disabled="schedule.status !== 'ACTIVE'" @click="runProfileSchedule(schedule.id)">Run Now</v-btn>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="table-wrap compact-table" v-if="focusedQueueNextAssets.length">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Object</th>
+                          <th>Type</th>
+                          <th>Downstream</th>
+                          <th>Rows</th>
+                          <th>Columns</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="asset in focusedQueueNextAssets" :key="'scheduler-queue-next-' + asset.asset_id">
+                          <td>{{ asset.asset_id }}</td>
+                          <td>{{ queueObjectTypeLabel(asset.object_type) }}</td>
+                          <td>{{ asset.downstream_count ?? '-' }}</td>
+                          <td>{{ formatEstimatedRows(asset.estimated_rows) }}</td>
+                          <td>{{ asset.column_count ?? '-' }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap compact-table" v-if="focusedQueueDeferredAssets.length">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Queued Later</th>
+                          <th>Rank</th>
+                          <th>Type</th>
+                          <th>Downstream</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="asset in focusedQueueDeferredAssets" :key="'scheduler-queue-later-' + asset.asset_id">
+                          <td>{{ asset.asset_id }}</td>
+                          <td>{{ asset.queue_rank }}</td>
+                          <td>{{ queueObjectTypeLabel(asset.object_type) }}</td>
+                          <td>{{ asset.downstream_count ?? '-' }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap compact-table" v-if="focusedQueueFreshSkippedAssets.length">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Skipped As Fresh</th>
+                          <th>Type</th>
+                          <th>Reason</th>
+                          <th>Rows</th>
+                          <th>Columns</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="asset in focusedQueueFreshSkippedAssets" :key="'scheduler-queue-fresh-' + asset.asset_id">
+                          <td>{{ asset.asset_id }}</td>
+                          <td>{{ queueObjectTypeLabel(asset.object_type) }}</td>
+                          <td>{{ asset.skip_reason === 'fresh_within_window' ? 'Profile is newer than freshness window' : asset.skip_reason }}</td>
+                          <td>{{ formatEstimatedRows(asset.estimated_rows) }}</td>
+                          <td>{{ asset.column_count ?? '-' }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap compact-table" v-if="focusedQueueTimeoutAssets.length">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Timed Out Recently</th>
+                          <th>Penalty</th>
+                          <th>Type</th>
+                          <th>Rows</th>
+                          <th>Downstream</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="asset in focusedQueueTimeoutAssets" :key="'scheduler-queue-timeout-' + asset.asset_id">
+                          <td>{{ asset.asset_id }}</td>
+                          <td>{{ asset.timeout_penalty_count }}</td>
+                          <td>{{ queueObjectTypeLabel(asset.object_type) }}</td>
+                          <td>{{ formatEstimatedRows(asset.estimated_rows) }}</td>
+                          <td>{{ asset.downstream_count ?? '-' }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="profile-scheduler-layout" v-if="['queues', 'settings'].includes(integrations.schedulerOpsTab)">
+                  <div class="managed-connector-panel scheduler-editor-panel" v-if="integrations.schedulerOpsTab === 'settings'">
+                    <div class="panel-kicker">{{ integrations.profileScheduleEditor.id ? 'Edit Queue Settings' : 'New Queue Schedule' }}</div>
                     <div class="form-row">
                       <div class="col-4"><v-label>Connector</v-label><v-select v-model="integrations.profileScheduleEditor.connectorId" density="compact" variant="outlined" hide-details :items="profileScheduleConnectorOptions"></v-select></div>
-                      <div class="col-4"><v-label>Name</v-label><v-text-field v-model="integrations.profileScheduleEditor.name" density="compact" variant="outlined" hide-details placeholder="Nightly metadata profile"></v-text-field></div>
+                      <div class="col-4"><v-label>Name</v-label><v-text-field v-model="integrations.profileScheduleEditor.name" density="compact" variant="outlined" hide-details placeholder="VendorData live queue"></v-text-field></div>
                       <div class="col-2"><v-label>Profile</v-label><v-select v-model="integrations.profileScheduleEditor.profileType" density="compact" variant="outlined" hide-details :items="profileScheduleTypeOptions"></v-select></div>
                       <div class="col-2"><v-label>Status</v-label><v-select v-model="integrations.profileScheduleEditor.status" density="compact" variant="outlined" hide-details :items="['ACTIVE','PAUSED']"></v-select></div>
                     </div>
@@ -10757,7 +12047,7 @@ const appConfig = {
                         <v-switch v-model="integrations.profileScheduleEditor.includeViews" color="primary" density="compact" hide-details label="Include views"></v-switch>
                       </div>
                       <div class="col-2">
-                        <div class="field-hint" style="padding-top: 28px;">Most-used-first with batch 1 is the safest live queue.</div>
+                        <div class="field-hint" style="padding-top: 28px;">Most-used-first with a moderate batch keeps the queue moving without hiding heavy tables.</div>
                       </div>
                     </div>
                     <div class="form-row mt-8" v-if="integrations.profileScheduleEditor.profileType === 'aggregate' || integrations.profileScheduleEditor.profileType === 'auto'">
@@ -10783,7 +12073,7 @@ const appConfig = {
                   </div>
 
                   <div class="managed-connector-panel scheduler-list-panel">
-                    <div class="panel-kicker">Created Schedules</div>
+                    <div class="panel-kicker">Saved Queues</div>
                     <div class="profile-schedule-list">
                       <div v-for="schedule in integrations.profileSchedules" :key="'profile-schedule-' + schedule.id" class="profile-schedule-row">
                         <div class="profile-schedule-main">
@@ -10816,8 +12106,9 @@ const appConfig = {
                           </div>
                         </div>
                         <div class="profile-schedule-actions">
+                          <v-btn size="small" variant="outlined" @click="focusProfileSchedule(schedule)">Open Queue</v-btn>
                           <v-btn size="small" variant="outlined" @click="editProfileSchedule(schedule)">Edit</v-btn>
-                          <v-btn size="small" variant="outlined" @click="loadProfileScheduleRuns(schedule.id)">History</v-btn>
+                          <v-btn size="small" variant="outlined" @click="loadProfileScheduleRuns(schedule.id)">Runs</v-btn>
                           <v-btn size="small" color="primary" variant="tonal" :disabled="schedule.status !== 'ACTIVE'" @click="runProfileSchedule(schedule.id)">Run</v-btn>
                           <v-btn v-if="schedule.status === 'ACTIVE'" size="small" variant="tonal" @click="updateProfileScheduleStatus(schedule, 'PAUSED')">Pause</v-btn>
                           <v-btn v-else size="small" variant="tonal" @click="updateProfileScheduleStatus(schedule, 'ACTIVE')">Activate</v-btn>
@@ -10833,7 +12124,7 @@ const appConfig = {
                   </div>
                 </div>
 
-                <div v-if="integrations.profileScheduleResult" class="managed-connector-results">
+                <div v-if="integrations.profileScheduleResult && integrations.schedulerOpsTab === 'overview'" class="managed-connector-results">
                   <div class="section-header">
                     <span class="section-title">Last Scheduler Result</span>
                   </div>
@@ -10852,12 +12143,15 @@ const appConfig = {
                   </div>
                 </div>
 
-                <div v-if="integrations.profileScheduleRuns.length" class="managed-connector-results scheduler-history-panel">
+                <div v-if="integrations.schedulerOpsTab === 'runs'" class="managed-connector-results scheduler-history-panel">
                   <div class="section-header">
-                    <span class="section-title">Schedule Run History</span>
-                    <v-chip size="x-small" variant="tonal">{{ integrations.profileScheduleRunScheduleId }}</v-chip>
+                    <div>
+                      <span class="section-title">Run History</span>
+                      <p class="card-help mb-0">Review queue executions and one-time profile runs for {{ schedulerFocusedConnectorId }} without bouncing back to connection setup.</p>
+                    </div>
+                    <v-chip size="x-small" variant="tonal">{{ integrations.profileScheduleRunScheduleId || schedulerFocusedConnectorId }}</v-chip>
                   </div>
-                  <div class="table-wrap compact-table">
+                  <div class="table-wrap compact-table" v-if="integrations.profileScheduleRuns.length">
                     <table>
                       <thead>
                         <tr>
@@ -10878,6 +12172,131 @@ const appConfig = {
                         </tr>
                       </tbody>
                     </table>
+                  </div>
+                  <div v-else class="empty">No queue runs loaded for the focused schedule yet.</div>
+                  <div class="table-wrap compact-table mt-8" v-if="integrations.connectorRuns.length">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Run</th>
+                          <th>Kind</th>
+                          <th>Status</th>
+                          <th>Publish</th>
+                          <th>Completed</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="run in integrations.connectorRuns" :key="'scheduler-connector-run-' + run.id">
+                          <td>{{ run.id }}</td>
+                          <td>{{ connectorRunKind(run) }}</td>
+                          <td>{{ run.status }}</td>
+                          <td>{{ connectorRunPublishStatus(run) }}</td>
+                          <td>{{ formatTimestamp(run.completed_at) }}</td>
+                          <td><v-btn size="small" variant="outlined" @click="selectConnectorRun(run)">Details</v-btn></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="managed-connector-results mt-8" v-if="integrations.selectedConnectorRun">
+                    <div class="section-header">
+                      <span class="section-title">Selected Run Detail</span>
+                      <div class="btn-row">
+                        <v-chip size="x-small" variant="tonal">{{ connectorRunKind(integrations.selectedConnectorRun) }}</v-chip>
+                        <v-chip size="x-small" variant="tonal" :color="connectorRunPublishColor(integrations.selectedConnectorRun)">{{ connectorRunPublishStatus(integrations.selectedConnectorRun) }}</v-chip>
+                      </div>
+                    </div>
+                    <div class="connector-next-summary">
+                      <div><span>Run</span><strong>{{ integrations.selectedConnectorRun.id }}</strong></div>
+                      <div><span>Status</span><strong>{{ integrations.selectedConnectorRun.status }}</strong></div>
+                      <div><span>Completed</span><strong>{{ formatTimestamp(integrations.selectedConnectorRun.completed_at) }}</strong></div>
+                      <div><span>Assets / objects</span><strong>{{ connectorRunFoundCount(integrations.selectedConnectorRun) }}</strong></div>
+                      <div><span>Profile publish</span><strong>{{ connectorRunPublishStatus(integrations.selectedConnectorRun) }}</strong></div>
+                      <div v-if="connectorRunQueueStatus(integrations.selectedConnectorRun)"><span>Queue remaining</span><strong>{{ connectorRunQueueStatus(integrations.selectedConnectorRun).pending_live_queue }}</strong></div>
+                    </div>
+                    <div class="btn-row mt-8">
+                      <v-btn v-if="connectorRunCanPublish(integrations.selectedConnectorRun)" size="small" variant="tonal" color="primary" :loading="integrations.connectorPublishLoading" @click="publishConnectorProfiles(integrations.selectedConnectorRun)">Publish</v-btn>
+                      <v-btn v-if="canRerunFailedAssets(integrations.selectedConnectorRun)" size="small" variant="tonal" color="warning" :loading="integrations.connectorLoading" @click="rerunFailedProfileAssets(integrations.selectedConnectorRun)">Rerun Failed</v-btn>
+                    </div>
+                  </div>
+                </div>
+
+                <div v-if="integrations.schedulerOpsTab === 'publishing'" class="managed-connector-results scheduler-history-panel">
+                  <div class="section-header">
+                    <div>
+                      <span class="section-title">Publishing Control</span>
+                      <p class="card-help mb-0">Publish successful profile runs, spot failures, and confirm recent pushes without drilling into individual run details first.</p>
+                    </div>
+                    <v-btn size="small" variant="tonal" color="primary" :loading="integrations.connectorPublishLoading" @click="publishConnectorProfiles()">Publish Pending Profiles</v-btn>
+                  </div>
+                  <div class="mini-stack">
+                    <div class="mini-metric"><span>Pending</span><strong>{{ connectorPendingPublishRuns.length }}</strong></div>
+                    <div class="mini-metric"><span>Failed</span><strong>{{ connectorPublishFailures.length }}</strong></div>
+                    <div class="mini-metric"><span>Published Recently</span><strong>{{ connectorRecentPublishedRuns.length }}</strong></div>
+                    <div class="mini-metric"><span>Focused Source</span><strong>{{ schedulerFocusedConnectorId }}</strong></div>
+                  </div>
+                  <div class="table-wrap compact-table mt-8" v-if="connectorPendingPublishRuns.length">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Run</th>
+                          <th>Assets Ready</th>
+                          <th>Status</th>
+                          <th>Completed</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="run in connectorPendingPublishRuns" :key="'scheduler-publish-pending-' + run.id">
+                          <td>{{ run.id }}</td>
+                          <td>{{ connectorRunPublishState(run).successful_asset_count || 0 }}</td>
+                          <td>{{ connectorRunPublishStatus(run) }}</td>
+                          <td>{{ formatTimestamp(run.completed_at) }}</td>
+                          <td><v-btn size="small" variant="tonal" color="primary" :loading="integrations.connectorPublishLoading && integrations.selectedConnectorRun?.id === run.id" @click="publishConnectorProfiles(run)">Publish</v-btn></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap compact-table mt-8" v-if="connectorPublishFailures.length">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Run</th>
+                          <th>Failure</th>
+                          <th>Completed</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="run in connectorPublishFailures" :key="'scheduler-publish-failure-' + run.id">
+                          <td>{{ run.id }}</td>
+                          <td>{{ connectorRunPublishState(run).error?.message || connectorRunPublishStatus(run) }}</td>
+                          <td>{{ formatTimestamp(run.completed_at) }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="table-wrap compact-table mt-8" v-if="connectorRecentPublishedRuns.length">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Run</th>
+                          <th>Status</th>
+                          <th>Completed</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="run in connectorRecentPublishedRuns" :key="'scheduler-publish-success-' + run.id">
+                          <td>{{ run.id }}</td>
+                          <td>{{ connectorRunPublishStatus(run) }}</td>
+                          <td>{{ formatTimestamp(run.completed_at) }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div v-if="integrations.connectorPublicationResult" class="scheduler-artifact-paths mt-8">
+                    <span>Status {{ integrations.connectorPublicationResult.status || '-' }}</span>
+                    <span>Targets {{ (integrations.connectorPublicationResult.targets || []).join(', ') || '-' }}</span>
+                    <span>Assets {{ integrations.connectorPublicationResult.successful_asset_count || 0 }}</span>
                   </div>
                 </div>
               </v-card>

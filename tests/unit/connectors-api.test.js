@@ -40,6 +40,21 @@ describe('Connectors API', () => {
       expect.arrayContaining(['microstrategy_cloud', 'ssas_on_prem', 'power_bi', 'tableau', 'qlik_cloud'])
     );
 
+    const sqlServer = res.body.definitions.find((definition) => definition.type === 'sql_server');
+    expect(sqlServer.wizard).toMatchObject({
+      supports_test: true,
+      supports_discovery: true,
+    });
+    expect(sqlServer.wizard.basic_fields).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ key: 'server_host' }),
+        expect.objectContaining({ key: 'database' }),
+      ])
+    );
+    expect(sqlServer.wizard.auth_modes).toEqual(
+      expect.arrayContaining([expect.objectContaining({ value: 'windows_integrated' })])
+    );
+
     const coverageRes = await request(app)
       .get('/api/v1/connectors/coverage')
       .set(authHeaders(viewer));
@@ -144,7 +159,16 @@ describe('Connectors API', () => {
         id: 'profile-sql-api',
         type: 'sql_server',
         label: 'Profile SQL API',
-        config: { server: 'sql.example.com', database: 'finance' },
+        config: {
+          server: 'sql.example.com',
+          database: 'finance',
+          mockConnectionCheck: {
+            status: 'ready',
+            live_connection_valid: true,
+            metadata_discovery_valid: true,
+            details: { server_name: 'sql.example.com', database_name: 'finance', credential_mode: 'service_account' },
+          },
+        },
         credential: { mode: 'service_account', username: 'svc', password: 'profile-password', secret_ref: 'kv://sql' },
       });
 
@@ -296,6 +320,45 @@ describe('Connectors API', () => {
     const responseJson = JSON.stringify(runRes.body);
     expect(responseJson).not.toContain('hidden-client-secret');
     expect(responseJson).not.toContain('kv://powerbi/api');
+  });
+
+  test('managed connector run returns explicit connection and discovery validation states', async () => {
+    const app = createApp();
+    await request(app)
+      .post('/api/v1/connectors')
+      .set(authHeaders(admin))
+      .send({
+        id: 'sql-validate-api',
+        type: 'sql_server',
+        label: 'SQL Validate API',
+        config: {
+          server: 'L1-5FSQL-01',
+          database: 'Sonic_DW',
+          mockConnectionCheck: {
+            status: 'ready',
+            live_connection_valid: true,
+            metadata_discovery_valid: true,
+            details: { server_name: 'L1-5FSQL-01', database_name: 'Sonic_DW', credential_mode: 'windows_integrated' },
+          },
+        },
+        credential: { mode: 'windows_integrated' },
+      });
+
+    const runRes = await request(app)
+      .post('/api/v1/connectors/sql-validate-api/run')
+      .set(authHeaders(admin))
+      .send({ dry_run: true, streams: ['tables'] });
+
+    expect(runRes.status).toBe(200);
+    expect(runRes.body.run.summary).toMatchObject({
+      connection_status: 'ready',
+      live_connection_valid: true,
+      metadata_discovery_valid: true,
+      connection_details: expect.objectContaining({
+        server_name: 'L1-5FSQL-01',
+        database_name: 'Sonic_DW',
+      }),
+    });
   });
 
   test('runs connector metadata profiling through managed connector API', async () => {

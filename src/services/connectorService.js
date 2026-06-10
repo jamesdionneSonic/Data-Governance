@@ -6,6 +6,7 @@
 import { randomUUID } from 'crypto';
 import { spawn } from 'child_process';
 import {
+  appendFileSync,
   existsSync,
   mkdirSync,
   readFileSync,
@@ -25,6 +26,213 @@ import {
 } from './connectorRuntime/extractionKernel.js';
 
 const SENSITIVE_FIELD_PATTERN = /password|secret|token|key|credential|clientSecret|privateKey/i;
+const CONNECTOR_RUNTIME_LOG_DIR = path.resolve(process.cwd(), 'logs');
+const CONNECTOR_RUNTIME_LOG_PATH = path.join(CONNECTOR_RUNTIME_LOG_DIR, 'connector-runtime.log');
+const CONNECTOR_RUN_TIMEOUT_MS = Number(process.env.CONNECTOR_RUN_TIMEOUT_MS || 45000);
+const WIZARD_SUPPORTED_TYPES = new Set([
+  'sql_server',
+  'ssis',
+  'postgresql',
+  'snowflake',
+  'azure_storage',
+  'power_bi',
+  'tableau',
+  'git_repository',
+  'openapi',
+]);
+
+function writeConnectorRuntimeLog(entry = {}) {
+  try {
+    if (!existsSync(CONNECTOR_RUNTIME_LOG_DIR)) {
+      mkdirSync(CONNECTOR_RUNTIME_LOG_DIR, { recursive: true });
+    }
+    appendFileSync(
+      CONNECTOR_RUNTIME_LOG_PATH,
+      `${JSON.stringify({ timestamp: new Date().toISOString(), ...entry })}\n`,
+      'utf8'
+    );
+  } catch (err) {
+    console.error('[connectorService] Failed to write connector runtime log:', err.message);
+  }
+}
+
+async function withConnectorRunTimeout(task, timeoutMs, context = {}) {
+  let timer = null;
+  try {
+    return await Promise.race([
+      task,
+      new Promise((_, reject) => {
+        timer = setTimeout(() => {
+          const error = new Error(
+            `Connector runtime timed out after ${timeoutMs}ms for ${context.connector_id || 'unknown connector'}.`
+          );
+          error.code = 'CONNECTOR_RUN_TIMEOUT';
+          error.status = 504;
+          error.details = {
+            timeout_ms: timeoutMs,
+            connector_id: context.connector_id || null,
+            connector_type: context.connector_type || null,
+            phase: context.phase || 'connector_runtime',
+          };
+          reject(error);
+        }, timeoutMs);
+      }),
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
+const AUTH_MODE_HELP = Object.freeze({
+  windows_integrated: 'Use the Windows account running the app. No password is stored in the connector.',
+  managed_identity: 'Use the runtime managed identity for Azure-hosted access.',
+  service_account: 'Use a username and password, or store the password in a secret reference.',
+  secret_reference: 'Use a username plus a secret-store reference for the password or token.',
+  service_principal: 'Use an application identity with client credentials.',
+  delegated_oauth: 'Use a delegated OAuth flow for user-scoped SaaS access.',
+  oauth: 'Use OAuth client credentials or an external token exchange flow.',
+  oauth_app: 'Use an OAuth app registration for repository or SaaS access.',
+  api_client: 'Use API client credentials issued by the SaaS platform.',
+  api_token_reference: 'Store the API token in a secret reference or provide it one time.',
+  api_key_reference: 'Store the API key in a secret reference or provide it one time.',
+  bearer_token_reference: 'Store the bearer token in a secret reference or provide it one time.',
+  pat: 'Use a personal access token directly or through a secret reference.',
+  pat_reference: 'Store the personal access token in a secret reference.',
+  key_pair: 'Use a username plus a private key or key reference.',
+  sas_reference: 'Use a SAS token for Azure Storage access.',
+  ssh_key_reference: 'Use an SSH key reference for repository access.',
+  none: 'No credential is required for this connector.',
+});
+
+const CONNECTOR_WIZARD_METADATA = Object.freeze({
+  sql_server: {
+    supports_test: true,
+    supports_discovery: true,
+    recommended_test_options: { dry_run: false, streams: ['schemas', 'tables', 'views'] },
+    basic_fields: [
+      { key: 'server_host', label: 'Server', input: 'text', required: true, placeholder: 'L1-5FSQL-01', config_group: 'sql_server_endpoint', config_part: 'host' },
+      { key: 'instance_name', label: 'Instance', input: 'text', placeholder: 'INST1', config_group: 'sql_server_endpoint', config_part: 'instance' },
+      { key: 'database', label: 'Database', input: 'text', required: true, placeholder: 'Sonic_DW', config_key: 'database' },
+      { key: 'port', label: 'Port', input: 'number', placeholder: '1433', config_key: 'port' },
+    ],
+    advanced_fields: [
+      { key: 'schema', label: 'Default schema', input: 'text', placeholder: 'dbo', config_key: 'schema' },
+      { key: 'encrypt', label: 'Encrypt connection', input: 'toggle', config_key: 'encrypt' },
+      { key: 'trustServerCertificate', label: 'Trust server certificate', input: 'toggle', config_key: 'trustServerCertificate' },
+      { key: 'connectionTimeout', label: 'Connection timeout (ms)', input: 'number', placeholder: '15000', config_key: 'connectionTimeout' },
+    ],
+  },
+  ssis: {
+    supports_test: true,
+    supports_discovery: true,
+    recommended_test_options: { dry_run: false, streams: ['catalog', 'packages', 'tasks', 'connections'] },
+    basic_fields: [
+      { key: 'server_host', label: 'Catalog server', input: 'text', required: true, placeholder: 'L1-5FSQL-01', config_group: 'sql_server_endpoint', config_part: 'host' },
+      { key: 'instance_name', label: 'Instance', input: 'text', placeholder: 'INST1', config_group: 'sql_server_endpoint', config_part: 'instance' },
+      { key: 'catalogDatabase', label: 'Catalog database', input: 'text', placeholder: 'SSISDB', config_key: 'database' },
+      { key: 'folder', label: 'Folder (optional)', input: 'text', placeholder: 'FinanceETL', config_key: 'folder' },
+      { key: 'project', label: 'Project (optional)', input: 'text', placeholder: 'NightlyLoads', config_key: 'project' },
+    ],
+    advanced_fields: [
+      { key: 'environment', label: 'Environment', input: 'text', placeholder: 'UAT', config_key: 'environment' },
+      { key: 'connectionString', label: 'Override connection string', input: 'textarea', placeholder: 'Data Source=...;', config_key: 'connectionString' },
+    ],
+  },
+  postgresql: {
+    supports_test: true,
+    supports_discovery: true,
+    recommended_test_options: { dry_run: false, streams: ['schemas', 'tables', 'views'] },
+    basic_fields: [
+      { key: 'host', label: 'Host', input: 'text', required: true, placeholder: 'postgres.example.com', config_key: 'host' },
+      { key: 'port', label: 'Port', input: 'number', placeholder: '5432', config_key: 'port' },
+      { key: 'database', label: 'Database', input: 'text', required: true, placeholder: 'analytics', config_key: 'database' },
+      { key: 'schema', label: 'Schema', input: 'text', placeholder: 'public', config_key: 'schema' },
+    ],
+    advanced_fields: [
+      { key: 'ssl', label: 'Use SSL', input: 'toggle', config_key: 'ssl' },
+    ],
+  },
+  snowflake: {
+    supports_test: true,
+    supports_discovery: true,
+    recommended_test_options: { dry_run: false, streams: ['databases', 'schemas', 'tables'] },
+    basic_fields: [
+      { key: 'account', label: 'Account', input: 'text', required: true, placeholder: 'xy12345.us-east-1', config_key: 'account' },
+      { key: 'warehouse', label: 'Warehouse', input: 'text', required: true, placeholder: 'COMPUTE_WH', config_key: 'warehouse' },
+      { key: 'database', label: 'Database', input: 'text', required: true, placeholder: 'ANALYTICS', config_key: 'database' },
+      { key: 'schema', label: 'Schema', input: 'text', placeholder: 'PUBLIC', config_key: 'schema' },
+    ],
+    advanced_fields: [
+      { key: 'role', label: 'Role', input: 'text', placeholder: 'SYSADMIN', config_key: 'role' },
+    ],
+  },
+  azure_storage: {
+    supports_test: true,
+    supports_discovery: true,
+    recommended_test_options: { dry_run: false, streams: ['accounts', 'containers', 'paths'] },
+    basic_fields: [
+      { key: 'account', label: 'Storage account', input: 'text', required: true, placeholder: 'sonicdatalake', config_key: 'account' },
+      { key: 'container', label: 'Container / filesystem', input: 'text', placeholder: 'raw', config_key: 'container' },
+      { key: 'path', label: 'Path prefix', input: 'text', placeholder: '/landing/vendor', config_key: 'path' },
+    ],
+    advanced_fields: [
+      { key: 'base_url', label: 'Custom endpoint', input: 'text', placeholder: 'https://account.dfs.core.windows.net', config_key: 'base_url' },
+      { key: 'account_kind', label: 'Storage kind', input: 'select', config_key: 'account_kind', options: [{ title: 'ADLS Gen2', value: 'adls_gen2' }, { title: 'Blob Storage', value: 'blob' }] },
+    ],
+  },
+  power_bi: {
+    supports_test: true,
+    supports_discovery: true,
+    recommended_test_options: { dry_run: false, streams: ['workspaces', 'datasets', 'reports'] },
+    basic_fields: [
+      { key: 'tenant_id', label: 'Tenant ID', input: 'text', required: true, placeholder: '00000000-0000-0000-0000-000000000000', config_key: 'tenant_id' },
+      { key: 'workspace_id', label: 'Workspace ID', input: 'text', placeholder: 'workspace-guid', config_key: 'workspace_id' },
+      { key: 'organization', label: 'Organization', input: 'text', placeholder: 'myorg', config_key: 'organization' },
+    ],
+    advanced_fields: [
+      { key: 'activity_start', label: 'Activity start override', input: 'text', placeholder: '2026-01-01T00:00:00Z', config_key: 'activity_start' },
+      { key: 'activity_end', label: 'Activity end override', input: 'text', placeholder: '2026-01-02T00:00:00Z', config_key: 'activity_end' },
+    ],
+  },
+  tableau: {
+    supports_test: true,
+    supports_discovery: true,
+    recommended_test_options: { dry_run: false, streams: ['projects', 'workbooks', 'datasources'] },
+    basic_fields: [
+      { key: 'server_url', label: 'Server URL', input: 'text', required: true, placeholder: 'https://tableau.company.com', config_key: 'server_url' },
+      { key: 'site_id', label: 'Site ID', input: 'text', required: true, placeholder: 'marketing', config_key: 'site_id' },
+    ],
+    advanced_fields: [
+      { key: 'api_version', label: 'API version', input: 'text', placeholder: '3.21', config_key: 'api_version' },
+    ],
+  },
+  git_repository: {
+    supports_test: true,
+    supports_discovery: true,
+    recommended_test_options: { dry_run: false, streams: ['repositories', 'python_scripts', 'sql_files'] },
+    basic_fields: [
+      { key: 'repo_url', label: 'Repository URL', input: 'text', required: true, placeholder: 'https://dev.azure.com/org/project/_git/repo', config_key: 'repo_url' },
+      { key: 'branch', label: 'Branch', input: 'text', placeholder: 'main', config_key: 'branch' },
+      { key: 'path', label: 'Root path', input: 'text', placeholder: '/', config_key: 'path' },
+      { key: 'files', label: 'Known files (optional)', input: 'textarea', placeholder: 'jobs/load_vehicle.py\nsql/stage_vehicle.sql', config_key: 'files', value_format: 'newline_array' },
+    ],
+    advanced_fields: [
+      { key: 'repository_api_url', label: 'Repository API URL override', input: 'text', placeholder: 'https://api.github.com/repos/org/repo', config_key: 'repository_api_url' },
+    ],
+  },
+  openapi: {
+    supports_test: true,
+    supports_discovery: false,
+    recommended_test_options: { dry_run: false, streams: ['openapi_spec', 'endpoints', 'schemas'] },
+    basic_fields: [
+      { key: 'spec_url', label: 'OpenAPI spec URL', input: 'text', required: true, placeholder: 'https://api.company.com/openapi.json', config_key: 'spec_url' },
+      { key: 'base_url', label: 'Base API URL', input: 'text', placeholder: 'https://api.company.com', config_key: 'base_url' },
+    ],
+    advanced_fields: [
+      { key: 'lineage_endpoint', label: 'Lineage endpoint override', input: 'text', placeholder: 'https://api.company.com/metadata', config_key: 'lineage_endpoint' },
+    ],
+  },
+});
 
 export const CONNECTOR_CATEGORIES = Object.freeze({
   DATABASE: 'database',
@@ -499,6 +707,18 @@ function normalizeConnectorType(type) {
   return found;
 }
 
+function connectorWizardMetadataForType(type) {
+  const normalized = String(type || '').trim().toLowerCase();
+  const wizard = CONNECTOR_WIZARD_METADATA[normalized];
+  if (wizard) return { ...wizard };
+  return {
+    supports_test: WIZARD_SUPPORTED_TYPES.has(normalized),
+    supports_discovery: false,
+    basic_fields: [],
+    advanced_fields: [],
+  };
+}
+
 function maskValue(value) {
   if (value === undefined || value === null || value === '') return value;
   const text = String(value);
@@ -519,12 +739,18 @@ function sanitizeCredential(credential = {}) {
   if (!credential || Object.keys(credential).length === 0) {
     return { mode: 'none', secret_ref: null, status: 'not_configured' };
   }
+  const visibleFields = Object.fromEntries(
+    Object.entries(credential)
+      .filter(([key]) => !['secret_ref', 'secretRef', 'vault'].includes(key))
+      .filter(([key]) => !SENSITIVE_FIELD_PATTERN.test(key))
+  );
   return {
     mode: credential.mode || credential.kind || 'secret_reference',
     secret_ref: credential.secret_ref || credential.secretRef || null,
     vault: credential.vault || credential.vault_name || null,
     status: credential.secret_ref || credential.secretRef ? 'stored_reference' : 'configured',
     fields: Object.keys(credential).filter((key) => !['secret_ref', 'secretRef', 'vault'].includes(key)),
+    values: visibleFields,
   };
 }
 
@@ -1453,7 +1679,17 @@ export function listConnectorDefinitions(filters = {}) {
   return Object.values(CONNECTOR_TYPES)
     .filter((definition) => !cloud || definition.cloud === cloud || definition.cloud === 'multi-cloud')
     .filter((definition) => !category || definition.category === category)
-    .map((definition) => ({ ...definition }));
+    .map((definition) => ({
+      ...definition,
+      wizard: {
+        ...connectorWizardMetadataForType(definition.type),
+        auth_modes: definition.credentialKinds.map((mode) => ({
+          value: mode,
+          title: mode.replace(/_/g, ' ').replace(/\b\w/g, (match) => match.toUpperCase()),
+          help: AUTH_MODE_HELP[mode] || 'Use the credential pattern supported by this source.',
+        })),
+      },
+    }));
 }
 
 export function upsertConnector(input = {}, actor = {}) {
@@ -1584,16 +1820,60 @@ export async function runConnector(id, options = {}, user = {}) {
   hydrateRuntimeStore();
   const connector = connectorStore.get(id);
   if (!connector) {
+    writeConnectorRuntimeLog({
+      event: 'connector.run.missing',
+      connector_id: id,
+      actor: actorId(user),
+    });
     throw new Error(`Connector '${id}' not found.`);
   }
   if (!canUseConnector(connector, user, CONNECTOR_ACTIONS.RUN)) {
     const error = new Error(`User is not allowed to run connector '${id}'.`);
     error.code = 'CONNECTOR_FORBIDDEN';
+    writeConnectorRuntimeLog({
+      event: 'connector.run.forbidden',
+      connector_id: id,
+      connector_type: connector.type,
+      actor: actorId(user),
+    });
     throw error;
   }
   const started = nowIso();
   const definition = normalizeConnectorType(connector.type);
-  const extraction = await executeConnectorExtraction({ connector, definition, options });
+  writeConnectorRuntimeLog({
+    event: 'connector.run.started',
+    connector_id: id,
+    connector_type: connector.type,
+    actor: actorId(user),
+    dry_run: options.dry_run !== false,
+    server: connector.config?.server || null,
+    database: connector.config?.database || null,
+    credential_mode: sanitizeCredential(connector.credential).mode,
+  });
+  let extraction;
+  try {
+    extraction = await withConnectorRunTimeout(
+      executeConnectorExtraction({ connector, definition, options }),
+      CONNECTOR_RUN_TIMEOUT_MS,
+      {
+        connector_id: id,
+        connector_type: connector.type,
+        phase: 'execute_connector_extraction',
+      }
+    );
+  } catch (err) {
+    writeConnectorRuntimeLog({
+      event: err?.code === 'CONNECTOR_RUN_TIMEOUT' ? 'connector.run.timed_out' : 'connector.run.crashed',
+      connector_id: id,
+      connector_type: connector.type,
+      actor: actorId(user),
+      message: err?.message || 'Unknown connector extraction crash',
+      code: err?.code || null,
+      details: err?.details || null,
+      stack: err?.stack || null,
+    });
+    throw err;
+  }
   const estimate = estimateHarvest(connector);
   const dryRun = options.dry_run !== false;
   const run = {
@@ -1625,6 +1905,11 @@ export async function runConnector(id, options = {}, user = {}) {
             source_contacted: true,
           }),
       ...extraction.summary,
+      connection_status: extraction.connection_check?.status || (extraction.status === 'failed' ? 'failed' : 'unknown'),
+      live_connection_valid: extraction.connection_check?.live_connection_valid === true,
+      metadata_discovery_valid:
+        extraction.connection_check?.metadata_discovery_valid !== false,
+      connection_details: sanitizeForPersistence(extraction.connection_check?.details || {}),
       credential_mode: sanitizeCredential(connector.credential).mode,
       secret_exposed: false,
       raw_data_captured: false,
@@ -1641,6 +1926,22 @@ export async function runConnector(id, options = {}, user = {}) {
     ],
   };
   run.artifact = exportConnectorRunMarkdown(run);
+  writeConnectorRuntimeLog({
+    event: 'connector.run.completed',
+    connector_id: id,
+    connector_type: connector.type,
+    actor: actorId(user),
+    status: run.status,
+    discovered_objects: run.summary?.discovered_objects ?? 0,
+    live_connection_valid: run.summary?.live_connection_valid === true,
+    metadata_discovery_valid: run.summary?.metadata_discovery_valid !== false,
+    connection_status: run.summary?.connection_status || 'unknown',
+    errors: (run.errors || []).slice(0, 5).map((error) => ({
+      code: error?.code || null,
+      message: error?.message || null,
+      phase: error?.phase || null,
+    })),
+  });
   runHistoryStore.unshift(run);
   runHistoryStore.splice(PROFILE_CONNECTOR_MAX_HISTORY);
   if (!dryRun || connector.type === CONNECTOR_TYPES.GIT_REPOSITORY.type) {
@@ -2236,6 +2537,45 @@ export function listConnectorProfileScheduleRuns(scheduleId, user = {}, filters 
     .slice(0, Number(filters.limit || 50));
 }
 
+function queuePreviewObjectType(asset = {}) {
+  return String(asset?.object_type || asset?.type || '').toLowerCase();
+}
+
+function queuePreviewAssetId(asset = {}) {
+  return asset?.id || asset?.object_id || asset?.qualified_name || asset?.qualifiedName || asset?.name || '';
+}
+
+function queuePreviewObjectName(asset = {}) {
+  return asset?.name || asset?.object_name || queuePreviewAssetId(asset);
+}
+
+function queuePreviewSchema(asset = {}) {
+  return asset?.schema || asset?.schema_name || asset?.owner_schema || 'dbo';
+}
+
+function queuePreviewNormalizeObjectId(value = '') {
+  return String(value || '').replace(/[\[\]`"]/g, '').trim().toLowerCase();
+}
+
+function queuePreviewStripServerPort(value = '') {
+  return String(value || '').replace(/^([^.,]+),\d+\./, '$1.').trim();
+}
+
+function queuePreviewTimeoutPenalty(asset = {}, queueState = {}) {
+  const penalties = queueState.timeout_penalties || {};
+  const keys = [
+    queuePreviewAssetId(asset),
+    asset?.object_id,
+    asset?.qualified_name,
+    asset?.qualifiedName,
+    queuePreviewStripServerPort(queuePreviewAssetId(asset)),
+  ].map(queuePreviewNormalizeObjectId);
+  for (const key of keys) {
+    if (key && penalties[key]) return Number(penalties[key].count || 0) || 0;
+  }
+  return 0;
+}
+
 export async function getConnectorProfileScheduleQueuePreview(scheduleId, user = {}, filters = {}) {
   hydrateRuntimeStore();
   const schedule = profileScheduleStore.get(scheduleId);
@@ -2267,12 +2607,44 @@ export async function getConnectorProfileScheduleQueuePreview(scheduleId, user =
   }
   const historicalQueue = plan?.coverage?.live_upgrade_queue || [];
   const queue = historicalQueue.filter((item) => item && item.asset_id);
+  const coverageAssets = Array.isArray(plan?.coverage?.assets) ? plan.coverage.assets : [];
+  const liveCapableAssets = coverageAssets.filter((asset) =>
+    ['table', 'view'].includes(queuePreviewObjectType(asset))
+  );
   const actionAssets = [...new Set((plan?.actions || []).map((action) => action.asset_id).filter(Boolean))];
+  const liveEligibleIds = new Set(queue.map((item) => queuePreviewNormalizeObjectId(item.asset_id)));
+  const freshSkippedAssets = liveCapableAssets
+    .filter((asset) => !liveEligibleIds.has(queuePreviewNormalizeObjectId(queuePreviewAssetId(asset))))
+    .map((asset) => ({
+      asset_id: queuePreviewAssetId(asset),
+      object_name: queuePreviewObjectName(asset),
+      object_type: queuePreviewObjectType(asset) || 'unknown',
+      schema: queuePreviewSchema(asset),
+      estimated_rows: Number(asset?.estimated_rows ?? asset?.estimatedRows ?? asset?.row_count ?? asset?.rowCount ?? 0) || 0,
+      column_count: Array.isArray(asset?.columns) ? asset.columns.length : 0,
+      skip_reason: 'fresh_within_window',
+    }));
+  const timeoutPenaltyAssets = queue
+    .map((asset) => ({
+      ...asset,
+      timeout_penalty_count: queuePreviewTimeoutPenalty(asset, queueState),
+    }))
+    .filter((asset) => asset.timeout_penalty_count > 0)
+    .sort((left, right) => right.timeout_penalty_count - left.timeout_penalty_count);
   const limit = Math.max(1, Number(filters.limit || 25));
   const desiredBatch = Math.max(1, Number(effectiveOptions.max_live_tables || 15));
+  const queueByAssetId = new Map(queue.map((item) => [item.asset_id, item]));
   const nextAssets = actionAssets.length >= desiredBatch
-    ? actionAssets.slice(0, Math.min(limit, desiredBatch))
-    : queue.slice(0, Math.min(limit, desiredBatch)).map((item) => item.asset_id);
+    ? actionAssets
+      .slice(0, Math.min(limit, desiredBatch))
+      .map((assetId, index) => queueByAssetId.get(assetId) || {
+        asset_id: assetId,
+        object_name: assetId.split('.').slice(-1)[0] || assetId,
+        object_type: 'unknown',
+        schema: assetId.split('.').slice(-2, -1)[0] || 'dbo',
+        queue_rank: index + 1,
+      })
+    : queue.slice(0, Math.min(limit, desiredBatch));
   const recentRuns = profileScheduleRunStore
     .filter((run) => run.schedule_id === scheduleId)
     .slice(0, Number(filters.history_limit || 10))
@@ -2287,7 +2659,15 @@ export async function getConnectorProfileScheduleQueuePreview(scheduleId, user =
 
   return {
     schedule: sanitizeProfileSchedule(schedule),
-    queue_status: plan?.coverage?.queue_status || null,
+    queue_status: {
+      ...(plan?.coverage?.queue_status || {}),
+      live_capable_assets: Math.max(
+        liveCapableAssets.length,
+        Number(plan?.coverage?.queue_status?.live_eligible_assets || 0) + freshSkippedAssets.length
+      ),
+      fresh_skipped_assets: freshSkippedAssets.length,
+      timeout_penalty_assets: Object.keys(queueState.timeout_penalties || {}).length,
+    },
     queue_options: {
       coverage_mode: effectiveOptions.coverage_mode || 'all_objects',
       live_priority: effectiveOptions.live_priority || 'most_used_first',
@@ -2297,6 +2677,8 @@ export async function getConnectorProfileScheduleQueuePreview(scheduleId, user =
     },
     next_assets: nextAssets,
     queued_assets: queue.slice(0, limit),
+    fresh_skipped_assets: freshSkippedAssets.slice(0, limit),
+    timeout_penalty_assets: timeoutPenaltyAssets.slice(0, limit),
     recent_runs: recentRuns,
   };
 }

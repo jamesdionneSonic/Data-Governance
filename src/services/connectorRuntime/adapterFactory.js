@@ -185,6 +185,51 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
     ];
   }
 
+  async testConnection() {
+    const credentialWarning = this.validateCredential();
+    this.validateConfig();
+    const warnings = credentialWarning === true ? [] : [credentialWarning];
+    if (this.config.mockConnectionCheck) {
+      return {
+        status: this.config.mockConnectionCheck.status || 'ready',
+        live_supported: true,
+        live_connection_valid: this.config.mockConnectionCheck.live_connection_valid !== false,
+        metadata_discovery_valid: this.config.mockConnectionCheck.metadata_discovery_valid !== false,
+        warnings,
+        details: this.config.mockConnectionCheck.details || {},
+      };
+    }
+    const credentialMode = sqlServerCredentialMode(this.connector);
+    const sqlDriver = this.config.sqlDriver || (await loadSqlServerDriver(credentialMode));
+    const connectionConfig =
+      this.config.connectionConfig || buildSqlServerConnectionConfig(this.connector).config;
+    const pool = new sqlDriver.ConnectionPool(connectionConfig);
+    try {
+      await pool.connect();
+      const result = await pool
+        .request()
+        .query('SELECT DB_NAME() AS database_name, @@SERVERNAME AS server_name, SYSTEM_USER AS login_name;');
+      const row = result.recordset?.[0] || {};
+      return {
+        status: 'ready',
+        live_supported: true,
+        live_connection_valid: true,
+        metadata_discovery_valid: true,
+        warnings,
+        details: {
+          server_name: row.server_name || connectionConfig.server || null,
+          database_name: row.database_name || this.config.database || null,
+          login_name: row.login_name || null,
+          credential_mode: credentialMode,
+        },
+      };
+    } catch (err) {
+      throw sqlServerConnectionRuntimeError(err, this.connector, 'connection_validation');
+    } finally {
+      await pool.close().catch(() => {});
+    }
+  }
+
   async loadMetadata(options = {}) {
     if (this.metadataPromise) return this.metadataPromise;
     if (options.mockMetadata) {
@@ -358,6 +403,76 @@ class SsisLiveAdapter extends PipelineAdapter {
       stream('agent_jobs', STREAM.object, 'SsisMetadataExtractor.extractAgentJobs', { metadata: ['SQL Agent jobs', 'SSIS job steps'] }),
       stream('lineage', STREAM.lineage, 'SsisMetadataExtractor.buildLineageEdges', { metadata: ['package calls', 'source-target edges', 'SQL task edges'] }),
     ];
+  }
+
+  async testConnection() {
+    const credentialWarning = this.validateCredential();
+    this.validateConfig();
+    const warnings = credentialWarning === true ? [] : [credentialWarning];
+    if (this.config.mockConnectionCheck) {
+      return {
+        status: this.config.mockConnectionCheck.status || 'ready',
+        live_supported: true,
+        live_connection_valid: this.config.mockConnectionCheck.live_connection_valid !== false,
+        metadata_discovery_valid: this.config.mockConnectionCheck.metadata_discovery_valid !== false,
+        warnings,
+        details: this.config.mockConnectionCheck.details || {},
+      };
+    }
+    const credentialMode = sqlServerCredentialMode(this.connector);
+    const sqlDriver = this.config.sqlDriver || (await loadSqlServerDriver(credentialMode));
+    const connectionConfig =
+      this.config.connectionConfig || buildSqlServerConnectionConfig(this.connector).config;
+    const pool = new sqlDriver.ConnectionPool(connectionConfig);
+    try {
+      await pool.connect();
+      const presentResult = await pool.request().query(
+        "SELECT name FROM sys.databases WHERE name = 'SSISDB' AND state_desc = 'ONLINE';"
+      );
+      const ssisdbPresent = Boolean(presentResult.recordset?.[0]?.name);
+      let metadataDiscoveryValid = false;
+      if (ssisdbPresent) {
+        try {
+          await pool.request().query('USE SSISDB; SELECT TOP 1 folder_id FROM catalog.folders;');
+          metadataDiscoveryValid = true;
+        } catch (err) {
+          warnings.push(
+            warningEvent({
+              connector: this.connector,
+              stream: 'connection',
+              message: `Connected to SQL Server, but SSIS catalog discovery failed: ${err.message}`,
+              details: { phase: 'catalog_probe' },
+            })
+          );
+        }
+      } else {
+        warnings.push(
+          warningEvent({
+            connector: this.connector,
+            stream: 'connection',
+            message: 'Connected to SQL Server, but SSISDB is not online or not visible to this runtime.',
+            details: { phase: 'catalog_probe' },
+          })
+        );
+      }
+      return {
+        status: metadataDiscoveryValid ? 'ready' : 'degraded',
+        live_supported: true,
+        live_connection_valid: true,
+        metadata_discovery_valid: metadataDiscoveryValid,
+        warnings,
+        details: {
+          server_name: connectionConfig.server || this.config.server || null,
+          database_name: connectionConfig.database || this.config.database || null,
+          credential_mode: credentialMode,
+          ssisdb_present: ssisdbPresent,
+        },
+      };
+    } catch (err) {
+      throw sqlServerConnectionRuntimeError(err, this.connector, 'connection_validation');
+    } finally {
+      await pool.close().catch(() => {});
+    }
   }
 
   async loadMetadata(options = {}) {
