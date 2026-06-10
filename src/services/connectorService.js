@@ -871,6 +871,14 @@ function shouldAutoPublishProfiles() {
   return value === 'true' || value === 'on' || value === '1';
 }
 
+function autoPublishTargets(options = {}) {
+  const rawTargets = Array.isArray(options.auto_publish_targets || options.autoPublishTargets)
+    ? options.auto_publish_targets || options.autoPublishTargets
+    : String(options.auto_publish_targets || options.autoPublishTargets || 'devops').split(',');
+  const normalized = [...new Set(rawTargets.map((target) => String(target).trim().toLowerCase()).filter(Boolean))];
+  return normalized.filter((target) => ['devops', 'confluence'].includes(target));
+}
+
 function npmCommand() {
   return process.platform === 'win32' ? 'npm.cmd' : 'npm';
 }
@@ -1240,9 +1248,14 @@ export function recordPublishedConnectorProfileRuns(options = {}, user = {}) {
   };
 }
 
-function maybeAutoPublishProfiles(run, user) {
-  if (!shouldAutoPublishProfiles() || profilePublishState(run).successful_asset_count <= 0) return;
-  publishConnectorProfileRuns({ run_id: run.id, targets: ['devops', 'confluence'] }, user)
+function maybeAutoPublishProfiles(run, user, options = {}) {
+  const autoPublishRequested =
+    options.auto_publish === true ||
+    options.autoPublish === true ||
+    shouldAutoPublishProfiles();
+  if (!autoPublishRequested || profilePublishState(run).successful_asset_count <= 0) return;
+  const targets = autoPublishTargets(options);
+  publishConnectorProfileRuns({ run_id: run.id, targets }, user)
     .catch((err) => {
       mergeRunPublishState(run, {
         status: 'publish_failed',
@@ -2046,6 +2059,7 @@ export async function runConnectorProfileSchedule(id, actor = {}) {
       error: run.errors?.[0] || null,
     });
     persistRuntimeStore();
+    maybeAutoPublishProfiles(run, runnerUser, updated.options || {});
     return {
       schedule: sanitizeProfileSchedule(updated),
       run,
