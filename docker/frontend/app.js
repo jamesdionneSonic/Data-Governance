@@ -558,6 +558,9 @@ const appConfig = {
         profileSchedulerStatus: null,
         profileScheduleRuns: [],
         profileScheduleRunScheduleId: '',
+        profileQueuePreview: null,
+        profileQueueScheduleId: '',
+        profileQueueLoading: false,
         profileScheduleLoading: false,
         profileScheduleResult: null,
         profileScheduleEditor: {
@@ -912,6 +915,15 @@ const appConfig = {
     },
     selectedConnectorActiveSchedule() {
       return this.selectedConnectorSchedules.find((schedule) => schedule.status === 'ACTIVE') || null;
+    },
+    focusedProfileSchedule() {
+      const scheduleId =
+        this.integrations.profileQueueScheduleId ||
+        this.selectedConnectorActiveSchedule?.id ||
+        this.selectedConnectorSchedules[0]?.id ||
+        this.integrations.profileSchedules[0]?.id ||
+        '';
+      return (this.integrations.profileSchedules || []).find((schedule) => schedule.id === scheduleId) || null;
     },
     selectedConnectorSupportsProfiling() {
       const connector = this.selectedManagedConnector;
@@ -5469,6 +5481,12 @@ const appConfig = {
         const payload = await this.api('/api/v1/connectors/profile-schedules');
         this.integrations.profileSchedules = payload.schedules || [];
         await this.loadProfileSchedulerStatus();
+        const preferredScheduleId =
+          this.integrations.profileQueueScheduleId ||
+          this.selectedConnectorActiveSchedule?.id ||
+          this.selectedConnectorSchedules[0]?.id ||
+          this.integrations.profileSchedules[0]?.id;
+        if (preferredScheduleId) await this.loadProfileScheduleQueuePreview(preferredScheduleId);
       } catch (err) {
         this.showToast(`Profile schedule load failed: ${err.message}`);
       } finally {
@@ -5495,6 +5513,20 @@ const appConfig = {
         this.integrations.profileScheduleRunScheduleId = scheduleId;
       } catch (err) {
         this.showToast(`Schedule history load failed: ${err.message}`);
+      }
+    },
+    async loadProfileScheduleQueuePreview(scheduleId) {
+      if (!scheduleId) return;
+      try {
+        this.integrations.profileQueueLoading = true;
+        const payload = await this.api(`/api/v1/connectors/profile-schedules/${encodeURIComponent(scheduleId)}/queue?limit=25&history_limit=10`);
+        this.integrations.profileQueuePreview = payload.preview || null;
+        this.integrations.profileQueueScheduleId = scheduleId;
+      } catch (err) {
+        this.integrations.profileQueuePreview = null;
+        this.showToast(`Queue preview failed: ${err.message}`);
+      } finally {
+        this.integrations.profileQueueLoading = false;
       }
     },
     async startProfileSchedulerWorker() {
@@ -5560,6 +5592,7 @@ const appConfig = {
         this.integrations.profileScheduleResult = payload.schedule || null;
         await this.loadProfileSchedules();
         if (payload.schedule?.id) await this.loadProfileScheduleRuns(payload.schedule.id);
+        if (payload.schedule?.id) await this.loadProfileScheduleQueuePreview(payload.schedule.id);
         this.showToast(editor.id ? 'Profile schedule updated.' : 'Profile schedule created.');
       } catch (err) {
         this.showToast(`Profile schedule save failed: ${err.message}`);
@@ -5593,6 +5626,7 @@ const appConfig = {
         ? schedule.options.auto_publish_targets
         : ['devops'];
       await this.loadProfileScheduleRuns(schedule.id);
+      await this.loadProfileScheduleQueuePreview(schedule.id);
       this.showToast(`Editing ${schedule.name || schedule.id}.`);
     },
     resetProfileScheduleEditor() {
@@ -5622,6 +5656,8 @@ const appConfig = {
       this.initializeProfileScheduleEditor(true);
       this.integrations.profileScheduleRuns = [];
       this.integrations.profileScheduleRunScheduleId = '';
+      this.integrations.profileQueuePreview = null;
+      this.integrations.profileQueueScheduleId = '';
     },
     async runProfileSchedule(scheduleId) {
       try {
@@ -5632,6 +5668,7 @@ const appConfig = {
         this.integrations.profileScheduleResult = payload.result || null;
         await this.loadProfileSchedules();
         await this.loadProfileScheduleRuns(scheduleId);
+        await this.loadProfileScheduleQueuePreview(scheduleId);
         this.showToast(`Schedule run ${payload.result?.run?.status || 'completed'}.`);
       } catch (err) {
         this.showToast(`Profile schedule run failed: ${err.message}`);
@@ -5650,6 +5687,9 @@ const appConfig = {
         await this.loadProfileSchedules();
         if (this.integrations.profileScheduleRunScheduleId) {
           await this.loadProfileScheduleRuns(this.integrations.profileScheduleRunScheduleId);
+        }
+        if (this.integrations.profileQueueScheduleId) {
+          await this.loadProfileScheduleQueuePreview(this.integrations.profileQueueScheduleId);
         }
         this.showToast(`Scheduler tick processed ${payload.result?.due_count || 0} due schedule(s).`);
       } catch (err) {
@@ -5683,6 +5723,10 @@ const appConfig = {
         if (this.integrations.profileScheduleRunScheduleId === scheduleId) {
           this.integrations.profileScheduleRuns = [];
           this.integrations.profileScheduleRunScheduleId = '';
+        }
+        if (this.integrations.profileQueueScheduleId === scheduleId) {
+          this.integrations.profileQueuePreview = null;
+          this.integrations.profileQueueScheduleId = '';
         }
         await this.loadProfileSchedules();
         this.showToast('Profile schedule deleted.');
@@ -5758,6 +5802,10 @@ const appConfig = {
       this.integrations.profileScheduleEditor.connectorId = connector.id;
       this.integrations.connectorGrant.connectorId = connector.id;
       this.loadManagedConnectorRuns(connector.id);
+      const activeSchedule = (this.integrations.profileSchedules || []).find(
+        (schedule) => schedule.connector_id === connector.id && schedule.status === 'ACTIVE'
+      );
+      if (activeSchedule) this.loadProfileScheduleQueuePreview(activeSchedule.id);
     },
     editManagedConnector(connector) {
       if (!connector) return;
@@ -10364,7 +10412,7 @@ const appConfig = {
                       <div class="col-2"><v-label>Live Batch Size</v-label><v-text-field v-model.number="integrations.profileScheduleEditor.maxLiveTables" type="number" min="1" max="25" density="compact" variant="outlined" hide-details></v-text-field></div>
                       <div class="col-2 scheduler-switch-cell"><v-switch v-model="integrations.profileScheduleEditor.includeViews" color="primary" density="compact" hide-details label="Include views"></v-switch></div>
                       <div class="col-2">
-                        <div class="field-hint" style="padding-top: 28px;">Hourly with 1 is the gentlest default.</div>
+                        <div class="field-hint" style="padding-top: 28px;">Hourly with 15 is the current default queue pace.</div>
                       </div>
                     </div>
                     <div class="form-row mt-8" v-if="integrations.profileScheduleEditor.profileType === 'aggregate' || integrations.profileScheduleEditor.profileType === 'auto'">
@@ -10391,7 +10439,7 @@ const appConfig = {
                           <div class="profile-schedule-title"><strong>{{ schedule.name }}</strong><v-chip size="x-small" variant="tonal" :color="scheduleStatusColor(schedule.status)">{{ schedule.status }}</v-chip></div>
                           <span>{{ schedule.connector_id }} · next {{ formatTimestamp(schedule.next_run_at) }}</span>
                         </div>
-                        <div class="btn-row"><v-btn size="small" variant="outlined" @click="editProfileSchedule(schedule)">Edit</v-btn><v-btn size="small" variant="tonal" @click="runProfileSchedule(schedule.id)">Run</v-btn></div>
+                        <div class="btn-row"><v-btn size="small" variant="outlined" @click="editProfileSchedule(schedule)">Edit</v-btn><v-btn size="small" variant="outlined" @click="loadProfileScheduleQueuePreview(schedule.id)">Queue</v-btn><v-btn size="small" variant="tonal" @click="runProfileSchedule(schedule.id)">Run</v-btn></div>
                       </div>
                       <div v-if="!integrations.profileSchedules.length" class="connector-empty-path"><strong>No schedules yet.</strong><span>Create one here or run a one-time profile first.</span></div>
                     </div>
@@ -10414,6 +10462,7 @@ const appConfig = {
                   <div class="mini-stack">
                     <div class="mini-metric"><span>Queue Worker</span><strong>{{ integrations.profileSchedulerStatus?.running ? 'Running' : 'Stopped' }}</strong></div>
                     <div class="mini-metric"><span>Selected Connector</span><strong>{{ selectedManagedConnector.id }}</strong></div>
+                    <div class="mini-metric"><span>Focused Schedule</span><strong>{{ focusedProfileSchedule?.connector_id || '-' }}</strong></div>
                     <div class="mini-metric"><span>Schedules</span><strong>{{ selectedConnectorSchedules.length }}</strong></div>
                     <div class="mini-metric"><span>Active Queue</span><strong>{{ selectedConnectorActiveSchedule ? 'Yes' : 'No' }}</strong></div>
                     <div class="mini-metric"><span>Next Run</span><strong>{{ formatTimestamp(selectedConnectorActiveSchedule?.next_run_at) }}</strong></div>
@@ -10437,6 +10486,63 @@ const appConfig = {
                     <div class="btn-row">
                       <v-btn size="small" variant="tonal" color="primary" :loading="integrations.connectorPublishLoading" :disabled="integrations.connectorPublishLoading" @click="publishConnectorProfiles()">Publish Pending Profiles</v-btn>
                       <v-btn size="small" variant="outlined" :loading="integrations.connectorLoading" @click="loadManagedConnectorRuns(integrations.selectedConnectorId)">Refresh</v-btn>
+                    </div>
+                  </div>
+                  <div class="managed-connector-results" v-if="focusedProfileSchedule">
+                    <div class="section-header">
+                      <div>
+                        <span class="section-title">Queue Preview</span>
+                        <p class="card-help mb-0">See which schedule is active, what it will try next, and how the live queue is moving.</p>
+                      </div>
+                      <div class="btn-row">
+                        <v-chip size="x-small" variant="tonal">{{ focusedProfileSchedule.connector_id }}</v-chip>
+                        <v-chip size="x-small" variant="tonal">{{ focusedProfileSchedule.id }}</v-chip>
+                        <v-btn size="small" variant="outlined" :loading="integrations.profileQueueLoading" @click="loadProfileScheduleQueuePreview(focusedProfileSchedule.id)">Refresh Queue</v-btn>
+                      </div>
+                    </div>
+                    <div class="mini-stack" v-if="integrations.profileQueuePreview">
+                      <div class="mini-metric"><span>Queue Order</span><strong>{{ profileLivePriorityLabel(integrations.profileQueuePreview.queue_options?.live_priority) }}</strong></div>
+                      <div class="mini-metric"><span>Batch Size</span><strong>{{ integrations.profileQueuePreview.queue_options?.max_live_tables || '-' }}</strong></div>
+                      <div class="mini-metric"><span>Freshness Skip</span><strong>{{ integrations.profileQueuePreview.queue_options?.live_profile_stale_days || 30 }} days</strong></div>
+                      <div class="mini-metric"><span>Live Eligible</span><strong>{{ integrations.profileQueuePreview.queue_status?.live_eligible_assets ?? '-' }}</strong></div>
+                      <div class="mini-metric"><span>Queue Remaining</span><strong>{{ integrations.profileQueuePreview.queue_status?.pending_live_queue ?? '-' }}</strong></div>
+                      <div class="mini-metric"><span>Selected This Run</span><strong>{{ integrations.profileQueuePreview.queue_status?.selected_for_this_run ?? '-' }}</strong></div>
+                    </div>
+                    <div class="table-wrap compact-table" v-if="integrations.profileQueuePreview?.next_assets?.length">
+                      <table>
+                        <thead>
+                          <tr><th>Next Live Objects</th></tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="assetId in integrations.profileQueuePreview.next_assets" :key="'queue-next-' + assetId">
+                            <td>{{ assetId }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="table-wrap compact-table" v-if="integrations.profileQueuePreview?.recent_runs?.length">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Completed</th>
+                            <th>Status</th>
+                            <th>Selected</th>
+                            <th>Live Done</th>
+                            <th>Queue Left</th>
+                            <th>Error</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="run in integrations.profileQueuePreview.recent_runs" :key="'queue-run-' + run.id">
+                            <td>{{ formatTimestamp(run.completed_at) }}</td>
+                            <td>{{ run.status }}</td>
+                            <td>{{ run.queue_status?.selected_for_this_run ?? '-' }}</td>
+                            <td>{{ run.queue_status?.completed_live_assets ?? '-' }}</td>
+                            <td>{{ run.queue_status?.pending_live_queue ?? '-' }}</td>
+                            <td>{{ run.error?.message || '-' }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                   <div class="mini-stack" v-if="integrations.connectorSnapshot">
