@@ -1895,6 +1895,53 @@ function inferProfileScheduleType(connector, requestedType = 'auto') {
   return 'metadata';
 }
 
+function normalizeQueueState(queueState = {}) {
+  return {
+    timeout_penalties: typeof queueState.timeout_penalties === 'object' && queueState.timeout_penalties
+      ? { ...queueState.timeout_penalties }
+      : {},
+    live_successes: typeof queueState.live_successes === 'object' && queueState.live_successes
+      ? { ...queueState.live_successes }
+      : {},
+  };
+}
+
+function normalizeAssetQueueKey(value = '') {
+  return String(value || '').trim().toLowerCase().replace(/[\[\]`"]/g, '').replace(/^([^.,]+),\d+\./, '$1.');
+}
+
+function timeoutLikeError(error = {}) {
+  const text = `${error.code || ''} ${error.message || ''} ${error.remediation || ''}`.toLowerCase();
+  return /timeout|timed out|requesttimeout|statement_timeout|lock timeout|econnreset/.test(text);
+}
+
+function updateQueueStateFromRun(queueState = {}, run = {}) {
+  const next = normalizeQueueState(queueState);
+  const actionAssetIds = [...new Set((run?.profile?.plan?.actions || []).map((action) => action?.asset_id).filter(Boolean))];
+  const errorByAsset = new Map((run?.errors || []).map((error) => [normalizeAssetQueueKey(error?.asset_id), error]));
+  const completedAt = run?.completed_at || nowIso();
+
+  for (const assetId of actionAssetIds) {
+    const key = normalizeAssetQueueKey(assetId);
+    if (!key) continue;
+    const error = errorByAsset.get(key);
+    if (error && timeoutLikeError(error)) {
+      const previous = next.timeout_penalties[key] || { count: 0 };
+      next.timeout_penalties[key] = {
+        count: Number(previous.count || 0) + 1,
+        last_timed_out_at: completedAt,
+      };
+      continue;
+    }
+    if (!error) {
+      next.live_successes[key] = completedAt;
+      delete next.timeout_penalties[key];
+    }
+  }
+
+  return next;
+}
+
 async function runConnectorProfileByType(connectorId, profileType, options, user) {
   if (profileType === 'aggregate') {
     const executionMode =
@@ -1961,6 +2008,11 @@ export function upsertConnectorProfileSchedule(input = {}, actor = {}) {
     failure_count: existing?.failure_count || 0,
     last_error: existing?.last_error || null,
   };
+  if (schedule.profile_type === 'aggregate') {
+    schedule.options.max_live_tables = Math.max(1, Number(schedule.options.max_live_tables || 15));
+    schedule.options.live_profile_stale_days = Math.max(1, Number(schedule.options.live_profile_stale_days || 30));
+    schedule.options.execution_mode = schedule.options.execution_mode || (schedule.options.dry_run === false ? 'live' : 'dry_run');
+  }
   schedule.next_run_at = schedule.next_run_at || computeNextRunAt(schedule, new Date(schedule.start_at));
   profileScheduleStore.set(id, schedule);
   persistRuntimeStore();
@@ -2027,9 +2079,18 @@ export async function runConnectorProfileSchedule(id, actor = {}) {
   const runnerUser = isAdmin(actor) ? actor : RUNTIME_USER;
   const startedAt = nowIso();
   try {
-    const run = await runConnectorProfileByType(schedule.connector_id, schedule.profile_type, schedule.options, runnerUser);
+    const queueState = normalizeQueueState(schedule.options?.queue_state || schedule.options?.queueState || {});
+    const effectiveOptions = {
+      ...schedule.options,
+      max_live_tables: Math.max(1, Number(schedule.options?.max_live_tables || 15)),
+      live_profile_stale_days: Math.max(1, Number(schedule.options?.live_profile_stale_days || 30)),
+      execution_mode: schedule.options?.execution_mode || (schedule.options?.dry_run === false ? 'live' : 'dry_run'),
+      queue_state: queueState,
+    };
+    const run = await runConnectorProfileByType(schedule.connector_id, schedule.profile_type, effectiveOptions, runnerUser);
     const completedAt = nowIso();
     const succeeded = !['failed', 'partial_failure'].includes(run.status);
+    const nextQueueState = updateQueueStateFromRun(queueState, run);
     const updated = {
       ...schedule,
       last_run_at: completedAt,
@@ -2040,6 +2101,11 @@ export async function runConnectorProfileSchedule(id, actor = {}) {
       last_error: run.errors?.[0] || null,
       next_run_at: computeNextRunAt(schedule, new Date(completedAt)),
       updated_at: completedAt,
+      options: sanitizeProfileOptions({
+        ...(schedule.options || {}),
+        ...effectiveOptions,
+        queue_state: nextQueueState,
+      }),
     };
     if (updated.failure_count >= updated.max_failures) updated.status = 'PAUSED';
     profileScheduleStore.set(id, updated);

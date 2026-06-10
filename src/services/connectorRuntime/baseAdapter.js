@@ -4,7 +4,7 @@ import {
   ConnectorRuntimeError,
   ConnectorStreamError,
 } from './connectorErrors.js';
-import { existsSync, readFileSync } from 'fs';
+import { existsSync, readFileSync, statSync } from 'fs';
 import path from 'path';
 import { CANONICAL_EVENT_TYPES, canonicalEvent, warningEvent } from './canonicalMetadata.js';
 import { fetchSourceMetadata } from './sourceClients.js';
@@ -12,6 +12,7 @@ import { applyMinimumCoverageProfiles, buildProfilingPlan, executeProfilingPlan 
 import { createProfileExecutor, supportsConnectorLiveProfiling } from './profileExecutors.js';
 
 let lineageUsageCache = null;
+let publishedLiveProfileCache = null;
 
 function toArray(value) {
   if (Array.isArray(value)) return value.filter(Boolean);
@@ -112,7 +113,7 @@ function coverageIncludesAllObjects(options = {}) {
   return mode === 'all_objects' || mode === 'minimum_all_objects';
 }
 
-function coverageLiveTableLimit(options = {}, fallback = 25) {
+function coverageLiveTableLimit(options = {}, fallback = 15) {
   const raw = Number(
     options.max_live_tables ??
     options.maxLiveTables ??
@@ -144,6 +145,138 @@ function normalizeDependencyId(value = '') {
 
 function stripServerPort(value = '') {
   return String(value || '').replace(/^([^.,]+),\d+\./, '$1.').trim();
+}
+
+function normalizeObjectId(value = '') {
+  return normalizeDependencyId(String(value || '').replace(/[\[\]`"]/g, '').trim());
+}
+
+function runtimeStorePath() {
+  return path.join(process.cwd(), 'data', '_runtime', 'profiles', 'profile-scheduler-store.json');
+}
+
+function normalizePublishedStatus(value = '') {
+  const status = String(value || '').toLowerCase();
+  return ['published', 'partial_published'].includes(status);
+}
+
+function uniqueAssetIds(actions = []) {
+  return [...new Set((actions || []).map((action) => action?.asset_id).filter(Boolean))];
+}
+
+function normalizeQueueState(queueState = {}) {
+  return {
+    timeout_penalties: typeof queueState.timeout_penalties === 'object' && queueState.timeout_penalties
+      ? { ...queueState.timeout_penalties }
+      : {},
+    live_successes: typeof queueState.live_successes === 'object' && queueState.live_successes
+      ? { ...queueState.live_successes }
+      : {},
+  };
+}
+
+function readPublishedLiveProfileState(connectorId = '') {
+  const cacheKey = String(connectorId || '').trim().toLowerCase();
+  if (!cacheKey) return new Map();
+  const storePath = runtimeStorePath();
+  const storeStamp = existsSync(storePath) ? statSync(storePath).mtimeMs : 0;
+  if (publishedLiveProfileCache?.connectorId === cacheKey && publishedLiveProfileCache?.storeStamp === storeStamp) {
+    return publishedLiveProfileCache.map;
+  }
+
+  const map = new Map();
+  if (existsSync(storePath)) {
+    try {
+      const store = JSON.parse(readFileSync(storePath, 'utf8'));
+      const runs = Array.isArray(store.connector_runs) ? store.connector_runs : [];
+      for (const run of runs) {
+        if (String(run?.connector_id || '').trim().toLowerCase() !== cacheKey) continue;
+        if (String(run?.mode || '').toLowerCase() !== 'live') continue;
+        if (!normalizePublishedStatus(run?.artifact?.profile_publish?.status)) continue;
+        const actionIds = uniqueAssetIds(run?.profile?.plan?.actions || []);
+        const failedAssetIds = new Set((run?.errors || []).map((error) => normalizeObjectId(error?.asset_id)).filter(Boolean));
+        const completedAt = run?.artifact?.profile_publish?.last_published_at || run?.completed_at || run?.started_at || null;
+        for (const assetId of actionIds) {
+          const normalized = normalizeObjectId(assetId);
+          if (!normalized || failedAssetIds.has(normalized)) continue;
+          const nextValue = {
+            asset_id: assetId,
+            profiled_at: completedAt,
+            source: 'published_live_run',
+          };
+          const existing = map.get(normalized);
+          if (!existing || String(nextValue.profiled_at || '') > String(existing.profiled_at || '')) {
+            map.set(normalized, nextValue);
+            map.set(normalizeObjectId(stripServerPort(assetId)), nextValue);
+          }
+        }
+      }
+    } catch {
+      // Best-effort cache only.
+    }
+  }
+
+  publishedLiveProfileCache = { connectorId: cacheKey, storeStamp, map };
+  return map;
+}
+
+function liveProfileStaleDays(options = {}) {
+  const raw = Number(options.live_profile_stale_days ?? options.liveProfileStaleDays ?? 30);
+  return Number.isFinite(raw) && raw > 0 ? Math.round(raw) : 30;
+}
+
+function queueSuccessAt(asset = {}, queueState = {}) {
+  const successes = queueState.live_successes || {};
+  const keys = [
+    asset.id,
+    asset.object_id,
+    asset.qualified_name,
+    asset.qualifiedName,
+    stripServerPort(asset.id || asset.object_id || ''),
+  ].map(normalizeObjectId);
+  for (const key of keys) {
+    if (key && successes[key]) return successes[key];
+  }
+  return null;
+}
+
+function timeoutScoreForAsset(asset = {}, queueState = {}) {
+  const penalties = queueState.timeout_penalties || {};
+  const keys = [
+    asset.id,
+    asset.object_id,
+    asset.qualified_name,
+    asset.qualifiedName,
+    stripServerPort(asset.id || asset.object_id || ''),
+  ].map(normalizeObjectId);
+  for (const key of keys) {
+    if (key && penalties[key]) return Number(penalties[key].count || 0) || 0;
+  }
+  return 0;
+}
+
+function assetNeedsLiveRefresh(asset = {}, publishedState = new Map(), queueState = {}, staleDays = 30) {
+  const cutoff = Date.now() - (staleDays * 24 * 60 * 60 * 1000);
+  const recentSuccess = queueSuccessAt(asset, queueState);
+  if (recentSuccess) {
+    const successTime = Date.parse(recentSuccess);
+    if (Number.isFinite(successTime) && successTime >= cutoff) return false;
+  }
+  const keys = [
+    asset.id,
+    asset.object_id,
+    asset.qualified_name,
+    asset.qualifiedName,
+    stripServerPort(asset.id || asset.object_id || ''),
+  ].map(normalizeObjectId);
+  for (const key of keys) {
+    if (!key) continue;
+    const published = publishedState.get(key);
+    if (!published?.profiled_at) continue;
+    const profiledAt = Date.parse(published.profiled_at);
+    if (Number.isFinite(profiledAt) && profiledAt >= cutoff) return false;
+  }
+  return true;
 }
 
 function dependencyReferenceId(dependency = {}) {
@@ -260,9 +393,11 @@ function buildLiveUpgradeQueue(eligibleAssets = [], selectedAssets = [], options
     }));
 }
 
-function sortCoverageAssets(assets = [], priority = 'smallest_first', usageCounts = new Map()) {
+function sortCoverageAssets(assets = [], priority = 'smallest_first', usageCounts = new Map(), queueState = {}) {
   const sorted = [...assets];
   sorted.sort((left, right) => {
+    const timeoutDelta = timeoutScoreForAsset(left, queueState) - timeoutScoreForAsset(right, queueState);
+    if (timeoutDelta !== 0) return timeoutDelta;
     const usageDelta = assetUsageCount(right, usageCounts) - assetUsageCount(left, usageCounts);
     if (priority === 'most_used_first' && usageDelta !== 0) return usageDelta;
     if (priority === 'alphabetical') {
@@ -476,6 +611,9 @@ export class BaseConnectorAdapter {
         const usageCounts = coveragePriority(options) === 'most_used_first'
           ? readLineageUsageCounts()
           : buildDependencyUsageCounts(this.lastMetadata);
+        const queueState = normalizeQueueState(options.queue_state || options.queueState || {});
+        const publishedState = readPublishedLiveProfileState(this.id);
+        const staleDays = liveProfileStaleDays(options);
         coverageAssets = resolvedAssets.filter((asset) => {
           if (coverageIncludesAllObjects(options)) return true;
           if (coverageIncludesViews(options)) return ['table', 'view'].includes(objectType(asset));
@@ -486,10 +624,11 @@ export class BaseConnectorAdapter {
           coverageIncludesViews(options) || coverageIncludesAllObjects(options)
             ? isLiveProfileEligible(asset)
             : objectType(asset) === 'table'
-        );
-        const sortedCoverageAssets = sortCoverageAssets(liveEligibleAssets, priority, usageCounts);
-        assets = sortedCoverageAssets.slice(0, coverageLiveTableLimit(options, 25));
-        options = { ...options, usage_counts: usageCounts };
+        )
+          .filter((asset) => assetNeedsLiveRefresh(asset, publishedState, queueState, staleDays));
+        const sortedCoverageAssets = sortCoverageAssets(liveEligibleAssets, priority, usageCounts, queueState);
+        assets = sortedCoverageAssets.slice(0, coverageLiveTableLimit(options, 15));
+        options = { ...options, usage_counts: usageCounts, queue_state: queueState };
       } else {
         assets = resolvedAssets;
       }
@@ -500,7 +639,7 @@ export class BaseConnectorAdapter {
         connector_id: this.id,
         connector_type: this.type,
         dialect: options.dialect || this.config.dialect || this.type,
-        max_tables: requestedCoverageMode ? Math.max(1, assets.length || coverageLiveTableLimit(options, 25)) : options.max_tables,
+        max_tables: requestedCoverageMode ? Math.max(1, assets.length || coverageLiveTableLimit(options, 15)) : options.max_tables,
         assets,
       },
       options.objectCache || new Map()
@@ -512,12 +651,16 @@ export class BaseConnectorAdapter {
           : coveragePriority(options) === 'most_used_first'
             ? readLineageUsageCounts()
             : buildDependencyUsageCounts(this.lastMetadata || {});
+      const queueState = normalizeQueueState(options.queue_state || options.queueState || {});
+      const publishedState = readPublishedLiveProfileState(this.id);
+      const staleDays = liveProfileStaleDays(options);
       const liveEligibleAssets = coverageAssets.filter((asset) =>
         coverageIncludesViews(options) || coverageIncludesAllObjects(options)
           ? isLiveProfileEligible(asset)
           : objectType(asset) === 'table'
-      );
-      const sortedLiveEligibleAssets = sortCoverageAssets(liveEligibleAssets, coveragePriority(options), usageCounts);
+      )
+        .filter((asset) => assetNeedsLiveRefresh(asset, publishedState, queueState, staleDays));
+      const sortedLiveEligibleAssets = sortCoverageAssets(liveEligibleAssets, coveragePriority(options), usageCounts, queueState);
       const liveQueue = buildLiveUpgradeQueue(sortedLiveEligibleAssets, assets, { ...options, usage_counts: usageCounts });
       plan.coverage = {
         enabled: true,
@@ -525,7 +668,7 @@ export class BaseConnectorAdapter {
         include_views: coverageIncludesViews(options),
         include_all_objects: coverageIncludesAllObjects(options),
         live_priority: coveragePriority(options),
-        live_asset_limit: coverageLiveTableLimit(options, 25),
+        live_asset_limit: coverageLiveTableLimit(options, 15),
         assets: coverageAssets,
         live_assets: assets.map((asset) => asset.id || asset.object_id || asset.name),
         live_eligible_assets: liveEligibleAssets.map((asset) => asset.id || asset.object_id || asset.name),

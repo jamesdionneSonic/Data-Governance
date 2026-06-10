@@ -552,7 +552,7 @@ const appConfig = {
           coverageMode: 'all_objects',
           includeViews: true,
           livePriority: 'most_used_first',
-          maxLiveTables: 1,
+          maxLiveTables: 15,
         },
         profileSchedules: [],
         profileSchedulerStatus: null,
@@ -566,11 +566,11 @@ const appConfig = {
           name: '',
           profileType: 'auto',
           status: 'ACTIVE',
-          cadence: 'daily',
+          cadence: 'hourly',
           date: '',
           time: '',
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
-          intervalMinutes: 1440,
+          intervalMinutes: 60,
           maxFailures: 3,
           streams: '',
           dryRun: true,
@@ -578,7 +578,7 @@ const appConfig = {
           coverageMode: 'all_objects',
           includeViews: true,
           livePriority: 'most_used_first',
-          maxLiveTables: 1,
+          maxLiveTables: 15,
           autoPublish: true,
           publishTargets: ['devops'],
         },
@@ -2390,7 +2390,7 @@ const appConfig = {
         max_columns_per_table: Number(this.metrics.profiling.maxColumns) || 40,
         sample_percent: Number(this.metrics.profiling.samplePercent) || 1,
         lock_timeout_ms: Number(this.metrics.profiling.lockTimeoutMs) || 5000,
-        query_timeout_ms: Number(this.metrics.profiling.queryTimeoutMs) || 30000,
+        query_timeout_ms: Number(this.metrics.profiling.queryTimeoutMs) || 120000,
         ...overrides,
       };
     },
@@ -5587,7 +5587,7 @@ const appConfig = {
       editor.coverageMode = schedule.options?.coverage_mode || 'all_objects';
       editor.includeViews = schedule.options?.include_views !== false;
       editor.livePriority = schedule.options?.live_priority || 'most_used_first';
-      editor.maxLiveTables = Math.max(1, Number(schedule.options?.max_live_tables || 1));
+      editor.maxLiveTables = Math.max(1, Number(schedule.options?.max_live_tables || 15));
       editor.autoPublish = schedule.options?.auto_publish === true;
       editor.publishTargets = Array.isArray(schedule.options?.auto_publish_targets) && schedule.options.auto_publish_targets.length
         ? schedule.options.auto_publish_targets
@@ -5603,11 +5603,11 @@ const appConfig = {
         name: '',
         profileType: 'auto',
         status: 'ACTIVE',
-        cadence: 'daily',
+        cadence: 'hourly',
         date: '',
         time: '',
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
-        intervalMinutes: 1440,
+        intervalMinutes: 60,
         maxFailures: 3,
         streams: '',
         dryRun: true,
@@ -5615,7 +5615,7 @@ const appConfig = {
         coverageMode: 'all_objects',
         includeViews: true,
         livePriority: 'most_used_first',
-        maxLiveTables: 1,
+        maxLiveTables: 15,
         autoPublish: true,
         publishTargets: ['devops'],
       };
@@ -5744,7 +5744,7 @@ const appConfig = {
       return {
         coverageMode: options.coverage_mode || 'all_objects',
         livePriority: options.live_priority || 'most_used_first',
-        maxLiveTables: Number(options.max_live_tables || 1) || 1,
+        maxLiveTables: Number(options.max_live_tables || 15) || 15,
       };
     },
     connectorDefinitionLabel(type) {
@@ -5920,7 +5920,7 @@ const appConfig = {
       this.integrations.profileScheduleEditor.coverageMode = this.integrations.profileRunEditor.coverageMode || 'all_objects';
       this.integrations.profileScheduleEditor.includeViews = this.integrations.profileRunEditor.includeViews === true;
       this.integrations.profileScheduleEditor.livePriority = this.integrations.profileRunEditor.livePriority || 'most_used_first';
-      this.integrations.profileScheduleEditor.maxLiveTables = Math.max(1, Number(this.integrations.profileRunEditor.maxLiveTables || 1));
+      this.integrations.profileScheduleEditor.maxLiveTables = Math.max(1, Number(this.integrations.profileRunEditor.maxLiveTables || 15));
       this.integrations.profileScheduleEditor.autoPublish = this.integrations.profileRunEditor.executionMode === 'live';
       this.integrations.profileScheduleEditor.publishTargets = ['devops'];
       this.initializeProfileScheduleEditor(true);
