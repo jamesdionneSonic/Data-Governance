@@ -1961,6 +1961,25 @@ async function runConnectorProfileByType(connectorId, profileType, options, user
   return runConnectorMetadataProfiling(connectorId, options, user);
 }
 
+async function planConnectorProfileByType(connectorId, profileType, options, user) {
+  if (profileType === 'aggregate') {
+    const executionMode =
+      options.execution_mode ||
+      options.executionMode ||
+      (options.dry_run === false ? 'live' : 'dry_run');
+    return planConnectorProfiling(
+      connectorId,
+      {
+        ...options,
+        execution_mode: executionMode,
+      },
+      user
+    );
+  }
+  if (profileType === 'bi') return planConnectorBiProfiling(connectorId, options, user);
+  return planConnectorMetadataProfiling(connectorId, options, user);
+}
+
 export function upsertConnectorProfileSchedule(input = {}, actor = {}) {
   hydrateRuntimeStore();
   const existing = input.id ? profileScheduleStore.get(input.id) : null;
@@ -2217,6 +2236,71 @@ export function listConnectorProfileScheduleRuns(scheduleId, user = {}, filters 
     .slice(0, Number(filters.limit || 50));
 }
 
+export async function getConnectorProfileScheduleQueuePreview(scheduleId, user = {}, filters = {}) {
+  hydrateRuntimeStore();
+  const schedule = profileScheduleStore.get(scheduleId);
+  if (!schedule) return null;
+  const connector = connectorStore.get(schedule.connector_id);
+  if (connector && !canUseConnector(connector, user, CONNECTOR_ACTIONS.VIEW)) {
+    const error = new Error(`User is not allowed to view profile schedule '${scheduleId}'.`);
+    error.code = 'CONNECTOR_FORBIDDEN';
+    throw error;
+  }
+
+  const queueState = normalizeQueueState(schedule.options?.queue_state || schedule.options?.queueState || {});
+  const effectiveOptions = {
+    ...schedule.options,
+    max_live_tables: Math.max(1, Number(schedule.options?.max_live_tables || 15)),
+    live_profile_stale_days: Math.max(1, Number(schedule.options?.live_profile_stale_days || 30)),
+    execution_mode: schedule.options?.execution_mode || (schedule.options?.dry_run === false ? 'live' : 'dry_run'),
+    queue_state: queueState,
+  };
+  const latestConnectorRun = runHistoryStore.find((run) =>
+    run.connector_id === schedule.connector_id &&
+    run.profile?.plan?.coverage &&
+    ['live', 'metadata_harvest', 'dry_run'].includes(String(run.mode || '').toLowerCase())
+  );
+  let plan = latestConnectorRun?.profile?.plan || null;
+  if (!plan || filters.refresh === true || filters.refresh === 'true') {
+    const planResult = await planConnectorProfileByType(schedule.connector_id, schedule.profile_type, effectiveOptions, user);
+    plan = planResult?.profile?.plan || planResult?.plan || planResult;
+  }
+  const historicalQueue = plan?.coverage?.live_upgrade_queue || [];
+  const queue = historicalQueue.filter((item) => item && item.asset_id);
+  const actionAssets = [...new Set((plan?.actions || []).map((action) => action.asset_id).filter(Boolean))];
+  const limit = Math.max(1, Number(filters.limit || 25));
+  const desiredBatch = Math.max(1, Number(effectiveOptions.max_live_tables || 15));
+  const nextAssets = actionAssets.length >= desiredBatch
+    ? actionAssets.slice(0, Math.min(limit, desiredBatch))
+    : queue.slice(0, Math.min(limit, desiredBatch)).map((item) => item.asset_id);
+  const recentRuns = profileScheduleRunStore
+    .filter((run) => run.schedule_id === scheduleId)
+    .slice(0, Number(filters.history_limit || 10))
+    .map((run) => ({
+      id: run.id,
+      run_id: run.run_id,
+      status: run.status,
+      completed_at: run.completed_at,
+      queue_status: run.summary?.coverage_queue_status || null,
+      error: run.error || null,
+    }));
+
+  return {
+    schedule: sanitizeProfileSchedule(schedule),
+    queue_status: plan?.coverage?.queue_status || null,
+    queue_options: {
+      coverage_mode: effectiveOptions.coverage_mode || 'all_objects',
+      live_priority: effectiveOptions.live_priority || 'most_used_first',
+      max_live_tables: effectiveOptions.max_live_tables,
+      live_profile_stale_days: effectiveOptions.live_profile_stale_days,
+      execution_mode: effectiveOptions.execution_mode,
+    },
+    next_assets: nextAssets,
+    queued_assets: queue.slice(0, limit),
+    recent_runs: recentRuns,
+  };
+}
+
 export function getProfileSchedulerStatus() {
   hydrateRuntimeStore();
   return {
@@ -2390,6 +2474,7 @@ export default {
   getProfileSchedulerStatus,
   getConnector,
   getConnectorProfileSchedule,
+  getConnectorProfileScheduleQueuePreview,
   getConnectorSnapshot,
   grantConnectorPermission,
   getConnectorAdapterCoverage,

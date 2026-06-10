@@ -14,6 +14,7 @@ import {
   getConnectorAdapterCoverage,
   getProfileSchedulerStatus,
   getConnectorProfileSchedule,
+  getConnectorProfileScheduleQueuePreview,
   getConnectorSnapshot,
   grantConnectorPermission,
   listConnectorDefinitions,
@@ -173,6 +174,19 @@ router.get('/profile-schedules/:scheduleId/runs', authenticate, (req, res) => {
         limit: req.query.limit,
       }),
     });
+  } catch (err) {
+    return connectorError(res, req, err);
+  }
+});
+
+router.get('/profile-schedules/:scheduleId/queue', authenticate, async (req, res) => {
+  try {
+    const preview = await getConnectorProfileScheduleQueuePreview(req.params.scheduleId, req.user, {
+      limit: req.query.limit,
+      history_limit: req.query.history_limit || req.query.historyLimit,
+    });
+    if (!preview) return connectorError(res, req, new Error(`Profile schedule '${req.params.scheduleId}' not found.`));
+    return res.json({ status: 'success', preview });
   } catch (err) {
     return connectorError(res, req, err);
   }
