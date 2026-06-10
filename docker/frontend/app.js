@@ -579,6 +579,8 @@ const appConfig = {
           includeViews: true,
           livePriority: 'most_used_first',
           maxLiveTables: 1,
+          autoPublish: true,
+          publishTargets: ['devops'],
         },
         connectorEditor: {
           id: 'sonic-managed-connector',
@@ -888,6 +890,12 @@ const appConfig = {
         { title: 'Daily', value: 'daily' },
         { title: 'Weekly', value: 'weekly' },
         { title: 'Custom minutes', value: 'custom' },
+      ];
+    },
+    profilePublishTargetOptions() {
+      return [
+        { title: 'DevOps runtime package', value: 'devops' },
+        { title: 'Confluence pages', value: 'confluence' },
       ];
     },
     selectedManagedConnector() {
@@ -5449,6 +5457,10 @@ const appConfig = {
         payload.live_priority = editor.livePriority || 'most_used_first';
         payload.max_live_tables = Math.max(1, Number(editor.maxLiveTables || 1));
       }
+      payload.auto_publish = editor.autoPublish === true;
+      payload.auto_publish_targets = editor.autoPublish === true
+        ? (Array.isArray(editor.publishTargets) && editor.publishTargets.length ? editor.publishTargets : ['devops'])
+        : [];
       return payload;
     },
     async loadProfileSchedules() {
@@ -5576,6 +5588,10 @@ const appConfig = {
       editor.includeViews = schedule.options?.include_views !== false;
       editor.livePriority = schedule.options?.live_priority || 'most_used_first';
       editor.maxLiveTables = Math.max(1, Number(schedule.options?.max_live_tables || 1));
+      editor.autoPublish = schedule.options?.auto_publish === true;
+      editor.publishTargets = Array.isArray(schedule.options?.auto_publish_targets) && schedule.options.auto_publish_targets.length
+        ? schedule.options.auto_publish_targets
+        : ['devops'];
       await this.loadProfileScheduleRuns(schedule.id);
       this.showToast(`Editing ${schedule.name || schedule.id}.`);
     },
@@ -5600,6 +5616,8 @@ const appConfig = {
         includeViews: true,
         livePriority: 'most_used_first',
         maxLiveTables: 1,
+        autoPublish: true,
+        publishTargets: ['devops'],
       };
       this.initializeProfileScheduleEditor(true);
       this.integrations.profileScheduleRuns = [];
@@ -5903,6 +5921,8 @@ const appConfig = {
       this.integrations.profileScheduleEditor.includeViews = this.integrations.profileRunEditor.includeViews === true;
       this.integrations.profileScheduleEditor.livePriority = this.integrations.profileRunEditor.livePriority || 'most_used_first';
       this.integrations.profileScheduleEditor.maxLiveTables = Math.max(1, Number(this.integrations.profileRunEditor.maxLiveTables || 1));
+      this.integrations.profileScheduleEditor.autoPublish = this.integrations.profileRunEditor.executionMode === 'live';
+      this.integrations.profileScheduleEditor.publishTargets = ['devops'];
       this.initializeProfileScheduleEditor(true);
       this.integrations.connectorWorkflowTab = 'schedule';
     },
@@ -10347,6 +10367,13 @@ const appConfig = {
                         <div class="field-hint" style="padding-top: 28px;">Hourly with 1 is the gentlest default.</div>
                       </div>
                     </div>
+                    <div class="form-row mt-8" v-if="integrations.profileScheduleEditor.profileType === 'aggregate' || integrations.profileScheduleEditor.profileType === 'auto'">
+                      <div class="col-3 scheduler-switch-cell"><v-switch v-model="integrations.profileScheduleEditor.autoPublish" color="primary" density="compact" hide-details label="Auto-publish"></v-switch></div>
+                      <div class="col-5"><v-label>Publish Targets</v-label><v-select v-model="integrations.profileScheduleEditor.publishTargets" density="compact" variant="outlined" hide-details :items="profilePublishTargetOptions()" multiple chips :disabled="!integrations.profileScheduleEditor.autoPublish"></v-select></div>
+                      <div class="col-4">
+                        <div class="field-hint" style="padding-top: 28px;">DevOps keeps the skill current after each successful live queue run.</div>
+                      </div>
+                    </div>
                     <div class="form-row mt-8">
                       <div class="col-12"><v-label>Tables / Object IDs</v-label><v-textarea v-model="integrations.profileScheduleEditor.assetIds" rows="3" density="compact" variant="outlined" hide-details placeholder="Optional schedule scope. Enter one table object id per line for aggregate profiling."></v-textarea></div>
                     </div>
@@ -10627,6 +10654,15 @@ const appConfig = {
                         <div class="field-hint" style="padding-top: 28px;">Most-used-first with batch 1 is the safest live queue.</div>
                       </div>
                     </div>
+                    <div class="form-row mt-8" v-if="integrations.profileScheduleEditor.profileType === 'aggregate' || integrations.profileScheduleEditor.profileType === 'auto'">
+                      <div class="col-3 scheduler-switch-cell">
+                        <v-switch v-model="integrations.profileScheduleEditor.autoPublish" color="primary" density="compact" hide-details label="Auto-publish"></v-switch>
+                      </div>
+                      <div class="col-5"><v-label>Publish Targets</v-label><v-select v-model="integrations.profileScheduleEditor.publishTargets" density="compact" variant="outlined" hide-details :items="profilePublishTargetOptions()" multiple chips :disabled="!integrations.profileScheduleEditor.autoPublish"></v-select></div>
+                      <div class="col-4">
+                        <div class="field-hint" style="padding-top: 28px;">Auto-publish can push each successful live queue batch into DevOps without a manual publish step.</div>
+                      </div>
+                    </div>
                     <div class="form-row mt-8">
                       <div class="col-12"><v-label>Tables / Object IDs</v-label><v-textarea v-model="integrations.profileScheduleEditor.assetIds" rows="3" density="compact" variant="outlined" hide-details placeholder="Optional schedule scope. Leave blank for full queue coverage, or pin one object id per line."></v-textarea></div>
                     </div>
@@ -10664,6 +10700,10 @@ const appConfig = {
                             <span>{{ profileCoverageModeLabel(scheduleQueueSummary(schedule).coverageMode) }}</span>
                             <span>{{ profileLivePriorityLabel(scheduleQueueSummary(schedule).livePriority) }}</span>
                             <span>Batch {{ scheduleQueueSummary(schedule).maxLiveTables }}</span>
+                          </div>
+                          <div class="profile-schedule-health">
+                            <span>{{ schedule.options?.auto_publish ? 'Auto-publish on' : 'Auto-publish off' }}</span>
+                            <span v-if="schedule.options?.auto_publish">{{ (schedule.options?.auto_publish_targets || ['devops']).join(', ') }}</span>
                           </div>
                           <div v-if="schedule.last_error" class="profile-schedule-error">
                             {{ schedule.last_error.message || schedule.last_error }}
