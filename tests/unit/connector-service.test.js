@@ -100,13 +100,79 @@ describe('connectorService', () => {
     );
   });
 
+  test('includes wizard metadata for common connector types', () => {
+    const definitions = listConnectorDefinitions();
+    const sqlServer = definitions.find((definition) => definition.type === 'sql_server');
+    const powerBi = definitions.find((definition) => definition.type === 'power_bi');
+
+    expect(sqlServer.wizard).toMatchObject({
+      supports_test: true,
+      supports_discovery: true,
+    });
+    expect(sqlServer.wizard.basic_fields).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ key: 'server_host', required: true }),
+        expect.objectContaining({ key: 'database', required: true }),
+      ])
+    );
+    expect(sqlServer.wizard.auth_modes).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ value: 'windows_integrated' }),
+        expect.objectContaining({ value: 'service_account' }),
+      ])
+    );
+
+    expect(powerBi.wizard.basic_fields).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ key: 'tenant_id' }),
+        expect.objectContaining({ key: 'workspace_id' }),
+      ])
+    );
+  });
+
+  test('returns non-secret credential values for edit hydration without exposing secret material', () => {
+    upsertConnector(
+      {
+        id: 'editable-sql',
+        type: 'sql_server',
+        label: 'Editable SQL',
+        config: { server: 'sql01', database: 'dw' },
+        credential: {
+          mode: 'service_account',
+          username: 'svc_profile',
+          password: 'very-secret',
+          secret_ref: 'kv://metadata/sql',
+        },
+      },
+      admin
+    );
+
+    const visible = listConnectors({}, admin);
+    const connector = visible.find((item) => item.id === 'editable-sql');
+
+    expect(connector.credential.values).toMatchObject({
+      username: 'svc_profile',
+    });
+    expect(connector.credential.values.password).toBeUndefined();
+    expect(JSON.stringify(connector)).not.toContain('very-secret');
+  });
+
   test('masks credentials and lets granted users run managed connectors through the extraction kernel', async () => {
     const connector = upsertConnector(
       {
         id: 'sonic-dw-sql',
         type: 'sql_server',
         label: 'Sonic DW',
-        config: { server: 'L1-5FSQL-01', database: 'Sonic_DW' },
+        config: {
+          server: 'L1-5FSQL-01',
+          database: 'Sonic_DW',
+          mockConnectionCheck: {
+            status: 'ready',
+            live_connection_valid: true,
+            metadata_discovery_valid: true,
+            details: { server_name: 'L1-5FSQL-01', database_name: 'Sonic_DW', credential_mode: 'service_account' },
+          },
+        },
         credential: {
           mode: 'service_account',
           username: 'svc_lineage',
@@ -137,6 +203,8 @@ describe('connectorService', () => {
     expect(run.summary).toMatchObject({
       secret_exposed: false,
       raw_data_captured: false,
+      live_connection_valid: true,
+      metadata_discovery_valid: true,
     });
     expect(run.extraction.events).toEqual(
       expect.arrayContaining([expect.objectContaining({ type: 'metadata.object', stream: 'tables' })])
@@ -212,6 +280,39 @@ describe('connectorService', () => {
           remediation: expect.stringContaining('Review connector configuration'),
         }),
       ],
+    });
+  });
+
+  test('surfaces live connection and discovery status for SQL Server-family connector tests', async () => {
+    upsertConnector(
+      {
+        id: 'ssis-live-check',
+        type: 'ssis',
+        label: 'SSIS Live Check',
+        config: {
+          server: 'V1-SSIS25-01',
+          database: 'SSISDB',
+          mockConnectionCheck: {
+            status: 'degraded',
+            live_connection_valid: true,
+            metadata_discovery_valid: false,
+            details: { server_name: 'V1-SSIS25-01', database_name: 'SSISDB', credential_mode: 'windows_integrated' },
+          },
+        },
+        credential: { mode: 'windows_integrated' },
+      },
+      admin
+    );
+
+    const run = await runConnector('ssis-live-check', { dry_run: true, streams: ['catalog'] }, admin);
+    expect(run.summary).toMatchObject({
+      connection_status: 'degraded',
+      live_connection_valid: true,
+      metadata_discovery_valid: false,
+      connection_details: expect.objectContaining({
+        server_name: 'V1-SSIS25-01',
+        database_name: 'SSISDB',
+      }),
     });
   });
 
@@ -936,7 +1037,15 @@ describe('connectorService', () => {
     const extraction = await runConnectorExtractionForConfig({
       id: 'sql-bridge',
       type: 'sql_server',
-      config: { database: 'Sonic_DW' },
+      config: {
+        database: 'Sonic_DW',
+        mockConnectionCheck: {
+          status: 'ready',
+          live_connection_valid: true,
+          metadata_discovery_valid: true,
+          details: { server_name: 'demo-server', database_name: 'Sonic_DW' },
+        },
+      },
       credential: { mode: 'service_account', secret_ref: 'kv://sql' },
       options: {
         dry_run: false,
@@ -986,7 +1095,15 @@ describe('connectorService', () => {
     const extraction = await runConnectorExtractionForConfig({
       id: 'ssis-bridge',
       type: 'ssis',
-      config: { server: 'V1-SSIS25-01' },
+      config: {
+        server: 'V1-SSIS25-01',
+        mockConnectionCheck: {
+          status: 'ready',
+          live_connection_valid: true,
+          metadata_discovery_valid: true,
+          details: { server_name: 'V1-SSIS25-01', database_name: 'SSISDB' },
+        },
+      },
       credential: { mode: 'windows_integrated', secret_ref: 'legacy-request-body' },
       options: {
         dry_run: false,
@@ -1074,6 +1191,22 @@ function minimalConnectorConfig(type) {
     tenant_url: 'https://tenant.example.com',
     workspace_url: 'https://workspace.example.com',
   };
+  if (type === 'sql_server') {
+    base.mockConnectionCheck = {
+      status: 'ready',
+      live_connection_valid: true,
+      metadata_discovery_valid: true,
+      details: { server_name: 'demo-server', database_name: 'demo_db' },
+    };
+  }
+  if (type === 'ssis') {
+    base.mockConnectionCheck = {
+      status: 'ready',
+      live_connection_valid: true,
+      metadata_discovery_valid: true,
+      details: { server_name: 'demo-server', database_name: 'SSISDB' },
+    };
+  }
   if (type === 'git_repository') {
     base.files = ['pipelines/load_dim_vehicle.py'];
   }

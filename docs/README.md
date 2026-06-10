@@ -62,7 +62,10 @@ This is the master index for platform documentation.
 ## Lineage and SQL Server Implementation
 
 - [Lineage Detection Research](LINEAGE_DETECTION_RESEARCH.md)
+- [Lineage Engine Tuning Backlog](LINEAGE_ENGINE_TUNING_BACKLOG.md)
 - [Lineage Implementation Guide](LINEAGE_IMPLEMENTATION_GUIDE.md)
+- [Lineage Object Investigation Queue](LINEAGE_OBJECT_INVESTIGATION_QUEUE.md)
+- [Lineage Suspicious Objects Process](LINEAGE_SUSPICIOUS_OBJECTS_PROCESS.md)
 - [Lineage Quick Reference](LINEAGE_QUICK_REFERENCE.md)
 - [Scoring Calibration Matrix](SCORING_CALIBRATION_MATRIX.md)
 - [SQL Server Connection Guide](SQL_SERVER_CONNECTION_GUIDE.md)
