@@ -36,7 +36,7 @@ describe('Confluence Sync Service', () => {
       JSON.stringify({
         pages: [
           {
-            title: '[AUTO] Sonic Data Lineage README',
+            title: 'Sonic Data Lineage README',
             file: 'pages/readme.md',
             hash: 'abc',
             bytes: 9,
@@ -46,7 +46,7 @@ describe('Confluence Sync Service', () => {
         ],
         object_locator_pages: [
           {
-            title: '[AUTO] Object Locator 001 - FactClaim to LoadFactClaim',
+            title: 'Object Locator 001 - FactClaim to LoadFactClaim',
             file: 'object-locator/001.md',
             hash: 'locator',
             bytes: 100,
@@ -56,7 +56,7 @@ describe('Confluence Sync Service', () => {
         ],
         quick_context_pages: [
           {
-            title: '[AUTO] Lineage Quick Context 001 - FactClaim to LoadFactClaim',
+            title: 'Lineage Quick Context 001 - FactClaim to LoadFactClaim',
             file: 'quick-context/001.md',
             hash: 'quick',
             bytes: 100,
@@ -66,7 +66,7 @@ describe('Confluence Sync Service', () => {
         ],
         shard_pages: [
           {
-            title: '[AUTO] Catalog Shard 001 - DW01 Sonic_DW table',
+            title: 'Catalog Shard 001 - DW01 Sonic_DW table',
             file: 'shards/001.md',
             hash: 'shard',
             bytes: 100,
@@ -76,7 +76,7 @@ describe('Confluence Sync Service', () => {
         ],
         object_pages: [
           {
-            title: '[AUTO] FactClaim',
+            title: 'FactClaim',
             file: 'object-context/fact.md',
             hash: 'def',
             bytes: 10,
@@ -131,14 +131,93 @@ describe('Confluence Sync Service', () => {
 
     expect(result.status).toBe('ready');
     expect(result.pages).toHaveLength(4);
-    expect(result.pages[0].title).toBe('[AUTO] Sonic Data Lineage README');
-    expect(result.pages[1].title).toBe('[AUTO] Object Locator 001 - FactClaim to LoadFactClaim');
+    expect(result.pages[0].title).toBe('Sonic Data Lineage README');
+    expect(result.pages[1].title).toBe('Object Locator 001 - FactClaim to LoadFactClaim');
     expect(result.pages[2].title).toBe(
-      '[AUTO] Lineage Quick Context 001 - FactClaim to LoadFactClaim'
+      'Lineage Quick Context 001 - FactClaim to LoadFactClaim'
     );
-    expect(result.pages[3].title).toBe('[AUTO] Catalog Shard 001 - DW01 Sonic_DW table');
+    expect(result.pages[3].title).toBe('Catalog Shard 001 - DW01 Sonic_DW table');
     expect(result.attachments).toHaveLength(1);
     expect(result.warnings).toEqual([]);
+  });
+
+  test('publish cleans legacy AUTO pages before publishing clean generated titles', async () => {
+    await seedExportManifest();
+
+    const deletedUrls = [];
+    const createdTitles = [];
+    const legacyPagesByParent = {
+      '2221670415': [
+        {
+          id: 'legacy-root',
+          title: '[AUTO] Sonic Data Lineage README',
+          metadata: { labels: { results: [] } },
+        },
+      ],
+      'legacy-root': [
+        {
+          id: 'legacy-child',
+          title: '[AUTO] Old Child',
+          metadata: { labels: { results: [] } },
+        },
+      ],
+      'legacy-child': [],
+    };
+
+    const httpClient = {
+      async get(url) {
+        const childMatch = url.match(/\/rest\/api\/content\/([^/]+)\/child\/page$/);
+        if (childMatch) {
+          return { data: { results: legacyPagesByParent[childMatch[1]] || [] } };
+        }
+        return { data: { results: [] } };
+      },
+      async post(url, body) {
+        if (url.endsWith('/rest/api/content')) {
+          createdTitles.push(body.title);
+          return { data: { id: `created-${createdTitles.length}` } };
+        }
+        return { data: { id: 'created-attachment' } };
+      },
+      async put() {
+        return { data: { id: 'updated' } };
+      },
+      async delete(url) {
+        deletedUrls.push(url);
+        return { data: {} };
+      },
+    };
+
+    const result = await syncConfluenceExport({
+      exportRoot: tempRoot,
+      dryRun: false,
+      skipAttachments: true,
+      httpClient,
+      config: {
+        baseUrl: 'https://sonicautomotive.atlassian.net/wiki',
+        spaceKey: 'TDE',
+        parentPageId: '2221670415',
+        email: 'catalog@example.com',
+        apiToken: 'token',
+      },
+    });
+
+    expect(result.deletedPages.map((page) => page.title)).toEqual([
+      '[AUTO] Old Child',
+      '[AUTO] Sonic Data Lineage README',
+    ]);
+    expect(deletedUrls).toEqual([
+      'https://sonicautomotive.atlassian.net/wiki/rest/api/content/legacy-child',
+      'https://sonicautomotive.atlassian.net/wiki/rest/api/content/legacy-root',
+    ]);
+    expect(createdTitles).toEqual(
+      expect.arrayContaining([
+        'Sonic Data Lineage README',
+        'Object Locator 001 - FactClaim to LoadFactClaim',
+        'Lineage Quick Context 001 - FactClaim to LoadFactClaim',
+        'Catalog Shard 001 - DW01 Sonic_DW table',
+      ])
+    );
   });
 
   test('renders markdown to Confluence storage HTML with generated notice', () => {

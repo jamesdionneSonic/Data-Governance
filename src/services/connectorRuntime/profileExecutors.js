@@ -1,3 +1,5 @@
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import { ConnectorRuntimeError } from './connectorErrors.js';
 import { profileFromAggregateRow } from '../profilingExecutionService.js';
 import {
@@ -6,6 +8,8 @@ import {
   sqlServerCredentialMode,
   sqlServerConnectionRuntimeError,
 } from './sqlServerConnection.js';
+
+const execFileAsync = promisify(execFile);
 
 const DATABASE_CONNECTORS = new Set([
   'sql_server',
@@ -26,6 +30,96 @@ function credentialValue(connector, ...keys) {
 
 function endpoint(connector, ...keys) {
   return credentialValue(connector, ...keys);
+}
+
+function connectionStrategy(connector = {}, options = {}) {
+  return String(
+    options.connection_strategy ||
+      options.connectionStrategy ||
+      connector.config?.connection_strategy ||
+      connector.config?.connectionStrategy ||
+      ''
+  ).trim().toLowerCase();
+}
+
+function usesSqlcmdWindowsAuth(connector = {}, options = {}) {
+  return ['sqlcmd_windows_auth', 'sqlcmd', 'sqlcmd_windows_integrated'].includes(connectionStrategy(connector, options));
+}
+
+function sqlcmdServer(connector = {}) {
+  const server = connector.config?.server || connector.config?.host || connector.config?.data_source || connector.config?.dataSource;
+  const port = connector.config?.port;
+  if (port && !String(server || '').includes(',')) return `${server},${port}`;
+  return server;
+}
+
+function sqlcmdDatabase(connector = {}) {
+  return connector.config?.database || connector.config?.catalog;
+}
+
+function sqlcmdJson(output = '') {
+  const body = String(output || '')
+    .split(/\r?\n/)
+    .map((line) => line.trimEnd())
+    .filter((line) => {
+      const value = line.trim();
+      return value && !/^JSON_/i.test(value) && !/^-+$/.test(value) && !/^\(\d+ rows affected\)$/i.test(value);
+    })
+    .join('');
+  return body ? JSON.parse(body) : null;
+}
+
+function splitSqlStatements(sql = '') {
+  return String(sql || '')
+    .split(';')
+    .map((statement) => statement.trim())
+    .filter(Boolean);
+}
+
+function sqlcmdProfileSql(sql = '') {
+  const statements = splitSqlStatements(sql);
+  const selectIndex = [...statements].reverse().findIndex((statement) => /^select\b/i.test(statement));
+  if (selectIndex < 0) return sql;
+  const actualIndex = statements.length - 1 - selectIndex;
+  const preamble = statements.slice(0, actualIndex).map((statement) => `${statement};`).join('\n');
+  const select = statements[actualIndex].replace(/;+\s*$/, '');
+  return [
+    'SET NOCOUNT ON;',
+    preamble,
+    `SELECT * FROM (${select}) AS profile_row FOR JSON PATH, WITHOUT_ARRAY_WRAPPER;`,
+  ].filter(Boolean).join('\n');
+}
+
+async function runSqlcmdJsonQuery({ connector, action, sql }) {
+  const server = sqlcmdServer(connector);
+  const database = sqlcmdDatabase(connector) || action.database;
+  if (!server || !database) {
+    throw profileError(
+      connector,
+      action,
+      'SQL Server sqlcmd profiling requires connector server and database configuration.',
+      'Set connector config.server and config.database before running live SQL Server profiles through sqlcmd.'
+    );
+  }
+  const { stdout } = await execFileAsync(connector.config?.sqlcmd_path || connector.config?.sqlcmdPath || 'sqlcmd', [
+    '-S',
+    server,
+    '-E',
+    '-C',
+    '-d',
+    database,
+    '-w',
+    '65535',
+    '-y',
+    '0',
+    '-Q',
+    sql,
+  ], {
+    windowsHide: true,
+    maxBuffer: Number(connector.config?.sqlcmd_max_buffer || connector.config?.sqlcmdMaxBuffer || 128 * 1024 * 1024),
+    timeout: Number(action.query?.timeout_ms || connector.config?.sqlcmd_timeout_ms || connector.config?.sqlcmdTimeoutMs || 120000),
+  });
+  return sqlcmdJson(stdout) || {};
 }
 
 function profileError(connector, action, message, remediation, details = {}) {
@@ -60,7 +154,7 @@ export function createProfileExecutor({ connector, options = {} }) {
       if (connector.config?.profile_endpoint || options.profile_endpoint) {
         return runProfileEndpoint({ connector, action, options });
       }
-      if (connector.type === 'sql_server') return runSqlServerProfile({ connector, action });
+      if (connector.type === 'sql_server') return runSqlServerProfile({ connector, action, options });
       if (connector.type === 'postgresql') return runPostgresProfile({ connector, action });
       if (connector.type === 'snowflake') return runSnowflakeProfile({ connector, action });
       if (connector.type === 'bigquery') return runBigQueryProfile({ connector, action });
@@ -71,7 +165,22 @@ export function createProfileExecutor({ connector, options = {} }) {
   };
 }
 
-async function runSqlServerProfile({ connector, action }) {
+async function runSqlServerProfile({ connector, action, options = {} }) {
+  if (usesSqlcmdWindowsAuth(connector, options)) {
+    try {
+      const row = await runSqlcmdJsonQuery({ connector, action, sql: sqlcmdProfileSql(action.query.sql) });
+      return profileFromAggregateRow(action, row);
+    } catch (err) {
+      if (err instanceof ConnectorRuntimeError) throw err;
+      throw profileError(
+        connector,
+        action,
+        `SQL Server sqlcmd live profiling failed: ${err.message}`,
+        'Verify sqlcmd is installed, the Windows user has read access, the table exists, and the generated aggregate SQL is valid.',
+        { connection_strategy: 'sqlcmd_windows_auth', original_error: err.message }
+      );
+    }
+  }
   const credentialMode = sqlServerCredentialMode(connector);
   let sql;
   try {

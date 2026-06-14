@@ -146,7 +146,86 @@ Recurring profile work is handled by the managed connector profile scheduler:
 | `POST /api/v1/connectors/profile-schedules/worker/stop` | Stop the in-process scheduler worker. |
 | `POST /api/v1/connectors/profile-schedules/tick` | Run all due active schedules up to a configured limit. |
 
+### Future Read-Only Queue Health Contract
+
+The current UI can derive queue-health explanations from existing schedules, queue previews, scheduler status, and recent run history. If those sources stop being sufficient, add a read-only summary endpoint rather than changing scheduler execution:
+
+| Endpoint | Use |
+| --- | --- |
+| `GET /api/v1/connectors/profile-schedules/queue-health` | Return queue-health summaries for schedules visible to the caller. |
+| `GET /api/v1/connectors/profile-schedules/:scheduleId/queue-health` | Return queue-health summary for one visible schedule. |
+
+This contract is intentionally read-only. It must not:
+
+- start, stop, tick, pause, activate, delete, reseed, or reorder schedules
+- change profile execution, queue selection, timeout penalty calculation, or freshness windows
+- change connector credentials, Windows-auth behavior, runtime permissions, or role visibility
+- change profile artifacts, profile-index output, publish behavior, or artifact scrubbing
+- require exact pending counts when the current runtime can only support `unknown`
+
+Recommended response shape:
+
+```json
+{
+  "generated_at": "2026-06-13T12:00:00.000Z",
+  "source": "profile_scheduler",
+  "schedules": [
+    {
+      "schedule_id": "vendor-live-profile",
+      "schedule_name": "VendorData live queue",
+      "connector_id": "vendor-data",
+      "profile_type": "aggregate",
+      "status": "running",
+      "plain_status": "Running normally",
+      "plain_summary": "12 live profile objects have completed for this queue.",
+      "next_action": "Monitor next run or open queue detail for current progress.",
+      "last_run_at": "2026-06-13T11:40:00.000Z",
+      "next_run_at": "2026-06-13T12:40:00.000Z",
+      "last_delta": {
+        "completed_live": 3,
+        "failed_live": 0,
+        "fresh_skipped": 2,
+        "timeout_penalized": 1
+      },
+      "counts": {
+        "completed_live": 12,
+        "pending_live": null,
+        "pending_live_known": false,
+        "failed_live": 0,
+        "fresh_skipped": 2,
+        "timeout_penalized": 1,
+        "selected_this_run": 3
+      },
+      "blocker": null,
+      "recommended_operator_action": "none",
+      "publish_status": "published",
+      "warnings": [
+        {
+          "code": "PENDING_COUNT_UNKNOWN",
+          "message": "The current runtime does not expose an exact pending total for this schedule."
+        }
+      ],
+      "safe_to_show_by_default": true
+    }
+  ]
+}
+```
+
+Field rules:
+
+- `pending_live` may be `null` only when `pending_live_known` is `false`; clients must show `Unknown` instead of guessing.
+- `plain_status`, `plain_summary`, and `next_action` must be safe default UI text and must not include secrets, credentials, raw SQL, raw rows, sample values, connection strings, token values, or vault references.
+- `blocker` should use normalized user-facing categories such as `needs_login_or_vpn`, `missing_column_metadata`, `network_unreachable`, `timeout_retry`, `publish_warning`, or `scheduler_stopped`.
+- `recommended_operator_action` should be one of `none`, `open_queue_detail`, `confirm_login_or_vpn`, `refresh_metadata`, `retry_run`, `retry_publish`, `activate_schedule`, or `start_worker`.
+- `last_delta` should describe the newest observed change since the previous summary when available, and may be omitted when the runtime cannot compute it without new durable state.
+
 Schedule type `auto` resolves to the existing profile engines: aggregate profiling for database/warehouse connectors, BI report profiling for BI connectors, and metadata profiling for cloud/catalog/storage/pipeline/repository/API/Kafka/Salesforce/SAP connectors. Schedule options are sanitized before persistence so raw payloads, mocks, secrets, tokens, and vault references are not stored.
+
+Recurring schedules are not dry-run previews. Schedule create/update requests must persist `dry_run: false` and a live execution mode for operational profile jobs. Dry-run planning remains available only through explicit ad-hoc plan/preview endpoints.
+
+Before a live schedule run builds aggregate SQL, the planner must verify that each selected live asset has usable column metadata. If selected assets are missing columns, the runtime must perform targeted metadata enrichment through the saved connector, update the metadata used by the planner, and replan the same run. If enrichment succeeds, the run proceeds with live aggregate actions. If enrichment fails, the run fails or partial-fails with an operator-visible reason.
+
+A live schedule run must not be marked successful when selected assets produced no actions because column metadata was missing. In that case, the run summary must identify the blocked assets and report a status such as `partial_failure` or `failed` rather than metadata-only success.
 
 The application starts an in-process worker on server boot unless `PROFILE_SCHEDULER_ENABLED=false` or the process is running tests. The worker ticks every `PROFILE_SCHEDULER_INTERVAL_MS` milliseconds, defaults to 60 seconds, and uses `PROFILE_SCHEDULER_TICK_LIMIT` to cap each pass.
 
@@ -180,5 +259,6 @@ Automated coverage includes:
 - connector API tests for `/profile/plan` and `/profile/run`
 - profiling API tests for `connector_id` delegation
 - profile scheduler tests for schedule CRUD, due ticks, repeated-failure pause behavior, sanitized run history, status endpoints, and local artifact export
+- profile scheduler tests proving recurring schedules cannot persist `dry_run: true`, missing column metadata triggers targeted enrichment before planning, and zero-action live runs caused by missing columns cannot report success
 - Playwright memory-stability coverage that cycles major app views and asserts no page errors, no non-favicon 4xx resources, and bounded heap growth
 - profile index safety tests that fail when forbidden fields such as `sample_values`, `raw_rows`, `preview_data`, `example_value`, `raw_payload`, `credential`, `token`, `secret`, or `connection_string` appear in persisted profile index output

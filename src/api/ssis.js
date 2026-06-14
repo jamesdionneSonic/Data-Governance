@@ -19,6 +19,7 @@ import { sendErrorResponse } from '../middleware/errorHandler.js';
 import { loadRuntimeCatalog } from '../services/catalogRuntimeService.js';
 import { initializeCache } from '../utils/cacheInitializer.js';
 import { runConnectorExtractionForConfig } from '../services/connectorService.js';
+import { buildSqlServerApiConnectionContext } from '../services/connectorRuntime/sqlServerConnection.js';
 
 const router = createApiRouter();
 
@@ -27,161 +28,36 @@ const router = createApiRouter();
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function buildConnectionConfig(payload) {
-  const {
-    server,
-    port = 1433,
-    database = 'master', // SSIS queries switch to SSISDB internally; master is fine as initial db
-    username,
-    password,
-    domain,
-    authentication = 'sql-server',
-    encrypt = true,
-    trustServerCertificate = false,
-  } = payload;
-
-  if (!server) {
-    return {
-      error: {
-        status: 400,
-        body: { error: 'Bad Request', message: 'server is required' },
-      },
-    };
-  }
-
-  const connConfig = {
-    server,
-    port: Number(port) || 1433,
-    database,
-    options: {
-      encrypt: encrypt === true || encrypt === 'true',
-      trustServerCertificate: trustServerCertificate === true || trustServerCertificate === 'true',
-      enableArithAbort: true,
-    },
-    pool: { max: 5, min: 0, idleTimeoutMillis: 30000 },
+  const built = await buildSqlServerApiConnectionContext(payload, {
+    requireDatabase: false,
+    defaultDatabase: 'master',
+    defaultPort: 1433,
+    defaultEncrypt: true,
+    defaultTrustServerCertificate: false,
     connectionTimeout: 20000,
-    requestTimeout: 600000, // 10 min – SSIS XML can be large
-  };
-
-  let sqlDriver;
-  try {
-    const mssqlModule = await import('mssql');
-    sqlDriver = mssqlModule.default;
-  } catch (_err) {
+    requestTimeout: 600000,
+    pool: { max: 5, min: 0, idleTimeoutMillis: 30000 },
+    sqlAuthLabel: 'sql-server authentication',
+    windowsDriverMessage:
+      'Windows integrated auth requires msnodesqlv8 on a Windows host. Use SQL auth or NTLM in Linux/Docker.',
+    windowsIntegratedCredentialMessage:
+      'For NTLM Windows auth provide both username and password, or leave both blank for integrated.',
+    windowsDriverInstallMessage:
+      'Windows integrated auth requires msnodesqlv8 on a Windows host. Provide username/password for NTLM instead.',
+    azureAdMode: 'azure-active-directory-service-principal-secret',
+  });
+  if (built.error) {
     return {
       error: {
-        status: 500,
-        body: {
-          error: 'Driver Missing',
-          message: 'mssql npm package is not installed. Run: npm install mssql',
-        },
-      },
-    };
-  }
-
-  if (authentication === 'sql-server') {
-    if (!username || !password) {
-      return {
-        error: {
-          status: 400,
-          body: {
-            error: 'Bad Request',
-            message: 'username and password are required for sql-server authentication',
-          },
-        },
-      };
-    }
-    connConfig.authentication = {
-      type: 'default',
-      options: { userName: username, password },
-    };
-  } else if (authentication === 'windows') {
-    if (!username && !password) {
-      try {
-        let nativeModule;
-        try {
-          nativeModule = await import('mssql/msnodesqlv8.js');
-        } catch (_driverLoadErr) {
-          throw new Error(
-            'Windows integrated auth requires msnodesqlv8 on a Windows host. Use SQL auth or NTLM in Linux/Docker.'
-          );
-        }
-        sqlDriver = nativeModule.default;
-        connConfig.options.trustedConnection = true;
-        connConfig.driver = 'msnodesqlv8';
-        connConfig.connectionString = `Driver={ODBC Driver 17 for SQL Server};Server=${server};Database=${database};Trusted_Connection=Yes;`;
-        delete connConfig.authentication;
-        delete connConfig.port;
-      } catch (_driverErr) {
-        return {
-          error: {
-            status: 400,
-            body: {
-              error: 'Bad Request',
-              message:
-                'Windows integrated auth requires msnodesqlv8 on a Windows host. Provide username/password for NTLM instead.',
-            },
-          },
-        };
-      }
-    } else {
-      if (!username || !password) {
-        return {
-          error: {
-            status: 400,
-            body: {
-              error: 'Bad Request',
-              message:
-                'For NTLM Windows auth provide both username and password, or leave both blank for integrated.',
-            },
-          },
-        };
-      }
-      let resolvedDomain = domain || '';
-      let resolvedUsername = username;
-      if (!resolvedDomain && String(username).includes('\\')) {
-        const [pd, pu] = String(username).split('\\');
-        if (pd && pu) {
-          resolvedDomain = pd;
-          resolvedUsername = pu;
-        }
-      }
-      connConfig.authentication = {
-        type: 'ntlm',
-        options: { userName: resolvedUsername, password, domain: resolvedDomain },
-      };
-    }
-  } else if (authentication === 'azure-active-directory-service-principal-secret') {
-    const { clientId, clientSecret, tenantId } = payload;
-    if (!clientId || !clientSecret || !tenantId) {
-      return {
-        error: {
-          status: 400,
-          body: {
-            error: 'Bad Request',
-            message: 'clientId, clientSecret, and tenantId are required for service-principal auth',
-          },
-        },
-      };
-    }
-    connConfig.authentication = {
-      type: 'azure-active-directory-service-principal-secret',
-      options: { clientId, clientSecret, tenantId },
-    };
-  } else if (authentication === 'azure-active-directory-msi-app-service') {
-    connConfig.authentication = { type: 'azure-active-directory-msi-app-service', options: {} };
-  } else {
-    return {
-      error: {
-        status: 400,
+        status: built.error.status,
         body: {
           error: 'Bad Request',
-          message: `Unsupported authentication type: ${authentication}. Supported: sql-server, windows, azure-active-directory-service-principal-secret, azure-active-directory-msi-app-service`,
+          message: built.error.message,
         },
       },
     };
   }
-
-  return { connConfig, sqlDriver };
+  return built;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

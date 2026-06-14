@@ -22,6 +22,7 @@ import { loadRuntimeCatalog } from '../services/catalogRuntimeService.js';
 import { indexObjects, createIndex, healthCheck } from '../services/indexService.js';
 import { initializeCache } from '../utils/cacheInitializer.js';
 import { runConnectorExtractionForConfig } from '../services/connectorService.js';
+import { buildSqlServerApiConnectionContext } from '../services/connectorRuntime/sqlServerConnection.js';
 
 const router = createApiRouter();
 const ingestionState = {
@@ -380,162 +381,23 @@ ${discovery.clusterWarning || discovery.catalogWarning ? `\n## Warnings\n${[disc
 }
 
 async function buildSqlConnectionContext(payload) {
-  const mssqlDriver = await import('mssql');
-  const {
-    server,
-    port = 1433,
-    database,
-    username,
-    password,
-    domain,
-    clientId,
-    clientSecret,
-    tenantId,
-    authentication = 'sql-server',
-    encrypt = true,
-    trustServerCertificate = false,
-  } = payload;
-
-  if (!server || !database) {
-    return {
-      error: {
-        status: 400,
-        code: 'BAD_REQUEST',
-        message: 'server and database are required',
-      },
-    };
-  }
-
-  const connConfig = {
-    server,
-    port: Number(port) || 1433,
-    database,
-    options: {
-      encrypt: encrypt === true || encrypt === 'true',
-      trustServerCertificate: trustServerCertificate === true || trustServerCertificate === 'true',
-      enableArithAbort: true,
-    },
-    pool: {
-      max: 20,
-      min: 0,
-      idleTimeoutMillis: 30000,
-    },
+  return buildSqlServerApiConnectionContext(payload, {
+    requireDatabase: true,
+    defaultPort: 1433,
+    defaultEncrypt: true,
+    defaultTrustServerCertificate: false,
     connectionTimeout: 15000,
-    requestTimeout: 300000, // 5 minutes for large extractions
-  };
-
-  let sqlDriver = mssqlDriver.default;
-
-  if (authentication === 'sql-server') {
-    if (!username || !password) {
-      return {
-        error: {
-          status: 400,
-          code: 'BAD_REQUEST',
-          message: 'username and password are required for SQL Server authentication',
-        },
-      };
-    }
-
-    connConfig.authentication = {
-      type: 'default',
-      options: {
-        userName: username,
-        password,
-      },
-    };
-  } else if (authentication === 'windows') {
-    if (!username && !password) {
-      try {
-        let nativeDriverModule;
-        try {
-          nativeDriverModule = await import('mssql/msnodesqlv8.js');
-        } catch (_driverLoadErr) {
-          throw new Error(
-            'Windows integrated auth requires msnodesqlv8 on a Windows host. Use SQL Server auth or NTLM on Linux/Docker.'
-          );
-        }
-        sqlDriver = nativeDriverModule.default;
-
-        connConfig.options.trustedConnection = true;
-        connConfig.driver = 'msnodesqlv8';
-        connConfig.connectionString = `Driver={ODBC Driver 17 for SQL Server};Server=${server};Database=${database};Trusted_Connection=Yes;`;
-        delete connConfig.authentication;
-        delete connConfig.port;
-      } catch (_driverErr) {
-        return {
-          error: {
-            status: 400,
-            code: 'BAD_REQUEST',
-            message:
-              'Windows integrated auth requires msnodesqlv8. Install with `npm i msnodesqlv8`, or provide username/password for NTLM.',
-          },
-        };
-      }
-    } else {
-      if (!username || !password) {
-        return {
-          error: {
-            status: 400,
-            code: 'BAD_REQUEST',
-            message:
-              'For NTLM Windows auth, provide both username and password. For integrated auth, leave both blank.',
-          },
-        };
-      }
-
-      let resolvedDomain = domain || '';
-      let resolvedUsername = username;
-      if (!resolvedDomain && String(username).includes('\\')) {
-        const [parsedDomain, parsedUser] = String(username).split('\\');
-        if (parsedDomain && parsedUser) {
-          resolvedDomain = parsedDomain;
-          resolvedUsername = parsedUser;
-        }
-      }
-
-      connConfig.authentication = {
-        type: 'ntlm',
-        options: {
-          userName: resolvedUsername,
-          password,
-          domain: resolvedDomain,
-        },
-      };
-    }
-  } else if (authentication === 'azure-ad') {
-    if (!clientId || !clientSecret || !tenantId) {
-      return {
-        error: {
-          status: 400,
-          code: 'BAD_REQUEST',
-          message: 'clientId, clientSecret, and tenantId are required for Azure AD authentication',
-        },
-      };
-    }
-
-    connConfig.authentication = {
-      type: 'azure-active-directory-service-principal-secret',
-      options: {
-        clientId,
-        clientSecret,
-        tenantId,
-      },
-    };
-  } else {
-    return {
-      error: {
-        status: 400,
-        code: 'BAD_REQUEST',
-        message: `Unsupported authentication method: ${authentication}`,
-      },
-    };
-  }
-
-  return {
-    connConfig,
-    sqlDriver,
-  };
+    requestTimeout: 300000,
+    pool: { max: 20, min: 0, idleTimeoutMillis: 30000 },
+    sqlAuthLabel: 'SQL Server authentication',
+    windowsDriverMessage:
+      'Windows integrated auth requires msnodesqlv8 on a Windows host. Use SQL Server auth or NTLM on Linux/Docker.',
+    windowsIntegratedCredentialMessage:
+      'For NTLM Windows auth, provide both username and password. For integrated auth, leave both blank.',
+    windowsDriverInstallMessage:
+      'Windows integrated auth requires msnodesqlv8.',
+    azureAdMode: 'azure-active-directory-service-principal-secret',
+  });
 }
 
 /**

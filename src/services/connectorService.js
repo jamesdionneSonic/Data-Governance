@@ -19,16 +19,22 @@ import {
   executeConnectorExtraction,
   executeConnectorMetadataProfile,
   executeConnectorProfile,
+  executeConnectorTest,
   planConnectorBiProfile,
   planConnectorMetadataProfile,
   planConnectorProfile,
   planConnectorExtraction,
 } from './connectorRuntime/extractionKernel.js';
+import { diagnoseSqlServerConnectionVariants } from './connectorRuntime/sqlServerConnection.js';
 
 const SENSITIVE_FIELD_PATTERN = /password|secret|token|key|credential|clientSecret|privateKey/i;
 const CONNECTOR_RUNTIME_LOG_DIR = path.resolve(process.cwd(), 'logs');
 const CONNECTOR_RUNTIME_LOG_PATH = path.join(CONNECTOR_RUNTIME_LOG_DIR, 'connector-runtime.log');
 const CONNECTOR_RUN_TIMEOUT_MS = Number(process.env.CONNECTOR_RUN_TIMEOUT_MS || 45000);
+const CONNECTOR_TEST_TIMEOUT_MS = Number(process.env.CONNECTOR_TEST_TIMEOUT_MS || 15000);
+const SSIS_CONNECTOR_TEST_TIMEOUT_MS = Number(
+  process.env.SSIS_CONNECTOR_TEST_TIMEOUT_MS || CONNECTOR_TEST_TIMEOUT_MS * 3
+);
 const WIZARD_SUPPORTED_TYPES = new Set([
   'sql_server',
   'ssis',
@@ -81,6 +87,70 @@ async function withConnectorRunTimeout(task, timeoutMs, context = {}) {
   } finally {
     if (timer) clearTimeout(timer);
   }
+}
+
+export function connectorTestTimeoutMs(connector = {}, options = {}) {
+  const requested = Number(options.timeout_ms || options.timeoutMs);
+  const defaultTimeout =
+    connector.type === CONNECTOR_TYPES.SSIS.type
+      ? SSIS_CONNECTOR_TEST_TIMEOUT_MS
+      : CONNECTOR_TEST_TIMEOUT_MS;
+  const effective = Number.isFinite(requested) && requested > 0 ? requested : defaultTimeout;
+  return Math.min(CONNECTOR_RUN_TIMEOUT_MS, effective);
+}
+
+export function connectorRuntimeAuthRemediationPacket(connector = {}, requestedId, err = {}) {
+  const details = err.details || {};
+  const failureCategory = details.failure_category || null;
+  const isWindowsAuthFailure =
+    failureCategory === 'windows_security_negotiation_failed' ||
+    err.code === 'SQL_SERVER_WINDOWS_INTEGRATED_CONNECTION_FAILED';
+  if (!isWindowsAuthFailure) return null;
+
+  const server = connector.config?.server || connector.config?.host || details.server || null;
+  const database = connector.config?.database || connector.config?.catalogDatabase || details.database || null;
+  const authMode = sanitizeCredential(connector.credential).mode || details.credential_mode || null;
+  const runtimeIdentity =
+    details.runtime_process_identity ||
+    (details.runtime_process_domain && details.runtime_process_user
+      ? `${details.runtime_process_domain}\\${details.runtime_process_user}`
+      : details.runtime_process_user || null);
+
+  return {
+    title: 'Windows Integrated SQL Server authentication needs infrastructure confirmation.',
+    connector_id: connector.id || null,
+    requested_connector_id: requestedId || connector.id || null,
+    connector_type: connector.type || null,
+    endpoint: {
+      server,
+      database,
+      port: connector.config?.port || details.port || null,
+      raw_server: details.raw_server || server,
+      instance: details.instance || null,
+      resolved_endpoint: details.resolved_endpoint || null,
+      uses_named_instance: details.uses_named_instance === true,
+      trust_server_certificate:
+        connector.config?.trustServerCertificate ?? connector.config?.trust_server_certificate ?? null,
+      encrypt: connector.config?.encrypt ?? null,
+      server_spn_configured: Boolean(connector.config?.serverSpn || connector.config?.server_spn),
+    },
+    runtime_identity: {
+      identity: runtimeIdentity,
+      user: details.runtime_process_user || null,
+      domain: details.runtime_process_domain || null,
+      host: details.runtime_process_host || null,
+    },
+    auth_mode: authMode,
+    shared_runtime_rule:
+      'Do not bypass the connector framework with direct SQL probes; resolve endpoint/auth here and retest through saved connector TEST.',
+    dba_infrastructure_asks: [
+      'Confirm the MSSQLSvc SPN registered for the SQL Server host and port or named instance used by this connector.',
+      'Confirm whether the app runtime identity is allowed to authenticate to the SQL Server service with Windows Integrated Auth.',
+      'Confirm the exact SSMS/Ingestion Studio endpoint, port or instance, encryption, and trustServerCertificate settings that succeed.',
+      'For named instances, confirm SQL Browser/fixed-port behavior and whether the saved connector should use a fixed port.',
+      'Only add serverSpn to connector config after infrastructure/DBA confirms the exact SPN value.',
+    ],
+  };
 }
 
 const AUTH_MODE_HELP = Object.freeze({
@@ -741,7 +811,7 @@ function sanitizeCredential(credential = {}) {
   }
   const visibleFields = Object.fromEntries(
     Object.entries(credential)
-      .filter(([key]) => !['secret_ref', 'secretRef', 'vault'].includes(key))
+      .filter(([key]) => !['secret_ref', 'secretRef', 'vault', 'status', 'fields', 'values'].includes(key))
       .filter(([key]) => !SENSITIVE_FIELD_PATTERN.test(key))
   );
   return {
@@ -749,9 +819,37 @@ function sanitizeCredential(credential = {}) {
     secret_ref: credential.secret_ref || credential.secretRef || null,
     vault: credential.vault || credential.vault_name || null,
     status: credential.secret_ref || credential.secretRef ? 'stored_reference' : 'configured',
-    fields: Object.keys(credential).filter((key) => !['secret_ref', 'secretRef', 'vault'].includes(key)),
+    fields: Object.keys(credential).filter(
+      (key) => !['secret_ref', 'secretRef', 'vault', 'status', 'fields', 'values'].includes(key)
+    ),
     values: visibleFields,
   };
+}
+
+function normalizeCredentialForPersistence(credential = {}) {
+  if (!credential || Object.keys(credential).length === 0) {
+    return { mode: 'none' };
+  }
+  const normalized = {
+    mode: credential.mode || credential.kind || 'secret_reference',
+  };
+  const secretRef = credential.secret_ref || credential.secretRef;
+  if (secretRef) normalized.secret_ref = 'stored_reference';
+  const vault = credential.vault || credential.vault_name;
+  if (vault) normalized.vault = 'stored_reference';
+  for (const [key, value] of Object.entries(credential)) {
+    if (
+      ['mode', 'kind', 'secret_ref', 'secretRef', 'vault', 'vault_name', 'status', 'fields', 'values'].includes(key) ||
+      SENSITIVE_FIELD_PATTERN.test(key) ||
+      value === undefined ||
+      value === null ||
+      value === ''
+    ) {
+      continue;
+    }
+    normalized[key] = value;
+  }
+  return normalized;
 }
 
 function sanitizeConnector(connector) {
@@ -763,12 +861,80 @@ function sanitizeConnector(connector) {
   };
 }
 
+function normalizeConnectorLookupValue(value = '') {
+  return String(value || '').trim().toLowerCase();
+}
+
+function connectorLookupAliases(connector = {}) {
+  return [
+    connector.id,
+    connector.label,
+    connector.name,
+    connector.config?.database,
+    connector.config?.catalog,
+    connector.config?.catalogDatabase,
+    connector.config?.databaseName,
+  ]
+    .map(normalizeConnectorLookupValue)
+    .filter(Boolean);
+}
+
+function resolveConnectorRecord(id) {
+  hydrateRuntimeStore();
+  const exact = connectorStore.get(id);
+  if (exact) return { connector: exact, requested_id: id, resolved_id: exact.id, alias_match: false };
+
+  const requested = normalizeConnectorLookupValue(id);
+  if (!requested) return { connector: null, requested_id: id, resolved_id: null, alias_match: false };
+
+  const matches = [...connectorStore.values()].filter((connector) =>
+    connectorLookupAliases(connector).includes(requested)
+  );
+  if (matches.length !== 1) return { connector: null, requested_id: id, resolved_id: null, alias_match: false };
+  return { connector: matches[0], requested_id: id, resolved_id: matches[0].id, alias_match: true };
+}
+
 function sanitizeProfileOptions(options = {}) {
   const sanitized = sanitizeConfig(options || {});
   delete sanitized.metadata_payload;
   delete sanitized.metadataPayload;
   delete sanitized.mockMetadata;
   return sanitized;
+}
+
+function scheduleDryRunRequested(options = {}) {
+  return options.dry_run === true || options.dryRun === true || options.execution_mode === 'dry_run' || options.executionMode === 'dry_run';
+}
+
+function normalizeScheduleRuntimeOptions(options = {}, warnings = []) {
+  const normalized = sanitizeProfileOptions({
+    fail_fast: false,
+    ...options,
+    dry_run: false,
+    execution_mode: options.execution_mode && options.execution_mode !== 'dry_run' ? options.execution_mode : 'live',
+  });
+  delete normalized.dryRun;
+  delete normalized.executionMode;
+  if (scheduleDryRunRequested(options)) {
+    warnings.push({
+      code: 'PROFILE_SCHEDULE_DRY_RUN_NORMALIZED',
+      message: 'Recurring profile schedules must run live; dry_run was normalized to false.',
+    });
+  }
+  return normalized;
+}
+
+function assertProfileScheduleNotDryRun(options = {}) {
+  if (!scheduleDryRunRequested(options)) return;
+  const error = new Error('Recurring profile schedules cannot be saved as dry runs. Use a one-time profile run for dry-run previews.');
+  error.code = 'CONNECTOR_CONFIG_ERROR';
+  error.status = 400;
+  error.remediation = 'Set options.dry_run to false and execution_mode to live before saving the schedule.';
+  error.details = {
+    dry_run: options.dry_run ?? options.dryRun ?? null,
+    execution_mode: options.execution_mode || options.executionMode || null,
+  };
+  throw error;
 }
 
 function normalizeScheduleInterval(input = {}) {
@@ -789,6 +955,16 @@ function computeNextRunAt(schedule = {}, from = new Date()) {
 
 function sanitizeProfileSchedule(schedule) {
   return schedule ? { ...schedule, options: sanitizeProfileOptions(schedule.options || {}) } : null;
+}
+
+function normalizePersistedProfileSchedule(schedule = {}) {
+  const warnings = Array.isArray(schedule.validation_warnings) ? [...schedule.validation_warnings] : [];
+  const options = normalizeScheduleRuntimeOptions(schedule.options || {}, warnings);
+  return {
+    ...schedule,
+    options,
+    validation_warnings: warnings.length ? warnings : undefined,
+  };
 }
 
 function runtimePersistenceEnabled() {
@@ -1496,14 +1672,33 @@ function maybeAutoPublishProfiles(run, user, options = {}) {
 
 function connectorForPersistence(connector) {
   if (!connector) return null;
-  const credential = sanitizeCredential(connector.credential || {});
-  return sanitizeForPersistence({
+  const sanitized = sanitizeForPersistence({
     ...connector,
     config: sanitizeConfig(connector.config || {}),
-    credential: {
-      ...credential,
-      secret_ref: credential.secret_ref ? 'stored_reference' : null,
-    },
+    credential: undefined,
+  });
+  sanitized.credential = normalizeCredentialForPersistence(connector.credential || {});
+  return sanitized;
+}
+
+function connectorRunForPersistence(run) {
+  if (!run) return null;
+  return sanitizeForPersistence({
+    id: run.id,
+    connector_id: run.connector_id,
+    connector_type: run.connector_type,
+    actor: run.actor,
+    status: run.status,
+    mode: run.mode,
+    started_at: run.started_at,
+    completed_at: run.completed_at,
+    summary: run.summary,
+    stream_results: run.stream_results,
+    errors: run.errors,
+    warnings: run.warnings,
+    artifact: run.artifact,
+    publication: run.publication,
+    profile_publish: run.profile_publish,
   });
 }
 
@@ -1519,7 +1714,7 @@ function persistRuntimeStore() {
           version: 1,
           saved_at: nowIso(),
           connectors: [...connectorStore.values()].map(connectorForPersistence),
-          connector_runs: runHistoryStore.slice(0, PROFILE_CONNECTOR_MAX_HISTORY).map(sanitizeForPersistence),
+          connector_runs: runHistoryStore.slice(0, PROFILE_CONNECTOR_MAX_HISTORY).map(connectorRunForPersistence),
           snapshots: [...snapshotStore.values()].map(sanitizeForPersistence),
           profile_schedules: [...profileScheduleStore.values()].map(sanitizeProfileSchedule),
           profile_schedule_runs: profileScheduleRunStore
@@ -1546,8 +1741,17 @@ function hydrateRuntimeStore() {
   if (!existsSync(storePath)) return;
   try {
     const parsed = JSON.parse(readFileSync(storePath, 'utf8'));
+    let migratedConnectors = false;
     for (const connector of parsed.connectors || []) {
-      if (connector?.id && !connectorStore.has(connector.id)) connectorStore.set(connector.id, connector);
+      if (connector?.id && !connectorStore.has(connector.id)) {
+        const normalizedCredential = normalizeCredentialForPersistence(connector.credential || {});
+        migratedConnectors =
+          migratedConnectors || JSON.stringify(normalizedCredential) !== JSON.stringify(connector.credential || {});
+        connectorStore.set(connector.id, {
+          ...connector,
+          credential: normalizedCredential,
+        });
+      }
     }
     for (const run of parsed.connector_runs || []) {
       if (run?.id && !runHistoryStore.some((existing) => existing.id === run.id)) {
@@ -1560,14 +1764,20 @@ function hydrateRuntimeStore() {
         snapshotStore.set(snapshot.connector_id, snapshot);
       }
     }
+    let migratedSchedules = false;
     for (const schedule of parsed.profile_schedules || []) {
-      if (schedule?.id && !profileScheduleStore.has(schedule.id)) profileScheduleStore.set(schedule.id, schedule);
+      if (schedule?.id && !profileScheduleStore.has(schedule.id)) {
+        const normalized = normalizePersistedProfileSchedule(schedule);
+        migratedSchedules = migratedSchedules || JSON.stringify(normalized.options || {}) !== JSON.stringify(schedule.options || {});
+        profileScheduleStore.set(schedule.id, normalized);
+      }
     }
     for (const run of parsed.profile_schedule_runs || []) {
       if (run?.id && !profileScheduleRunStore.some((existing) => existing.id === run.id)) {
         profileScheduleRunStore.push(run);
       }
     }
+    if (migratedSchedules || migratedConnectors) persistRuntimeStore();
   } catch (err) {
     profileSchedulerStatus.last_error = {
       code: 'PROFILE_SCHEDULER_STORE_READ_ERROR',
@@ -1739,15 +1949,20 @@ export function listConnectors(filters = {}, user = {}) {
 }
 
 export function getConnector(id, user = {}, action = CONNECTOR_ACTIONS.VIEW) {
-  hydrateRuntimeStore();
-  const connector = connectorStore.get(id);
+  const resolved = resolveConnectorRecord(id);
+  const connector = resolved.connector;
   if (!connector) return null;
   if (!canUseConnector(connector, user, action)) {
     const error = new Error(`User is not allowed to ${action} connector '${id}'.`);
     error.code = 'CONNECTOR_FORBIDDEN';
     throw error;
   }
-  return sanitizeConnector(connector);
+  return sanitizeConnector({
+    ...connector,
+    requested_id: resolved.requested_id,
+    resolved_id: resolved.resolved_id,
+    alias_match: resolved.alias_match,
+  });
 }
 
 export function grantConnectorPermission(id, grant = {}, actor = {}) {
@@ -1959,6 +2174,219 @@ export async function runConnector(id, options = {}, user = {}) {
   }
   persistRuntimeStore();
   return run;
+}
+
+export async function testConnector(id, options = {}, user = {}) {
+  const resolved = resolveConnectorRecord(id);
+  const connector = resolved.connector;
+  if (!connector) {
+    throw new Error(`Connector '${id}' not found.`);
+  }
+  if (!canUseConnector(connector, user, CONNECTOR_ACTIONS.RUN)) {
+    const error = new Error(`User is not allowed to test connector '${id}'.`);
+    error.code = 'CONNECTOR_FORBIDDEN';
+    throw error;
+  }
+  const definition = normalizeConnectorType(connector.type);
+  writeConnectorRuntimeLog({
+    event: 'connector.test.started',
+    connector_id: connector.id,
+    requested_connector_id: id,
+    alias_match: resolved.alias_match,
+    connector_type: connector.type,
+    actor: actorId(user),
+    server: connector.config?.server || connector.config?.host || null,
+    database: connector.config?.database || connector.config?.catalogDatabase || null,
+    credential_mode: sanitizeCredential(connector.credential).mode,
+  });
+  const timeoutMs = connectorTestTimeoutMs(connector, options);
+  let test;
+  try {
+    test = await withConnectorRunTimeout(
+      executeConnectorTest({ connector, definition, options }),
+      timeoutMs,
+      {
+        connector_id: connector.id,
+        connector_type: connector.type,
+        phase: 'connection_validation',
+      }
+    );
+  } catch (err) {
+    const remediationPacket = connectorRuntimeAuthRemediationPacket(connector, id, err);
+    test = {
+      status: 'failed',
+      connector_id: connector.id,
+      requested_connector_id: id,
+      alias_match: resolved.alias_match,
+      connector_type: connector.type,
+      tested_at: nowIso(),
+      elapsed_ms: timeoutMs,
+      phase: err.details?.phase || 'connection_validation',
+      captures_raw_data: false,
+      secret_exposed: false,
+      diagnostics: {
+        success: false,
+        connector_id: connector.id,
+        requested_connector_id: id,
+        alias_match: resolved.alias_match,
+        connector_type: connector.type,
+        phase: err.details?.phase || 'connection_validation',
+        server: connector.config?.server || connector.config?.host || null,
+        database: connector.config?.database || connector.config?.catalogDatabase || null,
+        elapsed_ms: timeoutMs,
+        connection_status: 'failed',
+        live_connection_valid: false,
+        metadata_discovery_valid: false,
+        actionable_error: {
+          code: err.code || 'CONNECTOR_TEST_FAILED',
+          message: err.message,
+          remediation:
+            err.remediation ||
+            'Verify the saved connector endpoint, driver, network path, authentication mode, and timeout settings.',
+          details: err.details || null,
+          remediation_packet: remediationPacket,
+        },
+        remediation_packet: remediationPacket,
+      },
+      errors: [
+        {
+          code: err.code || 'CONNECTOR_TEST_FAILED',
+          message: err.message,
+          phase: err.details?.phase || 'connection_validation',
+          status: err.status || 500,
+          remediation:
+            err.remediation ||
+            'Verify the saved connector endpoint, driver, network path, authentication mode, and timeout settings.',
+          details: err.details || null,
+          remediation_packet: remediationPacket,
+        },
+      ],
+    };
+  }
+  const testError = test.errors?.[0] || test.diagnostics?.actionable_error || test.diagnostics?.error || {};
+  const remediationPacket =
+    test.status === 'failed' ? connectorRuntimeAuthRemediationPacket(connector, id, testError) : null;
+  if (remediationPacket) {
+    test.diagnostics = {
+      ...(test.diagnostics || {}),
+      remediation_packet: remediationPacket,
+      actionable_error: {
+        ...(test.diagnostics?.actionable_error || {}),
+        remediation_packet: remediationPacket,
+      },
+    };
+    test.errors = (test.errors || []).map((error) => ({
+      ...error,
+      remediation_packet: remediationPacket,
+    }));
+  }
+  const summary = {
+    test_only: true,
+    source_contacted: true,
+    dry_run_only: false,
+    connection_status: test.diagnostics?.connection_status || test.status,
+    live_connection_valid: test.diagnostics?.live_connection_valid === true,
+    metadata_discovery_valid: test.diagnostics?.metadata_discovery_valid !== false,
+    connection_details: sanitizeForPersistence(test.diagnostics?.details || {}),
+    credential_mode: sanitizeCredential(connector.credential).mode,
+    elapsed_ms: test.elapsed_ms,
+    server: test.diagnostics?.server || null,
+    database: test.diagnostics?.database || null,
+    login: test.diagnostics?.login || null,
+    phase: test.phase,
+    connector_id: connector.id,
+    requested_connector_id: id,
+    resolved_connector_id: connector.id,
+    alias_match: resolved.alias_match,
+    connector_type: connector.type,
+    secret_exposed: false,
+    raw_data_captured: false,
+  };
+  const result = {
+    id: `connector-test-${randomUUID().slice(0, 12)}`,
+    connector_id: connector.id,
+    requested_connector_id: id,
+    resolved_connector_id: connector.id,
+    alias_match: resolved.alias_match,
+    connector_type: connector.type,
+    actor: actorId(user),
+    status: test.status,
+    mode: 'connection_test',
+    started_at: test.tested_at,
+    completed_at: nowIso(),
+    summary,
+    diagnostics: sanitizeForPersistence(test.diagnostics || {}),
+    errors: test.errors || [],
+    warnings: (test.diagnostics?.warnings || [])
+      .map((warning) => warning?.attributes?.message || warning?.message || warning?.name || String(warning))
+      .filter(Boolean),
+  };
+  writeConnectorRuntimeLog({
+    event: 'connector.test.completed',
+    connector_id: connector.id,
+    requested_connector_id: id,
+    alias_match: resolved.alias_match,
+    connector_type: connector.type,
+    actor: actorId(user),
+    status: result.status,
+    elapsed_ms: result.summary.elapsed_ms,
+    live_connection_valid: result.summary.live_connection_valid,
+    metadata_discovery_valid: result.summary.metadata_discovery_valid,
+    error: result.errors?.[0]?.message || null,
+  });
+  return result;
+}
+
+export async function diagnoseConnectorConnection(id, options = {}, user = {}) {
+  const resolved = resolveConnectorRecord(id);
+  const connector = resolved.connector;
+  if (!connector) {
+    throw new Error(`Connector '${id}' not found.`);
+  }
+  if (!canUseConnector(connector, user, CONNECTOR_ACTIONS.RUN)) {
+    const error = new Error(`User is not allowed to diagnose connector '${id}'.`);
+    error.code = 'CONNECTOR_FORBIDDEN';
+    throw error;
+  }
+  if (!['sql_server', 'ssis'].includes(connector.type)) {
+    const error = new Error(`Connector diagnostics are not supported for connector type '${connector.type}'.`);
+    error.code = 'CONNECTOR_DIAGNOSTIC_UNSUPPORTED';
+    error.status = 400;
+    throw error;
+  }
+
+  writeConnectorRuntimeLog({
+    event: 'connector.diagnostic.started',
+    connector_id: connector.id,
+    requested_connector_id: id,
+    alias_match: resolved.alias_match,
+    connector_type: connector.type,
+    actor: actorId(user),
+  });
+  const diagnostic = await diagnoseSqlServerConnectionVariants(connector, {
+    variantTimeoutMs: Math.min(Number(options.variantTimeoutMs || options.timeout_ms || 3000), 10000),
+    drivers: options.drivers,
+    stopOnSuccess: options.stopOnSuccess !== false,
+  });
+  const result = sanitizeForPersistence({
+    connector_id: connector.id,
+    requested_connector_id: id,
+    resolved_connector_id: connector.id,
+    alias_match: resolved.alias_match,
+    connector_type: connector.type,
+    status: diagnostic.status,
+    diagnostic,
+  });
+  writeConnectorRuntimeLog({
+    event: 'connector.diagnostic.completed',
+    connector_id: connector.id,
+    requested_connector_id: id,
+    connector_type: connector.type,
+    actor: actorId(user),
+    status: result.status,
+    variant_count: result.diagnostic?.results?.length || 0,
+  });
+  return result;
 }
 
 export async function planConnector(id, options = {}, user = {}) {
@@ -2298,6 +2726,8 @@ export function upsertConnectorProfileSchedule(input = {}, actor = {}) {
   const now = nowIso();
   const intervalMinutes = normalizeScheduleInterval(input);
   const requestedStatus = String(input.status || '').toUpperCase();
+  assertProfileScheduleNotDryRun(input.options || {});
+  const validationWarnings = Array.isArray(existing?.validation_warnings) ? [...existing.validation_warnings] : [];
   const schedule = {
     id,
     connector_id: connectorId,
@@ -2311,12 +2741,14 @@ export function upsertConnectorProfileSchedule(input = {}, actor = {}) {
     start_at: input.start_at || input.startAt || existing?.start_at || now,
     next_run_at: input.next_run_at || input.nextRunAt || existing?.next_run_at || null,
     max_failures: Number(input.max_failures || input.maxFailures || existing?.max_failures || 3),
-    options: sanitizeProfileOptions({
-      dry_run: true,
-      fail_fast: false,
-      ...(existing?.options || {}),
-      ...(input.options || {}),
-    }),
+    options: normalizeScheduleRuntimeOptions(
+      {
+        ...(existing?.options || {}),
+        ...(input.options || {}),
+      },
+      validationWarnings
+    ),
+    validation_warnings: validationWarnings.length ? validationWarnings : undefined,
     created_by: existing?.created_by || actorId(actor),
     updated_by: actorId(actor),
     created_at: existing?.created_at || now,
@@ -2331,7 +2763,7 @@ export function upsertConnectorProfileSchedule(input = {}, actor = {}) {
   if (schedule.profile_type === 'aggregate') {
     schedule.options.max_live_tables = Math.max(1, Number(schedule.options.max_live_tables || 15));
     schedule.options.live_profile_stale_days = Math.max(1, Number(schedule.options.live_profile_stale_days || 30));
-    schedule.options.execution_mode = schedule.options.execution_mode || (schedule.options.dry_run === false ? 'live' : 'dry_run');
+    schedule.options.execution_mode = 'live';
   }
   schedule.next_run_at = schedule.next_run_at || computeNextRunAt(schedule, new Date(schedule.start_at));
   profileScheduleStore.set(id, schedule);
@@ -2402,9 +2834,10 @@ export async function runConnectorProfileSchedule(id, actor = {}) {
     const queueState = normalizeQueueState(schedule.options?.queue_state || schedule.options?.queueState || {});
     const effectiveOptions = {
       ...schedule.options,
+      dry_run: false,
       max_live_tables: Math.max(1, Number(schedule.options?.max_live_tables || 15)),
       live_profile_stale_days: Math.max(1, Number(schedule.options?.live_profile_stale_days || 30)),
-      execution_mode: schedule.options?.execution_mode || (schedule.options?.dry_run === false ? 'live' : 'dry_run'),
+      execution_mode: schedule.profile_type === 'aggregate' ? 'live' : schedule.options?.execution_mode || 'live',
       queue_state: queueState,
     };
     const run = await runConnectorProfileByType(schedule.connector_id, schedule.profile_type, effectiveOptions, runnerUser);
@@ -2590,9 +3023,10 @@ export async function getConnectorProfileScheduleQueuePreview(scheduleId, user =
   const queueState = normalizeQueueState(schedule.options?.queue_state || schedule.options?.queueState || {});
   const effectiveOptions = {
     ...schedule.options,
+    dry_run: false,
     max_live_tables: Math.max(1, Number(schedule.options?.max_live_tables || 15)),
     live_profile_stale_days: Math.max(1, Number(schedule.options?.live_profile_stale_days || 30)),
-    execution_mode: schedule.options?.execution_mode || (schedule.options?.dry_run === false ? 'live' : 'dry_run'),
+    execution_mode: schedule.profile_type === 'aggregate' ? 'live' : schedule.options?.execution_mode || 'live',
     queue_state: queueState,
   };
   const latestConnectorRun = runHistoryStore.find((run) =>
@@ -2852,6 +3286,7 @@ export default {
   CONNECTOR_TYPES,
   canUseConnector,
   deleteConnector,
+  diagnoseConnectorConnection,
   deleteConnectorProfileSchedule,
   getProfileSchedulerStatus,
   getConnector,
@@ -2876,6 +3311,7 @@ export default {
   runConnectorProfiling,
   runConnectorProfileSchedule,
   runDueConnectorProfileSchedules,
+  testConnector,
   runConnector,
   recordPublishedConnectorProfileRuns,
   publishConnectorProfileRuns,

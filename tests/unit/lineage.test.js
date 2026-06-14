@@ -187,6 +187,64 @@ describe('Lineage Service', () => {
       expect(upstream).toContain('table_b');
       expect(upstream).not.toContain('table_a');
     });
+
+    it('keeps contextual lookup reads out of physical upstream traversal', () => {
+      const targetId = 'L1-5FSQL-01.Sonic_DW.dbo.DimVehicle';
+      const loaderId = 'L1-5FSQL-01.Sonic_DW.dbo.usp_DimVehicle';
+      const sourceId = 'L1-5FSQL-01.Sonic_DW.dbo.SynWrkDimVehicleVehicle';
+      const lookupId = 'L1-5FSQL-01.Sonic_DW.dbo.DimVehicleMake';
+      const contextualId = 'L1-5FSQL-01.Sonic_DW.dbo.DimVehicleModel';
+      const dimObjects = new Map([
+        [
+          targetId,
+          {
+            id: targetId,
+            name: 'DimVehicle',
+            type: 'table',
+            created_by: [loaderId],
+            contextual_reads: [contextualId],
+          },
+        ],
+        [
+          loaderId,
+          {
+            id: loaderId,
+            name: 'usp_DimVehicle',
+            type: 'procedure',
+            reads_from: [sourceId, lookupId],
+            writes_to: [targetId],
+          },
+        ],
+        [sourceId, { id: sourceId, name: 'SynWrkDimVehicleVehicle', type: 'synonym' }],
+        [
+          lookupId,
+          {
+            id: lookupId,
+            name: 'DimVehicleMake',
+            type: 'table',
+            used_by: [loaderId],
+          },
+        ],
+        [contextualId, { id: contextualId, name: 'DimVehicleModel', type: 'table' }],
+      ]);
+
+      const graph = buildLineageGraph(dimObjects);
+      const upstream = getUpstreamDependencies(targetId, graph, 2);
+      const typedEdges = buildTypedLineageEdges(dimObjects);
+
+      expect(upstream).toEqual(expect.arrayContaining([loaderId, sourceId]));
+      expect(upstream).not.toContain(lookupId);
+      expect(upstream).not.toContain(contextualId);
+      expect(typedEdges).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            source: contextualId,
+            target: targetId,
+            type: 'contextual_read',
+          }),
+        ])
+      );
+    });
   });
 
   describe('Downstream Dependents', () => {

@@ -365,6 +365,77 @@ function isLiveProfileEligible(asset = {}) {
   return ['table', 'view'].includes(objectType(asset));
 }
 
+function assetColumnsMissing(asset = {}) {
+  return isLiveProfileEligible(asset) && (!Array.isArray(asset.columns) || asset.columns.length === 0);
+}
+
+function selectedAssetNames(assets = []) {
+  return assets.map((asset) => asset.id || asset.object_id || objectName(asset)).filter(Boolean);
+}
+
+function mergeEnrichedAssets(assets = [], enrichedAssets = []) {
+  if (!Array.isArray(enrichedAssets) || !enrichedAssets.length) return assets;
+  return assets.map((asset) => {
+    const match = enrichedAssets.find((candidate) => matchesRequestedAsset(candidate, asset.id || asset.object_id || objectName(asset)));
+    if (!match) return asset;
+    return normalizeProfileAsset({ ...asset, ...match, columns: match.columns || asset.columns }, {});
+  });
+}
+
+function missingColumnSkippedItems(plan = {}) {
+  return (plan.skipped || []).filter((item) => /No columns are available in the catalog metadata/i.test(item.reason || item.message || ''));
+}
+
+function liveProfilingBlockedByMissingColumns(plan = {}, run = {}) {
+  const selectedForRun = Number(plan.coverage?.queue_status?.selected_for_this_run || plan.coverage?.live_assets?.length || 0);
+  return (
+    selectedForRun > 0 &&
+    Number(run.summary?.actions_planned || plan.actions?.length || 0) === 0 &&
+    missingColumnSkippedItems(plan).length > 0
+  );
+}
+
+function applyMissingColumnBlock(run = {}, plan = {}) {
+  if (!liveProfilingBlockedByMissingColumns(plan, run)) return run;
+  const affectedObjects = missingColumnSkippedItems(plan).map((item) => item.object_name || item.asset_id).filter(Boolean);
+  const message = 'Live profiling blocked by missing column metadata.';
+  return {
+    ...run,
+    status: plan.metadata_enrichment?.status === 'partial' ? 'partial_failure' : 'failed',
+    summary: {
+      ...(run.summary || {}),
+      live_profile_blocked: true,
+      blocked_reason: 'live profiling blocked by missing column metadata',
+      affected_object_count: affectedObjects.length,
+      affected_objects: affectedObjects,
+      metadata_enrichment: plan.metadata_enrichment || null,
+    },
+    errors: [
+      ...(run.errors || []),
+      {
+        code: plan.metadata_enrichment?.error?.code || 'PROFILE_MISSING_COLUMN_METADATA',
+        message,
+        phase: 'metadata_enrichment',
+        status: 422,
+        remediation:
+          plan.metadata_enrichment?.error?.remediation ||
+          'Refresh source column metadata for the selected live-profile assets, then rerun the profile schedule.',
+        details: {
+          affected_objects: affectedObjects,
+          metadata_enrichment: plan.metadata_enrichment || null,
+        },
+      },
+    ],
+    warnings: [
+      ...(run.warnings || []),
+      {
+        asset_id: null,
+        message: `${message} Affected objects: ${affectedObjects.join(', ') || 'unknown'}.`,
+      },
+    ],
+  };
+}
+
 function groupCoverageCounts(assets = []) {
   return assets.reduce((summary, asset) => {
     const key = objectType(asset) || 'unknown';
@@ -599,6 +670,7 @@ export class BaseConnectorAdapter {
   async planProfiling(options = {}) {
     let assets = options.assets || options.objects || [];
     let coverageAssets = [];
+    let enrichment = null;
     const requestedCoverageMode = coverageMode(options);
     const needsResolvedAssets =
       !assets.length || toArray(options.asset_id || options.assetId || options.object_id || options.objectId || options.ids).length > 0;
@@ -633,6 +705,41 @@ export class BaseConnectorAdapter {
         assets = resolvedAssets;
       }
     }
+    const liveExecutionRequested = options.dry_run === false || options.execution_mode === 'live' || options.executionMode === 'live';
+    const missingColumnAssets = assets.filter(assetColumnsMissing);
+    if (liveExecutionRequested && missingColumnAssets.length && typeof this.enrichProfileAssetColumns === 'function') {
+      try {
+        enrichment = await this.enrichProfileAssetColumns(missingColumnAssets, options);
+        const enrichedAssets = enrichment?.assets || [];
+        assets = mergeEnrichedAssets(assets, enrichedAssets);
+        coverageAssets = mergeEnrichedAssets(coverageAssets, enrichedAssets);
+      } catch (err) {
+        enrichment = {
+          status: 'failed',
+          phase: 'metadata_enrichment',
+          affected_assets: selectedAssetNames(missingColumnAssets),
+          error: {
+            code: err.code || 'PROFILE_METADATA_ENRICHMENT_FAILED',
+            message: err.message,
+            remediation:
+              err.remediation ||
+              'Verify connector permissions to read source column metadata for the selected table or view.',
+            details: err.details || null,
+          },
+        };
+      }
+    } else if (liveExecutionRequested && missingColumnAssets.length) {
+      enrichment = {
+        status: 'unsupported',
+        phase: 'metadata_enrichment',
+        affected_assets: selectedAssetNames(missingColumnAssets),
+        error: {
+          code: 'PROFILE_METADATA_ENRICHMENT_UNSUPPORTED',
+          message: 'Live profiling blocked by missing column metadata and this connector cannot enrich selected object columns.',
+          remediation: 'Run metadata ingestion for the connector or add a connector-specific selected-object column enrichment implementation.',
+        },
+      };
+    }
     const plan = buildProfilingPlan(
       {
         ...options,
@@ -644,6 +751,19 @@ export class BaseConnectorAdapter {
       },
       options.objectCache || new Map()
     );
+    if (enrichment) {
+      plan.metadata_enrichment = {
+        ...enrichment,
+        status:
+          enrichment.status === 'failed' || enrichment.status === 'unsupported'
+            ? enrichment.status
+            : assets.some(assetColumnsMissing)
+              ? 'partial'
+              : 'succeeded',
+        affected_assets: enrichment.affected_assets || selectedAssetNames(missingColumnAssets),
+        enriched_assets: enrichment.enriched_assets || selectedAssetNames((enrichment.assets || []).filter((asset) => !assetColumnsMissing(asset))),
+      };
+    }
     if (requestedCoverageMode) {
       const usageCounts =
         options.usage_counts instanceof Map
@@ -700,7 +820,7 @@ export class BaseConnectorAdapter {
   async runProfiling(options = {}) {
     const plan = options.plan || (await this.planProfiling(options));
     const executor = createProfileExecutor({ connector: this.connector, options });
-    const run = await executeProfilingPlan(plan, executor);
+    const run = applyMissingColumnBlock(await executeProfilingPlan(plan, executor), plan);
     return applyMinimumCoverageProfiles(run, plan);
   }
 

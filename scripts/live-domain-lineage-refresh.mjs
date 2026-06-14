@@ -1,0 +1,244 @@
+import 'dotenv/config';
+import { mkdir, writeFile } from 'fs/promises';
+import { join, resolve } from 'path';
+import MarkdownGenerator from '../src/services/markdownFromSqlServer.js';
+import SqlServerMetadataExtractor from '../src/services/sqlServerExtractor.js';
+import { SsisMetadataExtractor } from '../src/services/ssisExtractor.js';
+import { buildSqlServerApiConnectionContext } from '../src/services/connectorRuntime/sqlServerConnection.js';
+
+const DEFAULT_OUTPUT_PATH = './data/markdown';
+const RAW_SQL_PATH = './data/analysis/raw/sqlserver';
+const SUMMARY_PATH = './data/analysis/raw/live-domain-refresh-summary.json';
+
+const SQL_TARGETS = [
+  {
+    id: 'Sonic_DW',
+    server: 'L1-5FSQL-01\\INST1',
+    database: 'Sonic_DW',
+  },
+  {
+    id: 'VendorData',
+    server: 'L1-DWASQL-02',
+    port: 12010,
+    database: 'VendorData',
+  },
+  {
+    id: 'StagingDB',
+    server: 'L1-DWASQL-02',
+    port: 12010,
+    database: 'StagingDB',
+  },
+  {
+    id: 'ETL_Staging',
+    server: 'L1-5FSQL-01\\INST1',
+    database: 'ETL_Staging',
+  },
+];
+
+const SSIS_TARGET = {
+  id: 'SSIS_UAT',
+  server: 'V1-SSIS25-01',
+  port: 11040,
+  database: 'SSISDB',
+};
+
+function sanitizePathSegment(value) {
+  const input = String(value || '');
+  const withoutControlChars = Array.from(input)
+    .filter((char) => char.charCodeAt(0) >= 32)
+    .join('');
+
+  return withoutControlChars
+    .replace(/[<>:"/\\|?*]/g, '_')
+    .replace(/\s+/g, '_')
+    .slice(0, 128);
+}
+
+async function persistGeneratedMarkdown(markdowns, database, outputPath = DEFAULT_OUTPUT_PATH) {
+  const baseOutputPath = resolve(process.cwd(), outputPath);
+  const analysisBasePath = resolve(process.cwd(), RAW_SQL_PATH);
+  const safeDatabase = sanitizePathSegment(database);
+
+  for (const markdown of markdowns) {
+    const normalizedDirectory = String(markdown.directory || '').replace(/^[/\\]+/, '');
+    const targetDirectory = resolve(baseOutputPath, normalizedDirectory);
+    const analysisDirectory = resolve(analysisBasePath, normalizedDirectory);
+    const fileName = sanitizePathSegment(markdown.fileName || `${safeDatabase}.md`);
+    const targetPath = join(targetDirectory, fileName);
+    const analysisTargetPath = join(analysisDirectory, fileName);
+
+    await mkdir(targetDirectory, { recursive: true });
+    await mkdir(analysisDirectory, { recursive: true });
+    await writeFile(targetPath, markdown.content || '', 'utf-8');
+    await writeFile(analysisTargetPath, markdown.content || '', 'utf-8');
+  }
+
+  return {
+    baseOutputPath,
+    analysisBasePath,
+    filesWritten: markdowns.length,
+  };
+}
+
+async function buildConnection(target, options = {}) {
+  const built = await buildSqlServerApiConnectionContext(
+    {
+      server: target.server,
+      port: target.port,
+      database: target.database,
+      authentication: 'windows',
+      encrypt: true,
+      trustServerCertificate: true,
+    },
+    {
+      requireDatabase: options.requireDatabase ?? true,
+      defaultDatabase: target.database,
+      defaultPort: 1433,
+      defaultEncrypt: true,
+      defaultTrustServerCertificate: true,
+      connectionTimeout: 30000,
+      requestTimeout: 1200000,
+      pool: options.pool || { max: 20, min: 0, idleTimeoutMillis: 30000 },
+      sqlAuthLabel: 'sql-server authentication',
+      windowsDriverMessage: 'Windows integrated auth requires msnodesqlv8 on a Windows host.',
+      windowsIntegratedCredentialMessage:
+        'For NTLM Windows auth provide both username and password, or leave both blank for integrated.',
+      windowsDriverInstallMessage: 'Windows integrated auth requires msnodesqlv8 on a Windows host.',
+    }
+  );
+
+  if (built.error) {
+    throw new Error(`${target.id}: ${built.error.message}`);
+  }
+
+  return built;
+}
+
+function summarizeSqlMetadata(metadata, persistResult) {
+  return {
+    server: metadata.serverName,
+    database: metadata.database,
+    filesWritten: persistResult.filesWritten,
+    counts: {
+      tables: metadata.tables?.length || 0,
+      synonyms: metadata.synonyms?.length || 0,
+      views: metadata.views?.length || 0,
+      storedProcedures: metadata.storedProcedures?.length || 0,
+      functions: metadata.functions?.length || 0,
+      triggers: metadata.triggers?.length || 0,
+      relationships: metadata.relationships?.length || 0,
+      warnings: metadata.extractionWarnings?.length || 0,
+    },
+  };
+}
+
+function summarizeSsisResult(result) {
+  return {
+    ssisdbPresent: result.ssisdbPresent,
+    counts: {
+      packages: result.catalog?.length || 0,
+      parameters: result.parameters?.length || 0,
+      xmlPackagesParsed: result.xmlMetadata?.length || 0,
+      agentJobs: result.agentJobs?.jobs?.length || 0,
+      ssisAgentSteps: result.agentJobs?.ssisSteps?.length || 0,
+      lineageEdges: result.lineageEdges?.length || 0,
+      warnings: result.warnings?.length || 0,
+    },
+    warnings: result.warnings || [],
+  };
+}
+
+async function refreshSqlTarget(target) {
+  console.log(`[live-refresh] SQL ${target.id}: connecting to ${target.server}/${target.database}`);
+  const { connConfig, sqlDriver } = await buildConnection(target);
+  const extractor = new SqlServerMetadataExtractor(connConfig, sqlDriver);
+  await extractor.connect();
+  try {
+    const metadata = await extractor.extractAllMetadata(target.database);
+    const markdowns = new MarkdownGenerator(metadata).generateAllMarkdowns();
+    const persistResult = await persistGeneratedMarkdown(markdowns, target.database);
+    const summary = summarizeSqlMetadata(metadata, persistResult);
+    console.log(
+      `[live-refresh] SQL ${target.id}: ${summary.filesWritten} files, ${summary.counts.relationships} relationships`
+    );
+    return {
+      id: target.id,
+      type: 'sql_server',
+      status: 'succeeded',
+      ...summary,
+    };
+  } finally {
+    await extractor.disconnect();
+  }
+}
+
+async function refreshSsisTarget(target) {
+  console.log(`[live-refresh] SSIS ${target.id}: connecting to ${target.server}/${target.database}`);
+  const { connConfig, sqlDriver } = await buildConnection(target, {
+    requireDatabase: false,
+    pool: { max: 5, min: 0, idleTimeoutMillis: 30000 },
+  });
+  const extractor = new SsisMetadataExtractor(connConfig, sqlDriver);
+  await extractor.connect();
+  try {
+    const result = await extractor.extractAll({ extractXml: true });
+    const summary = summarizeSsisResult(result);
+    console.log(
+      `[live-refresh] SSIS ${target.id}: ${summary.counts.packages} packages, ${summary.counts.lineageEdges} edges`
+    );
+    return {
+      id: target.id,
+      type: 'ssis',
+      status: 'succeeded',
+      server: target.server,
+      database: target.database,
+      ...summary,
+    };
+  } finally {
+    await extractor.disconnect();
+  }
+}
+
+async function main() {
+  const startedAt = new Date().toISOString();
+  const results = [];
+
+  for (const target of SQL_TARGETS) {
+    results.push(await refreshSqlTarget(target));
+  }
+
+  results.push(await refreshSsisTarget(SSIS_TARGET));
+
+  const summary = {
+    startedAt,
+    finishedAt: new Date().toISOString(),
+    targets: results,
+  };
+  await mkdir(resolve(process.cwd(), 'data/analysis/raw'), { recursive: true });
+  await writeFile(resolve(process.cwd(), SUMMARY_PATH), JSON.stringify(summary, null, 2), 'utf-8');
+  console.log(`[live-refresh] Summary written to ${SUMMARY_PATH}`);
+}
+
+main().catch(async (err) => {
+  const failedAt = new Date().toISOString();
+  await mkdir(resolve(process.cwd(), 'data/analysis/raw'), { recursive: true }).catch(() => {});
+  await writeFile(
+    resolve(process.cwd(), SUMMARY_PATH),
+    JSON.stringify(
+      {
+        failedAt,
+        status: 'failed',
+        error: {
+          message: err.message,
+          code: err.code || null,
+          stack: err.stack || null,
+        },
+      },
+      null,
+      2
+    ),
+    'utf-8'
+  ).catch(() => {});
+  console.error(`[live-refresh] Failed: ${err.message}`);
+  process.exitCode = 1;
+});

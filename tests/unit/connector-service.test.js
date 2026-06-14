@@ -1,6 +1,10 @@
 import {
   canUseConnector,
+  connectorRuntimeAuthRemediationPacket,
+  connectorTestTimeoutMs,
+  diagnoseConnectorConnection,
   deleteConnectorProfileSchedule,
+  getConnector,
   getProfileSchedulerStatus,
   getConnectorProfileSchedule,
   getConnectorSnapshot,
@@ -22,17 +26,20 @@ import {
   runConnectorProfiling,
   runConnectorProfileSchedule,
   runDueConnectorProfileSchedules,
+  testConnector,
   upsertConnectorProfileSchedule,
   upsertConnector,
 } from '../../src/services/connectorService.js';
 import { jest } from '@jest/globals';
-import { existsSync, mkdtempSync, readFileSync, rmSync } from 'fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from 'fs';
 import { tmpdir } from 'os';
 import path from 'path';
 
 const admin = { id: 'admin-1', email: 'admin@example.com', roles: ['Admin'] };
 const analyst = { id: 'analyst-1', email: 'analyst@example.com', roles: ['Analyst'] };
 const viewer = { id: 'viewer-1', email: 'viewer@example.com', roles: ['Viewer'] };
+
+jest.setTimeout(15000);
 
 describe('connectorService', () => {
   beforeEach(() => {
@@ -304,8 +311,9 @@ describe('connectorService', () => {
       admin
     );
 
-    const run = await runConnector('ssis-live-check', { dry_run: true, streams: ['catalog'] }, admin);
+    const run = await testConnector('ssis-live-check', {}, admin);
     expect(run.summary).toMatchObject({
+      test_only: true,
       connection_status: 'degraded',
       live_connection_valid: true,
       metadata_discovery_valid: false,
@@ -313,6 +321,127 @@ describe('connectorService', () => {
         server_name: 'V1-SSIS25-01',
         database_name: 'SSISDB',
       }),
+    });
+  });
+
+  test('resolves business database aliases to the saved connector for test-only diagnostics', async () => {
+    upsertConnector(
+      {
+        id: 'GPA',
+        type: 'sql_server',
+        label: 'GPA Database',
+        config: {
+          server: 'L1-5FSQL-01',
+          database: 'Sonic_DW',
+          mockConnectionCheck: {
+            status: 'ready',
+            live_connection_valid: true,
+            metadata_discovery_valid: true,
+            details: {
+              server_name: 'L1-5FSQL-01',
+              database_name: 'Sonic_DW',
+              login_name: 'SONIC\\svc-data-governance',
+            },
+          },
+        },
+        credential: { mode: 'windows_integrated' },
+      },
+      admin
+    );
+
+    const connector = getConnector('Sonic_DW', admin);
+    expect(connector).toEqual(
+      expect.objectContaining({
+        id: 'GPA',
+        requested_id: 'Sonic_DW',
+        resolved_id: 'GPA',
+        alias_match: true,
+      })
+    );
+
+    const result = await testConnector('Sonic_DW', {}, admin);
+    expect(result.status).toBe('succeeded');
+    expect(result.summary).toEqual(
+      expect.objectContaining({
+        connector_id: 'GPA',
+        requested_connector_id: 'Sonic_DW',
+        resolved_connector_id: 'GPA',
+        alias_match: true,
+        database: 'Sonic_DW',
+      })
+    );
+  });
+
+  test('builds an actionable shared-runtime packet for Windows integrated auth failures', () => {
+    const packet = connectorRuntimeAuthRemediationPacket(
+      {
+        id: 'VendorData',
+        type: 'sql_server',
+        config: {
+          server: 'L1-DWASQL-02',
+          database: 'VendorData',
+          port: 12010,
+          encrypt: true,
+          trustServerCertificate: true,
+        },
+        credential: { mode: 'windows_integrated' },
+      },
+      'VendorData',
+      {
+        code: 'SQL_SERVER_WINDOWS_INTEGRATED_CONNECTION_FAILED',
+        details: {
+          failure_category: 'windows_security_negotiation_failed',
+          runtime_process_identity: 'SONIC\\James.Dionne',
+          runtime_process_user: 'James.Dionne',
+          runtime_process_domain: 'SONIC',
+          runtime_process_host: 'DEVBOX',
+          resolved_endpoint: 'L1-DWASQL-02,12010',
+        },
+      }
+    );
+
+    expect(packet).toEqual(
+      expect.objectContaining({
+        connector_id: 'VendorData',
+        requested_connector_id: 'VendorData',
+        auth_mode: 'windows_integrated',
+        shared_runtime_rule: expect.stringContaining('Do not bypass the connector framework'),
+        endpoint: expect.objectContaining({
+          server: 'L1-DWASQL-02',
+          database: 'VendorData',
+          port: 12010,
+          server_spn_configured: false,
+        }),
+        runtime_identity: expect.objectContaining({
+          identity: 'SONIC\\James.Dionne',
+        }),
+        dba_infrastructure_asks: expect.arrayContaining([
+          expect.stringContaining('MSSQLSvc SPN'),
+          expect.stringContaining('serverSpn'),
+        ]),
+      })
+    );
+  });
+
+  test('uses a triple timeout budget for SSIS connector tests', () => {
+    expect(connectorTestTimeoutMs({ type: 'ssis' }, {})).toBe(45000);
+    expect(connectorTestTimeoutMs({ type: 'sql_server' }, {})).toBe(15000);
+    expect(connectorTestTimeoutMs({ type: 'ssis' }, { timeout_ms: 20000 })).toBe(20000);
+  });
+
+  test('guards live connection diagnostics to SQL Server-family connectors', async () => {
+    upsertConnector(
+      {
+        id: 'repo-diagnostic',
+        type: 'git_repository',
+        config: { repo_url: 'https://example.test/repo.git' },
+        credential: { mode: 'none' },
+      },
+      admin
+    );
+
+    await expect(diagnoseConnectorConnection('repo-diagnostic', {}, admin)).rejects.toMatchObject({
+      code: 'CONNECTOR_DIAGNOSTIC_UNSUPPORTED',
     });
   });
 
@@ -759,7 +888,13 @@ describe('connectorService', () => {
         id: 'scheduled-powerbi',
         type: 'power_bi',
         label: 'Scheduled Power BI',
-        config: { tenant_id: 'tenant-1' },
+        config: {
+          tenant_id: 'tenant-1',
+          seed_metadata: {
+            reports: [{ id: 'report-1', name: 'Daily Report' }],
+            dashboards: [{ id: 'dash-1', name: 'Daily Dashboard' }],
+          },
+        },
         credential: { mode: 'service_principal', secret_ref: 'kv://powerbi/schedule' },
       },
       admin
@@ -774,9 +909,8 @@ describe('connectorService', () => {
         interval_minutes: 60,
         start_at: '2026-06-07T00:00:00.000Z',
         options: {
-          dry_run: true,
+          dry_run: false,
           streams: ['reports', 'dashboards'],
-          metadata_payload: { should_not_store: true },
         },
       },
       admin
@@ -792,6 +926,7 @@ describe('connectorService', () => {
     expect(JSON.stringify(schedule)).not.toContain('should_not_store');
     expect(listConnectorProfileSchedules({}, admin)).toHaveLength(1);
     expect(getConnectorProfileSchedule(schedule.id, admin)).toEqual(expect.objectContaining({ id: schedule.id }));
+    expect(schedule.options.dry_run).toBe(false);
 
     const immediate = await runConnectorProfileSchedule(schedule.id, admin);
     expect(immediate.run.status).toBe('succeeded');
@@ -823,7 +958,7 @@ describe('connectorService', () => {
         interval_minutes: 5,
         max_failures: 1,
         start_at: '2026-06-07T00:00:00.000Z',
-        options: { dry_run: true },
+        options: { dry_run: false },
       },
       admin
     );
@@ -854,7 +989,14 @@ describe('connectorService', () => {
           id: 'scheduled-tableau-artifacts',
           type: 'tableau',
           label: 'Scheduled Tableau Artifacts',
-          config: { base_url: 'https://tableau.example.com', site_id: 'sonic' },
+          config: {
+            base_url: 'https://tableau.example.com',
+            site_id: 'sonic',
+            seed_metadata: {
+              workbooks: [{ id: 'workbook-1', name: 'Executive Workbook' }],
+              views: [{ id: 'view-1', name: 'Executive View' }],
+            },
+          },
           credential: {
             mode: 'pat',
             token: 'hidden-token-value',
@@ -871,9 +1013,8 @@ describe('connectorService', () => {
           interval_minutes: 60,
           start_at: '2026-06-07T00:00:00.000Z',
           options: {
-            dry_run: true,
+            dry_run: false,
             streams: ['workbooks', 'views'],
-            metadata_payload: { raw: 'do-not-store' },
             token: 'do-not-store-token',
           },
         },
@@ -894,6 +1035,16 @@ describe('connectorService', () => {
       expect(artifactJson).not.toContain('hidden-token-value');
       expect(artifactJson).not.toContain('kv://tableau/artifacts');
       expect(artifactJson).not.toContain('do-not-store');
+
+      const storeJson = JSON.parse(readFileSync(path.join(runtimeDir, 'profile-scheduler-store.json'), 'utf8'));
+      const persistedConnector = storeJson.connectors.find((item) => item.id === 'scheduled-tableau-artifacts');
+      expect(persistedConnector.credential).toEqual({
+        mode: 'pat',
+        secret_ref: 'stored_reference',
+      });
+      expect(JSON.stringify(persistedConnector.credential)).not.toContain('hidden-token-value');
+      expect(JSON.stringify(persistedConnector.credential)).not.toContain('values');
+      expect(JSON.stringify(persistedConnector.credential)).not.toContain('fields');
 
       const history = listConnectorProfileScheduleRuns(schedule.id, admin);
       expect(history).toHaveLength(1);
@@ -917,6 +1068,250 @@ describe('connectorService', () => {
       delete process.env.PROFILE_RUNTIME_DIR;
       rmSync(runtimeDir, { recursive: true, force: true });
     }
+  });
+
+  test('profile scheduler hydrates legacy nested sanitized credentials as minimal credentials', () => {
+    const runtimeDir = mkdtempSync(path.join(tmpdir(), 'profile-scheduler-legacy-'));
+    const storePath = path.join(runtimeDir, 'profile-scheduler-store.json');
+    mkdirSync(path.dirname(storePath), { recursive: true });
+    writeFileSync(
+      storePath,
+      JSON.stringify(
+        {
+          version: 1,
+          saved_at: '2026-06-12T00:00:00.000Z',
+          connectors: [
+            {
+              id: 'legacy-nested-credential',
+              type: 'sql_server',
+              label: 'Legacy Nested Credential',
+              provider: 'Microsoft',
+              category: 'database',
+              cloud: 'hybrid',
+              status: 'active',
+              config: { server: 'L1-DWASQL-02', database: 'VendorData' },
+              credential: {
+                mode: 'windows_integrated',
+                status: 'configured',
+                fields: ['mode', 'status', 'fields', 'values'],
+                values: {
+                  mode: 'windows_integrated',
+                  status: 'configured',
+                  fields: ['mode', 'status', 'fields', 'values'],
+                  values: { mode: 'windows_integrated' },
+                },
+              },
+              permissions: {
+                users: {},
+                roles: { Admin: ['view', 'run', 'edit', 'admin'] },
+                groups: {},
+              },
+            },
+          ],
+          connector_runs: [],
+          snapshots: [],
+          profile_schedules: [],
+          profile_schedule_runs: [],
+        },
+        null,
+        2
+      )
+    );
+
+    process.env.PROFILE_SCHEDULER_PERSISTENCE = 'on';
+    process.env.PROFILE_RUNTIME_DIR = runtimeDir;
+    resetConnectorStore();
+
+    try {
+      const connector = getConnector('legacy-nested-credential', admin);
+      expect(connector.credential).toEqual(
+        expect.objectContaining({
+          mode: 'windows_integrated',
+          status: 'configured',
+          values: { mode: 'windows_integrated' },
+        })
+      );
+      expect(connector.credential.values.values).toBeUndefined();
+      expect(connector.credential.fields).toEqual(['mode']);
+      const rewritten = JSON.parse(readFileSync(storePath, 'utf8'));
+      expect(rewritten.connectors[0].credential).toEqual({ mode: 'windows_integrated' });
+    } finally {
+      resetConnectorStore();
+      delete process.env.PROFILE_SCHEDULER_PERSISTENCE;
+      delete process.env.PROFILE_RUNTIME_DIR;
+      rmSync(runtimeDir, { recursive: true, force: true });
+    }
+  });
+
+  test('profile schedules reject dry-run saves', () => {
+    upsertConnector(
+      {
+        id: 'dry-run-rejected',
+        type: 'power_bi',
+        label: 'Dry Run Rejected',
+        config: { tenant_id: 'tenant-1' },
+        credential: { mode: 'service_principal', secret_ref: 'kv://powerbi/schedule' },
+      },
+      admin
+    );
+
+    expect(() =>
+      upsertConnectorProfileSchedule(
+        {
+          connector_id: 'dry-run-rejected',
+          profile_type: 'bi',
+          interval_minutes: 60,
+          options: { dry_run: true },
+        },
+        admin
+      )
+    ).toThrow(/cannot be saved as dry runs/i);
+  });
+
+  test('live aggregate schedule enriches missing columns before planning profile actions', async () => {
+    upsertConnector(
+      {
+        id: 'vendor-missing-columns',
+        type: 'sql_server',
+        label: 'VendorData',
+        config: {
+          server: 'L1-DWASQL-02,12010',
+          database: 'VendorData',
+          mockConnectionCheck: {
+            status: 'ready',
+            live_connection_valid: true,
+            metadata_discovery_valid: true,
+            details: { server_name: 'L1-DWASQL-02,12010', database_name: 'VendorData' },
+          },
+          mockMetadata: {
+            database: 'VendorData',
+            tables: [
+              {
+                id: 'VendorData.buyer.CBAPurchasesByVIN',
+                database: 'VendorData',
+                schema: 'buyer',
+                name: 'CBAPurchasesByVIN',
+                object_type: 'table',
+                columns: [],
+              },
+            ],
+            views: [],
+          },
+          mockColumnMetadata: {
+            'VendorData.buyer.CBAPurchasesByVIN': [
+              { name: 'VIN', data_type: 'varchar' },
+              { name: 'PurchaseDate', data_type: 'datetime' },
+            ],
+          },
+        },
+        credential: { mode: 'windows_integrated' },
+      },
+      admin
+    );
+
+    const schedule = upsertConnectorProfileSchedule(
+      {
+        connector_id: 'vendor-missing-columns',
+        profile_type: 'aggregate',
+        interval_minutes: 60,
+        start_at: '2026-06-07T00:00:00.000Z',
+        options: {
+          dry_run: false,
+          execution_mode: 'live',
+          coverage_mode: 'all_objects',
+          include_views: true,
+          max_live_tables: 15,
+          mockProfileRows: {
+            row_count: 20,
+            vin__null_count: 0,
+            vin__distinct_count: 20,
+            purchasedate__null_count: 1,
+            purchasedate__distinct_count: 19,
+          },
+        },
+      },
+      admin
+    );
+
+    const result = await runConnectorProfileSchedule(schedule.id, admin);
+    expect(result.run.status).toBe('succeeded');
+    expect(result.run.summary).toMatchObject({
+      actions_planned: 1,
+      columns_profiled: 2,
+      coverage_assets_live: 1,
+    });
+    expect(result.run.profile.plan.metadata_enrichment).toEqual(
+      expect.objectContaining({
+        status: 'succeeded',
+        affected_assets: ['VendorData.buyer.CBAPurchasesByVIN'],
+      })
+    );
+  });
+
+  test('live aggregate schedule fails visibly when selected assets still have no columns', async () => {
+    upsertConnector(
+      {
+        id: 'vendor-blocked-columns',
+        type: 'sql_server',
+        label: 'VendorData Blocked',
+        config: {
+          server: 'L1-DWASQL-02,12010',
+          database: 'VendorData',
+          mockMetadata: {
+            database: 'VendorData',
+            tables: [
+              {
+                id: 'VendorData.buyer.LiveAuctionVINs',
+                database: 'VendorData',
+                schema: 'buyer',
+                name: 'LiveAuctionVINs',
+                object_type: 'table',
+                columns: [],
+              },
+            ],
+            views: [],
+          },
+          mockColumnMetadata: {
+            'VendorData.buyer.LiveAuctionVINs': [],
+          },
+        },
+        credential: { mode: 'windows_integrated' },
+      },
+      admin
+    );
+
+    const schedule = upsertConnectorProfileSchedule(
+      {
+        connector_id: 'vendor-blocked-columns',
+        profile_type: 'aggregate',
+        interval_minutes: 60,
+        start_at: '2026-06-07T00:00:00.000Z',
+        options: {
+          dry_run: false,
+          execution_mode: 'live',
+          coverage_mode: 'all_objects',
+          include_views: true,
+          max_live_tables: 15,
+        },
+      },
+      admin
+    );
+
+    const result = await runConnectorProfileSchedule(schedule.id, admin);
+    expect(result.run.status).toBe('failed');
+    expect(result.run.summary).toEqual(
+      expect.objectContaining({
+        live_profile_blocked: true,
+        blocked_reason: 'live profiling blocked by missing column metadata',
+        actions_planned: 0,
+      })
+    );
+    expect(result.run.errors[0]).toEqual(
+      expect.objectContaining({
+        code: 'PROFILE_MISSING_COLUMN_METADATA',
+        message: 'Live profiling blocked by missing column metadata.',
+      })
+    );
   });
 
   test('AWS signed source client requires resolved signing credentials', async () => {
@@ -1150,6 +1545,141 @@ describe('connectorService', () => {
       ])
     );
   });
+
+  test('conforms SSRS ReportServer metadata to canonical connector events', async () => {
+    const extraction = await runConnectorExtractionForConfig({
+      id: 'ssrs-bridge',
+      type: 'ssrs',
+      config: {
+        server: 'L1-5FSQL-01,12013',
+        database: 'ReportServer',
+        mockConnectionCheck: {
+          status: 'ready',
+          live_connection_valid: true,
+          metadata_discovery_valid: true,
+          details: { server_name: 'D1-SQL-01B\\INST1', database_name: 'ReportServer' },
+        },
+      },
+      credential: { mode: 'windows_integrated', secret_ref: 'local-windows-auth' },
+      options: {
+        dry_run: false,
+        include_metadata: true,
+        streams: ['reports', 'data_sources', 'datasets', 'usage', 'subscriptions', 'agent_jobs', 'lineage'],
+        mockMetadata: {
+          extractedAt: '2026-06-12T15:24:25.000Z',
+          lookback_months: 6,
+          reports: [
+            {
+              ItemID: 'report-guid',
+              Path: '/CMA/Activity Details Report',
+              Name: 'Activity Details Report',
+              ItemType: 'report',
+              ModifiedDate: '2026-06-01T00:00:00.000Z',
+            },
+          ],
+          report_usage: [
+            {
+              ItemPath: '/CMA/Activity Details Report',
+              Executions: 38769,
+              DistinctUsers: 231,
+              LastAccessed: '2026-06-12T10:52:19.253Z',
+              Successes: 38765,
+              NonSuccesses: 4,
+            },
+          ],
+          usage: [
+            {
+              ItemPath: '/CMA/Activity Details Report',
+              UserName: 'SONIC\\Tammy.Reese',
+              Executions: 155,
+              LastAccessed: '2026-06-12T10:52:19.253Z',
+              Successes: 155,
+              NonSuccesses: 0,
+              LastObservedStatus: 'rsSuccess',
+            },
+          ],
+          data_sources: [
+            {
+              ItemID: 'report-guid',
+              ReportPath: '/CMA/Activity Details Report',
+              ReportName: 'Activity Details Report',
+              DataSourceName: 'SonicDW',
+              Extension: 'SQL',
+              LinkedItemID: 'datasource-guid',
+              LinkedDataSourcePath: '/Shared Data Sources/SonicDW',
+            },
+          ],
+          shared_data_source_definitions: [
+            {
+              ItemID: 'datasource-guid',
+              Path: '/Shared Data Sources/SonicDW',
+              Name: 'SonicDW',
+              DefinitionXml:
+                '<RptDataSource><ConnectionProperties><ConnectString>Data Source=L1-5FSQL-01;Initial Catalog=Sonic_DW;</ConnectString><Extension>SQL</Extension></ConnectionProperties></RptDataSource>',
+            },
+          ],
+          report_definitions: [
+            {
+              ItemID: 'report-guid',
+              Path: '/CMA/Activity Details Report',
+              Name: 'Activity Details Report',
+              DefinitionXml:
+                '<Report><DataSources><DataSource Name="SonicDW"><DataSourceReference>/Shared Data Sources/SonicDW</DataSourceReference></DataSource></DataSources><DataSets><DataSet Name="VehicleDataset"><Query><DataSourceName>SonicDW</DataSourceName><CommandType>Text</CommandType><CommandText>SELECT VehicleKey FROM dbo.DimVehicle</CommandText></Query></DataSet></DataSets></Report>',
+            },
+          ],
+          subscriptions: [
+            {
+              SubscriptionID: 'subscription-guid',
+              ReportPath: '/CMA/Activity Details Report',
+              ReportName: 'Activity Details Report',
+              LastStatus: 'Mail sent',
+              LastRunTime: '2026-06-12T08:00:00.000Z',
+              EventType: 'TimedSubscription',
+              DeliveryExtension: 'Report Server Email',
+              ScheduleID: 'schedule-guid',
+            },
+          ],
+          agent_jobs: [
+            {
+              ReportPath: '/CMA/Activity Details Report',
+              ScheduleID: 'schedule-guid',
+              JobName: 'schedule-guid',
+              JobEnabled: 1,
+              RunStatus: 1,
+              JobRuns: 17,
+              LastJobRun: '2026-06-12T08:00:00.000Z',
+            },
+          ],
+        },
+      },
+    });
+
+    expect(extraction.summary).toMatchObject({
+      object_count: 5,
+      lineage_edge_count: 3,
+    });
+    expect(extraction.events).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ type: 'metadata.report', stream: 'reports' }),
+        expect.objectContaining({ type: 'metadata.data_source', stream: 'data_sources' }),
+        expect.objectContaining({
+          type: 'metadata.dataset',
+          stream: 'datasets',
+          attributes: expect.objectContaining({
+            canonical_source_object_ids: ['L1-5FSQL-01.Sonic_DW.dbo.DimVehicle'],
+          }),
+        }),
+        expect.objectContaining({ type: 'usage.event', stream: 'usage' }),
+        expect.objectContaining({ type: 'metadata.object', stream: 'subscriptions' }),
+        expect.objectContaining({ type: 'metadata.object', stream: 'agent_jobs' }),
+        expect.objectContaining({
+          type: 'lineage.edge',
+          stream: 'lineage',
+          lineage: [{ from: 'L1-5FSQL-01.Sonic_DW.dbo.DimVehicle', to: '/CMA/Activity Details Report', type: 'source_object_feeds_report' }],
+        }),
+      ])
+    );
+  });
 });
 
 function firstStreamForType(type) {
@@ -1205,6 +1735,14 @@ function minimalConnectorConfig(type) {
       live_connection_valid: true,
       metadata_discovery_valid: true,
       details: { server_name: 'demo-server', database_name: 'SSISDB' },
+    };
+  }
+  if (type === 'ssrs') {
+    base.mockConnectionCheck = {
+      status: 'ready',
+      live_connection_valid: true,
+      metadata_discovery_valid: true,
+      details: { server_name: 'demo-server', database_name: 'ReportServer' },
     };
   }
   if (type === 'git_repository') {

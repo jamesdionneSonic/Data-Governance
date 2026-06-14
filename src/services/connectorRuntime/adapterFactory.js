@@ -1,13 +1,20 @@
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import { BaseConnectorAdapter } from './baseAdapter.js';
-import { CANONICAL_EVENT_TYPES, canonicalEvent } from './canonicalMetadata.js';
+import { CANONICAL_EVENT_TYPES, canonicalEvent, warningEvent } from './canonicalMetadata.js';
 import { ConnectorConfigError, ConnectorRuntimeError } from './connectorErrors.js';
 import { hasDirectSourceClient } from './sourceClients.js';
+import { XMLParser } from 'fast-xml-parser';
+import { extractTablesFromSQL } from '../sqlServerExtractor.js';
 import {
   buildSqlServerConnectionConfig,
   loadSqlServerDriver,
+  runtimeProcessIdentityDetails,
   sqlServerCredentialMode,
   sqlServerConnectionRuntimeError,
 } from './sqlServerConnection.js';
+
+const execFileAsync = promisify(execFile);
 
 const STREAM = {
   object: CANONICAL_EVENT_TYPES.OBJECT,
@@ -117,6 +124,1301 @@ class SsasAdapter extends BIConnectorAdapter {
   }
 }
 
+function ssrsDateWindow(options = {}, config = {}) {
+  const months = Number(options.lookback_months || options.lookbackMonths || config.lookback_months || config.lookbackMonths || 6);
+  const safeMonths = Number.isFinite(months) && months > 0 ? Math.min(months, 60) : 6;
+  return safeMonths;
+}
+
+function ssrsExternalId(prefix, value) {
+  return ['ssrs', prefix, value].filter(Boolean).join('/');
+}
+
+function ssrsConnectionStrategy(options = {}, config = {}) {
+  return String(
+    options.connection_strategy ||
+      options.connectionStrategy ||
+      config.connection_strategy ||
+      config.connectionStrategy ||
+      ''
+  ).trim().toLowerCase();
+}
+
+function ssrsUsesSqlcmdStrategy(options = {}, config = {}) {
+  return ['sqlcmd_windows_auth', 'sqlcmd', 'sqlcmd_windows_integrated'].includes(ssrsConnectionStrategy(options, config));
+}
+
+function ssrsAllowsSqlcmdFallback(options = {}, config = {}) {
+  const strategy = ssrsConnectionStrategy(options, config);
+  return ['auto', 'node_then_sqlcmd', 'sqlcmd_fallback'].includes(strategy);
+}
+
+function ssrsSqlcmdServer(config = {}) {
+  const server = config.server || config.host || config.data_source || config.dataSource;
+  const port = config.port;
+  if (server && port && !String(server).includes(',')) return `${server},${port}`;
+  return server;
+}
+
+function ssrsSqlcmdDatabase(config = {}) {
+  return config.database || config.catalog || 'ReportServer';
+}
+
+function sqlcmdRows(output = '', columns = []) {
+  return String(output || '')
+    .split(/\r?\n/)
+    .map((line) => line.trimEnd())
+    .filter((line) => line.trim() && !/^\(\d+ rows affected\)$/i.test(line.trim()))
+    .map((line) => {
+      const values = line.split('\t');
+      return Object.fromEntries(columns.map((column, index) => [column, (values[index] || '').trim()]));
+    });
+}
+
+function sqlcmdJson(output = '') {
+  const body = String(output || '')
+    .split(/\r?\n/)
+    .map((line) => line.trimEnd())
+    .filter((line) => {
+      const value = line.trim();
+      return value && !/^JSON_/i.test(value) && !/^-+$/.test(value) && !/^\(\d+ rows affected\)$/i.test(value);
+    })
+    .join('');
+  return body ? JSON.parse(body) : [];
+}
+
+async function runSsrsSqlcmdQuery(config = {}, query, { json = false } = {}) {
+  const server = ssrsSqlcmdServer(config);
+  const database = ssrsSqlcmdDatabase(config);
+  if (!server) {
+    throw new ConnectorConfigError('SQL Server sqlcmd extraction requires config.server or config.host.', {
+      connector_type: config.type || 'sql_server',
+      required_config: ['server'],
+    });
+  }
+  const args = ['-S', server, '-E', '-C', '-d', database, '-w', '65535', '-Q', query];
+  if (json) args.splice(args.length - 2, 0, '-y', '0');
+  else args.splice(args.length - 2, 0, '-h', '-1');
+  const { stdout } = await execFileAsync(config.sqlcmd_path || config.sqlcmdPath || 'sqlcmd', args, {
+    windowsHide: true,
+    maxBuffer: Number(config.sqlcmd_max_buffer || config.sqlcmdMaxBuffer || 128 * 1024 * 1024),
+    timeout: Number(config.sqlcmd_timeout_ms || config.sqlcmdTimeoutMs || 120000),
+  });
+  return json ? sqlcmdJson(stdout) : stdout;
+}
+
+function ssrsSqlcmdMetadataQueries(lookbackMonths) {
+  const reportStart = `DATEADD(month, -${lookbackMonths}, SYSDATETIME())`;
+  const prefix = 'SET QUOTED_IDENTIFIER ON; SET ANSI_NULLS ON; SET ANSI_PADDING ON; SET ANSI_WARNINGS ON; SET CONCAT_NULL_YIELDS_NULL ON; SET ARITHABORT ON; SET NUMERIC_ROUNDABORT OFF; SET NOCOUNT ON;';
+  return {
+    connection: `${prefix}
+SELECT CAST(CONCAT(
+  @@SERVERNAME,
+  CHAR(9), DB_NAME(),
+  CHAR(9), SYSTEM_USER,
+  CHAR(9), CASE WHEN OBJECT_ID('dbo.Catalog') IS NULL THEN 0 ELSE 1 END,
+  CHAR(9), CASE WHEN OBJECT_ID('dbo.ExecutionLog3') IS NULL THEN 0 ELSE 1 END,
+  CHAR(9), CASE WHEN COL_LENGTH('dbo.Catalog', 'Content') IS NULL THEN 0 ELSE 1 END,
+  CHAR(9), CASE WHEN HAS_PERMS_BY_NAME('msdb.dbo.sysjobhistory', 'OBJECT', 'SELECT') = 1 THEN 1 ELSE 0 END
+) AS nvarchar(1200));`,
+    reports: `${prefix}
+SELECT CAST(CONCAT(
+  CONVERT(varchar(36), ItemID),
+  CHAR(9), REPLACE(Path, CHAR(9), ' '),
+  CHAR(9), REPLACE(Name, CHAR(9), ' '),
+  CHAR(9), Type,
+  CHAR(9), CASE Type WHEN 2 THEN 'report' WHEN 4 THEN 'linked_report' ELSE 'catalog_item' END,
+  CHAR(9), CONVERT(varchar(23), CreationDate, 121),
+  CHAR(9), CONVERT(varchar(23), ModifiedDate, 121)
+) AS nvarchar(1200))
+FROM dbo.Catalog
+WHERE Type IN (2, 4)
+ORDER BY Path;`,
+    dataSources: `${prefix}
+SELECT CAST(CONCAT(
+  CONVERT(varchar(36), ds.ItemID),
+  CHAR(9), COALESCE(REPLACE(c.Path, CHAR(9), ' '), ''),
+  CHAR(9), COALESCE(REPLACE(c.Name, CHAR(9), ' '), ''),
+  CHAR(9), COALESCE(REPLACE(ds.Name, CHAR(9), ' '), ''),
+  CHAR(9), COALESCE(REPLACE(ds.Extension, CHAR(9), ' '), ''),
+  CHAR(9), COALESCE(CONVERT(varchar(36), ds.Link), ''),
+  CHAR(9), COALESCE(REPLACE(linked.Path, CHAR(9), ' '), '')
+) AS nvarchar(1200))
+FROM dbo.DataSource ds
+LEFT JOIN dbo.Catalog c ON ds.ItemID = c.ItemID
+LEFT JOIN dbo.Catalog linked ON ds.Link = linked.ItemID
+ORDER BY c.Path, ds.Name;`,
+    reportDefinitions: `${prefix}
+SELECT
+  CONVERT(varchar(36), ItemID) AS ItemID,
+  Path,
+  Name,
+  TRY_CONVERT(nvarchar(max), TRY_CONVERT(xml, CONVERT(varbinary(max), Content))) AS DefinitionXml
+FROM dbo.Catalog
+WHERE Type IN (2, 4)
+  AND Content IS NOT NULL
+ORDER BY Path
+FOR JSON PATH;`,
+    sharedDataSourceDefinitions: `${prefix}
+SELECT
+  CONVERT(varchar(36), ItemID) AS ItemID,
+  Path,
+  Name,
+  TRY_CONVERT(nvarchar(max), TRY_CONVERT(xml, CONVERT(varbinary(max), Content))) AS DefinitionXml
+FROM dbo.Catalog
+WHERE Type = 5
+  AND Content IS NOT NULL
+ORDER BY Path
+FOR JSON PATH;`,
+    usage: `${prefix}
+SELECT CAST(CONCAT(
+  REPLACE(ItemPath, CHAR(9), ' '),
+  CHAR(9), REPLACE(UserName, CHAR(9), ' '),
+  CHAR(9), COUNT_BIG(*),
+  CHAR(9), CONVERT(varchar(23), MAX(TimeStart), 121),
+  CHAR(9), SUM(CASE WHEN Status = 'rsSuccess' THEN 1 ELSE 0 END),
+  CHAR(9), SUM(CASE WHEN Status <> 'rsSuccess' THEN 1 ELSE 0 END),
+  CHAR(9), MAX(Status)
+) AS nvarchar(1200))
+FROM dbo.ExecutionLog3
+WHERE TimeStart >= ${reportStart}
+GROUP BY ItemPath, UserName
+ORDER BY ItemPath, MAX(TimeStart) DESC, UserName;`,
+    reportUsage: `${prefix}
+SELECT CAST(CONCAT(
+  REPLACE(ItemPath, CHAR(9), ' '),
+  CHAR(9), COUNT_BIG(*),
+  CHAR(9), COUNT(DISTINCT UserName),
+  CHAR(9), CONVERT(varchar(23), MAX(TimeStart), 121),
+  CHAR(9), SUM(CASE WHEN Status = 'rsSuccess' THEN 1 ELSE 0 END),
+  CHAR(9), SUM(CASE WHEN Status <> 'rsSuccess' THEN 1 ELSE 0 END)
+) AS nvarchar(1200))
+FROM dbo.ExecutionLog3
+WHERE TimeStart >= ${reportStart}
+GROUP BY ItemPath
+ORDER BY MAX(TimeStart) DESC, ItemPath;`,
+    subscriptions: `${prefix}
+SELECT CAST(CONCAT(
+  CONVERT(varchar(36), s.SubscriptionID),
+  CHAR(9), REPLACE(c.Path, CHAR(9), ' '),
+  CHAR(9), REPLACE(c.Name, CHAR(9), ' '),
+  CHAR(9), COALESCE(REPLACE(s.Description, CHAR(9), ' '), ''),
+  CHAR(9), COALESCE(REPLACE(s.LastStatus, CHAR(9), ' '), ''),
+  CHAR(9), COALESCE(CONVERT(varchar(23), s.LastRunTime, 121), ''),
+  CHAR(9), COALESCE(REPLACE(s.EventType, CHAR(9), ' '), ''),
+  CHAR(9), COALESCE(REPLACE(s.DeliveryExtension, CHAR(9), ' '), ''),
+  CHAR(9), COALESCE(CONVERT(varchar(20), s.InactiveFlags), ''),
+  CHAR(9), COALESCE(CONVERT(varchar(36), sch.ScheduleID), '')
+) AS nvarchar(2000))
+FROM dbo.Subscriptions s
+JOIN dbo.Catalog c ON s.Report_OID = c.ItemID
+LEFT JOIN dbo.ReportSchedule rs ON s.SubscriptionID = rs.SubscriptionID
+LEFT JOIN dbo.Schedule sch ON rs.ScheduleID = sch.ScheduleID
+ORDER BY s.LastRunTime DESC, c.Path;`,
+    agentJobs: `${prefix}
+WITH JobHistory AS (
+  SELECT
+    h.job_id,
+    h.run_status,
+    DATETIME2FROMPARTS(h.run_date / 10000, (h.run_date % 10000) / 100, h.run_date % 100, h.run_time / 10000, (h.run_time % 10000) / 100, h.run_time % 100, 0, 0) AS JobRunAt
+  FROM msdb.dbo.sysjobhistory h
+  WHERE h.step_id = 0
+)
+SELECT CAST(CONCAT(
+  REPLACE(c.Path, CHAR(9), ' '),
+  CHAR(9), CONVERT(varchar(36), sch.ScheduleID),
+  CHAR(9), j.name,
+  CHAR(9), j.enabled,
+  CHAR(9), h.run_status,
+  CHAR(9), COUNT_BIG(*),
+  CHAR(9), CONVERT(varchar(23), MAX(h.JobRunAt), 121)
+) AS nvarchar(1200))
+FROM dbo.Subscriptions s
+JOIN dbo.Catalog c ON s.Report_OID = c.ItemID
+JOIN dbo.ReportSchedule rs ON s.SubscriptionID = rs.SubscriptionID
+JOIN dbo.Schedule sch ON rs.ScheduleID = sch.ScheduleID
+JOIN msdb.dbo.sysjobs j ON TRY_CONVERT(uniqueidentifier, j.name) = sch.ScheduleID
+JOIN JobHistory h ON h.job_id = j.job_id
+WHERE h.JobRunAt >= ${reportStart}
+GROUP BY c.Path, sch.ScheduleID, j.name, j.enabled, h.run_status
+ORDER BY c.Path, COUNT_BIG(*) DESC;`,
+  };
+}
+
+function sqlServerSqlcmdMetadataQueries() {
+  const prefix = 'SET QUOTED_IDENTIFIER ON; SET NOCOUNT ON;';
+  return {
+    connection: `${prefix}
+SELECT CAST(CONCAT(
+  @@SERVERNAME,
+  CHAR(9), DB_NAME(),
+  CHAR(9), SYSTEM_USER
+) AS nvarchar(1200));`,
+    tables: `${prefix}
+SELECT
+  CONCAT(DB_NAME(), '.', s.name, '.', t.name) AS id,
+  DB_NAME() AS database_name,
+  s.name AS schema_name,
+  t.name AS object_name,
+  t.name AS name,
+  'table' AS object_type,
+  SUM(CASE WHEN p.index_id IN (0, 1) THEN p.rows ELSE 0 END) AS row_count,
+  t.create_date,
+  t.modify_date
+FROM sys.tables t
+JOIN sys.schemas s ON t.schema_id = s.schema_id
+LEFT JOIN sys.partitions p ON t.object_id = p.object_id
+WHERE t.is_ms_shipped = 0
+GROUP BY s.name, t.name, t.create_date, t.modify_date
+ORDER BY s.name, t.name
+FOR JSON PATH;`,
+    views: `${prefix}
+SELECT
+  CONCAT(DB_NAME(), '.', s.name, '.', v.name) AS id,
+  DB_NAME() AS database_name,
+  s.name AS schema_name,
+  v.name AS object_name,
+  v.name AS name,
+  'view' AS object_type,
+  v.create_date,
+  v.modify_date
+FROM sys.views v
+JOIN sys.schemas s ON v.schema_id = s.schema_id
+WHERE v.is_ms_shipped = 0
+ORDER BY s.name, v.name
+FOR JSON PATH;`,
+    columns: `${prefix}
+SELECT
+  CONCAT(DB_NAME(), '.', s.name, '.', o.name) AS parent_id,
+  DB_NAME() AS database_name,
+  s.name AS schema_name,
+  o.name AS object_name,
+  c.name AS column_name,
+  c.name AS name,
+  ty.name AS data_type,
+  c.column_id AS ordinal_position,
+  CASE WHEN c.is_nullable = 1 THEN 'YES' ELSE 'NO' END AS is_nullable,
+  c.max_length AS character_maximum_length,
+  c.precision AS numeric_precision,
+  c.scale AS numeric_scale
+FROM sys.objects o
+JOIN sys.schemas s ON o.schema_id = s.schema_id
+JOIN sys.columns c ON o.object_id = c.object_id
+JOIN sys.types ty ON c.user_type_id = ty.user_type_id
+WHERE o.type IN ('U', 'V')
+  AND o.is_ms_shipped = 0
+ORDER BY s.name, o.name, c.column_id
+FOR JSON PATH;`,
+  };
+}
+
+const ssrsXmlParser = new XMLParser({
+  ignoreAttributes: false,
+  attributeNamePrefix: '',
+  removeNSPrefix: true,
+  textNodeName: '#text',
+  parseTagValue: false,
+  trimValues: true,
+});
+
+function toArray(value) {
+  if (Array.isArray(value)) return value.filter(Boolean);
+  if (value === undefined || value === null) return [];
+  return [value];
+}
+
+function xmlText(value) {
+  if (value === undefined || value === null) return '';
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return String(value).trim();
+  if (typeof value === 'object') return String(value['#text'] || '').trim();
+  return '';
+}
+
+function child(node, key) {
+  if (!node || typeof node !== 'object') return null;
+  return node[key] ?? null;
+}
+
+function parseXmlDocument(xmlTextValue) {
+  const text = String(xmlTextValue || '').trim();
+  if (!text) return null;
+  try {
+    return ssrsXmlParser.parse(text);
+  } catch {
+    return null;
+  }
+}
+
+function parseConnectionStringValue(connectionString = '', keys = []) {
+  const escaped = keys.map((key) => key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+  const match = String(connectionString || '').match(new RegExp(`(?:${escaped})\\s*=\\s*([^;"]+)`, 'i'));
+  return match ? match[1].trim() : '';
+}
+
+function parseConnectionStringServer(connectionString = '') {
+  return parseConnectionStringValue(connectionString, ['Data Source', 'Server', 'Address', 'Addr', 'Network Address']);
+}
+
+function parseConnectionStringDatabase(connectionString = '') {
+  return parseConnectionStringValue(connectionString, ['Initial Catalog', 'Database']);
+}
+
+function canonicalSqlServerName(value = '') {
+  return String(value || '')
+    .trim()
+    .replace(/^tcp:/i, '')
+    .split(',')[0]
+    .split('\\')[0]
+    .trim();
+}
+
+function canonicalDatabaseName(value = '') {
+  const text = String(value || '').trim();
+  if (/^dbsonicdw$/i.test(text) || /^sonic[_\s-]?dw$/i.test(text)) return 'Sonic_DW';
+  return text;
+}
+
+function cleanSqlIdentifier(value = '') {
+  const text = String(value || '')
+    .trim()
+    .replace(/^\[|\]$/g, '')
+    .replace(/^"|"$|^'|'$/g, '')
+    .trim();
+  return /^(null|undefined)$/i.test(text) ? '' : text;
+}
+
+function splitSqlObjectName(value = '') {
+  return String(value || '')
+    .split('.')
+    .map(cleanSqlIdentifier)
+    .filter(Boolean);
+}
+
+function canonicalSqlObjectId({ server, database, schema, object }) {
+  const cleanObject = cleanSqlIdentifier(object);
+  if (!cleanObject) return '';
+  const cleanServer = canonicalSqlServerName(server);
+  const cleanDatabase = canonicalDatabaseName(database);
+  const cleanSchema = cleanSqlIdentifier(schema || 'dbo') || 'dbo';
+  return [cleanServer, cleanDatabase, cleanSchema, cleanObject].filter(Boolean).join('.');
+}
+
+function storedProcedureReference(commandText = '', defaults = {}) {
+  const command = String(commandText || '').trim();
+  if (!command) return null;
+  const firstToken = command.split(/\s+/)[0] || '';
+  const withoutExec = command.match(/^\s*exec(?:ute)?\s+([^\s(;]+)/i)?.[1] || firstToken;
+  const parts = splitSqlObjectName(withoutExec);
+  if (!parts.length) return null;
+  const object = parts.pop();
+  const schema = parts.pop() || defaults.schema || 'dbo';
+  const database = parts.pop() || defaults.database;
+  const server = parts.pop() || defaults.server;
+  return {
+    server,
+    database,
+    schema,
+    object,
+    object_id: canonicalSqlObjectId({ server, database, schema, object }),
+    reference_type: 'stored_procedure',
+  };
+}
+
+function sqlReferencesFromCommand(commandText = '', commandType = '', defaults = {}) {
+  const command = String(commandText || '').trim();
+  if (!command) return [];
+  const type = String(commandType || '').trim().toLowerCase();
+  if (type === 'storedprocedure' || type === 'stored_procedure') {
+    const proc = storedProcedureReference(command, defaults);
+    return proc?.object_id ? [proc] : [];
+  }
+  if (/^\s*exec(?:ute)?\s+/i.test(command)) {
+    const proc = storedProcedureReference(command, defaults);
+    return proc?.object_id ? [proc] : [];
+  }
+  return extractTablesFromSQL(command, defaults.server, defaults.database, defaults.schema || 'dbo')
+    .map((reference) => {
+      const normalized = {
+        ...reference,
+        database: canonicalDatabaseName(reference.database || defaults.database),
+        server: canonicalSqlServerName(reference.server || defaults.server),
+        schema: reference.schema || defaults.schema || 'dbo',
+      };
+      return {
+        ...normalized,
+        object_id: canonicalSqlObjectId(normalized),
+        reference_type: 'table_or_view',
+      };
+    })
+    .filter((reference) => reference.object_id);
+}
+
+class SsrsLiveAdapter extends BIConnectorAdapter {
+  constructor(args) {
+    super(args);
+    this.requiredConfig = ['server', 'database'];
+    this.requiredCredentialModes = ['windows_integrated', 'service_account', 'secret_reference'];
+    this.capability = {
+      ...this.capability,
+      supports_live_read: true,
+      supports_usage: true,
+      supports_subscriptions: true,
+      supports_sql_agent_history: true,
+      captures_raw_data: false,
+      existing_extractor: 'ReportServer catalog and msdb bridge',
+    };
+    this.streams = [
+      stream('reports', STREAM.report, 'ReportServer.dbo.Catalog', {
+        metadata: ['report ItemID', 'path', 'name', 'type', 'created/modified dates'],
+      }),
+      stream('data_sources', STREAM.dataSource, 'ReportServer.dbo.DataSource and shared Catalog data sources', {
+        metadata: ['data source references', 'extensions', 'linked shared data sources'],
+      }),
+      stream('datasets', STREAM.dataset, 'ReportServer RDL DataSets and Query definitions', {
+        metadata: ['dataset name', 'data source name', 'command type', 'command text', 'SQL object references'],
+      }),
+      stream('usage', STREAM.usage, 'ReportServer.dbo.ExecutionLog3', {
+        cursor: 'TimeStart',
+        metadata: ['execution counts', 'last access', 'distinct users', 'status', 'format', 'request type'],
+      }),
+      stream('subscriptions', STREAM.object, 'ReportServer.dbo.Subscriptions', {
+        metadata: ['subscription status', 'last run time', 'delivery extension', 'schedule relationship'],
+      }),
+      stream('agent_jobs', STREAM.object, 'msdb.dbo.sysjobs/sysjobhistory joined through ReportSchedule', {
+        metadata: ['SQL Agent job status', 'job run counts', 'last job run'],
+      }),
+      stream('lineage', STREAM.lineage, 'ReportServer report-data-source and schedule-report relationships', {
+        metadata: ['data source -> report', 'SQL Agent schedule -> report'],
+      }),
+    ];
+  }
+
+  async testConnection(options = {}) {
+    const credentialWarning = this.validateCredential();
+    const warnings = credentialWarning === true ? [] : [credentialWarning];
+    if (this.config.mockConnectionCheck) {
+      return {
+        status: this.config.mockConnectionCheck.status || 'ready',
+        live_supported: true,
+        live_connection_valid: this.config.mockConnectionCheck.live_connection_valid !== false,
+        metadata_discovery_valid: this.config.mockConnectionCheck.metadata_discovery_valid !== false,
+        warnings,
+        details: this.config.mockConnectionCheck.details || {},
+      };
+    }
+    if (
+      options.mockMetadata ||
+      options.metadata_payload ||
+      options.metadataPayload ||
+      this.config.seed_metadata ||
+      this.config.metadata_payload ||
+      this.config.metadataPayload
+    ) {
+      return {
+        status: 'ready',
+        live_supported: true,
+        live_connection_valid: true,
+        metadata_discovery_valid: true,
+        warnings,
+        details: {
+          bridge_metadata_payload: true,
+          source_contacted_by: options.metadata_payload_source || this.config.metadata_payload_source || 'external_metadata_harvest',
+        },
+      };
+    }
+    if (!this.config.server && !this.config.host) {
+      warnings.push(
+        warningEvent({
+          connector: this.connector,
+          stream: 'connection',
+          message: 'SSRS live extraction requires config.server or config.host when dry_run is false.',
+          details: { required_config: ['server', 'database'] },
+        })
+      );
+      return {
+        status: 'planned',
+        live_supported: true,
+        live_connection_valid: true,
+        metadata_discovery_valid: true,
+        warnings,
+        details: { planned_only: true, required_config: ['server', 'database'] },
+      };
+    }
+    if (ssrsUsesSqlcmdStrategy(options, this.config)) {
+      return this.testSqlcmdConnection(options, warnings);
+    }
+    this.validateConfig();
+    const credentialMode = sqlServerCredentialMode(this.connector);
+    const sqlDriver = this.config.sqlDriver || (await loadSqlServerDriver(credentialMode));
+    const connectionConfig =
+      this.config.connectionConfig || buildSqlServerConnectionConfig(this.connector).config;
+    const pool = new sqlDriver.ConnectionPool(connectionConfig);
+    try {
+      await pool.connect();
+      const result = await pool.request().query(`
+        SELECT
+          @@SERVERNAME AS server_name,
+          DB_NAME() AS database_name,
+          SYSTEM_USER AS login_name,
+          CASE WHEN OBJECT_ID('dbo.Catalog') IS NULL THEN 0 ELSE 1 END AS has_catalog,
+          CASE WHEN OBJECT_ID('dbo.ExecutionLog3') IS NULL THEN 0 ELSE 1 END AS has_execution_log3,
+          CASE WHEN COL_LENGTH('dbo.Catalog', 'Content') IS NULL THEN 0 ELSE 1 END AS has_catalog_content,
+          CASE WHEN HAS_PERMS_BY_NAME('msdb.dbo.sysjobhistory', 'OBJECT', 'SELECT') = 1 THEN 1 ELSE 0 END AS has_msdb_jobhistory;
+      `);
+      const row = result.recordset?.[0] || {};
+      const metadataDiscoveryValid = row.has_catalog === 1 && row.has_execution_log3 === 1;
+      if (!metadataDiscoveryValid) {
+        warnings.push(
+          warningEvent({
+            connector: this.connector,
+            stream: 'connection',
+            message: 'Connected to SQL Server, but required ReportServer catalog objects were not visible.',
+            details: {
+              has_catalog: row.has_catalog === 1,
+              has_execution_log3: row.has_execution_log3 === 1,
+            },
+          })
+        );
+      }
+      if (row.has_msdb_jobhistory !== 1) {
+        warnings.push(
+          warningEvent({
+            connector: this.connector,
+            stream: 'agent_jobs',
+            message: 'Connected to ReportServer, but msdb SQL Agent history is not readable.',
+            details: { required_permission: 'SELECT on msdb.dbo.sysjobs and msdb.dbo.sysjobhistory' },
+          })
+        );
+      }
+      return {
+        status: metadataDiscoveryValid ? 'ready' : 'partial',
+        live_supported: true,
+        live_connection_valid: true,
+        metadata_discovery_valid: metadataDiscoveryValid,
+        warnings,
+        details: {
+          server_name: row.server_name || connectionConfig.server || null,
+          database_name: row.database_name || this.config.database || null,
+          login_name: row.login_name || null,
+          reportserver_catalog_visible: row.has_catalog === 1,
+          execution_log3_visible: row.has_execution_log3 === 1,
+          catalog_content_visible: row.has_catalog_content === 1,
+          msdb_jobhistory_visible: row.has_msdb_jobhistory === 1,
+          credential_mode: credentialMode,
+          ...runtimeProcessIdentityDetails(),
+        },
+      };
+    } catch (err) {
+      if (ssrsAllowsSqlcmdFallback(options, this.config)) {
+        warnings.push(
+          warningEvent({
+            connector: this.connector,
+            stream: 'connection',
+            message: 'Node SQL Server integrated authentication failed; using sqlcmd Windows-auth fallback.',
+            details: {
+              failed_strategy: 'node_sql_driver',
+              fallback_strategy: 'sqlcmd_windows_auth',
+              error_message: err.message,
+            },
+          })
+        );
+        return this.testSqlcmdConnection(options, warnings);
+      }
+      throw sqlServerConnectionRuntimeError(err, this.connector, 'ssrs_connection_validation');
+    } finally {
+      await pool.close().catch(() => {});
+    }
+  }
+
+  async testSqlcmdConnection(options = {}, warnings = []) {
+    this.validateConfig();
+    const lookbackMonths = ssrsDateWindow(options, this.config);
+    const queries = ssrsSqlcmdMetadataQueries(lookbackMonths);
+    try {
+      const rows = sqlcmdRows(await runSsrsSqlcmdQuery(this.config, queries.connection), [
+        'server_name',
+        'database_name',
+        'login_name',
+        'has_catalog',
+        'has_execution_log3',
+        'has_catalog_content',
+        'has_msdb_jobhistory',
+      ]);
+      const row = rows[0] || {};
+      const metadataDiscoveryValid = row.has_catalog === '1' && row.has_execution_log3 === '1';
+      if (!metadataDiscoveryValid) {
+        warnings.push(
+          warningEvent({
+            connector: this.connector,
+            stream: 'connection',
+            message: 'sqlcmd connected to SQL Server, but required ReportServer catalog objects were not visible.',
+            details: {
+              has_catalog: row.has_catalog === '1',
+              has_execution_log3: row.has_execution_log3 === '1',
+            },
+          })
+        );
+      }
+      if (row.has_msdb_jobhistory !== '1') {
+        warnings.push(
+          warningEvent({
+            connector: this.connector,
+            stream: 'agent_jobs',
+            message: 'sqlcmd connected to ReportServer, but msdb SQL Agent history is not readable.',
+            details: { required_permission: 'SELECT on msdb.dbo.sysjobs and msdb.dbo.sysjobhistory' },
+          })
+        );
+      }
+      return {
+        status: metadataDiscoveryValid ? 'ready' : 'partial',
+        live_supported: true,
+        live_connection_valid: true,
+        metadata_discovery_valid: metadataDiscoveryValid,
+        warnings,
+        details: {
+          server_name: row.server_name || ssrsSqlcmdServer(this.config) || null,
+          database_name: row.database_name || ssrsSqlcmdDatabase(this.config) || null,
+          login_name: row.login_name || null,
+          reportserver_catalog_visible: row.has_catalog === '1',
+          execution_log3_visible: row.has_execution_log3 === '1',
+          catalog_content_visible: row.has_catalog_content === '1',
+          msdb_jobhistory_visible: row.has_msdb_jobhistory === '1',
+          credential_mode: 'windows_integrated',
+          connection_strategy: 'sqlcmd_windows_auth',
+          sqlcmd_path: this.config.sqlcmd_path || this.config.sqlcmdPath || 'sqlcmd',
+          ...runtimeProcessIdentityDetails(),
+        },
+      };
+    } catch (err) {
+      throw sqlServerConnectionRuntimeError(err, this.connector, 'ssrs_sqlcmd_connection_validation');
+    }
+  }
+
+  async loadMetadata(options = {}) {
+    if (this.metadataPromise) return this.metadataPromise;
+    const configuredMetadata =
+      options.mockMetadata ||
+      options.metadata_payload ||
+      options.metadataPayload ||
+      this.config.mockMetadata ||
+      this.config.metadata_payload ||
+      this.config.metadataPayload ||
+      this.config.seed_metadata ||
+      this.config.sample_metadata;
+    if (configuredMetadata) {
+      const metadata = configuredMetadata.lineage ? configuredMetadata : {
+        ...configuredMetadata,
+        lineage: this.buildSsrsLineage(configuredMetadata),
+      };
+      this.lastMetadata = metadata;
+      return metadata;
+    }
+    if (options.dry_run !== false) return null;
+    this.metadataPromise = this.loadLiveMetadata(options).catch((err) => {
+      if (err instanceof ConnectorRuntimeError) throw err;
+      throw sqlServerConnectionRuntimeError(err, this.connector, 'ssrs_metadata_extraction');
+    });
+    return this.metadataPromise;
+  }
+
+  async loadLiveMetadata(options = {}) {
+    if (ssrsUsesSqlcmdStrategy(options, this.config)) {
+      return this.loadLiveMetadataViaSqlcmd(options);
+    }
+    const credentialMode = sqlServerCredentialMode(this.connector);
+    const sqlDriver = this.config.sqlDriver || (await loadSqlServerDriver(credentialMode));
+    const connectionConfig =
+      this.config.connectionConfig || buildSqlServerConnectionConfig(this.connector).config;
+    const pool = new sqlDriver.ConnectionPool(connectionConfig);
+    const lookbackMonths = ssrsDateWindow(options, this.config);
+    try {
+      await pool.connect();
+      const query = async (sql) => (await pool.request().query(sql)).recordset || [];
+      const reports = await query(`
+        SELECT
+          CONVERT(varchar(36), ItemID) AS ItemID,
+          Path,
+          Name,
+          Type,
+          CASE Type WHEN 2 THEN 'report' WHEN 4 THEN 'linked_report' ELSE 'catalog_item' END AS ItemType,
+          CreationDate,
+          ModifiedDate
+        FROM dbo.Catalog
+        WHERE Type IN (2, 4)
+        ORDER BY Path;
+      `);
+      const dataSources = await query(`
+        SELECT
+          CONVERT(varchar(36), ds.ItemID) AS ItemID,
+          c.Path AS ReportPath,
+          c.Name AS ReportName,
+          ds.Name AS DataSourceName,
+          ds.Extension,
+          CONVERT(varchar(36), ds.Link) AS LinkedItemID,
+          linked.Path AS LinkedDataSourcePath
+        FROM dbo.DataSource ds
+        LEFT JOIN dbo.Catalog c ON ds.ItemID = c.ItemID
+        LEFT JOIN dbo.Catalog linked ON ds.Link = linked.ItemID
+        ORDER BY c.Path, ds.Name;
+      `);
+      const reportDefinitions = await query(`
+        SELECT
+          CONVERT(varchar(36), ItemID) AS ItemID,
+          Path,
+          Name,
+          TRY_CONVERT(nvarchar(max), TRY_CONVERT(xml, CONVERT(varbinary(max), Content))) AS DefinitionXml
+        FROM dbo.Catalog
+        WHERE Type IN (2, 4)
+          AND Content IS NOT NULL
+        ORDER BY Path;
+      `);
+      const sharedDataSourceDefinitions = await query(`
+        SELECT
+          CONVERT(varchar(36), ItemID) AS ItemID,
+          Path,
+          Name,
+          TRY_CONVERT(nvarchar(max), TRY_CONVERT(xml, CONVERT(varbinary(max), Content))) AS DefinitionXml
+        FROM dbo.Catalog
+        WHERE Type = 5
+          AND Content IS NOT NULL
+        ORDER BY Path;
+      `);
+      const usage = await query(`
+        SELECT
+          ItemPath,
+          UserName,
+          COUNT_BIG(*) AS Executions,
+          MAX(TimeStart) AS LastAccessed,
+          SUM(CASE WHEN Status = 'rsSuccess' THEN 1 ELSE 0 END) AS Successes,
+          SUM(CASE WHEN Status <> 'rsSuccess' THEN 1 ELSE 0 END) AS NonSuccesses,
+          MAX(Status) AS LastObservedStatus
+        FROM dbo.ExecutionLog3
+        WHERE TimeStart >= DATEADD(month, -${lookbackMonths}, SYSDATETIME())
+        GROUP BY ItemPath, UserName
+        ORDER BY ItemPath, LastAccessed DESC, UserName;
+      `);
+      const reportUsage = await query(`
+        SELECT
+          ItemPath,
+          COUNT_BIG(*) AS Executions,
+          COUNT(DISTINCT UserName) AS DistinctUsers,
+          MAX(TimeStart) AS LastAccessed,
+          SUM(CASE WHEN Status = 'rsSuccess' THEN 1 ELSE 0 END) AS Successes,
+          SUM(CASE WHEN Status <> 'rsSuccess' THEN 1 ELSE 0 END) AS NonSuccesses
+        FROM dbo.ExecutionLog3
+        WHERE TimeStart >= DATEADD(month, -${lookbackMonths}, SYSDATETIME())
+        GROUP BY ItemPath
+        ORDER BY LastAccessed DESC, ItemPath;
+      `);
+      const subscriptions = await query(`
+        SELECT
+          CONVERT(varchar(36), s.SubscriptionID) AS SubscriptionID,
+          c.Path AS ReportPath,
+          c.Name AS ReportName,
+          s.Description,
+          s.LastStatus,
+          s.LastRunTime,
+          s.EventType,
+          s.DeliveryExtension,
+          s.InactiveFlags,
+          CONVERT(varchar(36), sch.ScheduleID) AS ScheduleID
+        FROM dbo.Subscriptions s
+        JOIN dbo.Catalog c ON s.Report_OID = c.ItemID
+        LEFT JOIN dbo.ReportSchedule rs ON s.SubscriptionID = rs.SubscriptionID
+        LEFT JOIN dbo.Schedule sch ON rs.ScheduleID = sch.ScheduleID
+        ORDER BY s.LastRunTime DESC, c.Path;
+      `);
+      const agentJobs = await query(`
+        WITH JobHistory AS (
+          SELECT
+            h.job_id,
+            h.run_status,
+            DATETIME2FROMPARTS(
+              h.run_date / 10000,
+              (h.run_date % 10000) / 100,
+              h.run_date % 100,
+              h.run_time / 10000,
+              (h.run_time % 10000) / 100,
+              h.run_time % 100,
+              0,
+              0
+            ) AS JobRunAt
+          FROM msdb.dbo.sysjobhistory h
+          WHERE h.step_id = 0
+        )
+        SELECT
+          c.Path AS ReportPath,
+          CONVERT(varchar(36), sch.ScheduleID) AS ScheduleID,
+          j.name AS JobName,
+          j.enabled AS JobEnabled,
+          h.run_status AS RunStatus,
+          COUNT_BIG(*) AS JobRuns,
+          MAX(h.JobRunAt) AS LastJobRun
+        FROM dbo.Subscriptions s
+        JOIN dbo.Catalog c ON s.Report_OID = c.ItemID
+        JOIN dbo.ReportSchedule rs ON s.SubscriptionID = rs.SubscriptionID
+        JOIN dbo.Schedule sch ON rs.ScheduleID = sch.ScheduleID
+        JOIN msdb.dbo.sysjobs j ON TRY_CONVERT(uniqueidentifier, j.name) = sch.ScheduleID
+        JOIN JobHistory h ON h.job_id = j.job_id
+        WHERE h.JobRunAt >= DATEADD(month, -${lookbackMonths}, SYSDATETIME())
+        GROUP BY c.Path, sch.ScheduleID, j.name, j.enabled, h.run_status
+        ORDER BY c.Path, JobRuns DESC;
+      `);
+      const metadata = {
+        extractedAt: new Date().toISOString(),
+        lookback_months: lookbackMonths,
+        reports,
+        data_sources: dataSources,
+        dataSources,
+        report_definitions: reportDefinitions,
+        reportDefinitions,
+        shared_data_source_definitions: sharedDataSourceDefinitions,
+        sharedDataSourceDefinitions,
+        usage,
+        report_usage: reportUsage,
+        reportUsage,
+        subscriptions,
+        agent_jobs: agentJobs,
+        agentJobs,
+      };
+      metadata.lineage = this.buildSsrsLineage(metadata);
+      metadata.datasets = this.extractSsrsDatasets(metadata);
+      this.lastMetadata = metadata;
+      return metadata;
+    } catch (err) {
+      if (ssrsAllowsSqlcmdFallback(options, this.config)) {
+        return this.loadLiveMetadataViaSqlcmd(options);
+      }
+      throw err;
+    } finally {
+      await pool.close().catch(() => {});
+    }
+  }
+
+  async loadLiveMetadataViaSqlcmd(options = {}) {
+    const lookbackMonths = ssrsDateWindow(options, this.config);
+    const queries = ssrsSqlcmdMetadataQueries(lookbackMonths);
+    const reports = sqlcmdRows(await runSsrsSqlcmdQuery(this.config, queries.reports), [
+      'ItemID',
+      'Path',
+      'Name',
+      'Type',
+      'ItemType',
+      'CreationDate',
+      'ModifiedDate',
+    ]);
+    const dataSources = sqlcmdRows(await runSsrsSqlcmdQuery(this.config, queries.dataSources), [
+      'ItemID',
+      'ReportPath',
+      'ReportName',
+      'DataSourceName',
+      'Extension',
+      'LinkedItemID',
+      'LinkedDataSourcePath',
+    ]);
+    const reportDefinitions = await runSsrsSqlcmdQuery(this.config, queries.reportDefinitions, { json: true });
+    const sharedDataSourceDefinitions = await runSsrsSqlcmdQuery(this.config, queries.sharedDataSourceDefinitions, { json: true });
+    const usage = sqlcmdRows(await runSsrsSqlcmdQuery(this.config, queries.usage), [
+      'ItemPath',
+      'UserName',
+      'Executions',
+      'LastAccessed',
+      'Successes',
+      'NonSuccesses',
+      'LastObservedStatus',
+    ]);
+    const reportUsage = sqlcmdRows(await runSsrsSqlcmdQuery(this.config, queries.reportUsage), [
+      'ItemPath',
+      'Executions',
+      'DistinctUsers',
+      'LastAccessed',
+      'Successes',
+      'NonSuccesses',
+    ]);
+    const subscriptions = sqlcmdRows(await runSsrsSqlcmdQuery(this.config, queries.subscriptions), [
+      'SubscriptionID',
+      'ReportPath',
+      'ReportName',
+      'Description',
+      'LastStatus',
+      'LastRunTime',
+      'EventType',
+      'DeliveryExtension',
+      'InactiveFlags',
+      'ScheduleID',
+    ]);
+    const agentJobs = sqlcmdRows(await runSsrsSqlcmdQuery(this.config, queries.agentJobs), [
+      'ReportPath',
+      'ScheduleID',
+      'JobName',
+      'JobEnabled',
+      'RunStatus',
+      'JobRuns',
+      'LastJobRun',
+    ]);
+    const metadata = {
+      extractedAt: new Date().toISOString(),
+      lookback_months: lookbackMonths,
+      extraction_strategy: 'sqlcmd_windows_auth',
+      reports,
+      data_sources: dataSources,
+      dataSources,
+      report_definitions: reportDefinitions,
+      reportDefinitions,
+      shared_data_source_definitions: sharedDataSourceDefinitions,
+      sharedDataSourceDefinitions,
+      usage,
+      report_usage: reportUsage,
+      reportUsage,
+      subscriptions,
+      agent_jobs: agentJobs,
+      agentJobs,
+    };
+    metadata.lineage = this.buildSsrsLineage(metadata);
+    metadata.datasets = this.extractSsrsDatasets(metadata);
+    this.lastMetadata = metadata;
+    return metadata;
+  }
+
+  async readStream(streamName, options = {}) {
+    const streamConfig = this.streamByName(streamName);
+    const metadata = await this.loadMetadata(options);
+    if (!metadata) return super.readStream(streamName, options);
+    const events = this.eventsForStream(streamName, metadata);
+    return {
+      stream: streamName,
+      events,
+      state: {
+        cursor: options.cursor || null,
+        high_watermark: metadata.extractedAt || metadata.extracted_at || new Date().toISOString(),
+      },
+      plan: this.streamPlan(streamConfig),
+    };
+  }
+
+  buildSsrsLineage(metadata = {}) {
+    const datasets = metadata.datasets || this.extractSsrsDatasets(metadata);
+    const dataSourceEdges = (metadata.data_sources || metadata.dataSources || [])
+      .filter((item) => item.ReportPath && (item.LinkedDataSourcePath || item.DataSourceName))
+      .map((item) => ({
+        id: `datasource:${item.LinkedDataSourcePath || item.DataSourceName}->report:${item.ReportPath}`,
+        from: item.LinkedDataSourcePath || `${item.ReportPath}/${item.DataSourceName}`,
+        to: item.ReportPath,
+        type: 'feeds_report',
+        confidence: item.LinkedDataSourcePath ? 0.9 : 0.72,
+        evidence_type: 'ReportServer.dbo.DataSource',
+        report_path: item.ReportPath,
+        data_source_name: item.DataSourceName,
+        linked_data_source_path: item.LinkedDataSourcePath || null,
+      }));
+    const scheduleEdges = (metadata.agent_jobs || metadata.agentJobs || [])
+      .filter((item) => item.ReportPath && item.ScheduleID)
+      .map((item) => ({
+        id: `schedule:${item.ScheduleID}->report:${item.ReportPath}`,
+        from: item.ScheduleID,
+        to: item.ReportPath,
+        type: 'scheduled_execution',
+        confidence: 0.8,
+        evidence_type: 'ReportSchedule + msdb.sysjobs',
+        report_path: item.ReportPath,
+        job_name: item.JobName,
+      }));
+    const datasetEdges = datasets.flatMap((dataset) =>
+      (dataset.sql_references || []).map((reference) => ({
+        id: `sqlobject:${reference.object_id}->report:${dataset.report_path}`,
+        from: reference.object_id,
+        to: dataset.report_path,
+        type: reference.reference_type === 'stored_procedure' ? 'procedure_feeds_report' : 'source_object_feeds_report',
+        confidence: reference.reference_type === 'stored_procedure' ? 0.9 : 0.82,
+        evidence_type: 'RDL DataSet Query',
+        report_path: dataset.report_path,
+        dataset_name: dataset.dataset_name,
+        data_source_name: dataset.data_source_name,
+        command_type: dataset.command_type,
+        canonical_match: {
+          object_id: reference.object_id,
+          server: reference.server,
+          database: reference.database,
+          schema: reference.schema,
+          object: reference.object,
+          match_strategy: 'canonical_sql_object_id',
+        },
+      }))
+    );
+    return [...dataSourceEdges, ...scheduleEdges, ...datasetEdges];
+  }
+
+  extractSharedDataSourceDefinitions(metadata = {}) {
+    const definitions = [...(metadata.shared_data_source_definitions || []), ...(metadata.sharedDataSourceDefinitions || [])];
+    const byPath = new Map();
+    for (const definition of definitions) {
+      const doc = parseXmlDocument(definition.DefinitionXml || definition.definition_xml || definition.xml);
+      const root = doc?.RptDataSource || doc?.DataSourceDefinition || doc?.DataSource;
+      const body = root?.ConnectionProperties || root;
+      const connectString = xmlText(body?.ConnectString || root?.ConnectString);
+      byPath.set(definition.Path || definition.path, {
+        item_id: definition.ItemID || definition.item_id,
+        path: definition.Path || definition.path,
+        name: definition.Name || definition.name,
+        extension: xmlText(body?.Extension || root?.Extension),
+        connect_string: connectString,
+        server: canonicalSqlServerName(parseConnectionStringServer(connectString)),
+        database: canonicalDatabaseName(parseConnectionStringDatabase(connectString)),
+      });
+    }
+    return byPath;
+  }
+
+  extractSsrsDatasets(metadata = {}) {
+    if (Array.isArray(metadata.datasets) && metadata.datasets.length) return metadata.datasets;
+    const sharedDefinitions = this.extractSharedDataSourceDefinitions(metadata);
+    const reportDataSources = metadata.data_sources || metadata.dataSources || [];
+    const definitions = [...(metadata.report_definitions || []), ...(metadata.reportDefinitions || [])];
+    const datasets = [];
+
+    for (const definition of definitions) {
+      const reportPathValue = definition.Path || definition.path;
+      const reportNameValue = definition.Name || definition.name || reportPathValue;
+      const doc = parseXmlDocument(definition.DefinitionXml || definition.definition_xml || definition.xml);
+      const report = doc?.Report || doc;
+      if (!report) continue;
+      const embeddedSources = new Map();
+      for (const source of toArray(child(child(report, 'DataSources'), 'DataSource'))) {
+        const name = source.Name || source.name;
+        const properties = child(source, 'ConnectionProperties') || {};
+        const reference = xmlText(child(source, 'DataSourceReference'));
+        const connectString = xmlText(child(properties, 'ConnectString'));
+        const shared = sharedDefinitions.get(reference);
+        embeddedSources.set(name, {
+          name,
+          reference,
+          connect_string: connectString || shared?.connect_string || '',
+          server: canonicalSqlServerName(parseConnectionStringServer(connectString) || shared?.server || ''),
+          database: canonicalDatabaseName(parseConnectionStringDatabase(connectString) || shared?.database || ''),
+          extension: xmlText(child(properties, 'DataProvider')) || shared?.extension || '',
+        });
+      }
+      const reportSourceRows = reportDataSources.filter((source) => source.ReportPath === reportPathValue);
+      for (const source of reportSourceRows) {
+        if (source.DataSourceName && !embeddedSources.has(source.DataSourceName)) {
+          const shared = sharedDefinitions.get(source.LinkedDataSourcePath);
+          embeddedSources.set(source.DataSourceName, {
+            name: source.DataSourceName,
+            reference: source.LinkedDataSourcePath,
+            connect_string: shared?.connect_string || '',
+            server: shared?.server || '',
+            database: shared?.database || '',
+            extension: source.Extension || shared?.extension || '',
+          });
+        }
+      }
+
+      for (const dataset of toArray(child(child(report, 'DataSets'), 'DataSet'))) {
+        const query = child(dataset, 'Query') || {};
+        const dataSourceName = xmlText(child(query, 'DataSourceName'));
+        const commandText = xmlText(child(query, 'CommandText'));
+        const commandType = xmlText(child(query, 'CommandType')) || (/^\s*exec(?:ute)?\s+/i.test(commandText) ? 'StoredProcedure' : 'Text');
+        const source = embeddedSources.get(dataSourceName) || {};
+        const defaults = {
+          server: source.server || canonicalSqlServerName(this.config.source_server || this.config.sourceServer || this.config.server || ''),
+          database: source.database || canonicalDatabaseName(this.config.source_database || this.config.sourceDatabase || 'Sonic_DW'),
+          schema: this.config.source_schema || this.config.sourceSchema || 'dbo',
+        };
+        const sqlReferences = sqlReferencesFromCommand(commandText, commandType, defaults);
+        datasets.push({
+          id: ssrsExternalId('dataset', `${reportPathValue}/${dataset.Name || dataset.name}`),
+          report_item_id: definition.ItemID || definition.item_id,
+          report_path: reportPathValue,
+          report_name: reportNameValue,
+          dataset_name: dataset.Name || dataset.name,
+          data_source_name: dataSourceName,
+          data_source_reference: source.reference || null,
+          command_type: commandType,
+          command_text: commandText,
+          source_server: defaults.server,
+          source_database: defaults.database,
+          source_schema: defaults.schema,
+          sql_references: sqlReferences,
+          unresolved_sql_reference: sqlReferences.length === 0 && Boolean(commandText),
+        });
+      }
+    }
+    return datasets;
+  }
+
+  eventsForStream(streamName, metadata = {}) {
+    if (streamName === 'reports') {
+      const usageByReport = new Map((metadata.report_usage || metadata.reportUsage || []).map((item) => [item.ItemPath, item]));
+      return (metadata.reports || []).map((item) => {
+        const usage = usageByReport.get(item.Path) || {};
+        return canonicalEvent({
+          type: STREAM.report,
+          connector: this.connector,
+          stream: streamName,
+          external_id: item.ItemID || item.Path,
+          name: item.Name || item.Path,
+          object_type: item.ItemType || 'report',
+          source_url: item.Path,
+          attributes: {
+            path: item.Path,
+            item_id: item.ItemID,
+            item_type: item.ItemType,
+            created_at: item.CreationDate,
+            modified_at: item.ModifiedDate,
+            last_accessed_at: usage.LastAccessed || null,
+            execution_count: Number(usage.Executions || 0),
+            distinct_user_count: Number(usage.DistinctUsers || 0),
+            success_count: Number(usage.Successes || 0),
+            non_success_count: Number(usage.NonSuccesses || 0),
+          },
+          confidence: 0.95,
+          evidence: { source_table: 'ReportServer.dbo.Catalog' },
+        });
+      });
+    }
+    if (streamName === 'data_sources') {
+      return (metadata.data_sources || metadata.dataSources || []).map((item) =>
+        canonicalEvent({
+          type: STREAM.dataSource,
+          connector: this.connector,
+          stream: streamName,
+          external_id: item.LinkedDataSourcePath || `${item.ReportPath || item.ItemID}/${item.DataSourceName}`,
+          name: item.LinkedDataSourcePath || item.DataSourceName || 'report data source',
+          object_type: item.LinkedDataSourcePath ? 'shared_data_source' : 'embedded_report_data_source',
+          parent_id: item.ReportPath || item.ItemID || null,
+          source_url: item.LinkedDataSourcePath || item.ReportPath || null,
+          attributes: {
+            report_path: item.ReportPath,
+            report_name: item.ReportName,
+            data_source_name: item.DataSourceName,
+            extension: item.Extension,
+            linked_item_id: item.LinkedItemID,
+            linked_data_source_path: item.LinkedDataSourcePath,
+          },
+          confidence: item.LinkedDataSourcePath ? 0.92 : 0.74,
+          evidence: { source_table: 'ReportServer.dbo.DataSource' },
+        })
+      );
+    }
+    if (streamName === 'datasets') {
+      const datasets = metadata.datasets || this.extractSsrsDatasets(metadata);
+      return datasets.map((item) =>
+        canonicalEvent({
+          type: STREAM.dataset,
+          connector: this.connector,
+          stream: streamName,
+          external_id: item.id || `${item.report_path}/${item.dataset_name}`,
+          name: item.dataset_name || `${item.report_name} dataset`,
+          object_type: 'ssrs_report_dataset',
+          parent_id: item.report_path,
+          source_url: item.report_path,
+          attributes: {
+            ...item,
+            canonical_source_object_ids: (item.sql_references || []).map((reference) => reference.object_id),
+            raw_report_result_rows_captured: false,
+          },
+          confidence: item.sql_references?.length ? 0.88 : 0.65,
+          evidence: { source: 'RDL DataSet Query' },
+        })
+      );
+    }
+    if (streamName === 'usage') {
+      return (metadata.usage || []).map((item) =>
+        canonicalEvent({
+          type: STREAM.usage,
+          connector: this.connector,
+          stream: streamName,
+          external_id: ssrsExternalId('usage', `${item.ItemPath}/${item.UserName}`),
+          name: `${item.ItemPath} used by ${item.UserName}`,
+          object_type: 'report_usage',
+          parent_id: item.ItemPath,
+          source_url: item.ItemPath,
+          attributes: {
+            report_path: item.ItemPath,
+            user_name: item.UserName,
+            execution_count: Number(item.Executions || 0),
+            last_accessed_at: item.LastAccessed,
+            success_count: Number(item.Successes || 0),
+            non_success_count: Number(item.NonSuccesses || 0),
+            last_observed_status: item.LastObservedStatus,
+            lookback_months: metadata.lookback_months || null,
+          },
+          confidence: 0.96,
+          evidence: { source_view: 'ReportServer.dbo.ExecutionLog3' },
+        })
+      );
+    }
+    if (streamName === 'subscriptions') {
+      return (metadata.subscriptions || []).map((item) =>
+        canonicalEvent({
+          type: STREAM.object,
+          connector: this.connector,
+          stream: streamName,
+          external_id: item.SubscriptionID,
+          name: item.Description || `${item.ReportPath} subscription`,
+          object_type: 'ssrs_subscription',
+          parent_id: item.ReportPath,
+          source_url: item.ReportPath,
+          attributes: {
+            report_path: item.ReportPath,
+            report_name: item.ReportName,
+            last_status: item.LastStatus,
+            last_run_time: item.LastRunTime,
+            event_type: item.EventType,
+            delivery_extension: item.DeliveryExtension,
+            inactive_flags: item.InactiveFlags,
+            schedule_id: item.ScheduleID,
+          },
+          confidence: 0.92,
+          evidence: { source_table: 'ReportServer.dbo.Subscriptions' },
+        })
+      );
+    }
+    if (streamName === 'agent_jobs') {
+      return (metadata.agent_jobs || metadata.agentJobs || []).map((item) =>
+        canonicalEvent({
+          type: STREAM.object,
+          connector: this.connector,
+          stream: streamName,
+          external_id: item.JobName || item.ScheduleID,
+          name: item.JobName || item.ScheduleID,
+          object_type: 'sql_agent_job',
+          parent_id: item.ReportPath,
+          source_url: item.ReportPath,
+          attributes: {
+            report_path: item.ReportPath,
+            schedule_id: item.ScheduleID,
+            job_name: item.JobName,
+            job_enabled: item.JobEnabled === true || item.JobEnabled === 1,
+            run_status: item.RunStatus,
+            job_runs: Number(item.JobRuns || 0),
+            last_job_run: item.LastJobRun,
+          },
+          confidence: 0.9,
+          evidence: { source_tables: ['ReportServer.dbo.ReportSchedule', 'msdb.dbo.sysjobs', 'msdb.dbo.sysjobhistory'] },
+        })
+      );
+    }
+    if (streamName === 'lineage') {
+      return (metadata.lineage || this.buildSsrsLineage(metadata)).map((edge) =>
+        canonicalEvent({
+          type: STREAM.lineage,
+          connector: this.connector,
+          stream: streamName,
+          external_id: edge.id || `${edge.from}->${edge.to}`,
+          name: edge.type || 'ssrs_lineage',
+          object_type: 'lineage_edge',
+          attributes: edge,
+          lineage: [{ from: edge.from, to: edge.to, type: edge.type }],
+          confidence: edge.confidence || 0.78,
+          evidence: { evidence_type: edge.evidence_type || 'ssrs_metadata' },
+        })
+      );
+    }
+    return [];
+  }
+}
+
 class TableauAdapter extends BIConnectorAdapter {
   constructor(args) {
     super(args);
@@ -158,7 +1460,46 @@ class DataWarehouseAdapter extends BaseConnectorAdapter {
 }
 
 function objectName(object = {}) {
-  return object.name || object.objectName || object.packageName || object.projectName || object.id || 'unknown';
+  return (
+    object.name ||
+    object.objectName ||
+    object.object_name ||
+    object.packageName ||
+    object.package_name ||
+    object.projectName ||
+    object.project_name ||
+    object.folderName ||
+    object.folder_name ||
+    object.id ||
+    'unknown'
+  );
+}
+
+function objectSchema(object = {}) {
+  return object.schema || object.schema_name || object.owner_schema || 'dbo';
+}
+
+function tableName(object = {}) {
+  return object.table || object.table_name || object.name || object.object_name || String(object.id || '').split('.').pop();
+}
+
+function sqlStringLiteral(value = '') {
+  return String(value || '').replace(/'/g, "''");
+}
+
+function normalizeMetadataColumn(column = {}) {
+  const name = column.name || column.column_name || column.COLUMN_NAME;
+  return {
+    name,
+    column_name: name,
+    data_type: column.data_type || column.dataType || column.DATA_TYPE || 'unknown',
+    ordinal_position: column.ordinal_position ?? column.ordinalPosition ?? column.ORDINAL_POSITION ?? null,
+    is_nullable: column.is_nullable ?? column.isNullable ?? column.IS_NULLABLE ?? null,
+    max_length: column.max_length ?? column.character_maximum_length ?? column.CHARACTER_MAXIMUM_LENGTH ?? null,
+    numeric_precision: column.numeric_precision ?? column.NUMERIC_PRECISION ?? null,
+    numeric_scale: column.numeric_scale ?? column.NUMERIC_SCALE ?? null,
+    source: column.source || 'live_information_schema',
+  };
 }
 
 class SqlServerLiveAdapter extends DataWarehouseAdapter {
@@ -185,7 +1526,7 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
     ];
   }
 
-  async testConnection() {
+  async testConnection(options = {}) {
     const credentialWarning = this.validateCredential();
     this.validateConfig();
     const warnings = credentialWarning === true ? [] : [credentialWarning];
@@ -198,6 +1539,9 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
         warnings,
         details: this.config.mockConnectionCheck.details || {},
       };
+    }
+    if (ssrsUsesSqlcmdStrategy(options, this.config)) {
+      return this.testSqlcmdConnection(warnings);
     }
     const credentialMode = sqlServerCredentialMode(this.connector);
     const sqlDriver = this.config.sqlDriver || (await loadSqlServerDriver(credentialMode));
@@ -221,6 +1565,7 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
           database_name: row.database_name || this.config.database || null,
           login_name: row.login_name || null,
           credential_mode: credentialMode,
+          ...runtimeProcessIdentityDetails(),
         },
       };
     } catch (err) {
@@ -230,13 +1575,48 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
     }
   }
 
+  async testSqlcmdConnection(warnings = []) {
+    const queries = sqlServerSqlcmdMetadataQueries();
+    try {
+      const rows = sqlcmdRows(await runSsrsSqlcmdQuery(this.config, queries.connection), [
+        'server_name',
+        'database_name',
+        'login_name',
+      ]);
+      const row = rows[0] || {};
+      return {
+        status: 'ready',
+        live_supported: true,
+        live_connection_valid: true,
+        metadata_discovery_valid: true,
+        warnings,
+        details: {
+          server_name: row.server_name || ssrsSqlcmdServer(this.config) || null,
+          database_name: row.database_name || this.config.database || null,
+          login_name: row.login_name || null,
+          credential_mode: 'windows_integrated',
+          connection_strategy: 'sqlcmd_windows_auth',
+          sqlcmd_path: this.config.sqlcmd_path || this.config.sqlcmdPath || 'sqlcmd',
+          ...runtimeProcessIdentityDetails(),
+        },
+      };
+    } catch (err) {
+      throw sqlServerConnectionRuntimeError(err, this.connector, 'sqlcmd_connection_validation');
+    }
+  }
+
   async loadMetadata(options = {}) {
     if (this.metadataPromise) return this.metadataPromise;
-    if (options.mockMetadata) {
-      this.lastMetadata = options.mockMetadata;
-      return options.mockMetadata;
+    if (options.mockMetadata || this.config.mockMetadata) {
+      const metadata = options.mockMetadata || this.config.mockMetadata;
+      this.lastMetadata = metadata;
+      return metadata;
     }
     if (options.dry_run !== false) return null;
+    if (ssrsUsesSqlcmdStrategy(options, this.config)) {
+      this.metadataPromise = this.loadMetadataViaSqlcmd(options);
+      return this.metadataPromise;
+    }
     this.metadataPromise = (async () => {
       const SqlServerMetadataExtractor = (await import('../sqlServerExtractor.js')).default;
       const credentialMode = sqlServerCredentialMode(this.connector);
@@ -262,6 +1642,147 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
       throw sqlServerConnectionRuntimeError(err, this.connector, 'metadata_connection');
     });
     return this.metadataPromise;
+  }
+
+  async loadMetadataViaSqlcmd() {
+    const queries = sqlServerSqlcmdMetadataQueries();
+    const tables = await runSsrsSqlcmdQuery(this.config, queries.tables, { json: true });
+    const views = await runSsrsSqlcmdQuery(this.config, queries.views, { json: true });
+    const columns = await runSsrsSqlcmdQuery(this.config, queries.columns, { json: true });
+    const columnsByParent = new Map();
+    for (const column of columns) {
+      const parentId = column.parent_id || [column.database_name, column.schema_name, column.object_name].filter(Boolean).join('.');
+      if (!columnsByParent.has(parentId)) columnsByParent.set(parentId, []);
+      columnsByParent.get(parentId).push(normalizeMetadataColumn(column));
+    }
+    const attachColumns = (item) => {
+      const id = item.id || [item.database_name, item.schema_name, item.object_name || item.name].filter(Boolean).join('.');
+      return {
+        ...item,
+        database: item.database_name || this.config.database,
+        schema: item.schema_name,
+        object_name: item.object_name || item.name,
+        name: item.name || item.object_name,
+        row_count: Number(item.row_count || 0),
+        columns: columnsByParent.get(id) || [],
+      };
+    };
+    const metadata = {
+      extractedAt: new Date().toISOString(),
+      database: this.config.database,
+      extraction_strategy: 'sqlcmd_windows_auth',
+      tables: tables.map(attachColumns),
+      views: views.map(attachColumns),
+      storedProcedures: [],
+      functions: [],
+      triggers: [],
+      relationships: [],
+    };
+    metadata.allObjects = [...metadata.tables, ...metadata.views];
+    this.lastMetadata = metadata;
+    return metadata;
+  }
+
+  async enrichProfileAssetColumns(assets = [], options = {}) {
+    if (options.mockColumnMetadata || this.config.mockColumnMetadata) {
+      const metadata = options.mockColumnMetadata || this.config.mockColumnMetadata;
+      const enriched = assets.map((asset) => {
+        const keys = [
+          asset.id,
+          asset.object_id,
+          asset.qualified_name,
+          asset.qualifiedName,
+          [asset.database || this.config.database, objectSchema(asset), tableName(asset)].filter(Boolean).join('.'),
+          [objectSchema(asset), tableName(asset)].filter(Boolean).join('.'),
+          tableName(asset),
+        ].filter(Boolean);
+        const columns = keys.reduce((found, key) => found || metadata[key], null) || [];
+        return {
+          ...asset,
+          columns: columns.map(normalizeMetadataColumn).filter((column) => column.name),
+        };
+      });
+      return {
+        status: enriched.some((asset) => asset.columns.length) ? 'succeeded' : 'failed',
+        phase: 'metadata_enrichment',
+        affected_assets: assets.map((asset) => asset.id || objectName(asset)),
+        enriched_assets: enriched.filter((asset) => asset.columns.length).map((asset) => asset.id || objectName(asset)),
+        assets: enriched,
+      };
+    }
+
+    if (ssrsUsesSqlcmdStrategy(options, this.config)) {
+      try {
+        const queries = sqlServerSqlcmdMetadataQueries();
+        const allColumns = await runSsrsSqlcmdQuery(this.config, queries.columns, { json: true });
+        const byObject = new Map();
+        for (const column of allColumns) {
+          const key = `${column.schema_name}.${column.object_name}`.toLowerCase();
+          if (!byObject.has(key)) byObject.set(key, []);
+          byObject.get(key).push(normalizeMetadataColumn(column));
+        }
+        const enriched = assets.map((asset) => {
+          const schema = objectSchema(asset);
+          const table = tableName(asset);
+          return {
+            ...asset,
+            columns: byObject.get(`${schema}.${table}`.toLowerCase()) || [],
+          };
+        });
+        return {
+          status: enriched.some((asset) => asset.columns.length) ? 'succeeded' : 'failed',
+          phase: 'metadata_enrichment',
+          affected_assets: assets.map((asset) => asset.id || objectName(asset)),
+          enriched_assets: enriched.filter((asset) => asset.columns.length).map((asset) => asset.id || objectName(asset)),
+          assets: enriched,
+        };
+      } catch (err) {
+        throw sqlServerConnectionRuntimeError(err, this.connector, 'sqlcmd_metadata_enrichment');
+      }
+    }
+
+    const credentialMode = sqlServerCredentialMode(this.connector);
+    const sqlDriver = this.config.sqlDriver || (await loadSqlServerDriver(credentialMode));
+    const connectionConfig =
+      this.config.connectionConfig || buildSqlServerConnectionConfig(this.connector).config;
+    const pool = new sqlDriver.ConnectionPool(connectionConfig);
+    try {
+      await pool.connect();
+      const enriched = [];
+      for (const asset of assets) {
+        const schema = objectSchema(asset);
+        const table = tableName(asset);
+        const result = await pool.request().query(`
+          SELECT
+            COLUMN_NAME AS column_name,
+            DATA_TYPE AS data_type,
+            ORDINAL_POSITION AS ordinal_position,
+            IS_NULLABLE AS is_nullable,
+            CHARACTER_MAXIMUM_LENGTH AS character_maximum_length,
+            NUMERIC_PRECISION AS numeric_precision,
+            NUMERIC_SCALE AS numeric_scale
+          FROM INFORMATION_SCHEMA.COLUMNS
+          WHERE TABLE_SCHEMA = '${sqlStringLiteral(schema)}'
+            AND TABLE_NAME = '${sqlStringLiteral(table)}'
+          ORDER BY ORDINAL_POSITION;
+        `);
+        enriched.push({
+          ...asset,
+          columns: (result.recordset || []).map(normalizeMetadataColumn).filter((column) => column.name),
+        });
+      }
+      return {
+        status: enriched.some((asset) => asset.columns.length) ? 'succeeded' : 'failed',
+        phase: 'metadata_enrichment',
+        affected_assets: assets.map((asset) => asset.id || objectName(asset)),
+        enriched_assets: enriched.filter((asset) => asset.columns.length).map((asset) => asset.id || objectName(asset)),
+        assets: enriched,
+      };
+    } catch (err) {
+      throw sqlServerConnectionRuntimeError(err, this.connector, 'metadata_enrichment');
+    } finally {
+      await pool.close().catch(() => {});
+    }
   }
 
   async readStream(streamName, options = {}) {
@@ -466,6 +1987,7 @@ class SsisLiveAdapter extends PipelineAdapter {
           database_name: connectionConfig.database || this.config.database || null,
           credential_mode: credentialMode,
           ssisdb_present: ssisdbPresent,
+          ...runtimeProcessIdentityDetails(),
         },
       };
     } catch (err) {
@@ -477,20 +1999,63 @@ class SsisLiveAdapter extends PipelineAdapter {
 
   async loadMetadata(options = {}) {
     if (this.metadataPromise) return this.metadataPromise;
-    if (options.mockMetadata) {
-      this.lastMetadata = options.mockMetadata;
-      return options.mockMetadata;
+    if (options.mockMetadata || this.config.mockMetadata) {
+      const metadata = options.mockMetadata || this.config.mockMetadata;
+      this.lastMetadata = metadata;
+      return metadata;
     }
     if (options.dry_run !== false) return null;
     this.metadataPromise = (async () => {
       const { SsisMetadataExtractor } = await import('../ssisExtractor.js');
-      const connectionConfig = this.config.connectionConfig || this.config;
-      const extractor = new SsisMetadataExtractor(connectionConfig, this.config.sqlDriver);
+      const credentialMode = sqlServerCredentialMode(this.connector);
+      const sqlDriver = this.config.sqlDriver || (await loadSqlServerDriver(credentialMode));
+      const connectionConfig =
+        this.config.connectionConfig || buildSqlServerConnectionConfig(this.connector).config;
+      const extractor = new SsisMetadataExtractor(connectionConfig, sqlDriver);
       await extractor.connect();
       try {
-        const metadata = await extractor.extractAll({
-          extractXml: options.extractXml !== false,
-        });
+        const selectedStreamNames = this.selectedStreams(options).map((item) => item.name);
+        const catalogOnly = selectedStreamNames.every((name) => name === 'catalog') && options.extractXml === false;
+        let metadata;
+        if (catalogOnly) {
+          const warnings = [];
+          const ssisdbPresent = await extractor.checkSsisdb(warnings);
+          metadata = {
+            extractedAt: new Date().toISOString(),
+            ssisdbPresent,
+            catalog: ssisdbPresent ? await extractor.extractCatalogInventory(warnings, options) : [],
+            parameters: [],
+            executables: [],
+            environments: { variables: [] },
+            executionHistory: [],
+            componentPhases: [],
+            dataStatistics: [],
+            executionParameterValues: [],
+            eventMessages: [],
+            validations: [],
+            xmlMetadata: [],
+            scaleOut: { workers: [], tasks: [] },
+            agentJobs: { jobs: [], ssisSteps: [] },
+            legacyLog: [],
+            msdbPackages: [],
+            performanceStats: [],
+            projectVersionHistory: [],
+            lineageEdges: [],
+            warnings,
+          };
+        } else {
+          metadata = await extractor.extractAll({
+            extractXml: options.extractXml !== false,
+            folderName: options.folderName || options.folder_name,
+            folder: options.folder,
+            projectName: options.projectName || options.project_name,
+            project: options.project,
+            packageName: options.packageName || options.package_name,
+            package: options.package,
+            packages: options.packages,
+            selectedPackages: options.selectedPackages,
+          });
+        }
         this.lastMetadata = metadata;
         return metadata;
       } finally {
@@ -1178,7 +2743,7 @@ const TYPE_ADAPTERS = {
   oracle_analytics: BIConnectorAdapter,
   thoughtspot: BIConnectorAdapter,
   sisense: BIConnectorAdapter,
-  ssrs: BIConnectorAdapter,
+  ssrs: SsrsLiveAdapter,
   git_repository: RepositoryAdapter,
   openapi: ApiAdapter,
   azure_data_factory: PipelineAdapter,
@@ -1215,7 +2780,8 @@ export function createConnectorAdapter({ connector, definition }) {
   }
   const adapter = new Adapter({ connector, definition });
   const bridge = DOCUMENTED_BRIDGES[connector.type];
-  if (bridge) {
+  const usesLiveAdapterContract = Adapter === SqlServerLiveAdapter || Adapter === SsisLiveAdapter || Adapter === SsrsLiveAdapter;
+  if (bridge && !usesLiveAdapterContract) {
     adapter.configureBridge({
       ...bridge,
       requiredCredentialModes: bridge.requiredCredentialModes || definition?.credentialKinds || adapter.requiredCredentialModes,

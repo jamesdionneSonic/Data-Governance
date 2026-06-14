@@ -517,8 +517,8 @@ function compactLookupKey(value) {
 }
 
 function resolverFileKey(value, fallback = 'unknown') {
-  const compact = compactLookupKey(value || fallback);
-  return (compact || fallback).slice(0, 180);
+  const normalized = normalizeLookupKey(value || fallback) || fallback;
+  return `q-${hashValue(normalized, 16)}`;
 }
 
 function camelWords(value) {
@@ -1482,7 +1482,7 @@ function lineageIntentCards() {
       primary_entrypoint: 'answers/summary/by-object-id/{object_hash}.json',
       resolution_order: [
         ...baseResolutionOrder,
-        'indexes/resolve/by-qualified-name/{compact_lookup_key}.json',
+        'indexes/resolve/by-qualified-name/{lookup_hash}.json',
         'answers/summary/by-object-id/{object_hash}.json',
         'context-packs/objects/by-id/{object_hash}.json',
       ],
@@ -1494,7 +1494,7 @@ function lineageIntentCards() {
       primary_entrypoint: 'answers/profile-teaser/by-object-id/{object_hash}.json',
       resolution_order: [
         ...baseResolutionOrder,
-        'indexes/resolve/by-qualified-name/{compact_lookup_key}.json',
+        'indexes/resolve/by-qualified-name/{lookup_hash}.json',
         'answers/profile-teaser/by-object-id/{object_hash}.json',
         'profile-index/by-object-id/{profile_key}.json',
       ],
@@ -1506,7 +1506,7 @@ function lineageIntentCards() {
       primary_entrypoint: 'answers/downstream/by-object-id/{object_hash}.json',
       resolution_order: [
         ...baseResolutionOrder,
-        'indexes/resolve/by-qualified-name/{compact_lookup_key}.json',
+        'indexes/resolve/by-qualified-name/{lookup_hash}.json',
         'answers/downstream/by-object-id/{object_hash}.json',
         'context-packs/objects/by-id/{object_hash}.json',
       ],
@@ -1518,7 +1518,7 @@ function lineageIntentCards() {
       primary_entrypoint: 'answers/upstream/by-object-id/{object_hash}.json',
       resolution_order: [
         ...baseResolutionOrder,
-        'indexes/resolve/by-qualified-name/{compact_lookup_key}.json',
+        'indexes/resolve/by-qualified-name/{lookup_hash}.json',
         'answers/upstream/by-object-id/{object_hash}.json',
         'context-packs/objects/by-id/{object_hash}.json',
       ],
@@ -1530,7 +1530,7 @@ function lineageIntentCards() {
       primary_entrypoint: 'answers/downstream/by-object-id/{object_hash}.json',
       resolution_order: [
         ...baseResolutionOrder,
-        'indexes/resolve/by-qualified-name/{compact_lookup_key}.json',
+        'indexes/resolve/by-qualified-name/{lookup_hash}.json',
         'answers/downstream/by-object-id/{object_hash}.json',
         'context-packs/objects/by-id/{object_hash}.json',
       ],
@@ -1542,7 +1542,7 @@ function lineageIntentCards() {
       primary_entrypoint: 'answers/summary/by-object-id/{object_hash}.json',
       resolution_order: [
         ...baseResolutionOrder,
-        'indexes/resolve/by-qualified-name/{compact_lookup_key}.json',
+        'indexes/resolve/by-qualified-name/{lookup_hash}.json',
         'answers/summary/by-object-id/{object_hash}.json',
         'answers/downstream/by-object-id/{object_hash}.json',
       ],
@@ -1554,7 +1554,7 @@ function lineageIntentCards() {
       primary_entrypoint: 'context-packs/objects/by-id/{object_hash}.json',
       resolution_order: [
         ...baseResolutionOrder,
-        'indexes/resolve/by-qualified-name/{compact_lookup_key}.json',
+        'indexes/resolve/by-qualified-name/{lookup_hash}.json',
         'answers/summary/by-object-id/{object_hash}.json',
         'context-packs/objects/by-id/{object_hash}.json',
       ],
@@ -1685,7 +1685,7 @@ async function buildArtifactManifests(packageRoot, { runtimeBuild, profileIndexM
     intent_card_count: intentCardCount,
     common_intents: Object.fromEntries(lineageIntentCards().map((card) => [card.intent, card.file])),
     object_resolution: {
-      exact_qualified_name: 'indexes/resolve/by-qualified-name/{compact_lookup_key}.json',
+      exact_qualified_name: 'indexes/resolve/by-qualified-name/{lookup_hash}.json',
       by_name_shards: 'indexes/by-name/{first_two_chars}.json',
       aliases: 'indexes/aliases/{first_two_chars}.json',
       object_path_index: 'registry/object-path-index.json',
@@ -1725,7 +1725,7 @@ async function buildArtifactManifests(packageRoot, { runtimeBuild, profileIndexM
       artifact_manifest: 'indexes/artifact-manifest.json',
       index_manifest: 'indexes/index-manifest.json',
       intent_cards: 'answers/intents/*.json',
-      object_resolver: 'indexes/resolve/by-qualified-name/{compact_lookup_key}.json',
+      object_resolver: 'indexes/resolve/by-qualified-name/{lookup_hash}.json',
       summary_answer: 'answers/summary/by-object-id/{object_hash}.json',
       usage_answer: 'answers/usage-count/by-object-id/{object_hash}.json',
       upstream_answer: 'answers/upstream/by-object-id/{object_hash}.json',

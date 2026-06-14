@@ -1,5 +1,34 @@
-﻿/* eslint-env browser */
+/* eslint-env browser */
 /* global Vue, Vuetify, Chart */
+
+import { workflowComponents } from './workflowComponents.js';
+import { workflowQuickActions } from './workflowQuickActions.js';
+import { navItems, navSections, pageWorkflowMeta } from './workflowRegistry.js';
+import {
+  assetDetailPageTemplate,
+  catalogSearchPageTemplate,
+  homeFindDataPageTemplate,
+  lineageExplorerPageTemplate,
+  lineageAssistantPageTemplate,
+} from './workflows/findAndUnderstandTemplates.js';
+import {
+  advancedGovernancePageTemplate,
+  businessGlossaryPageTemplate,
+  governanceOpsPageTemplate,
+  metricIntelligencePageTemplate,
+} from './workflows/governAndImproveTemplates.js';
+import {
+  dataProductsPageTemplate,
+  governanceInsightsPageTemplate,
+} from './workflows/packageAndReportTemplates.js';
+import {
+  connectionsPageTemplate,
+  connectorWorkflowPageTemplate,
+  lineageAcquisitionPageTemplate,
+  platformAdminPageTemplate,
+  profilingSchedulerPageTemplate,
+} from './workflows/connectAndOperateTemplates.js';
+import { helpCenterPageTemplate } from './workflows/supportTemplates.js';
 
 const { createApp, nextTick } = Vue;
 const { createVuetify } = Vuetify;
@@ -9,147 +38,6 @@ const vuetify = createVuetify({
     defaultSet: 'mdi',
   },
 });
-
-const navSections = [
-  {
-    key: 'workspace',
-    label: 'Find & Understand',
-    items: [
-      { key: 'overview', label: 'Command Center', icon: 'mdi-view-dashboard' },
-      { key: 'browse', label: 'Search', icon: 'mdi-magnify' },
-      { key: 'lineageAsk', label: 'Lineage Assistant', icon: 'mdi-message-question' },
-      { key: 'discovery', label: 'Lineage Explorer', icon: 'mdi-graphql' },
-    ],
-  },
-  {
-    key: 'govern',
-    label: 'Govern & Improve',
-    items: [
-      { key: 'glossary', label: 'Business Glossary', icon: 'mdi-book-open-variant' },
-      { key: 'governance', label: 'Trust & Compliance', icon: 'mdi-shield-check' },
-      { key: 'governanceOps', label: 'Governance Ops', icon: 'mdi-clipboard-check' },
-      { key: 'metrics', label: 'Metric Intelligence', icon: 'mdi-function-variant' },
-    ],
-  },
-  {
-    key: 'deliver',
-    label: 'Package & Report',
-    items: [
-      { key: 'products', label: 'Data Products', icon: 'mdi-package-variant-closed' },
-      { key: 'reports', label: 'Governance Insights', icon: 'mdi-chart-box' },
-    ],
-  },
-  {
-    key: 'operate',
-    label: 'Connect & Operate',
-    items: [
-      { key: 'integrations', label: 'Profile Operations', icon: 'mdi-swap-horizontal' },
-      { key: 'import', label: 'Ingestion Studio', icon: 'mdi-database-import' },
-      { key: 'scheduler', label: 'Queues & Schedules', icon: 'mdi-calendar-clock' },
-      { key: 'admin', label: 'Platform Admin', icon: 'mdi-cog' },
-    ],
-  },
-  {
-    key: 'support',
-    label: 'Support',
-    items: [{ key: 'docs', label: 'Help Center', icon: 'mdi-help-circle' }],
-  },
-];
-
-const navItems = navSections.flatMap((section) => section.items);
-
-const pageWorkflowMeta = {
-  overview: {
-    title: 'Command Center',
-    subtitle: 'Start with health, coverage, recent activity, and the next best governance action.',
-    workflow: 'Orient',
-    primaryAction: 'Run next step',
-  },
-  browse: {
-    title: 'Search',
-    subtitle: 'Find governed assets, inspect metadata, and jump into lineage or stewardship work.',
-    workflow: 'Find',
-    primaryAction: 'Search catalog',
-  },
-  lineageAsk: {
-    title: 'Lineage Assistant',
-    subtitle: 'Ask plain-English lineage questions and get source-backed impacted object tables.',
-    workflow: 'Ask',
-    primaryAction: 'Ask question',
-  },
-  discovery: {
-    title: 'Lineage Explorer',
-    subtitle: 'Trace producers, consumers, SSIS packages, load procedures, and blast radius.',
-    workflow: 'Trace',
-    primaryAction: 'Render graph',
-  },
-  glossary: {
-    title: 'Business Glossary',
-    subtitle: 'Define business language and connect terms to technical assets.',
-    workflow: 'Define',
-    primaryAction: 'Search terms',
-  },
-  governance: {
-    title: 'Trust & Compliance',
-    subtitle: 'Manage classification, masking policy, data quality, and compliance coverage.',
-    workflow: 'Control',
-    primaryAction: 'Run rules',
-  },
-  governanceOps: {
-    title: 'Governance Ops',
-    subtitle: 'Route ownership, stewardship tasks, trust actions, exceptions, and publication readiness.',
-    workflow: 'Operate',
-    primaryAction: 'Refresh ops',
-  },
-  metrics: {
-    title: 'Metric Intelligence',
-    subtitle: 'Resolve metric columns, business formulas, profile evidence, and change impact.',
-    workflow: 'Measure',
-    primaryAction: 'Analyze metric',
-  },
-  products: {
-    title: 'Data Products',
-    subtitle: 'Package certified assets, contracts, access posture, and product readiness.',
-    workflow: 'Package',
-    primaryAction: 'Review products',
-  },
-  reports: {
-    title: 'Governance Insights',
-    subtitle: 'Review impact analysis, generated reports, leaderboards, and executive evidence.',
-    workflow: 'Report',
-    primaryAction: 'Refresh reports',
-  },
-  integrations: {
-    title: 'Profile Operations',
-    subtitle: 'Run source profiles, manage live queues, publish results, and grant safe access without exposing secrets.',
-    workflow: 'Connect',
-    primaryAction: 'Save connection',
-  },
-  import: {
-    title: 'Ingestion Studio',
-    subtitle: 'Extract metadata, generate markdown, validate, index, and publish governance evidence.',
-    workflow: 'Ingest',
-    primaryAction: 'Run next step',
-  },
-  scheduler: {
-    title: 'Queues & Schedules',
-    subtitle: 'Operate recurring profile queues, see what runs next, and tune live profiling safely.',
-    workflow: 'Operate',
-    primaryAction: 'Review queues',
-  },
-  admin: {
-    title: 'Platform Admin',
-    subtitle: 'Manage users, audit trail, platform health, settings, and API diagnostics.',
-    workflow: 'Administer',
-    primaryAction: 'Review health',
-  },
-  docs: {
-    title: 'Help Center',
-    subtitle: 'Find operating guides, implementation references, and user help.',
-    workflow: 'Learn',
-    primaryAction: 'Open guide',
-  },
-};
 
 const demoSnapshot = {
   overview: {
@@ -237,6 +125,7 @@ const demoSnapshot = {
 };
 
 const appConfig = {
+  components: workflowComponents,
   data() {
     return {
       navSections,
@@ -250,6 +139,14 @@ const appConfig = {
       token: localStorage.getItem('dg_token') || '',
       refreshToken: localStorage.getItem('dg_refresh') || '',
       currentUser: JSON.parse(localStorage.getItem('dg_user') || 'null'),
+      catalogRecentSearches: (() => {
+        try {
+          const parsed = JSON.parse(localStorage.getItem('dg_catalog_recent_searches') || '[]');
+          return Array.isArray(parsed) ? parsed.filter(Boolean).slice(0, 6) : [];
+        } catch {
+          return [];
+        }
+      })(),
       isLoggingOut: false,
       isRefreshingToken: false,
       authRefreshPromise: null,
@@ -488,6 +385,7 @@ const appConfig = {
         downstream: null,
         impact: null,
       },
+      showLineageEvidence: false,
       lineageQuestion: 'what uses DimVehicle?',
       lineageQuestionAnswer: null,
       lineageQuestionLoading: false,
@@ -537,9 +435,11 @@ const appConfig = {
         connectorRuns: [],
         connectorSnapshot: null,
         connectorLoading: false,
+        connectorTestStates: {},
         connectorPublishLoading: false,
         connectorPublicationResult: null,
         selectedConnectorRun: null,
+        connectorRunDrawerOpen: false,
         connectorWorkflowTab: 'connection',
         selectedConnectorId: localStorage.getItem('dg_profile_connector_id') || '',
         profileRunResult: null,
@@ -577,7 +477,7 @@ const appConfig = {
           intervalMinutes: 60,
           maxFailures: 3,
           streams: '',
-          dryRun: true,
+          dryRun: false,
           assetIds: '',
           coverageMode: 'all_objects',
           includeViews: true,
@@ -655,6 +555,7 @@ const appConfig = {
       graphTabLinkAvailable: typeof window !== 'undefined',
       importer: {
         activeConnector: 'sql-server',
+        showAdvancedTroubleshooting: false,
         files: [],
         parsed: [],
         validatePath: './data/markdown',
@@ -782,14 +683,62 @@ const appConfig = {
     };
   },
   computed: {
+    normalizedCurrentRoles() {
+      return (this.currentUser?.roles || ['Viewer'])
+        .map((role) =>
+          String(role || '')
+            .toLowerCase()
+            .replace(/[\s_-]+/g, '')
+        )
+        .filter(Boolean);
+    },
+    navigationRole() {
+      const roles = this.normalizedCurrentRoles;
+      if (roles.some((role) => ['admin', 'administrator', 'platformadmin'].includes(role))) {
+        return 'admin';
+      }
+      if (roles.some((role) => ['poweruser', 'steward', 'datasteward', 'governancesteward'].includes(role))) {
+        return 'steward';
+      }
+      if (roles.some((role) => ['analyst', 'bianalyst', 'reportanalyst'].includes(role))) {
+        return 'analyst';
+      }
+      return 'user';
+    },
+    navigationRoleLabel() {
+      const labels = {
+        user: 'User',
+        analyst: 'Analyst',
+        steward: 'Data Steward',
+        admin: 'Admin',
+      };
+      return labels[this.navigationRole] || 'User';
+    },
+    visibleNavSections() {
+      return this.navSections
+        .map((section) => ({
+          ...section,
+          items: section.items.filter((item) => !item.hidden && this.canAccessView(item.key)),
+        }))
+        .filter((section) => section.items.length > 0);
+    },
+    visibleNavItems() {
+      return this.visibleNavSections.flatMap((section) => section.items);
+    },
     activeNavItem() {
-      return this.navItems.find((item) => item.key === this.activeView) || null;
+      return (
+        this.visibleNavItems.find((item) => item.key === this.activeView) ||
+        this.navItems.find((item) => item.key === this.activeView) ||
+        null
+      );
     },
     activeNavSection() {
       return (
-        this.navSections.find((section) =>
+        this.visibleNavSections.find((section) =>
           section.items.some((item) => item.key === this.activeView)
-        ) || null
+        ) ||
+        this.navSections.find((section) => section.items.some((item) => item.key === this.activeView)) ||
+        null
       );
     },
     activePageMeta() {
@@ -801,30 +750,7 @@ const appConfig = {
       };
     },
     pageQuickActions() {
-      const actions = {
-        overview: [
-          { label: 'Search Catalog', icon: 'mdi-magnify', view: 'browse' },
-          { label: 'Ask Lineage', icon: 'mdi-message-question', view: 'lineageAsk' },
-          { label: 'Ingest Metadata', icon: 'mdi-database-import', view: 'import' },
-        ],
-        browse: [
-          { label: 'Lineage Explorer', icon: 'mdi-graphql', view: 'discovery' },
-          { label: 'Governance Ops', icon: 'mdi-clipboard-check', view: 'governanceOps' },
-        ],
-        integrations: [
-          { label: 'Ingestion Studio', icon: 'mdi-database-import', view: 'import' },
-          { label: 'Queues & Schedules', icon: 'mdi-calendar-clock', view: 'scheduler' },
-        ],
-        scheduler: [
-          { label: 'Profile Operations', icon: 'mdi-swap-horizontal', view: 'integrations' },
-          { label: 'Governance Ops', icon: 'mdi-clipboard-check', view: 'governanceOps' },
-        ],
-        import: [
-          { label: 'Profile Operations', icon: 'mdi-swap-horizontal', view: 'integrations' },
-          { label: 'Lineage Explorer', icon: 'mdi-graphql', view: 'discovery' },
-        ],
-      };
-      return actions[this.activeView] || [];
+      return (workflowQuickActions[this.activeView] || []).filter((action) => this.canAccessView(action.view));
     },
     isAuthenticated() {
       return !!this.token;
@@ -921,6 +847,11 @@ const appConfig = {
         this.integrations.profileRunEditor.connectorId ||
         this.integrations.profileScheduleEditor.connectorId;
       return (this.integrations.managedConnectors || []).find((connector) => connector.id === selectedId) || null;
+    },
+    selectedProfileScheduleEditorConnector() {
+      return (this.integrations.managedConnectors || []).find(
+        (connector) => connector.id === this.integrations.profileScheduleEditor.connectorId
+      ) || null;
     },
     selectedConnectorDefinition() {
       return this.integrations.connectorDefinitions.find(
@@ -1051,6 +982,96 @@ const appConfig = {
         return String(left.name || left.id || '').localeCompare(String(right.name || right.id || ''));
       });
     },
+    sortedProfileSchedules() {
+      return [...(this.integrations.profileSchedules || [])].sort((left, right) => {
+        const leftRank = this.profileScheduleStateMeta(left).rank;
+        const rightRank = this.profileScheduleStateMeta(right).rank;
+        if (leftRank !== rightRank) return leftRank - rightRank;
+        const leftNextRun = left.next_run_at ? new Date(left.next_run_at).getTime() : Number.MAX_SAFE_INTEGER;
+        const rightNextRun = right.next_run_at ? new Date(right.next_run_at).getTime() : Number.MAX_SAFE_INTEGER;
+        if (leftNextRun !== rightNextRun) return leftNextRun - rightNextRun;
+        const leftLastRun = left.last_run_at ? new Date(left.last_run_at).getTime() : 0;
+        const rightLastRun = right.last_run_at ? new Date(right.last_run_at).getTime() : 0;
+        if (leftLastRun !== rightLastRun) return rightLastRun - leftLastRun;
+        return String(left.name || left.id || '').localeCompare(String(right.name || right.id || ''));
+      });
+    },
+    profileScheduleSections() {
+      const sections = [
+        {
+          key: 'running',
+          title: 'Running Active',
+          helper: 'Active queues that are running now or have active queue work in flight.',
+          schedules: [],
+        },
+        {
+          key: 'failed',
+          title: 'Active Failed',
+          helper: 'Active queues that need attention before the next reliable profile refresh.',
+          schedules: [],
+        },
+        {
+          key: 'successful',
+          title: 'Active Successful',
+          helper: 'Healthy active queues with successful recent profile evidence.',
+          schedules: [],
+        },
+        {
+          key: 'deactivated',
+          title: 'Deactivated',
+          helper: 'Paused or inactive queues that will not run until activated.',
+          schedules: [],
+        },
+        {
+          key: 'drafts',
+          title: 'Drafts',
+          helper: 'Saved setup work that cannot run until blockers are resolved and the schedule is activated.',
+          schedules: [],
+        },
+      ];
+      const sectionMap = Object.fromEntries(sections.map((section) => [section.key, section]));
+      this.sortedProfileSchedules.forEach((schedule) => {
+        sectionMap[this.profileScheduleStateMeta(schedule).section]?.schedules.push(schedule);
+      });
+      return sections;
+    },
+    profileQueueHealthRows() {
+      return this.sortedProfileSchedules.map((schedule) => this.profileQueueHealthRow(schedule));
+    },
+    profileQueueHealthSummary() {
+      const rows = this.profileQueueHealthRows;
+      const nextRuns = rows
+        .map((row) => row.nextRunAt)
+        .filter(Boolean)
+        .map((value) => new Date(value).getTime())
+        .filter((value) => Number.isFinite(value))
+        .sort((left, right) => left - right);
+      return {
+        total: rows.length,
+        running: rows.filter((row) => row.healthKey === 'running').length,
+        completed: rows.filter((row) => row.healthKey === 'completed').length,
+        needsAttention: rows.filter((row) => row.needsAttention).length,
+        waiting: rows.filter((row) => row.healthKey === 'waiting').length,
+        completedLiveProfiles: rows.reduce((sum, row) => sum + (Number(row.completedLiveProfiles) || 0), 0),
+        failedLiveProfiles: rows.reduce((sum, row) => sum + (Number(row.failedLiveProfiles) || 0), 0),
+        timeoutPenalties: rows.reduce((sum, row) => sum + (Number(row.timeoutPenaltyCount) || 0), 0),
+        nextRunAt: nextRuns.length ? new Date(nextRuns[0]).toISOString() : null,
+      };
+    },
+    profileQueueHeroAnswer() {
+      const summary = this.profileQueueHealthSummary;
+      if (summary.total === 0) return 'No profiling queues are configured yet.';
+      if (summary.needsAttention > 0) {
+        return `${summary.needsAttention} profiling queue${summary.needsAttention === 1 ? '' : 's'} need attention before the next reliable refresh.`;
+      }
+      if (summary.running > 0) {
+        return `${summary.running} profiling queue${summary.running === 1 ? ' is' : 's are'} running normally.`;
+      }
+      if (summary.completed > 0 && summary.nextRunAt) {
+        return `Profiling is healthy. The next scheduled run starts ${this.formatTimestamp(summary.nextRunAt)}.`;
+      }
+      return 'Profiling is waiting for the next scheduled run.';
+    },
     selectedConnectorActiveSchedule() {
       return this.selectedConnectorSchedules.find((schedule) => schedule.status === 'ACTIVE') || null;
     },
@@ -1098,6 +1119,27 @@ const appConfig = {
     },
     connectorRecentPublishedRuns() {
       return (this.integrations.connectorRuns || []).filter((run) => ['published', 'partial_published'].includes(this.connectorRunPublishStatus(run))).slice(0, 5);
+    },
+    selectedConnectorRunDetailItems() {
+      const run = this.integrations.selectedConnectorRun;
+      if (!run) return [];
+      const queueStatus = this.connectorRunQueueStatus(run);
+      return [
+        { label: 'Run', value: run.id },
+        { label: 'Kind', value: this.connectorRunKind(run) },
+        { label: 'Status', value: this.connectorRunDisplayStatus(run) },
+        { label: 'Completed', value: this.formatTimestamp(run.completed_at) },
+        { label: 'Publish', value: this.connectorRunPublishStatus(run) },
+        { label: 'Assets / objects', value: this.connectorRunFoundCount(run) },
+        { label: 'Metadata enrichment', value: this.connectorRunMetadataEnrichmentStatus(run) },
+        { label: 'Actions planned', value: run.summary?.actions_planned },
+        { label: 'Columns profiled', value: run.summary?.columns_profiled },
+        { label: 'Selected this run', value: queueStatus?.selected_for_this_run },
+        { label: 'Coverage assets live', value: run.summary?.coverage_assets_live },
+        { label: 'Live completed', value: queueStatus?.completed_live_assets },
+        { label: 'Live failed', value: queueStatus?.failed_live_assets },
+        { label: 'Queue remaining', value: queueStatus?.pending_live_queue },
+      ];
     },
     focusedQueueHeader() {
       if (!this.focusedProfileSchedule) return 'No queue selected';
@@ -1229,6 +1271,46 @@ const appConfig = {
         ) || this.ingestionConnectorOptions[0]
       );
     },
+    lineageAcquisitionDomain() {
+      return {
+        key: 'SONIC_DW',
+        label: 'SONIC_DW',
+        cadence: 'Monthly refresh, plus manual investigation refresh',
+        sources: [
+          { key: 'Sonic_DW', connectorKey: 'sql-server', type: 'Warehouse database' },
+          { key: 'VendorData', connectorKey: 'sql-server', type: 'Vendor database' },
+          { key: 'StagingDB', connectorKey: 'sql-server', type: 'Staging database' },
+          { key: 'ETL_Staging', connectorKey: 'sql-server', type: 'ETL staging database' },
+          { key: 'SSIS_UAT', connectorKey: 'ssis', type: 'SSIS evidence' },
+        ],
+      };
+    },
+    lineageAcquisitionSourceRows() {
+      return this.lineageAcquisitionDomain.sources.map((source) => {
+        const connector = this.ingestionConnectorOptions.find((item) => item.key === source.connectorKey) || {};
+        return {
+          ...source,
+          status: connector.status || 'Ready',
+          statusColor: connector.statusColor || 'primary',
+          metric: connector.metric || 'Not configured',
+        };
+      });
+    },
+    lineageAcquisitionSummary() {
+      const sources = this.lineageAcquisitionSourceRows;
+      return {
+        domain: this.lineageAcquisitionDomain.label,
+        sourceCount: sources.length,
+        refreshed: sources.filter((source) => ['Extracted', 'Parsed'].includes(source.status)).length,
+        ready: sources.filter((source) => source.status === 'Ready').length,
+        warnings: sources.filter((source) => source.status === 'Discovered').length,
+        indexedObjects:
+          this.importer.lastLoadStats?.totalObjects ||
+          this.importer.status?.loadedObjectCount ||
+          this.overview?.overview?.totalObjects ||
+          0,
+      };
+    },
     elasticsearchStatusLabel() {
       if (this.importer.status?.elasticsearchHealthy === true) {
         return 'Connected';
@@ -1319,6 +1401,77 @@ const appConfig = {
         { title: 'What loads this?', value: 'loads' },
         { title: 'What uses this?', value: 'uses' },
       ];
+    },
+    lineageExplorerImpactSummary() {
+      const counts = this.lineageAnswer?.semantic_lineage?.summary?.counts || {};
+      const upstream = (counts.source_inputs || 0) + (counts.lookup_dependencies || 0);
+      const loadPath = (counts.loaders || 0) + (counts.orchestrators || 0);
+      const downstream = counts.business_consumers || 0;
+      const maintenance = counts.maintenance_reads || 0;
+      return {
+        upstream,
+        loadPath,
+        downstream,
+        maintenance,
+        total: upstream + loadPath + downstream + maintenance,
+      };
+    },
+    lineageExplorerBusinessLogicSummary() {
+      if (!this.lineageAnswer) {
+        return 'Choose an object and get an answer to see available transformation or load-path logic.';
+      }
+
+      const pack = this.lineageAnswer.semantic_lineage || {};
+      const loaders = pack.loaders || [];
+      const orchestrators = pack.orchestrators || [];
+      const maintenanceReads = pack.maintenance_reads || [];
+      const parts = [];
+
+      if (loaders.length) {
+        parts.push(`${loaders.length} loader${loaders.length === 1 ? '' : 's'} write or maintain the focus object`);
+      }
+      if (orchestrators.length) {
+        parts.push(`${orchestrators.length} orchestrator${orchestrators.length === 1 ? '' : 's'} run the load path`);
+      }
+      if (maintenanceReads.length) {
+        parts.push(`${maintenanceReads.length} maintenance read${maintenanceReads.length === 1 ? '' : 's'} are separated from business consumers`);
+      }
+
+      return parts.length
+        ? `${parts.join('; ')}.`
+        : 'No transformation or load-path logic was found in the current lineage evidence for this answer.';
+    },
+    selectedAssetLineageTitle() {
+      return this.selectedObjectDetail?.name || this.objectNameFromId(this.selectedObjectId) || this.selectedObjectId;
+    },
+    selectedAssetLineagePlainEnglish() {
+      return (
+        this.lineageAnswer?.plain_english ||
+        `${this.selectedAssetLineageTitle} has ${this.assetLineageCount('upstream')} upstream and ${this.assetLineageCount('downstream')} downstream related object${this.assetLineageCount('downstream') === 1 ? '' : 's'} in the loaded lineage evidence.`
+      );
+    },
+    lineageExplorerConfidenceLabel() {
+      if (!this.lineageAnswer) return 'Answer Pending';
+      const raw =
+        this.lineageAnswer.confidence ??
+        this.lineageAnswer.confidence_score ??
+        this.lineageAnswer.evidence_confidence;
+      const confidence = Number(raw);
+      if (Number.isFinite(confidence)) {
+        if (confidence >= 0.8) return 'High Confidence';
+        if (confidence >= 0.5) return 'Strongly Suggested';
+        return 'Needs Review';
+      }
+      return this.lineageAnswer.impacted_objects?.length ? 'Strongly Suggested' : 'Evidence Pending';
+    },
+    lineageExplorerConfidenceTooltip() {
+      if (!this.lineageAnswer) {
+        return 'The platform will explain confidence after it resolves a lineage answer.';
+      }
+      if (this.lineageExplorerConfidenceLabel === 'Strongly Suggested') {
+        return 'Strongly Suggested means the platform found lineage evidence, but users should inspect caveats and evidence before treating it as certified truth.';
+      }
+      return 'System confidence reflects available metadata, lineage evidence, parser results, and caveats. It is not ownership or compliance approval.';
     },
     isMarketplaceAdmin() {
       const roles = (this.currentUser?.roles || []).map((role) => String(role).toLowerCase());
@@ -1428,13 +1581,13 @@ const appConfig = {
       if (persona === 'executive') {
         return [
           { label: 'Open Governance Insights', view: 'reports' },
-          { label: 'Review Trust & Compliance', view: 'governance' },
+          { label: 'Review Governance Work', view: 'governanceOps' },
           { label: 'Run Next Workflow Step', action: 'workflow' },
         ];
       }
       if (persona === 'steward') {
         return [
-          { label: 'Open Trust & Compliance', view: 'governance' },
+          { label: 'Open Review Work', view: 'governanceOps' },
           { label: 'Inspect Business Glossary', view: 'glossary' },
           { label: 'Run Next Workflow Step', action: 'workflow' },
         ];
@@ -1443,12 +1596,12 @@ const appConfig = {
         return [
           { label: 'Search Catalog', view: 'browse' },
           { label: 'Open Data Products', view: 'products' },
-          { label: 'Open Lineage Explorer', view: 'discovery' },
+          { label: 'Explore selected asset lineage', view: 'browse' },
         ];
       }
       return [
         { label: 'Open Metadata Ingestion', view: 'import' },
-        { label: 'Open Lineage Explorer', view: 'discovery' },
+        { label: 'Explore selected asset lineage', view: 'browse' },
         { label: 'Run Next Workflow Step', action: 'workflow' },
       ];
     },
@@ -1535,6 +1688,13 @@ const appConfig = {
       if (selectedTypes.includes('column')) return 'Enter a column name, like email, amount, or customer_id...';
       if (selectedTypes.includes('storedProcedure')) return 'Enter a procedure name, like usp_DimVehicle...';
       return 'Search tables, columns, procedures, owners, tags...';
+    },
+    visibleCatalogRecentSearches() {
+      const current = String(this.browseQuery || '').trim().toLowerCase();
+      return (this.catalogRecentSearches || [])
+        .filter((query) => String(query || '').trim())
+        .filter((query) => String(query).trim().toLowerCase() !== current)
+        .slice(0, 5);
     },
     catalogHelperActions() {
       return [
@@ -1894,8 +2054,109 @@ const appConfig = {
         .slice(0, 8)
         .join(' ');
     },
+    metricConceptLabel(metric = {}) {
+      return (
+        metric.business_name ||
+        metric.metric_name ||
+        metric.display_name ||
+        metric.definition ||
+        metric.semantic_type ||
+        metric.column_name ||
+        'Unlabeled metric concept'
+      );
+    },
+    metricConceptGroups() {
+      const groups = new Map();
+      for (const metric of this.metrics.registry?.metrics || []) {
+        const label = this.metricConceptLabel(metric);
+        const key = String(label).trim().toLowerCase() || 'unlabeled metric concept';
+        if (!groups.has(key)) {
+          groups.set(key, {
+            key,
+            label,
+            variants: [],
+            representative: metric,
+          });
+        }
+        groups.get(key).variants.push(metric);
+      }
+      return Array.from(groups.values()).map((group) => ({
+        ...group,
+        suggestedCount: group.variants.filter((metric) => this.metricNeedsReview(metric)).length,
+        sourceCount: new Set(group.variants.map((metric) => metric.object_id).filter(Boolean)).size,
+      }));
+    },
+    metricNeedsReview(metric = {}) {
+      const state = String(metric.metric_state || metric.status || '').toLowerCase();
+      const confidence = String(metric.confidence_label || '').toLowerCase();
+      return ['suggested', 'in_review', 'in review', 'inferred', 'candidate', 'draft'].includes(state) || confidence.includes('inferred');
+    },
+    metricStateLabel(metric = {}) {
+      const state = String(metric.metric_state || metric.status || 'suggested').replace(/_/g, ' ');
+      return state || 'suggested';
+    },
+    metricStateColor(metric = {}) {
+      const state = String(metric.metric_state || metric.status || '').toLowerCase();
+      if (['certified', 'confirmed', 'approved'].includes(state)) return 'success';
+      if (['suggested', 'in_review', 'in review', 'inferred', 'candidate'].includes(state)) return 'info';
+      if (state === 'deprecated') return 'error';
+      return 'warning';
+    },
+    metricVariantScope(metric = {}) {
+      return (
+        metric.business_domain ||
+        metric.department ||
+        metric.report_name ||
+        metric.report ||
+        metric.owner ||
+        'Shared variant'
+      );
+    },
+    metricTechnicalSourceLabel(metric = {}) {
+      const table = metric.object_id || 'source table unavailable';
+      const column = metric.column_name ? `.${metric.column_name}` : '';
+      return `${table}${column}`;
+    },
+    metricBusinessLogicSummary(group = {}) {
+      const variant = group.representative || group.variants?.[0] || {};
+      return (
+        variant.business_logic ||
+        variant.logic_summary ||
+        variant.definition ||
+        variant.description ||
+        this.metrics.logicAnswer?.answer ||
+        'Business logic summary has not been reviewed yet. Select a variant and explain logic to load the current evidence-backed summary.'
+      );
+    },
+    metricRowKey(metric = {}, index = 0) {
+      return metric.metric_id || `${metric.object_id || 'metric'}-${metric.column_name || index}`;
+    },
+    selectMetricVariant(metric = {}, { loadTable = false } = {}) {
+      this.metrics.objectId = metric.object_id || this.metrics.objectId;
+      this.metrics.selectedColumn = metric.column_name || this.metrics.selectedColumn;
+      if (loadTable) {
+        this.loadMetricTableAnswer();
+      }
+    },
+    openMetricInLineage(metric = {}) {
+      this.selectMetricVariant(metric);
+      if (metric.object_id) {
+        this.selectedObjectId = metric.object_id;
+        this.lineageObjectSearch.query = metric.object_id;
+      }
+      this.onViewChange('discovery');
+    },
+    openMetricInCatalog(metric = {}) {
+      this.selectMetricVariant(metric);
+      if (metric.object_id) {
+        this.selectedObjectId = metric.object_id;
+        this.browseQuery = metric.object_id;
+      }
+      this.onViewChange('browse');
+    },
     normalizeApiError({ path, method, status, payload, fallbackMessage }) {
       const errorNode = payload?.errorInfo || payload?.error;
+      const details = payload?.details || errorNode?.details || payload?.errors || null;
       const message =
         payload?.message ||
         (typeof errorNode === 'string' ? errorNode : errorNode?.message) ||
@@ -1909,10 +2170,12 @@ const appConfig = {
         endpoint: path,
         method: String(method || 'GET').toUpperCase(),
         status: status || errorNode?.status || payload?.status || 0,
-        code: payload?.code || errorNode?.code || 'API_ERROR',
+        code: payload?.code || errorNode?.code || details?.code || 'API_ERROR',
         message,
         requestId: payload?.requestId || errorNode?.requestId || 'n/a',
-        details: payload?.details || errorNode?.details || payload?.errors || null,
+        phase: payload?.phase || errorNode?.phase || details?.phase || null,
+        remediation: payload?.remediation || errorNode?.remediation || details?.remediation || null,
+        details,
       };
     },
     recordApiError(entry) {
@@ -2007,6 +2270,7 @@ const appConfig = {
         if (payload?.user) {
           this.currentUser = payload.user;
           localStorage.setItem('dg_user', JSON.stringify(this.currentUser));
+          this.ensureActiveViewAllowed({ silent: true });
         }
 
         if (payload?.token || payload?.refreshToken) {
@@ -2347,6 +2611,7 @@ const appConfig = {
         localStorage.setItem('dg_demo_mode', 'off');
 
         this.showToast(`Welcome ${this.currentUser?.name || this.currentUser?.email}`);
+        this.ensureActiveViewAllowed({ silent: true });
         await this.bootstrapData();
       } catch (err) {
         this.showToast(`Login failed: ${err.message}`);
@@ -2430,6 +2695,10 @@ const appConfig = {
     async loadActiveViewData(view = this.activeView) {
       if (view === 'browse') {
         await this.loadBrowse();
+        return;
+      }
+      if (view === 'assetDetail') {
+        await this.loadObjectContext();
         return;
       }
       if (view === 'glossary') {
@@ -2825,6 +3094,7 @@ const appConfig = {
         const payload = await this.api('/api/v1/auth/me');
         this.currentUser = payload.user;
         localStorage.setItem('dg_user', JSON.stringify(this.currentUser));
+        this.ensureActiveViewAllowed({ silent: true });
       } catch (_err) {
         this.currentUser = this.currentUser || null;
       }
@@ -3183,6 +3453,68 @@ const appConfig = {
           .replace(/[^a-z0-9]+/g, '');
       return normalize(actual) === normalize(requested);
     },
+    persistCatalogRecentSearches() {
+      localStorage.setItem(
+        'dg_catalog_recent_searches',
+        JSON.stringify((this.catalogRecentSearches || []).slice(0, 6))
+      );
+    },
+    recordCatalogRecentSearch(query = this.browseQuery) {
+      const normalized = String(query || '').trim();
+      if (!normalized) return;
+      const next = [
+        normalized,
+        ...(this.catalogRecentSearches || []).filter(
+          (item) => String(item || '').trim().toLowerCase() !== normalized.toLowerCase()
+        ),
+      ].slice(0, 6);
+      this.catalogRecentSearches = next;
+      this.persistCatalogRecentSearches();
+    },
+    async applyCatalogRecentSearch(query) {
+      const normalized = String(query || '').trim();
+      if (!normalized) return;
+      this.browseMode = 'search';
+      this.browseQuery = normalized;
+      await this.runSearch();
+    },
+    async performHomeSearch() {
+      this.browseMode = 'search';
+      this.selectedFacetFilters = {
+        types: [],
+        quality: [],
+        databases: [],
+        owners: [],
+        sensitivity: [],
+        tags: [],
+      };
+      this.browseSort = 'relevance';
+      this.selectedObjectId = '';
+      this.selectedObjectDetail = null;
+      await this.runSearch();
+    },
+    async openAssetDetail(objectId) {
+      const id = String(objectId || '').trim();
+      if (!id) return;
+      this.selectedObjectId = id;
+      await this.loadObjectContext();
+      await this.onViewChange('assetDetail');
+    },
+    clearHomeSearch() {
+      this.browseQuery = '';
+      this.browseResults = [];
+      this.browseSearchSubmitted = false;
+      this.browseSearchWarning = '';
+      this.browseSearchEngine = '';
+      this.browseSearchTotal = null;
+      this.browseLoadError = '';
+      this.selectedObjectId = '';
+      this.selectedObjectDetail = null;
+    },
+    clearCatalogRecentSearches() {
+      this.catalogRecentSearches = [];
+      this.persistCatalogRecentSearches();
+    },
     setBrowseMode(mode) {
       this.browseMode = mode === 'browse' ? 'browse' : 'search';
       this.browseSearchWarning = '';
@@ -3389,6 +3721,7 @@ const appConfig = {
         this.browseSearchEngine = search.searchEngine || 'catalog';
         this.browseSearchTotal = search.pagination?.total ?? this.browseResults.length;
         this.captureBrowseSearchMetadata(search);
+        this.recordCatalogRecentSearch();
       } catch (err) {
         if (this.demoModeEnabled && !this.hasRealData) {
           this.browseResults = demoSnapshot.objects.filter((item) =>
@@ -3398,6 +3731,7 @@ const appConfig = {
           this.browseSearchWarning = '';
           this.browseSearchEngine = 'demo';
           this.browseSearchTotal = this.browseResults.length;
+          this.recordCatalogRecentSearch();
           return;
         }
         this.browseLoadError = err.message;
@@ -3570,7 +3904,7 @@ const appConfig = {
       }
 
       try {
-        const [detail, upstream, downstream, impact, governanceContext, piiPolicy, columnSemantics, dictionary] = await Promise.all([
+        const [detailResult, upstreamResult, downstreamResult, impactResult, governanceContextResult, piiPolicyResult, columnSemanticsResult, dictionaryResult] = await Promise.allSettled([
           this.api(`/api/v1/objects/${encodeURIComponent(this.selectedObjectId)}`),
           this.api(
             `/api/v1/lineage/${encodeURIComponent(this.selectedObjectId)}/upstream?depth=${this.discoveryDepth}`
@@ -3578,14 +3912,32 @@ const appConfig = {
           this.api(
             `/api/v1/lineage/${encodeURIComponent(this.selectedObjectId)}/downstream?depth=${this.discoveryDepth}`
           ),
-          this.api(`/api/v1/lineage/${encodeURIComponent(this.selectedObjectId)}/impact`),
+          this.api(`/api/v1/discovery/impact/${encodeURIComponent(this.selectedObjectId)}`),
           this.api(`/api/v1/governance/context/${encodeURIComponent(this.selectedObjectId)}`),
           this.api(`/api/v1/classification/pii/${encodeURIComponent(this.selectedObjectId)}`),
           this.api(`/api/v1/classification/columns/${encodeURIComponent(this.selectedObjectId)}/semantics`),
           this.api(`/api/v1/dictionary/${encodeURIComponent(this.selectedObjectId)}`),
         ]);
+        if (detailResult.status !== 'fulfilled') {
+          throw detailResult.reason || new Error('Object detail unavailable');
+        }
 
-        this.selectedObjectDetail = detail.data || null;
+        const detail = detailResult.value || {};
+        const upstream = upstreamResult.status === 'fulfilled' ? upstreamResult.value : { data: [] };
+        const downstream = downstreamResult.status === 'fulfilled' ? downstreamResult.value : { data: [] };
+        const impact = impactResult.status === 'fulfilled' ? impactResult.value : { data: [] };
+        const governanceContext = governanceContextResult.status === 'fulfilled' ? governanceContextResult.value : {};
+        const piiPolicy = piiPolicyResult.status === 'fulfilled' ? piiPolicyResult.value : {};
+        const columnSemantics = columnSemanticsResult.status === 'fulfilled' ? columnSemanticsResult.value : {};
+        const dictionary = dictionaryResult.status === 'fulfilled' ? dictionaryResult.value : {};
+
+        this.selectedObjectDetail = detail.data
+          ? {
+              ...detail.data,
+              graphUpstreamCount: this.lineagePayloadItems(upstream).length,
+              graphDownstreamCount: this.lineagePayloadItems(downstream).length,
+            }
+          : null;
         this.selectedObjectGovernance = governanceContext.context || null;
         this.selectedObjectPiiPolicy = piiPolicy.pii_policy || null;
         this.selectedObjectColumnSemantics = columnSemantics.semantics || null;
@@ -4127,6 +4479,505 @@ const appConfig = {
       }
       return trend || 'baseline';
     },
+    catalogAssetTypeLabel(item = {}) {
+      const type = String(item.type || item.object_type || 'object');
+      const labels = {
+        storedProcedure: 'Stored Procedure',
+        storedprocedure: 'Stored Procedure',
+        procedure: 'Stored Procedure',
+        table: 'Table',
+        view: 'View',
+        function: 'Function',
+        package: 'Package',
+        dataset: 'Dataset',
+        column: 'Column',
+        report: 'Report',
+        metric: 'Metric',
+      };
+      return labels[type] || type.charAt(0).toUpperCase() + type.slice(1);
+    },
+    homeAssetDisplayLabel(item = {}) {
+      const explicitLabel = item.business_name || item.businessName || item.display_name || item.displayName || item.title || item.label;
+      if (explicitLabel) return explicitLabel;
+
+      const rawText = [
+        item.name,
+        item.id,
+        item.description,
+        item.packagePath,
+      ].filter(Boolean).join(' ').toLowerCase();
+
+      if (rawText.includes('column_mapping') || rawText.includes('column mapping')) return 'Column mapping evidence';
+      if (rawText.includes('.dtsx') || rawText.includes('ssis')) return 'SSIS package evidence';
+      if (rawText.includes('report')) return 'Report metadata';
+      if (rawText.includes('metric')) return 'Metric definition';
+
+      const rawName = String(item.name || item.id || '').trim();
+      const looksTechnical = /[\\/]|\.dtsx|chunk[_-]?\d+|[_]{2,}|[.].*[.]/i.test(rawName);
+      if (rawName && !looksTechnical) return rawName;
+
+      return `${this.catalogAssetTypeLabel(item)} evidence`;
+    },
+    homeAssetContextLine(item = {}) {
+      const rawText = [
+        item.name,
+        item.id,
+        item.description,
+        item.packagePath,
+      ].filter(Boolean).join(' ').toLowerCase();
+
+      if (rawText.includes('column_mapping') || rawText.includes('column mapping')) {
+        return 'Column-level mapping captured for lineage and impact analysis.';
+      }
+      if (rawText.includes('.dtsx') || rawText.includes('ssis')) {
+        return 'Package metadata captured from SSIS lineage evidence.';
+      }
+      return this.catalogBusinessSummary(item);
+    },
+    catalogSourceLocation(item = {}) {
+      const parts = [
+        item.server || item.source || item.source_system,
+        item.database,
+        item.schema,
+        item.workspace || item.report_workspace,
+        item.storage_location,
+      ].filter(Boolean);
+      if (parts.length) return parts.join(' / ');
+
+      const idParts = String(item.id || '').split('.').filter(Boolean);
+      if (idParts.length >= 3) return idParts.slice(0, -1).join(' / ');
+      if (item.packagePath) return item.packagePath;
+      return item.location || 'Location not captured';
+    },
+    catalogMatchReason(item = {}) {
+      if (item.match_reason || item.matchReason) return item.match_reason || item.matchReason;
+      const query = String(this.browseQuery || '').trim().toLowerCase();
+      if (!query) return this.browseMode === 'browse' ? 'Shown from selected database' : 'Suggested catalog match';
+
+      const fields = [
+        ['name', item.name || item.id],
+        ['source location', this.catalogSourceLocation(item)],
+        ['description', item.description],
+        ['owner', item.owner],
+        ['type', item.type],
+        ['classification', (item.classifications || []).join(' ')],
+        ['tag', (item.tags || []).join(' ')],
+      ];
+      const match = fields.find(([, value]) => String(value || '').toLowerCase().includes(query));
+      if (match) return `Matched ${match[0]}`;
+      if (Number(item.score) > 0 || Number(item.rankScore) > 0) return 'Matched search index relevance';
+      return 'Matched catalog filters';
+    },
+    catalogConfidenceScore(item = {}) {
+      const raw =
+        item.system_confidence ??
+        item.confidence ??
+        item.confidence_score ??
+        item.evidence_confidence ??
+        this.qualityScoreForItem(item) ??
+        item.trust_score ??
+        item.trust?.score;
+      const score = Number(raw);
+      return Number.isFinite(score) ? Math.max(0, Math.min(100, Math.round(score))) : null;
+    },
+    catalogConfidenceLabel(item = {}) {
+      const score = this.catalogConfidenceScore(item);
+      if (score === null) return item.description ? 'Context Available' : 'Needs Context';
+      if (score >= 85) return 'High Confidence';
+      if (score >= 60) return 'Usable With Caveats';
+      return 'Needs Review';
+    },
+    catalogConfidenceReason(item = {}) {
+      const score = this.catalogConfidenceScore(item);
+      if (score === null) {
+        return item.description
+          ? 'Business description or metadata exists, but no numeric system confidence is available yet.'
+          : 'Missing business description or confidence evidence; inspect details before using.';
+      }
+      if (score >= 85) return 'Strong metadata/profile evidence is available for this asset.';
+      if (score >= 60) return 'Some evidence is available, but confirm caveats and ownership before relying on it.';
+      return 'Low confidence means metadata, profile, lineage, or parse evidence is incomplete.';
+    },
+    catalogBusinessSummary(item = {}) {
+      return this.catalogBusinessSummaryLines(item).join(' ');
+    },
+    catalogBusinessSummaryLines(item = {}) {
+      const explicit = item.business_summary || item.businessSummary || item.summary;
+      if (explicit) return [String(explicit).trim()].filter(Boolean);
+
+      const rawDescription = String(item.description || '').trim();
+      const cleanDescription = this.cleanCatalogDescription(rawDescription);
+      if (cleanDescription && !/^Metadata was auto-extracted/i.test(cleanDescription)) return [cleanDescription];
+
+      const columns = this.assetColumnRows(item);
+      const name = item.name || this.objectNameFromId(item.id) || 'This asset';
+      const type = this.catalogAssetTypeLabel(item).toLowerCase();
+      const location = this.catalogSourceLocation(item);
+      const notableColumns = columns
+        .map((column) => this.columnDisplayName(column))
+        .filter(Boolean)
+        .filter((columnName) => !/^meta/i.test(columnName))
+        .slice(0, 6);
+      const lines = [
+        `${name} is a ${type} in ${location}.`,
+      ];
+      if (cleanDescription) lines.push(cleanDescription);
+      if (columns.length) {
+        lines.push(`It has ${columns.length} captured column${columns.length === 1 ? '' : 's'}${notableColumns.length ? `, including ${notableColumns.join(', ')}.` : '.'}`);
+      }
+      const upstreamCount = this.assetLineageCount('upstream', item);
+      const downstreamCount = this.assetLineageCount('downstream', item);
+      if (upstreamCount || downstreamCount) {
+        lines.push(`Current curated lineage evidence shows ${upstreamCount} upstream and ${downstreamCount} downstream related object${downstreamCount === 1 ? '' : 's'}.`);
+      }
+      return lines;
+    },
+    cleanCatalogDescription(description = '') {
+      const text = String(description || '').replace(/\r/g, '').trim();
+      if (!text) return '';
+      const withoutColumns = text.split(/\n\s*Columns\s*\n/i)[0] || text;
+      const lines = withoutColumns
+        .split('\n')
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .filter((line) => !/^overview$/i.test(line))
+        .filter((line) => !/^metadata auto-extracted from sql server\.?$/i.test(line))
+        .filter((line) => !/^\|/.test(line));
+      const facts = {};
+      lines.forEach((line) => {
+        line.replace(/\b(Type|Schema|Row Count|Size):\s*([^:]+?)(?=\s+\b(?:Type|Schema|Row Count|Size):|$)/gi, (_match, key, value) => {
+          facts[key.toLowerCase()] = String(value || '').trim();
+          return '';
+        });
+      });
+      if (Object.keys(facts).length) {
+        const parts = [];
+        if (facts.type) parts.push(`type ${facts.type}`);
+        if (facts.schema) parts.push(`schema ${facts.schema}`);
+        if (facts['row count']) parts.push(`${facts['row count']} recorded rows`);
+        if (facts.size) parts.push(`${facts.size} captured size`);
+        return `Metadata was auto-extracted from SQL Server (${parts.join(', ')}).`;
+      }
+      return lines.join(' ').replace(/\s+/g, ' ').trim();
+    },
+    objectNameFromId(id = '') {
+      return String(id || '').split('.').filter(Boolean).pop() || '';
+    },
+    assetColumnRows(item = this.selectedObjectDetail) {
+      if (Array.isArray(item?.columns) && item.columns.length) return item.columns;
+      if (item?.id === this.selectedObjectId && Array.isArray(this.selectedObjectDictionary?.columns)) {
+        return this.selectedObjectDictionary.columns;
+      }
+      return [];
+    },
+    assetDetailColumns() {
+      const detailColumns = Array.isArray(this.selectedObjectDetail?.columns)
+        ? this.selectedObjectDetail.columns
+        : [];
+      const dictionaryColumns = Array.isArray(this.selectedObjectDictionary?.columns)
+        ? this.selectedObjectDictionary.columns
+        : [];
+
+      if (!detailColumns.length) return dictionaryColumns;
+      const dictionaryByName = new Map(
+        dictionaryColumns.map((column) => [this.columnDisplayName(column).toLowerCase(), column])
+      );
+      return detailColumns.map((column, index) =>
+        this.mergeColumnMetadata(column, dictionaryByName.get(this.columnDisplayName(column).toLowerCase()) || {}, index)
+      );
+    },
+    mergeColumnMetadata(source = {}, dictionary = {}, index = 0) {
+      const pick = (first, second, fallback = null) => {
+        if (first !== undefined && first !== null && first !== '') return first;
+        if (second !== undefined && second !== null && second !== '') return second;
+        return fallback;
+      };
+      const name = pick(source.name || source.column_name || source.columnName, dictionary.name || dictionary.column_name || dictionary.columnName, `column_${index + 1}`);
+      return {
+        ...dictionary,
+        ...source,
+        column_id: pick(source.column_id || source.columnId || source.id, dictionary.column_id || dictionary.columnId || dictionary.id, `${this.selectedObjectId}.${name}`),
+        name,
+        column_name: name,
+        data_type: pick(source.data_type || source.dataType || source.type || source.system_type, dictionary.data_type || dictionary.dataType || dictionary.type || dictionary.system_type, 'unknown'),
+        max_length: pick(source.max_length ?? source.maxLength ?? source.character_maximum_length ?? source.length, dictionary.max_length ?? dictionary.maxLength ?? dictionary.character_maximum_length ?? dictionary.length),
+        precision: pick(source.precision ?? source.numeric_precision, dictionary.precision ?? dictionary.numeric_precision),
+        scale: pick(source.scale ?? source.numeric_scale, dictionary.scale ?? dictionary.numeric_scale),
+        sensitivity: pick(dictionary.sensitivity, source.sensitivity, ''),
+        semantic_type: pick(dictionary.semantic_type || dictionary.semanticType, source.semantic_type || source.semanticType),
+        semantic_role: pick(dictionary.semantic_role || dictionary.semanticRole, source.semantic_role || source.semanticRole),
+        description: pick(dictionary.description, source.description, ''),
+      };
+    },
+    columnDisplayName(column = {}) {
+      return (
+        column.column_name ||
+        column.name ||
+        column.columnName ||
+        this.objectNameFromId(column.column_id || column.columnId || column.id) ||
+        ''
+      );
+    },
+    columnDataTypeLabel(column = {}) {
+      const rawType = String(column.data_type || column.dataType || column.type || column.system_type || 'unknown').trim();
+      const lowerType = rawType.toLowerCase();
+      const rawLength = column.max_length ?? column.maxLength ?? column.character_maximum_length ?? column.length;
+      const length = Number(rawLength);
+      const precision = column.precision ?? column.numeric_precision;
+      const scale = column.scale ?? column.numeric_scale;
+
+      if (['varchar', 'char', 'binary', 'varbinary'].includes(lowerType) && Number.isFinite(length)) {
+        return `${rawType}(${length < 0 ? 'max' : length})`;
+      }
+      if (['varchar', 'char', 'binary', 'varbinary'].includes(lowerType)) {
+        return `${rawType} (length not captured)`;
+      }
+      if (['nvarchar', 'nchar'].includes(lowerType) && Number.isFinite(length)) {
+        return `${rawType}(${length < 0 ? 'max' : Math.max(1, Math.floor(length / 2))})`;
+      }
+      if (['nvarchar', 'nchar'].includes(lowerType)) {
+        return `${rawType} (length not captured)`;
+      }
+      if (['decimal', 'numeric'].includes(lowerType) && precision !== null && precision !== undefined && precision !== '') {
+        const precisionText = Number(precision);
+        const scaleText = scale !== null && scale !== undefined && scale !== '' ? Number(scale) : 0;
+        if (Number.isFinite(precisionText) && Number.isFinite(scaleText)) {
+          return `${rawType}(${precisionText}, ${scaleText})`;
+        }
+      }
+      if (['decimal', 'numeric'].includes(lowerType)) {
+        return `${rawType} (precision/scale not captured)`;
+      }
+      return rawType || 'unknown';
+    },
+    columnSemanticLabel(column = {}) {
+      if (column.semantic_type || column.semantic_role) return column.semantic_type || column.semantic_role;
+      if (column.is_key) return 'key';
+      if (column.is_identifier) return 'identifier';
+      if (column.is_metric) return 'metric';
+      if (column.is_dimension) return 'dimension';
+      return '-';
+    },
+    lineagePayloadItems(payload = {}) {
+      if (Array.isArray(payload)) return payload;
+      if (Array.isArray(payload.data)) return payload.data;
+      if (Array.isArray(payload.items)) return payload.items;
+      if (Array.isArray(payload.nodes)) return payload.nodes;
+      return [];
+    },
+    lineageReferenceItems(value) {
+      if (!value) return [];
+      const values = Array.isArray(value) ? value : [value];
+      return values
+        .map((entry) => {
+          if (!entry) return null;
+          if (typeof entry === 'string') return { id: entry };
+          if (typeof entry === 'object') {
+            const id = entry.id || entry.object_id || entry.objectId || entry.source || entry.target || entry.name;
+            return id ? { ...entry, id } : null;
+          }
+          return null;
+        })
+        .filter(Boolean);
+    },
+    curatedAssetLineageItems(direction, item = this.selectedObjectDetail) {
+      if (!item) return [];
+      const fields =
+        direction === 'upstream'
+          ? ['depends_on', 'created_by', 'created_via']
+          : ['used_by'];
+      const byId = new Map();
+      fields.forEach((field) => {
+        this.lineageReferenceItems(item[field]).forEach((entry) => {
+          if (!byId.has(entry.id)) byId.set(entry.id, entry);
+        });
+      });
+      this.assetLineageItems(direction).forEach((entry) => {
+        const id = entry?.id || entry?.object_id || entry?.objectId;
+        if (id && byId.has(id)) byId.set(id, { ...entry, id });
+      });
+      return Array.from(byId.values());
+    },
+    assetLineageItems(direction) {
+      const payload = direction === 'upstream' ? this.lineageRaw?.upstream : this.lineageRaw?.downstream;
+      return this.lineagePayloadItems(payload);
+    },
+    assetLineageCount(direction, item = this.selectedObjectDetail) {
+      const curated = this.curatedAssetLineageItems(direction, item);
+      if (curated.length) return curated.length;
+      const fallbackCount =
+        direction === 'upstream'
+          ? Number(item?.upstreamCount ?? item?.upstream_count ?? 0)
+          : Number(item?.downstreamCount ?? item?.downstream_count ?? 0);
+      if (Number.isFinite(fallbackCount) && fallbackCount > 0) return fallbackCount;
+      return item === this.selectedObjectDetail ? this.assetLineageItems(direction).length : 0;
+    },
+    assetLineagePreview(direction) {
+      const curated = this.curatedAssetLineageItems(direction);
+      return (curated.length ? curated : this.assetLineageItems(direction)).slice(0, 5);
+    },
+    reviewWorkWarningQueues() {
+      return this.reviewWorkQueues().map((queue) => ({
+        key: queue.key,
+        label: queue.label,
+        count: queue.items.length,
+        reason: queue.description,
+        view: queue.primaryView,
+      }));
+    },
+    reviewWorkQueues() {
+      const tasks = this.governanceOps.tasks || [];
+      const incidents = this.governanceOps.incidents || [];
+      const publicationChecks = this.governanceOps.publication?.checks || [];
+      const ownershipAlerts = this.governanceOps.stewardPortfolio?.alerts || [];
+      const openTasks = tasks.filter((task) => !['done', 'canceled'].includes(task.status));
+      const itemFromTask = (task, defaults = {}) => ({
+        id: task.taskId || task.id || `${defaults.key || 'task'}-${task.assetId || task.asset_id || task.title}`,
+        title: task.title || defaults.title || 'Review governance task',
+        assetId: task.assetId || task.asset_id || defaults.assetId || '',
+        status: task.status || defaults.status || 'open',
+        severity: task.severity || defaults.severity || 'warning',
+        owner: task.owner || task.steward || task.assignee || task.assignedTo || defaults.owner || 'Unassigned',
+        due: task.dueDate || task.due_at || task.due || task.targetDate || defaults.due || 'No due date',
+        nextAction: defaults.nextAction || 'Open owning workflow',
+        primaryView: defaults.primaryView || 'governanceOps',
+        secondaryView: defaults.secondaryView || '',
+      });
+      const itemFromIncident = (incident, defaults = {}) => ({
+        id: incident.incidentId || incident.id || `${defaults.key || 'incident'}-${incident.assetId || incident.title}`,
+        title: incident.title || defaults.title || 'Review governance incident',
+        assetId: incident.assetId || incident.asset_id || defaults.assetId || '',
+        status: incident.status || defaults.status || 'open',
+        severity: incident.severity || defaults.severity || 'warning',
+        owner: incident.owner || incident.steward || incident.assignee || incident.assignedTo || defaults.owner || 'Unassigned',
+        due: incident.dueDate || incident.due_at || incident.due || incident.targetDate || defaults.due || 'No due date',
+        nextAction: defaults.nextAction || 'Open owning workflow',
+        primaryView: defaults.primaryView || 'governanceOps',
+        secondaryView: defaults.secondaryView || '',
+      });
+
+      const failedProfileItems = [
+        ...openTasks
+          .filter((task) => /profile|quality/i.test(`${task.title || ''} ${task.type || ''}`))
+          .map((task) =>
+            itemFromTask(task, {
+              key: 'failed-profile',
+              nextAction: 'Open schedule or run details in Profiling',
+              primaryView: 'scheduler',
+            })
+          ),
+        ...incidents
+          .filter((incident) => /profile|quality/i.test(`${incident.title || ''} ${incident.type || ''}`))
+          .map((incident) =>
+            itemFromIncident(incident, {
+              key: 'failed-profile-incident',
+              nextAction: 'Open Profiling to inspect the failing run',
+              primaryView: 'scheduler',
+            })
+          ),
+      ];
+
+      const failedLineageItems = [
+        ...openTasks
+          .filter((task) => /lineage|dependency|graph/i.test(`${task.title || ''} ${task.type || ''}`))
+          .map((task) =>
+            itemFromTask(task, {
+              key: 'failed-lineage',
+              nextAction: 'Open Search and explore the asset lineage',
+              primaryView: 'browse',
+              secondaryView: 'import',
+            })
+          ),
+        ...incidents
+          .filter((incident) => /lineage|dependency|graph/i.test(`${incident.title || ''} ${incident.type || ''}`))
+          .map((incident) =>
+            itemFromIncident(incident, {
+              key: 'failed-lineage-incident',
+              nextAction: 'Open Search and explore the asset lineage',
+              primaryView: 'browse',
+              secondaryView: 'import',
+            })
+          ),
+        ...publicationChecks
+          .filter((check) => check.status === 'fail' && /lineage|dependency|graph/i.test(check.name || ''))
+          .map((check) => ({
+            id: `pub-${check.name}`,
+            title: check.name,
+            assetId: '',
+            status: check.status,
+            severity: 'warning',
+            nextAction: 'Open Lineage Acquisition if evidence is stale',
+            primaryView: 'import',
+            secondaryView: 'discovery',
+          })),
+      ];
+
+      const suspiciousLineageItems = [
+        ...ownershipAlerts.map((alert) => ({
+          id: `alert-${alert.assetId}-${alert.message}`,
+          title: alert.message || 'Review low-confidence asset context',
+          assetId: alert.assetId || '',
+          status: alert.severity || 'warning',
+          severity: alert.severity || 'warning',
+          owner: alert.owner || alert.steward || 'Unassigned',
+          due: alert.dueDate || alert.due_at || 'No due date',
+          nextAction: 'Open Search / Catalog to inspect confidence reasons',
+          primaryView: 'browse',
+          secondaryView: 'discovery',
+        })),
+        ...incidents
+          .filter((incident) => /trust|confidence|suspicious/i.test(`${incident.title || ''} ${incident.severity || ''}`))
+          .map((incident) =>
+            itemFromIncident(incident, {
+              key: 'suspicious-lineage',
+              nextAction: 'Open Search and explore lineage evidence',
+              primaryView: 'browse',
+              secondaryView: 'import',
+            })
+          ),
+      ];
+
+      const fallbackTaskItems = openTasks.slice(0, 3).map((task) =>
+        itemFromTask(task, {
+          key: 'fallback-task',
+          nextAction: 'Open the owning workflow listed on the task',
+          primaryView: 'governanceOps',
+        })
+      );
+
+      return [
+        {
+          key: 'failed-profiles',
+          label: 'Failed Profiles',
+          description: 'Profile and quality failures are reviewed here, then fixed in Profiling.',
+          primaryView: 'scheduler',
+          emptyText: 'No failed profile work items are currently queued.',
+          items: failedProfileItems.length ? failedProfileItems : fallbackTaskItems,
+        },
+        {
+          key: 'failed-lineage',
+          label: 'Failed Lineage',
+          description: 'Lineage failures link to Search first, with Lineage Acquisition for stale evidence.',
+          primaryView: 'browse',
+          emptyText: 'No failed lineage work items are currently queued.',
+          items: failedLineageItems,
+        },
+        {
+          key: 'suspicious-lineage',
+          label: 'Suspicious Lineage',
+          description: 'Suspicious or low-confidence lineage is reviewed as evidence, not operated from this page.',
+          primaryView: 'import',
+          emptyText: 'No suspicious lineage work items are currently queued.',
+          items: suspiciousLineageItems,
+        },
+      ];
+    },
+    openReviewWorkItem(item = {}) {
+      if (item.assetId) {
+        this.selectedObjectId = item.assetId;
+      }
+      this.onViewChange(item.primaryView || 'governanceOps');
+    },
     thresholdFromQualityEditor() {
       const editor = this.governance.qualityRules.editor;
       const threshold = {};
@@ -4577,8 +5428,9 @@ const appConfig = {
         this.lineageObjectSearch.loading = false;
       }
     },
-    chooseLineageObject(item) {
+    async chooseLineageObject(item, options = {}) {
       if (!item?.id) return;
+      const shouldLoad = options.load !== false;
       this.selectedObjectId = item.id;
       this.lineageObjectSearch.query = item.id;
       this.lineageObjectSearch.open = false;
@@ -4588,30 +5440,33 @@ const appConfig = {
         const parts = item.id.split('.');
         this.matrixDatabase = (parts.length >= 4 ? parts[1] : parts[0]) || this.matrixDatabase;
       }
+      if (shouldLoad) {
+        await this.loadDiscovery();
+      }
     },
-    chooseExactLineageObjectMatch() {
+    async chooseExactLineageObjectMatch() {
       const query = String(this.lineageObjectSearch.query || '').trim().toLowerCase();
       if (!query) return false;
       const exact = this.lineageObjectSearch.results.find(
         (item) => String(item.id || '').toLowerCase() === query
       );
       if (!exact) return false;
-      this.chooseLineageObject(exact);
+      await this.chooseLineageObject(exact, { load: false });
       return true;
     },
     async renderSelectedLineage() {
       if (!this.selectedObjectId && this.lineageObjectSearch.results.length === 1) {
-        this.chooseLineageObject(this.lineageObjectSearch.results[0]);
+        await this.chooseLineageObject(this.lineageObjectSearch.results[0], { load: false });
       }
       if (!this.selectedObjectId) {
-        this.chooseExactLineageObjectMatch();
+        await this.chooseExactLineageObjectMatch();
       }
       if (!this.selectedObjectId && this.lineageObjectSearch.query) {
         await this.searchLineageObjects(this.lineageObjectSearch.query);
-        if (this.chooseExactLineageObjectMatch()) {
+        if (await this.chooseExactLineageObjectMatch()) {
           // Exact typed object id selected.
         } else if (this.lineageObjectSearch.results.length === 1) {
-          this.chooseLineageObject(this.lineageObjectSearch.results[0]);
+          await this.chooseLineageObject(this.lineageObjectSearch.results[0], { load: false });
         }
       }
       if (!this.selectedObjectId) {
@@ -4619,6 +5474,28 @@ const appConfig = {
         return;
       }
       await this.loadDiscovery();
+    },
+    async openSelectedObjectLineage(objectId = this.selectedObjectId) {
+      const id = String(objectId || '').trim();
+      if (!id) {
+        this.showToast('Choose an asset before exploring lineage.');
+        return;
+      }
+      this.selectedObjectId = id;
+      this.lineageObjectSearch.query = id;
+      this.showLineageEvidence = false;
+      await this.onViewChange('discovery');
+    },
+    async toggleLineageEvidence() {
+      this.showLineageEvidence = !this.showLineageEvidence;
+      await nextTick();
+      if (this.showLineageEvidence) {
+        const target = document.getElementById('lineage-graph-drilldowns');
+        if (target?.scrollIntoView) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        this.renderGraph();
+      }
     },
     async runBlastRadiusAnalysis() {
       if (!this.selectedObjectId && this.lineageObjectSearch.query) {
@@ -4853,19 +5730,19 @@ const appConfig = {
 
       const groups = [
         {
-          title: 'Business Consumers',
+          title: 'Business Uses',
           match: (row) => String(row.role || '').toLowerCase().includes('business consumer'),
         },
         {
-          title: 'Maintenance / Load-Path Reads',
+          title: 'Maintenance Reads',
           match: (row) => String(row.role || '').toLowerCase().includes('maintenance'),
         },
         {
-          title: 'Load Orchestration',
+          title: 'Load Jobs',
           match: (row) => /orchestrates|loads target/i.test(String(row.role || '')),
         },
         {
-          title: 'Upstream Sources & Lookups',
+          title: 'Source Inputs & Lookups',
           match: (row) => /source input|lookup/i.test(String(row.role || '')),
         },
       ];
@@ -4889,10 +5766,34 @@ const appConfig = {
 
       return built;
     },
+    selectedAssetLineageGroups(answer = this.lineageAnswer) {
+      const answerGroups = this.lineageAnswerRoleGroups(answer);
+      if (answerGroups.length) return answerGroups;
+
+      const buildRows = (direction) =>
+        this.assetLineageItems(direction).map((item) => ({
+          ...item,
+          label: item.name || this.objectNameFromId(item.id),
+          location: this.catalogSourceLocation(item),
+        }));
+
+      const groups = [
+        { title: 'Feeds This', rows: buildRows('upstream') },
+        { title: 'Uses This', rows: buildRows('downstream') },
+      ];
+      return groups.filter((group) => group.rows.length);
+    },
     lineageAnswerTableColumns(answer = this.lineageQuestionAnswer) {
       if (!answer) return [];
       if (answer.impacted_objects?.length) return ['Role', 'Object', 'Type', 'Location'];
       return answer.table?.columns || [];
+    },
+    lineageExplorerGroupPreview(group = {}) {
+      const rows = group.rows || [];
+      if (!rows.length) return 'No objects in this group.';
+      const preview = rows.slice(0, 3).map((row) => row.label || row.id).join(', ');
+      const remaining = rows.length - 3;
+      return remaining > 0 ? `${preview}, and ${remaining} more` : preview;
     },
     async loadEdgeAudit() {
       if (!this.selectedObjectId) {
@@ -5957,6 +6858,7 @@ const appConfig = {
       };
       this.syncConnectorCredentialMode();
       this.hydrateConnectorEditorFromDefinition();
+      this.integrations.connectorWorkflowTab = 'connection';
       this.showToast('Started a new blank connector draft.');
     },
     parseAdvancedConnectorConfig() {
@@ -5980,6 +6882,15 @@ const appConfig = {
         .filter(Boolean)
         .slice(0, 5);
     },
+    connectorTestErrorMeta() {
+      const first = this.integrations.connectorEditor.testSummary?.errors?.[0] || null;
+      if (!first) return [];
+      return [
+        ['Error Code', first.code],
+        ['Phase', first.phase],
+        ['Status', first.status],
+      ].filter(([, value]) => value !== undefined && value !== null && value !== '');
+    },
     connectorTestHealth() {
       const summary = this.integrations.connectorEditor.testSummary?.summary || {};
       return {
@@ -5987,6 +6898,103 @@ const appConfig = {
         connection: summary.live_connection_valid ? 'Passed' : (this.integrations.connectorEditor.testSummary ? 'Failed' : 'Pending'),
         discovery: summary.metadata_discovery_valid ? 'Passed' : (this.integrations.connectorEditor.testSummary ? 'Blocked' : 'Pending'),
       };
+    },
+    formatDiagnosticValue(value) {
+      if (value === undefined || value === null || value === '') return '-';
+      if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+      if (Array.isArray(value)) return value.length ? value.join(', ') : '-';
+      if (typeof value === 'object') return JSON.stringify(value);
+      return String(value);
+    },
+    connectorTestActionableError(connectorId) {
+      const state = this.connectorRowTestState(connectorId);
+      const test = state.test || {};
+      return (
+        test.diagnostics?.actionable_error ||
+        test.errors?.[0] ||
+        (state.error
+          ? {
+              code: test.code || state.code || 'CONNECTOR_TEST_FAILED',
+              message: state.error,
+              remediation: test.remediation || state.remediation,
+              phase: test.phase || state.phase,
+              details: test.details || state.details,
+            }
+          : null)
+      );
+    },
+    connectorTestDiagnosticPairs(connectorId) {
+      const state = this.connectorRowTestState(connectorId);
+      const test = state.test || {};
+      const summary = test.summary || {};
+      const diagnostics = test.diagnostics || {};
+      const details = summary.connection_details || diagnostics.details || {};
+      const saved = (this.integrations.managedConnectors || []).find((connector) => connector.id === connectorId) || {};
+      const config = saved.config || {};
+      const firstError = this.connectorTestActionableError(connectorId);
+      return [
+        ['Result', state.loading ? 'Testing' : (test.status || state.status)],
+        ['Elapsed', summary.elapsed_ms !== undefined ? `${summary.elapsed_ms} ms` : diagnostics.elapsed_ms !== undefined ? `${diagnostics.elapsed_ms} ms` : null],
+        ['Server', summary.server || diagnostics.server || details.server_name || config.server || config.host],
+        ['Database / catalog', summary.database || diagnostics.database || details.database_name || config.database || config.catalog || config.catalogDatabase],
+        ['Login / user', summary.login || diagnostics.login || details.login_name || details.runtime_process_identity || diagnostics.user],
+        ['Connector', summary.connector_id || test.connector_id || connectorId],
+        ['Type', summary.connector_type || test.connector_type || saved.type],
+        ['Phase', summary.phase || diagnostics.phase || firstError?.phase],
+      ].filter(([, value]) => value !== undefined && value !== null && value !== '');
+    },
+    connectorTestActionablePairs(connectorId) {
+      const error = this.connectorTestActionableError(connectorId);
+      if (!error) return [];
+      return [
+        ['Code', error.code],
+        ['Message', error.message],
+        ['Remediation', error.remediation],
+        ['Details', this.formatDiagnosticValue(error.details)],
+      ].filter(([, value]) => value !== undefined && value !== null && value !== '' && value !== '-');
+    },
+    connectorIntelligentName(connector = {}) {
+      if (connector.label) return connector.label;
+      const config = connector.config || {};
+      const typeLabel = this.connectorDefinitionLabel(connector.type || '').replace(/\s*\([^)]*\)\s*$/, '');
+      if (connector.type === 'ssis' && config.server) return `${config.server} - SSIS`;
+      if (config.server && config.database) return `${config.server} - ${config.database}`;
+      if (config.workspace) return `${config.workspace} - Reports`;
+      if (config.account || config.bucket || config.container) {
+        return [typeLabel, config.account || config.bucket || config.container].filter(Boolean).join(' - ');
+      }
+      return connector.id || 'Unnamed connection';
+    },
+    connectorInventoryStatus(connector = {}) {
+      const rowState = this.connectorRowTestState(connector.id);
+      if (connector.disabled === true || connector.status === 'disabled') return 'Disabled';
+      if (rowState.loading || rowState.status === 'testing') return 'Testing';
+      if (['succeeded', 'success', 'passed'].includes(rowState.status)) return 'Passed';
+      if (rowState.status === 'failed') return 'Failed';
+      if (!connector.credential?.status && !connector.credential?.mode) return 'Access Restricted';
+      return 'Untested';
+    },
+    connectorLoginCheck(connector = {}) {
+      const rowState = this.connectorRowTestState(connector.id);
+      const summary = rowState.test?.summary || {};
+      if (rowState.loading || rowState.status === 'testing') return 'Testing';
+      if (summary.live_connection_valid === true) return 'Passed';
+      if (rowState.status === 'failed' || summary.live_connection_valid === false) return 'Failed';
+      return 'Untested';
+    },
+    connectorDiscoveryCheck(connector = {}) {
+      const rowState = this.connectorRowTestState(connector.id);
+      const summary = rowState.test?.summary || {};
+      if (rowState.loading || rowState.status === 'testing') return 'Testing';
+      if (summary.metadata_discovery_valid === true) return 'Passed';
+      if (rowState.status === 'failed' || summary.metadata_discovery_valid === false) return 'Failed';
+      return 'Untested';
+    },
+    connectorInventoryStatusColor(status) {
+      if (status === 'Passed') return 'success';
+      if (status === 'Failed' || status === 'Disabled' || status === 'Access Restricted') return 'error';
+      if (status === 'Testing') return 'info';
+      return 'warning';
     },
     connectorEditorSavedRecord() {
       return (this.integrations.managedConnectors || []).find(
@@ -5999,10 +7007,36 @@ const appConfig = {
       const config = saved?.config || {};
       return [
         ['Server', details.server_name || config.server],
+        ['Resolved Endpoint', details.resolved_endpoint],
+        ['Instance', details.instance],
         ['Database', details.database_name || config.database],
         ['Login', details.login_name],
+        ['Runtime Identity', details.runtime_process_identity],
+        ['Runtime Host', details.runtime_process_host],
+        ['Connection Variant', details.connection_variant],
         ['Credential Mode', details.credential_mode || saved?.credential?.mode || this.integrations.connectorEditor.credentialMode],
       ].filter(([, value]) => value);
+    },
+    connectorRowTestState(connectorId) {
+      return this.integrations.connectorTestStates?.[connectorId] || {};
+    },
+    setConnectorRowTestState(connectorId, state) {
+      this.integrations.connectorTestStates = {
+        ...(this.integrations.connectorTestStates || {}),
+        [connectorId]: {
+          ...(this.integrations.connectorTestStates?.[connectorId] || {}),
+          ...state,
+        },
+      };
+    },
+    connectorSavedConfigPairs() {
+      const saved = this.connectorEditorSavedRecord();
+      const config = saved?.config || {};
+      return [
+        ['Saved Server', config.server],
+        ['Saved Database', config.database],
+        ['Saved Port', config.port],
+      ].filter(([, value]) => value !== undefined && value !== null && value !== '');
     },
     buildConnectorSavePayload() {
       const editor = this.integrations.connectorEditor;
@@ -6115,8 +7149,8 @@ const appConfig = {
     profileScheduleOptionsPayload() {
       const editor = this.integrations.profileScheduleEditor;
       const payload = {
-        execution_mode: editor.dryRun ? 'dry_run' : (editor.profileType === 'aggregate' || editor.profileType === 'auto' ? 'live' : 'dry_run'),
-        dry_run: editor.dryRun !== false,
+        execution_mode: 'live',
+        dry_run: false,
         fail_fast: false,
         ids: String(editor.assetIds || '')
           .split(/[\n,]+/)
@@ -6245,6 +7279,10 @@ const appConfig = {
         this.showToast('Choose a connector before saving a schedule.');
         return;
       }
+      if (editor.dryRun === true) {
+        this.showToast('Recurring profile schedules cannot be saved as dry runs. Use Run Now for ad-hoc dry-run previews.');
+        return;
+      }
       const startAt = this.profileScheduleStartIso();
       if (!startAt) {
         this.showToast('Choose a valid start date and time.');
@@ -6278,7 +7316,7 @@ const appConfig = {
         if (payload.schedule?.id) await this.loadProfileScheduleQueuePreview(payload.schedule.id);
         this.showToast(editor.id ? 'Profile schedule updated.' : 'Profile schedule created.');
       } catch (err) {
-        this.showToast(`Profile schedule save failed: ${err.message}`);
+        this.showToast(`Profile schedule save failed: ${err.remediation || err.message}`);
       } finally {
         this.integrations.profileScheduleLoading = false;
       }
@@ -6298,7 +7336,7 @@ const appConfig = {
       editor.intervalMinutes = schedule.interval_minutes || 1440;
       editor.maxFailures = schedule.max_failures || 3;
       editor.streams = (schedule.options?.streams || []).join(', ');
-      editor.dryRun = schedule.options?.dry_run !== false;
+      editor.dryRun = false;
       editor.assetIds = (schedule.options?.ids || []).join('\n');
       editor.coverageMode = schedule.options?.coverage_mode || 'all_objects';
       editor.includeViews = schedule.options?.include_views !== false;
@@ -6326,7 +7364,7 @@ const appConfig = {
         intervalMinutes: 60,
         maxFailures: 3,
         streams: '',
-        dryRun: true,
+        dryRun: false,
         assetIds: '',
         coverageMode: 'all_objects',
         includeViews: true,
@@ -6431,6 +7469,222 @@ const appConfig = {
       if (status === 'PAUSED') return 'warning';
       return 'secondary';
     },
+    profileQueueNumber(value) {
+      const number = Number(value);
+      return Number.isFinite(number) ? number : null;
+    },
+    profileQueueDisplayCount(value) {
+      const number = this.profileQueueNumber(value);
+      return number === null ? 'Unknown' : number.toLocaleString();
+    },
+    profileQueueRunForSchedule(schedule = {}) {
+      if (this.focusedProfileSchedule?.id === schedule.id && this.focusedProfileRecentRun) {
+        return this.focusedProfileRecentRun;
+      }
+      return (this.integrations.profileScheduleRuns || []).find((run) => run.schedule_id === schedule.id || run.scheduleId === schedule.id) || null;
+    },
+    profileQueueStatusForSchedule(schedule = {}) {
+      const run = this.profileQueueRunForSchedule(schedule);
+      if (this.focusedProfileSchedule?.id === schedule.id && this.focusedProfileQueueStatus) {
+        return this.focusedProfileQueueStatus;
+      }
+      return run?.summary?.coverage_queue_status || null;
+    },
+    profileQueueTypeLabel(schedule = {}) {
+      const type = String(schedule.profile_type || 'auto').toLowerCase();
+      if (type === 'aggregate' || type === 'auto') return 'Database profile queue';
+      if (type === 'bi') return 'BI metadata profile queue';
+      if (type === 'metadata') return 'Connector metadata profile queue';
+      return 'Profile queue';
+    },
+    profileQueuePlainStatus(schedule = {}, state = this.profileScheduleStateMeta(schedule), queueStatus = null) {
+      const timeoutCount = this.profileQueueNumber(queueStatus?.timeout_penalty_assets);
+      const pendingCount = this.profileQueueNumber(queueStatus?.pending_live_queue);
+      const selectedCount = this.profileQueueNumber(queueStatus?.selected_for_this_run);
+      if (timeoutCount > 0 && state.section !== 'failed') return 'Will retry timed-out tables later';
+      if (state.section === 'drafts') return 'Setup not ready';
+      if (state.section === 'deactivated') return 'Paused';
+      if (state.section === 'failed') return 'Needs attention';
+      if (state.label === 'Running With Errors') return 'Running with issues';
+      if (state.section === 'running' && (selectedCount > 0 || pendingCount > 0)) return 'Running normally';
+      if (state.section === 'successful' && pendingCount === 0) return 'Finished this batch';
+      if (state.section === 'successful') return 'Waiting for next scheduled run';
+      if (state.section === 'running') return 'Waiting for next scheduled run';
+      return state.label || 'Status unknown';
+    },
+    profileQueuePlainExplanation(schedule = {}, row = {}) {
+      if (row.blockers?.length) return row.blockers[0];
+      if (row.timeoutPenaltyCount > 0) {
+        return `${row.timeoutPenaltyCount.toLocaleString()} timed-out object${row.timeoutPenaltyCount === 1 ? '' : 's'} will be delayed so other profile work can continue.`;
+      }
+      if (row.selectedThisRun > 0) {
+        return `${row.selectedThisRun.toLocaleString()} object${row.selectedThisRun === 1 ? ' is' : 's are'} selected for the current live profile batch.`;
+      }
+      if (row.pendingLiveQueue > 0) {
+        return `${row.pendingLiveQueue.toLocaleString()} live profile object${row.pendingLiveQueue === 1 ? '' : 's'} remain in the queue.`;
+      }
+      if (row.completedLiveProfiles > 0) {
+        return `${row.completedLiveProfiles.toLocaleString()} live profile object${row.completedLiveProfiles === 1 ? ' has' : 's have'} completed for this queue.`;
+      }
+      if (schedule.next_run_at) return `Next run is scheduled for ${this.formatTimestamp(schedule.next_run_at)}.`;
+      return 'The current APIs do not report detailed queue totals for this schedule yet.';
+    },
+    profileQueueHealthRow(schedule = {}) {
+      const state = this.profileScheduleStateMeta(schedule);
+      const queueStatus = this.profileQueueStatusForSchedule(schedule) || {};
+      const lastRun = this.profileQueueRunForSchedule(schedule);
+      const blockers = this.profileScheduleBlockers(schedule);
+      const completedLiveProfiles = this.profileQueueNumber(
+        queueStatus.completed_live_assets ?? lastRun?.summary?.coverage_queue_status?.completed_live_assets
+      );
+      const failedLiveProfiles = this.profileQueueNumber(
+        queueStatus.failed_live_assets ?? lastRun?.summary?.coverage_queue_status?.failed_live_assets
+      );
+      const pendingLiveQueue = this.profileQueueNumber(
+        queueStatus.pending_live_queue ?? lastRun?.summary?.coverage_queue_status?.pending_live_queue
+      );
+      const selectedThisRun = this.profileQueueNumber(
+        queueStatus.selected_for_this_run ?? lastRun?.summary?.coverage_queue_status?.selected_for_this_run
+      );
+      const freshSkippedCount = this.profileQueueNumber(queueStatus.fresh_skipped_assets);
+      const timeoutPenaltyCount = this.profileQueueNumber(queueStatus.timeout_penalty_assets);
+      const plainStatus = this.profileQueuePlainStatus(schedule, state, queueStatus);
+      const needsAttention =
+        state.section === 'failed' ||
+        blockers.length > 0 ||
+        failedLiveProfiles > 0 ||
+        plainStatus === 'Running with issues';
+      const row = {
+        id: schedule.id,
+        schedule,
+        name: schedule.name || schedule.id || 'Unnamed profile queue',
+        source: schedule.connector_id || 'No connection selected',
+        typeLabel: this.profileQueueTypeLabel(schedule),
+        statusLabel: plainStatus,
+        statusColor: needsAttention ? 'error' : state.color,
+        healthKey: needsAttention ? 'attention' : state.section === 'successful' ? 'completed' : state.section === 'running' ? 'running' : 'waiting',
+        needsAttention,
+        nextRunAt: schedule.next_run_at || null,
+        lastRunAt: schedule.last_run_at || lastRun?.completed_at || lastRun?.started_at || null,
+        lastResult: this.profileScheduleLastResult(schedule),
+        completedLiveProfiles,
+        failedLiveProfiles,
+        pendingLiveQueue,
+        selectedThisRun,
+        freshSkippedCount,
+        timeoutPenaltyCount,
+        completedLabel: this.profileQueueDisplayCount(completedLiveProfiles),
+        failedLabel: this.profileQueueDisplayCount(failedLiveProfiles),
+        pendingLabel: this.profileQueueDisplayCount(pendingLiveQueue),
+        selectedLabel: this.profileQueueDisplayCount(selectedThisRun),
+        freshSkippedLabel: this.profileQueueDisplayCount(freshSkippedCount),
+        timeoutPenaltyLabel: this.profileQueueDisplayCount(timeoutPenaltyCount),
+        blockers,
+        nextAction: this.profileScheduleNextAction(schedule),
+      };
+      row.explanation = this.profileQueuePlainExplanation(schedule, row);
+      return row;
+    },
+    profileScheduleStateMeta(schedule = {}) {
+      const status = String(schedule.status || '').toUpperCase();
+      const lastStatus = String(schedule.last_status || '').toLowerCase();
+      const queueStatus = this.focusedProfileSchedule?.id === schedule.id ? this.focusedProfileQueueStatus : null;
+      const hasRunningQueue =
+        status === 'ACTIVE' &&
+        (
+          ['running', 'in_progress', 'started'].includes(lastStatus) ||
+          Number(queueStatus?.selected_for_this_run || 0) > 0 ||
+          Number(queueStatus?.pending_live_queue || 0) > 0
+        );
+      const hasFailure =
+        status === 'ACTIVE' &&
+        (
+          Boolean(schedule.last_error) ||
+          Number(schedule.failure_count || 0) > 0 ||
+          ['failed', 'failure', 'partial_failure', 'running_with_errors', 'error'].includes(lastStatus)
+        );
+      const hasSuccess =
+        status === 'ACTIVE' &&
+        (
+          ['success', 'succeeded', 'completed', 'published', 'partial_published'].includes(lastStatus) ||
+          Number(schedule.run_count || 0) > 0
+        );
+
+      if (['DRAFT', 'PLANNED'].includes(status)) {
+        return { section: 'drafts', label: 'Draft', color: 'secondary', rank: 50 };
+      }
+      if (status !== 'ACTIVE') {
+        return { section: 'deactivated', label: status === 'PAUSED' ? 'Deactivated' : (status || 'Inactive'), color: 'warning', rank: 40 };
+      }
+      if (hasRunningQueue) return { section: 'running', label: hasFailure ? 'Running With Errors' : 'Running', color: hasFailure ? 'warning' : 'info', rank: 10 };
+      if (hasFailure) return { section: 'failed', label: 'Active Failed', color: 'error', rank: 20 };
+      if (hasSuccess) return { section: 'successful', label: 'Active Successful', color: 'success', rank: 30 };
+      return { section: 'running', label: 'Active Ready', color: 'info', rank: 10 };
+    },
+    profileScheduleLastResult(schedule = {}) {
+      if (schedule.last_error) return this.profileQueueFriendlyError(schedule.last_error);
+      if (schedule.last_status) return schedule.last_status;
+      if (schedule.run_count) return `${schedule.run_count} run${schedule.run_count === 1 ? '' : 's'}`;
+      return 'No completed run yet';
+    },
+    profileQueueFriendlyError(error) {
+      const message = typeof error === 'string' ? error : (error?.message || String(error || ''));
+      const remediation = typeof error === 'object' ? error?.remediation : '';
+      const combined = `${message} ${remediation || ''}`.trim();
+      if (!combined) return 'Needs attention before the next reliable run.';
+      if (/missing column metadata/i.test(combined)) {
+        return 'Needs source column metadata before live profiling can continue.';
+      }
+      if (/login|auth|credential|permission|denied|unauthorized|forbidden/i.test(combined)) {
+        return 'Needs VPN, login, or source permission confirmation.';
+      }
+      if (/timeout|timed out|deadline|cancel/i.test(combined)) {
+        return 'Will retry timed-out tables later so other profile work can continue.';
+      }
+      if (/network|connect|econn|socket|dns|host|unreachable|refused/i.test(combined)) {
+        return 'Needs source connectivity or network route confirmation.';
+      }
+      if (/publish/i.test(combined)) {
+        return 'Profile ran, but publishing needs a retry or operator review.';
+      }
+      return message.length > 140 ? `${message.slice(0, 137)}...` : message;
+    },
+    profileScheduleBlockers(schedule = {}) {
+      const blockers = [];
+      const state = this.profileScheduleStateMeta(schedule);
+      if (!schedule.connector_id) blockers.push('Choose one database connection before this schedule can run.');
+      if (state.section === 'drafts') blockers.push('Draft schedules cannot run until they are activated.');
+      if (state.section === 'deactivated') blockers.push('This schedule is deactivated and will not run until activated.');
+      if (schedule.last_error) blockers.push(this.profileQueueFriendlyError(schedule.last_error));
+      if (schedule.last_error?.remediation) blockers.push(this.profileQueueFriendlyError(schedule.last_error.remediation));
+      if (!this.integrations.profileSchedulerStatus?.running && schedule.status === 'ACTIVE') {
+        blockers.push('The scheduler worker is stopped, so active queues are not advancing.');
+      }
+      return blockers;
+    },
+    profileScheduleEditorBlockers() {
+      const editor = this.integrations.profileScheduleEditor;
+      const connector = this.selectedProfileScheduleEditorConnector;
+      const blockers = [];
+      if (!editor.connectorId) blockers.push('Choose one saved connection.');
+      if (!connector) blockers.push('The selected connection must exist before this schedule can run.');
+      if (connector && !connector.config?.database && ['sql_server', 'postgresql', 'snowflake', 'bigquery', 'databricks', 'aws_redshift'].includes(connector.type)) {
+        blockers.push('Database schedules must point at exactly one database connection.');
+      }
+      if (connector && this.connectorLoginCheck(connector) === 'Failed') blockers.push('Resolve the connection login check before activating this schedule.');
+      if (connector && this.connectorDiscoveryCheck(connector) === 'Failed') blockers.push('Resolve discovery/read access before activating this schedule.');
+      if (!editor.name && editor.status === 'ACTIVE') blockers.push('Name the schedule so operators can recognize it in the queue.');
+      if (editor.dryRun === true) blockers.push('Recurring profile schedules cannot be saved as dry runs. Use Run Now for ad-hoc dry-run previews.');
+      return blockers;
+    },
+    profileScheduleNextAction(schedule = {}) {
+      const state = this.profileScheduleStateMeta(schedule);
+      if (state.section === 'drafts') return 'Resolve blockers, then activate or save draft.';
+      if (state.section === 'deactivated') return 'Activate when this source should profile again.';
+      if (state.section === 'failed') return 'Open the queue, review the failure, then run or retry.';
+      if (state.section === 'running') return 'Open queue detail to monitor current table progress.';
+      return 'Monitor next run or run now for an investigation.';
+    },
     profileCoverageModeOptions() {
       return [
         { title: 'All objects', value: 'all_objects' },
@@ -6482,6 +7736,62 @@ const appConfig = {
         total: Number(run?.summary?.coverage_assets_total || 0),
       };
     },
+    connectorRunMetadataEnrichment(run) {
+      return run?.summary?.metadata_enrichment || run?.summary?.coverage_queue_status?.metadata_enrichment || null;
+    },
+    connectorRunMetadataEnrichmentStatus(run) {
+      const enrichment = this.connectorRunMetadataEnrichment(run);
+      if (!enrichment) return 'not reported';
+      if (enrichment.status) return enrichment.status;
+      if (enrichment.attempted === false) return 'unsupported';
+      if (enrichment.failed === true) return 'failed';
+      if (enrichment.succeeded === true) return 'succeeded';
+      if (enrichment.attempted === true) return 'attempted';
+      return 'not reported';
+    },
+    connectorRunBlockedByMissingColumns(run) {
+      const summary = run?.summary || {};
+      const errors = run?.errors || [];
+      return (
+        summary.live_profile_blocked === true ||
+        /missing column metadata/i.test(summary.blocked_reason || '') ||
+        errors.some((error) => error?.code === 'PROFILE_MISSING_COLUMN_METADATA' || /missing column metadata/i.test(error?.message || ''))
+      );
+    },
+    connectorRunAffectedObjects(run) {
+      const summary = run?.summary || {};
+      const enrichment = this.connectorRunMetadataEnrichment(run) || {};
+      const errors = run?.errors || [];
+      return [
+        ...(summary.affected_objects || []),
+        ...(enrichment.affected_assets || []),
+        ...errors.flatMap((error) => error?.details?.affected_objects || []),
+      ].filter(Boolean);
+    },
+    connectorRunCounterPairs(run) {
+      const summary = run?.summary || {};
+      const queueStatus = this.connectorRunQueueStatus(run) || {};
+      return [
+        ['Actions planned', summary.actions_planned],
+        ['Columns profiled', summary.columns_profiled],
+        ['Selected this run', queueStatus.selected_for_this_run],
+        ['Coverage assets live', summary.coverage_assets_live],
+        ['Coverage assets total', summary.coverage_assets_total],
+      ].filter(([, value]) => value !== undefined && value !== null && value !== '');
+    },
+    connectorRunDisplayStatus(run) {
+      if (this.connectorRunBlockedByMissingColumns(run)) return 'blocked: missing columns';
+      return run?.status || '-';
+    },
+    connectorRunStatusColor(run) {
+      if (this.connectorRunBlockedByMissingColumns(run)) return 'error';
+      const status = String(run?.status || '').toLowerCase();
+      if (['succeeded', 'success', 'completed'].includes(status)) return 'success';
+      if (['partial_failure', 'warning', 'running_with_errors'].includes(status)) return 'warning';
+      if (['failed', 'failure', 'error'].includes(status)) return 'error';
+      if (['running', 'started', 'in_progress'].includes(status)) return 'info';
+      return 'secondary';
+    },
     scheduleQueueSummary(schedule) {
       const options = schedule?.options || {};
       return {
@@ -6494,11 +7804,13 @@ const appConfig = {
       const definition = this.integrations.connectorDefinitions.find((item) => item.type === type);
       return definition ? `${definition.label} (${definition.cloud})` : type;
     },
-    applyManagedConnectorSelection(connector, { focusWorkflow = false } = {}) {
+    applyManagedConnectorSelection(connector, { focusWorkflow = false, includeProfileContext = true } = {}) {
       if (!connector) return;
       this.integrations.selectedConnectorId = connector.id;
-      this.integrations.profileRunEditor.connectorId = connector.id;
-      this.integrations.profileScheduleEditor.connectorId = connector.id;
+      if (includeProfileContext) {
+        this.integrations.profileRunEditor.connectorId = connector.id;
+        this.integrations.profileScheduleEditor.connectorId = connector.id;
+      }
       this.integrations.connectorGrant.connectorId = connector.id;
       if (focusWorkflow) {
         this.integrations.connectorWorkflowTab = 'connection';
@@ -6520,11 +7832,23 @@ const appConfig = {
         Math.max(0, this.connectorWizardStepDefinitions.length - 1)
       );
       this.persistProfileOpsFocus();
-      this.loadManagedConnectorRuns(connector.id);
-      const activeSchedule = (this.integrations.profileSchedules || []).find(
-        (schedule) => schedule.connector_id === connector.id && schedule.status === 'ACTIVE'
-      );
-      if (activeSchedule) this.focusProfileSchedule(activeSchedule);
+      if (includeProfileContext) {
+        this.loadManagedConnectorRuns(connector.id);
+        const activeSchedule = (this.integrations.profileSchedules || []).find(
+          (schedule) => schedule.connector_id === connector.id && schedule.status === 'ACTIVE'
+        );
+        if (activeSchedule) this.focusProfileSchedule(activeSchedule);
+      }
+    },
+    openManagedConnection(connector) {
+      if (!connector) return;
+      this.applyManagedConnectorSelection(connector, { focusWorkflow: true, includeProfileContext: false });
+      this.loadManagedConnectorSnapshot(connector.id);
+      this.showToast(`Opened ${connector.label || connector.id}.`);
+    },
+    disableManagedConnection(connector) {
+      const name = connector?.label || connector?.id || 'this connection';
+      this.showToast(`Disable is not wired yet for ${name}; backend disable semantics are tracked outside UIWF-012.`);
     },
     useManagedConnector(connector) {
       this.applyManagedConnectorSelection(connector);
@@ -6544,19 +7868,53 @@ const appConfig = {
       this.integrations.connectorEditor.lastValidationAt = new Date().toISOString();
       this.showToast(`Testing ${connector.label || connector.id}...`);
     },
-    async runSavedConnectorTest(connector) {
+    async runSavedConnectorTest(connector, { syncEditor = false } = {}) {
       if (!connector) {
         this.showToast('Choose a saved connector first.');
         return;
       }
-      this.applyManagedConnectorSelection(connector, { focusWorkflow: true });
-      this.primeConnectorTestState(connector);
-      await this.runManagedConnector(
-        connector.id,
-        this.selectedConnectorWizard.recommended_test_options || { dry_run: false }
-      );
-      if (this.selectedConnectorWizard.supports_discovery) {
-        this.integrations.connectorEditor.discoverySummary = this.integrations.connectorSnapshot || null;
+      if (syncEditor) {
+        this.applyManagedConnectorSelection(connector, { focusWorkflow: true });
+        this.primeConnectorTestState(connector);
+      } else {
+        this.showToast(`Testing ${connector.label || connector.id}...`);
+      }
+      this.setConnectorRowTestState(connector.id, { loading: true, status: 'testing', error: null, test: null });
+      try {
+        const testTimeoutMs = connector.type === 'ssis' ? 45000 : 15000;
+        const payload = await this.api(`/api/v1/connectors/${encodeURIComponent(connector.id)}/test`, {
+          method: 'POST',
+          body: JSON.stringify({ timeout_ms: testTimeoutMs }),
+        });
+        const test = payload.test || null;
+        if (syncEditor) {
+          this.integrations.connectorEditor.testSummary = test;
+          this.integrations.connectorEditor.discoverySummary = null;
+        }
+        this.setConnectorRowTestState(connector.id, {
+          loading: false,
+          status: test?.status || 'unknown',
+          error: test?.errors?.[0]?.message || null,
+          test,
+        });
+        this.showToast(`Connector test ${test?.status || 'completed'} in ${test?.summary?.elapsed_ms ?? '-'} ms.`);
+      } catch (err) {
+        const failure = this.buildConnectorRunFailureSummary(connector, err);
+        if (syncEditor) {
+          this.integrations.connectorEditor.testSummary = failure;
+          this.integrations.connectorEditor.discoverySummary = null;
+        }
+        this.setConnectorRowTestState(connector.id, {
+          loading: false,
+          status: 'failed',
+          error: err.message,
+          code: err.code,
+          phase: err.phase,
+          remediation: err.remediation,
+          details: err.details,
+          test: failure,
+        });
+        this.showToast(`Connector test failed: ${err.message}`);
       }
     },
     buildConnectorRunFailureSummary(connector, err) {
@@ -6585,20 +7943,41 @@ const appConfig = {
             credential_mode: credentialMode,
           },
           credential_mode: credentialMode,
+          elapsed_ms: err?.elapsed_ms || null,
+          server: config.server || config.host || '',
+          database: config.database || config.catalog || config.catalogDatabase || '',
+          phase: err?.phase || 'connection_validation',
+        },
+        diagnostics: {
+          success: false,
+          connector_id: saved.id || this.integrations.connectorEditor.id || '',
+          connector_type: saved.type || this.integrations.connectorEditor.type || '',
+          phase: err?.phase || 'connection_validation',
+          server: config.server || config.host || null,
+          database: config.database || config.catalog || config.catalogDatabase || null,
+          actionable_error: {
+            code: err?.code || 'CONNECTOR_RUN_FAILED',
+            message: err?.message || 'Connector run failed.',
+            remediation: err?.remediation || null,
+            details: err?.details || null,
+          },
         },
         errors: [
           {
             code: err?.code || 'CONNECTOR_RUN_FAILED',
             message: err?.message || 'Connector run failed.',
+            phase: err?.phase || 'connection_validation',
+            remediation: err?.remediation || null,
+            details: err?.details || null,
           },
         ],
       };
     },
     async testManagedConnector(connector) {
-      await this.runSavedConnectorTest(connector);
+      await this.runSavedConnectorTest(connector, { syncEditor: true });
     },
     async retestSelectedManagedConnector() {
-      await this.runSavedConnectorTest(this.selectedManagedConnector);
+      await this.runSavedConnectorTest(this.selectedManagedConnector, { syncEditor: true });
     },
     profileRunOptionsPayload() {
       const editor = this.integrations.profileRunEditor;
@@ -6646,7 +8025,7 @@ const appConfig = {
         this.integrations.profileRunResult = run;
         this.integrations.connectorRuns = [run, ...this.integrations.connectorRuns.filter(Boolean)].slice(0, 10);
         this.integrations.selectedConnectorRun = run;
-        this.integrations.connectorWorkflowTab = 'history';
+        this.integrations.schedulerOpsTab = 'runs';
         this.showToast(`Profile run ${run?.status || 'completed'}.`);
       } catch (err) {
         this.showToast(`Profile run failed: ${err.message}`);
@@ -6739,8 +8118,7 @@ const appConfig = {
         '';
       this.integrations.profileScheduleEditor.connectorId = connectorId;
       this.integrations.profileScheduleEditor.profileType = this.integrations.profileRunEditor.profileType;
-      this.integrations.profileScheduleEditor.dryRun =
-        this.integrations.profileRunEditor.executionMode !== 'live';
+      this.integrations.profileScheduleEditor.dryRun = false;
       this.integrations.profileScheduleEditor.assetIds = this.integrations.profileRunEditor.assetIds || '';
       this.integrations.profileScheduleEditor.streams = this.integrations.profileRunEditor.streams || '';
       this.integrations.profileScheduleEditor.coverageMode = this.integrations.profileRunEditor.coverageMode || 'all_objects';
@@ -6750,7 +8128,8 @@ const appConfig = {
       this.integrations.profileScheduleEditor.autoPublish = this.integrations.profileRunEditor.executionMode === 'live';
       this.integrations.profileScheduleEditor.publishTargets = ['devops'];
       this.initializeProfileScheduleEditor(true);
-      this.integrations.connectorWorkflowTab = 'schedule';
+      this.integrations.schedulerOpsTab = 'settings';
+      this.onViewChange('scheduler');
     },
     connectorCredentialModeOptions() {
       const modes = this.selectedConnectorDefinition?.credentialKinds || [
@@ -6850,7 +8229,7 @@ const appConfig = {
         this.integrations.connectorGrant.connectorId = editor.id;
         editor.draftMode = false;
         editor.lastResetAt = null;
-        if (!keepWorkflowTab) this.integrations.connectorWorkflowTab = 'run';
+        if (!keepWorkflowTab) this.integrations.connectorWorkflowTab = 'connection';
         this.showToast('Managed connector saved.');
         return true;
       } catch (err) {
@@ -6875,7 +8254,7 @@ const appConfig = {
         description: editor.description || '',
         credential: { mode: editor.credentialMode },
       };
-      await this.runSavedConnectorTest(connector);
+      await this.runSavedConnectorTest(connector, { syncEditor: true });
     },
     async grantManagedConnectorPermission() {
       const grant = this.integrations.connectorGrant;
@@ -6944,6 +8323,10 @@ const appConfig = {
     },
     selectConnectorRun(run) {
       this.integrations.selectedConnectorRun = run || null;
+    },
+    openConnectorRunDrawer(run) {
+      this.selectConnectorRun(run);
+      this.integrations.connectorRunDrawerOpen = Boolean(run);
     },
     connectorRunKind(run) {
       if (run?.summary?.bi_profile_run) return 'BI profile';
@@ -7122,7 +8505,10 @@ const appConfig = {
     hashText(value) {
       return String(value || '')
         .split('')
-        .reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) >>> 0, 0)
+        .reduce((hash, char) => {
+          const nextHash = Math.imul(hash, 31) + char.charCodeAt(0);
+          return nextHash < 0 ? nextHash + 0x100000000 : nextHash;
+        }, 0)
         .toString(36);
     },
     normalizeComboboxValue(value) {
@@ -8016,7 +9402,37 @@ const appConfig = {
     roleClass(role) {
       return `badge ${String(role || '').toLowerCase()}`;
     },
+    canAccessView(view) {
+      const item = this.navItems.find((navItem) => navItem.key === view);
+      if (!item) {
+        if (view === 'governance') {
+          return ['steward', 'admin'].includes(this.navigationRole);
+        }
+        return false;
+      }
+      const audience = Array.isArray(item.audience) && item.audience.length ? item.audience : ['admin'];
+      return audience.includes(this.navigationRole);
+    },
+    ensureActiveViewAllowed({ silent = false } = {}) {
+      if (this.canAccessView(this.activeView)) {
+        return true;
+      }
+      const requestedLabel = pageWorkflowMeta[this.activeView]?.title || this.activeNavItem?.label || 'That page';
+      this.activeView = 'overview';
+      if (!silent) {
+        this.showToast(`${requestedLabel} is hidden for ${this.navigationRoleLabel} navigation.`);
+      }
+      return false;
+    },
     async onViewChange(view) {
+      if (!this.canAccessView(view)) {
+        const requestedLabel = pageWorkflowMeta[view]?.title || this.navItems.find((item) => item.key === view)?.label || 'That page';
+        this.activeView = 'overview';
+        this.closeMobileSidebar();
+        this.showToast(`${requestedLabel} is hidden for ${this.navigationRoleLabel} navigation.`);
+        await this.loadActiveViewData(this.activeView);
+        return;
+      }
       this.activeView = view;
       this.closeMobileSidebar();
       await this.loadActiveViewData(view);
@@ -8042,17 +9458,21 @@ const appConfig = {
     if (Number.isFinite(requestedDepth) && requestedDepth > 0) {
       this.discoveryDepth = Math.min(Math.max(requestedDepth, 1), 5);
     }
+    if (requestedView === 'governance') {
+      this.activeView = 'governanceOps';
+    }
     if (
       requestedView &&
+      requestedView !== 'governance' &&
       [
         'discovery',
         'lineageAsk',
         'browse',
+        'assetDetail',
         'overview',
         'reports',
         'glossary',
         'products',
-        'governance',
         'integrations',
         'import',
         'scheduler',
@@ -8062,11 +9482,13 @@ const appConfig = {
     ) {
       this.activeView = requestedView;
     }
+    this.ensureActiveViewAllowed({ silent: true });
     if (!this.token || this.token === '') {
       this.setDemoMode(true);
     } else {
       await this.bootstrapData();
     }
+    this.ensureActiveViewAllowed({ silent: true });
     if (this.activeView === 'discovery' && this.selectedObjectId) {
       await nextTick();
       this.loadDiscovery();
@@ -8127,7 +9549,7 @@ const appConfig = {
           </div>
 
           <v-list density="compact" nav class="nav-list">
-            <div v-for="section in navSections" :key="section.key" class="nav-section">
+            <div v-for="section in visibleNavSections" :key="section.key" class="nav-section">
               <div v-if="!sidebarCollapsed || $vuetify.display.smAndDown" class="nav-section-label">{{ section.label }}</div>
               <v-list-item
                 v-for="item in section.items"
@@ -8150,7 +9572,7 @@ const appConfig = {
         </v-navigation-drawer>
 
         <v-main class="main">
-          <v-app-bar class="topbar" flat>
+          <v-app-bar :class="['topbar', { 'home-topbar': activeView === 'overview' }]" flat>
             <div class="topbar-left">
               <div class="topbar-nav-controls">
                 <v-btn v-if="$vuetify.display.smAndDown" icon="mdi-menu" variant="text" size="small" @click="toggleMobileSidebar" title="Open navigation"></v-btn>
@@ -8158,21 +9580,13 @@ const appConfig = {
                   <v-icon>{{ sidebarCollapsed ? 'mdi-chevron-right' : 'mdi-chevron-left' }}</v-icon>
                 </v-btn>
               </div>
-              <div class="topbar-title-block">
+              <div v-if="!['overview', 'discovery'].includes(activeView)" class="topbar-title-block">
                 <div class="topbar-kicker">{{ activeNavSection?.label || 'Workspace' }}</div>
                 <h4>{{ activePageMeta.title }}</h4>
-                <div class="user-meta">{{ currentUser?.email }} · {{ (currentUser?.roles || []).join(', ') }}</div>
+                <div class="user-meta">{{ currentUser?.email }} · {{ navigationRoleLabel }} navigation · {{ (currentUser?.roles || []).join(', ') }}</div>
               </div>
             </div>
-            <div class="d-flex align-center" style="gap: 12px; flex-wrap: wrap;">
-              <v-btn class="pill-action-btn" color="primary" size="small" @click="runRecommendedWorkflowAction">Run Next Step</v-btn>
-              <v-chip size="small" variant="flat" :color="demoModeEnabled ? 'info' : 'blue-grey-lighten-4'" :class="demoModeEnabled ? 'font-weight-bold' : 'text-blue-grey-darken-4 font-weight-bold'">
-                {{ demoModeEnabled ? 'Demo Data: ON' : 'Demo Data: OFF' }}
-              </v-chip>
-              <v-btn v-if="!hasRealData" class="pill-action-btn secondary" size="small" variant="tonal" @click="setDemoMode(!demoModeEnabled)">
-                {{ demoModeEnabled ? 'Disable Demo Data' : 'Enable Demo Data' }}
-              </v-btn>
-              <v-btn class="pill-action-btn secondary" size="small" variant="tonal" @click="bootstrapData">Refresh All</v-btn>
+            <div class="topbar-profile-area">
               <v-menu location="bottom end" :close-on-content-click="false" offset="8">
                 <template #activator="{ props }">
                   <v-btn
@@ -8265,7 +9679,7 @@ const appConfig = {
           </v-app-bar>
 
           <v-container fluid :class="['content', 'workflow-surface', 'page-' + activeView]">
-            <section class="page-intro">
+            <section v-if="!['overview', 'discovery', 'assetDetail'].includes(activeView)" class="page-intro">
               <div class="page-intro-main">
                 <span class="page-kicker">{{ activePageMeta.workflow }}</span>
                 <h1>{{ activePageMeta.title }}</h1>
@@ -8285,7 +9699,7 @@ const appConfig = {
               </div>
             </section>
 
-            <div class="telemetry-banner">
+            <div v-if="!['overview', 'discovery', 'assetDetail'].includes(activeView)" class="telemetry-banner">
               <div class="telemetry-card">
                 <span>Ingestion Health</span>
                 <strong>{{ importer.status?.status || 'monitoring' }}</strong>
@@ -8300,4909 +9714,24 @@ const appConfig = {
               </div>
             </div>
 
-            <div v-if="activeView === 'overview'">
-              <div class="search-hero" style="margin-bottom:14px;">
-                <h2>🔍 Find anything in your data catalog</h2>
-                <p>Search tables, views, procedures, functions — all in one place</p>
-                <div class="search-bar-wrap">
-                  <v-text-field
-                    v-model="browseQuery"
-                    placeholder="Search objects, owners, schemas, tags..."
-                    density="comfortable"
-                    variant="outlined"
-                    hide-details
-                    @keyup.enter="onViewChange('browse'); $nextTick(runSearch)"
-                  ></v-text-field>
-                  <v-btn color="primary" @click="onViewChange('browse'); $nextTick(runSearch)">Search</v-btn>
-                </div>
-                <div class="search-hint">&#x2318;K &nbsp;·&nbsp; Try: "sales", "revenue", a table name, or an owner</div>
-              </div>
-
-              <v-row dense>
-                <v-col cols="12">
-                  <v-card variant="outlined" style="padding:12px 16px;">
-                    <div class="section-header" style="margin-bottom:10px;">
-                      <span class="section-title">{{ resolvedPersona.charAt(0).toUpperCase() + resolvedPersona.slice(1) }} Dashboard</span>
-                    </div>
-
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-select
-                          label="Dashboard Persona"
-                          density="compact"
-                          variant="outlined"
-                          :items="personaOptions"
-                          item-title="label"
-                          item-value="value"
-                          :model-value="reports.persona"
-                          @update:model-value="setPersona"
-                        ></v-select>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="8" class="d-flex align-center" style="gap:8px;flex-wrap:wrap;">
-                        <v-chip
-                          v-for="item in personaQuickActions"
-                          :key="'persona-action-' + item.label"
-                          size="small"
-                          color="primary"
-                          variant="tonal"
-                          style="cursor:pointer;"
-                          @click="runPersonaQuickAction(item)"
-                        >{{ item.label }}</v-chip>
-                      </v-col>
-                    </v-row>
-
-                    <v-row dense style="margin-top:8px;">
-                      <v-col v-for="kpi in personaKpis" :key="'persona-kpi-' + kpi.label" cols="12" xs="6" sm="4" md="3">
-                        <v-card variant="outlined" class="kpi">
-                          <div class="value">{{ kpi.value }}</div>
-                          <div class="label">{{ kpi.label }}</div>
-                        </v-card>
-                      </v-col>
-                    </v-row>
-                  </v-card>
-                </v-col>
-
-                <v-col cols="12" sm="12" md="7" lg="8">
-                  <v-card variant="outlined">
-                    <v-card-title style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:12px;">Quality Radar</v-card-title>
-                    <v-card-text style="min-height:290px;">
-                      <div class="quality-radar-bars" v-if="qualityRadarSignals.length">
-                        <div
-                          v-for="signal in qualityRadarSignals"
-                          :key="'quality-radar-' + signal.key"
-                          class="quality-radar-row"
-                        >
-                          <div class="quality-radar-label">
-                            <strong>{{ signal.label }}</strong>
-                            <span>{{ signal.value }}</span>
-                          </div>
-                          <div class="quality-radar-track">
-                            <div
-                              class="quality-radar-fill"
-                              :class="signal.passing ? 'pass' : 'gap'"
-                              :style="{ width: Math.max(3, Number(signal.percentage || 0)) + '%' }"
-                            ></div>
-                          </div>
-                          <div class="quality-radar-score">{{ signal.percentage || 0 }}%</div>
-                        </div>
-                      </div>
-                      <div v-else class="empty">Load data to see quality signals.</div>
-                    </v-card-text>
-                  </v-card>
-                </v-col>
-
-                <v-col cols="12" sm="12" md="5" lg="4">
-                  <v-card variant="outlined">
-                    <v-card-title style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:12px;">Persona Insights</v-card-title>
-                    <v-card-text>
-                      <ul class="persona-insight-list">
-                        <li v-for="insight in personaInsights" :key="'insight-' + insight">{{ insight }}</li>
-                      </ul>
-
-                      <h4 style="margin:12px 0 8px;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;">Quality Checks</h4>
-                      <div class="check-list" v-if="quality && (quality.signals?.length || quality.checks)">
-                        <div v-for="signal in (quality.signals || [])" :key="signal.key" class="check-item" :class="signal.passing ? 'pass' : 'fail'">
-                          <span v-if="signal.passing" class="check-icon">&#10003;</span>
-                          <span v-else class="check-icon">&#10007;</span>
-                          <span class="check-label">{{ signal.label }} · {{ signal.value }}</span>
-                          <v-chip size="x-small" :class="signal.passing ? 'analyst' : 'admin'" variant="flat">{{ signal.percentage }}%</v-chip>
-                        </div>
-                        <div v-if="!(quality.signals || []).length" v-for="(val, key) in quality.checks" :key="key" class="check-item" :class="val ? 'pass' : 'fail'">
-                          <span v-if="val" class="check-icon">&#10003;</span>
-                          <span v-else class="check-icon">&#10007;</span>
-                          <span class="check-label">{{ key.replace(/([A-Z])/g,' $1').replace(/^./,s=>s.toUpperCase()) }}</span>
-                          <v-chip size="x-small" :class="val ? 'analyst' : 'admin'" variant="flat">{{ val ? 'Pass' : 'Fail' }}</v-chip>
-                        </div>
-                      </div>
-                      <div v-else class="empty">Load data to see quality checks.</div>
-                    </v-card-text>
-                  </v-card>
-                </v-col>
-
-                <v-col cols="12" sm="12" md="8" lg="8">
-                  <v-card variant="outlined">
-                    <v-card-title style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);margin-bottom:12px;">Recent Catalog Objects</v-card-title>
-                    <v-card-text>
-                      <div class="asset-results">
-                        <div
-                          v-for="obj in (overviewRecentObjects.length ? overviewRecentObjects : (demoModeEnabled ? demoSnapshot.objects : []))"
-                          :key="obj.id"
-                          class="asset-card"
-                          :class="{ selected: selectedObjectId === obj.id }"
-                          @click="selectedObjectId = obj.id; onViewChange('browse'); $nextTick(()=>{ browseQuery=obj.name; runSearch(); })"
-                        >
-                          <div class="asset-type-icon" :class="'type-' + (obj.type === 'storedProcedure' ? 'proc' : obj.type === 'function' ? 'fn' : obj.type || 'other')">
-                            {{ obj.type === 'table' ? 'T' : obj.type === 'view' ? 'V' : obj.type === 'storedProcedure' ? 'P' : obj.type === 'function' ? 'F' : obj.type === 'trigger' ? 'TR' : '?' }}
-                          </div>
-                          <div class="asset-body">
-                            <div class="asset-name">
-                              {{ obj.name || obj.id }}
-                              <span class="badge" v-if="obj.sensitivity !== 'confidential'">Verified</span>
-                              <span class="trust-deprecated badge" v-else-if="obj.sensitivity === 'confidential'">&#128274; Confidential</span>
-                            </div>
-                            <div class="asset-description">{{ obj.description || 'No description available.' }}</div>
-                            <div class="asset-meta">
-                              <v-chip size="x-small" variant="tonal" class="schema-badge">{{ obj.database || 'unknown' }}</v-chip>
-                              <v-chip size="x-small" variant="outlined" class="owner-chip">&#128100; {{ obj.owner || 'unassigned' }}</v-chip>
-                              <v-chip size="x-small" variant="outlined" class="type-chip">{{ obj.type || 'object' }}</v-chip>
-                              <v-chip size="x-small" variant="tonal" :color="qualityScoreColor(qualityScoreForItem(obj))">Quality {{ qualityScoreForItem(obj) ?? 'n/a' }}</v-chip>
-                              <v-chip size="x-small" variant="outlined">Trend {{ qualityTrendLabel(obj) }}</v-chip>
-                            </div>
-                          </div>
-                          <div class="asset-actions">
-                            <v-btn size="small" variant="outlined" append-icon="mdi-open-in-new" @click.stop="selectedObjectId = obj.id; onViewChange('discovery'); $nextTick(loadDiscovery)">Lineage</v-btn>
-                          </div>
-                        </div>
-                        <div v-if="!(overviewRecentObjects.length || (demoModeEnabled && demoSnapshot.objects.length))" class="empty-state">
-                          <div class="empty-state-icon">&#128193;</div>
-                          <h4>{{ catalogHasLoadedObjects ? 'Catalog loaded, examples unavailable' : 'No catalog objects yet' }}</h4>
-                          <p v-if="catalogHasLoadedObjects">The dashboard has loaded catalog totals, but no sample objects were returned for this card.</p>
-                          <p v-else>Connect to SQL Server or upload markdown files to populate your catalog.</p>
-                          <v-btn color="primary" @click="catalogHasLoadedObjects ? onViewChange('browse') : onViewChange('import')">{{ catalogHasLoadedObjects ? 'Open Catalog Search' : 'Go to Ingestion' }}</v-btn>
-                        </div>
-                      </div>
-                    </v-card-text>
-                  </v-card>
-                </v-col>
-
-                <v-col cols="12" sm="12" md="4" lg="4">
-                  <v-card variant="outlined" style="padding:24px;border-radius:16px;box-shadow:0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);margin-bottom:24px;background:rgba(255,255,255,0.74);backdrop-filter:blur(12px);">
-                    <v-card-title style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#64748b;margin-bottom:16px;">Pipeline Progress</v-card-title>
-                    <v-card-text style="padding:0;">
-                      <div class="workflow-progress" style="margin-bottom:16px;border-radius:9999px;overflow:hidden;">
-                        <div class="workflow-progress-bar" :style="{ width: workflowProgressPercent + '%' }"></div>
-                      </div>
-                      <div style="font-size:12px;color:#64748b;line-height:1.6;margin-bottom:16px;">{{ workflowProgressPercent }}% of governance pipeline complete</div>
-                      <div class="mini-stack">
-                        <div
-                          v-for="step in importWorkflowSteps"
-                          :key="'ov-wf-' + step.key"
-                          class="mini-metric"
-                          style="cursor:pointer;padding:16px 20px;border-radius:12px;border:1px solid rgba(226,232,240,0.8);box-shadow:0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);"
-                          @click="jumpToWorkflowStep(step)"
-                        >
-                          <span>{{ step.label }}</span>
-                          <v-chip size="x-small" variant="flat" :color="step.done ? 'success' : 'amber-lighten-2'" :class="step.done ? 'font-weight-bold' : 'text-grey-darken-4 font-weight-bold'">{{ step.done ? 'Done' : 'Pending' }}</v-chip>
-                        </div>
-                      </div>
-                      <div class="btn-row" style="margin-top:16px;">
-                        <v-btn block class="pill-action-btn" color="primary" @click="runRecommendedWorkflowAction">
-                          ► {{ recommendedWorkflowAction.label }}
-                        </v-btn>
-                      </div>
-
-                      <h4 style="margin:24px 0 12px;font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;">Platform Health</h4>
-                      <div class="mini-stack">
-                        <div class="mini-metric">
-                          <span>Search Index</span>
-                          <v-chip size="x-small" variant="flat" :color="isElasticsearchHealthy ? 'success' : 'blue-grey-lighten-4'" :class="isElasticsearchHealthy ? 'font-weight-bold' : 'text-blue-grey-darken-4 font-weight-bold'">{{ elasticsearchStatusLabel }}</v-chip>
-                        </div>
-                        <div class="mini-metric">
-                          <span>Demo Mode</span>
-                          <v-chip size="x-small" variant="flat" :color="demoModeEnabled ? 'info' : 'blue-grey-lighten-4'" :class="demoModeEnabled ? 'font-weight-bold' : 'text-blue-grey-darken-4 font-weight-bold'">{{ demoModeEnabled ? 'ON' : 'OFF' }}</v-chip>
-                        </div>
-                        <div class="mini-metric">
-                          <span>Data Objects</span>
-                          <strong>{{ executiveReportMetrics.objects }}</strong>
-                        </div>
-                        <div class="mini-metric">
-                          <span>Quality Score</span>
-                          <strong>{{ executiveReportMetrics.qualityScore || '-' }}</strong>
-                        </div>
-                      </div>
-                    </v-card-text>
-                  </v-card>
-                </v-col>
-              </v-row>
-            </div>
-
-            <div v-if="activeView === 'browse'">
-              <div class="search-hero catalog-search-panel" style="margin-bottom:14px;">
-                <div class="catalog-search-mode-row">
-                  <v-btn-toggle v-model="browseMode" density="comfortable" mandatory variant="outlined">
-                    <v-btn value="search" prepend-icon="mdi-magnify" @click="setBrowseMode('search')">Search</v-btn>
-                    <v-btn value="browse" prepend-icon="mdi-database-search" @click="setBrowseMode('browse')">Browse by Database</v-btn>
-                  </v-btn-toggle>
-                  <v-btn size="small" variant="outlined" :loading="browseLoading || bootstrapInProgress" @click="bootstrapData">Refresh Catalog</v-btn>
-                </div>
-
-                <div v-if="browseMode === 'search'">
-                  <h2>Search</h2>
-                  <p>Start with what you know: a table, column, owner, term, tag, or business concept.</p>
-                  <div class="search-bar-wrap catalog-search-bar">
-                  <v-text-field
-                    v-model="browseQuery"
-                    :placeholder="catalogSearchPlaceholder"
-                    variant="outlined"
-                    density="comfortable"
-                    hide-details
-                    @keyup.enter="runSearch"
-                  ></v-text-field>
-                  <v-btn color="primary" :loading="browseSearchLoading" @click="runSearch">Search</v-btn>
-                  </div>
-                </div>
-
-                <div v-else>
-                  <h2>Browse by database</h2>
-                  <p>Choose a cataloged database to inspect its schemas and objects. Empty databases are hidden from this list.</p>
-                  <div class="search-bar-wrap catalog-search-bar">
-                    <v-select
-                      :model-value="selectedBrowseDatabase"
-                      :items="catalogDatabaseOptions"
-                      item-title="title"
-                      item-value="value"
-                      placeholder="Choose a database..."
-                      variant="outlined"
-                      density="comfortable"
-                      hide-details
-                      @update:model-value="selectBrowseDatabase"
-                    ></v-select>
-                    <v-btn color="primary" :disabled="!selectedBrowseDatabase" @click="selectBrowseDatabase(selectedBrowseDatabase)">Open</v-btn>
-                  </div>
-                </div>
-
-                <div class="catalog-helper-grid">
-                  <button
-                    v-for="helper in catalogHelperActions"
-                    :key="'catalog-helper-' + helper.key"
-                    type="button"
-                    class="catalog-helper-card"
-                    @click="applyCatalogHelper(helper.key)"
-                  >
-                    <v-icon size="18">{{ helper.icon }}</v-icon>
-                    <span>
-                      <strong>{{ helper.label }}</strong>
-                      <small>{{ helper.description }}</small>
-                    </span>
-                  </button>
-                </div>
-
-                <div class="search-hint">
-                  {{ catalogResultSummary }} · {{ browseCatalogStatusText }}
-                </div>
-                <div v-if="browseSearchWarning" class="search-hint" style="color:#fbbf24;">{{ browseSearchWarning }}</div>
-                <div v-if="browseLoadError" class="search-hint" style="color:#f87171;">Catalog load issue: {{ browseLoadError }}</div>
-                <div
-                  v-if="hasStaleDemoCatalogState"
-                  class="search-hint"
-                  style="color:#fbbf24;font-weight:700;"
-                >
-                  Demo rows were still in this browser session. Click Load Catalog or refresh to reload the markdown catalog.
-                </div>
-              </div>
-
-              <v-row>
-                <v-col v-if="catalogSearchHasStarted && browseMode === 'search'" cols="12" md="3" lg="2">
-                <div class="facet-rail">
-                  <div class="facet-rail-title">Filters</div>
-
-                  <div class="facet-group" v-if="browseTypeTabs.length">
-                    <div class="facet-group-title">Asset Type</div>
-                    <div class="btn-row" style="gap:6px;flex-wrap:wrap;">
-                      <v-chip
-                        v-for="tab in browseTypeTabs"
-                        :key="tab.type"
-                        size="small"
-                        :color="selectedFacetFilters.types.includes(tab.type) ? 'primary' : undefined"
-                        :variant="selectedFacetFilters.types.includes(tab.type) ? 'flat' : 'outlined'"
-                        style="cursor:pointer;"
-                        @click="toggleBrowseFacet('types', tab.type)"
-                      >
-                        {{ tab.label }} ({{ tab.count }})
-                      </v-chip>
-                    </div>
-                  </div>
-
-                  <div class="facet-group" v-if="browseFacetOptions.quality.some((qualityName) => (browseFacetCounts.quality[qualityName] || 0) > 0)">
-                    <div class="facet-group-title">Quality</div>
-                    <div class="btn-row" style="gap:6px;flex-wrap:wrap;">
-                      <v-chip
-                        v-for="qualityName in browseFacetOptions.quality"
-                        v-show="(browseFacetCounts.quality[qualityName] || 0) > 0"
-                        :key="qualityName"
-                        size="small"
-                        :color="selectedFacetFilters.quality.includes(qualityName) ? 'primary' : undefined"
-                        :variant="selectedFacetFilters.quality.includes(qualityName) ? 'flat' : 'outlined'"
-                        style="cursor:pointer;"
-                        @click="toggleBrowseFacet('quality', qualityName)"
-                      >{{ qualityName.charAt(0).toUpperCase() + qualityName.slice(1) }} ({{ browseFacetCounts.quality[qualityName] || 0 }})</v-chip>
-                    </div>
-                  </div>
-
-                  <div class="facet-group" v-if="browseFacetOptions.databases.length">
-                    <div class="facet-group-title">Database</div>
-                    <div class="btn-row" style="gap:6px;flex-wrap:wrap;">
-                      <v-chip
-                        v-for="dbName in browseFacetOptions.databases"
-                        v-show="(browseFacetCounts.databases[dbName] || 0) > 0"
-                        :key="dbName"
-                        size="small"
-                        :color="selectedFacetFilters.databases.includes(dbName) ? 'primary' : undefined"
-                        :variant="selectedFacetFilters.databases.includes(dbName) ? 'flat' : 'outlined'"
-                        style="cursor:pointer;"
-                        @click="toggleBrowseFacet('databases', dbName)"
-                      >{{ dbName }} ({{ browseFacetCounts.databases[dbName] || 0 }})</v-chip>
-                    </div>
-                  </div>
-
-                  <div class="facet-group">
-                    <div class="facet-group-title">Sort Results</div>
-                    <v-select
-                      v-model="browseSort"
-                      density="compact"
-                      variant="outlined"
-                      hide-details
-                      :items="[
-                        { title: 'Relevance', value: 'relevance' },
-                        { title: 'Quality', value: 'quality' },
-                        { title: 'Impact', value: 'impact' },
-                        { title: 'Alphabetical', value: 'alphabetical' },
-                      ]"
-                    ></v-select>
-                  </div>
-
-                  <div style="margin-top:14px;">
-                    <v-btn block size="small" variant="outlined" @click="clearBrowseFacets">Clear Search &amp; Filters</v-btn>
-                  </div>
-
-                  <div style="margin-top:14px;" v-if="selectedFacetFilters.types.length || selectedFacetFilters.quality.length || selectedFacetFilters.databases.length">
-                    <div class="section-title" style="font-size:11px;margin-bottom:6px;">Active Filters</div>
-                    <div class="mini-stack">
-                      <div class="mini-metric" v-for="typeName in selectedFacetFilters.types" :key="'active-type-' + typeName">
-                        <span>Type</span>
-                        <strong>{{ typeName }}</strong>
-                      </div>
-                      <div class="mini-metric" v-for="qualityName in selectedFacetFilters.quality" :key="'active-quality-' + qualityName">
-                        <span>Quality</span>
-                        <strong>{{ qualityName }}</strong>
-                      </div>
-                      <div class="mini-metric" v-for="databaseName in selectedFacetFilters.databases" :key="'active-db-' + databaseName">
-                        <span>DB</span>
-                        <strong>{{ databaseName }}</strong>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div style="margin-top:14px;">
-                    <div class="section-title" style="font-size:11px;margin-bottom:6px;">Object Detail</div>
-                    <div class="form-row" style="grid-template-columns:1fr auto;">
-                      <v-text-field v-model="selectedObjectId" placeholder="Object ID" density="compact" variant="outlined" hide-details></v-text-field>
-                      <v-btn size="small" color="primary" @click="loadObjectContext">Go</v-btn>
-                    </div>
-                  </div>
-                </div>
-                </v-col>
-
-                <v-col cols="12" :md="catalogSearchHasStarted && browseMode === 'search' ? 9 : 12" :lg="catalogSearchHasStarted && browseMode === 'search' ? 10 : 12">
-                <div>
-                  <div class="section-header" style="margin-bottom:10px;">
-                    <span class="section-title">
-                      {{ catalogResultSummary }}
-                    </span>
-                    <div class="btn-row">
-                      <v-btn v-if="browseSearchSubmitted" size="small" variant="outlined" append-icon="mdi-refresh" :loading="browseSearchLoading" @click="runSearch">Refresh Results</v-btn>
-                      <v-btn v-if="catalogSearchHasStarted" size="small" variant="outlined" @click="clearBrowseFacets">Clear</v-btn>
-                    </div>
-                  </div>
-
-                  <div v-if="browseMode === 'browse' && selectedBrowseDatabase && browseTreeRoots().length" class="schema-explorer catalog-schema-explorer" style="margin-bottom:14px;">
-                    <div class="section-header" style="margin-bottom:10px;">
-                      <span class="section-title">Schema Explorer</span>
-                      <span class="text-small">{{ browseTreeRoots().length }} namespaces</span>
-                    </div>
-                    <v-expansion-panels variant="accordion" density="compact">
-                      <v-expansion-panel v-for="group in browseTreeRoots()" :key="group.key">
-                        <v-expansion-panel-title>
-                          <div class="d-flex align-center" style="gap:10px;">
-                            <v-icon start class="mr-2">mdi-folder-outline</v-icon>
-                            <strong>{{ group.key }}</strong>
-                            <v-chip size="x-small" variant="tonal">{{ group.children.length }}</v-chip>
-                          </div>
-                        </v-expansion-panel-title>
-                        <v-expansion-panel-text>
-                          <div class="mini-stack">
-                            <div
-                              v-for="item in group.children.slice(0, 6)"
-                              :key="'tree-' + item.id"
-                              class="mini-metric"
-                              style="cursor:pointer;"
-                              @click="selectedObjectId = item.id; loadObjectContext(); onViewChange('discovery')"
-                            >
-                              <span>{{ item.name || item.id }}</span>
-                              <strong>{{ item.type || 'object' }}</strong>
-                            </div>
-                          </div>
-                        </v-expansion-panel-text>
-                      </v-expansion-panel>
-                    </v-expansion-panels>
-                  </div>
-
-                  <div class="asset-results" v-if="catalogSearchHasStarted && filteredCatalogResults.length > 0">
-                    <div
-                      v-for="item in filteredCatalogResults"
-                      :key="item.id || item.name"
-                      class="asset-card"
-                      :class="{ selected: selectedObjectId === (item.id || item.name) }"
-                      @click="selectedObjectId = item.id || item.name; loadObjectContext()"
-                    >
-                      <div class="asset-type-icon" :class="'type-' + (item.type === 'storedProcedure' ? 'proc' : item.type === 'function' ? 'fn' : item.type || 'other')">
-                        {{ item.type === 'table' ? 'T' : item.type === 'view' ? 'V' : item.type === 'storedProcedure' ? 'P' : item.type === 'function' ? 'F' : item.type === 'trigger' ? 'TR' : '?' }}
-                      </div>
-                      <div class="asset-body">
-                        <div class="asset-name">
-                          <strong>{{ item.name || item.id }}</strong>
-                          <v-chip size="x-small" :class="item.resultRank <= 3 ? 'poweruser' : 'viewer'" variant="flat">#{{ item.resultRank }}</v-chip>
-                          <v-chip size="x-small" variant="tonal" color="success" v-if="item.sensitivity !== 'confidential' && item.sensitivity !== 'restricted'">Verified</v-chip>
-                          <v-chip size="x-small" variant="tonal" color="amber" v-else-if="item.sensitivity === 'restricted'">Restricted</v-chip>
-                          <v-chip size="x-small" variant="tonal" color="error" v-else-if="item.sensitivity === 'confidential'">Confidential</v-chip>
-                        </div>
-                        <div class="asset-description">{{ item.description || 'No description available - help improve coverage by adding one.' }}</div>
-                        <div class="asset-meta">
-                          <v-chip size="x-small" variant="tonal" class="schema-badge">{{ item.database || item.schema || 'unknown' }}</v-chip>
-                          <v-chip size="x-small" variant="outlined" class="owner-chip">&#128100; {{ item.owner || 'unassigned' }}</v-chip>
-                          <v-chip size="x-small" variant="outlined" class="type-chip">{{ item.type || 'object' }}</v-chip>
-                          <v-chip v-if="item.sensitivity" size="x-small" :class="'sens-' + item.sensitivity" variant="flat">{{ item.sensitivity }}</v-chip>
-                          <v-chip v-if="item.trust_level" size="x-small" class="analyst" variant="flat">Trust: {{ item.trust_level }}</v-chip>
-                          <v-chip v-if="item.certified" size="x-small" class="poweruser" variant="flat">Certified</v-chip>
-                          <v-chip size="x-small" variant="tonal" :color="qualityScoreColor(qualityScoreForItem(item))">Quality {{ qualityScoreForItem(item) ?? 'n/a' }}</v-chip>
-                          <v-chip size="x-small" variant="outlined">Trend {{ qualityTrendLabel(item) }}</v-chip>
-                          <v-chip
-                            v-for="cls in (item.classifications || []).slice(0, 3)"
-                            :key="(item.id || item.name) + '-cls-' + cls"
-                            class="viewer"
-                            size="x-small"
-                            variant="flat"
-                          >{{ cls }}</v-chip>
-                        </div>
-                      </div>
-                      <div class="asset-actions">
-                        <v-btn size="small" variant="outlined" append-icon="mdi-open-in-new" @click.stop="selectedObjectId = item.id || item.name; onViewChange('discovery'); $nextTick(loadDiscovery)">Lineage</v-btn>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div v-else class="card">
-                    <div class="empty-state">
-                      <div class="empty-state-icon">&#128269;</div>
-                      <h4 v-if="!catalogSearchHasStarted">Start with search or browse</h4>
-                      <h4 v-else-if="browseMode === 'browse' && !selectedBrowseDatabase">Choose a database</h4>
-                      <h4 v-else>No catalog objects found</h4>
-                      <p v-if="browseLoadError">The catalog API did not load: {{ browseLoadError }}</p>
-                      <p v-else-if="hasStaleDemoCatalogState">This browser was holding demo results. Reload the catalog to replace them with markdown data.</p>
-                      <p v-else-if="!catalogSearchHasStarted">Search for an asset, use a helper, or switch to Browse by Database to inspect cataloged databases.</p>
-                      <p v-else-if="browseMode === 'browse' && !selectedBrowseDatabase">Only databases with cataloged objects appear in the dropdown above.</p>
-                      <p v-else-if="browseSearchSubmitted">No markdown catalog objects matched this search. Try a broader term or clear filters.</p>
-                      <p v-else>No objects matched the selected database and filters.</p>
-                      <v-btn v-if="catalogSearchHasStarted" color="primary" @click="clearBrowseFacets">Clear Search &amp; Filters</v-btn>
-                      <v-btn style="margin-left:8px;" variant="outlined" :loading="browseLoading || bootstrapInProgress" @click="bootstrapData">Refresh Catalog</v-btn>
-                    </div>
-                  </div>
-
-                  <div class="detail-panel mt-12" v-if="selectedObjectDetail">
-                    <div class="detail-header">
-                      <div class="detail-header-row">
-                        <div class="asset-type-icon" :class="'type-' + (selectedObjectDetail.type === 'storedProcedure' ? 'proc' : selectedObjectDetail.type === 'function' ? 'fn' : selectedObjectDetail.type || 'other')">
-                          {{ selectedObjectDetail.type === 'table' ? 'T' : selectedObjectDetail.type === 'view' ? 'V' : selectedObjectDetail.type === 'storedProcedure' ? 'P' : 'F' }}
-                        </div>
-                        <div>
-                          <div class="detail-name">{{ selectedObjectDetail.id || selectedObjectId }}</div>
-                          <div class="detail-path">{{ selectedObjectDetail.database }}.{{ selectedObjectDetail.name }}</div>
-                          <div class="asset-meta mt-4">
-                            <v-chip size="x-small" variant="tonal" color="success">Verified</v-chip>
-                            <v-chip size="x-small" class="type-chip" variant="outlined">{{ selectedObjectDetail.type }}</v-chip>
-                            <v-chip size="x-small" class="owner-chip" variant="outlined">&#128100; {{ selectedObjectDetail.owner || 'unassigned' }}</v-chip>
-                            <v-chip
-                              v-if="selectedObjectDetail.lineage_status"
-                              size="x-small"
-                              :class="selectedObjectDetail.external_source ? 'poweruser' : 'analyst'"
-                              variant="flat"
-                            >{{ lineageStatusLabel(selectedObjectDetail.lineage_status) }}</v-chip>
-                            <v-chip
-                              v-if="selectedObjectDetail.external_source"
-                              size="x-small"
-                              class="viewer"
-                              variant="flat"
-                            >External Source</v-chip>
-                            <v-chip v-if="selectedObjectGovernance?.trust?.trust_level" size="x-small" class="analyst" variant="flat">{{ selectedObjectGovernance.trust.trust_level }}</v-chip>
-                            <v-chip v-if="selectedObjectGovernance?.trust?.certified" size="x-small" class="poweruser" variant="flat">Certified</v-chip>
-                            <v-chip size="x-small" variant="tonal" :color="qualityScoreColor(qualityScoreForItem(selectedObjectDetail))">Quality {{ qualityScoreForItem(selectedObjectDetail) ?? 'n/a' }}</v-chip>
-                            <v-chip size="x-small" variant="outlined">Trend {{ qualityTrendLabel(selectedObjectDetail) }}</v-chip>
-                          </div>
-                          <div v-if="selectedObjectDetail.external_source" style="margin-top:8px;font-size:12px;color:var(--text-muted);">
-                            This table is source-owned in the current corpus, so created_by is intentionally empty until a local writer is discovered.
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="detail-body">
-                      <div class="tab-row">
-                        <v-btn size="small" variant="flat" color="primary">Overview</v-btn>
-                        <v-btn size="small" variant="outlined" append-icon="mdi-open-in-new" @click="onViewChange('discovery'); $nextTick(loadDiscovery)">Lineage</v-btn>
-                      </div>
-                      <p style="font-size:13px;color:var(--text-muted);">{{ selectedObjectDetail.description || 'No description available.' }}</p>
-                      <div class="asset-semantic-strip" v-if="selectedObjectGovernance?.glossary_links?.length">
-                        <div>
-                          <span>Business Terms</span>
-                          <strong>{{ selectedObjectGovernance.glossary_links.length }} mapped</strong>
-                        </div>
-                        <button
-                          v-for="term in selectedObjectGovernance.glossary_links"
-                          :key="'asset-semantic-' + term.slug"
-                          @click="onViewChange('glossary'); $nextTick(() => openGlossaryTerm(term.slug))"
-                        >{{ term.term }}</button>
-                      </div>
-                      <div class="stat-row">
-                        <div class="stat-item"><div class="stat-value">{{ selectedObjectDetail.upstreamCount || '-' }}</div><div class="stat-label">Upstream</div></div>
-                        <div class="stat-item"><div class="stat-value">{{ selectedObjectDetail.downstreamCount || '-' }}</div><div class="stat-label">Downstream</div></div>
-                        <div class="stat-item"><div class="stat-value">{{ selectedObjectDetail.sensitivity || '-' }}</div><div class="stat-label">Sensitivity</div></div>
-                        <div class="stat-item"><div class="stat-value">{{ selectedObjectGovernance?.trust?.score || '-' }}</div><div class="stat-label">Trust Score</div></div>
-                        <div class="stat-item"><div class="stat-value">{{ qualityScoreForItem(selectedObjectDetail) ?? '-' }}</div><div class="stat-label">Quality Score</div></div>
-                        <div class="stat-item"><div class="stat-value">{{ qualityTrendLabel(selectedObjectDetail) }}</div><div class="stat-label">Quality Trend</div></div>
-                      </div>
-                      <div class="schema-column-browser mt-12" v-if="selectedObjectDictionary">
-                        <div class="section-header" style="margin-bottom:10px;">
-                          <span class="section-title">Column Dictionary</span>
-                          <div class="btn-row">
-                            <v-chip size="x-small" variant="tonal">{{ selectedObjectDictionary.columns?.length || 0 }} columns</v-chip>
-                            <v-btn
-                              size="small"
-                              variant="outlined"
-                              append-icon="mdi-download"
-                              @click="downloadObjectDictionary"
-                            >Export</v-btn>
-                          </div>
-                        </div>
-                        <v-table density="compact" class="dictionary-table">
-                          <thead>
-                            <tr>
-                              <th>Column</th>
-                              <th>Type</th>
-                              <th>Semantic</th>
-                              <th>Sensitivity</th>
-                              <th>Description</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr v-for="column in (selectedObjectDictionary.columns || []).slice(0, 40)" :key="'dict-column-' + column.column_id">
-                              <td><code>{{ column.name }}</code></td>
-                              <td>{{ column.data_type || '-' }}</td>
-                              <td>
-                                <v-chip size="x-small" variant="tonal" :color="column.is_metric ? 'primary' : 'blue-grey-lighten-4'">
-                                  {{ column.semantic_type || (column.is_key ? 'key' : '-') }}
-                                </v-chip>
-                              </td>
-                              <td>{{ column.sensitivity || '-' }}</td>
-                              <td>{{ column.description || '-' }}</td>
-                            </tr>
-                            <tr v-if="!(selectedObjectDictionary.columns || []).length">
-                              <td colspan="5" class="text-center">No column metadata captured yet.</td>
-                            </tr>
-                          </tbody>
-                        </v-table>
-                      </div>
-                      <div class="grid mt-12" style="grid-template-columns:1fr 1fr;gap:12px;">
-                        <v-card class="card" style="box-shadow:none;" variant="outlined">
-                          <h4>Metadata Enrichment</h4>
-                          <div class="form-row"><v-text-field v-model="editableObjectMetadata.owner" placeholder="Owner" density="compact" variant="outlined" hide-details></v-text-field></div>
-                          <div class="form-row"><v-text-field v-model="editableObjectMetadata.steward" placeholder="Steward" density="compact" variant="outlined" hide-details></v-text-field></div>
-                          <div class="form-row"><v-text-field v-model="editableObjectMetadata.domain_manager" placeholder="Domain Manager" density="compact" variant="outlined" hide-details></v-text-field></div>
-                          <div class="form-row"><v-text-field v-model="editableObjectMetadata.custodian" placeholder="Custodian" density="compact" variant="outlined" hide-details></v-text-field></div>
-                          <div class="form-row"><v-text-field v-model="editableObjectMetadata.business_domain" placeholder="Business Domain" density="compact" variant="outlined" hide-details></v-text-field></div>
-                          <div class="form-row"><v-text-field v-model="editableObjectMetadata.business_processes" placeholder="Business Processes (comma-separated)" density="compact" variant="outlined" hide-details></v-text-field></div>
-                          <div class="form-row"><v-text-field v-model="editableObjectMetadata.use_cases" placeholder="Use Cases (comma-separated)" density="compact" variant="outlined" hide-details></v-text-field></div>
-                          <div class="form-row">
-                            <v-select
-                              v-model="editableObjectMetadata.sensitivity"
-                              density="compact"
-                              variant="outlined"
-                              hide-details
-                              :items="['public','internal','confidential','restricted']"
-                            ></v-select>
-                          </div>
-                          <div class="form-row"><v-text-field v-model="editableObjectMetadata.tags" placeholder="Tags (comma-separated)" density="compact" variant="outlined" hide-details></v-text-field></div>
-                          <div class="form-row"><v-text-field v-model="editableObjectMetadata.documentation_links" placeholder="Documentation Links (comma-separated)" density="compact" variant="outlined" hide-details></v-text-field></div>
-                          <div class="form-row"><v-text-field v-model="editableObjectMetadata.related_dashboards" placeholder="Related Dashboards (comma-separated)" density="compact" variant="outlined" hide-details></v-text-field></div>
-                          <div class="form-row"><v-textarea v-model="editableObjectMetadata.business_justification" rows="3" variant="outlined" density="compact" hide-details placeholder="Business justification"></v-textarea></div>
-                          <div class="form-row"><v-textarea v-model="editableObjectMetadata.description" rows="5" variant="outlined" density="compact" hide-details placeholder="Description"></v-textarea></div>
-                          <div class="btn-row"><v-btn color="primary" @click="saveSelectedObjectMetadata">Save Markdown Metadata</v-btn></div>
-                        </v-card>
-                        <v-card class="card" style="box-shadow:none;" variant="outlined">
-                          <h4>Governance Context</h4>
-                          <div class="mini-stack">
-                            <div class="mini-metric"><span>Owner</span><strong>{{ selectedObjectGovernance?.asset?.owner || '-' }}</strong></div>
-                            <div class="mini-metric"><span>Steward</span><strong>{{ selectedObjectGovernance?.asset?.steward || '-' }}</strong></div>
-                            <div class="mini-metric"><span>Domain Manager</span><strong>{{ selectedObjectGovernance?.asset?.domain_manager || '-' }}</strong></div>
-                            <div class="mini-metric"><span>Custodian</span><strong>{{ selectedObjectGovernance?.asset?.custodian || '-' }}</strong></div>
-                          </div>
-                          <div class="mt-8" v-if="selectedObjectGovernance?.classifications?.length">
-                            <div class="section-title" style="font-size:11px;margin-bottom:6px;">Classifications</div>
-                            <div class="btn-row">
-                              <v-chip v-for="cls in selectedObjectGovernance.classifications" :key="'detail-cls-' + cls" class="viewer" size="x-small" variant="flat">{{ cls }}</v-chip>
-                            </div>
-                          </div>
-                          <div class="mt-8" v-if="selectedObjectPiiPolicy">
-                            <div class="section-title" style="font-size:11px;margin-bottom:6px;">PII Masking Policy</div>
-                            <div class="policy-summary-strip">
-                              <span :class="selectedObjectPiiPolicy.summary?.requires_masking ? 'policy-risk' : 'policy-ok'">
-                                {{ selectedObjectPiiPolicy.summary?.requires_masking ? 'Mask required' : 'No PII detected' }}
-                              </span>
-                              <strong>{{ selectedObjectPiiPolicy.summary?.pii_columns || 0 }} / {{ selectedObjectPiiPolicy.summary?.total_columns || 0 }} columns</strong>
-                            </div>
-                            <div class="policy-action-list" v-if="selectedObjectPiiPolicy.masking_actions?.length">
-                              <div v-for="action in selectedObjectPiiPolicy.masking_actions" :key="'mask-action-' + action.column_name" class="policy-action-row">
-                                <code>{{ action.column_name }}</code>
-                                <span>{{ action.strategy }}</span>
-                                <strong>{{ Math.round((action.confidence || 0) * 100) }}%</strong>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="mt-8" v-if="selectedObjectColumnSemantics?.can_answer_metric_question">
-                            <div class="section-title" style="font-size:11px;margin-bottom:6px;">Metric Columns</div>
-                            <div class="policy-action-list">
-                              <div
-                                v-for="column in selectedObjectColumnSemantics.metric_columns || []"
-                                :key="'metric-column-' + column.column_name"
-                                class="policy-action-row"
-                              >
-                                <code>{{ column.column_name }}</code>
-                                <span>{{ column.semantic_type }}</span>
-                                <strong>{{ Math.round((column.confidence || 0) * 100) }}%</strong>
-                              </div>
-                              <div v-if="!(selectedObjectColumnSemantics.metric_columns || []).length" class="policy-empty-row">
-                                No metric columns detected from current metadata.
-                              </div>
-                            </div>
-                          </div>
-                          <div class="mt-8" v-if="selectedObjectGovernance?.glossary_links?.length">
-                            <div class="section-title" style="font-size:11px;margin-bottom:6px;">Related Glossary Terms</div>
-                            <div class="btn-row">
-                              <v-btn
-                                v-for="term in selectedObjectGovernance.glossary_links"
-                                :key="term.slug"
-                                size="small"
-                                variant="outlined"
-                                @click="onViewChange('glossary'); $nextTick(() => openGlossaryTerm(term.slug))"
-                              >{{ term.term }}</v-btn>
-                            </div>
-                          </div>
-                        </v-card>
-                      </div>
-                      <div class="btn-row mt-8">
-                        <v-btn size="small" variant="outlined" @click="onViewChange('discovery'); $nextTick(loadDiscovery)">View in Lineage</v-btn>
-                        <v-btn size="small" variant="outlined" @click="buildBlastRadiusReport(); onViewChange('reports');">Blast Radius</v-btn>
-                        <v-btn size="small" color="primary" @click="syncMarketplaceFormWithSelection(); onViewChange('reports');">Request Access</v-btn>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                </div>
-                </v-col>
-              </v-row>
-            </div>
-
-            <div v-if="activeView === 'glossary'">
-              <div class="glossary-workspace">
-                <aside class="glossary-rail">
-                  <div class="glossary-rail-block">
-                    <div class="glossary-rail-title">Business Glossary</div>
-                    <div class="form-row">
-                      <v-text-field
-                        v-model="glossary.query"
-                        placeholder="Search terms, owners, synonyms..."
-                        density="compact"
-                        variant="outlined"
-                        hide-details
-                        @keyup.enter="loadGlossary"
-                      ></v-text-field>
-                    </div>
-                    <v-btn size="small" color="primary" block @click="loadGlossary">Search</v-btn>
-                    <div class="glossary-admin-actions">
-                      <v-btn size="small" variant="tonal" color="primary" @click="startGlossaryCreate">New Term</v-btn>
-                      <v-btn size="small" variant="tonal" :disabled="!glossary.selected" @click="startGlossaryEdit">Edit</v-btn>
-                    </div>
-                    <div class="glossary-domain-list" v-if="glossary.domains.length">
-                      <div class="glossary-muted-label">Domains</div>
-                      <div class="glossary-domain" v-for="domain in glossary.domains" :key="'glossary-domain-' + domain">
-                        <span>{{ domain }}</span>
-                      </div>
-                    </div>
-                    <div class="glossary-term-list">
-                      <button
-                        v-for="term in glossary.terms"
-                        :key="term.slug"
-                        class="glossary-term-button"
-                        :class="{ active: term.slug === glossary.selected?.slug }"
-                        @click="openGlossaryTerm(term.slug)"
-                      >
-                        <span class="glossary-term-name">{{ term.term }}</span>
-                        <span class="glossary-term-meta">{{ term.domain }}<template v-if="term.asset_count"> · {{ term.asset_count }} links</template></span>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div class="glossary-resolver">
-                    <div class="glossary-rail-title">Semantic Resolver</div>
-                    <v-text-field
-                      v-model="glossary.semanticQuery"
-                      placeholder="Try a business term..."
-                      density="compact"
-                      variant="outlined"
-                      hide-details
-                      @keyup.enter="resolveGlossarySemanticQuery"
-                    ></v-text-field>
-                    <v-btn class="mt-8" size="small" color="primary" block @click="resolveGlossarySemanticQuery">Resolve</v-btn>
-                    <div class="glossary-resolver-metrics" v-if="glossary.semanticResolution">
-                      <div>
-                        <span>Terms</span>
-                        <strong>{{ glossary.semanticResolution.terms?.length || 0 }}</strong>
-                      </div>
-                      <div>
-                        <span>Assets</span>
-                        <strong>{{ glossary.semanticResolution.assets?.length || 0 }}</strong>
-                      </div>
-                    </div>
-                  </div>
-                </aside>
-
-                <main class="glossary-main">
-                  <section class="glossary-record compact" v-if="glossary.editing">
-                    <div class="glossary-section-heading" style="margin-top:0;">
-                      <div>
-                        <h3>{{ glossary.editMode === 'edit' ? 'Edit Glossary Term' : 'Create Glossary Term' }}</h3>
-                        <p>Maintain the governed business definition and ownership metadata.</p>
-                      </div>
-                      <div class="btn-row">
-                        <v-btn size="small" variant="tonal" @click="cancelGlossaryEdit">Cancel</v-btn>
-                        <v-btn size="small" color="primary" @click="saveGlossaryTerm">Save Term</v-btn>
-                      </div>
-                    </div>
-                    <div class="glossary-editor-grid">
-                      <v-text-field v-model="glossary.editor.term" label="Term" density="compact" variant="outlined" hide-details></v-text-field>
-                      <v-text-field v-model="glossary.editor.domain" label="Domain" density="compact" variant="outlined" hide-details></v-text-field>
-                      <v-select v-model="glossary.editor.status" :items="['draft','approved','deprecated']" label="Status" density="compact" variant="outlined" hide-details></v-select>
-                      <v-text-field v-model="glossary.editor.parent" label="Parent slug" density="compact" variant="outlined" hide-details></v-text-field>
-                      <v-text-field v-model="glossary.editor.owner" label="Technical owner" density="compact" variant="outlined" hide-details></v-text-field>
-                      <v-text-field v-model="glossary.editor.business_owner" label="Business owner" density="compact" variant="outlined" hide-details></v-text-field>
-                      <v-text-field v-model="glossary.editor.steward" label="Steward" density="compact" variant="outlined" hide-details></v-text-field>
-                      <v-text-field v-model="glossary.editor.synonyms" label="Synonyms" density="compact" variant="outlined" hide-details></v-text-field>
-                      <v-text-field v-model="glossary.editor.related_terms" label="Related terms" density="compact" variant="outlined" hide-details></v-text-field>
-                      <v-text-field v-model="glossary.editor.tags" label="Tags" density="compact" variant="outlined" hide-details></v-text-field>
-                      <v-textarea class="glossary-editor-definition" v-model="glossary.editor.definition" label="Definition" rows="4" density="compact" variant="outlined" hide-details></v-textarea>
-                    </div>
-                    <div class="btn-row mt-12" v-if="glossary.editMode === 'edit'">
-                      <v-btn size="small" color="error" variant="tonal" @click="deleteGlossaryTerm">Delete Term</v-btn>
-                    </div>
-                  </section>
-
-                  <section class="glossary-record">
-                    <div v-if="glossary.selected">
-                      <div class="glossary-record-header">
-                        <div>
-                          <div class="glossary-kicker">{{ glossary.selected.domain }}</div>
-                          <h2>{{ glossary.selected.term }}</h2>
-                          <p v-if="glossary.selected.definition">{{ glossary.selected.definition }}</p>
-                        </div>
-                        <div class="glossary-status-stack">
-                          <span class="glossary-status approved">{{ glossary.selected.status }}</span>
-                          <span class="glossary-status">v{{ glossary.selected.version || 1 }}</span>
-                        </div>
-                      </div>
-
-                      <div class="glossary-owner-strip">
-                        <div><span>Technical Owner</span><strong>{{ glossary.selected.owner || 'unassigned' }}</strong></div>
-                        <div><span>Business Owner</span><strong>{{ glossary.selected.business_owner || '-' }}</strong></div>
-                        <div><span>Steward</span><strong>{{ glossary.selected.steward || '-' }}</strong></div>
-                        <div><span>Effective From</span><strong>{{ glossary.selected.effective_from || '-' }}</strong></div>
-                      </div>
-
-                      <div class="glossary-content-grid">
-                        <article class="glossary-definition">
-                          <div v-html="renderDocHtml(glossary.selected.body || '')"></div>
-                        </article>
-                        <aside class="glossary-facts">
-                          <div class="glossary-fact">
-                            <span>Parent Term</span>
-                            <strong>{{ glossary.selected.parent || '-' }}</strong>
-                          </div>
-                          <div class="glossary-fact">
-                            <span>Synonyms</span>
-                            <div class="glossary-chip-row">
-                              <span v-for="synonym in glossary.selected.synonyms || []" :key="'synonym-' + synonym" class="glossary-soft-chip">{{ synonym }}</span>
-                              <strong v-if="!(glossary.selected.synonyms || []).length">-</strong>
-                            </div>
-                          </div>
-                          <div class="glossary-fact">
-                            <span>Related Terms</span>
-                            <div class="glossary-chip-row">
-                              <span v-for="related in glossary.selected.related_terms || []" :key="'related-' + related" class="glossary-soft-chip">{{ related }}</span>
-                              <strong v-if="!(glossary.selected.related_terms || []).length">-</strong>
-                            </div>
-                          </div>
-                        </aside>
-                      </div>
-
-                      <div class="glossary-section-heading">
-                        <div>
-                          <h3>Mapped Technical Assets</h3>
-                          <p>Exact physical objects connected to this business term.</p>
-                        </div>
-                        <span>{{ (glossary.selected.assets || []).length }} links</span>
-                      </div>
-                      <div class="glossary-table-wrap">
-                        <table class="glossary-table">
-                          <thead>
-                            <tr>
-                              <th>Asset</th>
-                              <th>Type</th>
-                              <th>Relationship</th>
-                              <th>Confidence</th>
-                              <th>Notes</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr v-for="asset in glossary.selected.assets || []" :key="'glossary-asset-' + asset.asset_id">
-                              <td><code>{{ asset.asset_id }}</code></td>
-                              <td>{{ asset.type || 'asset' }}</td>
-                              <td>{{ asset.relationship || 'related' }}</td>
-                              <td>{{ asset.confidence || '-' }}</td>
-                              <td>{{ asset.notes || '-' }}</td>
-                            </tr>
-                            <tr v-if="!(glossary.selected.assets || []).length">
-                              <td colspan="5" class="glossary-empty-row">No physical assets linked yet.</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-
-                      <div class="glossary-mapping-panel">
-                        <div>
-                          <h3>Add Mapping</h3>
-                          <p>Attach a catalog object, table, column, package, or dashboard to this term.</p>
-                        </div>
-                        <div class="glossary-asset-search">
-                          <v-text-field v-model="glossary.assetSearchQuery" label="Find asset" density="compact" variant="outlined" hide-details @keyup.enter="searchGlossaryMappingAssets"></v-text-field>
-                          <v-btn color="primary" variant="tonal" :loading="glossary.assetSearchLoading" @click="searchGlossaryMappingAssets">Find</v-btn>
-                        </div>
-                        <div class="glossary-asset-results" v-if="glossary.assetSearchResults.length">
-                          <button
-                            v-for="asset in glossary.assetSearchResults"
-                            :key="'glossary-map-result-' + (asset.id || asset.name)"
-                            class="glossary-asset-result"
-                            @click="chooseGlossaryMappingAsset(asset)"
-                          >
-                            <strong>{{ asset.id || asset.name }}</strong>
-                            <span>{{ asset.type || 'asset' }} · {{ asset.database || 'unknown' }}</span>
-                          </button>
-                        </div>
-                        <div class="glossary-mapping-form">
-                          <v-text-field v-model="glossary.newMapping.asset_id" label="Asset id" density="compact" variant="outlined" hide-details></v-text-field>
-                          <v-select v-model="glossary.newMapping.relationship" :items="['defines','contains','reports','derived_from','related']" label="Relationship" density="compact" variant="outlined" hide-details></v-select>
-                          <v-text-field v-model.number="glossary.newMapping.confidence" label="Confidence" type="number" min="0" max="1" step="0.05" density="compact" variant="outlined" hide-details></v-text-field>
-                          <v-btn color="primary" @click="linkGlossaryAsset">Link Asset</v-btn>
-                        </div>
-                      </div>
-                    </div>
-                    <div v-else class="empty">Select a glossary term.</div>
-                  </section>
-
-                  <section class="glossary-record compact" v-if="glossary.semanticResolution?.assets?.length">
-                    <div class="glossary-section-heading">
-                      <div>
-                        <h3>Resolved Physical Assets</h3>
-                        <p>Objects found from the semantic resolver.</p>
-                      </div>
-                    </div>
-                    <div class="glossary-table-wrap">
-                      <table class="glossary-table">
-                        <thead>
-                          <tr>
-                            <th>Asset</th>
-                            <th>Type</th>
-                            <th>Reason</th>
-                            <th>Score</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="asset in glossary.semanticResolution.assets" :key="'semantic-' + asset.asset_id">
-                            <td><code>{{ asset.asset_id }}</code></td>
-                            <td>{{ asset.type }}</td>
-                            <td>{{ asset.reason }}</td>
-                            <td>{{ asset.score }}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </section>
-                </main>
-              </div>
-            </div>
-
-            <div v-if="activeView === 'products'">
-              <v-row>
-                <v-col
-                  v-for="product in productsCatalog.products"
-                  :key="product.product_id || product.slug"
-                  cols="12"
-                  md="4"
-                >
-                  <v-card class="card" variant="outlined" @click="productsCatalog.selected = product" style="cursor:pointer;">
-                    <div class="section-header" style="margin-bottom:8px;">
-                      <span class="section-title">{{ product.name }}</span>
-                      <div class="btn-row">
-                        <v-chip size="small" color="info" variant="tonal">{{ product.trust_level || 'unrated' }}</v-chip>
-                        <v-chip size="small" color="success" variant="flat" v-if="product.certified">Certified</v-chip>
-                      </div>
-                    </div>
-                    <div class="asset-meta" style="margin-bottom:8px;">
-                      <v-chip size="x-small" class="schema-badge" variant="tonal">{{ product.domain }}</v-chip>
-                      <v-chip size="x-small" class="owner-chip" variant="outlined">&#128100; {{ product.owner }}</v-chip>
-                    </div>
-                    <div class="asset-description">{{ (product.description || '').slice(0, 180) }}...</div>
-                    <div class="btn-row mt-8">
-                      <v-chip size="small" variant="outlined">{{ (product.assets || []).length }} assets</v-chip>
-                      <v-chip size="small" variant="outlined">v{{ product.version }}</v-chip>
-                    </div>
-                  </v-card>
-                </v-col>
-              </v-row>
-            </div>
-
-            <div v-if="activeView === 'governance'" class="governance-page">
-              <v-row>
-                <v-col cols="12" sm="6" md="3">
-                  <v-card class="card kpi" variant="outlined">
-                    <div class="value">{{ governance.health?.health_score || 0 }}</div>
-                    <div class="label">Governance Health</div>
-                  </v-card>
-                </v-col>
-                <v-col cols="12" sm="6" md="3">
-                  <v-card class="card kpi" variant="outlined">
-                    <div class="value">{{ governance.health?.metrics?.ownership_coverage_pct || 0 }}%</div>
-                    <div class="label">Ownership Coverage</div>
-                  </v-card>
-                </v-col>
-                <v-col cols="12" sm="6" md="3">
-                  <v-card class="card kpi" variant="outlined">
-                    <div class="value">{{ governance.health?.metrics?.classification_coverage_pct || 0 }}%</div>
-                    <div class="label">Classification Coverage</div>
-                  </v-card>
-                </v-col>
-                <v-col cols="12" sm="6" md="3">
-                  <v-card class="card kpi" variant="outlined">
-                    <div class="value">{{ governance.health?.metrics?.certified_pct || 0 }}%</div>
-                    <div class="label">Certified Assets</div>
-                  </v-card>
-                </v-col>
-                <v-col cols="12">
-                  <v-card class="card" variant="outlined">
-                    <div class="section-header" style="margin-bottom:12px;">
-                      <span class="section-title">Policy Effectiveness</span>
-                      <v-chip size="small" variant="tonal" color="primary">
-                        {{ governance.classification.policyEffectiveness?.coverage_score || 0 }} score
-                      </v-chip>
-                    </div>
-                    <div class="policy-dashboard-grid">
-                      <div class="policy-dashboard-score">
-                        <span>Classification Coverage</span>
-                        <strong>{{ governance.classification.policyEffectiveness?.classification_coverage?.percent || 0 }}%</strong>
-                        <small>{{ governance.classification.policyEffectiveness?.classification_coverage?.assets || 0 }} / {{ governance.classification.policyEffectiveness?.total_assets || 0 }} assets</small>
-                      </div>
-                      <div class="policy-dashboard-score">
-                        <span>Policy Coverage</span>
-                        <strong>{{ governance.classification.policyEffectiveness?.policy_coverage?.percent || 0 }}%</strong>
-                        <small>{{ governance.classification.policyEffectiveness?.policy_coverage?.assets || 0 }} governed assets</small>
-                      </div>
-                      <div class="policy-dashboard-score">
-                        <span>Masked Assets</span>
-                        <strong>{{ governance.classification.policyEffectiveness?.controls?.mask || 0 }}</strong>
-                        <small>Dynamic masking recommended</small>
-                      </div>
-                      <div class="policy-dashboard-score">
-                        <span>Restricted Assets</span>
-                        <strong>{{ governance.classification.policyEffectiveness?.controls?.restrict_access || 0 }}</strong>
-                        <small>Access controls recommended</small>
-                      </div>
-                    </div>
-                    <div class="policy-effectiveness-body">
-                      <div>
-                        <div class="panel-kicker">Template Coverage</div>
-                        <div class="policy-template-list">
-                          <div
-                            v-for="template in governance.classification.policyEffectiveness?.template_coverage || []"
-                            :key="'policy-template-' + template.template_id"
-                            class="policy-template-row"
-                          >
-                            <span>{{ template.template_id }}</span>
-                            <strong>{{ template.assets }}</strong>
-                          </div>
-                          <div v-if="!(governance.classification.policyEffectiveness?.template_coverage || []).length" class="policy-empty-row">
-                            No templates matched yet.
-                          </div>
-                        </div>
-                      </div>
-                      <div>
-                        <div class="panel-kicker">Gaps To Fix</div>
-                        <div class="policy-gap-list">
-                          <div
-                            v-for="gap in (governance.classification.policyEffectiveness?.gaps || []).slice(0, 6)"
-                            :key="'policy-gap-' + gap.asset_id"
-                            class="policy-gap-row"
-                          >
-                            <strong>{{ gap.asset_id }}</strong>
-                            <span>{{ gap.issue }}</span>
-                          </div>
-                          <div v-if="!(governance.classification.policyEffectiveness?.gaps || []).length" class="policy-empty-row">
-                            No current policy coverage gaps.
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </v-card>
-                </v-col>
-                <v-col cols="12">
-                  <v-card class="card" variant="outlined">
-                    <div class="section-header" style="margin-bottom:12px;">
-                      <span class="section-title">Data Quality Rules</span>
-                      <div class="btn-row">
-                        <v-btn size="small" variant="tonal" @click="startQualityRuleCreate">New Rule</v-btn>
-                        <v-btn size="small" color="primary" :loading="governance.qualityRules.loading" @click="runQualityValidation">Run Validation</v-btn>
-                        <v-btn size="small" variant="outlined" :loading="governance.qualityRules.loading" @click="buildQualityScorecard">Build Scorecard</v-btn>
-                      </div>
-                    </div>
-                    <div class="quality-rules-grid">
-                      <div class="quality-rule-panel">
-                        <div class="panel-kicker">Rules</div>
-                        <div class="quality-rule-list">
-                          <button
-                            v-for="rule in governance.qualityRules.rules"
-                            :key="'quality-rule-' + rule.id"
-                            type="button"
-                            class="quality-rule-row"
-                            :class="{ selected: governance.qualityRules.selectedRuleId === rule.id }"
-                            @click="editQualityRule(rule)"
-                          >
-                            <strong>{{ rule.name }}</strong>
-                            <span>{{ rule.asset_id }} · {{ rule.column_name || 'asset' }} · {{ qualityRuleTypeLabel(rule.type) }}</span>
-                            <v-chip size="x-small" :class="rule.severity === 'fail' ? 'admin' : rule.severity === 'critical' ? 'poweruser' : 'analyst'" variant="flat">{{ rule.severity }}</v-chip>
-                          </button>
-                          <div v-if="!governance.qualityRules.rules.length" class="policy-empty-row">No quality rules defined yet.</div>
-                        </div>
-                      </div>
-                      <div class="quality-rule-panel">
-                        <div class="panel-kicker">Rule Editor</div>
-                        <div class="quality-editor">
-                          <v-text-field v-model="governance.qualityRules.editor.name" density="compact" variant="outlined" label="Rule name" hide-details></v-text-field>
-                          <div class="quality-editor-row">
-                            <v-text-field v-model="governance.qualityRules.editor.id" density="compact" variant="outlined" label="ID" hide-details></v-text-field>
-                            <v-text-field v-model="governance.qualityRules.editor.asset_id" density="compact" variant="outlined" label="Asset ID" hide-details></v-text-field>
-                            <v-text-field v-model="governance.qualityRules.editor.column_name" density="compact" variant="outlined" label="Column" hide-details></v-text-field>
-                          </div>
-                          <div class="quality-editor-row">
-                            <v-select v-model="governance.qualityRules.editor.type" density="compact" variant="outlined" label="Type" :items="['null_percent','cardinality_bounds','range','pattern','uniqueness']" hide-details></v-select>
-                            <v-select v-model="governance.qualityRules.editor.severity" density="compact" variant="outlined" label="Severity" :items="['warning','critical','fail']" hide-details></v-select>
-                            <v-switch v-model="governance.qualityRules.editor.enabled" density="compact" label="Enabled" hide-details color="primary"></v-switch>
-                          </div>
-                          <div class="quality-editor-row four">
-                            <v-text-field v-model="governance.qualityRules.editor.threshold_min" density="compact" variant="outlined" label="Min" type="number" hide-details></v-text-field>
-                            <v-text-field v-model="governance.qualityRules.editor.threshold_max" density="compact" variant="outlined" label="Max" type="number" hide-details></v-text-field>
-                            <v-text-field v-model="governance.qualityRules.editor.threshold_min_percent" density="compact" variant="outlined" label="Min %" type="number" hide-details></v-text-field>
-                            <v-text-field v-model="governance.qualityRules.editor.threshold_min_match_percent" density="compact" variant="outlined" label="Min match %" type="number" hide-details></v-text-field>
-                          </div>
-                          <div class="quality-editor-row two">
-                            <v-text-field v-model="governance.qualityRules.editor.schedule" density="compact" variant="outlined" label="Schedule" hide-details></v-text-field>
-                            <v-text-field v-model="governance.qualityRules.editor.alert_routes" density="compact" variant="outlined" label="Alert routes" hide-details></v-text-field>
-                          </div>
-                          <div class="btn-row">
-                            <v-btn size="small" color="primary" :loading="governance.qualityRules.loading" @click="saveQualityRule">Save Rule</v-btn>
-                            <v-btn size="small" variant="tonal" color="error" :disabled="!governance.qualityRules.selectedRuleId" @click="deleteQualityRule()">Delete</v-btn>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="quality-rule-panel">
-                        <div class="panel-kicker">Validation Runner</div>
-                        <div class="quality-editor">
-                          <v-text-field v-model="governance.qualityRules.runProfile.asset_id" density="compact" variant="outlined" label="Profile asset ID" hide-details></v-text-field>
-                          <v-text-field v-model="governance.qualityRules.runProfile.column_name" density="compact" variant="outlined" label="Profile column" hide-details></v-text-field>
-                          <div class="quality-editor-row two">
-                            <v-text-field v-model="governance.qualityRules.runProfile.row_count" density="compact" variant="outlined" label="Rows" type="number" hide-details></v-text-field>
-                            <v-text-field v-model="governance.qualityRules.runProfile.null_count" density="compact" variant="outlined" label="Nulls" type="number" hide-details></v-text-field>
-                          </div>
-                          <div class="quality-editor-row three">
-                            <v-text-field v-model="governance.qualityRules.runProfile.distinct_count" density="compact" variant="outlined" label="Distinct" type="number" hide-details></v-text-field>
-                            <v-text-field v-model="governance.qualityRules.runProfile.min" density="compact" variant="outlined" label="Min" type="number" hide-details></v-text-field>
-                            <v-text-field v-model="governance.qualityRules.runProfile.max" density="compact" variant="outlined" label="Max" type="number" hide-details></v-text-field>
-                          </div>
-                          <v-text-field v-model="governance.qualityRules.runProfile.pattern_match_percent" density="compact" variant="outlined" label="Pattern match %" type="number" hide-details></v-text-field>
-                        </div>
-                        <div class="btn-row mt-8">
-                          <v-btn size="small" variant="tonal" color="primary" @click="loadQualityTrend()">Load Trend</v-btn>
-                          <v-btn size="small" variant="outlined" @click="exportQualityScorecard('json')">Export JSON</v-btn>
-                          <v-btn size="small" variant="outlined" @click="exportQualityScorecard('csv')">Export CSV</v-btn>
-                        </div>
-                        <div class="quality-execution-summary" v-if="governance.qualityRules.executions.length">
-                          <strong>{{ governance.qualityRules.executions[0].status }}</strong>
-                          <span>{{ governance.qualityRules.executions[0].passed }} passed · {{ governance.qualityRules.executions[0].failed }} failed</span>
-                        </div>
-                        <div class="quality-scorecard-strip" v-if="governance.qualityRules.scorecard">
-                          <div>
-                            <span>Quality Score</span>
-                            <strong>{{ governance.qualityRules.scorecard.overall_score }}</strong>
-                          </div>
-                          <div>
-                            <span>Analytics Fitness</span>
-                            <strong>{{ governance.qualityRules.scorecard.fitness?.analytics }}</strong>
-                          </div>
-                          <div>
-                            <span>Export</span>
-                            <strong>{{ governance.qualityRules.scorecardExport?.content_type || 'not generated' }}</strong>
-                          </div>
-                        </div>
-                        <div class="quality-trend-panel" v-if="governance.qualityRules.trend">
-                          <div class="quality-trend-header">
-                            <strong>{{ governance.qualityRules.trend.asset_id }}</strong>
-                            <span>{{ qualityTrendBars.length }} trend point(s)</span>
-                          </div>
-                          <div class="quality-sparkline" v-if="qualityTrendBars.length">
-                            <div
-                              v-for="(point, index) in qualityTrendBars"
-                              :key="'quality-trend-' + index + '-' + point.label"
-                              class="quality-spark-bar"
-                              :title="point.metric + ' ' + point.value + ' on ' + point.label"
-                            >
-                              <span :style="{ height: Math.max(6, Math.min(100, point.value)) + '%' }"></span>
-                              <small>{{ point.label }}</small>
-                            </div>
-                          </div>
-                          <div v-else class="policy-empty-row">No trend history yet. Build a scorecard or run validation to create the first point.</div>
-                        </div>
-                        <div class="quality-incident-list">
-                          <div v-for="incident in governance.qualityRules.incidents.slice(0, 5)" :key="'quality-incident-' + incident.id" class="quality-incident-row">
-                            <strong>{{ incident.severity }}</strong>
-                            <span>{{ incident.asset_id }} · {{ incident.column_name }}</span>
-                          </div>
-                          <div v-if="!governance.qualityRules.incidents.length" class="policy-empty-row">No quality incidents.</div>
-                        </div>
-                      </div>
-                    </div>
-                  </v-card>
-                </v-col>
-                <v-col cols="12">
-                  <v-card class="card" variant="outlined">
-                    <div class="section-header" style="margin-bottom:12px;">
-                      <span class="section-title">Classification Taxonomy</span>
-                      <v-btn size="small" color="primary" :loading="governance.classification.loading" @click="runClassificationRules">Run Rules</v-btn>
-                    </div>
-                    <div class="classification-admin-grid">
-                      <div class="classification-panel">
-                        <div class="panel-kicker">Categories</div>
-                        <div class="classification-panel-actions">
-                          <v-btn size="x-small" variant="tonal" @click="startClassificationCategoryCreate">New</v-btn>
-                        </div>
-                        <div class="classification-chip-cloud">
-                          <v-chip
-                            v-for="category in governance.classification.taxonomy?.categories || []"
-                            :key="'classification-category-' + category.id"
-                            size="small"
-                            variant="tonal"
-                            :color="category.parent ? 'indigo' : 'primary'"
-                            @click="editClassificationCategory(category)"
-                          >
-                            {{ category.label }}<span v-if="category.parent">&nbsp;/ {{ category.parent }}</span>
-                          </v-chip>
-                        </div>
-                        <div class="classification-editor">
-                          <v-text-field v-model="governance.classification.categoryEditor.label" density="compact" variant="outlined" label="Category label" hide-details></v-text-field>
-                          <div class="classification-editor-row">
-                            <v-text-field v-model="governance.classification.categoryEditor.id" density="compact" variant="outlined" label="ID" hide-details></v-text-field>
-                            <v-text-field v-model="governance.classification.categoryEditor.parent" density="compact" variant="outlined" label="Parent ID" hide-details></v-text-field>
-                            <v-text-field v-model="governance.classification.categoryEditor.level" density="compact" variant="outlined" label="Level" type="number" hide-details></v-text-field>
-                          </div>
-                          <v-textarea v-model="governance.classification.categoryEditor.description" density="compact" variant="outlined" label="Description" rows="2" hide-details></v-textarea>
-                          <v-text-field v-model="governance.classification.categoryEditor.regulatory_frameworks" density="compact" variant="outlined" label="Regulatory frameworks" hide-details></v-text-field>
-                          <v-textarea v-model="governance.classification.categoryEditor.name_patterns" density="compact" variant="outlined" label="Name patterns" rows="3" hide-details></v-textarea>
-                          <div class="classification-editor-row two">
-                            <v-text-field v-model="governance.classification.categoryEditor.sensitivity_triggers" density="compact" variant="outlined" label="Sensitivity triggers" hide-details></v-text-field>
-                            <v-text-field v-model="governance.classification.categoryEditor.tag_triggers" density="compact" variant="outlined" label="Tag triggers" hide-details></v-text-field>
-                          </div>
-                          <div class="btn-row">
-                            <v-btn size="small" color="primary" @click="saveClassificationCategory">Save Category</v-btn>
-                            <v-btn
-                              size="small"
-                              variant="tonal"
-                              color="error"
-                              :disabled="!(governance.classification.taxonomy?.categories || []).find((category) => category.id === governance.classification.selectedCategoryId && !category.built_in)"
-                              @click="deleteClassificationCategory((governance.classification.taxonomy?.categories || []).find((category) => category.id === governance.classification.selectedCategoryId))"
-                            >Delete</v-btn>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="classification-panel">
-                        <div class="panel-kicker">Rules</div>
-                        <div class="classification-panel-actions">
-                          <v-btn size="x-small" variant="tonal" @click="startClassificationRuleCreate">New</v-btn>
-                        </div>
-                        <div class="classification-rule-list">
-                          <div
-                            v-for="rule in (governance.classification.taxonomy?.rules || [])"
-                            :key="'classification-rule-' + rule.id"
-                            class="classification-rule"
-                            @click="editClassificationRule(rule)"
-                          >
-                            <strong>{{ rule.classification }}</strong>
-                            <span>{{ rule.label }}</span>
-                            <v-chip size="x-small" variant="flat">{{ Math.round((rule.confidence || 0) * 100) }}%</v-chip>
-                          </div>
-                        </div>
-                        <div class="classification-editor">
-                          <v-text-field v-model="governance.classification.ruleEditor.label" density="compact" variant="outlined" label="Rule name" hide-details></v-text-field>
-                          <div class="classification-editor-row">
-                            <v-text-field v-model="governance.classification.ruleEditor.id" density="compact" variant="outlined" label="ID" hide-details></v-text-field>
-                            <v-select v-model="governance.classification.ruleEditor.target" density="compact" variant="outlined" label="Target" :items="['asset', 'column']" hide-details></v-select>
-                            <v-select v-model="governance.classification.ruleEditor.classification" density="compact" variant="outlined" label="Classification" :items="(governance.classification.taxonomy?.categories || []).map((category) => category.label)" hide-details></v-select>
-                          </div>
-                          <v-textarea v-model="governance.classification.ruleEditor.pattern" density="compact" variant="outlined" label="Regex pattern" rows="2" hide-details></v-textarea>
-                          <div class="classification-editor-row">
-                            <v-text-field v-model="governance.classification.ruleEditor.confidence" density="compact" variant="outlined" label="Confidence" type="number" step="0.01" min="0" max="1" hide-details></v-text-field>
-                            <v-text-field v-model="governance.classification.ruleEditor.min_column_hits" density="compact" variant="outlined" label="Min column hits" type="number" hide-details></v-text-field>
-                            <v-switch v-model="governance.classification.ruleEditor.enabled" density="compact" label="Enabled" hide-details color="primary"></v-switch>
-                          </div>
-                          <v-textarea v-model="governance.classification.ruleEditor.description" density="compact" variant="outlined" label="Description" rows="2" hide-details></v-textarea>
-                          <div class="btn-row">
-                            <v-btn size="small" color="primary" @click="saveClassificationRule">Save Rule</v-btn>
-                            <v-btn
-                              size="small"
-                              variant="tonal"
-                              color="error"
-                              :disabled="!governance.classification.selectedRuleId"
-                              @click="deleteClassificationRule((governance.classification.taxonomy?.rules || []).find((rule) => rule.id === governance.classification.selectedRuleId))"
-                            >Delete</v-btn>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="classification-panel">
-                        <div class="panel-kicker">Coverage</div>
-                        <div class="classification-count-grid">
-                          <div
-                            v-for="(count, label) in governance.classification.summary?.classification_counts || {}"
-                            :key="'classification-count-' + label"
-                            class="classification-count"
-                          >
-                            <span>{{ label }}</span>
-                            <strong>{{ count }}</strong>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </v-card>
-                </v-col>
-                <v-col cols="12">
-                  <v-card class="card" variant="outlined">
-                    <div class="section-header" style="margin-bottom:8px;">
-                      <span class="section-title">Governance Leaderboard</span>
-                    </div>
-                    <div class="asset-results">
-                      <div v-for="item in governance.summaries.slice(0, 20)" :key="'gov-' + item.asset_id" class="asset-card">
-                        <div class="asset-body">
-                          <div class="asset-name">
-                            <strong>{{ item.asset_id }}</strong>
-                            <v-chip size="x-small" color="info" variant="tonal">{{ item.trust_level }}</v-chip>
-                            <v-chip size="x-small" color="success" variant="flat" v-if="item.certified">Certified</v-chip>
-                          </div>
-                          <div class="asset-meta">
-                            <v-chip size="x-small" class="schema-badge" variant="tonal">{{ item.database }}</v-chip>
-                            <v-chip size="x-small" class="owner-chip" variant="outlined">&#128100; {{ item.owner || 'unassigned' }}</v-chip>
-                            <v-chip size="x-small" class="type-chip" variant="outlined">{{ item.type }}</v-chip>
-                            <v-chip size="x-small" variant="outlined">Score {{ item.trust_score }}</v-chip>
-                            <v-chip size="x-small" variant="tonal" :color="qualityScoreColor(qualityScoreForItem(item))">Quality {{ qualityScoreForItem(item) ?? 'n/a' }}</v-chip>
-                            <v-chip size="x-small" variant="outlined">Trend {{ qualityTrendLabel(item) }}</v-chip>
-                          </div>
-                        </div>
-                        <div class="asset-actions">
-                          <v-btn size="small" variant="outlined" @click="selectedObjectId = item.asset_id; onViewChange('browse'); $nextTick(loadObjectContext)">Open</v-btn>
-                        </div>
-                      </div>
-                    </div>
-                  </v-card>
-                </v-col>
-              </v-row>
-            </div>
-
-            <div v-if="activeView === 'governanceOps'" class="governance-page">
-              <v-row>
-                <v-col cols="12">
-                  <v-card class="card" variant="outlined">
-                    <div class="section-header" style="margin-bottom:12px;">
-                      <div>
-                        <span class="section-title">Governance Operations</span>
-                        <p class="card-help">Stewardship, incidents, usage, publication readiness, and AI context activation from the shared Phase 7 service layer.</p>
-                      </div>
-                      <div class="btn-row">
-                        <v-btn size="small" variant="outlined" :loading="governanceOps.loading" @click="loadGovernanceOps">Refresh</v-btn>
-                        <v-btn size="small" color="primary" :loading="governanceOps.loading" @click="generateGovernanceTasks">Generate Tasks</v-btn>
-                      </div>
-                    </div>
-                    <div class="policy-dashboard-grid" style="margin-bottom:12px;" v-if="governanceOps.storeStatus">
-                      <div class="policy-dashboard-score">
-                        <span>Durable Store</span>
-                        <strong>{{ governanceOps.storeStatus.persistenceEnabled ? 'Enabled' : 'Disabled' }}</strong>
-                        <small>{{ governanceOps.storeStatus.exists ? 'State file present' : 'No state file yet' }}</small>
-                      </div>
-                      <div class="policy-dashboard-score">
-                        <span>Event Queue</span>
-                        <strong>{{ governanceOps.storeStatus.counts?.eventDeliveries || 0 }}</strong>
-                        <small>Email, Slack, Teams delivery records</small>
-                      </div>
-                      <div class="policy-dashboard-score">
-                        <span>Comment Threads</span>
-                        <strong>{{ governanceOps.storeStatus.counts?.commentThreads || 0 }}</strong>
-                        <small>Asset collaboration threads</small>
-                      </div>
-                      <div class="policy-dashboard-score">
-                        <span>Trust Actions</span>
-                        <strong>{{ governanceOps.storeStatus.counts?.trustActionThreads || 0 }}</strong>
-                        <small>Certification and endorsement histories</small>
-                      </div>
-                    </div>
-                    <v-row>
-                      <v-col cols="12" sm="6" md="3">
-                        <v-card class="card kpi" variant="outlined">
-                          <div class="value">{{ governanceOps.overview?.kpis?.totalAssets || 0 }}</div>
-                          <div class="label">Governed Assets</div>
-                        </v-card>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="3">
-                        <v-card class="card kpi" variant="outlined">
-                          <div class="value">{{ governanceOps.overview?.kpis?.averageTrustScore || 0 }}</div>
-                          <div class="label">Avg Trust</div>
-                        </v-card>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="3">
-                        <v-card class="card kpi" variant="outlined">
-                          <div class="value">{{ governanceOps.overview?.kpis?.openTasks || 0 }}</div>
-                          <div class="label">Open Tasks</div>
-                        </v-card>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="3">
-                        <v-card class="card kpi" variant="outlined">
-                          <div class="value">{{ governanceOps.overview?.kpis?.openIncidents || 0 }}</div>
-                          <div class="label">Open Incidents</div>
-                        </v-card>
-                      </v-col>
-                    </v-row>
-                  </v-card>
-                </v-col>
-
-                <v-col cols="12">
-                  <v-card class="card" variant="outlined">
-                    <div class="section-header" style="margin-bottom:12px;">
-                      <div>
-                        <span class="section-title">Ownership & Stewardship Control</span>
-                        <p class="card-help">Resolve business owner, steward, domain manager, and custodian accountability, including inherited roles and escalation paths.</p>
-                      </div>
-                      <div class="btn-row">
-                        <v-text-field v-model="governanceOps.portfolioSubject" density="compact" variant="outlined" hide-details placeholder="owner, steward, or all"></v-text-field>
-                        <v-btn size="small" variant="outlined" :loading="governanceOps.loading" @click="loadStewardPortfolio">Load Portfolio</v-btn>
-                      </div>
-                    </div>
-                    <div class="policy-dashboard-grid" style="margin-bottom:12px;">
-                      <div
-                        v-for="role in governanceOps.ownershipModel"
-                        :key="'ownership-role-' + role.role"
-                        class="policy-dashboard-score"
-                      >
-                        <span>{{ role.label }}</span>
-                        <strong>{{ governanceOps.ownershipSummary?.coverage?.[role.role]?.pct || 0 }}%</strong>
-                        <small>{{ governanceOps.ownershipSummary?.coverage?.[role.role]?.count || 0 }} assigned · {{ governanceOps.ownershipSummary?.coverage?.[role.role]?.inherited || 0 }} inherited</small>
-                      </div>
-                    </div>
-                    <v-row>
-                      <v-col cols="12" md="7">
-                        <div class="table-wrap">
-                          <table class="data-table">
-                            <thead>
-                              <tr>
-                                <th>Asset</th>
-                                <th>Roles</th>
-                                <th>Risk</th>
-                                <th>Tasks</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr v-for="asset in governanceOps.stewardPortfolio?.assets || []" :key="'portfolio-' + asset.assetId">
-                                <td class="text-mono text-small">{{ asset.assetId }}</td>
-                                <td>
-                                  <v-chip v-for="role in asset.roles" :key="asset.assetId + role" size="x-small" variant="tonal">{{ role }}</v-chip>
-                                </td>
-                                <td>
-                                  <v-chip size="x-small" :color="asset.qualityStatus === 'healthy' ? 'success' : 'warning'" variant="tonal">{{ asset.qualityStatus }}</v-chip>
-                                </td>
-                                <td>{{ asset.openTaskCount }} open · {{ asset.overdueTaskCount }} overdue</td>
-                              </tr>
-                              <tr v-if="!(governanceOps.stewardPortfolio?.assets || []).length">
-                                <td colspan="4" class="empty">No owned or stewarded assets found for this subject.</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </v-col>
-                      <v-col cols="12" md="5">
-                        <div class="policy-gap-list">
-                          <div
-                            v-for="alert in governanceOps.stewardPortfolio?.alerts || []"
-                            :key="'portfolio-alert-' + alert.assetId"
-                            class="policy-gap-row"
-                          >
-                            <strong>{{ alert.severity }}</strong>
-                            <span>{{ alert.assetId }} · {{ alert.message }}</span>
-                          </div>
-                          <div v-if="!(governanceOps.stewardPortfolio?.alerts || []).length" class="policy-empty-row">No ownership alerts for this portfolio.</div>
-                        </div>
-                      </v-col>
-                    </v-row>
-                    <div class="form-row mt-8">
-                      <div class="col-3"><v-text-field v-model="governanceOps.bulkAssetIds" density="compact" variant="outlined" hide-details placeholder="asset ids, comma separated"></v-text-field></div>
-                      <div class="col-2"><v-text-field v-model="governanceOps.bulkOwner" density="compact" variant="outlined" hide-details placeholder="business owner"></v-text-field></div>
-                      <div class="col-2"><v-text-field v-model="governanceOps.bulkSteward" density="compact" variant="outlined" hide-details placeholder="steward"></v-text-field></div>
-                      <div class="col-2"><v-text-field v-model="governanceOps.bulkDomainManager" density="compact" variant="outlined" hide-details placeholder="domain manager"></v-text-field></div>
-                      <div class="col-2"><v-text-field v-model="governanceOps.bulkCustodian" density="compact" variant="outlined" hide-details placeholder="custodian"></v-text-field></div>
-                      <div class="col-1"><v-btn size="small" color="primary" :loading="governanceOps.loading" @click="planBulkOwnershipAssignment">Plan</v-btn></div>
-                    </div>
-                    <div v-if="governanceOps.bulkAssignmentPlan" class="scheduler-runtime-bar mt-8">
-                      <span>{{ governanceOps.bulkAssignmentPlan.count }} asset(s)</span>
-                      <span>{{ governanceOps.bulkAssignmentPlan.note }}</span>
-                      <span v-if="governanceOps.bulkAssignmentPlan.task">Task {{ governanceOps.bulkAssignmentPlan.task.taskId }}</span>
-                    </div>
-                  </v-card>
-                </v-col>
-
-                <v-col cols="12" md="7">
-                  <v-card class="card" variant="outlined">
-                    <div class="section-header" style="margin-bottom:12px;">
-                      <span class="section-title">Stewardship Work Queue</span>
-                      <div class="btn-row">
-                        <v-select v-model="governanceOps.selectedTaskStatus" density="compact" variant="outlined" hide-details clearable :items="['open','in_progress','blocked','done','canceled']" placeholder="status"></v-select>
-                        <v-text-field v-model="governanceOps.taskAssetId" density="compact" variant="outlined" hide-details placeholder="asset id"></v-text-field>
-                        <v-text-field v-model="governanceOps.taskTitle" density="compact" variant="outlined" hide-details placeholder="task title"></v-text-field>
-                        <v-btn size="small" color="primary" @click="createGovernanceOpsTask">Add</v-btn>
-                      </div>
-                    </div>
-                    <div class="table-wrap">
-                      <table class="data-table">
-                        <thead>
-                          <tr>
-                            <th>Asset</th>
-                            <th>Task</th>
-                            <th>Priority</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr
-                            v-for="task in governanceOps.tasks.filter((item) => !governanceOps.selectedTaskStatus || item.status === governanceOps.selectedTaskStatus).slice(0, 12)"
-                            :key="'govops-task-' + task.taskId"
-                          >
-                            <td class="text-mono text-small">{{ task.assetId || '-' }}</td>
-                            <td>{{ task.title }}</td>
-                            <td><v-chip size="x-small" variant="tonal">{{ task.priority }}</v-chip></td>
-                            <td>{{ task.status }}</td>
-                            <td>
-                              <v-btn v-if="task.status === 'open'" size="x-small" variant="outlined" @click="transitionGovernanceOpsTask(task, 'in_progress')">Start</v-btn>
-                              <v-btn v-if="task.status !== 'done'" size="x-small" variant="outlined" @click="transitionGovernanceOpsTask(task, 'done')">Done</v-btn>
-                            </td>
-                          </tr>
-                          <tr v-if="!governanceOps.tasks.length">
-                            <td colspan="5" class="empty">No stewardship tasks yet. Generate tasks from metadata gaps to seed the queue.</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </v-card>
-                </v-col>
-
-                <v-col cols="12" md="5">
-                  <v-card class="card" variant="outlined">
-                    <div class="section-header" style="margin-bottom:12px;">
-                      <span class="section-title">Incidents</span>
-                    </div>
-                    <div class="form-row">
-                      <div class="col-2"><v-select v-model="governanceOps.selectedIncidentStatus" density="compact" variant="outlined" hide-details clearable :items="['open','investigating','mitigated','resolved','closed']" placeholder="status"></v-select></div>
-                      <div class="col-5"><v-text-field v-model="governanceOps.incidentAssetId" density="compact" variant="outlined" hide-details placeholder="asset id"></v-text-field></div>
-                      <div class="col-4"><v-text-field v-model="governanceOps.incidentTitle" density="compact" variant="outlined" hide-details placeholder="incident title"></v-text-field></div>
-                      <div class="col-1"><v-btn size="small" color="primary" @click="createGovernanceIncident">Create</v-btn></div>
-                    </div>
-                    <div class="quality-incident-list">
-                      <div
-                        v-for="incident in governanceOps.incidents.filter((item) => !governanceOps.selectedIncidentStatus || item.status === governanceOps.selectedIncidentStatus).slice(0, 6)"
-                        :key="'govops-incident-' + incident.incidentId"
-                        class="quality-incident-row"
-                      >
-                        <strong>{{ incident.severity }}</strong>
-                        <span>{{ incident.assetId || 'unassigned' }} · {{ incident.title }} · {{ incident.status }}</span>
-                        <v-btn v-if="incident.status === 'open'" size="x-small" variant="outlined" @click="transitionGovernanceIncident(incident, 'investigating')">Investigate</v-btn>
-                        <v-btn v-if="incident.status !== 'resolved' && incident.status !== 'closed'" size="x-small" variant="outlined" @click="transitionGovernanceIncident(incident, 'resolved')">Resolve</v-btn>
-                      </div>
-                      <div v-if="!governanceOps.incidents.length" class="policy-empty-row">No governance incidents are open.</div>
-                    </div>
-                  </v-card>
-                </v-col>
-
-                <v-col cols="12" md="4">
-                  <v-card class="card" variant="outlined">
-                    <div class="section-header" style="margin-bottom:12px;">
-                      <span class="section-title">Publication Readiness</span>
-                      <v-chip size="small" :color="governanceOps.publication?.ready ? 'success' : 'warning'" variant="tonal">
-                        {{ governanceOps.publication?.ready ? 'Ready' : 'Needs Checks' }}
-                      </v-chip>
-                    </div>
-                    <div class="policy-template-list">
-                      <div v-for="check in governanceOps.publication?.checks || []" :key="'pub-check-' + check.name" class="policy-template-row">
-                        <span>{{ check.name }}</span>
-                        <div class="btn-row">
-                          <strong>{{ check.status }}</strong>
-                          <v-btn size="x-small" variant="outlined" @click="recordPublicationCheck(check.name, 'pass')">Pass</v-btn>
-                          <v-btn size="x-small" variant="outlined" color="warning" @click="recordPublicationCheck(check.name, 'fail')">Fail</v-btn>
-                        </div>
-                      </div>
-                    </div>
-                  </v-card>
-                </v-col>
-
-                <v-col cols="12" md="4">
-                  <v-card class="card" variant="outlined">
-                    <div class="section-header" style="margin-bottom:12px;">
-                      <span class="section-title">Adoption Leaders</span>
-                    </div>
-                    <div class="policy-gap-list">
-                      <div v-for="asset in governanceOps.overview?.adoptionLeaders || []" :key="'adoption-' + asset.assetId" class="policy-gap-row">
-                        <strong>{{ asset.assetId }}</strong>
-                        <span>Score {{ asset.adoptionScore }} · usage {{ asset.usageCount }} · downstream {{ asset.downstreamCount }}</span>
-                      </div>
-                    </div>
-                  </v-card>
-                </v-col>
-
-                <v-col cols="12" md="4">
-                  <v-card class="card" variant="outlined">
-                    <div class="section-header" style="margin-bottom:12px;">
-                      <span class="section-title">AI Context Lookup</span>
-                    </div>
-                    <div class="btn-row">
-                      <v-text-field v-model="governanceOps.contextQuery" density="compact" variant="outlined" hide-details placeholder="Ask a governance context question"></v-text-field>
-                      <v-btn size="small" color="primary" @click="askGovernanceOpsContext">Ask</v-btn>
-                    </div>
-                    <div v-if="governanceOps.contextAnswer" class="mt-8">
-                      <p class="card-help">{{ governanceOps.contextAnswer.answer }}</p>
-                      <div class="policy-gap-list">
-                        <div v-for="match in governanceOps.contextAnswer.matches || []" :key="'context-match-' + match.assetId" class="policy-gap-row">
-                          <strong>{{ match.assetId }}</strong>
-                          <span>{{ match.type }} · {{ match.owner }} · trust {{ match.trust?.score }}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </v-card>
-                </v-col>
-
-                <v-col cols="12">
-                  <v-card class="card" variant="outlined">
-                    <div class="section-header" style="margin-bottom:12px;">
-                      <span class="section-title">Governance Event Delivery Queue</span>
-                      <v-chip size="small" variant="tonal">{{ governanceOps.eventDeliveries.length }} recent</v-chip>
-                    </div>
-                    <div class="table-wrap">
-                      <table class="data-table">
-                        <thead>
-                          <tr>
-                            <th>Event</th>
-                            <th>Actor</th>
-                            <th>Status</th>
-                            <th>Channels</th>
-                            <th>Created</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="event in governanceOps.eventDeliveries.slice(0, 12)" :key="'govops-event-' + event.deliveryId">
-                            <td>{{ event.eventType }}</td>
-                            <td>{{ event.actor?.email || event.actor?.userId || 'system' }}</td>
-                            <td>{{ event.status }}</td>
-                            <td>{{ (event.channels || []).join(', ') }}</td>
-                            <td>{{ event.createdAt }}</td>
-                          </tr>
-                          <tr v-if="!governanceOps.eventDeliveries.length">
-                            <td colspan="5" class="empty">No governance events have been queued yet.</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </v-card>
-                </v-col>
-              </v-row>
-            </div>
-
-            <div v-if="activeView === 'lineageAsk'">
-              <div class="lineage-assistant-shell">
-                <section class="lineage-assistant-prompt">
-                  <div class="lineage-assistant-title">
-                    <v-icon>mdi-auto-fix</v-icon>
-                    <div>
-                      <h2>Sonic Lineage Assistant</h2>
-                      <p>Ask a lineage question and get a plain-English answer with technical evidence.</p>
-                    </div>
-                  </div>
-                  <div class="lineage-assistant-input">
-                    <v-text-field
-                      v-model="lineageQuestion"
-                      density="comfortable"
-                      variant="outlined"
-                      hide-details
-                      placeholder="Ask: what uses DimVehicle? how many tables are in WebV?"
-                      prepend-inner-icon="mdi-message-question"
-                      @keyup.enter="askLineageQuestion()"
-                    ></v-text-field>
-                    <v-btn color="primary" :loading="lineageQuestionLoading" @click="askLineageQuestion()">Ask</v-btn>
-                  </div>
-                  <div class="lineage-question-examples">
-                    <v-btn size="small" variant="tonal" @click="askLineageQuestion('what uses DimVehicle?')">what uses DimVehicle?</v-btn>
-                    <v-btn size="small" variant="tonal" @click="askLineageQuestion('what loads DimVehicle?')">what loads DimVehicle?</v-btn>
-                    <v-btn size="small" variant="tonal" @click="askLineageQuestion('how many tables are in WebV?')">tables in WebV</v-btn>
-                    <v-btn size="small" variant="tonal" @click="askLineageQuestion('?help')">?help</v-btn>
-                  </div>
-                </section>
-
-                <div class="lineage-answer-workspace">
-                  <main class="lineage-answer-document">
-                    <div class="lineage-answer-toolbar">
-                      <span>{{ lineageQuestionAnswer?.assistant?.title || 'Answer Workspace' }}</span>
-                      <div class="btn-row">
-                        <v-chip size="x-small" variant="tonal" v-if="lineageQuestionAnswer">{{ lineageQuestionAnswer.answer_type }}</v-chip>
-                        <v-btn size="small" variant="outlined" @click="askLineageQuestion('?help')">Help</v-btn>
-                        <v-btn size="small" variant="outlined" @click="clearLineageAssistant">Clear</v-btn>
-                        <v-btn
-                          v-if="lineageQuestionAnswer?.resolved_object?.object_id"
-                          size="small"
-                          variant="outlined"
-                          append-icon="mdi-graphql"
-                          @click="selectedObjectId = lineageQuestionAnswer.resolved_object.object_id; onViewChange('discovery')"
-                        >Open Graph</v-btn>
-                      </div>
-                    </div>
-
-                    <div v-if="lineageQuestionLoading" class="lineage-answer-empty">
-                      <v-icon size="34">mdi-progress-clock</v-icon>
-                      <h3>Building the answer</h3>
-                      <p>Resolving your question against the loaded lineage catalog.</p>
-                    </div>
-
-                    <template v-else-if="lineageQuestionAnswer">
-                      <p class="lineage-answer-lead">{{ lineageQuestionAnswer.plain_english }}</p>
-
-                      <div v-if="lineageQuestionAnswer.caveats && lineageQuestionAnswer.caveats.length" class="lineage-caveat-list">
-                        <div v-for="caveat in lineageQuestionAnswer.caveats" :key="'qa-doc-caveat-' + caveat" class="lineage-caveat-item">
-                          {{ caveat }}
-                        </div>
-                      </div>
-
-                      <template v-if="lineageAnswerRoleGroups().length">
-                        <section v-for="group in lineageAnswerRoleGroups()" :key="'qa-group-' + group.title" class="lineage-answer-section">
-                          <div class="lineage-answer-section-header">
-                            <h3>{{ group.title }}</h3>
-                            <span>{{ group.rows.length }} object{{ group.rows.length === 1 ? '' : 's' }}</span>
-                          </div>
-                          <div class="table-wrap lineage-answer-section-table">
-                            <v-table density="compact">
-                              <thead>
-                                <tr>
-                                  <th>Object</th>
-                                  <th>Type</th>
-                                  <th>Location</th>
-                                  <th>Why it matters</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr v-for="row in group.rows" :key="'qa-group-row-' + group.title + '-' + row.id">
-                                  <td><span class="lineage-answer-object">{{ row.label || row.id }}</span></td>
-                                  <td>{{ row.type }}</td>
-                                  <td class="lineage-answer-location">{{ row.location || '-' }}</td>
-                                  <td class="lineage-answer-why">{{ row.why_it_matters || row.evidence || '-' }}</td>
-                                </tr>
-                              </tbody>
-                            </v-table>
-                          </div>
-                        </section>
-                      </template>
-
-                      <section v-else-if="lineageQuestionRows(lineageQuestionAnswer).length" class="lineage-answer-section">
-                        <div class="lineage-answer-section-header">
-                          <h3>Results</h3>
-                          <span>{{ lineageQuestionRows(lineageQuestionAnswer).length }} row{{ lineageQuestionRows(lineageQuestionAnswer).length === 1 ? '' : 's' }}</span>
-                        </div>
-                        <div class="table-wrap lineage-answer-section-table">
-                          <v-table density="compact">
-                            <thead>
-                              <tr>
-                                <th v-for="column in lineageQuestionColumns(lineageQuestionAnswer)" :key="'qa-doc-head-' + column">{{ column }}</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr v-for="(row, idx) in lineageQuestionRows(lineageQuestionAnswer).slice(0, 60)" :key="'qa-doc-row-' + idx">
-                                <td v-for="column in lineageQuestionColumns(lineageQuestionAnswer)" :key="'qa-doc-cell-' + idx + '-' + column">
-                                  <span v-if="column === 'Object' || column === 'Database' || column === 'Example'" class="lineage-answer-object">{{ lineageQuestionCell(row, column) }}</span>
-                                  <span v-else>{{ lineageQuestionCell(row, column) }}</span>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </v-table>
-                        </div>
-                      </section>
-
-                      <div v-if="lineageQuestionAnswer.assistant?.suggested_followups?.length" class="lineage-followups answer-doc-followups">
-                        <v-btn
-                          v-for="followup in lineageQuestionAnswer.assistant.suggested_followups"
-                          :key="'qa-doc-followup-' + followup"
-                          size="small"
-                          variant="tonal"
-                          @click="askLineageQuestion(followup)"
-                        >{{ followup }}</v-btn>
-                      </div>
-                    </template>
-
-                    <div v-else class="lineage-answer-empty">
-                      <v-icon size="34">mdi-message-question</v-icon>
-                      <h3>Ask a lineage question</h3>
-                      <p>Answers will be formatted like a short technical brief with exact object names and evidence.</p>
-                    </div>
-                  </main>
-
-                  <aside class="lineage-evidence-rail">
-                    <section class="lineage-rail-card">
-                      <h3>Question</h3>
-                      <p>{{ lineageQuestionAnswer?.question || lineageQuestion }}</p>
-                    </section>
-
-                    <section class="lineage-rail-card" v-if="lineageQuestionAnswer?.resolved_object">
-                      <h3>Resolved Object</h3>
-                      <div class="lineage-rail-kv"><span>ID</span><strong>{{ lineageQuestionAnswer.resolved_object.object_id }}</strong></div>
-                      <div class="lineage-rail-kv"><span>Type</span><strong>{{ lineageQuestionAnswer.resolved_object.type }}</strong></div>
-                    </section>
-
-                    <section class="lineage-rail-card">
-                      <h3>Sources</h3>
-                      <div v-if="lineageQuestionAnswer?.sources?.length" class="lineage-source-list">
-                        <div v-for="source in lineageQuestionAnswer.sources.slice(0, 12)" :key="'qa-rail-source-' + (source.object_id || source.source) + source.role" class="lineage-source-item">
-                          <strong>{{ source.object || source.source }}</strong>
-                          <span>{{ source.role || source.detail }}</span>
-                          <code v-if="source.location">{{ source.location }}</code>
-                        </div>
-                      </div>
-                      <p v-else class="lineage-rail-muted">Sources appear after an answer is built.</p>
-                    </section>
-
-                    <section class="lineage-rail-card" v-if="lineageQuestionHistory.length">
-                      <h3>Recent Questions</h3>
-                      <div class="lineage-question-history">
-                        <button v-for="item in lineageQuestionHistory" :key="'qa-history-' + item" type="button" @click="askLineageQuestion(item)">
-                          {{ item }}
-                        </button>
-                      </div>
-                    </section>
-                  </aside>
-                </div>
-              </div>
-            </div>
-
-            <div v-if="activeView === 'metrics'">
-              <v-row>
-                <v-col cols="12">
-                  <v-card class="card" variant="outlined" style="padding:16px;">
-                    <div class="section-header" style="margin-bottom:12px;">
-                      <span class="section-title">Metric Intelligence</span>
-                      <div class="btn-row">
-                        <v-btn size="small" variant="outlined" @click="loadMetricRuntimePack">Runtime Pack</v-btn>
-                        <v-btn size="small" color="primary" :loading="metrics.loading" @click="loadMetricRegistry">Refresh</v-btn>
-                      </div>
-                    </div>
-                    <div class="form-row" style="grid-template-columns:1fr auto; margin-bottom:12px;">
-                      <v-text-field
-                        v-model="metrics.query"
-                        placeholder="Search metric, table, business name, or definition"
-                        density="compact"
-                        variant="outlined"
-                        hide-details
-                        prepend-inner-icon="mdi-magnify"
-                        @keyup.enter="loadMetricRegistry"
-                      ></v-text-field>
-                      <v-btn variant="outlined" @click="loadMetricRegistry">Search</v-btn>
-                    </div>
-                    <div class="kpi-grid" style="margin-bottom:12px;">
-                      <v-card class="card kpi" variant="outlined"><div class="value">{{ metrics.registry?.summary?.total_metrics || 0 }}</div><div class="label">Metric Columns</div></v-card>
-                      <v-card class="card kpi" variant="outlined"><div class="value">{{ metrics.registry?.summary?.confirmed_metrics || 0 }}</div><div class="label">Confirmed</div></v-card>
-                      <v-card class="card kpi" variant="outlined"><div class="value">{{ metrics.registry?.summary?.metric_candidates || 0 }}</div><div class="label">Candidates</div></v-card>
-                      <v-card class="card kpi" variant="outlined"><div class="value">{{ metrics.registry?.summary?.tables_with_metrics || 0 }}</div><div class="label">Tables With Metrics</div></v-card>
-                    </div>
-                  </v-card>
-                </v-col>
-              </v-row>
-
-              <v-row>
-                <v-col cols="12" md="7">
-                  <v-card class="card" variant="outlined" style="padding:12px;">
-                    <div class="section-header" style="margin-bottom:8px;">
-                      <span class="section-title">Registry</span>
-                      <span class="text-small">{{ metrics.registry?.pagination?.total || 0 }} result{{ (metrics.registry?.pagination?.total || 0) === 1 ? '' : 's' }}</span>
-                    </div>
-                    <div class="table-wrap" style="max-height:520px; overflow:auto;">
-                      <v-table density="compact">
-                        <thead>
-                          <tr>
-                            <th>Metric</th>
-                            <th>Table</th>
-                            <th>State</th>
-                            <th>Confidence</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr
-                            v-for="metric in metrics.registry?.metrics || []"
-                            :key="'metric-registry-' + metric.metric_id"
-                            style="cursor:pointer;"
-                            @click="metrics.objectId = metric.object_id; metrics.selectedColumn = metric.column_name; loadMetricTableAnswer();"
-                          >
-                            <td>
-                              <strong>{{ metric.column_name }}</strong>
-                              <div class="text-small">{{ metric.data_type }} · {{ metric.semantic_type }}</div>
-                            </td>
-                            <td>
-                              <span class="text-mono text-small">{{ metric.object_id }}</span>
-                              <div class="text-small">{{ metric.business_domain || metric.owner || '-' }}</div>
-                            </td>
-                            <td><v-chip size="x-small" variant="flat" :color="metric.metric_state === 'confirmed' ? 'success' : metric.metric_state === 'inferred' ? 'info' : 'warning'">{{ metric.metric_state }}</v-chip></td>
-                            <td>{{ metric.confidence_label }} · {{ metric.confidence }}</td>
-                          </tr>
-                          <tr v-if="!(metrics.registry?.metrics || []).length">
-                            <td colspan="4">No metric columns found for the current search.</td>
-                          </tr>
-                        </tbody>
-                      </v-table>
-                    </div>
-                  </v-card>
-                </v-col>
-
-                <v-col cols="12" md="5">
-                  <v-card class="card" variant="outlined" style="padding:12px; margin-bottom:12px;">
-                    <div class="section-header" style="margin-bottom:8px;">
-                      <span class="section-title">Ask About A Table</span>
-                      <v-btn size="small" variant="outlined" @click="loadMetricTableAnswer">Load</v-btn>
-                    </div>
-                    <div class="form-row" style="grid-template-columns:1fr; margin-bottom:10px;">
-                      <v-text-field v-model="metrics.objectId" placeholder="table object id, e.g. Sonic_DW.dbo.FactSales" density="compact" variant="outlined" hide-details></v-text-field>
-                    </div>
-                    <p class="lineage-answer-text" v-if="metrics.tableAnswer">{{ metrics.tableAnswer.answer }}</p>
-                    <div class="table-wrap" v-if="metrics.tableAnswer?.rows?.length" style="max-height:230px; overflow:auto;">
-                      <v-table density="compact">
-                        <thead><tr><th>Column</th><th>Why</th></tr></thead>
-                        <tbody>
-                          <tr
-                            v-for="row in metrics.tableAnswer.rows"
-                            :key="'metric-table-row-' + row.column"
-                            style="cursor:pointer;"
-                            @click="metrics.selectedColumn = row.column"
-                          >
-                            <td><strong>{{ row.column }}</strong><div class="text-small">{{ row.data_type }} · {{ row.state }}</div></td>
-                            <td class="text-small">{{ row.why || '-' }}</td>
-                          </tr>
-                        </tbody>
-                      </v-table>
-                    </div>
-                  </v-card>
-
-                  <v-card class="card" variant="outlined" style="padding:12px;">
-                    <div class="section-header" style="margin-bottom:8px;">
-                      <span class="section-title">Logic &amp; Impact</span>
-                      <div class="btn-row">
-                        <v-btn size="small" variant="outlined" @click="explainSelectedMetric">Explain Logic</v-btn>
-                        <v-btn size="small" variant="outlined" @click="loadSelectedMetricProfile">Profile</v-btn>
-                        <v-btn size="small" color="primary" @click="assessSelectedMetricImpact">Impact</v-btn>
-                      </div>
-                    </div>
-                    <v-text-field v-model="metrics.selectedColumn" placeholder="Metric column" density="compact" variant="outlined" hide-details style="margin-bottom:10px;"></v-text-field>
-                    <p v-if="metrics.logicAnswer" class="lineage-answer-text">{{ metrics.logicAnswer.answer }}</p>
-                    <div v-if="metrics.logicAnswer?.caveats?.length" class="lineage-caveat-list">
-                      <div v-for="caveat in metrics.logicAnswer.caveats" :key="'metric-caveat-' + caveat" class="lineage-caveat-item">{{ caveat }}</div>
-                    </div>
-                    <div v-if="metrics.impactAnswer" class="mini-stack" style="margin-top:10px;">
-                      <div class="mini-metric"><span>Risk</span><strong>{{ metrics.impactAnswer.risk?.severity }}</strong></div>
-                      <div class="mini-metric"><span>Impacted Evidence</span><strong>{{ metrics.impactAnswer.risk?.impacted_count }}</strong></div>
-                      <div class="mini-metric"><span>Unresolved Risks</span><strong>{{ metrics.impactAnswer.risk?.unresolved_risk_count }}</strong></div>
-                    </div>
-                    <p v-if="metrics.profileAnswer" class="lineage-answer-text" style="margin-top:10px;">{{ metrics.profileAnswer.answer }}</p>
-                    <div v-if="metrics.profileAnswer" class="mini-stack" style="margin-top:10px;">
-                      <div class="mini-metric"><span>Rows</span><strong>{{ metrics.profileAnswer.profile?.summary?.row_count || 0 }}</strong></div>
-                      <div class="mini-metric"><span>Null %</span><strong>{{ metrics.profileAnswer.profile?.latest?.null_percent ?? '-' }}</strong></div>
-                      <div class="mini-metric"><span>Distinct</span><strong>{{ metrics.profileAnswer.profile?.latest?.distinct_count ?? '-' }}</strong></div>
-                      <div class="mini-metric"><span>Raw Values</span><strong>{{ metrics.profileAnswer.profile?.raw_values_retained ? 'retained' : 'not retained' }}</strong></div>
-                    </div>
-                    <div v-if="metrics.profileAnswer?.caveats?.length" class="lineage-caveat-list">
-                      <div v-for="caveat in metrics.profileAnswer.caveats" :key="'metric-profile-caveat-' + caveat" class="lineage-caveat-item">{{ caveat }}</div>
-                    </div>
-                    <div v-if="metrics.impactAnswer?.risk?.categories?.length" class="lineage-help-panel" style="margin-top:10px;">
-                      <div class="lineage-help-title">Impact Categories</div>
-                      <div class="lineage-help-examples">
-                        <div v-for="category in metrics.impactAnswer.risk.categories" :key="'metric-impact-category-' + category.type" class="lineage-help-example">
-                          <strong>{{ category.type }}</strong>
-                          <span>{{ category.severity }} · {{ category.reason }}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div v-if="metrics.runtimePack" class="lineage-help-panel" style="margin-top:10px;">
-                      <div class="lineage-help-title">Runtime Pack</div>
-                      <div class="lineage-help-copy">{{ metrics.runtimePack.summary?.total_metrics || 0 }} compact metric answer cards are available for chat/runtime use.</div>
-                    </div>
-                  </v-card>
-
-                  <v-card class="card" variant="outlined" style="padding:12px; margin-top:12px;">
-                    <div class="section-header" style="margin-bottom:8px;">
-                      <span class="section-title">Profile Execution</span>
-                      <div class="btn-row">
-                        <v-btn size="small" variant="outlined" :loading="metrics.profiling.loading" @click="planMetricTableProfile">Plan</v-btn>
-                        <v-btn size="small" color="primary" :loading="metrics.profiling.loading" @click="runMetricTableProfile">Run</v-btn>
-                      </div>
-                    </div>
-                    <div class="form-row" style="grid-template-columns:1fr 1fr 1fr; margin-bottom:10px;">
-                      <v-select v-model="metrics.profiling.dialect" density="compact" variant="outlined" label="Dialect" :items="['sql_server','postgresql','snowflake','bigquery','databricks','redshift']" hide-details></v-select>
-                      <v-select v-model="metrics.profiling.mode" density="compact" variant="outlined" label="Profile mode" :items="['metadata_only','sample','full_scan']" hide-details></v-select>
-                      <v-select v-model="metrics.profiling.executionMode" density="compact" variant="outlined" label="Execution" :items="['dry_run','simulate','live']" hide-details></v-select>
-                    </div>
-                    <div class="form-row" style="grid-template-columns:repeat(4, 1fr); margin-bottom:10px;">
-                      <v-text-field v-model="metrics.profiling.maxColumns" density="compact" variant="outlined" label="Columns" type="number" hide-details></v-text-field>
-                      <v-text-field v-model="metrics.profiling.samplePercent" density="compact" variant="outlined" label="Sample %" type="number" hide-details></v-text-field>
-                      <v-text-field v-model="metrics.profiling.lockTimeoutMs" density="compact" variant="outlined" label="Lock ms" type="number" hide-details></v-text-field>
-                      <v-text-field v-model="metrics.profiling.queryTimeoutMs" density="compact" variant="outlined" label="Query ms" type="number" hide-details></v-text-field>
-                    </div>
-                    <div class="lineage-caveat-item" style="margin-bottom:10px;">
-                      Aggregate profile runs retain no raw values. Live runs require approved read-only connector credentials; dry runs only generate the plan.
-                    </div>
-                    <p v-if="metrics.profiling.answer" class="lineage-answer-text">{{ metrics.profiling.answer.answer }}</p>
-                    <div v-if="metrics.profiling.plan || metrics.profiling.run" class="mini-stack" style="margin-top:10px;">
-                      <div class="mini-metric"><span>Plan Status</span><strong>{{ metrics.profiling.plan?.status || '-' }}</strong></div>
-                      <div class="mini-metric"><span>Planned Assets</span><strong>{{ metrics.profiling.plan?.summary?.planned_assets || 0 }}</strong></div>
-                      <div class="mini-metric"><span>Profiled Assets</span><strong>{{ metrics.profiling.run?.summary?.assets_profiled || 0 }}</strong></div>
-                      <div class="mini-metric"><span>Raw Values</span><strong>{{ metrics.profiling.run?.summary?.raw_values_retained ? 'retained' : 'not retained' }}</strong></div>
-                    </div>
-                    <div v-if="metrics.profiling.run?.errors?.length" class="lineage-caveat-list" style="margin-top:10px;">
-                      <div v-for="error in metrics.profiling.run.errors" :key="'profile-error-' + error.asset_id + error.message" class="lineage-caveat-item">
-                        {{ error.asset_id }}: {{ error.message }}
-                      </div>
-                    </div>
-                    <div v-if="metrics.profiling.confluence" class="lineage-help-panel" style="margin-top:10px;">
-                      <div class="lineage-help-title">Confluence Summary</div>
-                      <div class="lineage-help-copy">{{ confluenceSummaryPreview(metrics.profiling.confluence.content) }}</div>
-                    </div>
-                    <pre v-if="metrics.profiling.plan?.actions?.[0]?.query?.sql" class="profile-sql-preview">{{ metrics.profiling.plan.actions[0].query.sql }}</pre>
-                  </v-card>
-                </v-col>
-              </v-row>
-            </div>
-
-            <div v-if="activeView === 'discovery'">
-              <v-row>
-              <v-col cols="12">
-              <v-card class="card" style="padding:12px 16px;" variant="outlined">
-                <div class="section-header" style="margin-bottom:8px;">
-                  <span class="section-title">&#x27C6; Lineage &amp; Dependency Graph</span>
-                  <div class="btn-row">
-                    <v-btn
-                      size="small"
-                      variant="outlined"
-                      :loading="reports.blastRadiusLoading"
-                      @click="runBlastRadiusAnalysis()"
-                    >⚡ Blast Radius</v-btn>
-                    <v-btn size="small" variant="outlined" @click="loadEdgeAudit">Edge Audit</v-btn>
-                    <v-btn size="small" variant="outlined" @click="openGraphFocus">Expand</v-btn>
-                    <v-btn size="small" variant="outlined" @click="focusGraphToFit">Fit</v-btn>
-                    <v-btn size="small" variant="outlined" @click="openDiscoveryInNewTab">Open tab</v-btn>
-                    <v-btn size="small" variant="outlined" @click="showOnlySsisPackages" v-if="graphHasSSISNodes">SSIS only</v-btn>
-                    <v-btn size="small" variant="outlined" @click="showAllGraphNodes" v-if="graphHasSSISNodes && graphShowOnlySSIS">Show all</v-btn>
-                    <v-btn size="small" color="primary" @click="renderSelectedLineage">↔ Render</v-btn>
-                  </div>
-                </div>
-                <div class="form-row lineage-object-picker-row">
-                  <div class="lineage-object-picker">
-                    <v-text-field
-                      v-model="lineageObjectSearch.query"
-                      placeholder="Search table, view, procedure, or package"
-                      density="compact"
-                      variant="outlined"
-                      hide-details
-                      prepend-inner-icon="mdi-magnify"
-                      :loading="lineageObjectSearch.loading"
-                      @update:model-value="searchLineageObjects"
-                      @keyup.enter="renderSelectedLineage"
-                      @focus="lineageObjectSearch.open = lineageObjectSearch.results.length > 0"
-                    ></v-text-field>
-                    <div class="lineage-object-suggestions" v-if="lineageObjectSearch.open && lineageObjectSearch.results.length">
-                      <button
-                        v-for="item in lineageObjectSearch.results"
-                        :key="'lineage-object-suggestion-' + item.id"
-                        type="button"
-                        @click="chooseLineageObject(item)"
-                      >
-                        <strong>{{ item.id }}</strong>
-                        <span>{{ item.type }} · {{ item.database || 'unknown' }}</span>
-                      </button>
-                    </div>
-                  </div>
-                  <v-btn variant="outlined" @click="searchLineageObjects()">Search</v-btn>
-                  <v-select
-                    v-model="lineageAnswerIntent"
-                    density="compact"
-                    variant="outlined"
-                    hide-details
-                    style="width:180px;"
-                    :items="lineageAnswerIntentOptions"
-                    @update:model-value="selectedObjectId ? loadLineageAnswer() : null"
-                  ></v-select>
-                  <v-select
-                    v-model="discoveryFormat"
-                    density="compact"
-                    variant="outlined"
-                    hide-details
-                    style="width:130px;"
-                    :items="[
-                      { title: 'Flowchart', value: 'centered' },
-                      { title: 'Cytoscape', value: 'cytoscape' },
-                      { title: 'Mermaid', value: 'mermaid' },
-                    ]"
-                  ></v-select>
-                  <v-text-field type="number" min="1" max="5" v-model.number="discoveryDepth" density="compact" variant="outlined" hide-details style="width:70px;" title="Depth"></v-text-field>
-                  <v-btn color="primary" @click="renderSelectedLineage">Render Graph</v-btn>
-                </div>
-                <div class="graph-legend">
-                  <span class="legend-item"><span class="legend-dot" style="background:#2563eb;border-radius:2px;"></span>Table</span>
-                  <span class="legend-item"><span class="legend-dot" style="background:#7c3aed;border-radius:2px;"></span>View</span>
-                  <span class="legend-item"><span class="legend-dot" style="background:#ea580c;border-radius:2px;"></span>Procedure</span>
-                  <span class="legend-item"><span class="legend-dot" style="background:#0d9488;border-radius:50%;"></span>Function</span>
-                  <span class="legend-item"><span class="legend-dot" style="background:#be123c;border-radius:2px;"></span>Trigger</span>
-                  <span class="legend-item"><span class="legend-dot" style="background:#5b21b6;border-radius:6px;"></span>SSIS Package</span>
-                  <span class="legend-item"><span class="legend-dot" style="background:#22c55e;border-radius:50%;"></span>Direct business term</span>
-                  <span class="legend-item"><span class="legend-dot" style="background:#f59e0b;border-radius:50%;"></span>Propagated term</span>
-                  <span class="legend-item" style="margin-left:auto;font-size:10px;color:var(--text-faint);">Flow: producers -> focus -> consumers &nbsp;|&nbsp; Edge width = confidence</span>
-                </div>
-                <div style="display:flex; justify-content:flex-end; gap:8px; margin:8px 0 10px;">
-                  <v-btn size="small" variant="outlined" @click="loadEdgeAudit">Edge Audit</v-btn>
-                  <v-btn size="small" variant="outlined" @click="openGraphFocus">Open fullscreen</v-btn>
-                  <v-btn size="small" variant="outlined" @click="focusGraphToFit">Zoom to fit</v-btn>
-                  <v-btn size="small" variant="outlined" @click="openDiscoveryInNewTab">Open in new tab</v-btn>
-                  <v-btn size="small" variant="outlined" @click="showOnlySsisPackages" v-if="graphHasSSISNodes">SSIS only</v-btn>
-                  <v-btn size="small" variant="outlined" @click="showAllGraphNodes" v-if="graphHasSSISNodes && graphShowOnlySSIS">Show all</v-btn>
-                </div>
-                <div v-if="graphHasSSISNodes" style="margin-bottom:8px; font-size:12px; color:#475569;">
-                  SSIS package nodes are available in this graph. Use <strong>SSIS only</strong> to isolate them, double-click a package to drill into it, or <strong>Open fullscreen</strong> for a larger workspace.
-                </div>
-                <div v-if="discoveryFormat === 'centered'" style="margin-bottom:8px; font-size:12px; color:#475569;">
-                  Flowchart mode keeps direct producers on the left, the focus object in the middle, and direct consumers on the right. SSIS package groups show the staging bridge that supports the final load.
-                </div>
-                <div v-if="graphShowHiddenHint" style="margin-top:8px; padding:10px 12px; border:1px solid #fde68a; border-radius:8px; background:#fffbeb; color:#92400e; font-size:12px;">
-                  SSIS packages are often beyond the current depth. Try <strong>Expand</strong>, increase depth, or use <strong>Fit</strong> after rendering.
-                </div>
-              </v-card>
-              </v-col>
-
-              <v-row v-if="reports.blastRadius">
-                <v-col cols="12" sm="6" md="3">
-                  <v-card class="card kpi" variant="outlined"><div class="value">{{ reports.blastRadius.impactedObjects }}</div><div class="label">Blast Radius</div></v-card>
-                </v-col>
-                <v-col cols="12" sm="6" md="3">
-                  <v-card class="card kpi" variant="outlined"><div class="value">{{ reports.blastRadius.directDownstream }}</div><div class="label">Direct Downstream</div></v-card>
-                </v-col>
-                <v-col cols="12" sm="6" md="3">
-                  <v-card class="card kpi" variant="outlined"><div class="value">{{ reports.blastRadius.directUpstream }}</div><div class="label">Direct Upstream</div></v-card>
-                </v-col>
-                <v-col cols="12" sm="6" md="3">
-                  <v-card class="card kpi" variant="outlined"><div class="value">{{ reports.blastRadius.maxDepth }}</div><div class="label">Max Depth</div></v-card>
-                </v-col>
-              </v-row>
-
-              <v-dialog v-model="graphFocusDialog.show" fullscreen scrollable>
-                <v-card style="background:#f8fafc; min-height:100vh;">
-                  <v-toolbar density="compact" color="white" flat>
-                    <v-toolbar-title>Lineage Focus Mode - {{ selectedObjectId }}</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-chip v-if="graphHasSSISNodes" size="small" color="purple" variant="flat" style="margin-right:8px;">SSIS included</v-chip>
-                    <v-chip v-else-if="graphShowHiddenHint" size="small" color="amber" variant="flat" style="margin-right:8px;">SSIS may be deeper</v-chip>
-                    <v-btn size="small" variant="outlined" class="mr-2" @click="focusGraphToFit">Fit to view</v-btn>
-                    <v-btn size="small" variant="outlined" class="mr-2" @click="resetGraphView">Reset</v-btn>
-                    <v-btn icon="mdi-close" variant="text" @click="closeGraphFocus"></v-btn>
-                  </v-toolbar>
-                  <v-card-text style="padding:16px;">
-                    <div class="form-row" style="grid-template-columns:1fr auto auto auto auto; margin-bottom:12px; align-items:center;">
-                      <v-text-field
-                        v-model="lineageObjectSearch.query"
-                        placeholder="Search object"
-                        density="compact"
-                        variant="outlined"
-                        hide-details
-                        prepend-inner-icon="mdi-magnify"
-                        @update:model-value="searchLineageObjects"
-                        @keyup.enter="renderSelectedLineage"
-                      ></v-text-field>
-                      <v-text-field
-                        v-model="graphSearchText"
-                        placeholder="Search graph"
-                        density="compact"
-                        variant="outlined"
-                        hide-details
-                        @input="highlightGraphMatches"
-                      ></v-text-field>
-                      <v-select
-                        v-model="discoveryFormat"
-                        density="compact"
-                        variant="outlined"
-                        hide-details
-                        style="width:130px;"
-                        :items="[
-                          { title: 'Flowchart', value: 'centered' },
-                          { title: 'Cytoscape', value: 'cytoscape' },
-                          { title: 'Mermaid', value: 'mermaid' },
-                        ]"
-                      ></v-select>
-                      <v-text-field type="number" min="1" max="5" v-model.number="discoveryDepth" density="compact" variant="outlined" hide-details style="width:70px;"></v-text-field>
-                      <v-btn color="primary" @click="renderSelectedLineage">Render Graph</v-btn>
-                    </div>
-                    <div v-if="graphSearchText" style="margin-bottom:10px; font-size:12px; color:#64748b;">
-                      {{ graphSearchMatchCount }} match{{ graphSearchMatchCount === 1 ? '' : 'es' }} found.
-                    </div>
-                    <div v-if="discoveryFormat === 'centered'" class="lineage-flow-guide">
-                      <span>SSIS packages / source tables</span>
-                      <strong>-></strong>
-                      <span>transform procedures</span>
-                      <strong>-></strong>
-                      <span>focus object</span>
-                      <strong>-></strong>
-                      <span>consumers</span>
-                    </div>
-                    <div v-if="discoveryFormat === 'cytoscape' || discoveryFormat === 'centered'" style="height:78vh; min-height:700px; border:1px solid #dbeafe; border-radius:12px; overflow:hidden; background:#fff;">
-                      <div id="cy-graph-focus" style="width:100%; height:100%;"></div>
-                    </div>
-                    <div v-else-if="discoveryFormat === 'mermaid'" style="height:78vh; min-height:700px; border:1px solid #dbeafe; border-radius:12px; overflow:auto; background:#fff; padding:16px;" id="mermaid-graph-focus"></div>
-                    <div v-else style="height:78vh; min-height:700px; border:1px solid #dbeafe; border-radius:12px; overflow:auto; background:#fff; padding:16px;">
-                      <pre class="mono" style="margin:0;">{{ JSON.stringify(discoveryGraph?.data, null, 2) }}</pre>
-                    </div>
-                  </v-card-text>
-                </v-card>
-              </v-dialog>
-
-              <v-dialog v-model="edgeAuditDialog" max-width="1200">
-                <v-card>
-                  <v-toolbar density="compact" color="white" flat>
-                    <v-toolbar-title>Edge Audit - {{ selectedObjectId }}</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-btn icon="mdi-close" variant="text" @click="edgeAuditDialog = false"></v-btn>
-                  </v-toolbar>
-                  <v-card-text>
-                    <div v-if="edgeAudit" style="margin-bottom:12px; display:flex; gap:12px; flex-wrap:wrap;">
-                      <v-chip size="small" variant="flat">Total {{ edgeAudit.totalEdges }}</v-chip>
-                      <v-chip size="small" color="green" variant="flat">Direct {{ edgeAudit.directEdges }}</v-chip>
-                      <v-chip size="small" color="amber" variant="flat">Bridge {{ edgeAudit.bridgeEdges }}</v-chip>
-                      <v-chip size="small" color="blue" variant="flat">Derived {{ edgeAudit.derivedEdges }}</v-chip>
-                      <v-chip size="small" color="grey" variant="flat">Related {{ edgeAudit.relatedEdges }}</v-chip>
-                    </div>
-                    <div v-if="edgeAudit && edgeAudit.edges && edgeAudit.edges.length" class="table-wrap" style="max-height:70vh; overflow:auto;">
-                      <v-table density="compact">
-                        <thead>
-                          <tr>
-                            <th>Classification</th>
-                            <th>Type</th>
-                            <th>Source</th>
-                            <th>Target</th>
-                            <th>Source DB</th>
-                            <th>Target DB</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="edge in edgeAudit.edges" :key="edge.source + '->' + edge.target + ':' + edge.type">
-                            <td><v-chip size="x-small" :color="edge.classification === 'direct' ? 'green' : edge.classification === 'bridge' ? 'amber' : edge.classification === 'derived' ? 'blue' : 'grey'" variant="flat">{{ edge.classification }}</v-chip></td>
-                            <td>{{ edge.type }}</td>
-                            <td>{{ edge.sourceLabel }}</td>
-                            <td>{{ edge.targetLabel }}</td>
-                            <td>{{ edge.sourceDatabase || '-' }}</td>
-                            <td>{{ edge.targetDatabase || '-' }}</td>
-                          </tr>
-                        </tbody>
-                      </v-table>
-                    </div>
-                    <div v-else class="empty-state" style="padding:20px;">
-                      <div class="empty-state-icon">&#128202;</div>
-                      <h4>No audit data yet</h4>
-                      <p>Click Edge Audit after loading a graph.</p>
-                    </div>
-                  </v-card-text>
-                </v-card>
-              </v-dialog>
-
-              <v-row>
-              <v-col cols="12" md="8" lg="8">
-              <v-card class="card" style="padding:12px;" variant="outlined">
-                <div class="section-header" style="margin-bottom:8px;">
-                  <span class="section-title">Lineage Graph - {{ selectedObjectId }}</span>
-                  <div class="btn-row">
-                    <v-btn size="small" variant="outlined" @click="loadDiscovery">↻</v-btn>
-                  </div>
-                </div>
-                <div v-if="discoveryFormat === 'centered'" class="lineage-flow-guide">
-                  <span>SSIS packages / source tables</span>
-                  <strong>-></strong>
-                  <span>transform procedures</span>
-                  <strong>-></strong>
-                  <span>focus object</span>
-                  <strong>-></strong>
-                  <span>consumers</span>
-                </div>
-                <div class="graph-box" v-if="discoveryFormat === 'cytoscape' || discoveryFormat === 'centered'"><div id="cy-graph"></div></div>
-                <div class="graph-box" v-else-if="discoveryFormat === 'mermaid'" id="mermaid-graph"></div>
-                <div class="graph-box" v-else style="padding:12px;"><pre class="mono" style="overflow:auto;margin:0;">{{ JSON.stringify(discoveryGraph?.data, null, 2) }}</pre></div>
-              </v-card>
-
-              <v-card class="card lineage-compact-matrix" variant="outlined">
-                <div class="section-header">
-                  <span class="section-title">Dependency Matrix &amp; Tier Distribution</span>
-                  <div class="btn-row">
-                    <v-text-field v-model="matrixDatabase" placeholder="Database" density="compact" variant="outlined" hide-details style="width:140px;"></v-text-field>
-                    <v-btn size="small" variant="outlined" @click="loadDiscovery">Reload</v-btn>
-                  </div>
-                </div>
-                <div class="table-wrap lineage-compact-matrix-table" v-if="reports.blastHeatmap && reports.blastHeatmap.length">
-                  <v-table density="compact">
-                    <thead><tr><th>Tier</th><th>Object Type</th><th>Count</th></tr></thead>
-                    <tbody>
-                      <tr v-for="cell in reports.blastHeatmap" :key="'heat-' + cell.tier + '-' + cell.type">
-                        <td><v-chip size="x-small" :class="cell.tier === 'T1' ? 'admin' : cell.tier === 'T2' ? 'poweruser' : 'analyst'" variant="flat">{{ cell.tier }}</v-chip></td>
-                        <td>{{ cell.type }}</td>
-                        <td><strong>{{ cell.count }}</strong></td>
-                      </tr>
-                    </tbody>
-                  </v-table>
-                </div>
-                <div v-else class="empty-state lineage-compact-empty">
-                  <div class="empty-state-icon">&#128202;</div>
-                  <h4>No heat map data yet</h4>
-                  <p>Run a blast radius analysis to see tier and type distribution.</p>
-                </div>
-              </v-card>
-              </v-col>
-
-              <v-col cols="12" md="4" lg="4">
-              <v-card class="card" style="padding:12px; margin-bottom:12px;" variant="outlined">
-                <div class="section-header" style="margin-bottom:8px;">
-                  <span class="section-title">Lineage Answer</span>
-                  <div class="btn-row">
-                    <v-btn size="small" variant="outlined" @click="loadLineageAnswer" :loading="lineageAnswerLoading">Refresh</v-btn>
-                    <v-btn size="small" variant="outlined" @click="onViewChange('docs'); openDocByKey('help-center')">Help</v-btn>
-                  </div>
-                </div>
-
-                <div class="mini-stack" style="margin-bottom:10px;">
-                  <div class="mini-metric"><span>Intent</span><strong>{{ lineageAnswer?.intent_description || 'Choose a lineage question' }}</strong></div>
-                  <div class="mini-metric"><span>Focus Object</span><strong style="font-family:monospace;font-size:11px;">{{ selectedObjectId || '-' }}</strong></div>
-                </div>
-
-                <div v-if="lineageAnswerLoading" class="empty-state" style="padding:20px;">
-                  <div class="empty-state-icon">&#8987;</div>
-                  <h4>Building answer</h4>
-                  <p>Summarizing the semantic lineage for this object.</p>
-                </div>
-
-                <template v-else-if="lineageAnswer">
-                  <p class="lineage-answer-text">{{ lineageAnswer.plain_english }}</p>
-
-                  <div v-if="lineageAnswer.caveats && lineageAnswer.caveats.length" class="lineage-caveat-list">
-                    <div v-for="caveat in lineageAnswer.caveats" :key="caveat" class="lineage-caveat-item">
-                      {{ caveat }}
-                    </div>
-                  </div>
-
-                  <div class="table-wrap lineage-answer-table" v-if="lineageAnswer.impacted_objects && lineageAnswer.impacted_objects.length">
-                    <v-table density="compact">
-                      <thead>
-                        <tr>
-                          <th>Role</th>
-                          <th>Object</th>
-                          <th>Type</th>
-                          <th>Where</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="item in lineageAnswer.impacted_objects.slice(0, 12)" :key="'lineage-answer-' + item.role + '-' + item.id">
-                          <td>{{ item.role }}</td>
-                          <td>
-                            <div class="lineage-answer-object">{{ item.label }}</div>
-                            <div class="lineage-answer-why">{{ item.why_it_matters }}</div>
-                          </td>
-                          <td>{{ item.type }}</td>
-                          <td class="lineage-answer-location">{{ item.location || '-' }}</td>
-                        </tr>
-                      </tbody>
-                    </v-table>
-                  </div>
-
-                  <div v-if="lineageHelp && lineageHelp.examples && lineageHelp.examples.length" class="lineage-help-panel">
-                    <div class="lineage-help-title">How to ask</div>
-                    <div class="lineage-help-copy">{{ lineageHelp.plain_english }}</div>
-                    <div class="lineage-help-examples">
-                      <div v-for="example in lineageHelp.examples.slice(0, 4)" :key="example.prompt" class="lineage-help-example">
-                        <strong>{{ example.prompt }}</strong>
-                        <span>{{ example.description }}</span>
-                      </div>
-                    </div>
-                  </div>
-                </template>
-
-                <div v-else class="empty-state" style="padding:20px;">
-                  <div class="empty-state-icon">&#128270;</div>
-                  <h4>No lineage answer yet</h4>
-                  <p>Render the object to get a plain-English explanation and impacted object list.</p>
-                </div>
-              </v-card>
-
-              <v-card ref="impactSummaryCard" class="card" style="padding:12px;" variant="outlined">
-                <h3>Impact Summary</h3>
-                <div
-                  v-if="reports.blastRadiusStatus"
-                  class="lineage-action-status"
-                  :class="{ active: reports.blastRadiusLoading }"
-                >
-                  {{ reports.blastRadiusStatus }}
-                </div>
-                <div class="mini-stack" style="margin-bottom:10px;">
-                  <div class="mini-metric"><span>Focus Object</span><strong style="font-family:monospace;font-size:11px;">{{ selectedObjectId }}</strong></div>
-                  <div class="mini-metric"><span>Top Reach Score</span><strong>{{ reports.blastRows?.[0]?.reachScore || 0 }}</strong></div>
-                  <div class="mini-metric"><span>Highest Tier</span><strong>{{ reports.blastRows?.[0]?.tier || '-' }}</strong></div>
-                </div>
-
-                <div class="ranked-list">
-                  <div
-                    v-for="(item, idx) in (reports.blastRows || []).slice(0, 10)"
-                    :key="'disc-impact-' + item.id"
-                    class="ranked-item"
-                    style="cursor:pointer;"
-                    @click="selectedObjectId = item.id; loadDiscovery()"
-                  >
-                    <span class="ranked-num">#{{ idx + 1 }}</span>
-                    <span class="ranked-name">{{ item.id }}</span>
-                    <span class="ranked-type">{{ item.tier }}</span>
-                    <span class="ranked-score">{{ item.reachScore }}</span>
-                  </div>
-                  <div v-if="!reports.blastRows || reports.blastRows.length === 0" class="empty-state" style="padding:20px;">
-                    <div class="empty-state-icon">&#x26A1;</div>
-                    <h4>No impact data</h4>
-                    <p>Render a graph first, then click Blast Radius.</p>
-                  </div>
-                </div>
-              </v-card>
-              </v-col>
-              </v-row>
-
-            </div>
-
-            <div v-if="activeView === 'reports'">
-              <v-row>
-              <v-col cols="12">
-              <v-card class="card" style="padding:12px 16px;" variant="outlined">
-                <div class="section-header" style="margin-bottom:10px;">
-                  <span class="section-title">&#x25A7; Executive Reporting Suite</span>
-                  <v-chip size="small" color="info" variant="tonal">{{ resolvedPersona.charAt(0).toUpperCase() + resolvedPersona.slice(1) }} View</v-chip>
-                </div>
-                <v-row>
-                  <v-col cols="12" sm="6" md="3"><v-card class="card kpi" variant="outlined"><div class="value">{{ executiveReportMetrics.objects }}</div><div class="label">Governed Objects</div></v-card></v-col>
-                  <v-col cols="12" sm="6" md="3"><v-card class="card kpi" variant="outlined"><div class="value">{{ executiveReportMetrics.dependencies }}</div><div class="label">Total Dependencies</div></v-card></v-col>
-                  <v-col cols="12" sm="6" md="3"><v-card class="card kpi" variant="outlined"><div class="value">{{ executiveReportMetrics.qualityScore || '-' }}</div><div class="label">Quality Score</div></v-card></v-col>
-                  <v-col cols="12" sm="6" md="3"><v-card class="card kpi" variant="outlined"><div class="value">{{ executiveReportMetrics.blastObjects }}</div><div class="label">High-Risk Objects</div></v-card></v-col>
-                </v-row>
-              </v-card>
-              </v-col>
-
-              <v-col cols="12">
-              <v-card class="card" variant="outlined">
-                <div class="section-header">
-                  <span class="section-title">Data Marketplace Access Workflow</span>
-                  <div class="btn-row">
-                    <v-select
-                      v-model="marketplace.scope"
-                      density="compact"
-                      variant="outlined"
-                      hide-details
-                      style="width:170px;"
-                      :items="[
-                        { title: 'My Requests', value: 'mine' },
-                        { title: 'My Approvals', value: 'approvals' },
-                        ...(isMarketplaceAdmin ? [{ title: 'All Requests', value: 'all' }] : []),
-                      ]"
-                      @update:model-value="loadMarketplaceRequests"
-                    ></v-select>
-                    <v-btn size="small" variant="outlined" @click="loadMarketplaceRequests()">Refresh</v-btn>
-                  </div>
-                </div>
-
-                <div class="form-row" style="margin-bottom:10px;">
-                  <div class="col-3"><v-label>Asset ID</v-label><v-text-field v-model="marketplace.form.assetId" placeholder="sales.orders" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-2"><v-label>Requested Role</v-label><v-select v-model="marketplace.form.requestedRole" density="compact" variant="outlined" hide-details :items="['Viewer','Analyst','PowerUser']"></v-select></div>
-                  <div class="col-3"><v-label>Approver User ID</v-label><v-text-field v-model="marketplace.form.approverId" placeholder="user-approver" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-4"><v-label>Approver Email</v-label><v-text-field v-model="marketplace.form.approverEmail" placeholder="approver@company.com" density="compact" variant="outlined" hide-details></v-text-field></div>
-                </div>
-                <v-label>Business Justification</v-label>
-                <v-textarea v-model="marketplace.form.justification" rows="3" variant="outlined" density="compact" hide-details placeholder="Describe why access is required and business impact if delayed."></v-textarea>
-                <div class="btn-row" style="margin-top:10px;">
-                  <v-btn color="primary" @click="submitMarketplaceAccessRequest" :loading="marketplace.loading" :disabled="marketplace.loading">Submit Request</v-btn>
-                  <v-btn variant="tonal" @click="syncMarketplaceFormWithSelection">Use Selected Object</v-btn>
-                </div>
-
-                <div class="table-wrap mt-8">
-                  <v-table density="compact">
-                    <thead>
-                      <tr>
-                        <th>Request</th>
-                        <th>Asset</th>
-                        <th>Status</th>
-                        <th>Requester</th>
-                        <th>Approver</th>
-                        <th>SLA Due</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="requestItem in marketplace.requests" :key="requestItem.requestId">
-                        <td class="text-mono text-small">{{ requestItem.requestId }}</td>
-                        <td>{{ requestItem.assetId }}</td>
-                        <td>
-                        <v-chip size="x-small" variant="tonal" :color="requestItem.sla?.overdue ? 'amber' : 'success'">{{ requestItem.status }}</v-chip>
-                        </td>
-                        <td>{{ requestItem.requester?.email || requestItem.requester?.userId || '-' }}</td>
-                        <td>{{ requestItem.approver?.email || requestItem.approver?.userId || '-' }}</td>
-                        <td>{{ formatTimestamp(requestItem.sla?.dueAt) }}</td>
-                        <td class="btn-row">
-                          <v-btn
-                            v-if="canReviewMarketplaceRequest(requestItem) && ['submitted','in-review','request-more-info'].includes(requestItem.status)"
-                            size="small"
-                            variant="outlined"
-                            @click="reviewMarketplaceRequest(requestItem, 'start_review')"
-                          >Start</v-btn>
-                          <v-btn
-                            v-if="canReviewMarketplaceRequest(requestItem) && ['submitted','in-review','request-more-info'].includes(requestItem.status)"
-                            size="small"
-                            variant="outlined"
-                            @click="reviewMarketplaceRequest(requestItem, 'request_more_info')"
-                          >More Info</v-btn>
-                          <v-btn
-                            v-if="canReviewMarketplaceRequest(requestItem) && ['submitted','in-review','request-more-info'].includes(requestItem.status)"
-                            size="small"
-                            color="success"
-                            variant="tonal"
-                            @click="reviewMarketplaceRequest(requestItem, 'approve')"
-                          >Approve</v-btn>
-                          <v-btn
-                            v-if="canReviewMarketplaceRequest(requestItem) && ['submitted','in-review','request-more-info'].includes(requestItem.status)"
-                            size="small"
-                            color="error"
-                            variant="tonal"
-                            @click="reviewMarketplaceRequest(requestItem, 'reject')"
-                          >Reject</v-btn>
-                          <v-btn
-                            v-if="isMarketplaceAdmin && requestItem.status === 'approved'"
-                            size="small"
-                            color="primary"
-                            @click="fulfillMarketplaceRequest(requestItem)"
-                          >Fulfill</v-btn>
-                        </td>
-                      </tr>
-                      <tr v-if="!marketplace.requests.length">
-                        <td colspan="7" class="empty">No access requests found for this scope.</td>
-                      </tr>
-                    </tbody>
-                  </v-table>
-                </div>
-              </v-card>
-
-              <v-card class="card span-8" variant="outlined">
-                <div class="section-header">
-                  <span class="section-title">Blast Radius Analysis</span>
-                  <div class="btn-row">
-                    <v-text-field v-model="selectedObjectId" placeholder="Object ID" density="compact" variant="outlined" hide-details style="width:200px;"></v-text-field>
-                    <v-btn size="small" color="primary" @click="loadDiscovery">Recalculate</v-btn>
-                    <v-btn size="small" variant="outlined" @click="refreshBlastRadiusReport">Refresh</v-btn>
-                  </div>
-                </div>
-                <div class="stat-row" v-if="reports.blastRadius">
-                  <div class="stat-item"><div class="stat-value">{{ reports.blastRadius.impactedObjects }}</div><div class="stat-label">Impacted</div></div>
-                  <div class="stat-item"><div class="stat-value">{{ reports.blastRadius.directDownstream }}</div><div class="stat-label">Downstream</div></div>
-                  <div class="stat-item"><div class="stat-value">{{ reports.blastRadius.directUpstream }}</div><div class="stat-label">Upstream</div></div>
-                  <div class="stat-item"><div class="stat-value">{{ reports.blastRadius.maxDepth }}</div><div class="stat-label">Max Depth</div></div>
-                </div>
-                <div style="height:280px;margin-top:10px;"><canvas id="blast-radius-chart"></canvas></div>
-              </v-card>
-
-              <v-card class="card span-4" variant="outlined">
-                <h3>Tier &times; Type Distribution</h3>
-                <div class="table-wrap" v-if="reports.blastHeatmap && reports.blastHeatmap.length">
-                  <v-table density="compact">
-                    <thead><tr><th>Tier</th><th>Type</th><th>#</th></tr></thead>
-                    <tbody>
-                      <tr v-for="cell in reports.blastHeatmap" :key="'rep-heat-' + cell.tier + '-' + cell.type">
-                        <td><v-chip size="x-small" :class="cell.tier==='T1'?'admin':cell.tier==='T2'?'poweruser':'analyst'" variant="flat">{{ cell.tier }}</v-chip></td>
-                        <td>{{ cell.type }}</td>
-                        <td><strong>{{ cell.count }}</strong></td>
-                      </tr>
-                    </tbody>
-                  </v-table>
-                </div>
-                <div v-else class="empty-state" style="padding:24px;">
-                  <div class="empty-state-icon">&#128200;</div>
-                  <h4>No heat data</h4>
-                  <p>Run blast radius analysis first.</p>
-                </div>
-              </v-card>
-
-              <v-card class="card span-12" variant="outlined">
-                <div class="section-header">
-                  <span class="section-title">&#127942; Critical Dependency Leaderboard</span>
-                  <span class="text-muted text-small">Top 10 objects by reach score - highest risk targets</span>
-                </div>
-                <div class="ranked-list" v-if="criticalDependencyLeaderboard.length">
-                  <div
-                    v-for="(row, idx) in criticalDependencyLeaderboard"
-                    :key="'leader-' + row.id"
-                    class="ranked-item"
-                    style="grid-template-columns:28px 1fr 80px 60px 60px 70px;cursor:pointer;"
-                    @click="selectedObjectId = row.id"
-                  >
-                    <span class="ranked-num" :style="idx < 3 ? 'color:#f59e0b;font-weight:900;' : ''">#{{ idx + 1 }}</span>
-                    <span class="ranked-name">{{ row.id }}</span>
-                    <span class="ranked-type">
-                      <v-chip size="x-small" :class="row.tier==='T1'?'admin':row.tier==='T2'?'poweruser':'analyst'" variant="flat">{{ row.tier }}</v-chip>
-                    </span>
-                    <span class="text-small text-muted" style="text-align:center;">&#8679; {{ row.inDegree }}</span>
-                    <span class="text-small text-muted" style="text-align:center;">&#8681; {{ row.outDegree }}</span>
-                    <span class="ranked-score">{{ row.reachScore }}</span>
-                  </div>
-                </div>
-                <div v-else class="empty-state">
-                  <div class="empty-state-icon">&#127942;</div>
-                  <h4>Leaderboard empty</h4>
-                  <p>Load lineage data and run blast radius to populate.</p>
-                </div>
-              </v-card>
-
-              <v-card class="card span-12" variant="outlined">
-                <div class="section-header">
-                  <span class="section-title">All Dependency Reach</span>
-                  <span class="text-muted text-small">{{ (reports.blastRows || []).length }} objects analyzed</span>
-                </div>
-                <div class="table-wrap">
-                  <v-table density="compact">
-                    <thead><tr>
-                      <th>Object</th><th>Type</th><th>Tier</th>
-                      <th>Downstream</th><th>Upstream</th><th>Reach Score</th>
-                    </tr></thead>
-                    <tbody>
-                      <tr
-                        v-for="row in (reports.blastRows || []).slice(0, 30)"
-                        :key="'blast-row-' + row.id"
-                        class="clickable"
-                        @click="selectedObjectId = row.id"
-                      >
-                        <td><strong>{{ row.id }}</strong></td>
-                        <td><v-chip size="x-small" class="type-chip" variant="outlined">{{ row.type }}</v-chip></td>
-                        <td><v-chip size="x-small" :class="row.tier==='T1'?'admin':row.tier==='T2'?'poweruser':'analyst'" variant="flat">{{ row.tier }}</v-chip></td>
-                        <td>{{ row.downstreamDepth === null ? '-' : row.downstreamDepth }}</td>
-                        <td>{{ row.upstreamDepth === null ? '-' : row.upstreamDepth }}</td>
-                        <td><strong style="color:var(--primary);">{{ row.reachScore }}</strong></td>
-                      </tr>
-                      <tr v-if="!reports.blastRows || reports.blastRows.length === 0">
-                        <td colspan="6" class="empty">No blast radius data yet - render a graph first.</td>
-                      </tr>
-                    </tbody>
-                  </v-table>
-                </div>
-              </v-card>
-
-              <v-card class="card span-7" variant="outlined">
-                <h3>Export Center</h3>
-                <div class="export-cards">
-                  <div class="export-card" @click="downloadProtected('/api/v1/reporting/export/catalog.csv', 'catalog.csv')">
-                    <div class="export-icon">&#128202;</div>
-                    <div class="export-label">Catalog CSV</div>
-                    <div class="export-desc">All objects, flat export</div>
-                  </div>
-                  <div class="export-card" @click="downloadProtected('/api/v1/reporting/export/catalog.xlsx', 'catalog.xlsx')">
-                    <div class="export-icon">&#128209;</div>
-                    <div class="export-label">Excel Workbook</div>
-                    <div class="export-desc">Formatted spreadsheet</div>
-                  </div>
-                  <div class="export-card" @click="downloadProtected('/api/v1/reporting/export/dependency/' + encodeURIComponent(selectedObjectId) + '.pdf', 'dependency.pdf')">
-                    <div class="export-icon">&#128196;</div>
-                    <div class="export-label">Dependency PDF</div>
-                    <div class="export-desc">Impact report for {{ selectedObjectId }}</div>
-                  </div>
-                  <div class="export-card" @click="downloadProtected('/api/v1/reporting/export/visualization/' + encodeURIComponent(selectedObjectId) + '?format=svg', 'visualization.svg')">
-                    <div class="export-icon">&#127912;</div>
-                    <div class="export-label">Graph SVG</div>
-                    <div class="export-desc">Lineage visualization</div>
-                  </div>
-                </div>
-
-                <div class="section-header mt-8">
-                  <span class="section-title">Share Link</span>
-                </div>
-                <div class="form-row" style="grid-template-columns:1fr auto auto;">
-                  <v-text-field v-model="reports.shareObjectId" placeholder="Object ID" density="compact" variant="outlined" hide-details></v-text-field>
-                  <v-select v-model="reports.shareFormat" density="compact" variant="outlined" hide-details style="width:80px;" :items="['svg','png']"></v-select>
-                  <v-btn size="small" variant="outlined" @click="createShareLink">Generate</v-btn>
-                </div>
-                <div class="code-block mt-8" v-if="reports.sharedLink" style="word-break:break-all;">{{ reports.sharedLink }}</div>
-              </v-card>
-
-              <v-card class="card span-5" variant="outlined">
-                <h3>One-Click Report Packs</h3>
-                <div class="pack-cards" style="grid-template-columns:1fr;">
-                  <div class="pack-card">
-                    <div class="pack-card-header">&#127970; Executive Pack</div>
-                    <div class="pack-files">Excel catalog + Dependency PDF + Visualization SVG</div>
-                    <v-btn block color="primary" :loading="reports.runningPack" :disabled="reports.runningPack" @click="runReportPack('executive')">
-                      {{ reports.runningPack ? 'Downloading...' : 'Download Executive Pack' }}
-                    </v-btn>
-                  </div>
-                  <div class="pack-card" style="margin-top:8px;">
-                    <div class="pack-card-header">&#128101; Steward Pack</div>
-                    <div class="pack-files">CSV catalog + Dependency PDF</div>
-                    <v-btn block variant="tonal" :disabled="reports.runningPack" @click="runReportPack('steward')">
-                      Download Steward Pack
-                    </v-btn>
-                  </div>
-                  <div class="pack-card" style="margin-top:8px;">
-                    <div class="pack-card-header">&#128200; Analyst Pack</div>
-                    <div class="pack-files">CSV catalog + Graph SVG</div>
-                    <v-btn block variant="outlined" :disabled="reports.runningPack" @click="runReportPack('analyst')">
-                      Download Analyst Pack
-                    </v-btn>
-                  </div>
-                </div>
-
-                <div class="pack-status mt-8" v-if="reports.lastPackRun">
-                  &#10003; Last run: <strong>{{ reports.lastPackRun.packType }}</strong> pack &nbsp;&middot;&nbsp;
-                  {{ reports.lastPackRun.fileCount }} files &nbsp;&middot;&nbsp;
-                  {{ new Date(reports.lastPackRun.downloadedAt).toLocaleTimeString() }}
-                </div>
-
-                <div class="divider"></div>
-                <h4>Scheduled Reports</h4>
-                <div class="form-row" style="grid-template-columns:1fr auto;">
-                  <v-text-field v-model="reports.recipient" placeholder="Recipient email" density="compact" variant="outlined" hide-details></v-text-field>
-                  <v-btn size="small" variant="outlined" @click="createSchedule">Schedule</v-btn>
-                </div>
-                <div class="table-wrap mt-8" v-if="reports.schedules.length">
-                  <v-table density="compact">
-                    <thead><tr><th>ID</th><th>Status</th><th></th></tr></thead>
-                    <tbody>
-                      <tr v-for="item in reports.schedules" :key="item.scheduleId">
-                        <td class="text-mono">{{ item.scheduleId }}</td>
-                        <td><v-chip size="x-small" variant="tonal" :color="item.active ? 'success' : 'secondary'">{{ item.active ? 'Active' : 'Paused' }}</v-chip></td>
-                        <td><v-btn size="small" variant="outlined" @click="runSchedule(item.scheduleId)">Run</v-btn></td>
-                      </tr>
-                    </tbody>
-                  </v-table>
-                </div>
-                <div v-else class="empty">No schedules configured.</div>
-              </v-card>
-            </div>
-
-            <div v-if="activeView === 'integrations'" class="grid integrations-secondary-grid">
-              <v-card v-if="integrations.connectorWorkflowTab === 'integrations'" class="card span-12 help-strip" variant="outlined">
-                <div class="section-header">
-                  <span class="section-title">Integrations Guide</span>
-                  <v-btn size="small" variant="outlined" @click="onViewChange('docs'); openDocByKey('help-center')">Open Help Center</v-btn>
-                </div>
-                <div class="help-strip-grid">
-                  <div class="help-pill"><strong>Notifications</strong><span>Send governance events to email, Slack, or Teams.</span></div>
-                  <div class="help-pill"><strong>Webhooks</strong><span>Push event payloads into external systems and test delivery.</span></div>
-                  <div class="help-pill"><strong>External Links</strong><span>Attach Jira/Confluence/Runbook links to any catalog object.</span></div>
-                  <div class="help-pill"><strong>CI/CD Checks</strong><span>Run impact, compliance, and docs checks before deploy.</span></div>
-                </div>
-              </v-card>
-
-              <v-card class="card span-12" variant="outlined">
-                <div class="section-header">
-                  <span class="section-title">Managed Metadata Connectors</span>
-                  <div class="btn-row">
-                    <v-btn size="small" variant="outlined" :loading="integrations.connectorLoading" @click="loadManagedConnectors">Refresh</v-btn>
-                  </div>
-                </div>
-                <p class="card-help">Create a reusable source connection, then run an immediate profile or schedule a recurring refresh from that same saved connector.</p>
-                <div class="connector-workflow-rail">
-                  <button
-                    v-for="step in connectorWorkflowSteps"
-                    :key="'connector-step-' + step.key"
-                    type="button"
-                    class="connector-workflow-step"
-                    :class="{ active: integrations.connectorWorkflowTab === step.key, done: step.done }"
-                    @click="integrations.connectorWorkflowTab = step.key"
-                  >
-                    <span>{{ step.done ? 'Done' : 'Next' }}</span>
-                    <strong>{{ step.label }}</strong>
-                  </button>
-                </div>
-                <div class="connector-workflow-tabs">
-                  <v-btn-toggle v-model="integrations.connectorWorkflowTab" mandatory density="compact" variant="outlined">
-                    <v-btn value="connection" prepend-icon="mdi-database-cog">Connection</v-btn>
-                    <v-btn value="run" prepend-icon="mdi-play-circle">Run Profile Now</v-btn>
-                    <v-btn value="schedule" prepend-icon="mdi-calendar-clock">Queues</v-btn>
-                    <v-btn value="access" prepend-icon="mdi-account-key">Access</v-btn>
-                    <v-btn value="history" prepend-icon="mdi-history">Runs</v-btn>
-                    <v-btn value="integrations" prepend-icon="mdi-bell">Notifications</v-btn>
-                  </v-btn-toggle>
-                </div>
-
-                <div v-if="integrations.connectorWorkflowTab === 'connection'" class="connector-workspace-grid">
-                  <div class="managed-connector-panel connector-builder-panel">
-                    <div class="panel-kicker">Connection Wizard</div>
-                    <h3>Create or edit a source connection</h3>
-                    <p class="card-help">Common sources use a guided setup. Advanced JSON is still available when you need it.</p>
-                    <div class="connector-step-chip-row">
-                      <v-chip
-                        v-for="(step, index) in connectorWizardStepDefinitions"
-                        :key="'connector-step-' + step.key"
-                        size="small"
-                        variant="tonal"
-                        :color="index === integrations.connectorEditor.wizardStep ? 'primary' : (index < integrations.connectorEditor.wizardStep ? 'success' : 'default')"
-                        :prepend-icon="index === integrations.connectorEditor.wizardStep ? 'mdi-circle-slice-8' : (index < integrations.connectorEditor.wizardStep ? 'mdi-check-circle' : 'mdi-circle-outline')"
-                        @click="goToConnectorWizardStep(index)"
-                        style="cursor:pointer;"
-                      >
-                        {{ step.label }}
-                      </v-chip>
-                    </div>
-
-                    <div class="connector-guardrail" v-if="integrations.connectorEditor.draftMode">
-                      <v-icon size="small">mdi-pencil-box-outline</v-icon>
-                      <span>New unsaved connector draft. Nothing has been saved yet{{ integrations.connectorEditor.lastResetAt ? ' as of ' + formatTimestamp(integrations.connectorEditor.lastResetAt) : '' }}.</span>
-                    </div>
-
-                    <div v-if="currentConnectorWizardStep?.key === 'type'" class="mt-8">
-                      <div class="form-row">
-                        <div class="col-6">
-                          <v-label>Connector Type</v-label>
-                          <v-select
-                            v-model="integrations.connectorEditor.type"
-                            density="compact"
-                            variant="outlined"
-                            hide-details
-                            :items="integrations.connectorDefinitions.map((item) => ({ title: connectorDefinitionLabel(item.type), value: item.type }))"
-                            @update:model-value="onConnectorTypeChanged"
-                          ></v-select>
-                        </div>
-                        <div class="col-6">
-                          <div class="connector-next-summary">
-                            <div><span>Category</span><strong>{{ selectedConnectorDefinition?.category || '-' }}</strong></div>
-                            <div><span>Cloud</span><strong>{{ selectedConnectorDefinition?.cloud || '-' }}</strong></div>
-                            <div><span>Discovery</span><strong>{{ selectedConnectorWizard.supports_discovery ? 'Supported' : 'Not included' }}</strong></div>
-                            <div><span>Testing</span><strong>{{ selectedConnectorWizard.supports_test ? 'Supported' : 'Save only' }}</strong></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div v-else-if="currentConnectorWizardStep?.key === 'auth'" class="mt-8">
-                      <div class="form-row">
-                        <div class="col-6">
-                          <v-label>Authentication Method</v-label>
-                          <v-select
-                            v-model="integrations.connectorEditor.credentialMode"
-                            density="compact"
-                            variant="outlined"
-                            hide-details
-                            :items="connectorCredentialModeOptions()"
-                            item-title="title"
-                            item-value="value"
-                            @update:model-value="syncConnectorCredentialMode"
-                          ></v-select>
-                          <div class="field-hint">{{ selectedConnectorAuthModeMeta?.help || connectorCredentialModeHint() }}</div>
-                        </div>
-                        <div class="col-6">
-                          <div class="connector-next-summary">
-                            <div><span>Selected Mode</span><strong>{{ selectedConnectorAuthModeMeta?.title || integrations.connectorEditor.credentialMode }}</strong></div>
-                            <div><span>Secret storage</span><strong>{{ connectorSecretReferenceRequired() ? 'Reference or one-time secret' : 'Not required' }}</strong></div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="form-row mt-8">
-                        <div
-                          v-for="field in connectorCredentialFields"
-                          :key="'connector-credential-' + field.key"
-                          :class="field.input === 'textarea' ? 'col-12' : 'col-6'"
-                        >
-                          <v-label>{{ field.label }}</v-label>
-                          <v-textarea
-                            v-if="field.input === 'textarea'"
-                            :model-value="connectorFieldValue(field.key, '')"
-                            rows="3"
-                            density="compact"
-                            variant="outlined"
-                            hide-details
-                            :placeholder="field.placeholder || ''"
-                            @update:model-value="setConnectorFieldValue(field.key, $event)"
-                          ></v-textarea>
-                          <v-text-field
-                            v-else
-                            :model-value="connectorFieldValue(field.key, '')"
-                            :type="connectorFieldInputType(field)"
-                            density="compact"
-                            variant="outlined"
-                            hide-details="auto"
-                            :error="Boolean(connectorCredentialFieldError(field))"
-                            :error-messages="connectorCredentialFieldError(field)"
-                            :placeholder="field.placeholder || ''"
-                            @update:model-value="setConnectorFieldValue(field.key, $event)"
-                          ></v-text-field>
-                          <div v-if="field.required && !connectorCredentialFieldError(field)" class="field-hint">Required</div>
-                        </div>
-                        <div class="col-12" v-if="connectorSecretReferenceRequired()">
-                          <v-label>One-time Secret Value (optional)</v-label>
-                          <v-text-field
-                            v-model="integrations.connectorEditor.rawSecret"
-                            density="compact"
-                            variant="outlined"
-                            hide-details
-                            type="password"
-                            placeholder="Use for a one-time test or first save. It is not shown again after save."
-                          ></v-text-field>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div v-else-if="currentConnectorWizardStep?.key === 'connection'" class="mt-8">
-                      <div class="connector-guardrail" v-if="integrations.connectorEditor.type === 'sql_server' || integrations.connectorEditor.type === 'ssis'">
-                        <v-icon size="small">mdi-database-sync-outline</v-icon>
-                        <span>Authentication comes first here so the wizard can refresh available databases from the server instead of making you guess them.</span>
-                      </div>
-                      <div class="form-row">
-                        <div
-                          v-for="field in visibleConnectorBasicFields"
-                          :key="'connector-basic-' + field.key"
-                          :class="field.input === 'textarea' ? 'col-12' : 'col-6'"
-                        >
-                          <v-label>{{ field.label }}</v-label>
-                          <div v-if="(integrations.connectorEditor.type === 'sql_server' || integrations.connectorEditor.type === 'ssis') && field.key === 'database'">
-                            <div class="btn-row" style="align-items:flex-end; gap:8px;">
-                              <v-combobox
-                                :model-value="connectorFieldValue(field.key, '')"
-                                density="compact"
-                                variant="outlined"
-                                hide-details="auto"
-                                :items="connectorDatabaseOptions"
-                                item-title="title"
-                                item-value="value"
-                                :loading="integrations.connectorEditor.discoveringDatabases"
-                                :error="Boolean(connectorWizardFieldError(field))"
-                                :error-messages="connectorWizardFieldError(field)"
-                                :placeholder="field.placeholder || ''"
-                                style="flex:1;"
-                                @update:model-value="setConnectorFieldValue(field.key, typeof $event === 'string' ? $event : ($event?.value || ''))"
-                              ></v-combobox>
-                              <v-btn
-                                variant="outlined"
-                                :loading="integrations.connectorEditor.discoveringDatabases"
-                                :disabled="!canDiscoverWizardDatabases()"
-                                @click="refreshWizardDatabases()"
-                              >Refresh Databases</v-btn>
-                            </div>
-                            <div class="field-hint">{{ connectorDatabaseHint() }}</div>
-                          </div>
-                          <v-select
-                            v-else-if="field.input === 'select'"
-                            :model-value="connectorFieldValue(field.key, '')"
-                            density="compact"
-                            variant="outlined"
-                            hide-details
-                            :items="connectorFieldItems(field)"
-                            item-title="title"
-                            item-value="value"
-                            @update:model-value="setConnectorFieldValue(field.key, $event)"
-                          ></v-select>
-                          <v-switch
-                            v-else-if="field.input === 'toggle'"
-                            :model-value="connectorFieldValue(field.key, false)"
-                            color="primary"
-                            density="compact"
-                            hide-details
-                            :label="field.label"
-                            @update:model-value="setConnectorFieldValue(field.key, $event)"
-                          ></v-switch>
-                          <v-textarea
-                            v-else-if="field.input === 'textarea'"
-                            :model-value="connectorFieldValue(field.key, '')"
-                            rows="3"
-                            density="compact"
-                            variant="outlined"
-                            hide-details
-                            :placeholder="field.placeholder || ''"
-                            @update:model-value="setConnectorFieldValue(field.key, $event)"
-                          ></v-textarea>
-                          <v-text-field
-                            v-else
-                            :model-value="connectorFieldValue(field.key, '')"
-                            :type="connectorFieldInputType(field)"
-                            density="compact"
-                            variant="outlined"
-                            hide-details="auto"
-                            :error="Boolean(connectorWizardFieldError(field))"
-                            :error-messages="connectorWizardFieldError(field)"
-                            :placeholder="field.placeholder || ''"
-                            @update:model-value="setConnectorFieldValue(field.key, $event)"
-                          ></v-text-field>
-                          <div v-if="field.required && !connectorWizardFieldError(field)" class="field-hint">Required</div>
-                        </div>
-                      </div>
-                      <div class="connector-guardrail" v-if="integrations.connectorEditor.type === 'sql_server' || integrations.connectorEditor.type === 'ssis'">
-                        <v-icon size="small">mdi-auto-fix</v-icon>
-                        <span>Server, instance, and database fields generate the connector config automatically. No hand-written JSON needed for the common case.</span>
-                      </div>
-                    </div>
-
-                    <div v-else-if="currentConnectorWizardStep?.key === 'test'" class="mt-8">
-                      <div class="form-row">
-                        <div class="col-4"><v-label>Connection ID</v-label><v-text-field v-model="integrations.connectorEditor.id" density="compact" variant="outlined" hide-details="auto" placeholder="vendordata-sql" :error="Boolean(connectorEditorFieldError('id'))" :error-messages="connectorEditorFieldError('id')"></v-text-field></div>
-                        <div class="col-4"><v-label>Display Label</v-label><v-text-field v-model="integrations.connectorEditor.label" density="compact" variant="outlined" hide-details="auto" placeholder="VendorData SQL Server" :error="Boolean(connectorEditorFieldError('label'))" :error-messages="connectorEditorFieldError('label')"></v-text-field></div>
-                        <div class="col-4"><v-label>Description</v-label><v-text-field v-model="integrations.connectorEditor.description" density="compact" variant="outlined" hide-details placeholder="Optional"></v-text-field></div>
-                      </div>
-                      <div class="field-hint">These fields name the saved connector that testing, schedules, and permissions will use.</div>
-                      <div class="connector-next-summary">
-                        <div><span>Type</span><strong>{{ connectorDefinitionLabel(integrations.connectorEditor.type) }}</strong></div>
-                        <div><span>Connection</span><strong>{{ integrations.connectorEditor.label || integrations.connectorEditor.id || 'Unsaved draft' }}</strong></div>
-                        <div><span>Last test</span><strong>{{ integrations.connectorEditor.lastValidationAt ? formatTimestamp(integrations.connectorEditor.lastValidationAt) : 'Not run yet' }}</strong></div>
-                        <div><span>Status</span><strong>{{ integrations.connectorEditor.testSummary?.status || 'Pending' }}</strong></div>
-                      </div>
-                      <div class="field-hint mt-4" v-if="integrations.connectorLoading">
-                        Testing {{ integrations.connectorEditor.label || integrations.connectorEditor.id || 'connector' }}. The result card below will refresh when the live check finishes.
-                      </div>
-                      <div class="connector-next-summary mt-4" v-if="integrations.connectorEditor.testSummary">
-                        <div><span>Config</span><strong>{{ connectorTestHealth().config }}</strong></div>
-                        <div><span>Live Connection</span><strong>{{ connectorTestHealth().connection }}</strong></div>
-                        <div><span>Discovery</span><strong>{{ connectorTestHealth().discovery }}</strong></div>
-                        <div><span>Mode</span><strong>{{ integrations.connectorEditor.testSummary.summary?.credential_mode || integrations.connectorEditor.credentialMode || 'n/a' }}</strong></div>
-                      </div>
-                      <div class="connector-action-strip mt-8">
-                        <button
-                          type="button"
-                          class="native-connector-btn native-connector-btn-primary"
-                          style="border:0;border-radius:12px;padding:12px 18px;background:#2563eb;color:#fff;font-weight:700;cursor:pointer;"
-                          :disabled="integrations.connectorLoading"
-                          @click="testManagedConnectorDraft"
-                        >{{ integrations.connectorLoading ? 'Testing...' : 'Save Then Test Saved Connector' }}</button>
-                        <button
-                          type="button"
-                          class="native-connector-btn native-connector-btn-secondary"
-                          style="border:1px solid #cbd5e1;border-radius:12px;padding:12px 18px;background:#fff;color:#1e293b;font-weight:600;cursor:pointer;"
-                          :disabled="!selectedManagedConnector || integrations.connectorLoading"
-                          @click="retestSelectedManagedConnector"
-                        >Retest {{ selectedManagedConnector?.label || 'Saved Connector' }}</button>
-                      </div>
-                      <div v-if="integrations.connectorEditor.testSummary" class="mt-8">
-                        <div class="field-hint">
-                          Planned objects: {{ integrations.connectorEditor.testSummary.summary?.planned_objects ?? 0 }} ·
-                          Discovered objects: {{ integrations.connectorEditor.testSummary.summary?.discovered_objects ?? 0 }} ·
-                          Dry run only: {{ integrations.connectorEditor.testSummary.summary?.dry_run_only ? 'Yes' : 'No' }}
-                        </div>
-                        <div class="mini-stack mt-4" v-if="connectorTestDetailPairs().length">
-                          <div class="mini-metric" v-for="item in connectorTestDetailPairs()" :key="'connector-test-detail-' + item[0]">
-                            <span>{{ item[0] }}</span>
-                            <strong>{{ item[1] }}</strong>
-                          </div>
-                        </div>
-                        <div v-if="connectorTestErrors().length" class="connector-empty-path mt-8">
-                          <strong>Connection test reported issues.</strong>
-                          <span v-for="error in connectorTestErrors()" :key="'connector-test-error-' + error">{{ error }}</span>
-                        </div>
-                        <div class="field-hint mt-4" v-if="integrations.connectorEditor.testSummary?.status === 'failed'">
-                          This panel now reports only the saved connector runtime result. A failed result means the actual extractor path could not reach the saved server/database with the saved auth mode.
-                        </div>
-                      </div>
-                    </div>
-
-                    <div v-else-if="currentConnectorWizardStep?.key === 'discovery'" class="mt-8">
-                      <div class="connector-next-summary">
-                        <div><span>Snapshot captured</span><strong>{{ integrations.connectorEditor.discoverySummary ? 'Yes' : 'Run test first' }}</strong></div>
-                        <div><span>Objects discovered</span><strong>{{ integrations.connectorEditor.discoverySummary?.summary?.object_count ?? integrations.connectorEditor.testSummary?.summary?.discovered_objects ?? 0 }}</strong></div>
-                        <div><span>Metadata targets</span><strong>{{ integrations.connectorEditor.metadataTargets.length }}</strong></div>
-                      </div>
-                      <div class="connector-guardrail">
-                        <v-icon size="small">mdi-radar</v-icon>
-                        <span>{{ connectorDiscoveryHeadline() }}</span>
-                      </div>
-                      <div class="form-row mt-8" v-if="connectorDiscoveryCollections.length">
-                        <div class="col-12">
-                          <div class="panel-kicker">Discovered Collections</div>
-                          <div class="mini-stack">
-                            <div class="mini-metric" v-for="item in connectorDiscoveryCollections" :key="'discovery-' + item.key">
-                              <span>{{ item.key }}</span>
-                              <strong>{{ item.count }}</strong>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="form-row mt-8">
-                        <div class="col-12">
-                          <v-label>Metadata To Harvest</v-label>
-                          <v-select
-                            v-model="integrations.connectorEditor.metadataTargets"
-                            density="compact"
-                            variant="outlined"
-                            hide-details
-                            :items="(selectedConnectorDefinition?.metadata || []).map((item) => ({ title: item, value: item }))"
-                            multiple
-                            chips
-                          ></v-select>
-                          <div class="field-hint">Choose what this connector should harvest after the connection is saved.</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div v-else-if="currentConnectorWizardStep?.key === 'advanced'" class="mt-8">
-                      <div class="form-row">
-                        <div
-                          v-for="field in visibleConnectorAdvancedFields"
-                          :key="'connector-advanced-' + field.key"
-                          :class="field.input === 'textarea' ? 'col-12' : 'col-6'"
-                        >
-                          <v-label>{{ field.label }}</v-label>
-                          <v-select
-                            v-if="field.input === 'select'"
-                            :model-value="connectorFieldValue(field.key, '')"
-                            density="compact"
-                            variant="outlined"
-                            hide-details
-                            :items="connectorFieldItems(field)"
-                            item-title="title"
-                            item-value="value"
-                            @update:model-value="setConnectorFieldValue(field.key, $event)"
-                          ></v-select>
-                          <v-switch
-                            v-else-if="field.input === 'toggle'"
-                            :model-value="connectorFieldValue(field.key, false)"
-                            color="primary"
-                            density="compact"
-                            hide-details
-                            :label="field.label"
-                            @update:model-value="setConnectorFieldValue(field.key, $event)"
-                          ></v-switch>
-                          <v-textarea
-                            v-else-if="field.input === 'textarea'"
-                            :model-value="connectorFieldValue(field.key, '')"
-                            rows="3"
-                            density="compact"
-                            variant="outlined"
-                            hide-details
-                            :placeholder="field.placeholder || ''"
-                            @update:model-value="setConnectorFieldValue(field.key, $event)"
-                          ></v-textarea>
-                          <v-text-field
-                            v-else
-                            :model-value="connectorFieldValue(field.key, '')"
-                            :type="connectorFieldInputType(field)"
-                            density="compact"
-                            variant="outlined"
-                            hide-details
-                            :placeholder="field.placeholder || ''"
-                            @update:model-value="setConnectorFieldValue(field.key, $event)"
-                          ></v-text-field>
-                        </div>
-                      </div>
-                      <div class="form-row mt-8">
-                        <div class="col-12">
-                          <v-switch
-                            v-model="integrations.connectorEditor.showAdvancedJson"
-                            color="primary"
-                            density="compact"
-                            hide-details
-                            label="Show raw config JSON"
-                          ></v-switch>
-                          <div class="field-hint">Use this only for uncommon options or existing connector configs the wizard does not expose yet.</div>
-                        </div>
-                        <div class="col-12" v-if="integrations.connectorEditor.showAdvancedJson">
-                          <v-label>Advanced Config JSON</v-label>
-                          <v-textarea
-                            v-model="integrations.connectorEditor.configJson"
-                            rows="7"
-                            density="compact"
-                            variant="outlined"
-                            hide-details="auto"
-                            :error="integrations.connectorEditor.showAdvancedJson && !connectorAdvancedConfigPreview"
-                            :error-messages="integrations.connectorEditor.showAdvancedJson && !connectorAdvancedConfigPreview ? 'Advanced config JSON must be valid JSON.' : ''"
-                            @update:model-value="integrations.connectorEditor.rawJsonEdited = true"
-                          ></v-textarea>
-                        </div>
-                        <div class="col-12" v-if="connectorAdvancedExtraKeys.length">
-                          <div class="panel-kicker">Advanced-only keys</div>
-                          <div class="field-hint">These keys are not modeled by the wizard, but they will still be preserved on save.</div>
-                          <div class="btn-row mt-8">
-                            <v-chip v-for="key in connectorAdvancedExtraKeys" :key="'advanced-extra-' + key" size="small" variant="tonal">{{ key }}</v-chip>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div v-else-if="currentConnectorWizardStep?.key === 'save'" class="mt-8">
-                      <div class="connector-next-summary">
-                        <div><span>Connection</span><strong>{{ integrations.connectorEditor.label || integrations.connectorEditor.id || '-' }}</strong></div>
-                        <div><span>Type</span><strong>{{ connectorDefinitionLabel(integrations.connectorEditor.type) }}</strong></div>
-                        <div><span>Credential mode</span><strong>{{ selectedConnectorAuthModeMeta?.title || integrations.connectorEditor.credentialMode }}</strong></div>
-                        <div><span>Metadata targets</span><strong>{{ integrations.connectorEditor.metadataTargets.length || 0 }}</strong></div>
-                      </div>
-                      <div class="form-row mt-8">
-                        <div class="col-12">
-                          <v-label>Generated Config Preview</v-label>
-                          <v-textarea :model-value="connectorGeneratedConfigPreview" rows="6" density="compact" variant="outlined" hide-details readonly></v-textarea>
-                        </div>
-                      </div>
-                      <div class="connector-empty-path mt-8" v-if="connectorValidationChecklist().length">
-                        <strong>Before saving</strong>
-                        <span v-for="item in connectorValidationChecklist()" :key="'connector-validation-' + item">{{ item }}</span>
-                      </div>
-                    </div>
-
-                    <div class="connector-action-strip mt-8">
-                      <v-btn variant="tonal" @click="resetConnectorEditor">New Connection</v-btn>
-                      <v-btn variant="outlined" :disabled="integrations.connectorEditor.wizardStep === 0" @click="backConnectorWizard">Back</v-btn>
-                      <v-btn
-                        v-if="currentConnectorWizardStep?.key !== 'save'"
-                        color="primary"
-                        size="large"
-                        prepend-icon="mdi-arrow-right"
-                        min-width="220"
-                        style="font-weight: 700; letter-spacing: 0; color: white;"
-                        :disabled="!connectorWizardCanAdvance()"
-                        @click="advanceConnectorWizard"
-                      >{{ connectorWizardNextLabel() }}</v-btn>
-                      <v-btn v-else color="primary" :loading="integrations.connectorLoading" @click="saveManagedConnector">Save Connection</v-btn>
-                      <v-btn variant="tonal" :disabled="!selectedManagedConnector" @click="integrations.connectorWorkflowTab = 'run'">Run Profile Now</v-btn>
-                    </div>
-                  </div>
-
-                  <div class="managed-connector-panel">
-                    <div class="panel-kicker">Saved Connections</div>
-                    <div class="managed-connector-list">
-                      <div
-                        v-for="connector in integrations.managedConnectors"
-                        :key="'managed-connector-' + connector.id"
-                        class="managed-connector-row"
-                        :class="{ selected: integrations.selectedConnectorId === connector.id }"
-                      >
-                        <div>
-                          <strong>{{ connector.label }}</strong>
-                          <span>{{ connector.id }} · {{ connector.type }} · {{ connector.credential?.mode || 'credential not set' }}</span>
-                        </div>
-                        <div class="btn-row">
-                          <v-chip size="x-small" variant="tonal" :color="connector.credential?.status === 'stored_reference' || connector.credential?.status === 'configured' ? 'success' : 'warning'">{{ connector.credential?.status || 'unknown' }}</v-chip>
-                          <button type="button" class="native-connector-btn native-connector-btn-secondary native-connector-btn-small" style="border:1px solid #cbd5e1;border-radius:10px;padding:6px 12px;background:#fff;color:#1e293b;font-weight:600;cursor:pointer;" @click="useManagedConnector(connector)">Use</button>
-                          <button
-                            type="button"
-                            class="native-connector-btn native-connector-btn-primary native-connector-btn-small"
-                            style="border:0;border-radius:10px;padding:6px 12px;background:#2563eb;color:#fff;font-weight:700;cursor:pointer;"
-                            :disabled="integrations.connectorLoading"
-                            @click="testManagedConnector(connector)"
-                          >{{ integrations.connectorLoading && integrations.connectorEditor.id === connector.id ? 'Testing...' : 'Test' }}</button>
-                          <button type="button" class="native-connector-btn native-connector-btn-secondary native-connector-btn-small" style="border:1px solid #cbd5e1;border-radius:10px;padding:6px 12px;background:#fff;color:#1e293b;font-weight:600;cursor:pointer;" @click="editManagedConnector(connector)">Edit</button>
-                          <button type="button" class="native-connector-btn native-connector-btn-secondary native-connector-btn-small" style="border:1px solid #cbd5e1;border-radius:10px;padding:6px 12px;background:#fff;color:#1e293b;font-weight:600;cursor:pointer;" @click="loadManagedConnectorSnapshot(connector.id)">Snapshot</button>
-                        </div>
-                      </div>
-                      <div v-if="!integrations.managedConnectors.length" class="connector-empty-path">
-                        <strong>No connection saved yet.</strong>
-                        <span>Fill out Connection Setup, then click Save Connection.</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div v-if="integrations.connectorWorkflowTab === 'run'" class="connector-workspace-grid">
-                  <div class="managed-connector-panel">
-                    <div class="panel-kicker">One-Time Profile</div>
-                    <h3>Run an immediate profile</h3>
-                    <p class="card-help">Use this for testing a new connection or profiling a table/database now. Dry run validates the profile plan. Live runs aggregate-only profiling queries.</p>
-                    <div class="form-row">
-                      <div class="col-4"><v-label>Saved Connection</v-label><v-select v-model="integrations.profileRunEditor.connectorId" density="compact" variant="outlined" hide-details :items="profileScheduleConnectorOptions" @update:model-value="integrations.selectedConnectorId = integrations.profileRunEditor.connectorId"></v-select></div>
-                      <div class="col-3"><v-label>Profile Type</v-label><v-select v-model="integrations.profileRunEditor.profileType" density="compact" variant="outlined" hide-details :items="profileScheduleTypeOptions"></v-select></div>
-                      <div class="col-3"><v-label>Run Mode</v-label><v-select v-model="integrations.profileRunEditor.executionMode" density="compact" variant="outlined" hide-details :items="[{ title: 'Dry run / plan only', value: 'dry_run' }, { title: 'Live aggregate profile', value: 'live' }]"></v-select></div>
-                      <div class="col-2" style="display:flex;align-items:end;"><v-btn block color="primary" :loading="integrations.connectorLoading" :disabled="!integrations.profileRunEditor.connectorId" @click="runOneTimeProfile">Run Now</v-btn></div>
-                    </div>
-                    <div class="form-row mt-8">
-                      <div class="col-8"><v-label>Tables / Object IDs</v-label><v-textarea v-model="integrations.profileRunEditor.assetIds" rows="4" density="compact" variant="outlined" hide-details placeholder="Optional for metadata/BI. For aggregate database profiling, enter one table object id per line, such as GPA.dbo.SomeTable."></v-textarea></div>
-                      <div class="col-4"><v-label>Streams</v-label><v-text-field v-model="integrations.profileRunEditor.streams" density="compact" variant="outlined" hide-details placeholder="reports, dashboards, lineage"></v-text-field><div class="field-hint">Use streams for BI, catalog, pipeline, or metadata profiles. Leave blank for aggregate SQL profiling.</div></div>
-                    </div>
-                    <div class="form-row mt-8" v-if="integrations.profileRunEditor.profileType === 'aggregate'">
-                      <div class="col-3"><v-label>Coverage Mode</v-label><v-select v-model="integrations.profileRunEditor.coverageMode" density="compact" variant="outlined" hide-details :items="profileCoverageModeOptions()"></v-select></div>
-                      <div class="col-3"><v-label>Live Queue Order</v-label><v-select v-model="integrations.profileRunEditor.livePriority" density="compact" variant="outlined" hide-details :items="profileLivePriorityOptions()"></v-select></div>
-                      <div class="col-2"><v-label>Live Batch Size</v-label><v-text-field v-model.number="integrations.profileRunEditor.maxLiveTables" type="number" min="1" max="25" density="compact" variant="outlined" hide-details></v-text-field></div>
-                      <div class="col-2 scheduler-switch-cell"><v-switch v-model="integrations.profileRunEditor.includeViews" color="primary" density="compact" hide-details label="Include views"></v-switch></div>
-                      <div class="col-2">
-                        <div class="field-hint" style="padding-top: 28px;">Use 1 for a careful daytime queue, then raise off-hours.</div>
-                      </div>
-                    </div>
-                    <div class="connector-action-strip mt-8">
-                      <v-btn variant="tonal" :disabled="!integrations.profileRunEditor.connectorId" @click="prepareScheduleForSelectedConnector">Schedule this profile</v-btn>
-                      <v-btn variant="outlined" :disabled="!integrations.profileRunEditor.connectorId" @click="loadManagedConnectorRuns(integrations.profileRunEditor.connectorId)">Refresh History</v-btn>
-                    </div>
-                  </div>
-                  <div class="managed-connector-panel">
-                    <div class="panel-kicker">What will happen</div>
-                    <div class="connector-next-summary">
-                      <div><span>Connection</span><strong>{{ selectedManagedConnector?.label || 'Choose a saved connection' }}</strong></div>
-                      <div><span>Profile</span><strong>{{ integrations.profileRunEditor.profileType }}</strong></div>
-                      <div><span>Mode</span><strong>{{ integrations.profileRunEditor.executionMode === 'live' ? 'Live aggregate query' : 'Dry run / plan' }}</strong></div>
-                      <div v-if="integrations.profileRunEditor.profileType === 'aggregate'"><span>Queue Order</span><strong>{{ profileLivePriorityLabel(integrations.profileRunEditor.livePriority) }}</strong></div>
-                      <div v-if="integrations.profileRunEditor.profileType === 'aggregate'"><span>Live Batch</span><strong>{{ integrations.profileRunEditor.maxLiveTables }}</strong></div>
-                      <div><span>Raw data retained</span><strong>No</strong></div>
-                    </div>
-                    <div class="connector-guardrail">
-                      <v-icon size="small">mdi-shield-lock-outline</v-icon>
-                      <span>Profiles store counts, nulls, min/max, distinct counts, and classification signals. Raw values are not stored.</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div v-if="integrations.connectorWorkflowTab === 'schedule'" class="connector-workspace-grid">
-                  <div class="managed-connector-panel">
-                    <div class="panel-kicker">Queue Schedule</div>
-                    <h3>Create a recurring profile</h3>
-                    <p class="card-help">Use schedules to keep profile metadata fresh. The scheduler runs against the saved connector and keeps secrets hidden.</p>
-                    <div class="form-row">
-                      <div class="col-4"><v-label>Connection</v-label><v-select v-model="integrations.profileScheduleEditor.connectorId" density="compact" variant="outlined" hide-details :items="profileScheduleConnectorOptions"></v-select></div>
-                      <div class="col-4"><v-label>Name</v-label><v-text-field v-model="integrations.profileScheduleEditor.name" density="compact" variant="outlined" hide-details placeholder="Nightly GPA profile"></v-text-field></div>
-                      <div class="col-2"><v-label>Profile</v-label><v-select v-model="integrations.profileScheduleEditor.profileType" density="compact" variant="outlined" hide-details :items="profileScheduleTypeOptions"></v-select></div>
-                      <div class="col-2"><v-label>Status</v-label><v-select v-model="integrations.profileScheduleEditor.status" density="compact" variant="outlined" hide-details :items="['ACTIVE','PAUSED']"></v-select></div>
-                    </div>
-                    <div class="profile-date-time-grid mt-8">
-                      <div><v-label>Start Date</v-label><v-text-field v-model="integrations.profileScheduleEditor.date" type="date" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-calendar"></v-text-field></div>
-                      <div><v-label>Start Time</v-label><v-text-field v-model="integrations.profileScheduleEditor.time" type="time" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-clock-outline"></v-text-field></div>
-                      <div><v-label>Cadence</v-label><v-select v-model="integrations.profileScheduleEditor.cadence" density="compact" variant="outlined" hide-details :items="profileScheduleCadenceOptions" @update:model-value="syncProfileScheduleInterval"></v-select></div>
-                      <div><v-label>Minutes</v-label><v-text-field v-model.number="integrations.profileScheduleEditor.intervalMinutes" type="number" min="5" density="compact" variant="outlined" hide-details :disabled="integrations.profileScheduleEditor.cadence !== 'custom'"></v-text-field></div>
-                    </div>
-                    <div class="form-row mt-8">
-                      <div class="col-4"><v-label>Streams</v-label><v-text-field v-model="integrations.profileScheduleEditor.streams" density="compact" variant="outlined" hide-details placeholder="reports, dashboards, lineage"></v-text-field></div>
-                      <div class="col-4"><v-label>Timezone Label</v-label><v-text-field v-model="integrations.profileScheduleEditor.timezone" density="compact" variant="outlined" hide-details></v-text-field></div>
-                      <div class="col-2"><v-label>Max Failures</v-label><v-text-field v-model.number="integrations.profileScheduleEditor.maxFailures" type="number" min="1" density="compact" variant="outlined" hide-details></v-text-field></div>
-                      <div class="col-2 scheduler-switch-cell"><v-switch v-model="integrations.profileScheduleEditor.dryRun" color="primary" density="compact" hide-details label="Dry run"></v-switch></div>
-                    </div>
-                    <div class="form-row mt-8" v-if="integrations.profileScheduleEditor.profileType === 'aggregate' || integrations.profileScheduleEditor.profileType === 'auto'">
-                      <div class="col-3"><v-label>Coverage Mode</v-label><v-select v-model="integrations.profileScheduleEditor.coverageMode" density="compact" variant="outlined" hide-details :items="profileCoverageModeOptions()"></v-select></div>
-                      <div class="col-3"><v-label>Live Queue Order</v-label><v-select v-model="integrations.profileScheduleEditor.livePriority" density="compact" variant="outlined" hide-details :items="profileLivePriorityOptions()"></v-select></div>
-                      <div class="col-2"><v-label>Live Batch Size</v-label><v-text-field v-model.number="integrations.profileScheduleEditor.maxLiveTables" type="number" min="1" max="25" density="compact" variant="outlined" hide-details></v-text-field></div>
-                      <div class="col-2 scheduler-switch-cell"><v-switch v-model="integrations.profileScheduleEditor.includeViews" color="primary" density="compact" hide-details label="Include views"></v-switch></div>
-                      <div class="col-2">
-                        <div class="field-hint" style="padding-top: 28px;">Hourly with 15 is the current default queue pace.</div>
-                      </div>
-                    </div>
-                    <div class="form-row mt-8" v-if="integrations.profileScheduleEditor.profileType === 'aggregate' || integrations.profileScheduleEditor.profileType === 'auto'">
-                      <div class="col-3 scheduler-switch-cell"><v-switch v-model="integrations.profileScheduleEditor.autoPublish" color="primary" density="compact" hide-details label="Auto-publish"></v-switch></div>
-                      <div class="col-5"><v-label>Publish Targets</v-label><v-select v-model="integrations.profileScheduleEditor.publishTargets" density="compact" variant="outlined" hide-details :items="profilePublishTargetOptions()" multiple chips :disabled="!integrations.profileScheduleEditor.autoPublish"></v-select></div>
-                      <div class="col-4">
-                        <div class="field-hint" style="padding-top: 28px;">DevOps keeps the skill current after each successful live queue run.</div>
-                      </div>
-                    </div>
-                    <div class="form-row mt-8">
-                      <div class="col-12"><v-label>Tables / Object IDs</v-label><v-textarea v-model="integrations.profileScheduleEditor.assetIds" rows="3" density="compact" variant="outlined" hide-details placeholder="Optional schedule scope. Enter one table object id per line for aggregate profiling."></v-textarea></div>
-                    </div>
-                    <div class="connector-action-strip mt-8">
-                      <v-btn color="primary" :loading="integrations.profileScheduleLoading" @click="saveProfileSchedule">{{ integrations.profileScheduleEditor.id ? 'Update Schedule' : 'Create Schedule' }}</v-btn>
-                      <v-btn variant="tonal" @click="resetProfileScheduleEditor">Clear</v-btn>
-                      <v-btn variant="outlined" @click="onViewChange('scheduler')">Open Full Scheduler</v-btn>
-                    </div>
-                  </div>
-                  <div class="managed-connector-panel">
-                    <div class="panel-kicker">Existing Queues</div>
-                    <div class="profile-schedule-list">
-                      <div v-for="schedule in operatorScheduleCandidates.slice(0, 6)" :key="'connector-sched-' + schedule.id" class="profile-schedule-row">
-                        <div class="profile-schedule-main">
-                          <div class="profile-schedule-title"><strong>{{ schedule.name }}</strong><v-chip size="x-small" variant="tonal" :color="scheduleStatusColor(schedule.status)">{{ schedule.status }}</v-chip></div>
-                          <span>{{ schedule.connector_id }} · next {{ formatTimestamp(schedule.next_run_at) }}</span>
-                        </div>
-                        <div class="btn-row"><v-btn size="small" variant="outlined" @click="editProfileSchedule(schedule)">Edit</v-btn><v-btn size="small" variant="outlined" @click="focusProfileSchedule(schedule)">Open Queue</v-btn><v-btn size="small" variant="tonal" @click="runProfileSchedule(schedule.id)">Run</v-btn></div>
-                      </div>
-                      <div v-if="!integrations.profileSchedules.length" class="connector-empty-path"><strong>No schedules yet.</strong><span>Create one here or run a one-time profile first.</span></div>
-                    </div>
-                  </div>
-                </div>
-
-                <div v-if="integrations.connectorWorkflowTab === 'access'" class="managed-connector-panel">
-                  <div class="panel-kicker">Grant Access</div>
-                  <p class="card-help">After a connector is saved, grant users, groups, or roles permission to view/run it without seeing secrets.</p>
-                  <div class="form-row">
-                    <div class="col-3"><v-label>Connector</v-label><v-select v-model="integrations.connectorGrant.connectorId" density="compact" variant="outlined" hide-details :items="integrations.managedConnectors.map((item) => item.id)"></v-select></div>
-                    <div class="col-2"><v-label>Scope</v-label><v-select v-model="integrations.connectorGrant.scope" density="compact" variant="outlined" hide-details :items="['users','roles','groups']"></v-select></div>
-                    <div class="col-3"><v-label>Subject</v-label><v-text-field v-model="integrations.connectorGrant.subject" density="compact" variant="outlined" hide-details></v-text-field></div>
-                    <div class="col-3"><v-label>Actions</v-label><v-text-field v-model="integrations.connectorGrant.actions" density="compact" variant="outlined" hide-details></v-text-field></div>
-                    <div class="col-1" style="display:flex;align-items:end;"><v-btn size="small" color="primary" @click="grantManagedConnectorPermission">Grant</v-btn></div>
-                  </div>
-                </div>
-
-                <div class="managed-connector-results" v-if="selectedManagedConnector">
-                  <div class="mini-stack">
-                    <div class="mini-metric"><span>Worker</span><strong>{{ integrations.profileSchedulerStatus?.running ? 'Running' : 'Stopped' }}</strong></div>
-                    <div class="mini-metric"><span>Current Source</span><strong>{{ selectedManagedConnector.id }}</strong></div>
-                    <div class="mini-metric"><span>Active Queue</span><strong>{{ focusedProfileSchedule?.name || '-' }}</strong></div>
-                    <div class="mini-metric"><span>Queue Status</span><strong>{{ focusedProfileSchedule?.status || '-' }}</strong></div>
-                    <div class="mini-metric"><span>Next Run</span><strong>{{ formatTimestamp(focusedProfileSchedule?.next_run_at) }}</strong></div>
-                    <div class="mini-metric"><span>Queue Remaining</span><strong>{{ focusedProfileQueueStatus?.pending_live_queue ?? '-' }}</strong></div>
-                  </div>
-                  <div class="connector-guardrail mt-8" v-if="!selectedConnectorActiveSchedule">
-                    <v-icon size="small">mdi-alert-circle-outline</v-icon>
-                    <span>No active profile schedule exists yet for {{ selectedManagedConnector.id }}. The queue will not run automatically until you create or activate one.</span>
-                  </div>
-                  <div class="connector-guardrail mt-8" v-else-if="!integrations.profileSchedulerStatus?.running">
-                    <v-icon size="small">mdi-pause-circle-outline</v-icon>
-                    <span>{{ selectedManagedConnector.id }} has an active schedule, but the scheduler worker is stopped, so the queue is not advancing yet.</span>
-                  </div>
-                </div>
-
-                <div class="managed-connector-results" v-if="integrations.connectorWorkflowTab === 'history'">
-                  <div class="section-header">
-                    <div>
-                      <span class="section-title">Runs & Publishing</span>
-                      <p class="card-help mb-0">See what the queue is doing, what will run next, and which completed profiles still need publication.</p>
-                    </div>
-                    <div class="btn-row">
-                      <v-btn size="small" variant="tonal" color="primary" :loading="integrations.connectorPublishLoading" :disabled="integrations.connectorPublishLoading" @click="publishConnectorProfiles()">Publish Pending Profiles</v-btn>
-                      <v-btn size="small" variant="outlined" :loading="integrations.connectorLoading" @click="loadManagedConnectorRuns(integrations.selectedConnectorId)">Refresh</v-btn>
-                    </div>
-                  </div>
-                  <div class="managed-connector-results">
-                    <div class="section-header">
-                      <div>
-                        <span class="section-title">Queue Console</span>
-                        <p class="card-help mb-0">Detailed queue monitoring now lives in Queues & Schedules so setup and operations are not fighting each other on this page.</p>
-                      </div>
-                      <div class="btn-row">
-                        <v-btn size="small" variant="outlined" @click="integrations.schedulerOpsTab = 'overview'; onViewChange('scheduler')">Open Overview</v-btn>
-                        <v-btn size="small" variant="outlined" @click="integrations.schedulerOpsTab = 'queues'; onViewChange('scheduler')">Open Queues</v-btn>
-                        <v-btn size="small" variant="outlined" @click="integrations.schedulerOpsTab = 'runs'; onViewChange('scheduler')">Open Runs</v-btn>
-                        <v-btn size="small" variant="outlined" @click="integrations.schedulerOpsTab = 'publishing'; onViewChange('scheduler')">Open Publishing</v-btn>
-                      </div>
-                    </div>
-                    <div class="mini-stack">
-                      <div class="mini-metric"><span>Focused Queue</span><strong>{{ focusedProfileSchedule?.name || '-' }}</strong></div>
-                      <div class="mini-metric"><span>Focused Source</span><strong>{{ focusedProfileSchedule?.connector_id || selectedManagedConnector.id }}</strong></div>
-                      <div class="mini-metric"><span>Pending Publish Runs</span><strong>{{ connectorPendingPublishRuns.length }}</strong></div>
-                      <div class="mini-metric"><span>Publish Failures</span><strong>{{ connectorPublishFailures.length }}</strong></div>
-                    </div>
-                  </div>
-                  <div class="mini-stack" v-if="integrations.connectorSnapshot">
-                    <div class="mini-metric"><span>Snapshot Connector</span><strong>{{ integrations.connectorSnapshot.connector_id }}</strong></div>
-                    <div class="mini-metric"><span>Objects</span><strong>{{ integrations.connectorSnapshot.object_count }}</strong></div>
-                    <div class="mini-metric"><span>Columns</span><strong>{{ integrations.connectorSnapshot.column_count }}</strong></div>
-                    <div class="mini-metric"><span>Lineage Edges</span><strong>{{ integrations.connectorSnapshot.lineage_edge_count }}</strong></div>
-                    <div class="mini-metric"><span>Python Scripts</span><strong>{{ (integrations.connectorSnapshot.python_scripts || []).length }}</strong></div>
-                  </div>
-                  <div class="table-wrap mt-8" v-if="integrations.connectorRuns.length">
-                    <v-table density="compact">
-                      <thead><tr><th>Run</th><th>Kind</th><th>Mode</th><th>Status</th><th>Assets / Objects</th><th>Markdown</th><th>Publish</th><th></th></tr></thead>
-                      <tbody>
-                        <tr v-for="run in integrations.connectorRuns" :key="'connector-run-' + run.id" class="connector-run-row" :class="{ selected: integrations.selectedConnectorRun?.id === run.id }" @click="selectConnectorRun(run)">
-                          <td class="mono">{{ run.id }}</td>
-                          <td>{{ connectorRunKind(run) }}</td>
-                          <td>{{ run.mode }}</td>
-                          <td><v-chip size="x-small" variant="tonal" :color="run.status === 'failed' ? 'error' : (run.status === 'partial_failure' ? 'warning' : 'success')">{{ run.status }}</v-chip></td>
-                          <td>{{ connectorRunFoundCount(run) }}</td>
-                          <td>
-                            <v-chip size="x-small" variant="tonal" :color="run.artifact?.markdown_path ? 'success' : 'warning'">
-                              {{ run.artifact?.markdown_path ? 'exported' : 'not exported' }}
-                            </v-chip>
-                          </td>
-                          <td>
-                            <v-chip size="x-small" variant="tonal" :color="connectorRunPublishColor(run)">
-                              {{ connectorRunPublishStatus(run) }}
-                            </v-chip>
-                          </td>
-                          <td>
-                            <div class="btn-row connector-run-actions">
-                              <v-btn v-if="connectorRunCanPublish(run)" size="small" variant="tonal" color="primary" :loading="integrations.connectorPublishLoading && integrations.selectedConnectorRun?.id === run.id" :disabled="integrations.connectorPublishLoading || integrations.connectorLoading" @click.stop="publishConnectorProfiles(run)">Publish</v-btn>
-                              <v-btn v-if="canRerunFailedAssets(run)" size="small" variant="tonal" color="warning" :loading="integrations.connectorLoading && integrations.selectedConnectorRun?.id === run.id" :disabled="integrations.connectorLoading" @click.stop="rerunFailedProfileAssets(run)">Rerun Failed</v-btn>
-                              <v-btn size="small" variant="outlined" @click.stop="selectConnectorRun(run)">Details</v-btn>
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </v-table>
-                  </div>
-                  <div class="empty-state compact-empty" v-else>
-                    <strong>No connector run history yet</strong>
-                    <span>Save a connector, then run a metadata harvest or one-time profile to create drilldown results.</span>
-                  </div>
-                  <div class="connector-run-detail" v-if="integrations.selectedConnectorRun">
-                    <div class="section-header">
-                      <span class="section-title">Run Details</span>
-                      <div class="btn-row">
-                        <v-chip size="small" variant="tonal" color="primary">{{ connectorRunKind(integrations.selectedConnectorRun) }}</v-chip>
-                        <v-chip size="small" variant="tonal" :color="connectorRunPublishColor(integrations.selectedConnectorRun)">{{ connectorRunPublishStatus(integrations.selectedConnectorRun) }}</v-chip>
-                        <v-btn v-if="connectorRunCanPublish(integrations.selectedConnectorRun)" size="small" variant="tonal" color="primary" :loading="integrations.connectorPublishLoading" :disabled="integrations.connectorPublishLoading || integrations.connectorLoading" @click="publishConnectorProfiles(integrations.selectedConnectorRun)">Publish Successful Profiles</v-btn>
-                        <v-btn v-if="canRerunFailedAssets(integrations.selectedConnectorRun)" size="small" variant="tonal" color="warning" :loading="integrations.connectorLoading" :disabled="integrations.connectorLoading" @click="rerunFailedProfileAssets(integrations.selectedConnectorRun)">Rerun {{ connectorRunFailedAssetIds(integrations.selectedConnectorRun).length }} Failed</v-btn>
-                      </div>
-                    </div>
-                    <div class="connector-next-summary">
-                      <div><span>Run</span><strong>{{ integrations.selectedConnectorRun.id }}</strong></div>
-                      <div><span>Status</span><strong>{{ integrations.selectedConnectorRun.status }}</strong></div>
-                      <div><span>Completed</span><strong>{{ formatTimestamp(integrations.selectedConnectorRun.completed_at) }}</strong></div>
-                      <div><span>DevOps upload</span><strong>{{ integrations.selectedConnectorRun.artifact?.devops_upload_pending ? 'Pending' : 'Not flagged' }}</strong></div>
-                      <div><span>Profile publish</span><strong>{{ connectorRunPublishStatus(integrations.selectedConnectorRun) }}</strong></div>
-                      <div><span>Assets / objects</span><strong>{{ connectorRunFoundCount(integrations.selectedConnectorRun) }}</strong></div>
-                      <div><span>Columns found</span><strong>{{ integrations.selectedConnectorRun.summary?.discovered_columns ?? '-' }}</strong></div>
-                      <div v-if="connectorRunQueueStatus(integrations.selectedConnectorRun)"><span>Live completed</span><strong>{{ connectorRunQueueStatus(integrations.selectedConnectorRun).completed_live_assets }}</strong></div>
-                      <div v-if="connectorRunQueueStatus(integrations.selectedConnectorRun)"><span>Live failed</span><strong>{{ connectorRunQueueStatus(integrations.selectedConnectorRun).failed_live_assets }}</strong></div>
-                      <div v-if="connectorRunQueueStatus(integrations.selectedConnectorRun)"><span>Metadata-only</span><strong>{{ connectorRunQueueStatus(integrations.selectedConnectorRun).metadata_only_assets }}</strong></div>
-                      <div v-if="connectorRunQueueStatus(integrations.selectedConnectorRun)"><span>Queue remaining</span><strong>{{ connectorRunQueueStatus(integrations.selectedConnectorRun).pending_live_queue }}</strong></div>
-                    </div>
-                    <div class="connector-guardrail" v-if="connectorRunQueueStatus(integrations.selectedConnectorRun)">
-                      <strong>Queue progress</strong>
-                      <span>
-                        {{ connectorRunQueueStatus(integrations.selectedConnectorRun).completed_live_assets }} live completed,
-                        {{ connectorRunQueueStatus(integrations.selectedConnectorRun).failed_live_assets }} failed live,
-                        {{ connectorRunQueueStatus(integrations.selectedConnectorRun).metadata_only_assets }} metadata-only,
-                        {{ connectorRunQueueStatus(integrations.selectedConnectorRun).pending_live_queue }} still queued.
-                      </span>
-                    </div>
-                    <div class="connector-guardrail" v-if="connectorRunKind(integrations.selectedConnectorRun) === 'Metadata harvest'">
-                      This run discovered objects, columns, and lineage metadata. It did not execute aggregate data profiling, so row counts, null counts, and distinct counts will appear only after running a one-time or scheduled aggregate profile.
-                    </div>
-                    <div class="connector-guardrail error-guardrail" v-if="(integrations.selectedConnectorRun.errors || []).length">
-                      <strong>{{ integrations.selectedConnectorRun.errors[0].message }}</strong>
-                      <span v-if="integrations.selectedConnectorRun.errors[0].remediation">{{ integrations.selectedConnectorRun.errors[0].remediation }}</span>
-                    </div>
-                    <div class="scheduler-artifact-paths mt-8" v-if="integrations.selectedConnectorRun.artifact">
-                      <span>Markdown {{ integrations.selectedConnectorRun.artifact.markdown_path || '-' }}</span>
-                      <span>JSON {{ integrations.selectedConnectorRun.artifact.json_path || '-' }}</span>
-                    </div>
-                    <div class="table-wrap mt-8" v-if="connectorRunProfileRows(integrations.selectedConnectorRun).length">
-                      <v-table density="compact">
-                        <thead><tr><th>Asset</th><th>Rows</th><th>Columns</th><th>Profiled At</th></tr></thead>
-                        <tbody>
-                          <tr v-for="row in connectorRunProfileRows(integrations.selectedConnectorRun)" :key="'profile-asset-' + row.assetId">
-                            <td class="mono">{{ row.assetId }}</td>
-                            <td>{{ row.rowCount }}</td>
-                            <td>{{ row.columnCount }}</td>
-                            <td>{{ row.generatedAt }}</td>
-                          </tr>
-                        </tbody>
-                      </v-table>
-                    </div>
-                    <div class="table-wrap mt-8" v-if="connectorRunColumnRows(integrations.selectedConnectorRun).length">
-                      <v-table density="compact">
-                        <thead><tr><th>Asset</th><th>Column</th><th>Rows</th><th>Nulls</th><th>Null %</th><th>Distinct</th><th>Min</th><th>Max</th><th>Mean</th></tr></thead>
-                        <tbody>
-                          <tr v-for="row in connectorRunColumnRows(integrations.selectedConnectorRun).slice(0, 100)" :key="'profile-col-' + row.assetId + '-' + row.columnName">
-                            <td class="mono">{{ row.assetId }}</td>
-                            <td>{{ row.columnName }}</td>
-                            <td>{{ row.rowCount }}</td>
-                            <td>{{ row.nullCount }}</td>
-                            <td>{{ row.nullPercent }}</td>
-                            <td>{{ row.distinctCount }}</td>
-                            <td>{{ row.min }}</td>
-                            <td>{{ row.max }}</td>
-                            <td>{{ row.mean }}</td>
-                          </tr>
-                        </tbody>
-                      </v-table>
-                    </div>
-                    <div class="table-wrap mt-8" v-if="connectorRunStreamRows(integrations.selectedConnectorRun).length">
-                      <v-table density="compact">
-                        <thead><tr><th>Stream</th><th>Status</th><th>Events</th><th>Endpoint</th></tr></thead>
-                        <tbody>
-                          <tr v-for="row in connectorRunStreamRows(integrations.selectedConnectorRun)" :key="'stream-' + row.stream">
-                            <td>{{ row.stream }}</td>
-                            <td>{{ row.status }}</td>
-                            <td>{{ row.eventCount }}</td>
-                            <td>{{ row.endpoint }}</td>
-                          </tr>
-                        </tbody>
-                      </v-table>
-                    </div>
-                    <div class="code-block mt-8">Summary: {{ JSON.stringify(integrations.selectedConnectorRun.summary || {}, null, 2) }}</div>
-                  </div>
-                </div>
-              </v-card>
-
-            </div>
-
-            <div v-if="activeView === 'scheduler'" class="workflow-page scheduler-page">
-              <v-card class="card span-12 profile-scheduler-card" variant="outlined">
-                <div class="section-header">
-                  <span class="section-title">Queues & Schedules</span>
-                  <div class="btn-row">
-                    <v-btn size="small" variant="outlined" :loading="integrations.profileScheduleLoading" @click="loadProfileSchedules">Refresh</v-btn>
-                    <v-btn size="small" variant="outlined" :loading="integrations.profileScheduleLoading" @click="startProfileSchedulerWorker">Start Worker</v-btn>
-                    <v-btn size="small" variant="outlined" :loading="integrations.profileScheduleLoading" @click="stopProfileSchedulerWorker">Stop Worker</v-btn>
-                    <v-btn size="small" variant="outlined" :loading="integrations.profileScheduleLoading" @click="tickProfileSchedules">Run Due</v-btn>
-                    <v-btn size="small" color="primary" :loading="integrations.profileScheduleLoading" @click="saveProfileSchedule">
-                      {{ integrations.profileScheduleEditor.id ? 'Update Schedule' : 'Create Schedule' }}
-                    </v-btn>
-                  </div>
-                </div>
-                <p class="card-help">Operate live profiling as a queue: see which source is active, what runs next, what is blocked, and how the batch settings will behave before you save changes.</p>
-
-                <div class="profile-scheduler-stats">
-                  <div class="scheduler-stat"><span>Total</span><strong>{{ profileScheduleStats.total }}</strong></div>
-                  <div class="scheduler-stat"><span>Active</span><strong>{{ profileScheduleStats.active }}</strong></div>
-                  <div class="scheduler-stat"><span>Paused</span><strong>{{ profileScheduleStats.paused }}</strong></div>
-                  <div class="scheduler-stat"><span>Due in 24h</span><strong>{{ profileScheduleStats.dueSoon }}</strong></div>
-                  <div class="scheduler-stat"><span>Worker</span><strong>{{ integrations.profileSchedulerStatus?.running ? 'Running' : 'Stopped' }}</strong></div>
-                </div>
-
-                <div class="scheduler-runtime-bar">
-                  <span>Persistence {{ integrations.profileSchedulerStatus?.persistence_enabled ? 'on' : 'off' }}</span>
-                  <span>Interval {{ Math.round((integrations.profileSchedulerStatus?.interval_ms || 0) / 1000) || '-' }}s</span>
-                  <span>History {{ integrations.profileSchedulerStatus?.history_count ?? 0 }}</span>
-                  <span>Last tick {{ formatTimestamp(integrations.profileSchedulerStatus?.last_tick_at) }}</span>
-                  <span v-if="integrations.profileSchedulerStatus?.artifact_dir">Artifacts {{ integrations.profileSchedulerStatus.artifact_dir }}</span>
-                  <span v-if="integrations.profileSchedulerStatus?.last_error" class="scheduler-runtime-error">Error {{ integrations.profileSchedulerStatus.last_error.message }}</span>
-                </div>
-
-                <div class="connector-workflow-tabs" style="margin-top: 12px;">
-                  <v-btn-toggle v-model="integrations.schedulerOpsTab" mandatory density="compact" variant="outlined">
-                    <v-btn value="overview" prepend-icon="mdi-view-dashboard-outline">Overview</v-btn>
-                    <v-btn value="queues" prepend-icon="mdi-format-list-bulleted-square">Queues</v-btn>
-                    <v-btn value="runs" prepend-icon="mdi-history">Runs</v-btn>
-                    <v-btn value="publishing" prepend-icon="mdi-upload">Publishing</v-btn>
-                    <v-btn value="settings" prepend-icon="mdi-cog-outline">Settings</v-btn>
-                  </v-btn-toggle>
-                </div>
-
-                <div class="managed-connector-results" v-if="focusedProfileSchedule && ['overview', 'queues'].includes(integrations.schedulerOpsTab)">
-                  <div class="section-header">
-                    <div>
-                      <span class="section-title">Active Queue Workspace</span>
-                      <p class="card-help mb-0">This is the operator view: pick a queue, see the next objects, and verify the worker is aiming at the right source.</p>
-                    </div>
-                    <div class="btn-row">
-                      <v-chip size="x-small" variant="tonal">{{ focusedProfileSchedule.connector_id }}</v-chip>
-                      <v-chip size="x-small" variant="tonal">{{ focusedProfileSchedule.status }}</v-chip>
-                      <v-btn size="small" variant="outlined" :loading="integrations.profileQueueLoading" @click="focusProfileSchedule(focusedProfileSchedule)">Refresh Queue</v-btn>
-                    </div>
-                  </div>
-                  <div class="mini-stack">
-                    <div class="mini-metric"><span>Worker</span><strong>{{ integrations.profileSchedulerStatus?.running ? 'Running' : 'Stopped' }}</strong></div>
-                    <div class="mini-metric"><span>Queue</span><strong>{{ focusedProfileSchedule.name }}</strong></div>
-                    <div class="mini-metric"><span>Source</span><strong>{{ focusedProfileSchedule.connector_id }}</strong></div>
-                    <div class="mini-metric"><span>Next Run</span><strong>{{ formatTimestamp(focusedProfileSchedule.next_run_at) }}</strong></div>
-                    <div class="mini-metric"><span>Fresh Skips</span><strong>{{ focusedProfileQueueStatus?.fresh_skipped_assets ?? '-' }}</strong></div>
-                    <div class="mini-metric"><span>Queue Remaining</span><strong>{{ focusedProfileQueueStatus?.pending_live_queue ?? '-' }}</strong></div>
-                    <div class="mini-metric"><span>Selected This Run</span><strong>{{ focusedProfileQueueStatus?.selected_for_this_run ?? '-' }}</strong></div>
-                    <div class="mini-metric"><span>Timeout-Penalized</span><strong>{{ focusedProfileQueueStatus?.timeout_penalty_assets ?? '-' }}</strong></div>
-                  </div>
-                  <div class="profile-schedule-list">
-                    <div
-                      v-for="schedule in operatorScheduleCandidates"
-                      :key="'scheduler-queue-focus-' + schedule.id"
-                      class="profile-schedule-row"
-                      :class="{ selected: focusedProfileSchedule?.id === schedule.id }"
-                    >
-                      <div class="profile-schedule-main">
-                        <div class="profile-schedule-title">
-                          <strong>{{ schedule.name }}</strong>
-                          <v-chip size="x-small" variant="tonal" :color="scheduleStatusColor(schedule.status)">{{ schedule.status }}</v-chip>
-                        </div>
-                        <div class="profile-schedule-meta">
-                          <span>{{ schedule.connector_id }}</span>
-                          <span>{{ profileLivePriorityLabel(scheduleQueueSummary(schedule).livePriority) }}</span>
-                          <span>Batch {{ scheduleQueueSummary(schedule).maxLiveTables }}</span>
-                        </div>
-                      </div>
-                      <div class="btn-row">
-                        <v-btn size="small" variant="outlined" @click="focusProfileSchedule(schedule)">Open Queue</v-btn>
-                        <v-btn size="small" variant="outlined" @click="editProfileSchedule(schedule)">Edit</v-btn>
-                        <v-btn size="small" variant="tonal" :disabled="schedule.status !== 'ACTIVE'" @click="runProfileSchedule(schedule.id)">Run Now</v-btn>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="table-wrap compact-table" v-if="focusedQueueNextAssets.length">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Object</th>
-                          <th>Type</th>
-                          <th>Downstream</th>
-                          <th>Rows</th>
-                          <th>Columns</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="asset in focusedQueueNextAssets" :key="'scheduler-queue-next-' + asset.asset_id">
-                          <td>{{ asset.asset_id }}</td>
-                          <td>{{ queueObjectTypeLabel(asset.object_type) }}</td>
-                          <td>{{ asset.downstream_count ?? '-' }}</td>
-                          <td>{{ formatEstimatedRows(asset.estimated_rows) }}</td>
-                          <td>{{ asset.column_count ?? '-' }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="table-wrap compact-table" v-if="focusedQueueDeferredAssets.length">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Queued Later</th>
-                          <th>Rank</th>
-                          <th>Type</th>
-                          <th>Downstream</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="asset in focusedQueueDeferredAssets" :key="'scheduler-queue-later-' + asset.asset_id">
-                          <td>{{ asset.asset_id }}</td>
-                          <td>{{ asset.queue_rank }}</td>
-                          <td>{{ queueObjectTypeLabel(asset.object_type) }}</td>
-                          <td>{{ asset.downstream_count ?? '-' }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="table-wrap compact-table" v-if="focusedQueueFreshSkippedAssets.length">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Skipped As Fresh</th>
-                          <th>Type</th>
-                          <th>Reason</th>
-                          <th>Rows</th>
-                          <th>Columns</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="asset in focusedQueueFreshSkippedAssets" :key="'scheduler-queue-fresh-' + asset.asset_id">
-                          <td>{{ asset.asset_id }}</td>
-                          <td>{{ queueObjectTypeLabel(asset.object_type) }}</td>
-                          <td>{{ asset.skip_reason === 'fresh_within_window' ? 'Profile is newer than freshness window' : asset.skip_reason }}</td>
-                          <td>{{ formatEstimatedRows(asset.estimated_rows) }}</td>
-                          <td>{{ asset.column_count ?? '-' }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="table-wrap compact-table" v-if="focusedQueueTimeoutAssets.length">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Timed Out Recently</th>
-                          <th>Penalty</th>
-                          <th>Type</th>
-                          <th>Rows</th>
-                          <th>Downstream</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="asset in focusedQueueTimeoutAssets" :key="'scheduler-queue-timeout-' + asset.asset_id">
-                          <td>{{ asset.asset_id }}</td>
-                          <td>{{ asset.timeout_penalty_count }}</td>
-                          <td>{{ queueObjectTypeLabel(asset.object_type) }}</td>
-                          <td>{{ formatEstimatedRows(asset.estimated_rows) }}</td>
-                          <td>{{ asset.downstream_count ?? '-' }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <div class="profile-scheduler-layout" v-if="['queues', 'settings'].includes(integrations.schedulerOpsTab)">
-                  <div class="managed-connector-panel scheduler-editor-panel" v-if="integrations.schedulerOpsTab === 'settings'">
-                    <div class="panel-kicker">{{ integrations.profileScheduleEditor.id ? 'Edit Queue Settings' : 'New Queue Schedule' }}</div>
-                    <div class="form-row">
-                      <div class="col-4"><v-label>Connector</v-label><v-select v-model="integrations.profileScheduleEditor.connectorId" density="compact" variant="outlined" hide-details :items="profileScheduleConnectorOptions"></v-select></div>
-                      <div class="col-4"><v-label>Name</v-label><v-text-field v-model="integrations.profileScheduleEditor.name" density="compact" variant="outlined" hide-details placeholder="VendorData live queue"></v-text-field></div>
-                      <div class="col-2"><v-label>Profile</v-label><v-select v-model="integrations.profileScheduleEditor.profileType" density="compact" variant="outlined" hide-details :items="profileScheduleTypeOptions"></v-select></div>
-                      <div class="col-2"><v-label>Status</v-label><v-select v-model="integrations.profileScheduleEditor.status" density="compact" variant="outlined" hide-details :items="['ACTIVE','PAUSED']"></v-select></div>
-                    </div>
-                    <div class="profile-date-time-grid mt-8">
-                      <div>
-                        <v-label>Start Date</v-label>
-                        <v-text-field v-model="integrations.profileScheduleEditor.date" type="date" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-calendar"></v-text-field>
-                      </div>
-                      <div>
-                        <v-label>Start Time</v-label>
-                        <v-text-field v-model="integrations.profileScheduleEditor.time" type="time" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-clock-outline"></v-text-field>
-                      </div>
-                      <div>
-                        <v-label>Cadence</v-label>
-                        <v-select v-model="integrations.profileScheduleEditor.cadence" density="compact" variant="outlined" hide-details :items="profileScheduleCadenceOptions" @update:model-value="syncProfileScheduleInterval"></v-select>
-                      </div>
-                      <div>
-                        <v-label>Minutes</v-label>
-                        <v-text-field v-model.number="integrations.profileScheduleEditor.intervalMinutes" type="number" min="5" density="compact" variant="outlined" hide-details :disabled="integrations.profileScheduleEditor.cadence !== 'custom'"></v-text-field>
-                      </div>
-                    </div>
-                    <div class="form-row mt-8">
-                      <div class="col-4"><v-label>Timezone Label</v-label><v-text-field v-model="integrations.profileScheduleEditor.timezone" density="compact" variant="outlined" hide-details></v-text-field></div>
-                      <div class="col-2"><v-label>Max Failures</v-label><v-text-field v-model.number="integrations.profileScheduleEditor.maxFailures" type="number" min="1" density="compact" variant="outlined" hide-details></v-text-field></div>
-                      <div class="col-4"><v-label>Streams</v-label><v-text-field v-model="integrations.profileScheduleEditor.streams" density="compact" variant="outlined" hide-details placeholder="reports, dashboards, lineage"></v-text-field></div>
-                      <div class="col-2 scheduler-switch-cell">
-                        <v-switch v-model="integrations.profileScheduleEditor.dryRun" color="primary" density="compact" hide-details label="Dry run"></v-switch>
-                      </div>
-                    </div>
-                    <div class="form-row mt-8" v-if="integrations.profileScheduleEditor.profileType === 'aggregate' || integrations.profileScheduleEditor.profileType === 'auto'">
-                      <div class="col-3"><v-label>Coverage Mode</v-label><v-select v-model="integrations.profileScheduleEditor.coverageMode" density="compact" variant="outlined" hide-details :items="profileCoverageModeOptions()"></v-select></div>
-                      <div class="col-3"><v-label>Live Queue Order</v-label><v-select v-model="integrations.profileScheduleEditor.livePriority" density="compact" variant="outlined" hide-details :items="profileLivePriorityOptions()"></v-select></div>
-                      <div class="col-2"><v-label>Live Batch Size</v-label><v-text-field v-model.number="integrations.profileScheduleEditor.maxLiveTables" type="number" min="1" max="25" density="compact" variant="outlined" hide-details></v-text-field></div>
-                      <div class="col-2 scheduler-switch-cell">
-                        <v-switch v-model="integrations.profileScheduleEditor.includeViews" color="primary" density="compact" hide-details label="Include views"></v-switch>
-                      </div>
-                      <div class="col-2">
-                        <div class="field-hint" style="padding-top: 28px;">Most-used-first with a moderate batch keeps the queue moving without hiding heavy tables.</div>
-                      </div>
-                    </div>
-                    <div class="form-row mt-8" v-if="integrations.profileScheduleEditor.profileType === 'aggregate' || integrations.profileScheduleEditor.profileType === 'auto'">
-                      <div class="col-3 scheduler-switch-cell">
-                        <v-switch v-model="integrations.profileScheduleEditor.autoPublish" color="primary" density="compact" hide-details label="Auto-publish"></v-switch>
-                      </div>
-                      <div class="col-5"><v-label>Publish Targets</v-label><v-select v-model="integrations.profileScheduleEditor.publishTargets" density="compact" variant="outlined" hide-details :items="profilePublishTargetOptions()" multiple chips :disabled="!integrations.profileScheduleEditor.autoPublish"></v-select></div>
-                      <div class="col-4">
-                        <div class="field-hint" style="padding-top: 28px;">Auto-publish can push each successful live queue batch into DevOps without a manual publish step.</div>
-                      </div>
-                    </div>
-                    <div class="form-row mt-8">
-                      <div class="col-12"><v-label>Tables / Object IDs</v-label><v-textarea v-model="integrations.profileScheduleEditor.assetIds" rows="3" density="compact" variant="outlined" hide-details placeholder="Optional schedule scope. Leave blank for full queue coverage, or pin one object id per line."></v-textarea></div>
-                    </div>
-                    <div class="scheduler-guardrail mt-8">
-                      <v-icon size="small">mdi-shield-lock-outline</v-icon>
-                      <span>Saved schedules strip inline metadata payloads, mocks, tokens, secrets, and credential references before persistence.</span>
-                    </div>
-                    <div class="btn-row mt-8">
-                      <v-btn color="primary" :loading="integrations.profileScheduleLoading" @click="saveProfileSchedule">{{ integrations.profileScheduleEditor.id ? 'Update Schedule' : 'Create Schedule' }}</v-btn>
-                      <v-btn variant="tonal" @click="resetProfileScheduleEditor">Clear</v-btn>
-                    </div>
-                  </div>
-
-                  <div class="managed-connector-panel scheduler-list-panel">
-                    <div class="panel-kicker">Saved Queues</div>
-                    <div class="profile-schedule-list">
-                      <div v-for="schedule in integrations.profileSchedules" :key="'profile-schedule-' + schedule.id" class="profile-schedule-row">
-                        <div class="profile-schedule-main">
-                          <div class="profile-schedule-title">
-                            <strong>{{ schedule.name }}</strong>
-                            <v-chip size="x-small" variant="tonal" :color="scheduleStatusColor(schedule.status)">{{ schedule.status }}</v-chip>
-                            <v-chip size="x-small" variant="tonal">{{ schedule.profile_type }}</v-chip>
-                          </div>
-                          <div class="profile-schedule-meta">
-                            <span>{{ schedule.connector_id }}</span>
-                            <span>{{ schedule.cadence }} / {{ schedule.interval_minutes }} min</span>
-                            <span>next {{ formatTimestamp(schedule.next_run_at) }}</span>
-                          </div>
-                          <div class="profile-schedule-health">
-                            <span>Runs {{ schedule.run_count || 0 }}</span>
-                            <span>Failures {{ schedule.failure_count || 0 }}/{{ schedule.max_failures || 3 }}</span>
-                            <span>Last {{ schedule.last_status || 'never' }}</span>
-                          </div>
-                          <div class="profile-schedule-health">
-                            <span>{{ profileCoverageModeLabel(scheduleQueueSummary(schedule).coverageMode) }}</span>
-                            <span>{{ profileLivePriorityLabel(scheduleQueueSummary(schedule).livePriority) }}</span>
-                            <span>Batch {{ scheduleQueueSummary(schedule).maxLiveTables }}</span>
-                          </div>
-                          <div class="profile-schedule-health">
-                            <span>{{ schedule.options?.auto_publish ? 'Auto-publish on' : 'Auto-publish off' }}</span>
-                            <span v-if="schedule.options?.auto_publish">{{ (schedule.options?.auto_publish_targets || ['devops']).join(', ') }}</span>
-                          </div>
-                          <div v-if="schedule.last_error" class="profile-schedule-error">
-                            {{ schedule.last_error.message || schedule.last_error }}
-                          </div>
-                        </div>
-                        <div class="profile-schedule-actions">
-                          <v-btn size="small" variant="outlined" @click="focusProfileSchedule(schedule)">Open Queue</v-btn>
-                          <v-btn size="small" variant="outlined" @click="editProfileSchedule(schedule)">Edit</v-btn>
-                          <v-btn size="small" variant="outlined" @click="loadProfileScheduleRuns(schedule.id)">Runs</v-btn>
-                          <v-btn size="small" color="primary" variant="tonal" :disabled="schedule.status !== 'ACTIVE'" @click="runProfileSchedule(schedule.id)">Run</v-btn>
-                          <v-btn v-if="schedule.status === 'ACTIVE'" size="small" variant="tonal" @click="updateProfileScheduleStatus(schedule, 'PAUSED')">Pause</v-btn>
-                          <v-btn v-else size="small" variant="tonal" @click="updateProfileScheduleStatus(schedule, 'ACTIVE')">Activate</v-btn>
-                          <v-btn size="small" color="error" variant="tonal" @click="deleteProfileSchedule(schedule.id)">Delete</v-btn>
-                        </div>
-                      </div>
-                      <div v-if="!integrations.profileSchedules.length" class="empty-state scheduler-empty">
-                        <div class="empty-state-icon"><v-icon>mdi-calendar-clock</v-icon></div>
-                        <h4>No profile schedules yet</h4>
-                        <p>Create a schedule from an approved connector to automate metadata, BI, or aggregate profile runs.</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div v-if="integrations.profileScheduleResult && integrations.schedulerOpsTab === 'overview'" class="managed-connector-results">
-                  <div class="section-header">
-                    <span class="section-title">Last Scheduler Result</span>
-                  </div>
-                  <div class="mini-stack">
-                    <div class="mini-metric"><span>Status</span><strong>{{ integrations.profileScheduleResult.run?.status || integrations.profileScheduleResult.status || 'saved' }}</strong></div>
-                    <div class="mini-metric"><span>Due Count</span><strong>{{ integrations.profileScheduleResult.due_count ?? '-' }}</strong></div>
-                    <div class="mini-metric"><span>Run Count</span><strong>{{ integrations.profileScheduleResult.schedule?.run_count ?? integrations.profileScheduleResult.run_count ?? '-' }}</strong></div>
-                    <div class="mini-metric"><span>Next Run</span><strong>{{ formatTimestamp(integrations.profileScheduleResult.schedule?.next_run_at || integrations.profileScheduleResult.next_run_at) }}</strong></div>
-                    <div class="mini-metric" v-if="integrations.profileScheduleResult.run?.summary?.coverage_queue_status"><span>Live Done</span><strong>{{ integrations.profileScheduleResult.run.summary.coverage_queue_status.completed_live_assets }}</strong></div>
-                    <div class="mini-metric" v-if="integrations.profileScheduleResult.run?.summary?.coverage_queue_status"><span>Live Failed</span><strong>{{ integrations.profileScheduleResult.run.summary.coverage_queue_status.failed_live_assets }}</strong></div>
-                    <div class="mini-metric" v-if="integrations.profileScheduleResult.run?.summary?.coverage_queue_status"><span>Queue Left</span><strong>{{ integrations.profileScheduleResult.run.summary.coverage_queue_status.pending_live_queue }}</strong></div>
-                  </div>
-                  <div v-if="integrations.profileScheduleResult.artifact" class="scheduler-artifact-paths">
-                    <span>JSON {{ integrations.profileScheduleResult.artifact.json_path || '-' }}</span>
-                    <span>Markdown {{ integrations.profileScheduleResult.artifact.markdown_path || '-' }}</span>
-                  </div>
-                </div>
-
-                <div v-if="integrations.schedulerOpsTab === 'runs'" class="managed-connector-results scheduler-history-panel">
-                  <div class="section-header">
-                    <div>
-                      <span class="section-title">Run History</span>
-                      <p class="card-help mb-0">Review queue executions and one-time profile runs for {{ schedulerFocusedConnectorId }} without bouncing back to connection setup.</p>
-                    </div>
-                    <v-chip size="x-small" variant="tonal">{{ integrations.profileScheduleRunScheduleId || schedulerFocusedConnectorId }}</v-chip>
-                  </div>
-                  <div class="table-wrap compact-table" v-if="integrations.profileScheduleRuns.length">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Status</th>
-                          <th>Completed</th>
-                          <th>Run</th>
-                          <th>Artifact</th>
-                          <th>Error</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="run in integrations.profileScheduleRuns" :key="run.id">
-                          <td><v-chip size="x-small" variant="tonal" :color="scheduleStatusColor(run.status === 'succeeded' ? 'ACTIVE' : 'PAUSED')">{{ run.status }}</v-chip></td>
-                          <td>{{ formatTimestamp(run.completed_at) }}</td>
-                          <td>{{ run.run_id || run.id }}</td>
-                          <td>{{ run.artifact?.markdown_path || run.artifact?.json_path || '-' }}</td>
-                          <td>{{ run.error?.message || '-' }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div v-else class="empty">No queue runs loaded for the focused schedule yet.</div>
-                  <div class="table-wrap compact-table mt-8" v-if="integrations.connectorRuns.length">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Run</th>
-                          <th>Kind</th>
-                          <th>Status</th>
-                          <th>Publish</th>
-                          <th>Completed</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="run in integrations.connectorRuns" :key="'scheduler-connector-run-' + run.id">
-                          <td>{{ run.id }}</td>
-                          <td>{{ connectorRunKind(run) }}</td>
-                          <td>{{ run.status }}</td>
-                          <td>{{ connectorRunPublishStatus(run) }}</td>
-                          <td>{{ formatTimestamp(run.completed_at) }}</td>
-                          <td><v-btn size="small" variant="outlined" @click="selectConnectorRun(run)">Details</v-btn></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="managed-connector-results mt-8" v-if="integrations.selectedConnectorRun">
-                    <div class="section-header">
-                      <span class="section-title">Selected Run Detail</span>
-                      <div class="btn-row">
-                        <v-chip size="x-small" variant="tonal">{{ connectorRunKind(integrations.selectedConnectorRun) }}</v-chip>
-                        <v-chip size="x-small" variant="tonal" :color="connectorRunPublishColor(integrations.selectedConnectorRun)">{{ connectorRunPublishStatus(integrations.selectedConnectorRun) }}</v-chip>
-                      </div>
-                    </div>
-                    <div class="connector-next-summary">
-                      <div><span>Run</span><strong>{{ integrations.selectedConnectorRun.id }}</strong></div>
-                      <div><span>Status</span><strong>{{ integrations.selectedConnectorRun.status }}</strong></div>
-                      <div><span>Completed</span><strong>{{ formatTimestamp(integrations.selectedConnectorRun.completed_at) }}</strong></div>
-                      <div><span>Assets / objects</span><strong>{{ connectorRunFoundCount(integrations.selectedConnectorRun) }}</strong></div>
-                      <div><span>Profile publish</span><strong>{{ connectorRunPublishStatus(integrations.selectedConnectorRun) }}</strong></div>
-                      <div v-if="connectorRunQueueStatus(integrations.selectedConnectorRun)"><span>Queue remaining</span><strong>{{ connectorRunQueueStatus(integrations.selectedConnectorRun).pending_live_queue }}</strong></div>
-                    </div>
-                    <div class="btn-row mt-8">
-                      <v-btn v-if="connectorRunCanPublish(integrations.selectedConnectorRun)" size="small" variant="tonal" color="primary" :loading="integrations.connectorPublishLoading" @click="publishConnectorProfiles(integrations.selectedConnectorRun)">Publish</v-btn>
-                      <v-btn v-if="canRerunFailedAssets(integrations.selectedConnectorRun)" size="small" variant="tonal" color="warning" :loading="integrations.connectorLoading" @click="rerunFailedProfileAssets(integrations.selectedConnectorRun)">Rerun Failed</v-btn>
-                    </div>
-                  </div>
-                </div>
-
-                <div v-if="integrations.schedulerOpsTab === 'publishing'" class="managed-connector-results scheduler-history-panel">
-                  <div class="section-header">
-                    <div>
-                      <span class="section-title">Publishing Control</span>
-                      <p class="card-help mb-0">Publish successful profile runs, spot failures, and confirm recent pushes without drilling into individual run details first.</p>
-                    </div>
-                    <v-btn size="small" variant="tonal" color="primary" :loading="integrations.connectorPublishLoading" @click="publishConnectorProfiles()">Publish Pending Profiles</v-btn>
-                  </div>
-                  <div class="mini-stack">
-                    <div class="mini-metric"><span>Pending</span><strong>{{ connectorPendingPublishRuns.length }}</strong></div>
-                    <div class="mini-metric"><span>Failed</span><strong>{{ connectorPublishFailures.length }}</strong></div>
-                    <div class="mini-metric"><span>Published Recently</span><strong>{{ connectorRecentPublishedRuns.length }}</strong></div>
-                    <div class="mini-metric"><span>Focused Source</span><strong>{{ schedulerFocusedConnectorId }}</strong></div>
-                  </div>
-                  <div class="table-wrap compact-table mt-8" v-if="connectorPendingPublishRuns.length">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Run</th>
-                          <th>Assets Ready</th>
-                          <th>Status</th>
-                          <th>Completed</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="run in connectorPendingPublishRuns" :key="'scheduler-publish-pending-' + run.id">
-                          <td>{{ run.id }}</td>
-                          <td>{{ connectorRunPublishState(run).successful_asset_count || 0 }}</td>
-                          <td>{{ connectorRunPublishStatus(run) }}</td>
-                          <td>{{ formatTimestamp(run.completed_at) }}</td>
-                          <td><v-btn size="small" variant="tonal" color="primary" :loading="integrations.connectorPublishLoading && integrations.selectedConnectorRun?.id === run.id" @click="publishConnectorProfiles(run)">Publish</v-btn></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="table-wrap compact-table mt-8" v-if="connectorPublishFailures.length">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Run</th>
-                          <th>Failure</th>
-                          <th>Completed</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="run in connectorPublishFailures" :key="'scheduler-publish-failure-' + run.id">
-                          <td>{{ run.id }}</td>
-                          <td>{{ connectorRunPublishState(run).error?.message || connectorRunPublishStatus(run) }}</td>
-                          <td>{{ formatTimestamp(run.completed_at) }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="table-wrap compact-table mt-8" v-if="connectorRecentPublishedRuns.length">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Run</th>
-                          <th>Status</th>
-                          <th>Completed</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="run in connectorRecentPublishedRuns" :key="'scheduler-publish-success-' + run.id">
-                          <td>{{ run.id }}</td>
-                          <td>{{ connectorRunPublishStatus(run) }}</td>
-                          <td>{{ formatTimestamp(run.completed_at) }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div v-if="integrations.connectorPublicationResult" class="scheduler-artifact-paths mt-8">
-                    <span>Status {{ integrations.connectorPublicationResult.status || '-' }}</span>
-                    <span>Targets {{ (integrations.connectorPublicationResult.targets || []).join(', ') || '-' }}</span>
-                    <span>Assets {{ integrations.connectorPublicationResult.successful_asset_count || 0 }}</span>
-                  </div>
-                </div>
-              </v-card>
-
-            </div>
-
-            <div v-if="activeView === 'integrations' && integrations.connectorWorkflowTab === 'integrations'" class="grid">
-              <v-card class="card span-6" variant="outlined">
-                <h3>Notification Channels</h3>
-                <p class="card-help">Choose a channel and event type, then save settings and send a test event.</p>
-                <div class="form-row">
-                  <div class="col-4"><v-label>Channel</v-label><v-select v-model="integrations.notifyChannel" density="compact" variant="outlined" hide-details :items="['email','slack','teams']"></v-select></div>
-                  <div class="col-8"><v-label>Event Type</v-label><v-text-field v-model="integrations.notifyEventType" density="compact" variant="outlined" hide-details></v-text-field></div>
-                </div>
-                <div class="btn-row" style="margin-top:10px;">
-                  <v-btn color="primary" @click="saveNotificationChannel">Enable &amp; Save</v-btn>
-                  <v-btn variant="tonal" @click="sendNotificationTest">Send Test Event</v-btn>
-                </div>
-                <div class="mini-stack mt-8" v-if="integrations.settings">
-                  <div class="mini-metric" v-for="(val, key) in (integrations.settings.notifications || {})" :key="key">
-                    <span>{{ key }}</span>
-                    <v-chip size="x-small" variant="tonal" :color="val && val.enabled ? 'success' : 'secondary'">{{ val && val.enabled ? 'Enabled' : 'Disabled' }}</v-chip>
-                  </div>
-                  <div class="mini-metric" v-if="!Object.keys(integrations.settings.notifications || {}).length">
-                    <span>No channels configured</span>
-                  </div>
-                </div>
-                <div v-else class="empty">No settings loaded.</div>
-              </v-card>
-
-              <v-card class="card span-6" variant="outlined">
-                <h3>Webhook Registry</h3>
-                <p class="card-help">Register callback endpoints for governance events. Use Test before enabling in production.</p>
-                <div class="form-row">
-                  <div class="col-4"><v-label>Name</v-label><v-text-field v-model="integrations.newWebhook.name" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-4"><v-label>URL</v-label><v-text-field v-model="integrations.newWebhook.url" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-4"><v-label>Events (comma)</v-label><v-text-field v-model="integrations.newWebhook.events" density="compact" variant="outlined" hide-details></v-text-field></div>
-                </div>
-                <div class="btn-row" style="margin-top:10px;"><v-btn color="primary" @click="createWebhook">Create Webhook</v-btn></div>
-                <div class="table-wrap" style="margin-top:10px;">
-                  <v-table density="compact">
-                    <thead><tr><th>Name</th><th>URL</th><th>Actions</th></tr></thead>
-                    <tbody>
-                      <tr v-for="hook in integrations.webhooks" :key="hook.webhookId">
-                        <td>{{ hook.name }}</td><td>{{ hook.url }}</td>
-                        <td class="btn-row">
-                          <v-btn size="small" variant="tonal" @click="testWebhook(hook.webhookId)">Test</v-btn>
-                          <v-btn size="small" color="error" variant="tonal" @click="deleteWebhook(hook.webhookId)">Delete</v-btn>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </v-table>
-                </div>
-              </v-card>
-
-              <v-card class="card span-8" variant="outlined">
-                <h3>External System Links</h3>
-                <p class="card-help">Connect catalog objects to tickets, docs, dashboards, or runbooks for faster triage.</p>
-                <div class="form-row">
-                  <div class="col-3"><v-label>Object ID</v-label><v-text-field v-model="integrations.linkObjectId" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-3"><v-label>Type</v-label><v-text-field v-model="integrations.linkType" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-6"><v-label>URL</v-label><v-text-field v-model="integrations.linkUrl" density="compact" variant="outlined" hide-details></v-text-field></div>
-                </div>
-                <div class="btn-row" style="margin-top:10px;">
-                  <v-btn color="primary" @click="addExternalLink">Add Link</v-btn>
-                  <v-btn variant="tonal" @click="loadLinks">Refresh Links</v-btn>
-                </div>
-                <div class="table-wrap" style="margin-top:10px;">
-                  <v-table density="compact">
-                    <thead><tr><th>Type</th><th>URL</th><th>Action</th></tr></thead>
-                    <tbody>
-                      <tr v-for="link in integrations.links" :key="link.linkId">
-                        <td>{{ link.type }}</td>
-                        <td>{{ link.url }}</td>
-                        <td><v-btn size="small" color="error" variant="tonal" @click="removeLink(link.linkId)">Remove</v-btn></td>
-                      </tr>
-                    </tbody>
-                  </v-table>
-                </div>
-              </v-card>
-
-              <v-card class="card span-4" variant="outlined">
-                <h3>CI/CD Governance Checks</h3>
-                <p class="card-help">Run impact, compliance, and documentation checks for the selected object before release.</p>
-                <v-btn color="warning" @click="runPipelineChecks">Run CI/CD Checks</v-btn>
-              </v-card>
-            </div>
-
-            <div v-if="activeView === 'import'" class="import-page">
-              <v-row>
-              <v-col cols="12">
-              <v-card class="card" variant="outlined">
-                <h3>Guided Workflow</h3>
-                <p class="workflow-subtitle">Move through the governance pipeline in order: discover, extract, validate, load, then analyze blast radius.</p>
-                <div class="workflow-steps">
-                  <v-btn
-                    v-for="step in importWorkflowSteps"
-                    :key="'wf-' + step.key"
-                    class="workflow-step"
-                    size="small"
-                    variant="text"
-                    :class="{ done: step.done }"
-                    @click="jumpToWorkflowStep(step)"
-                  >
-                    <span class="workflow-step-status">{{ step.done ? '✓' : '○' }}</span>
-                    <span>{{ step.label }}</span>
-                  </v-btn>
-                </div>
-                <div class="workflow-progress">
-                  <div class="workflow-progress-bar" :style="{ width: workflowProgressPercent + '%' }"></div>
-                </div>
-                <div class="btn-row" style="margin-top:10px;">
-                  <v-btn color="primary" @click="runRecommendedWorkflowAction">Run Next Recommended Step</v-btn>
-                  <v-btn variant="tonal" @click="bootstrapData">Refresh Workflow State</v-btn>
-                </div>
-              </v-card>
-              </v-col>
-              </v-row>
-
-              <v-row dense>
-              <v-col cols="12" xs="6" sm="4" md="3">
-              <v-card class="card kpi" v-if="importer.validationResult" variant="outlined">
-                <div class="value">{{ importer.validationResult.valid || 0 }}</div>
-                <div class="label">Validated Objects</div>
-              </v-card>
-              <v-card class="card kpi" v-if="importer.validationResult" variant="outlined">
-                <div class="value">{{ importer.validationResult.invalid || 0 }}</div>
-                <div class="label">Validation Issues</div>
-              </v-card>
-              </v-col>
-              <v-col cols="12" xs="6" sm="4" md="3">
-              <v-card class="card kpi" v-if="importer.lastLoadStats" variant="outlined">
-                <div class="value">{{ importer.lastLoadStats.totalObjects || 0 }}</div>
-                <div class="label">Indexed Objects</div>
-              </v-card>
-              </v-col>
-              <v-col cols="12" xs="6" sm="4" md="3">
-              <v-card class="card kpi" v-if="importer.status" variant="outlined">
-                <div class="value">{{ importer.status.loadedObjectCount || 0 }}</div>
-                <div class="label">Current Index Size</div>
-              </v-card>
-              </v-col>
-              </v-row>
-
-              
-
-              <v-row>
-              <v-col cols="12">
-              <v-card class="card ingestion-workspace" variant="outlined">
-                <div class="ingestion-workspace-header">
-                  <div>
-                    <h3>Connector Workspace</h3>
-                    <p class="card-help">Choose one source at a time, configure it, then send generated markdown through validation and indexing.</p>
-                  </div>
-                  <div class="connector-picker">
-                    <span>Active Connector</span>
-                    <v-select
-                      v-model="importer.activeConnector"
-                      class="ingestion-connector-select"
-                      density="compact"
-                      variant="outlined"
-                      hide-details
-                      :items="ingestionConnectorOptions"
-                      item-title="label"
-                      item-value="key"
-                    ></v-select>
-                  </div>
-                </div>
-                <div class="connector-grid">
-                  <button
-                    v-for="connector in ingestionConnectorOptions"
-                    :key="'connector-' + connector.key"
-                    type="button"
-                    class="connector-card"
-                    :class="{ active: importer.activeConnector === connector.key, planned: connector.planned }"
-                    @click="importer.activeConnector = connector.key"
-                  >
-                    <span class="connector-icon"><v-icon :icon="connector.icon" size="20"></v-icon></span>
-                    <span class="connector-body">
-                      <span class="connector-topline">
-                        <strong>{{ connector.label }}</strong>
-                        <v-chip size="x-small" variant="tonal" :color="connector.statusColor">{{ connector.status }}</v-chip>
-                      </span>
-                      <span class="connector-type">{{ connector.type }} · {{ connector.metric }}</span>
-                      <span class="connector-description">{{ connector.description }}</span>
-                    </span>
-                  </button>
-                </div>
-              </v-card>
-
-              <v-card v-if="importer.activeConnector === 'sql-server'" class="card connector-detail-card" variant="outlined">
-                <h3>SQL Server Connector</h3>
-                <p class="card-help">Extract table metadata from SQL Server and auto-generate governance markdown with relationship confidence scoring.</p>
-                <div class="form-row" style="margin-bottom: 10px;">
-                  <div class="col-2"><v-label>Auth Method</v-label><v-select v-model="importer.sqlServer.authentication" density="compact" variant="outlined" hide-details :items="[{ title: 'SQL Server Auth', value: 'sql-server' }, { title: 'Windows Auth', value: 'windows' }, { title: 'Azure AD', value: 'azure-ad' }]" item-title="title" item-value="value"></v-select></div>
-                  <div class="col-3"><v-label>Server</v-label><v-text-field v-model="importer.sqlServer.server" placeholder="localhost or server.database.windows.net" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-2"><v-label>Port</v-label><v-text-field v-model.number="importer.sqlServer.port" type="number" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-3">
-                    <v-label>Database</v-label>
-                    <div style="display:flex; gap:6px; align-items:flex-start;">
-                      <v-combobox
-                        v-model="importer.sqlServer.database"
-                        :items="importer.sqlServer.availableDatabases"
-                        :loading="importer.sqlServer.discoveringDatabases"
-                        item-title="title"
-                        item-value="value"
-                        density="compact"
-                        variant="outlined"
-                        hide-details
-                        style="flex:1;"
-                        @focus="discoverSqlServerDatabases({ force: false })"
-                        placeholder="Type or auto-discover..."
-                      ></v-combobox>
-                      <v-btn
-                        icon="mdi-refresh"
-                        size="small"
-                        variant="tonal"
-                        :loading="importer.sqlServer.discoveringDatabases"
-                        :disabled="!hasSqlServerDatabaseDiscoveryInputs()"
-                        @click="discoverSqlServerDatabases({ force: true })"
-                        title="Refresh database list"
-                      ></v-btn>
-                    </div>
-                    <div :style="{ fontSize: '0.85em', color: sqlServerDatabaseHintColor, marginTop: '2px' }">{{ sqlServerDatabaseHint }}</div>
-                  </div>
-                </div>
-                <div class="form-row" style="margin-bottom: 8px;" v-if="importer.sqlServer.authentication === 'sql-server'">
-                  <div class="col-6"><v-label>Username</v-label><v-text-field v-model="importer.sqlServer.username" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-6"><v-label>Password</v-label><v-text-field v-model="importer.sqlServer.password" type="password" density="compact" variant="outlined" hide-details></v-text-field></div>
-                </div>
-                <div class="form-row" style="margin-bottom: 8px;" v-if="importer.sqlServer.authentication === 'windows'">
-                  <div class="col-12">
-                    <v-checkbox v-model="importer.sqlServer.useIntegratedAuth" density="compact" hide-details label="Use current Windows user (Integrated Auth)" color="primary" :class="{'checkbox-visible': true}"></v-checkbox>
-                  </div>
-                </div>
-                <div class="form-row" style="margin-bottom: 6px;" v-if="importer.sqlServer.authentication === 'windows' && !importer.sqlServer.useIntegratedAuth">
-                  <div class="col-4"><v-label>Domain</v-label><v-text-field v-model="importer.sqlServer.domain" placeholder="CONTOSO" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-4"><v-label>Username</v-label><v-text-field v-model="importer.sqlServer.username" placeholder="svc_data_gov or CONTOSO\\svc_data_gov" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-4"><v-label>Password</v-label><v-text-field v-model="importer.sqlServer.password" type="password" density="compact" variant="outlined" hide-details></v-text-field></div>
-                </div>
-                <div v-if="importer.sqlServer.authentication === 'windows'" style="margin-bottom: 10px; font-size: 0.85em; color: #666;">
-                  Integrated Auth uses your current Windows login. Turn it off only if you need manual NTLM credentials.
-                </div>
-                <div class="form-row" style="margin-bottom: 10px;" v-if="importer.sqlServer.authentication === 'azure-ad'">
-                  <div class="col-6"><v-label>Client ID</v-label><v-text-field v-model="importer.sqlServer.clientId" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-6"><v-label>Client Secret</v-label><v-text-field v-model="importer.sqlServer.clientSecret" type="password" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-12"><v-label>Tenant ID</v-label><v-text-field v-model="importer.sqlServer.tenantId" density="compact" variant="outlined" hide-details></v-text-field></div>
-                </div>
-                <div class="form-row" style="margin-bottom: 15px;">
-                  <div class="col-6" style="display:flex; gap:10px; align-items:center;">
-                    <div style="display:flex;align-items:center;gap:18px;">
-                      <v-checkbox
-                        v-model="importer.sqlServer.encrypt"
-                        density="compact"
-                        label="Encrypt Connection"
-                        color="primary"
-                        :class="'checkbox-visible always-show-checkbox'"
-                        hide-details="auto"
-                        style="min-width: 44px;"
-                      ></v-checkbox>
-                      <v-checkbox
-                        v-model="importer.sqlServer.trustServerCertificate"
-                        density="compact"
-                        label="Trust Server Cert"
-                        color="primary"
-                        :class="'checkbox-visible always-show-checkbox'"
-                        hide-details="auto"
-                        style="min-width: 44px;"
-                      ></v-checkbox>
-                    </div>
-                  </div>
-                  <div class="col-6" style="display:flex;align-items:end; gap:10px;">
-                    <v-btn color="primary" @click="discoverSqlServerScope" :loading="importer.sqlServer.discovering" :disabled="importer.sqlServer.discovering || importer.sqlServer.connecting" style="flex:1;">{{ importer.sqlServer.discovering ? 'Discovering...' : 'Connect & Select Scope' }}</v-btn>
-                  </div>
-                </div>
-                <v-dialog v-model="importer.sqlServer.showScopeSelector" max-width="900" scrollable>
-                  <v-card style="max-height: 85vh; overflow: auto;">
-                    <v-card-text>
-                    <h3 style="margin-top: 0;">Extract Database Scope</h3>
-                    <p style="margin-bottom: 10px; font-size: 0.9em; color: #555;">Discovered {{ importer.sqlServer.availableSchemas.length }} schemas with {{ importer.sqlServer.discoveredObjectCount }} total objects. Choose scope to extract.</p>
-                    
-                    <div style="margin-bottom: 12px;">
-                      <v-radio-group v-model="importer.sqlServer.selectionMode" inline hide-details>
-                        <v-radio label="Full Schema Mode (extract entire schemas)" value="schema"></v-radio>
-                        <v-radio label="Table-Level Mode (pick individual tables)" value="table"></v-radio>
-                      </v-radio-group>
-                    </div>
-
-                    <div class="btn-row" style="margin-bottom: 10px;">
-                      <v-btn size="small" variant="tonal" @click="toggleAllSqlServerSchemas(true)">Select all</v-btn>
-                      <v-btn size="small" variant="tonal" @click="toggleAllSqlServerSchemas(false)">Clear all</v-btn>
-                      <div style="display:flex; align-items:center; gap:8px; margin-left:auto;">
-                        <v-label style="margin:0; font-size: 0.85em; color: #555;">Top</v-label>
-                        <v-text-field v-model.number="importer.sqlServer.topSchemaCount" type="number" min="1" density="compact" variant="outlined" hide-details style="width:72px;"></v-text-field>
-                        <v-btn size="small" variant="tonal" @click="selectTopSqlServerSchemas">Select Largest</v-btn>
-                      </div>
-                    </div>
-
-                    <div v-if="importer.sqlServer.selectionMode === 'schema'" style="border: 1px solid #e5e7eb; border-radius: 6px; padding: 10px; max-height: 45vh; overflow-y: auto;">
-                      <div v-for="schema in importer.sqlServer.availableSchemas" :key="schema.schemaName" style="display:flex; justify-content:space-between; align-items:center; padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
-                        <v-checkbox-btn :value="schema.schemaName" v-model="importer.sqlServer.selectedSchemas" density="compact" hide-details color="primary" :class="{'checkbox-visible': true}"></v-checkbox-btn>
-                        <span style="font-weight: 500; margin-right:auto;">{{ schema.schemaName }}</span>
-                        <span style="font-size: 0.8em; color: #999;">
-                          {{ schema.totalObjectCount }} objects ({{ schema.tableCount }}T, {{ schema.viewCount }}V, {{ schema.procedureCount }}P)
-                        </span>
-                      </div>
-                      <div v-if="importer.sqlServer.availableSchemas.length === 0" class="empty">No schemas found.</div>
-                    </div>
-
-                    <div v-if="importer.sqlServer.selectionMode === 'table'" style="border: 1px solid #e5e7eb; border-radius: 6px; max-height: 45vh; overflow-y: auto;">
-                      <div v-for="schema in importer.sqlServer.availableSchemas" :key="'schema-' + schema.schemaName" style="border-bottom: 1px solid #e5e7eb;">
-                        <div @click="toggleSqlServerSchemaExpand(schema.schemaName)" style="padding: 10px; background: #f9fafb; cursor: pointer; display: flex; align-items: center; gap: 8px; user-select: none;">
-                          <span style="font-size: 1.2em; width: 20px;">{{ importer.sqlServer.expandedSchemas && importer.sqlServer.expandedSchemas[schema.schemaName] ? '▼' : '▶' }}</span>
-                          <span style="font-weight: 500;">{{ schema.schemaName }}</span>
-                          <span style="font-size: 0.8em; color: #999; margin-left: auto;">{{ schema.tableCount }} tables</span>
-                        </div>
-                        
-                        <div v-if="importer.sqlServer.expandedSchemas && importer.sqlServer.expandedSchemas[schema.schemaName]" style="background: #fff; max-height: 30vh; overflow-y: auto;">
-                          <div style="padding: 8px 0 8px 30px; border-bottom: 1px solid #f3f4f6;">
-                            <v-checkbox
-                              :model-value="isSchemaFullySelected(schema.schemaName)"
-                              density="compact"
-                              hide-details
-                              color="primary"
-                              :class="{'checkbox-visible': true}"
-                              @update:model-value="toggleSchemaTableSelection(schema.schemaName, { target: { checked: $event } })"
-                              :label="'Select all in ' + schema.schemaName"
-                            ></v-checkbox>
-                          </div>
-                          <div v-for="table in (importer.sqlServer.schemaTableLists && importer.sqlServer.schemaTableLists[schema.schemaName]) || []" :key="schema.schemaName + '.' + table.name" style="padding: 6px 30px; border-bottom: 1px solid #f3f4f6;">
-                            <div style="display:flex; align-items:center; gap:6px; font-size:0.9em;">
-                              <v-checkbox-btn :value="schema.schemaName + '.' + table.name" v-model="importer.sqlServer.selectedTables" density="compact" hide-details color="primary" :class="{'checkbox-visible': true}"></v-checkbox-btn>
-                              <span>{{ table.name }}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div v-if="importer.sqlServer.availableSchemas.length === 0" class="empty" style="padding: 20px;">No schemas found.</div>
-                    </div>
-
-                    <div class="btn-row" style="margin-top: 12px; justify-content: flex-end;">
-                      <v-btn variant="tonal" @click="cancelSqlServerScopeSelection">Cancel</v-btn>
-                      <v-btn color="primary" @click="connectSqlServer" :loading="importer.sqlServer.connecting" :disabled="importer.sqlServer.connecting">{{ importer.sqlServer.connecting ? 'Extracting...' : 'Extract Selected Scope' }}</v-btn>
-                    </div>
-                    </v-card-text>
-                  </v-card>
-                </v-dialog>
-                <div v-if="importer.sqlServer.result" style="margin-top: 15px; padding: 10px; background: #f0f8ff; border-left: 4px solid #2563eb; border-radius: 4px;">
-                  <div style="font-weight:bold; color:#2563eb;">✓ Extraction Complete</div>
-                  <div style="margin-top: 8px; font-size: 0.9em; line-height: 1.6;">
-                    <div v-if="importer.sqlServer.result.connectorExtraction" style="margin-bottom: 10px; padding: 8px; border: 1px solid #bfdbfe; border-radius: 6px; background: #eff6ff; color: #1e3a8a;">
-                      <div style="font-weight: 700;">Connector Framework</div>
-                      <div>
-                        <strong>Adapter:</strong> {{ importer.sqlServer.result.connectorExtraction.adapter }}
-                        · <strong>Status:</strong> {{ importer.sqlServer.result.connectorExtraction.status }}
-                        · <strong>Events:</strong> {{ importer.sqlServer.result.connectorExtraction.summary?.event_count || 0 }}
-                        · <strong>Streams:</strong> {{ importer.sqlServer.result.connectorExtraction.streamResults?.length || 0 }}
-                      </div>
-                      <div v-if="importer.sqlServer.result.connectorExtraction.errors?.length" style="margin-top: 4px; color: #991b1b;">
-                        <strong>Framework Errors:</strong> {{ importer.sqlServer.result.connectorExtraction.errors.length }}
-                      </div>
-                    </div>
-                    <div><strong>Objects Extracted:</strong> {{ importer.sqlServer.result.totalObjectsExtracted }} total</div>
-                    <div style="margin-left: 16px; font-size: 0.85em; color: #444;">
-                      <div v-if="importer.sqlServer.result.tablesExtracted > 0">• {{ importer.sqlServer.result.tablesExtracted }} tables</div>
-                      <div v-if="importer.sqlServer.result.viewsExtracted > 0">• {{ importer.sqlServer.result.viewsExtracted }} views</div>
-                      <div v-if="importer.sqlServer.result.proceduresExtracted > 0">• {{ importer.sqlServer.result.proceduresExtracted }} stored procedures</div>
-                      <div v-if="importer.sqlServer.result.functionsExtracted > 0">• {{ importer.sqlServer.result.functionsExtracted }} functions</div>
-                      <div v-if="importer.sqlServer.result.triggersExtracted > 0">• {{ importer.sqlServer.result.triggersExtracted }} triggers</div>
-                    </div>
-                    <div style="margin-top: 8px;"><strong>Relationships:</strong> {{ importer.sqlServer.result.relationshipsDetected }} detected</div>
-                    <div><strong>High Confidence:</strong> {{ importer.sqlServer.result.confidentRelationships }} (≥0.75)</div>
-                    <div><strong>Selected Schemas:</strong> {{ (importer.sqlServer.result.selectedSchemas || []).join(', ') || 'n/a' }}</div>
-                    <div style="margin-top: 8px; font-size: 0.85em; color: #555;">{{ importer.sqlServer.result.markdownFiles }} markdown files ready to import</div>
-
-                    <div v-if="importer.sqlServer.result.researchReport" style="margin-top: 12px; padding: 8px; border: 1px solid #c7d2fe; border-radius: 6px; background: #eef2ff;">
-                      <div style="font-weight: 600; color: #3730a3; margin-bottom: 6px;">Coverage Research</div>
-                      <div><strong>Coverage:</strong> {{ importer.sqlServer.result.researchReport.coveragePercent }}%</div>
-                      <div><strong>Core Objects:</strong> {{ importer.sqlServer.result.researchReport.extractedCoreObjects }} / {{ importer.sqlServer.result.researchReport.expectedCoreObjects }}</div>
-                      <div><strong>Column Lineage Enabled:</strong> {{ importer.sqlServer.result.researchReport.columnLineageEnabled ? 'Yes' : 'No (use narrower scope)' }}</div>
-
-                      <div v-if="importer.sqlServer.result.researchReport.missingOrUncaptured && importer.sqlServer.result.researchReport.missingOrUncaptured.length > 0" style="margin-top: 8px;">
-                        <div style="font-weight: 600;">Gaps detected:</div>
-                        <div v-for="(item, idx) in importer.sqlServer.result.researchReport.missingOrUncaptured" :key="'gap-' + idx">- {{ item }}</div>
-                      </div>
-
-                      <div v-if="importer.sqlServer.result.researchReport.recommendations && importer.sqlServer.result.researchReport.recommendations.length > 0" style="margin-top: 8px;">
-                        <div style="font-weight: 600;">Recommended next steps:</div>
-                        <div v-for="(item, idx) in importer.sqlServer.result.researchReport.recommendations" :key="'rec-' + idx">- {{ item }}</div>
-                      </div>
-                    </div>
-
-                    <div v-if="importer.sqlServer.result.objectInventory" style="margin-top: 10px; font-size: 0.85em; color: #374151;">
-                      <strong>Inventory:</strong>
-                      tables {{ importer.sqlServer.result.objectInventory.table || 0 }},
-                      views {{ importer.sqlServer.result.objectInventory.view || 0 }},
-                      procedures {{ importer.sqlServer.result.objectInventory.storedProcedure || 0 }},
-                      functions {{ ((importer.sqlServer.result.objectInventory.scalarFunction || 0) + (importer.sqlServer.result.objectInventory.inlineTableFunction || 0) + (importer.sqlServer.result.objectInventory.tableFunction || 0)) }},
-                      triggers {{ importer.sqlServer.result.objectInventory.trigger || 0 }},
-                      synonyms {{ importer.sqlServer.result.objectInventory.synonym || 0 }},
-                      sequences {{ importer.sqlServer.result.objectInventory.sequence || 0 }},
-                      table types {{ importer.sqlServer.result.objectInventory.tableType || 0 }}
-                    </div>
-
-                    <div v-if="importer.sqlServer.result.extractionWarnings && importer.sqlServer.result.extractionWarnings.length > 0" style="margin-top: 8px; font-size: 0.85em; color: #92400e; background: #fffbeb; border-left: 3px solid #f59e0b; padding: 8px;">
-                      <div><strong>Limited permissions detected:</strong></div>
-                      <div v-for="warning in importer.sqlServer.result.extractionWarnings" :key="warning.code">- {{ warning.message }}</div>
-                    </div>
-                  </div>
-                </div>
-              </v-card>
-
-              <v-card v-if="importer.activeConnector === 'ssis'" class="card connector-detail-card" variant="outlined">
-                <h3>SSIS Connector</h3>
-                <p class="card-help">Extract packages, execution history, and lineage from SSISDB.</p>
-                
-                <div class="form-row" style="margin-bottom: 10px;">
-                  <div class="col-2"><v-label>Auth Method</v-label><v-select v-model="importer.ssis.authentication" density="compact" variant="outlined" hide-details :items="[{ title: 'SQL Server Auth', value: 'sql-server' }, { title: 'Windows Auth', value: 'windows' }, { title: 'Azure AD', value: 'azure-ad' }]" item-title="title" item-value="value"></v-select></div>
-                  <div class="col-4"><v-label>Server</v-label><v-text-field v-model="importer.ssis.server" placeholder="localhost" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-2"><v-label>Port</v-label><v-text-field v-model.number="importer.ssis.port" type="number" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-4"><v-label>Database</v-label><v-text-field v-model="importer.ssis.database" placeholder="master" density="compact" variant="outlined" hide-details></v-text-field></div>
-                </div>
-
-                <div class="form-row" style="margin-bottom: 8px;" v-if="importer.ssis.authentication === 'sql-server'">
-                  <div class="col-6"><v-label>Username</v-label><v-text-field v-model="importer.ssis.username" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-6"><v-label>Password</v-label><v-text-field v-model="importer.ssis.password" type="password" density="compact" variant="outlined" hide-details></v-text-field></div>
-                </div>
-
-                <div class="form-row" style="margin-bottom: 8px;" v-if="importer.ssis.authentication === 'windows'">
-                  <div class="col-12">
-                    <v-checkbox v-model="importer.ssis.useIntegratedAuth" density="compact" hide-details label="Use current Windows user (Integrated Auth)" color="primary"></v-checkbox>
-                  </div>
-                </div>
-                <div class="form-row" style="margin-bottom: 6px;" v-if="importer.ssis.authentication === 'windows' && !importer.ssis.useIntegratedAuth">
-                  <div class="col-4"><v-label>Domain</v-label><v-text-field v-model="importer.ssis.domain" placeholder="CONTOSO" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-4"><v-label>Username</v-label><v-text-field v-model="importer.ssis.username" placeholder="svc_ssis" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-4"><v-label>Password</v-label><v-text-field v-model="importer.ssis.password" type="password" density="compact" variant="outlined" hide-details></v-text-field></div>
-                </div>
-
-                <div class="form-row" style="margin-bottom: 10px;" v-if="importer.ssis.authentication === 'azure-ad'">
-                  <div class="col-4"><v-label>Client ID</v-label><v-text-field v-model="importer.ssis.clientId" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-4"><v-label>Client Secret</v-label><v-text-field v-model="importer.ssis.clientSecret" type="password" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-4"><v-label>Tenant ID</v-label><v-text-field v-model="importer.ssis.tenantId" density="compact" variant="outlined" hide-details></v-text-field></div>
-                </div>
-
-                <div class="form-row" style="margin-bottom: 15px;">
-                  <div class="col-3"><v-label>History Days</v-label><v-text-field v-model.number="importer.ssis.historyDays" type="number" min="1" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-3"><v-label>Phase Days</v-label><v-text-field v-model.number="importer.ssis.phaseDays" type="number" min="1" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-6" style="display:flex; gap:10px; align-items:center;">
-                    <v-checkbox v-model="importer.ssis.extractXml" density="compact" label="Parse XML Lineage" color="primary" hide-details></v-checkbox>
-                    <v-checkbox v-model="importer.ssis.encrypt" density="compact" label="Encrypt" color="primary" hide-details></v-checkbox>
-                    <v-checkbox v-model="importer.ssis.trustServerCertificate" density="compact" label="Trust Cert" color="primary" hide-details></v-checkbox>
-                  </div>
-                </div>
-
-                <div class="btn-row" style="margin-bottom: 15px; justify-content: flex-end;">
-                  <v-btn variant="tonal" @click="discoverSsisCatalog" :loading="importer.ssis.discovering" :disabled="importer.ssis.discovering || importer.ssis.connecting">Discover Catalog</v-btn>
-                  <v-btn color="primary" @click="runSsisExtraction" :loading="importer.ssis.connecting" :disabled="importer.ssis.discovering || importer.ssis.connecting">{{ importer.ssis.connecting ? 'Extracting SSIS...' : 'Run Full Extraction' }}</v-btn>
-                </div>
-
-                <div v-if="importer.ssis.inventory && !importer.ssis.result" style="margin-top: 15px; padding: 10px; background: #fdfae5; border-left: 4px solid #d97706; border-radius: 4px;">
-                  <div style="font-weight:bold; color:#d97706;">✓ Discovery Complete</div>
-                  <div style="margin-top: 8px; font-size: 0.9em; line-height: 1.6;">
-                    SSISDB Present: <strong>{{ importer.ssis.inventory.ssisdbPresent ? 'Yes' : 'No' }}</strong><br/>
-                    Packages Found: <strong>{{ importer.ssis.inventory.packageCount }}</strong><br/>
-                    Executables: <strong>{{ importer.ssis.inventory.executables?.length || 0 }}</strong>
-                  </div>
-                </div>
-
-                <div v-if="importer.ssis.result" style="margin-top: 15px; padding: 10px; background: #f0f8ff; border-left: 4px solid #2563eb; border-radius: 4px;">
-                  <div style="font-weight:bold; color:#2563eb;">✓ SSIS Extraction Complete</div>
-                  <div style="margin-top: 8px; font-size: 0.9em; line-height: 1.6;">
-                    <div v-if="importer.ssis.result.connectorExtraction" style="margin-bottom: 10px; padding: 8px; border: 1px solid #bfdbfe; border-radius: 6px; background: #eff6ff; color: #1e3a8a;">
-                      <div style="font-weight: 700;">Connector Framework</div>
-                      <div>
-                        <strong>Adapter:</strong> {{ importer.ssis.result.connectorExtraction.adapter }}
-                        · <strong>Status:</strong> {{ importer.ssis.result.connectorExtraction.status }}
-                        · <strong>Events:</strong> {{ importer.ssis.result.connectorExtraction.summary?.event_count || 0 }}
-                        · <strong>Streams:</strong> {{ importer.ssis.result.connectorExtraction.streamResults?.length || 0 }}
-                      </div>
-                      <div v-if="importer.ssis.result.connectorExtraction.errors?.length" style="margin-top: 4px; color: #991b1b;">
-                        <strong>Framework Errors:</strong> {{ importer.ssis.result.connectorExtraction.errors.length }}
-                      </div>
-                    </div>
-                    <div><strong>Packages:</strong> {{ importer.ssis.result.summary?.counts?.packages || 0 }}</div>
-                    <div><strong>Lineage Edges:</strong> {{ importer.ssis.result.summary?.counts?.lineageEdges || 0 }}</div>
-                    <div><strong>Agent Jobs:</strong> {{ importer.ssis.result.summary?.counts?.agentJobs || 0 }}</div>
-                    <div><strong>XML Parsed:</strong> {{ importer.ssis.result.summary?.counts?.xmlPackagesParsed || 0 }}</div>
-                    <div style="margin-top: 8px; font-size: 0.85em; color: #555;">{{ importer.ssis.result.markdownFilesWritten || 0 }} markdown files generated to {{ importer.ssis.result.markdownOutputPath }}</div>
-                    
-                    <div v-if="importer.ssis.result.summary?.warnings?.length > 0" style="margin-top: 8px; font-size: 0.85em; color: #92400e; background: #fffbeb; border-left: 3px solid #f59e0b; padding: 8px;">
-                      <div><strong>Warnings ({{ importer.ssis.result.summary.warningCount }}):</strong></div>
-                      <div v-for="(warn, idx) in importer.ssis.result.summary.warnings.slice(0, 5)" :key="'sw-'+idx">- {{ warn }}</div>
-                      <div v-if="importer.ssis.result.summary.warnings.length > 5">...and {{ importer.ssis.result.summary.warnings.length - 5 }} more.</div>
-                    </div>
-                  </div>
-                </div>
-              </v-card>
-              
-              <v-card v-if="importer.activeConnector === 'markdown'" class="card connector-detail-card span-12" variant="outlined">
-                <h3>Markdown Upload & Parse</h3>
-                <p class="card-help">Use this for curated or externally generated markdown that should enter the same validate/load pipeline.</p>
-                <v-file-input multiple accept=".md,text/markdown" density="compact" variant="outlined" show-size @change="handleFileUpload" hide-details></v-file-input>
-                <div class="table-wrap" style="margin-top:10px;">
-                  <v-table density="compact">
-                    <thead><tr><th>File</th><th>Status</th><th>Object</th><th>Database</th><th>Error</th></tr></thead>
-                    <tbody>
-                      <tr v-for="item in importer.parsed" :key="item.fileName">
-                        <td>{{ item.fileName }}</td>
-                        <td>{{ item.status }}</td>
-                        <td>{{ item.objectId || '-' }}</td>
-                        <td>{{ item.database || '-' }}</td>
-                        <td>{{ item.error || '-' }}</td>
-                      </tr>
-                      <tr v-if="importer.parsed.length === 0"><td colspan="5" class="empty">No uploaded files parsed yet.</td></tr>
-                    </tbody>
-                  </v-table>
-                </div>
-              </v-card>
-
-              <v-card
-                v-if="importer.activeConnector === 'data-factory'"
-                class="card connector-detail-card cloud-connector-panel span-12"
-                variant="outlined"
-              >
-                <div class="cloud-connector-header">
-                  <v-icon icon="mdi-factory" size="28"></v-icon>
-                  <div>
-                    <h3>Data Factory Connector</h3>
-                    <p class="card-help">Connect to Azure Data Factory and generate markdown from pipelines, datasets, linked services, and triggers.</p>
-                  </div>
-                </div>
-                <div class="form-row" style="margin-top: 14px;">
-                  <div class="col-4">
-                    <div class="field-label-row"><v-label>Subscription ID</v-label><v-tooltip location="top" max-width="360" text="The Azure subscription that owns the Data Factory. In Azure Portal, open the Data Factory resource, then copy Subscription ID from Overview or Essentials."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Subscription ID help"></v-btn></template></v-tooltip></div>
-                    <v-text-field v-model="importer.dataFactory.subscriptionId" density="compact" variant="outlined" hide-details></v-text-field>
-                  </div>
-                  <div class="col-4">
-                    <div class="field-label-row"><v-label>Resource Group</v-label><v-tooltip location="top" max-width="360" text="The Azure resource group containing the Data Factory. In Azure Portal, open the factory and copy Resource group from Overview or Essentials."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Resource Group help"></v-btn></template></v-tooltip></div>
-                    <v-text-field v-model="importer.dataFactory.resourceGroupName" density="compact" variant="outlined" hide-details></v-text-field>
-                  </div>
-                  <div class="col-4">
-                    <div class="field-label-row"><v-label>Factory Name</v-label><v-tooltip location="top" max-width="360" text="The exact Azure Data Factory resource name. Find it in Azure Portal by searching Data factories, then open the factory and copy the Name value."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Factory Name help"></v-btn></template></v-tooltip></div>
-                    <v-text-field v-model="importer.dataFactory.factoryName" density="compact" variant="outlined" hide-details></v-text-field>
-                  </div>
-                </div>
-                <div class="form-row" style="margin-top: 10px;">
-                  <div class="col-4">
-                    <div class="field-label-row"><v-label>Tenant ID</v-label><v-tooltip location="top" max-width="380" text="The Microsoft Entra tenant for the service principal. In Azure Portal, go to Microsoft Entra ID > Overview and copy Tenant ID. You can skip this if using a pasted access token."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Tenant ID help"></v-btn></template></v-tooltip></div>
-                    <v-text-field v-model="importer.dataFactory.tenantId" density="compact" variant="outlined" hide-details></v-text-field>
-                  </div>
-                  <div class="col-4">
-                    <div class="field-label-row"><v-label>Client ID</v-label><v-tooltip location="top" max-width="380" text="The Application client ID for a Microsoft Entra app registration or managed service principal that has Reader access to the Data Factory. Find it under Microsoft Entra ID > App registrations > your app > Application client ID."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Client ID help"></v-btn></template></v-tooltip></div>
-                    <v-text-field v-model="importer.dataFactory.clientId" density="compact" variant="outlined" hide-details></v-text-field>
-                  </div>
-                  <div class="col-4">
-                    <div class="field-label-row"><v-label>Client Secret</v-label><v-tooltip location="top" max-width="380" text="A secret for the Entra app registration. Create one in Microsoft Entra ID > App registrations > your app > Certificates & secrets. Copy the secret Value immediately; Azure will not show it again."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Client Secret help"></v-btn></template></v-tooltip></div>
-                    <v-text-field v-model="importer.dataFactory.clientSecret" type="password" density="compact" variant="outlined" hide-details></v-text-field>
-                  </div>
-                </div>
-                <div class="form-row" style="margin-top: 10px;">
-                  <div class="col-12">
-                    <div class="field-label-row"><v-label>Access Token</v-label><v-tooltip location="top" max-width="390" text="Optional Azure Management API bearer token. Use this instead of tenant/client credentials for short-lived testing. Generate with Azure CLI using az account get-access-token --resource https://management.azure.com/ and paste accessToken only."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Access Token help"></v-btn></template></v-tooltip></div>
-                    <v-text-field v-model="importer.dataFactory.accessToken" type="password" density="compact" variant="outlined" placeholder="Optional bearer token instead of service principal fields" hide-details></v-text-field>
-                  </div>
-                </div>
-                <div class="btn-row" style="margin-top: 14px; justify-content: flex-end;">
-                  <v-btn variant="tonal" @click="discoverDataFactory" :loading="importer.dataFactory.discovering" :disabled="importer.dataFactory.discovering || importer.dataFactory.connecting">Discover Factory</v-btn>
-                  <v-btn color="primary" @click="runDataFactoryExtraction" :loading="importer.dataFactory.connecting" :disabled="importer.dataFactory.discovering || importer.dataFactory.connecting">{{ importer.dataFactory.connecting ? 'Extracting ADF...' : 'Generate Markdown' }}</v-btn>
-                </div>
-                <div v-if="importer.dataFactory.inventory || importer.dataFactory.result" class="cloud-connector-body">
-                  <div class="mini-metric"><span>Pipelines</span><strong>{{ (importer.dataFactory.result || importer.dataFactory.inventory).pipelines?.length || 0 }}</strong></div>
-                  <div class="mini-metric"><span>Datasets</span><strong>{{ (importer.dataFactory.result || importer.dataFactory.inventory).datasets?.length || 0 }}</strong></div>
-                  <div class="mini-metric"><span>Linked Services</span><strong>{{ (importer.dataFactory.result || importer.dataFactory.inventory).linkedServices?.length || 0 }}</strong></div>
-                  <div class="mini-metric"><span>Triggers</span><strong>{{ (importer.dataFactory.result || importer.dataFactory.inventory).triggers?.length || 0 }}</strong></div>
-                  <div class="mini-metric" v-if="importer.dataFactory.result?.markdownOutputPath"><span>Markdown Path</span><span class="text-mono text-small">{{ importer.dataFactory.result.markdownOutputPath }}</span></div>
-                  <div class="mini-metric" v-if="importer.dataFactory.result"><span>Files Written</span><strong>{{ importer.dataFactory.result.markdownFilesWritten || 0 }}</strong></div>
-                </div>
-              </v-card>
-
-              <v-card
-                v-if="importer.activeConnector === 'airflow'"
-                class="card connector-detail-card cloud-connector-panel span-12"
-                variant="outlined"
-              >
-                <div class="cloud-connector-header">
-                  <v-icon icon="mdi-source-branch" size="28"></v-icon>
-                  <div>
-                    <h3>Airflow Connector</h3>
-                    <p class="card-help">Connect to the Airflow REST API and generate markdown from DAGs, schedules, connections, and orchestration metadata.</p>
-                  </div>
-                </div>
-                <div class="form-row" style="margin-top: 14px;">
-                  <div class="col-6">
-                    <div class="field-label-row"><v-label>Base URL</v-label><v-tooltip location="top" max-width="380" text="The URL for your Airflow webserver, not a DAG page. Open Airflow in the browser and copy the root host, for example https://airflow.company.com. The connector appends /api/v1 automatically."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Airflow Base URL help"></v-btn></template></v-tooltip></div>
-                    <v-text-field v-model="importer.airflow.baseUrl" density="compact" variant="outlined" placeholder="https://airflow.example.com" hide-details></v-text-field>
-                  </div>
-                  <div class="col-3">
-                    <div class="field-label-row"><v-label>API Version</v-label><v-tooltip location="top" max-width="360" text="The Airflow stable REST API version. Use v1 for Airflow 2.x in most deployments. Ask your Airflow admin or check the API docs page at /api/v1/ui if exposed."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Airflow API Version help"></v-btn></template></v-tooltip></div>
-                    <v-text-field v-model="importer.airflow.apiVersion" density="compact" variant="outlined" hide-details></v-text-field>
-                  </div>
-                  <div class="col-3">
-                    <div class="field-label-row"><v-label>Limit</v-label><v-tooltip location="top" max-width="340" text="Maximum number of DAGs and connections to request from Airflow. Start with 100 for discovery; increase it if your Airflow environment has more DAGs."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Airflow Limit help"></v-btn></template></v-tooltip></div>
-                    <v-text-field v-model.number="importer.airflow.limit" type="number" min="1" density="compact" variant="outlined" hide-details></v-text-field>
-                  </div>
-                </div>
-                <div class="form-row" style="margin-top: 10px;">
-                  <div class="col-6">
-                    <div class="field-label-row"><v-label>Bearer Token</v-label><v-tooltip location="top" max-width="390" text="Optional token for Airflow deployments using bearer auth. Get this from your Airflow or identity-provider admin. If your Airflow uses basic auth instead, leave token blank and use username/password."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Airflow Bearer Token help"></v-btn></template></v-tooltip></div>
-                    <v-text-field v-model="importer.airflow.token" type="password" density="compact" variant="outlined" hide-details></v-text-field>
-                  </div>
-                  <div class="col-3">
-                    <div class="field-label-row"><v-label>Username</v-label><v-tooltip location="top" max-width="360" text="Optional Airflow username for basic authentication. Use a service account or user that can read DAGs and, if available, connections through the REST API."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Airflow Username help"></v-btn></template></v-tooltip></div>
-                    <v-text-field v-model="importer.airflow.username" density="compact" variant="outlined" hide-details></v-text-field>
-                  </div>
-                  <div class="col-3">
-                    <div class="field-label-row"><v-label>Password</v-label><v-tooltip location="top" max-width="360" text="Optional password for Airflow basic authentication. Pair it with the username. For production, prefer a read-only service account managed by your Airflow admin."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Airflow Password help"></v-btn></template></v-tooltip></div>
-                    <v-text-field v-model="importer.airflow.password" type="password" density="compact" variant="outlined" hide-details></v-text-field>
-                  </div>
-                </div>
-                <div class="btn-row" style="margin-top: 14px; justify-content: flex-end;">
-                  <v-btn variant="tonal" @click="discoverAirflow" :loading="importer.airflow.discovering" :disabled="importer.airflow.discovering || importer.airflow.connecting">Discover DAGs</v-btn>
-                  <v-btn color="primary" @click="runAirflowExtraction" :loading="importer.airflow.connecting" :disabled="importer.airflow.discovering || importer.airflow.connecting">{{ importer.airflow.connecting ? 'Extracting Airflow...' : 'Generate Markdown' }}</v-btn>
-                </div>
-                <div v-if="importer.airflow.inventory || importer.airflow.result" class="cloud-connector-body">
-                  <div class="mini-metric"><span>DAGs</span><strong>{{ (importer.airflow.result || importer.airflow.inventory).dags?.length || 0 }}</strong></div>
-                  <div class="mini-metric"><span>Connections</span><strong>{{ (importer.airflow.result || importer.airflow.inventory).connections?.length || 0 }}</strong></div>
-                  <div class="mini-metric"><span>API Version</span><strong>{{ (importer.airflow.result || importer.airflow.inventory).apiVersion }}</strong></div>
-                  <div class="mini-metric" v-if="importer.airflow.result"><span>Files Written</span><strong>{{ importer.airflow.result.markdownFilesWritten || 0 }}</strong></div>
-                  <div class="mini-metric span-12" v-if="(importer.airflow.result || importer.airflow.inventory).connectionWarning"><span>Warning</span><span>{{ (importer.airflow.result || importer.airflow.inventory).connectionWarning }}</span></div>
-                  <div class="mini-metric" v-if="importer.airflow.result?.markdownOutputPath"><span>Markdown Path</span><span class="text-mono text-small">{{ importer.airflow.result.markdownOutputPath }}</span></div>
-                </div>
-              </v-card>
-
-              <v-card
-                v-if="importer.activeConnector === 'databricks'"
-                class="card connector-detail-card cloud-connector-panel span-12"
-                variant="outlined"
-              >
-                <div class="cloud-connector-header">
-                  <v-icon icon="mdi-cube-outline" size="28"></v-icon>
-                  <div>
-                    <h3>Databricks Connector</h3>
-                    <p class="card-help">Connect to Databricks workspace APIs and generate markdown from jobs, clusters, and Unity Catalog metadata.</p>
-                  </div>
-                </div>
-                <div class="form-row" style="margin-top: 14px;">
-                  <div class="col-7">
-                    <div class="field-label-row"><v-label>Workspace URL</v-label><v-tooltip location="top" max-width="380" text="The Databricks workspace root URL. Open Databricks in your browser and copy the host, for example https://adb-0000000000000000.0.azuredatabricks.net. Do not include /jobs or /sql paths."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Databricks Workspace URL help"></v-btn></template></v-tooltip></div>
-                    <v-text-field v-model="importer.databricks.workspaceUrl" density="compact" variant="outlined" placeholder="https://adb-0000000000000000.0.azuredatabricks.net" hide-details></v-text-field>
-                  </div>
-                  <div class="col-3">
-                    <div class="field-label-row"><v-label>Token</v-label><v-tooltip location="top" max-width="390" text="A Databricks personal access token or service principal OAuth token with permission to list jobs, clusters, and Unity Catalog metadata. For a PAT, open Databricks > User Settings > Developer > Access tokens."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Databricks Token help"></v-btn></template></v-tooltip></div>
-                    <v-text-field v-model="importer.databricks.token" type="password" density="compact" variant="outlined" hide-details></v-text-field>
-                  </div>
-                  <div class="col-2">
-                    <div class="field-label-row"><v-label>Limit</v-label><v-tooltip location="top" max-width="340" text="Maximum number of Databricks jobs to request. Start with 100 for discovery; increase it if the workspace has more jobs to evaluate."><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-help-circle-outline" variant="text" density="compact" size="x-small" class="field-help-btn" aria-label="Databricks Limit help"></v-btn></template></v-tooltip></div>
-                    <v-text-field v-model.number="importer.databricks.limit" type="number" min="1" density="compact" variant="outlined" hide-details></v-text-field>
-                  </div>
-                </div>
-                <div class="btn-row" style="margin-top: 14px; justify-content: flex-end;">
-                  <v-btn variant="tonal" @click="discoverDatabricks" :loading="importer.databricks.discovering" :disabled="importer.databricks.discovering || importer.databricks.connecting">Discover Workspace</v-btn>
-                  <v-btn color="primary" @click="runDatabricksExtraction" :loading="importer.databricks.connecting" :disabled="importer.databricks.discovering || importer.databricks.connecting">{{ importer.databricks.connecting ? 'Extracting Databricks...' : 'Generate Markdown' }}</v-btn>
-                </div>
-                <div v-if="importer.databricks.inventory || importer.databricks.result" class="cloud-connector-body">
-                  <div class="mini-metric"><span>Jobs</span><strong>{{ (importer.databricks.result || importer.databricks.inventory).jobs?.length || 0 }}</strong></div>
-                  <div class="mini-metric"><span>Clusters</span><strong>{{ (importer.databricks.result || importer.databricks.inventory).clusters?.length || 0 }}</strong></div>
-                  <div class="mini-metric"><span>Catalogs</span><strong>{{ (importer.databricks.result || importer.databricks.inventory).catalogs?.length || 0 }}</strong></div>
-                  <div class="mini-metric" v-if="importer.databricks.result"><span>Files Written</span><strong>{{ importer.databricks.result.markdownFilesWritten || 0 }}</strong></div>
-                  <div class="mini-metric span-12" v-if="(importer.databricks.result || importer.databricks.inventory).clusterWarning"><span>Cluster Warning</span><span>{{ (importer.databricks.result || importer.databricks.inventory).clusterWarning }}</span></div>
-                  <div class="mini-metric span-12" v-if="(importer.databricks.result || importer.databricks.inventory).catalogWarning"><span>Catalog Warning</span><span>{{ (importer.databricks.result || importer.databricks.inventory).catalogWarning }}</span></div>
-                  <div class="mini-metric" v-if="importer.databricks.result?.markdownOutputPath"><span>Markdown Path</span><span class="text-mono text-small">{{ importer.databricks.result.markdownOutputPath }}</span></div>
-                </div>
-              </v-card>
-              </v-col>
-
-              <v-row>
-              <v-col cols="12" md="6">
-              <v-card class="card" variant="outlined">
-                <h3>Validate Markdown</h3>
-                <p class="card-help">Check generated or uploaded markdown before loading it into the searchable catalog.</p>
-                <v-label>Path to markdown tree</v-label>
-                <v-text-field v-model="importer.validatePath" density="compact" variant="outlined" hide-details></v-text-field>
-                <div class="btn-row" style="margin-top:10px;"><v-btn color="primary" @click="runValidation">Run Validate</v-btn></div>
-              </v-card>
-              </v-col>
-
-              <v-col cols="12" md="6">
-              <v-card class="card" variant="outlined">
-                <h3>Load & Export</h3>
-                <p class="card-help">Publish validated markdown into the search index or export generated artifacts.</p>
-                <v-label>Path to markdown tree</v-label>
-                <v-text-field v-model="importer.loadPath" density="compact" variant="outlined" hide-details></v-text-field>
-                <div style="margin-top: 8px; font-size: 0.85em; color: #4b5563;">
-                  <strong>Elasticsearch:</strong>
-                  <span :style="{ color: isElasticsearchHealthy ? '#065f46' : '#991b1b', fontWeight: '600' }">{{ elasticsearchStatusLabel }}</span>
-                  <span v-if="importer.status?.elasticsearchUrl"> ({{ importer.status.elasticsearchUrl }})</span>
-                </div>
-                <div class="btn-row" style="margin-top:10px;">
-                  <v-btn color="primary" @click="runLoad" :disabled="!canLoadToIndex">Load to Index</v-btn>
-                  <v-btn variant="tonal" @click="loadImportStatus">Refresh Status</v-btn>
-                  <v-btn variant="tonal" @click="downloadGeneratedMarkdownZip">Download ZIP</v-btn>
-                </div>
-                <div class="mini-stack mt-8" v-if="importer.status">
-                  <div class="mini-metric"><span>Status</span><v-chip size="x-small" variant="tonal" :color="importer.status.status === 'ok' ? 'success' : 'amber'">{{ importer.status.status || 'unknown' }}</v-chip></div>
-                  <div class="mini-metric"><span>Indexed Objects</span><strong>{{ importer.status.loadedObjectCount || 0 }}</strong></div>
-                  <div class="mini-metric"><span>Elasticsearch</span><v-chip size="x-small" variant="tonal" :color="isElasticsearchHealthy ? 'success' : 'error'">{{ elasticsearchStatusLabel }}</v-chip></div>
-                  <div class="mini-metric" v-if="importer.status.lastGeneratedPath"><span>Last Generated</span><span class="text-mono text-small">{{ importer.status.lastGeneratedPath }}</span></div>
-                </div>
-                <div v-else class="empty">No status yet - click Refresh Status.</div>
-              </v-card>
-              </v-col>
-              </v-row>
-            </div>
-
-            <div v-if="activeView === 'admin'">
-              <v-row>
-              <v-col cols="12" md="6">
-              <v-card class="card" variant="outlined">
-                <h3>User Administration</h3>
-                <div class="form-row" style="margin-bottom:10px;">
-                  <div class="col-4"><v-label>Email</v-label><v-text-field v-model="admin.newUser.email" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-3"><v-label>Name</v-label><v-text-field v-model="admin.newUser.name" density="compact" variant="outlined" hide-details></v-text-field></div>
-                  <div class="col-3"><v-label>Role</v-label><v-select v-model="admin.newUser.role" density="compact" variant="outlined" hide-details :items="['Admin','PowerUser','Analyst','Viewer']"></v-select></div>
-                  <div class="col-2" style="display:flex;align-items:end;"><v-btn color="primary" @click="createUser">Create</v-btn></div>
-                </div>
-                <div class="table-wrap">
-                  <v-table density="compact">
-                    <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Active</th><th>Actions</th></tr></thead>
-                    <tbody>
-                      <tr v-for="user in admin.users" :key="user.userId">
-                        <td>{{ user.name }}</td>
-                        <td>{{ user.email }}</td>
-                        <td>
-                          <v-select
-                            v-model="user.role"
-                            density="compact"
-                            variant="outlined"
-                            hide-details
-                            :items="['Admin','PowerUser','Analyst','Viewer']"
-                            @update:model-value="updateUserRole(user)"
-                          ></v-select>
-                        </td>
-                        <td>{{ user.active ? 'yes' : 'no' }}</td>
-                        <td class="btn-row">
-                          <v-btn size="small" variant="tonal" v-if="user.active" @click="deactivateUser(user.userId)">Deactivate</v-btn>
-                          <v-btn size="small" color="success" variant="tonal" v-else @click="reactivateUser(user.userId)">Reactivate</v-btn>
-                          <v-btn size="small" color="error" variant="tonal" @click="deleteUser(user.userId)">Delete</v-btn>
-                        </td>
-                      </tr>
-                      <tr v-if="admin.users.length === 0"><td colspan="5" class="empty">No admin users loaded.</td></tr>
-                    </tbody>
-                  </v-table>
-                </div>
-              </v-card>
-              </v-col>
-
-              <v-col cols="12" md="6">
-              <v-card class="card" variant="outlined">
-                <h3>Dashboard User Snapshot</h3>
-                <div class="health-grid" v-if="admin.dashboardUsers">
-                  <div class="health-card">
-                    <span class="health-icon">&#128100;</span>
-                    <div>
-                      <div class="health-name">Total Users</div>
-                      <div class="health-desc">{{ admin.dashboardUsers.total || admin.dashboardUsers.users?.length || '-' }}</div>
-                    </div>
-                  </div>
-                  <div class="health-card">
-                    <span class="health-icon">&#9989;</span>
-                    <div>
-                      <div class="health-name">Active</div>
-                      <div class="health-desc">{{ admin.dashboardUsers.active || '-' }}</div>
-                    </div>
-                  </div>
-                </div>
-                <div v-else class="empty">No user snapshot available.</div>
-              </v-card>
-              </v-col>
-              </v-row>
-
-              
-
-              <v-row>
-              <v-col cols="12" md="6">
-              <v-card class="card" variant="outlined">
-                <h3>Platform Health</h3>
-                <div class="health-grid" v-if="admin.dashboardHealth">
-                  <div class="health-card" v-for="(val, svc) in admin.dashboardHealth" :key="svc">
-                    <span v-if="typeof val === 'boolean' || val === 'ok' || val === 'healthy'" class="health-icon">&#9989;</span>
-                    <span v-else class="health-icon">&#10060;</span>
-                    <div>
-                      <div class="health-name">{{ svc }}</div>
-                      <div class="health-desc">{{ typeof val === 'object' ? (val.status || 'configured') : val }}</div>
-                    </div>
-                  </div>
-                </div>
-                <div v-else class="empty">Health data unavailable.</div>
-              </v-card>
-              </v-col>
-
-              <v-col cols="12" md="6">
-              <v-card class="card" variant="outlined">
-                <h3>Platform Settings</h3>
-                <div class="mini-stack" v-if="admin.dashboardSettings">
-                  <div class="mini-metric" v-for="(val, key) in admin.dashboardSettings" :key="key" style="font-size:11px;">
-                    <span>{{ key }}</span>
-                    <strong>{{ formatSettingValue(val) }}</strong>
-                  </div>
-                </div>
-                <div v-else class="empty">No settings loaded.</div>
-              </v-card>
-              </v-col>
-              </v-row>
-
-              
-
-              <v-row>
-              <v-col cols="12">
-              <v-card class="card" variant="outlined">
-                <h3>Audit Trail</h3>
-                <div class="table-wrap">
-                  <v-table density="compact">
-                    <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Details</th></tr></thead>
-                    <tbody>
-                      <tr v-for="event in admin.audit" :key="event.eventId || event.id">
-                        <td>{{ formatTimestamp(event.timestamp) }}</td>
-                        <td>{{ event.userName || event.userId }}</td>
-                        <td>{{ event.action }}</td>
-                        <td>{{ formatAuditDetails(event.details) }}</td>
-                      </tr>
-                      <tr v-if="admin.audit.length === 0"><td colspan="4" class="empty">No audit events available.</td></tr>
-                    </tbody>
-                  </v-table>
-                </div>
-              </v-card>
-              </v-col>
-              </v-row>
-
-              
-
-              <v-row>
-              <v-col cols="12">
-              <v-card class="card" variant="outlined">
-                <div class="btn-row" style="margin-bottom:10px;">
-                  <v-btn size="small" variant="tonal" @click="clearApiErrors">Clear Error Log</v-btn>
-                </div>
-                <div class="table-wrap">
-                  <v-table density="compact">
-                    <thead><tr><th>Time</th><th>Status</th><th>Method</th><th>Endpoint</th><th>Message</th><th>Request ID</th></tr></thead>
-                    <tbody>
-                      <tr v-for="item in apiErrors" :key="item.id">
-                        <td>{{ item.timestamp }}</td>
-                        <td>{{ item.status }}</td>
-                        <td>{{ item.method }}</td>
-                        <td class="mono">{{ item.endpoint }}</td>
-                        <td>{{ item.message }}</td>
-                        <td class="mono">{{ item.requestId }}</td>
-                      </tr>
-                      <tr v-if="apiErrors.length === 0"><td colspan="6" class="empty">No API errors captured in this session.</td></tr>
-                    </tbody>
-                  </v-table>
-                </div>
-              </v-card>
-              </v-col>
-              </v-row>
-            </div>
-
-            <div v-if="activeView === 'docs'">
-              <v-row>
-              <v-col cols="12" md="3" lg="2">
-              <v-card class="card" variant="outlined">
-                <div class="section-header">
-                  <span class="section-title">Documentation Library</span>
-                  <v-btn size="small" variant="outlined" @click="loadDocsLibrary">Refresh</v-btn>
-                </div>
-                <div class="mini-stack" v-if="docsLibrary.length">
-                  <v-btn
-                    v-for="doc in docsLibrary"
-                    :key="'doc-nav-' + doc.key"
-                    class="doc-nav-btn"
-                    :variant="selectedDocKey === doc.key ? 'flat' : 'tonal'"
-                    :color="selectedDocKey === doc.key ? 'primary' : undefined"
-                    style="justify-content:flex-start;"
-                    @click="openDocByKey(doc.key)"
-                  >
-                    <v-icon start class="mr-2">mdi-help-circle</v-icon>
-                    <span>{{ doc.title }}</span>
-                  </v-btn>
-                </div>
-                <div v-else-if="docsLoading" class="empty">Loading documentation...</div>
-                <div v-else class="empty">No documentation entries available.</div>
-              </v-card>
-              </v-col>
-
-              <v-col cols="12" md="9" lg="10">
-              <v-card class="card" variant="outlined">
-                <div class="section-header" style="margin-bottom:12px;">
-                  <span class="section-title">{{ selectedDocTitle }}</span>
-                </div>
-                <div v-if="selectedDoc" class="doc-content" v-html="renderDocHtml(selectedDoc.content)"></div>
-                <div v-else class="empty">Select a guide from the left rail.</div>
-              </v-card>
-              </v-col>
-              </v-row>
-            </div>
+            ${homeFindDataPageTemplate}
+            ${assetDetailPageTemplate}
+            ${catalogSearchPageTemplate}
+            ${businessGlossaryPageTemplate}
+${dataProductsPageTemplate}
+
+            ${advancedGovernancePageTemplate}
+            ${governanceOpsPageTemplate}
+            ${lineageAssistantPageTemplate}
+            ${metricIntelligencePageTemplate}
+            ${lineageExplorerPageTemplate}
+            ${governanceInsightsPageTemplate}
+            ${connectionsPageTemplate}
+            ${profilingSchedulerPageTemplate}
+            ${connectorWorkflowPageTemplate}
+            ${lineageAcquisitionPageTemplate}
+            ${platformAdminPageTemplate}
+${helpCenterPageTemplate}
           </v-container>
         </v-main>
 
@@ -13266,6 +9795,19 @@ const appConfig = {
         </v-navigation-drawer>
       </v-layout>
 
+      <workflow-detail-drawer
+        v-model="integrations.connectorRunDrawerOpen"
+        title="Profile Run Details"
+        :subtitle="integrations.selectedConnectorRun ? 'Shared drilldown for run status, queue progress, and publish state.' : ''"
+        :items="selectedConnectorRunDetailItems"
+      >
+        <workflow-blocker-list
+          v-if="integrations.selectedConnectorRun?.errors?.length"
+          title="Run reported issues"
+          :blockers="integrations.selectedConnectorRun.errors.map((error) => error.message || error)"
+          tone="error"
+        ></workflow-blocker-list>
+      </workflow-detail-drawer>
 
       <v-dialog v-model="promptDialog.show" max-width="500" persistent>
         <v-card>

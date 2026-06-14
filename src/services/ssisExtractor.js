@@ -7,6 +7,11 @@
 
 import mssql from 'mssql';
 import { XMLParser } from 'fast-xml-parser';
+import {
+  buildSqlServerConnectionConfig,
+  loadSqlServerDriver,
+  sqlServerCredentialMode,
+} from './connectorRuntime/sqlServerConnection.js';
 
 // -----------------------------------------------------------------------------
 // Constants
@@ -296,6 +301,64 @@ function buildCanonicalPackageId(serverName, folderName, projectName, packageNam
 
   if (!server || !folder || !project || !pkg) return '';
   return `${server}.SSISDB.${folder}.${project}.${pkg}`;
+}
+
+function getSsisScopeFilters(config = {}) {
+  const folder = cleanSsisSegment(
+    config.folderName || config.folder_name || config.folder || config.selectedFolder || ''
+  );
+  const project = cleanSsisSegment(
+    config.projectName || config.project_name || config.project || config.selectedProject || ''
+  );
+  const packages = [
+    config.packageName,
+    config.package_name,
+    config.package,
+    config.selectedPackage,
+    ...(Array.isArray(config.packages) ? config.packages : []),
+    ...(Array.isArray(config.selectedPackages) ? config.selectedPackages : []),
+  ]
+    .filter(Boolean)
+    .map((item) => cleanSsisSegment(item).toLowerCase());
+
+  return { folder, project, packages };
+}
+
+function hasSsisScopeFilters(scope = {}) {
+  return Boolean(scope.folder || scope.project || scope.packages?.length);
+}
+
+function filterAgentJobsToSsisScope(agentJobs = {}, scope = {}) {
+  if (!hasSsisScopeFilters(scope)) return agentJobs;
+
+  const folder = String(scope.folder || '').toLowerCase();
+  const project = String(scope.project || '').toLowerCase();
+  const packages = new Set((scope.packages || []).map((item) => String(item || '').toLowerCase()));
+  const matchedJobIds = new Set();
+  const ssisSteps = (agentJobs.ssisSteps || []).filter((step) => {
+    const command = String(step.command || '');
+    const commandLower = command.toLowerCase();
+    const catalogPathMatch = command.match(/\\SSISDB\\([^\\]+)\\([^\\]+)\\([^\\"]+\.dtsx)/i);
+    const matchedFolder = catalogPathMatch ? cleanSsisSegment(catalogPathMatch[1]).toLowerCase() : '';
+    const matchedProject = catalogPathMatch ? cleanSsisSegment(catalogPathMatch[2]).toLowerCase() : '';
+    const matchedPackage = catalogPathMatch ? cleanSsisSegment(catalogPathMatch[3]).toLowerCase() : '';
+
+    const folderMatches = !folder || matchedFolder === folder || commandLower.includes(`\\${folder}\\`);
+    const projectMatches = !project || matchedProject === project || commandLower.includes(`\\${project}\\`);
+    const packageMatches =
+      packages.size === 0 ||
+      packages.has(matchedPackage) ||
+      [...packages].some((pkg) => commandLower.includes(pkg));
+
+    const matches = folderMatches && projectMatches && packageMatches;
+    if (matches && step.job_id) matchedJobIds.add(step.job_id);
+    return matches;
+  });
+
+  return {
+    jobs: (agentJobs.jobs || []).filter((job) => matchedJobIds.has(job.job_id)),
+    ssisSteps,
+  };
 }
 
 function sanitizeSsisIdSegment(value, fallback = 'unknown') {
@@ -1190,6 +1253,7 @@ function extractDataFlowComponents(packageXml) {
           props.SqlCommandParam ||
           props.ReferenceMetadataSqlCommand ||
           (looksLikeSqlCommand(props.OpenRowset) ? props.OpenRowset : ''),
+        sqlCommandVariable: props.SqlCommandVariable || '',
         tableName: tableRef,
         tableDatabaseName: splitTable.databaseName || '',
         tableSchemaName: splitTable.schemaName || '',
@@ -1515,7 +1579,7 @@ function normalizePackageTaskName(value) {
 
 class SsisMetadataExtractor {
   constructor(connectionConfig, sqlDriver = mssql) {
-    this.config = connectionConfig;
+    this.config = connectionConfig || {};
     this.sql = sqlDriver;
     this.pool = null;
   }
@@ -1538,12 +1602,15 @@ class SsisMetadataExtractor {
     return present;
   }
 
-  async extractCatalogInventory(warnings) {
+  async extractCatalogInventory(warnings, options = {}) {
+    const limit = Number(options.limit || options.catalogLimit);
+    const topClause = Number.isFinite(limit) && limit > 0 ? `TOP (${Math.min(Math.trunc(limit), 1000)})` : '';
     const { rows, error } = await safeQuery(
       this.pool,
       `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
       USE SSISDB;
        SELECT
+         ${topClause}
          f.name                     AS folder_name,
          p.project_id,
          p.name                     AS project_name,
@@ -1695,6 +1762,11 @@ class SsisMetadataExtractor {
       }
     }
 
+    const scopeFilters = getSsisScopeFilters(this.config);
+    const configuredFolder = scopeFilters.folder;
+    const configuredProject = scopeFilters.project;
+    const configuredPackages = scopeFilters.packages;
+
     // 2. Get Projects
     const { rows: projects, error: projErr } = await safeQuery(
       this.pool,
@@ -1704,9 +1776,23 @@ class SsisMetadataExtractor {
     );
 
     if (projErr) return xmlResults;
+    const filteredProjects = (projects || []).filter((project) => {
+      const folderMatches =
+        !configuredFolder ||
+        cleanSsisSegment(project.folder_name || '').toLowerCase() === configuredFolder.toLowerCase();
+      const projectMatches =
+        !configuredProject ||
+        cleanSsisSegment(project.project_name || '').toLowerCase() === configuredProject.toLowerCase();
+      return folderMatches && projectMatches;
+    });
+    if ((projects || []).length && filteredProjects.length === 0) {
+      warnings.push(
+        `ssis_project_filter: no projects matched folder='${configuredFolder || '*'}' project='${configuredProject || '*'}'`
+      );
+    }
 
     // eslint-disable-next-line no-await-in-loop
-    for (const proj of projects) {
+    for (const proj of filteredProjects) {
       this.extractionDiagnostics.push(
         `\nProcessing Project: ${proj.project_name} (Folder: ${proj.folder_name})`
       );
@@ -1779,6 +1865,16 @@ class SsisMetadataExtractor {
         // 4. Extract Packages (.dtsx)
         for (const zipEntry of zipEntries) {
           if (zipEntry.entryName.toLowerCase().endsWith('.dtsx')) {
+            const cleanedPackageName = cleanSsisSegment(zipEntry.entryName).toLowerCase();
+            const packageMatches =
+              configuredPackages.length === 0 ||
+              configuredPackages.some(
+                (candidate) =>
+                  candidate === cleanedPackageName ||
+                  `${candidate}.dtsx` === cleanedPackageName ||
+                  candidate === cleanedPackageName.replace(/\.dtsx$/i, '')
+              );
+            if (!packageMatches) continue;
             const xmlBuffer = zipEntry.getData();
             if (dumpRawXml && rawXmlDumpDir) {
               try {
@@ -2104,6 +2200,16 @@ class SsisMetadataExtractor {
         projectName: xmlPkg.projectName || catalogRow.project_name || '',
         packageName: xmlPkg.packageName || objectName || catalogRow.package_name || '',
       };
+      const valueMap = buildSsisValueMap({
+        parameters: _parameters || [],
+        environments: _environments || {},
+        packageVariables: xmlPkg.packageVariables || [],
+        parameterOverrides: this.config.ssisProjectParameterOverrides || {},
+        folderName: packageContext.folderName,
+        projectName: packageContext.projectName,
+        packageName: packageContext.packageName,
+        hostServer,
+      });
 
       const connMap = new Map();
       const connArray = [];
@@ -2149,6 +2255,32 @@ class SsisMetadataExtractor {
           null
         );
       };
+      const resolveComponentSqlCommand = (component = {}) => {
+        if (component.sqlCommand) {
+          return {
+            sql: component.sqlCommand,
+            evidenceType: 'ssis_source_sql_command',
+          };
+        }
+        if (!component.sqlCommandVariable) {
+          return {
+            sql: '',
+            evidenceType: '',
+          };
+        }
+        const resolved =
+          valueMap.get(normalizeSsisVariableKey(component.sqlCommandVariable)) ||
+          valueMap.get(
+            normalizeSsisVariableKey(
+              String(component.sqlCommandVariable).replace(/^(?:User|Project|Package)::/i, '')
+            )
+          ) ||
+          '';
+        return {
+          sql: resolved,
+          evidenceType: resolved ? 'ssis_source_sql_command_variable' : 'ssis_source_sql_command_variable_unresolved',
+        };
+      };
 
       const sources = dataFlowComponents.filter((c) => c.role === 'SOURCE');
       const destinations = dataFlowComponents.filter((c) => c.role === 'DESTINATION');
@@ -2172,6 +2304,10 @@ class SsisMetadataExtractor {
 
       for (const src of sources) {
         const srcConnection = resolveConnection(src.connectionManagerId);
+        const sourceSql = resolveComponentSqlCommand(src);
+        const parsedSourceSql = sourceSql.sql
+          ? parseSqlEntities(sourceSql.sql)
+          : { calls: [], writes: [], reads: [] };
         const srcExternalId = isExternalSsisComponent(src)
           ? buildSsisExternalObjectId({
               serverName: hostServer,
@@ -2180,7 +2316,7 @@ class SsisMetadataExtractor {
               packageName: xmlPkg.packageName || objectName,
               componentName: src.componentName,
               role: 'source',
-              reference: srcConnection?.filePath || src.tableName || src.sqlCommand,
+              reference: srcConnection?.filePath || src.tableName || sourceSql.sql,
             })
           : '';
 
@@ -2207,19 +2343,24 @@ class SsisMetadataExtractor {
               src.tableObjectName
             )
           );
-        } else if (src.sqlCommand) {
-          const { reads } = parseSqlEntities(src.sqlCommand);
-          sourceTables.push(...reads.map((ref) => combineConnectionAndTable(srcConnection, ref, hostServer)));
+        } else if (sourceSql.sql) {
+          sourceTables.push(
+            ...parsedSourceSql.reads.map((ref) => combineConnectionAndTable(srcConnection, ref, hostServer))
+          );
         }
-        if (sourceTables.length === 0) {
+        if (
+          sourceTables.length === 0 &&
+          parsedSourceSql.calls.length === 0 &&
+          parsedSourceSql.writes.length === 0
+        ) {
           edges.push({
             from: packageId,
             to: 'UNRESOLVED_DYNAMIC_EDGE',
             via: `${packageId}/Source/${src.componentName}`,
             edgeType: 'UNRESOLVED_DYNAMIC_EDGE',
             validation_status: 'unresolved',
-            evidence_type: 'ssis_source_unresolved',
-            evidence_text: src.sqlCommand || src.tableName || '',
+            evidence_type: sourceSql.evidenceType || 'ssis_source_unresolved',
+            evidence_text: sourceSql.sql || src.sqlCommandVariable || src.tableName || '',
             confidence: 0.0,
             packageName: objectName,
           });
@@ -2234,7 +2375,7 @@ class SsisMetadataExtractor {
             edgeType: 'READS_FROM',
             validation_status: 'validated',
             evidence_type: externalEdge ? 'ssis_external_source_component' : 'ssis_dataflow_source',
-            evidence_text: src.sqlCommand || src.tableName || '',
+            evidence_text: sourceSql.sql || src.tableName || '',
             confidence: externalEdge ? 0.85 : 0.9,
             packageName: objectName,
             target_external_source: Boolean(externalEdge),
@@ -2243,30 +2384,35 @@ class SsisMetadataExtractor {
           });
         }
 
-        if (src.sqlCommand) {
-          const { calls, writes } = parseSqlEntities(src.sqlCommand);
-          for (const sp of calls) {
+        if (sourceSql.sql) {
+          for (const sp of parsedSourceSql.calls) {
             edges.push({
               from: packageId,
               to: buildSsisReference(srcConnection, 'dbo', sp, hostServer),
               via: `${packageId}/Source/${src.componentName}`,
               edgeType: 'CALLS',
               validation_status: 'validated',
-              evidence_type: 'ssis_source_sql_command_call',
-              evidence_text: src.sqlCommand,
+              evidence_type:
+                sourceSql.evidenceType === 'ssis_source_sql_command_variable'
+                  ? 'ssis_source_sql_command_variable_call'
+                  : 'ssis_source_sql_command_call',
+              evidence_text: sourceSql.sql,
               confidence: 0.95,
               packageName: objectName,
             });
           }
-          for (const target of writes) {
+          for (const target of parsedSourceSql.writes) {
             edges.push({
               from: packageId,
               to: buildSsisReference(srcConnection, 'dbo', target, hostServer),
               via: `${packageId}/Source/${src.componentName}`,
               edgeType: 'WRITES_TO',
               validation_status: 'validated',
-              evidence_type: 'ssis_source_sql_command_write',
-              evidence_text: src.sqlCommand,
+              evidence_type:
+                sourceSql.evidenceType === 'ssis_source_sql_command_variable'
+                  ? 'ssis_source_sql_command_variable_write'
+                  : 'ssis_source_sql_command_write',
+              evidence_text: sourceSql.sql,
               confidence: 0.9,
               packageName: objectName,
             });
@@ -2409,6 +2555,21 @@ class SsisMetadataExtractor {
 
   async extractAll(opts = {}) {
     const warnings = [];
+    const previousConfig = this.config;
+    this.config = {
+      ...(this.config || {}),
+      folderName: opts.folderName ?? this.config?.folderName,
+      folder_name: opts.folder_name ?? this.config?.folder_name,
+      folder: opts.folder ?? this.config?.folder,
+      projectName: opts.projectName ?? this.config?.projectName,
+      project_name: opts.project_name ?? this.config?.project_name,
+      project: opts.project ?? this.config?.project,
+      packageName: opts.packageName ?? this.config?.packageName,
+      package_name: opts.package_name ?? this.config?.package_name,
+      package: opts.package ?? this.config?.package,
+      packages: opts.packages ?? this.config?.packages,
+      selectedPackages: opts.selectedPackages ?? this.config?.selectedPackages,
+    };
     const result = {
       extractedAt: new Date().toISOString(),
       ssisdbPresent: false,
@@ -2433,38 +2594,58 @@ class SsisMetadataExtractor {
       warnings,
     };
 
-    const ssisPresent = await this.checkSsisdb(warnings);
-    result.ssisdbPresent = ssisPresent;
+    try {
+      const ssisPresent = await this.checkSsisdb(warnings);
+      result.ssisdbPresent = ssisPresent;
 
-    if (ssisPresent) {
-      result.catalog = await this.extractCatalogInventory(warnings);
-      result.parameters = await this.extractParameters(warnings);
-      result.environments = await this.extractEnvironments(warnings);
-      if (opts.extractXml !== false) {
-        result.xmlMetadata = await this.extractPackageXmlMetadata(
-          warnings,
-          result.parameters,
-          result.environments
-        );
+      if (ssisPresent) {
+        result.catalog = await this.extractCatalogInventory(warnings, opts);
+        result.parameters = await this.extractParameters(warnings);
+        result.environments = await this.extractEnvironments(warnings);
+        if (opts.extractXml !== false) {
+          result.xmlMetadata = await this.extractPackageXmlMetadata(
+            warnings,
+            result.parameters,
+            result.environments
+          );
+        }
       }
+
+      result.agentJobs = filterAgentJobsToSsisScope(
+        await this.extractAgentJobs(warnings),
+        getSsisScopeFilters(this.config)
+      );
+
+      result.lineageEdges = this.buildLineageEdges(
+        result.catalog,
+        result.xmlMetadata,
+        result.agentJobs,
+        result.parameters,
+        result.environments
+      );
+
+      return result;
+    } finally {
+      this.config = previousConfig;
     }
-
-    result.agentJobs = await this.extractAgentJobs(warnings);
-
-    result.lineageEdges = this.buildLineageEdges(
-      result.catalog,
-      result.xmlMetadata,
-      result.agentJobs,
-      result.parameters,
-      result.environments
-    );
-
-    return result;
   }
 }
 
 export async function extractSsisMetadata(connectionConfig, opts = {}) {
-  const extractor = new SsisMetadataExtractor(connectionConfig);
+  let resolvedConfig = connectionConfig || {};
+  let sqlDriver = opts.sqlDriver || mssql;
+  const looksLikeConnector =
+    resolvedConfig &&
+    typeof resolvedConfig === 'object' &&
+    (resolvedConfig.type === 'ssis' || resolvedConfig.type === 'sql_server' || resolvedConfig.credential);
+
+  if (looksLikeConnector) {
+    const credentialMode = sqlServerCredentialMode(resolvedConfig);
+    resolvedConfig = buildSqlServerConnectionConfig(resolvedConfig).config;
+    sqlDriver = opts.sqlDriver || (await loadSqlServerDriver(credentialMode));
+  }
+
+  const extractor = new SsisMetadataExtractor(resolvedConfig, sqlDriver);
   await extractor.connect();
   try {
     return await extractor.extractAll(opts);

@@ -528,7 +528,7 @@ function renderObjectIndexPage({ objectRows, generatedAt }) {
     '',
     `Total objects: ${objectRows.length}`,
     '',
-    `The table below previews the first ${previewRows.length} objects. Use [AUTO] Object Locator pages first to resolve an object name to its exact quick-context page, then use [AUTO] Lineage Quick Context pages for table/package lineage from Confluence page bodies. The complete machine-readable index is also published as an attachment and every object maps to a catalog shard page.`,
+    `The table below previews the first ${previewRows.length} objects. Use Object Locator pages first to resolve an object name to its exact quick-context page, then use Lineage Quick Context pages for table/package lineage from Confluence page bodies. The complete machine-readable index is also published as an attachment and every object maps to a catalog shard page.`,
     '',
     markdownTable(
       ['Object ID', 'Type', 'Database', 'Confidence', 'Shard', 'Upstream', 'Downstream'],
@@ -560,12 +560,12 @@ function groupRegistryRowsByDatabase(registryRows) {
 function buildDatabasePageEntries(databaseGroups) {
   const titleCounts = new Map();
   for (const [database] of databaseGroups) {
-    const titleKey = `[auto] database - ${database}`.toLowerCase();
+    const titleKey = `database - ${database}`.toLowerCase();
     titleCounts.set(titleKey, (titleCounts.get(titleKey) || 0) + 1);
   }
 
   return databaseGroups.map(([database, rows]) => {
-    const titleKey = `[auto] database - ${database}`.toLowerCase();
+    const titleKey = `database - ${database}`.toLowerCase();
     const hasCaseInsensitiveTitleConflict = titleCounts.get(titleKey) > 1;
     const hash = sha256(database).slice(0, 8);
 
@@ -573,8 +573,8 @@ function buildDatabasePageEntries(databaseGroups) {
       database,
       rows,
       title: hasCaseInsensitiveTitleConflict
-        ? `[AUTO] Database - ${database} [db ${hash}]`.slice(0, 240)
-        : `[AUTO] Database - ${database}`.slice(0, 240),
+        ? `Database - ${database} [db ${hash}]`.slice(0, 240)
+        : `Database - ${database}`.slice(0, 240),
       fileSegment: hasCaseInsensitiveTitleConflict
         ? `${safeSegment(database)}--${hash}`
         : safeSegment(database),
@@ -744,7 +744,7 @@ function quickContextRange(entries) {
 }
 
 function buildQuickContextTitle(number, entries) {
-  return `[AUTO] Lineage Quick Context ${String(number).padStart(3, '0')} - ${quickContextRange(
+  return `Lineage Quick Context ${String(number).padStart(3, '0')} - ${quickContextRange(
     entries
   )}`.slice(0, 240);
 }
@@ -816,7 +816,7 @@ function objectLocatorRange(entries) {
 }
 
 function buildObjectLocatorTitle(number, entries) {
-  return `[AUTO] Object Locator ${String(number).padStart(3, '0')} - ${objectLocatorRange(
+  return `Object Locator ${String(number).padStart(3, '0')} - ${objectLocatorRange(
     entries
   )}`.slice(0, 240);
 }
@@ -1217,7 +1217,7 @@ function groupObjectEntries(entries) {
 
 function buildShardTitle(number, group, partNumber, partCount) {
   const parts = [
-    '[AUTO] Catalog Shard',
+    'Catalog Shard',
     String(number).padStart(3, '0'),
     '-',
     titleSegment(group.server),
@@ -1503,7 +1503,7 @@ function governedAssetScore(entry) {
 
 function buildGovernedAssetTitle(number, entry) {
   const object = entry.object;
-  return `[AUTO] Governed Asset ${String(number).padStart(3, '0')} - ${titleSegment(
+  return `Governed Asset ${String(number).padStart(3, '0')} - ${titleSegment(
     object.name || entry.id
   )}`.slice(0, 240);
 }
@@ -1876,7 +1876,7 @@ export async function buildConfluenceExport(options = {}) {
 
   const pageDefinitions = [
     {
-      title: '[AUTO] Sonic Data Lineage README',
+      title: 'Sonic Data Lineage README',
       relativePath: path.join(artifactRoot, 'pages', 'readme.md'),
       content: () =>
         renderReadmePage({
@@ -1887,13 +1887,13 @@ export async function buildConfluenceExport(options = {}) {
       labels: ['readme'],
     },
     {
-      title: '[AUTO] Latest Rebuild Report',
+      title: 'Latest Rebuild Report',
       relativePath: path.join(artifactRoot, 'pages', 'latest-rebuild-report.md'),
       content: () => renderRebuildReportPage({ rebuildReportMarkdown, generatedAt }),
       labels: ['rebuild-report'],
     },
     {
-      title: '[AUTO] Governance Portal',
+      title: 'Governance Portal',
       relativePath: path.join(artifactRoot, 'pages', 'governance-portal.md'),
       content: () =>
         renderGovernancePortalPage({
@@ -1905,31 +1905,31 @@ export async function buildConfluenceExport(options = {}) {
       labels: ['governance-portal'],
     },
     {
-      title: '[AUTO] Catalog Manifest',
+      title: 'Catalog Manifest',
       relativePath: path.join(artifactRoot, 'pages', 'catalog-manifest.md'),
       content: () => renderCatalogManifestPage({ manifestJson, generatedAt }),
       labels: ['catalog-manifest'],
     },
     {
-      title: '[AUTO] Source System Inventory',
+      title: 'Source System Inventory',
       relativePath: path.join(artifactRoot, 'pages', 'source-system-inventory.md'),
       content: () => renderSourceInventoryPage({ objects, generatedAt }),
       labels: ['source-inventory'],
     },
     {
-      title: '[AUTO] Confidence Guide',
+      title: 'Confidence Guide',
       relativePath: path.join(artifactRoot, 'pages', 'confidence-guide.md'),
       content: renderConfidenceGuide,
       labels: ['confidence-guide'],
     },
     {
-      title: '[AUTO] Object Index',
+      title: 'Object Index',
       relativePath: path.join(artifactRoot, 'pages', 'object-index.md'),
       content: () => renderObjectIndexPage({ objectRows, generatedAt }),
       labels: ['object-index'],
     },
     {
-      title: '[AUTO] Databases',
+      title: 'Databases',
       relativePath: path.join(artifactRoot, 'pages', 'databases.md'),
       content: () => renderDatabasesIndexPage({ databasePageEntries, generatedAt }),
       labels: ['database-index'],
@@ -1939,7 +1939,7 @@ export async function buildConfluenceExport(options = {}) {
       relativePath: path.join(artifactRoot, 'pages', 'databases', `${fileSegment}.md`),
       content: () => renderDatabasePage({ database, rows, generatedAt }),
       labels: ['database', safeSegment(database).toLowerCase()],
-      parentTitle: '[AUTO] Databases',
+      parentTitle: 'Databases',
     })),
   ];
 

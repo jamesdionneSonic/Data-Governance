@@ -949,6 +949,32 @@ function canonicalSqlIdFromParsedSqlId(parsed) {
   );
 }
 
+function sqlRawQuarantineReason({ schema = '', name = '', type = '' } = {}) {
+  const schemaText = String(schema || '').trim();
+  const nameText = String(name || '').trim();
+  const lowerSchema = schemaText.toLowerCase();
+  const lowerName = nameText.toLowerCase();
+  const objectType = String(type || '').toLowerCase();
+
+  if (/[\[\]]/.test(nameText) && !/^\[[^\]]+\]$/.test(nameText)) {
+    return 'malformed_bracketed_object_name';
+  }
+
+  if (/^(dbo|wrk|stage|stg|clean|jump)\./i.test(nameText)) {
+    return 'embedded_schema_token_in_object_name';
+  }
+
+  if (objectType === 'table' && ['wrrk', 'wrkk', 'stgae', 'stag'].includes(lowerSchema)) {
+    return 'typo_schema_name';
+  }
+
+  if (lowerSchema === 'dbo' && /^(wrk|stage|stg|clean|jump)\./i.test(lowerName)) {
+    return 'dbo_schema_with_embedded_non_dbo_name';
+  }
+
+  return '';
+}
+
 const LINEAGE_TOKEN_STOP_WORDS = new Set([
   'tbl',
   'table',
@@ -1003,6 +1029,13 @@ function lineageRolePenalty(name, intentTokens) {
   if (!wantsStage && /(^|[_\W])(stg|stage|staging)([_\W]|$)/i.test(normalized)) penalty += 4;
   if (/^tmp[_\W]|[_\W]tmp[_\W]|[_\W]temp[_\W]/i.test(normalized)) penalty += 3;
   return penalty;
+}
+
+function appendUniqueStructuredRecord(records = [], record = {}) {
+  const next = Array.isArray(records) ? [...records] : [];
+  const key = JSON.stringify(record);
+  if (!next.some((existing) => JSON.stringify(existing) === key)) next.push(record);
+  return next;
 }
 
 function normalizeSsisReference(value, aliases, referenceIndex) {
@@ -1785,9 +1818,23 @@ async function loadSqlRawObjects(aliases) {
       const schema = cleanSegment(metadata.schema || path.basename(filePath, '.md').split('__')[0] || 'dbo');
       const name = cleanSegment(metadata.name || path.basename(filePath, '.md').split('__').slice(1).join('__'));
       const type = typeFromDirectory(kind);
+      const quarantineReason = sqlRawQuarantineReason({ schema, name, type });
       if (isUnknownServer(server)) {
         recordSqlRawQuarantine(quarantined, {
           reason: 'unknown_sql_server',
+          sourcePath: path.relative(ROOT, filePath),
+          pathServer: relParts[0] || '',
+          metadataServer: metadata.server || '',
+          database,
+          schema,
+          name,
+          type,
+        });
+        continue;
+      }
+      if (quarantineReason) {
+        recordSqlRawQuarantine(quarantined, {
+          reason: quarantineReason,
           sourcePath: path.relative(ROOT, filePath),
           pathServer: relParts[0] || '',
           metadataServer: metadata.server || '',
@@ -1927,6 +1974,7 @@ function rewriteSqlLineage(records, aliases) {
         unresolved_facts: 0,
       },
       row_count: record.metadata.row_count || 0,
+      live_row_count: record.metadata.live_row_count ?? record.metadata.liveRowCount ?? null,
       size_kb: record.metadata.size_kb || 0,
       column_count: record.metadata.column_count || 0,
       columns: record.columns,
@@ -1971,6 +2019,85 @@ function applyForwardSqlEdges(records, referenceIndex) {
   }
 
   return referenceIndex;
+}
+
+function applySynonymSourceExpansion(records) {
+  let expandedReads = 0;
+
+  for (const record of records.values()) {
+    const fm = record.frontmatter;
+    if (!fm || !['procedure', 'stored_procedure', 'proc', 'view'].includes(String(record.type || fm.type || '').toLowerCase())) {
+      continue;
+    }
+
+    const readsFrom = Array.isArray(fm.reads_from) ? fm.reads_from : [];
+    for (const sourceId of readsFrom) {
+      const source = records.get(String(sourceId || '').toLowerCase());
+      if (!source || String(source.type || source.frontmatter?.type || '').toLowerCase() !== 'synonym') {
+        continue;
+      }
+
+      const baseObjects = Array.isArray(source.frontmatter?.depends_on)
+        ? source.frontmatter.depends_on
+        : [];
+      for (const baseId of baseObjects) {
+        const base = records.get(String(baseId || '').toLowerCase());
+        if (!base || base.id === record.id) continue;
+
+        const before = fm.reads_from?.length || 0;
+        fm.reads_from = pushUniqueText(fm.reads_from, base.id);
+        fm.depends_on = pushUniqueText(fm.depends_on, base.id);
+        source.frontmatter.used_by = pushUniqueText(source.frontmatter.used_by, record.id);
+        if (base.type === 'table') {
+          base.frontmatter.used_by = pushUniqueText(base.frontmatter.used_by, record.id);
+        }
+        fm.tags = appendUniqueTag(fm.tags, 'lineage-stitch:synonym-source-expansion');
+        source.frontmatter.tags = appendUniqueTag(
+          source.frontmatter.tags,
+          'lineage-stitch:synonym-source-expanded'
+        );
+        if ((fm.reads_from?.length || 0) > before) expandedReads += 1;
+      }
+    }
+  }
+
+  return { expandedReads };
+}
+
+function applyExactSsisPackageTableEdges(records, packageUpdates = []) {
+  let readEdges = 0;
+  let writeEdges = 0;
+
+  for (const update of packageUpdates) {
+    const packageIdValue = update.packageId;
+    for (const sourceId of update.readsFrom || []) {
+      const source = records.get(String(sourceId || '').toLowerCase());
+      if (!source || source.type !== 'table') continue;
+      source.frontmatter.used_by = pushUniqueText(source.frontmatter.used_by, packageIdValue);
+      source.frontmatter.tags = appendUniqueTag(
+        source.frontmatter.tags,
+        'lineage-stitch:ssis-package-read'
+      );
+      readEdges += 1;
+    }
+
+    for (const targetId of update.writesTo || []) {
+      const target = records.get(String(targetId || '').toLowerCase());
+      if (!target || target.type !== 'table') continue;
+      target.frontmatter.created_by = pushUniqueText(target.frontmatter.created_by, packageIdValue);
+      target.frontmatter.created_via = pushUniqueText(target.frontmatter.created_via, packageIdValue);
+      target.frontmatter.tags = appendUniqueTag(
+        target.frontmatter.tags,
+        'lineage-stitch:ssis-package-write'
+      );
+      if (target.frontmatter.lineage_status !== 'creator_found') {
+        target.frontmatter.lineage_status = 'creator_found';
+      }
+      writeEdges += 1;
+    }
+  }
+
+  return { readEdges, writeEdges };
 }
 
 async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog, options = {}) {
@@ -2075,6 +2202,7 @@ async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog
 
     pendingPackageTargetUpdates.push({
       packageId: md.id,
+      readsFrom: md.frontmatter.reads_from || [],
       writesTo: md.frontmatter.writes_to || [],
     });
   }
@@ -2089,19 +2217,10 @@ async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog
     ssisSqlEndpointRecords += 1;
   }
 
-  for (const update of pendingPackageTargetUpdates) {
-    for (const targetId of update.writesTo) {
-      const target = records.get(targetId.toLowerCase());
-      if (!target || target.type !== 'table') continue;
-      target.frontmatter.created_via = pushUniqueText(
-        target.frontmatter.created_via,
-        update.packageId
-      );
-      if (target.frontmatter.lineage_status !== 'creator_found') {
-        target.frontmatter.lineage_status = 'creator_found';
-      }
-    }
-  }
+  const exactSsisPackageTableEdges = applyExactSsisPackageTableEdges(
+    records,
+    pendingPackageTargetUpdates
+  );
 
   return {
     server,
@@ -2112,6 +2231,7 @@ async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog
     processedXmlFiles,
     limited: ssisLimit > 0 && processedXmlFiles < xmlFiles.length,
     ssisSqlEndpointRecords,
+    exactSsisPackageTableEdges,
     skipped,
   };
 }
@@ -2190,10 +2310,25 @@ function applySsisBridgeInferences(records) {
         );
         if (!target || target.id.toLowerCase() === stage.ref.toLowerCase()) continue;
 
-        target.frontmatter.created_by = pushUniqueText(target.frontmatter.created_by, stage.ref);
-        target.frontmatter.created_via = pushUniqueText(target.frontmatter.created_via, pkg.id);
-        target.frontmatter.depends_on = pushUniqueText(target.frontmatter.depends_on, stage.ref);
-        target.frontmatter.lineage_status = 'creator_found';
+        target.frontmatter.probable_edges = appendUniqueStructuredRecord(
+          target.frontmatter.probable_edges,
+          {
+            source: stage.ref,
+            via: pkg.id,
+            relationship: 'stage_to_target_bridge_candidate',
+            validation_status: 'review',
+            confidence: 0.65,
+            evidence_type: 'token_bridge_inference',
+          }
+        );
+        target.frontmatter.contextual_reads = pushUniqueText(
+          target.frontmatter.contextual_reads,
+          stage.ref
+        );
+        target.frontmatter.tags = appendUniqueTag(
+          target.frontmatter.tags,
+          'lineage-review:ssis-bridge-candidate'
+        );
 
         if (stage.record?.frontmatter) {
           stage.record.frontmatter.used_by = pushUniqueText(
@@ -2207,6 +2342,53 @@ function applySsisBridgeInferences(records) {
   }
 
   return inferred;
+}
+
+function applyExactPackageProcedureChainStitching(records) {
+  let stitched = 0;
+
+  for (const pkg of records.values()) {
+    if (pkg.type !== 'package') continue;
+    const calls = Array.isArray(pkg.frontmatter?.calls) ? pkg.frontmatter.calls : [];
+    if (calls.length === 0) continue;
+
+    for (const call of calls) {
+      const proc = records.get(String(call || '').toLowerCase());
+      const procWrites = Array.isArray(proc?.frontmatter?.writes_to)
+        ? proc.frontmatter.writes_to
+        : [];
+      if (!proc || !['procedure', 'stored_procedure', 'proc'].includes(String(proc.type || proc.frontmatter?.type || '').toLowerCase())) {
+        continue;
+      }
+
+      for (const targetId of procWrites) {
+        const target = records.get(String(targetId || '').toLowerCase());
+        if (!target || target.type !== 'table') continue;
+
+        target.frontmatter.created_by = pushUniqueText(
+          target.frontmatter.created_by,
+          proc.id
+        );
+        target.frontmatter.created_via = pushUniqueText(
+          target.frontmatter.created_via,
+          pkg.id
+        );
+        target.frontmatter.depends_on = pushUniqueText(
+          target.frontmatter.depends_on,
+          proc.id
+        );
+        target.frontmatter.lineage_status = 'creator_found';
+        target.frontmatter.tags = appendUniqueTag(
+          target.frontmatter.tags,
+          'lineage-stitch:package-procedure-writer'
+        );
+        proc.frontmatter.used_by = pushUniqueText(proc.frontmatter.used_by, target.id);
+        stitched += 1;
+      }
+    }
+  }
+
+  return stitched;
 }
 
 function createBridgeTableCandidateResolver(records) {
@@ -2362,6 +2544,272 @@ function roundMetric(value) {
 
 function countArray(value) {
   return Array.isArray(value) ? value.length : 0;
+}
+
+function normalizedText(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function hasAnyPattern(value, patterns = []) {
+  const text = String(value || '');
+  return patterns.some((pattern) => pattern.test(text));
+}
+
+function appendUniqueTag(tags = [], tag = '') {
+  const cleanTag = String(tag || '').trim();
+  if (!cleanTag) return Array.isArray(tags) ? tags : [];
+  const next = Array.isArray(tags) ? [...tags] : [];
+  if (!next.some((existing) => normalizedText(existing) === normalizedText(cleanTag))) {
+    next.push(cleanTag);
+  }
+  return next;
+}
+
+function hasHardCreatorEvidence(frontmatter = {}) {
+  return (
+    countArray(frontmatter.created_by) > 0 ||
+    countArray(frontmatter.created_via) > 0 ||
+    String(frontmatter.lineage_status || '') === 'creator_found'
+  );
+}
+
+function effectiveRowCount(frontmatter = {}) {
+  const live = Number(frontmatter.live_row_count ?? frontmatter.liveRowCount);
+  if (Number.isFinite(live) && live >= 0) return live;
+  const generated = Number(frontmatter.row_count ?? frontmatter.rowCount ?? 0);
+  return Number.isFinite(generated) && generated >= 0 ? generated : 0;
+}
+
+function catalogFreshnessDiagnostic(frontmatter = {}) {
+  const generated = Number(frontmatter.row_count ?? 0);
+  const live = Number(frontmatter.live_row_count ?? frontmatter.liveRowCount);
+  if (!Number.isFinite(live) || live < 0) return null;
+  if (!Number.isFinite(generated) || generated !== 0 || live <= 0) return null;
+  return {
+    status: 'catalog_freshness_conflict',
+    reason: 'generated_row_count_zero_but_live_row_count_positive',
+    generated_row_count: generated,
+    live_row_count: live,
+  };
+}
+
+function applyCatalogFreshnessDiagnostics(records) {
+  let conflicts = 0;
+
+  for (const record of records.values()) {
+    const fm = record.frontmatter;
+    if (!fm) continue;
+    const diagnostic = catalogFreshnessDiagnostic(fm);
+    if (!diagnostic) continue;
+
+    fm.catalog_freshness = diagnostic;
+    fm.tags = appendUniqueTag(fm.tags, 'catalog-freshness:live-row-count-conflict');
+    conflicts += 1;
+  }
+
+  return { conflicts };
+}
+
+function classifyLineageObjectRole(frontmatter = {}) {
+  const type = normalizedText(frontmatter.type);
+  const database = normalizedText(frontmatter.database);
+  const schema = normalizedText(frontmatter.schema);
+  const name = String(frontmatter.name || '').trim();
+  const rowCount = effectiveRowCount(frontmatter);
+  const hasHardCreator = hasHardCreatorEvidence(frontmatter);
+  const directConsumers = countArray(frontmatter.used_by);
+  const directReads = countArray(frontmatter.reads_from) + countArray(frontmatter.depends_on);
+  const contextualReads = countArray(frontmatter.contextual_reads);
+  const probableEdges = countArray(frontmatter.probable_edges);
+  const columns = Array.isArray(frontmatter.columns) ? frontmatter.columns : [];
+  const columnNames = new Set(
+    columns
+      .map((column) => normalizedText(column?.name || column?.column_name || ''))
+      .filter(Boolean)
+  );
+
+  if (type === 'view') {
+    return {
+      lineage_role: 'view_or_helper_read_model',
+      status: null,
+      reason: 'view_dependency_surface',
+      tag: 'lineage-role:view-helper-read-model',
+    };
+  }
+
+  if (type !== 'table') return null;
+
+  if (
+    !hasHardCreator &&
+    (
+      hasAnyPattern(name, [
+        /(^|[_-])queue([_-]|$)/i,
+        /(^|[_-])process([_-]|$)/i,
+        /(^|[_-])state([_-]|$)/i,
+        /automation/i,
+        /(^|[_-])pending([_-]|$)/i,
+        /(^|[_-])retry([_-]|$)/i,
+      ]) ||
+      ['retrypending', 'retrycounter', 'recordcreationdate', 'recordcreatedate', 'processstate'].some((column) =>
+        columnNames.has(column)
+      )
+    )
+  ) {
+    return {
+      lineage_role: 'application_owned_process_table',
+      status: 'application_owned_final_writer_unresolved',
+      reason: 'queue_state_process_shape_without_writer',
+      tag: 'lineage-role:application-owned-process',
+      training_label: 'unresolved_final_writer',
+    };
+  }
+
+  if (
+    hasAnyPattern(name, [
+      /(^|[_-])(bk|bkp|bak|backup)([_-]|$)/i,
+      /(^|[_-])old([_-]|$)/i,
+      /(^|[_-])orig([_-]|$)/i,
+      /(^|[_-])copy([_-]|$)/i,
+      /(^|[_-])(dev|uat|test)([_-]|$)/i,
+      /(?:^|[_-])\d{8}$/i,
+      /_\d{6,8}$/i,
+    ])
+  ) {
+    return {
+      lineage_role: 'clone_dev_backup_table',
+      status: hasHardCreator ? null : 'clone_or_backup_unresolved',
+      reason: 'clone_dev_backup_name_pattern',
+      tag: 'lineage-role:clone-dev-backup',
+    };
+  }
+
+  if (
+    hasAnyPattern(name, [/manual/i, /reference/i, /seed/i, /static/i, /lookup/i]) &&
+    !hasHardCreator &&
+    rowCount <= 10000
+  ) {
+    return {
+      lineage_role: 'manual_or_reference_seed',
+      status: 'manual_or_reference_seed_unresolved',
+      reason: 'small_manual_reference_without_writer',
+      tag: 'lineage-role:manual-reference-seed',
+    };
+  }
+
+  if (
+    hasAnyPattern(name, [/test/i, /error[_-]?output/i, /bad[_-]?rows?/i, /reject/i, /failed/i]) &&
+    !hasHardCreator &&
+    rowCount <= 10000
+  ) {
+    return {
+      lineage_role: 'test_or_error_artifact',
+      status: 'test_or_error_artifact_unresolved',
+      reason: 'test_error_output_without_writer',
+      tag: 'lineage-role:test-error-artifact',
+    };
+  }
+
+  if (
+    database === 'sonic_dw' &&
+    schema === 'dbo' &&
+    hasAnyPattern(name, [/^stg_/i, /^wrk_/i, /^tmp_/i, /^update_/i, /^processed_/i, /audit/i]) &&
+    !hasHardCreator &&
+    rowCount === 0
+  ) {
+    return {
+      lineage_role: 'transient_work_artifact',
+      status: 'transient_work_artifact_unresolved',
+      reason: 'empty_transient_work_name_without_writer',
+      tag: 'lineage-role:transient-work-artifact',
+    };
+  }
+
+  if (hasAnyPattern(name, [/xref/i, /xrf/i, /bridge/i, /mapping/i, /map$/i, /keylu/i])) {
+    return {
+      lineage_role: hasHardCreator
+        ? 'loaded_xref_bridge_or_mapping'
+        : directConsumers > 0
+          ? 'xref_bridge_lookup_source'
+          : 'xref_bridge_or_mapping_review',
+      status: hasHardCreator ? null : 'xref_bridge_or_mapping_review',
+      reason: hasHardCreator ? 'xref_mapping_has_writer' : 'xref_mapping_without_writer',
+      tag: 'lineage-role:xref-bridge-map',
+    };
+  }
+
+  if (
+    database === 'sonic_dw' &&
+    schema === 'dbo' &&
+    hasAnyPattern(name, [/ops/i, /permission/i, /playbook/i, /txn/i, /error/i, /security/i, /audit/i, /survey/i])
+  ) {
+    return {
+      lineage_role: hasHardCreator ? 'procedure_owned_operational_table' : 'operational_app_table_review',
+      status: hasHardCreator ? null : 'operational_app_table_review',
+      reason: hasHardCreator ? 'operational_table_has_procedure_writer' : 'operational_app_table_without_writer',
+      tag: 'lineage-role:operational-app-table',
+    };
+  }
+
+  if (
+    database === 'vendordata' &&
+    schema === 'dbo' &&
+    !hasHardCreator &&
+    contextualReads > 0 &&
+    directReads === 0
+  ) {
+    return {
+      lineage_role: 'external_vendor_output_unresolved',
+      status: 'external_vendor_output_unresolved',
+      reason: 'vendor_context_without_executable_writer',
+      tag: 'lineage-role:external-vendor-output',
+      training_label: 'unresolved_final_writer',
+    };
+  }
+
+  if (!hasHardCreator && probableEdges > 0) {
+    return {
+      lineage_role: 'final_writer_unresolved_with_strong_upstream_evidence',
+      status: 'final_writer_unresolved_with_strong_upstream_evidence',
+      reason: 'probable_upstream_evidence_without_physical_writer',
+      tag: 'lineage-role:final-writer-unresolved',
+      training_label: 'unresolved_final_writer',
+    };
+  }
+
+  if (['wrk', 'stage', 'stg'].includes(schema) && !hasHardCreator) {
+    return {
+      lineage_role: rowCount > 0 ? 'active_intermediate_review' : 'empty_intermediate_review',
+      status: rowCount > 0 ? 'active_intermediate_unresolved' : 'empty_intermediate_unresolved',
+      reason: rowCount > 0 ? 'intermediate_schema_populated_without_writer' : 'intermediate_schema_empty_without_writer',
+      tag: 'lineage-role:intermediate-review',
+    };
+  }
+
+  return null;
+}
+
+function applyLineageRoleClassifications(records) {
+  let classified = 0;
+
+  for (const record of records.values()) {
+    const fm = record.frontmatter;
+    if (!fm) continue;
+    const classification = classifyLineageObjectRole(fm);
+    if (!classification) continue;
+
+    fm.lineage_role = classification.lineage_role;
+    fm.lineage_classification_reason = classification.reason;
+    fm.tags = appendUniqueTag(fm.tags, classification.tag);
+    if (classification.training_label) {
+      fm.training_label = classification.training_label;
+    }
+    if (classification.status && !hasHardCreatorEvidence(fm)) {
+      fm.lineage_status = classification.status;
+    }
+    classified += 1;
+  }
+
+  return { classified };
 }
 
 function uniqueEdgeCount(frontmatter = {}) {
@@ -3414,11 +3862,17 @@ async function main() {
   const referenceIndex = rewriteSqlLineage(records, aliases);
   applyForwardSqlEdges(records, referenceIndex);
   recordMemory('sql_lineage_rewritten');
+  logRebuildPhase('expanding synonym source reads');
+  const synonymSourceExpansionSummary = applySynonymSourceExpansion(records);
+  recordMemory('synonym_source_reads_expanded');
   logRebuildPhase('rebuilding SSIS metadata');
   const ssisSummary = await rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog, {
     ssisLimit: SSIS_REBUILD_LIMIT,
   });
   recordMemory('ssis_rebuilt');
+  logRebuildPhase('stitching exact package-procedure writer chains');
+  const exactPackageProcedureChains = applyExactPackageProcedureChainStitching(records);
+  recordMemory('exact_package_procedure_chains_stitched');
   logRebuildPhase('applying SSIS bridge inferences');
   const inferredSsisBridges = applySsisBridgeInferences(records);
   recordMemory('ssis_bridge_inferences_applied');
@@ -3428,6 +3882,12 @@ async function main() {
   logRebuildPhase('applying dictionary enrichment contract');
   const dictionaryEnrichmentSummary = applyDictionaryEnrichment(records);
   recordMemory('dictionary_enrichment_applied');
+  logRebuildPhase('applying catalog freshness diagnostics');
+  const catalogFreshnessSummary = applyCatalogFreshnessDiagnostics(records);
+  recordMemory('catalog_freshness_diagnostics_applied');
+  logRebuildPhase('classifying lineage object roles');
+  const lineageRoleClassificationSummary = applyLineageRoleClassifications(records);
+  recordMemory('lineage_roles_classified');
   logRebuildPhase('scoring catalog confidence');
   const catalogConfidenceSummary = applyCatalogConfidence(records);
   recordMemory('catalog_confidence_scored');
@@ -3467,7 +3927,10 @@ async function main() {
     unresolvedColumnLineageObjects: recordMetrics.unresolvedColumnLineageObjects,
     unresolvedColumnLineageRecords: recordMetrics.unresolvedColumnLineageRecords,
     columnLineageResolution,
+    synonymSourceExpansionSummary,
     dictionaryEnrichmentSummary,
+    catalogFreshnessSummary,
+    lineageRoleClassificationSummary,
     catalogConfidenceSummary,
     ssisColumnMappingObjects: recordMetrics.ssisColumnMappingObjects,
     ssisColumnMappings: recordMetrics.ssisColumnMappings,
@@ -3478,6 +3941,8 @@ async function main() {
     quarantinedSqlRawSample: quarantinedSqlRaw.sample,
     skippedSsis: ssisSummary.skipped,
     ssisSqlEndpointRecords: ssisSummary.ssisSqlEndpointRecords,
+    exactSsisPackageTableEdges: ssisSummary.exactSsisPackageTableEdges,
+    exactPackageProcedureChains,
     inferredSsisBridges,
     filesWritten: writeSummary.filesWritten,
     manifestFiles: writeSummary.manifestFiles,
@@ -3521,11 +3986,20 @@ async function main() {
 }
 
 export {
+  applyExactPackageProcedureChainStitching,
+  applyExactSsisPackageTableEdges,
+  applySynonymSourceExpansion,
+  applyCatalogFreshnessDiagnostics,
+  applyLineageRoleClassifications,
+  applySsisBridgeInferences,
   buildCatalogConfidence,
   buildRebuildReport,
   buildSsisSqlEndpointRecords,
+  catalogFreshnessDiagnostic,
+  classifyLineageObjectRole,
   evaluateRebuildGates,
   renderRebuildReportMarkdown,
+  sqlRawQuarantineReason,
   summarizeConfidence,
   summarizeSources,
 };

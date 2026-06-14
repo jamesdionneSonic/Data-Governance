@@ -56,6 +56,25 @@ Every connector adapter implements the same behavior:
 
 Adapters should only contain source-specific API details. Pagination, run history, permissions, errors, canonical event normalization, and downstream publishing belong in the shared runtime.
 
+## Single Shared Runtime Contract
+
+Every source family must have exactly one shared runtime path for connectivity and extraction orchestration. UI workflows, saved connectors, Ingestion Studio, profile schedules, lineage extraction, and ad-hoc admin tools must call the same connector runtime and adapters for the same source family.
+
+For SQL Server and SSIS this means:
+
+- one shared connection factory for server, instance, port, encryption, certificate trust, timeout, and Windows-auth behavior;
+- one shared test-only probe that reports runtime identity, endpoint, elapsed time, phase, and actionable errors;
+- one shared adapter path for metadata harvest and live profile metadata preparation;
+- no route-level, UI-level, scheduler-level, or one-off service implementation of a separate `mssql`/SSIS connection engine.
+
+Adding a new workflow is allowed; adding a new source connection engine is not. If the existing runtime contract is missing a capability, extend the shared runtime and add parity tests rather than duplicating the behavior elsewhere.
+
+## Test-Only Connector Validation
+
+Saved connector testing validates connectivity only. It must not run stream extraction, full metadata harvest, profile execution, schedule ticks, or lineage detection. The test response must include a structured diagnostic envelope with connector id, connector type, success/failure, phase, endpoint, database/catalog where applicable, runtime login/user where available, elapsed time, and remediation details for failures.
+
+The same saved connector id selected in the UI must be the id tested by the backend. UI wizard state must not cause a row-level TEST action to execute against a different connector.
+
 ## Error Handling
 
 Connector errors must be actionable:
@@ -139,6 +158,18 @@ All profile types can be automated through the managed connector scheduler:
 - `POST /api/v1/connectors/profile-schedules/tick`
 
 The scheduler does not create a second extraction path. Schedule type `auto` routes to the same aggregate, BI report, or connector metadata profile service used by the manual API. Admins own schedule creation and execution, and stored schedule options are sanitized so secrets, credential references, raw metadata payloads, and test mocks are not persisted.
+
+Recurring schedules must not be saved as dry-run-only jobs. A dry run is valid for explicit ad-hoc planning and manual previews; scheduled profile work must persist as live operational work. If the source is not ready for live profiling, the schedule should be rejected, paused, or marked invalid with an actionable remediation.
+
+When a live profile schedule selects assets that have no column metadata, the scheduler must request targeted metadata enrichment through the saved connector runtime, update the metadata needed for planning, and re-run planning for the same schedule run. If enrichment fails, the run must fail or partial-fail with a visible reason. A run must not be marked successful when selected live assets produce zero profile actions because required column metadata is missing.
+
+Required scheduler diagnostics:
+
+- selected asset count and selected object names;
+- missing-column asset count and object names;
+- metadata enrichment attempted/skipped;
+- actions planned after enrichment;
+- final status that distinguishes success, partial failure, and blocked metadata.
 
 ## Implementation Rule
 

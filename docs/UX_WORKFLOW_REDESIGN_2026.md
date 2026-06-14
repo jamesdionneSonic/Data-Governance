@@ -10,10 +10,9 @@ Navigation is grouped by the job the user is doing:
 
 | Group | Pages | User Job |
 | --- | --- | --- |
-| Find & Understand | Command Center, Catalog Search, Lineage Assistant, Lineage Explorer | Locate assets and understand dependencies. |
-| Govern & Improve | Business Glossary, Trust & Compliance, Governance Ops, Metric Intelligence | Improve metadata, trust, ownership, quality, and metrics. |
-| Package & Report | Data Products, Governance Insights | Package governed assets and communicate impact. |
-| Connect & Operate | Connector Admin, Ingestion Studio, Profile Scheduler, Platform Admin | Configure sources, ingest metadata, schedule profiles, and administer the platform. |
+| Find & Understand | Home / Find Data, Search / Catalog, Lineage Explorer | Locate assets, disambiguate same-name objects, and answer lineage/impact questions. |
+| Govern & Improve | Glossary & Metrics, Review Work / Governance Ops | Maintain business language, metric variants, and steward review queues. |
+| Operate | Profiling, Connections, Lineage Acquisition, Platform Admin | Configure reusable source access, profile source data, refresh lineage evidence, and administer the platform. |
 
 ## Page Pattern
 
@@ -26,11 +25,17 @@ Every primary page should use the same top-level pattern:
 
 ## Workflow Separation
 
-Connector Admin owns connector registration, credentials, permissions, notifications, webhooks, external links, and CI/CD checks.
+Connections owns reusable connection inventory, draft creation, login/discovery testing, and access eligibility. It does not own schedules, profile run history, queue progress, publishing, or lineage extraction operations.
 
-Profile Scheduler is a separate operational page. It owns recurring profile jobs, worker state, run history, and schedule health. It should not be buried under Connector Admin.
+Profiling is a separate analyst/admin page. It owns recurring profile jobs, profile queues, manual run-now, worker state, run history, publish warnings, and schedule health. It must not edit source connection credentials.
 
-Ingestion Studio owns extraction and markdown/index workflow.
+Lineage Acquisition is a separate admin/operator page. It owns evidence refresh for configured investigation domains, such as the `SONIC_DW` domain that includes `Sonic_DW`, `VendorData`, `StagingDB`, `ETL_Staging`, and `SSIS_UAT`. It must not be the end-user lineage answer surface.
+
+Lineage Explorer owns table, column, metric, and report impact answers. It starts with plain-English explanation, then exposes graph and evidence drilldowns.
+
+Review Work / Governance Ops owns bite-sized steward queues such as failed profiles, failed lineage, and suspicious lineage. It may deep-link to operational pages but must not duplicate their controls.
+
+Data Products is not a primary workflow until the product definition is explicit. Report metadata belongs in search, lineage, and metrics first.
 
 ## Visual Rules
 
@@ -39,9 +44,13 @@ Ingestion Studio owns extraction and markdown/index workflow.
 - Search surfaces are compact utility panels, not dark hero sections.
 - Chips, buttons, fields, and tables use shared contrast rules for readability.
 - Avoid nested page cards unless the card represents a repeated item, modal, or framed tool.
+- Default page states should show context, status, and next action before raw data.
+- Do not show raw logs, package XML, SQL snippets, parser output, or queue internals unless the user opens a detail/advanced view.
+- A page may use one stepper or one tab row, but not nested workflow tabs.
 
 ## Next UX Debt
 
 - Convert remaining one-off inline styles in large workflow pages into named classes.
-- Break the large single-file Vue template into reusable components once the current POC stabilizes.
-- Add visual regression coverage for Command Center, Catalog Search, Governance Ops, Connector Admin, Profile Scheduler, and Ingestion Studio.
+- Break the large single-file Vue template into workflow-owned pages and reusable components.
+- Add visual regression coverage for Home / Find Data, Search / Catalog, Lineage Explorer, Review Work, Profiling, Connections, and Lineage Acquisition.
+- Remove `Profile Operations`, `Ingestion Studio`, `Trust & Compliance`, and `Command Center` as primary navigation labels after their useful capabilities are moved to the workflow owners above.

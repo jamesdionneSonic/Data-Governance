@@ -7,7 +7,11 @@ Thanks for contributing to Data Governance.
 - Use **Backend-for-Frontend (BFF)** architecture for all frontend-facing APIs.
 - Use **Infrastructure as Code (IaC) First** for all environment/platform changes.
 - Do not implement monolithic code paths; prefer modular, reusable components.
+- Do not implement monolithic UI surfaces; every page must have one primary workflow owner, one primary job, and one default user state.
 - Validate all incoming/outgoing contracts.
+- Reuse the shared connector/runtime engine for source connections, tests, ingestion, profiling, and schedules; do not create a second SQL/SSIS connection path.
+- Do not run ad-hoc SQL Server, ODBC, `mssql`, `msnodesqlv8`, `sqlcmd`, or SSIS probes outside the shared connector runtime; add guarded diagnostics inside the runtime instead.
+- Follow `docs/UI_WORKFLOW_SPEC.md` and `docs/adr/ADR-005-Workflow-Led-UI-Surfaces.md` before adding cards, tables, tabs, buttons, or navigation entries.
 
 ## Branching
 
@@ -18,6 +22,8 @@ Thanks for contributing to Data Governance.
 ## Pull Request Requirements
 
 - Link to backlog story/phase in PR description.
+- Name the workflow owner for UI changes, such as Home/Search, Lineage Explorer, Glossary & Metrics, Review Work, Profiling, Connections, Lineage Acquisition, or Platform Admin.
+- For UI workflow remediation backlog work, complete the packet in `docs/CODEX_UI_WORK_PACKET_TEMPLATE.md` and follow `docs/UI_WORKFLOW_MIGRATION_PLAN.md`.
 - Include test evidence and impact notes.
 - Include docs updates when behavior/contracts change.
 - Pass CI checks before merge.

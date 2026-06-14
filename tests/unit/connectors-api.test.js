@@ -322,7 +322,7 @@ describe('Connectors API', () => {
     expect(responseJson).not.toContain('kv://powerbi/api');
   });
 
-  test('managed connector run returns explicit connection and discovery validation states', async () => {
+  test('managed connector test returns explicit connection diagnostics without running extraction', async () => {
     const app = createApp();
     await request(app)
       .post('/api/v1/connectors')
@@ -345,12 +345,13 @@ describe('Connectors API', () => {
       });
 
     const runRes = await request(app)
-      .post('/api/v1/connectors/sql-validate-api/run')
+      .post('/api/v1/connectors/sql-validate-api/test')
       .set(authHeaders(admin))
-      .send({ dry_run: true, streams: ['tables'] });
+      .send({});
 
     expect(runRes.status).toBe(200);
-    expect(runRes.body.run.summary).toMatchObject({
+    expect(runRes.body.test.summary).toMatchObject({
+      test_only: true,
       connection_status: 'ready',
       live_connection_valid: true,
       metadata_discovery_valid: true,
@@ -438,7 +439,13 @@ describe('Connectors API', () => {
         id: 'openapi-schedule-api',
         type: 'openapi',
         label: 'OpenAPI Schedule API',
-        config: { spec_url: 'https://api.example.com/openapi.json' },
+        config: {
+          spec_url: 'https://api.example.com/openapi.json',
+          seed_metadata: {
+            endpoints: [{ id: 'GET /vehicles', name: 'GET /vehicles' }],
+            schemas: [{ id: 'Vehicle', name: 'Vehicle' }],
+          },
+        },
         credential: {
           mode: 'api_key',
           secret_ref: 'kv://openapi/schedule',
@@ -456,16 +463,14 @@ describe('Connectors API', () => {
         interval_minutes: 60,
         start_at: '2026-06-07T00:00:00.000Z',
         options: {
-          dry_run: true,
+          dry_run: false,
           streams: ['endpoints', 'schemas', 'lineage'],
-          metadata_payload: {
-            endpoints: [{ id: 'GET /vehicles', name: 'GET /vehicles' }],
-          },
           api_key: 'do-not-return',
         },
       });
 
     expect(scheduleRes.status).toBe(201);
+    expect(scheduleRes.body.schedule.options.dry_run).toBe(false);
     expect(scheduleRes.body.schedule).toEqual(
       expect.objectContaining({
         connector_id: 'openapi-schedule-api',
@@ -531,5 +536,32 @@ describe('Connectors API', () => {
     const responseJson = JSON.stringify({ scheduleRes: scheduleRes.body, runRes: runRes.body, tickRes: tickRes.body });
     expect(responseJson).not.toContain('hidden-api-key');
     expect(responseJson).not.toContain('kv://openapi/schedule');
+  });
+
+  test('rejects recurring profile schedules saved as dry runs', async () => {
+    const app = createApp();
+    await request(app)
+      .post('/api/v1/connectors')
+      .set(authHeaders(admin))
+      .send({
+        id: 'dry-run-schedule-api',
+        type: 'power_bi',
+        label: 'Dry Run Schedule API',
+        config: { tenant_id: 'tenant-1' },
+        credential: { mode: 'service_principal', secret_ref: 'kv://powerbi/schedule' },
+      });
+
+    const scheduleRes = await request(app)
+      .post('/api/v1/connectors/profile-schedules')
+      .set(authHeaders(admin))
+      .send({
+        connector_id: 'dry-run-schedule-api',
+        profile_type: 'bi',
+        interval_minutes: 60,
+        options: { dry_run: true },
+      });
+
+    expect(scheduleRes.status).toBe(400);
+    expect(scheduleRes.body.message).toMatch(/cannot be saved as dry runs/i);
   });
 });

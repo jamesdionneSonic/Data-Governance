@@ -44,16 +44,14 @@ test.describe('App memory stability', () => {
     const baselineHeap = await usedHeap(page);
 
     const views = [
-      'Command Center',
-      'Catalog Search',
-      'Lineage Assistant',
-      'Lineage Explorer',
+      'Home / Find Data',
+      'Search',
       'Business Glossary',
-      'Trust',
+      'Governance Ops',
       'Metric Intelligence',
       'Connections',
-      'Metadata Ingestion',
-      'Administration',
+      'Lineage Acquisition',
+      'Platform Admin',
     ];
 
     for (let pass = 0; pass < 3; pass += 1) {

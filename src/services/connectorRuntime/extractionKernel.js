@@ -40,7 +40,7 @@ export async function executeConnectorExtraction({ connector, definition, option
   let connectionCheck;
 
   try {
-    connectionCheck = await adapter.testConnection();
+    connectionCheck = await adapter.testConnection(options);
     events.push(...(connectionCheck.warnings || []));
   } catch (err) {
     const serialized = serializeConnectorError(err);
@@ -92,6 +92,92 @@ export async function executeConnectorExtraction({ connector, definition, option
 
   const status = errors.length ? 'partial_failure' : 'succeeded';
   return buildExtractionResult({ connector, adapter, events, streamResults, errors, status, options, connectionCheck });
+}
+
+export async function executeConnectorTest({ connector, definition, options = {} }) {
+  const adapter = createConnectorAdapter({ connector, definition });
+  const started = Date.now();
+  try {
+    const connectionCheck = await adapter.testConnection(options);
+    return {
+      status: connectionCheck.live_connection_valid === false ? 'failed' : 'succeeded',
+      connector_id: connector.id,
+      connector_type: connector.type,
+      adapter: adapter.constructor.name,
+      tested_at: new Date().toISOString(),
+      elapsed_ms: Date.now() - started,
+      phase: 'connection_validation',
+      captures_raw_data: false,
+      secret_exposed: false,
+      diagnostics: {
+        success: connectionCheck.live_connection_valid !== false,
+        connector_id: connector.id,
+        connector_type: connector.type,
+        phase: 'connection_validation',
+        server:
+          connectionCheck.details?.server_name ||
+          connector.config?.server ||
+          connector.config?.host ||
+          connector.config?.server_url ||
+          connector.config?.base_url ||
+          null,
+        database:
+          connectionCheck.details?.database_name ||
+          connector.config?.database ||
+          connector.config?.catalogDatabase ||
+          connector.config?.catalog ||
+          null,
+        login:
+          connectionCheck.details?.login_name ||
+          connectionCheck.details?.runtime_process_identity ||
+          connectionCheck.details?.credential_mode ||
+          null,
+        elapsed_ms: Date.now() - started,
+        connection_status: connectionCheck.status || 'unknown',
+        live_supported: connectionCheck.live_supported === true,
+        live_connection_valid: connectionCheck.live_connection_valid !== false,
+        metadata_discovery_valid: connectionCheck.metadata_discovery_valid !== false,
+        details: connectionCheck.details || {},
+        warnings: connectionCheck.warnings || [],
+      },
+      errors: [],
+    };
+  } catch (err) {
+    const serialized = serializeConnectorError(err);
+    return {
+      status: 'failed',
+      connector_id: connector.id,
+      connector_type: connector.type,
+      adapter: adapter.constructor.name,
+      tested_at: new Date().toISOString(),
+      elapsed_ms: Date.now() - started,
+      phase: serialized.phase || 'connection_validation',
+      captures_raw_data: false,
+      secret_exposed: false,
+      diagnostics: {
+        success: false,
+        connector_id: connector.id,
+        connector_type: connector.type,
+        phase: serialized.phase || 'connection_validation',
+        server: serialized.details?.server || connector.config?.server || connector.config?.host || null,
+        database: serialized.details?.database || connector.config?.database || connector.config?.catalogDatabase || null,
+        login: serialized.details?.runtime_process_identity || serialized.details?.credential_mode || null,
+        elapsed_ms: Date.now() - started,
+        connection_status: 'failed',
+        live_supported: adapter.getCapabilities().supports_live_read === true,
+        live_connection_valid: false,
+        metadata_discovery_valid: false,
+        error: serialized,
+        actionable_error: {
+          code: serialized.code,
+          message: serialized.message,
+          remediation: serialized.remediation,
+          details: serialized.details || null,
+        },
+      },
+      errors: [serialized],
+    };
+  }
 }
 
 export async function planConnectorProfile({ connector, definition, options = {} }) {

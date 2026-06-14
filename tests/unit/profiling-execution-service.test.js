@@ -5,6 +5,7 @@ import {
   buildProfilingContract,
   buildProfilingPlan,
   executeProfilingPlan,
+  profileFromAggregateRow,
   runProfiling,
 } from '../../src/services/profilingExecutionService.js';
 import {
@@ -33,6 +34,7 @@ describe('profiling execution service', () => {
       profile_mode: 'sample',
       execution_mode: 'dry_run',
       sample_percent: 2,
+      query_timeout_ms: 30000,
     });
 
     expect(plan.status).toBe('ready');
@@ -59,6 +61,39 @@ describe('profiling execution service', () => {
     expect(plan.skipped[0].reason).toContain('Full-scan profiling is blocked');
   });
 
+  test('uses unique aggregate aliases when column names normalize to the same SQL alias', () => {
+    const plan = buildProfilingPlan({
+      assets: [
+        {
+          id: 'VendorData.sonicdw.alias_collision',
+          database: 'VendorData',
+          schema: 'sonicdw',
+          name: 'alias_collision',
+          type: 'table',
+          columns: [
+            { name: 'Dealer ID', data_type: 'int' },
+            { name: 'Dealer-ID', data_type: 'int' },
+          ],
+        },
+      ],
+      profile_mode: 'sample',
+      execution_mode: 'dry_run',
+    });
+
+    const action = plan.actions[0];
+    expect(action.columns.map((column) => column.profile_alias)).toEqual(['dealer_id', 'dealer_id_2']);
+    expect(action.query.sql).toContain('[dealer_id__null_count]');
+    expect(action.query.sql).toContain('[dealer_id_2__null_count]');
+
+    const profile = profileFromAggregateRow(action, {
+      row_count: 10,
+      dealer_id__null_count: 1,
+      dealer_id_2__null_count: 2,
+    });
+    expect(profile.columns['Dealer ID'].null_count).toBe(1);
+    expect(profile.columns['Dealer-ID'].null_count).toBe(2);
+  });
+
   test.each([
     ['postgresql', '"dbo"."Invoice"', 'SET lock_timeout = 5000;', 'TABLESAMPLE SYSTEM (2)'],
     ['snowflake', '"finance"."dbo"."Invoice"', 'STATEMENT_TIMEOUT_IN_SECONDS', 'SAMPLE (2)'],
@@ -72,6 +107,7 @@ describe('profiling execution service', () => {
       profile_mode: 'sample',
       execution_mode: 'dry_run',
       sample_percent: 2,
+      query_timeout_ms: 30000,
     });
 
     expect(plan.status).toBe('ready');

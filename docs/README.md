@@ -4,10 +4,11 @@ This is the master index for platform documentation.
 
 ## Current Product Navigation (2026 IA)
 
-- **Workspace**: Command Center, Catalog Search, Lineage Explorer
-- **Govern**: Business Glossary, Trust & Compliance
-- **Deliver**: Data Products, Governance Insights
-- **Operate**: Connections, Metadata Ingestion, Administration
+- **Find & Understand**: Home / Find Data, Search / Catalog, Lineage Explorer
+- **Govern & Improve**: Glossary & Metrics, Review Work / Governance Ops
+- **Operate**: Profiling, Connections, Lineage Acquisition, Platform Admin
+
+Deprecated primary labels: `Command Center`, `Profile Operations`, `Ingestion Studio`, `Trust & Compliance`, and `Data Products` until each has a clear workflow owner or explicit product definition.
 - **Support**: Help Center
 
 ## In-App User Help (Surfaced in UI)
@@ -45,6 +46,10 @@ This is the master index for platform documentation.
 ## Architecture, Product, and Engineering
 
 - [Enterprise Architecture](ENTERPRISE_ARCHITECTURE.md)
+- [UI Workflow Specification](UI_WORKFLOW_SPEC.md)
+- [UX Workflow Redesign 2026](UX_WORKFLOW_REDESIGN_2026.md)
+- [Codex UI Work Packet Template](CODEX_UI_WORK_PACKET_TEMPLATE.md)
+- [UI Workflow Migration Plan](UI_WORKFLOW_MIGRATION_PLAN.md)
 - [Connector Extraction Framework](CONNECTOR_EXTRACTION_FRAMEWORK.md)
 - [Profiling Execution Framework](PROFILING_EXECUTION_FRAMEWORK.md)
 - [Profile Index Safety And Storage Specification](PROFILE_INDEX_SPEC.md)
@@ -77,6 +82,8 @@ This is the master index for platform documentation.
 - [ADR-001: Store Sanitized Profile Indexes In The DevOps Azure Data Pack](adr/ADR-001-Profile-Indexes-In-DevOps-Azure-Data-Pack.md)
 - [ADR-002: Separate Profile Run Artifacts From Queryable Profile Indexes](adr/ADR-002-Separate-Profile-Run-Artifacts-From-Queryable-Profile-Indexes.md)
 - [ADR-003: Codex Skills Use The DevOps Profile Index First](adr/ADR-003-Codex-Skills-Use-DevOps-Profile-Index-First.md)
+- [ADR-004: Use One Shared Connector Runtime](adr/ADR-004-Single-Shared-Connector-Runtime.md)
+- [ADR-005: Use Workflow-Led UI Surfaces](adr/ADR-005-Workflow-Led-UI-Surfaces.md)
 - [Release Notes v0.6.0](RELEASE_NOTES_v0.6.0.md)
 - [Release Notes v1.0.0](RELEASE_NOTES_v1.0.0.md)
 - [Vuetify Final Audit 2026-05-10](VUETIFY_FINAL_AUDIT_2026-05-10.md)

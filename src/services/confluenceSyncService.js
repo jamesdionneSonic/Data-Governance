@@ -240,7 +240,7 @@ async function findChildPage(http, config, title, parentPageId = config.parentPa
   const response = await http.get('/rest/api/content/search', {
     params: {
       cql,
-      expand: 'version',
+      expand: 'version,metadata.labels',
       limit: 25,
     },
   });
@@ -252,7 +252,7 @@ async function findChildPage(http, config, title, parentPageId = config.parentPa
       title,
       spaceKey: config.spaceKey,
       type: 'page',
-      expand: 'version',
+      expand: 'version,metadata.labels',
       limit: 1,
     },
   });
@@ -263,7 +263,7 @@ async function findChildPage(http, config, title, parentPageId = config.parentPa
   const spaceResponse = await http.get('/rest/api/content/search', {
     params: {
       cql: spaceCql,
-      expand: 'version',
+      expand: 'version,metadata.labels',
       limit: 25,
     },
   });
@@ -467,6 +467,16 @@ async function listChildPages(http, parentPageId) {
 async function collectGeneratedPageTree(http, parentPageId) {
   const directChildren = await listChildPages(http, parentPageId);
   const generatedRoots = directChildren.filter(isGeneratedPage);
+  return collectPageTree(http, generatedRoots);
+}
+
+async function collectLegacyAutoPageTree(http, parentPageId) {
+  const directChildren = await listChildPages(http, parentPageId);
+  const legacyRoots = directChildren.filter((page) => String(page?.title || '').startsWith('[AUTO]'));
+  return collectPageTree(http, legacyRoots);
+}
+
+async function collectPageTree(http, roots) {
   const collected = [];
 
   async function visit(page, depth) {
@@ -482,7 +492,7 @@ async function collectGeneratedPageTree(http, parentPageId) {
     });
   }
 
-  for (const page of generatedRoots) {
+  for (const page of roots) {
     // eslint-disable-next-line no-await-in-loop
     await visit(page, 0);
   }
@@ -492,6 +502,15 @@ async function collectGeneratedPageTree(http, parentPageId) {
 
 async function deleteGeneratedPages({ http, config }) {
   const pages = await collectGeneratedPageTree(http, config.parentPageId);
+  return deletePageRecords({ http, pages });
+}
+
+async function deleteLegacyAutoPages({ http, config }) {
+  const pages = await collectLegacyAutoPageTree(http, config.parentPageId);
+  return deletePageRecords({ http, pages });
+}
+
+async function deletePageRecords({ http, pages }) {
   const results = [];
 
   for (const page of pages) {
@@ -511,10 +530,6 @@ async function deleteGeneratedPages({ http, config }) {
 async function deletePagesByTitle({ http, config, titles = [], parentTitle = null }) {
   const cleanTitles = titles.map((title) => String(title || '').trim()).filter(Boolean);
   if (cleanTitles.length === 0) return [];
-  const unsafeTitle = cleanTitles.find((title) => !title.startsWith('[AUTO]'));
-  if (unsafeTitle) {
-    throw new Error(`Refusing to delete non-generated Confluence page title: ${unsafeTitle}`);
-  }
 
   let parentPageId = config.parentPageId;
   if (parentTitle) {
@@ -536,6 +551,9 @@ async function deletePagesByTitle({ http, config, titles = [], parentTitle = nul
         parentTitle,
       });
       continue;
+    }
+    if (!isGeneratedPage(page)) {
+      throw new Error(`Refusing to delete non-generated Confluence page title: ${title}`);
     }
     // eslint-disable-next-line no-await-in-loop
     await http.delete(`/rest/api/content/${page.id}`);
@@ -704,12 +722,15 @@ export async function syncConfluenceExport(options = {}) {
     options.replaceGenerated ?? truthy(process.env.CONFLUENCE_REPLACE_GENERATED);
   const deletedPages = replaceGenerated
     ? await deleteGeneratedPages({ http, config })
-    : await deletePagesByTitle({
-        http,
-        config,
-        titles: deleteTitles,
-        parentTitle: deleteParentTitle,
-      });
+    : [
+        ...(await deleteLegacyAutoPages({ http, config })),
+        ...(await deletePagesByTitle({
+          http,
+          config,
+          titles: deleteTitles,
+          parentTitle: deleteParentTitle,
+        })),
+      ];
 
   const pageResults = await syncPagesInHierarchy({ http, config, exportRoot, pages });
 

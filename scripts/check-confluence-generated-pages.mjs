@@ -79,7 +79,7 @@ function isGeneratedPage(page) {
 
 const directChildren = await listChildPages(parentPageId);
 const generatedChildren = directChildren.filter(isGeneratedPage);
-const databasesPage = directChildren.find((page) => page.title === '[AUTO] Databases') || null;
+const databasesPage = directChildren.find((page) => page.title === 'Databases') || null;
 const databaseChildren = databasesPage ? (await listChildPages(databasesPage.id)).filter(isGeneratedPage) : [];
 let expectedDatabaseTitles = [];
 
@@ -91,7 +91,7 @@ try {
   );
   const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
   expectedDatabaseTitles = (manifest.pages || [])
-    .filter((page) => page.parent_title === '[AUTO] Databases')
+    .filter((page) => page.parent_title === 'Databases')
     .map((page) => page.title)
     .sort();
 } catch {

@@ -58,17 +58,17 @@ function inferReadRole(sourceMetadata = {}, consumerMetadata = {}) {
 
   if (consumerType === 'view') return 'business_consumer_read';
   if (
-    /^(dim|lkp|lookup|ref|map)/.test(sourceName) ||
-    /lookup|reference|bridge|xref/.test(sourceName)
-  ) {
-    return 'lookup_read';
-  }
-  if (
     /^(stg|wrk|synwrk|stage|tmp|temp|landing|src)/.test(sourceName) ||
     ['stg', 'wrk', 'stage', 'etl_staging', 'landing', 'source'].includes(sourceSchema) ||
     sourceType === 'synonym'
   ) {
     return 'source_read';
+  }
+  if (
+    /^(dim|lkp|lookup|ref|map)/.test(sourceName) ||
+    /lookup|reference|bridge|xref/.test(sourceName)
+  ) {
+    return 'lookup_read';
   }
   return 'business_consumer_read';
 }

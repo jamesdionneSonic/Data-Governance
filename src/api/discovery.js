@@ -324,15 +324,11 @@ router.get('/graph/:objectId', authenticate, async (req, res) => {
 
     const normalizedFormat = format.toLowerCase();
     const parsedDepth = parseInt(depth, 10);
-    const focusObject = cachedObjects.get(objectId);
-    const isDataObject = ['table', 'view'].includes(String(focusObject?.type || '').toLowerCase());
     let effectiveDepth = 2;
     if (Number.isFinite(parsedDepth)) {
       effectiveDepth = parsedDepth;
     }
-    if (isDataObject && effectiveDepth < 4) {
-      effectiveDepth = 4;
-    }
+    effectiveDepth = Math.min(Math.max(effectiveDepth, 1), 5);
     const typedEdges = getTypedLineageEdgeIndex();
     const glossaryTerms = await loadAllTerms();
     const glossarySignature = glossaryTerms

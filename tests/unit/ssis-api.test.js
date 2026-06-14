@@ -69,6 +69,6 @@ describe('SSIS API', () => {
     });
 
     expect(res.status).toBe(400);
-    expect(res.body.message).toContain('Unsupported authentication type');
+    expect(res.body.message).toContain('Unsupported authentication');
   });
 });

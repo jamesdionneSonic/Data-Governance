@@ -9,6 +9,7 @@
     "start": "NODE_ENV=production node src/index.js",
     "build": "echo 'Build process for frontend would go here'",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --passWithNoTests",
+    "test:lineage:rules": "node --experimental-vm-modules node_modules/jest/bin/jest.js tests/unit/lineage-engine-rule-contract.test.js --runInBand",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "test:e2e": "playwright test",
@@ -48,6 +49,7 @@
     "lint": "eslint src tests --fix",
     "format": "prettier --write 'src/**/*.js' 'tests/**/*.js'",
     "check-framework": "node scripts/check-framework.js",
+    "ui:workflow:guardrails": "node scripts/check-ui-workflow-guardrails.mjs",
     "verify": "npm run lint && npm run test",
     "prepare": "husky install"
   },

@@ -42,6 +42,9 @@ const REGISTRY_HEADERS = [
   'downstream_count',
   'column_count',
   'source_system',
+  'ssis_folder',
+  'ssis_project',
+  'ssis_package',
   'context_pack_path',
   'context_pack_json_path',
   'confluence_url',
@@ -94,6 +97,11 @@ function safeHashedSegment(value, fallback = 'unknown', maxLength = 80) {
   const suffix = shortHash(raw).slice(0, 8);
   const baseMaxLength = Math.max(8, maxLength - suffix.length - 2);
   return `${safeSegment(raw, fallback, baseMaxLength)}--${suffix}`;
+}
+
+function hashId(prefix, value, fallback = 'unknown') {
+  const raw = compactText(value, fallback) || fallback;
+  return `${prefix}-${shortHash(raw)}`;
 }
 
 function pluralType(type) {
@@ -308,9 +316,10 @@ function pathBaseForObject(object, id) {
 
   if (isSsisPackage(object)) {
     const parts = ssisPathParts(object);
-    const folder = safeHashedSegment(parts.folder, 'SSIS', 50);
-    const project = safeHashedSegment(parts.project, 'default', 50);
-    return `ssis/folders/${folder}/projects/${project}/packages/${name}--${hash}`;
+    const folder = hashId('f', parts.folder, 'SSIS');
+    const project = hashId('p', `${parts.folder}/${parts.project}`, 'default');
+    const packageId = hashId('pkg', `${id}/${parts.packageName}`, name || hash);
+    return `ssis/f/${folder}/p/${project}/pkg/${packageId}`;
   }
 
   const database = safeHashedSegment(object.database, 'unknown_database', 60);
@@ -365,6 +374,7 @@ function sortedObjectEntries(objects) {
 function buildRegistryRow({ entry, graph, generatedAt, markdownRoot, confluenceBaseUrl }) {
   const { object, id } = entry;
   const basePath = pathBaseForObject(object, id);
+  const ssisParts = isSsisPackage(object) ? ssisPathParts(object) : null;
   const upstream = getUpstreamDependencies(id, graph, 1);
   const downstream = getDownstreamDependents(id, graph, 1);
 
@@ -388,6 +398,9 @@ function buildRegistryRow({ entry, graph, generatedAt, markdownRoot, confluenceB
     downstream_count: downstream.length,
     column_count: Number(object.column_count || ensureArray(object.columns).length || 0),
     source_system: compactText(object.server || object.database, 'unknown'),
+    ssis_folder: ssisParts?.folder || '',
+    ssis_project: ssisParts?.project || '',
+    ssis_package: ssisParts?.packageName || '',
     context_pack_path: `${basePath}.md`,
     context_pack_json_path: `${basePath}.json`,
     confluence_url: confluenceBaseUrl || '',
@@ -735,7 +748,7 @@ function renderAiReadme({ remoteUrl }) {
     '- Treat `upstream_count` as source/feed count.',
     '- Report confidence labels and truncation flags when present.',
     '- Do not infer relationships from names when the context pack lacks evidence.',
-    '- For SSIS, use `ssis/folders/<folder>/projects/<project>/README.md` to move from project to packages.',
+    '- For SSIS, use `ssis/f/<folder-id>/p/<project-id>/README.md` to move from project to packages.',
     '',
     '## Canonical Repo',
     '',
@@ -856,11 +869,19 @@ function renderDatabaseReadme(database, rows) {
 }
 
 function ssisFolderFromRow(row) {
-  return row.context_pack_path.split('/')[2] || 'SSIS';
+  return row.context_pack_path.split('/')[2] || 'f-unknown';
 }
 
 function ssisProjectFromRow(row) {
-  return row.context_pack_path.split('/')[4] || 'default';
+  return row.context_pack_path.split('/')[4] || 'p-unknown';
+}
+
+function ssisFolderLabel(rows, folderKey) {
+  return rows.find((row) => ssisFolderFromRow(row) === folderKey)?.ssis_folder || folderKey || 'SSIS';
+}
+
+function ssisProjectLabel(rows, projectKey) {
+  return rows.find((row) => ssisProjectFromRow(row) === projectKey)?.ssis_project || projectKey || 'default';
 }
 
 function renderSsisReadme(ssisRows) {
@@ -876,7 +897,7 @@ function renderSsisReadme(ssisRows) {
         const rows = ssisRows.filter((row) => ssisFolderFromRow(row) === folder);
         const packageCount = rows.filter((row) => row.object_type === 'package').length;
         return [
-          `[${folder}](folders/${folder}/README.md)`,
+          `[${ssisFolderLabel(rows, folder)}](f/${folder}/README.md)`,
           packageCount,
           rows.length - packageCount,
         ];
@@ -888,11 +909,12 @@ function renderSsisReadme(ssisRows) {
 
 function renderSsisFolderReadme(folder, rows) {
   const projectNames = Array.from(new Set(rows.map((row) => ssisProjectFromRow(row)))).sort();
+  const folderLabel = ssisFolderLabel(rows, folder);
 
   return [
-    `# ${folder}`,
+    `# ${folderLabel}`,
     '',
-    'SSIS folder project index.',
+    `SSIS folder project index. Path id: \`${folder}\`.`,
     '',
     markdownTable(
       ['Project', 'Packages', 'Supporting Context Records'],
@@ -900,7 +922,7 @@ function renderSsisFolderReadme(folder, rows) {
         const projectRows = rows.filter((row) => ssisProjectFromRow(row) === project);
         const packageCount = projectRows.filter((row) => row.object_type === 'package').length;
         return [
-          `[${project}](projects/${project}/README.md)`,
+          `[${ssisProjectLabel(projectRows, project)}](p/${project}/README.md)`,
           packageCount,
           projectRows.length - packageCount,
         ];
@@ -913,10 +935,11 @@ function renderSsisFolderReadme(folder, rows) {
 function renderSsisProjectReadme(project, rows) {
   const packageRows = rows.filter((row) => row.object_type === 'package');
   const supportingRows = rows.filter((row) => row.object_type !== 'package');
+  const projectLabel = ssisProjectLabel(rows, project);
   return [
-    `# ${project}`,
+    `# ${projectLabel}`,
     '',
-    'SSIS project package index.',
+    `SSIS project package index. Path id: \`${project}\`.`,
     '',
     '## Packages',
     '',
@@ -929,7 +952,7 @@ function renderSsisProjectReadme(project, rows) {
           row.display_name,
           row.downstream_count,
           row.confidence_label,
-          `[context](packages/${path.basename(row.context_pack_path)})`,
+          `[context](pkg/${path.basename(row.context_pack_path)})`,
         ])
     ),
     '',
@@ -945,7 +968,7 @@ function renderSsisProjectReadme(project, rows) {
               row.display_name,
               row.object_type,
               row.confidence_label,
-              `[context](packages/${path.basename(row.context_pack_path)})`,
+              `[context](pkg/${path.basename(row.context_pack_path)})`,
             ])
         )
       : '- No supporting context records were generated for this project.',
@@ -1136,7 +1159,7 @@ export async function exportCatalogRepo(options = {}) {
   }
   for (const [folder, rows] of folderGroups.entries()) {
     // eslint-disable-next-line no-await-in-loop
-    await writeText(targetRoot, `ssis/folders/${folder}/README.md`, renderSsisFolderReadme(folder, rows));
+    await writeText(targetRoot, `ssis/f/${folder}/README.md`, renderSsisFolderReadme(folder, rows));
   }
   const projectGroups = new Map();
   for (const row of ssisRows) {
@@ -1150,7 +1173,7 @@ export async function exportCatalogRepo(options = {}) {
     // eslint-disable-next-line no-await-in-loop
     await writeText(
       targetRoot,
-      `ssis/folders/${group.folder}/projects/${group.project}/README.md`,
+      `ssis/f/${group.folder}/p/${group.project}/README.md`,
       renderSsisProjectReadme(group.project, group.rows)
     );
   }

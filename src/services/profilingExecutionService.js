@@ -241,6 +241,19 @@ function sqlAlias(value) {
     .toLowerCase();
 }
 
+function uniqueSqlAlias(baseAlias, usedAliases) {
+  const base = sqlAlias(baseAlias) || 'col';
+  let alias = base;
+  let index = 2;
+  while (usedAliases.has(alias)) {
+    const suffix = `_${index}`;
+    alias = `${base.slice(0, Math.max(1, 90 - suffix.length))}${suffix}`;
+    index += 1;
+  }
+  usedAliases.add(alias);
+  return alias;
+}
+
 function tableName(asset = {}) {
   return asset.table || asset.table_name || asset.name || String(asset.id || '').split('.').pop();
 }
@@ -271,9 +284,11 @@ function bigQueryObjectName(asset = {}) {
 
 function selectExpressions(columns, dialect) {
   const parts = [dialect.rowCountExpression()];
+  const usedAliases = new Set(['row_count']);
   for (const column of columns) {
     const colSql = dialect.quoteIdentifier(column.name);
-    const alias = sqlAlias(column.name);
+    const alias = uniqueSqlAlias(column.profile_alias || column.name, usedAliases);
+    column.profile_alias = alias;
     if (column.actions.includes('null_count')) {
       parts.push(`SUM(CASE WHEN ${colSql} IS NULL THEN 1 ELSE 0 END) AS ${dialect.quoteIdentifier(`${alias}__null_count`)}`);
     }
@@ -804,7 +819,7 @@ export function profileFromAggregateRow(action = {}, row = {}) {
   const rowCount = asNumber(normalizedRow.row_count ?? normalizedRow.count, 0);
   const columns = {};
   for (const column of action.columns || []) {
-    const alias = sqlAlias(column.name);
+    const alias = column.profile_alias || sqlAlias(column.name);
     const nullCount = normalizedRow[`${alias}__null_count`];
     columns[column.name] = {
       column_name: column.name,

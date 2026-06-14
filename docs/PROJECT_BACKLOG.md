@@ -30,6 +30,555 @@ This backlog contains the complete delivery history for MVP phases and the forwa
 - Added the scheduler operations layer: in-process worker lifecycle, local sanitized runtime persistence under `data/_runtime/profiles`, JSON and Confluence-ready markdown profile run artifacts, per-schedule run history, status APIs, UI worker controls, and tests for history/artifact scrubbing.
 - Added the Phase 7e ownership/stewardship first pass: role responsibility model, inherited ownership resolution, escalation chains, steward portfolio summaries, task SLA metadata, routed metadata-completion tasks, bulk ownership assignment planning, Governance Ops UI panels, API routes, tests, and framework documentation.
 
+## Capability Truth Table - June 13, 2026
+
+This table is the current product-readiness view. It is intentionally separate from old delivery-history checkboxes so we can see what is safe to rely on now without disturbing the live profile queues, SSRS extraction, or current UI migration state.
+
+| Capability | Current status | What is built now | What is still missing or needs hardening |
+| --- | --- | --- | --- |
+| Search-first Home / Find Data | Built | Home starts with search/ask, returns ranked results in place, and routes selected assets to focused asset detail. | Continue polishing result quality; do not reintroduce Home dashboard clutter. |
+| Workflow-owned frontend architecture | Built | `docker/frontend/app.js` composes workflow-owned modules and shared UI components. | Keep guardrails active so primary page markup does not drift back into `app.js`. |
+| Search / Catalog advanced console | Built as internal surface | Advanced search, filters, browse, disambiguated result cards, and recent-search recall exist as non-primary/internal flow. | Keep it internal unless a future workflow owner explicitly promotes it. |
+| Selected-asset lineage / impact | Built as internal/deep-link surface | Plain-English lineage answer, impact context, graph/evidence drilldowns, and selected-asset entry points exist. | Continue improving confidence, report lineage evidence, and column/report impact quality. |
+| Connections workflow | Built | Reusable connector inventory/detail, login/discovery checks, builder support lane, and profiling links exist. | Disable semantics and enterprise credential vault integration still need production definition. |
+| Profiling schedules and live queues | Built, local-operational | Schedule health, queue progress, run history, run-now, publish readiness, local worker, and sanitized artifacts exist. | Needs the `UIPROF` clean-state capability below so the default page explains queue health in plain English before showing operator controls; also needs single-writer production worker model, durable SQL/enterprise store option, and operational monitoring before enterprise completion. |
+| SQL Server live profiling | Built for current Windows-auth path | `sqlcmd_windows_auth` live aggregate profiling works for approved SQL Server connectors such as Sonic_DW/GPA and VendorData. | Service-account or managed-identity operating model still needed for unattended production. |
+| SSRS metadata and report lineage | Built for current Windows-auth path | ReportServer catalog, RDL datasets/query text, data sources, usage, subscriptions, msdb schedule/job signals, and SQL-object lineage extraction exist. | Needs broader report-source canonical matching validation and production credential model. |
+| Connector framework and bridges | Partly built | Shared connector runtime, bridge contracts, dry-run canonical events, many source definitions, and selected live paths exist. | Many connectors remain framework/dry-run or metadata-shape capable until proven against real source systems. |
+| BI report profiling framework | Partly built | BI profile contract, endpoints, metadata-safe profile shape, summaries, and reporting connector support exist. | Needs more live-source validation and richer BI measure/semantic definitions where source APIs allow. |
+| Connector metadata profiles | Partly built | Metadata profile contract and endpoints exist for several cloud/catalog/pipeline/repo/source families. | OpenAPI, Kafka, SAP, and other families need live-profile maturity beyond framework coverage. |
+| Governance Ops / stewardship | Partly built | Steward queues, ownership panels, tasks, incidents, publication readiness, context lookup, and local event delivery views exist. | Needs explicit enterprise workflow-state contracts, durable store, notifications, and immutable audit posture. |
+| Data quality, classification, and policy | Partly built | Metadata-safe classification, quality, trust, masking-policy, and related APIs/tests exist. | Production enforcement, full compliance reporting, and external control integration remain future hardening. |
+| Glossary and metrics | Partly built | Business-first glossary and metric intelligence surfaces, metric variants, evidence lanes, and profile context exist. | SME approval workflow, certification semantics, glossary reminders, and full metric governance remain open. |
+| Data Products | Not built as real workflow | Admin-visible future-state page explains that the workflow is parked. | Product definition, contracts, owner/consumer promise, lifecycle, access posture, and success metrics are still required. |
+| Access marketplace / fulfillment | Partly built | Access request APIs/UI and local lifecycle support exist. | Enterprise fulfillment integration, auditable immutable store, and live permission assignment need production setup. |
+| Notifications and webhooks | Partly built | Integration settings, simulated notifications, local webhook structures, signing/retry concepts exist. | Real email/Slack/Teams delivery and enterprise notification preferences must be configured and proven. |
+| Confluence publication | Partly built | Export/dry-run/sync services and generated package concepts exist. | Live Sonic page validation, stable page hierarchy, and clear human-vs-machine artifact separation remain open. |
+| DevOps/Azure data pack | Partly built | Runtime package builder/checker and `profile-index/` generation/validation exist. | Publish-location validation, versioned live publish, and Codex-skill readback proof remain open. |
+| Codex lineage skill answer experience | Partly built | Runtime package includes answer cards/profile-index structures intended for skill use. | Skill must be validated to use DevOps/Azure data pack first for profile, quality, metric, sensitivity, freshness, confidence, and unresolved-risk answers. |
+| Usage analytics, KPI, ROI, adoption | Framework/local only | Some Governance Ops KPI/ROI/adoption calculations exist. | Production usage-event capture, trend dashboards, benchmarking, and business-impact reporting remain open. |
+| Incidents and operational monitoring | Partly built | Local incident/task workflows and quality-rule incident creation exist. | SLA monitoring, anomaly/drift detection, schema-change alerting, decommission workflow, and production notifications remain open. |
+| Third-party embedded integrations | Not built | Connector definitions and metadata hooks exist for some BI tools. | Embedded lineage viewer, BI/notebook/IDE plugins, integration marketplace, and governed in-tool search remain open. |
+| Enterprise auth and production security | Not production-complete | Dev auth, role-aware UI, permission services, and some admin/audit surfaces exist. | Entra/OIDC, token refresh, production OAuth/API keys, rate limiting, managed identity, Key Vault, and immutable audit are still required. |
+| Azure runtime and operations | Not built | Local/dev runtime and operational docs exist. | Azure App Service/AKS, Azure SQL, Blob, Redis, private networking, App Insights, backups, SLO dashboards, and DR runbooks remain open. |
+
+## UI Workflow Architecture Remediation - June 11, 2026
+
+The current frontend has working capabilities, but several screens mix unrelated jobs. The remediation goal is to make the app search-first and workflow-led, with one primary job per page and no monolithic UI surfaces.
+
+### Completed Decisions / Guardrails
+
+| ID | Status | Outcome |
+| --- | --- | --- |
+| UIWF-000 | Done | Completed workflow interview for Connections, Profiling, Lineage Acquisition, Lineage Explorer, Search/Catalog, Glossary & Metrics, Review Work, Data Products/Reports, Home, and role navigation. |
+| UIWF-001 | Done | Accepted ADR-005: UI pages must be workflow-led with one primary job, one default state, and no mixed setup/run/operate/troubleshoot surface. |
+| UIWF-002 | Done | Added `docs/UI_WORKFLOW_SPEC.md` as the implementation contract for page ownership, role defaults, navigation, and UI acceptance checks. |
+| UIWF-003 | Done | Established the target navigation: Home / Find Data, Search / Catalog, Lineage Explorer, Glossary & Metrics, Review Work, Profiling, Connections, Lineage Acquisition, Platform Admin. |
+| UIWF-004 | Done | Decided deprecated primary labels: `Command Center`, `Profile Operations`, `Ingestion Studio`, `Trust & Compliance`, and `Data Products` until their useful parts are moved or explicitly defined. |
+| UIWF-005 | Done | Defined the `SONIC_DW` lineage domain as `Sonic_DW`, `VendorData`, `StagingDB`, `ETL_Staging`, and `SSIS_UAT`. |
+| UIWF-006 | Done | Added `docs/CODEX_UI_WORK_PACKET_TEMPLATE.md` with required workflow packet fields and upgrade-and-stop triggers for medium-intelligence Codex sessions. |
+| UIWF-007 | Done | Added `docs/UI_WORKFLOW_MIGRATION_PLAN.md` with ordered workstreams, model routing rules, and the starting prompt for future Codex backlog work. |
+
+### Codex Execution Entry Point
+
+When starting this backlog, first read:
+
+1. `docs/adr/ADR-005-Workflow-Led-UI-Surfaces.md`
+2. `docs/UI_WORKFLOW_SPEC.md`
+3. `docs/CODEX_UI_WORK_PACKET_TEMPLATE.md`
+4. `docs/UI_WORKFLOW_MIGRATION_PLAN.md`
+
+Codex 5.5 on medium may work only on small, scoped tasks with a completed work packet. If a task hits an upgrade-and-stop trigger in `docs/CODEX_UI_WORK_PACKET_TEMPLATE.md`, Codex must stop and ask the user to raise intelligence before editing files.
+
+### Conformance Backlog
+
+| ID | Priority | Status | Work |
+| --- | --- | --- | --- |
+| UIWF-010 | Critical | Done | Split the active frontend away from the monolithic `docker/frontend/app.js` structure into workflow-owned modules/pages and shared components. |
+| UIWF-011 | Critical | Done | Replace `Command Center` with a search-first Home / Find Data surface. Home now stays search/ask-first and does not show dashboard/workbench panels below the search area by default. |
+| UIWF-012 | Critical | Done | Replace `Profile Operations` with Connections. Main surface shows type, intelligent name, status, login check, discovery check, and explicit Open/Test/Edit/Disable actions only. |
+| UIWF-013 | Critical | Done | Move all profile schedule, queue, run history, publish warning, and manual run-now controls out of Connections and into Profiling. |
+| UIWF-014 | Critical | Done | Rebuild Profiling around the sorted schedule list: running active, active failed, active successful, deactivated, drafts. Add schedule builder with one-database scope, schema selection, blockers, activate, and run-now. |
+| UIWF-015 | Critical | Done | Rename/reframe `Ingestion Studio` as Lineage Acquisition and make it admin/operator evidence refresh for configured domains, not a raw extraction page for normal users. |
+| UIWF-016 | Critical | Done | Ensure selected-asset lineage answers are plain-English first, with graph/evidence drilldowns second; the old Lineage Explorer route remains internal/deep-link only. |
+| UIWF-017 | High | Done | Rebuild discovery results to disambiguate same-name assets with source location, type pill, match reason, confidence score, and business-first asset detail; Search / Catalog remains an internal advanced console. |
+| UIWF-018 | High | Done | Merge useful `Trust & Compliance` concepts into system confidence reasons, warning badges, and Review Work queues; remove it as a generic primary page. |
+| UIWF-019 | High | Done | Build Review Work / Governance Ops as steward work queues starting with failed profiles, failed lineage, and suspicious lineage. Deep-link to fixing surfaces instead of duplicating controls. |
+| UIWF-020 | High | Done | Reframe Glossary & Metrics so glossary terms are business-defined and metrics support grouped variants, in-review engine suggestions, business logic summaries, and impact links. |
+| UIWF-021 | Medium | Done | Park Data Products as an admin-visible future-state page until a concrete product definition exists; active report metadata belongs in Home/Asset Detail, selected-asset lineage, and Metrics. |
+| UIWF-022 | High | Done | Add role-aware navigation for User, Analyst, Data Steward, and Admin so normal users do not see advanced/raw operator pages. |
+| UIWF-023 | High | Done | Add visual/smoke coverage for redesigned primary workflow pages, plus hidden/internal-route assertions for Search, Asset Detail, and lineage surfaces. |
+| UIWF-024 | Medium | Done | Add lint or test guardrails that fail obvious UI anti-patterns such as nested workflow tabs, new primary labels outside the workflow spec, or duplicated connector/profile action implementations. |
+| UIWF-025 | Medium | Done | Add shared UI/action components for Test, Save Draft, Activate, Run Now, Retry Publish, status chips, blocker messages, confidence explanations, and drilldown detail drawers. |
+
+### UI Workflow Remediation Progress Notes
+
+#### UIWF-010 - June 11, 2026
+
+- Status changed from `Planned` to `In Progress`, then to `Done` after all primary `activeView` page templates were extracted from `docker/frontend/app.js`.
+- Started the structural frontend split required before future workflow UI changes can avoid expanding `docker/frontend/app.js`.
+- Moved workflow navigation sections and page metadata into `docker/frontend/workflows/*` owner modules, composed by `docker/frontend/workflowRegistry.js`.
+- Moved cross-workflow quick actions into `docker/frontend/workflowQuickActions.js`.
+- Added `docs/UI_WORKFLOW_MEDIUM_SAFE_EXTRACTION.md` so remaining move-only extraction slices can be safely handled on medium with exact page boundaries and stop conditions.
+- Added `docs/UI_WORKFLOW_REDESIGN_BACKLOG.md` to separate future layout/functionality redesign work from the current move-only architecture cleanup.
+- Expanded `docs/UI_WORKFLOW_REDESIGN_BACKLOG.md` with medium-ready story packets for the follow-on layout and functionality migration.
+- Extracted the Home / Find Data page template into `docker/frontend/workflows/findAndUnderstandTemplates.js`.
+- Extracted the Search / Catalog page template into `docker/frontend/workflows/findAndUnderstandTemplates.js`.
+- Extracted the Lineage Assistant page template into `docker/frontend/workflows/findAndUnderstandTemplates.js`.
+- Extracted the Lineage Explorer page template into `docker/frontend/workflows/findAndUnderstandTemplates.js`.
+- Extracted the Business Glossary page template into `docker/frontend/workflows/governAndImproveTemplates.js`.
+- Extracted the Advanced Trust Controls page template into `docker/frontend/workflows/governAndImproveTemplates.js`.
+- Extracted the Governance Operations page template into `docker/frontend/workflows/governAndImproveTemplates.js`.
+- Extracted the Metric Intelligence page template into `docker/frontend/workflows/governAndImproveTemplates.js`.
+- Extracted the Data Products future-state page template into `docker/frontend/workflows/packageAndReportTemplates.js`.
+- Extracted the Governance Insights page template into `docker/frontend/workflows/packageAndReportTemplates.js`.
+- Extracted the Connections page template into `docker/frontend/workflows/connectAndOperateTemplates.js`.
+- Extracted the Profiling page template into `docker/frontend/workflows/connectAndOperateTemplates.js`.
+- Extracted the connector workflow subpage template into `docker/frontend/workflows/connectAndOperateTemplates.js`.
+- Extracted the Lineage Acquisition page template into `docker/frontend/workflows/connectAndOperateTemplates.js`.
+- Extracted the Platform Admin page template into `docker/frontend/workflows/connectAndOperateTemplates.js`.
+- Extracted the Help Center page template into `docker/frontend/workflows/supportTemplates.js`.
+- Completed the page-template ownership pass: `docker/frontend/app.js` now composes workflow-owned page templates and no longer contains primary `activeView` page markup blocks.
+- Updated `scripts/check-ui-workflow-guardrails.mjs` so primary-label validation reads workflow-owned modules, blocks reintroducing `navSections` or `pageWorkflowMeta` inside `app.js`, and protects the extracted page-template seams.
+- Backend contracts, role visibility semantics, workflow behavior, and primary navigation remained unchanged.
+- Validation evidence: `node --check` passed for `docker/frontend/app.js`, `docker/frontend/workflowRegistry.js`, `docker/frontend/workflowQuickActions.js`, all new `docker/frontend/workflows/*.js` modules, and `scripts/check-ui-workflow-guardrails.mjs`; `npm run ui:workflow:guardrails` passed; `npm run test:e2e -- tests/e2e/ui-workflow.spec.js --workers=1` passed 14/14 after the default parallel run hit browser worker OOM; `git diff --check` found no whitespace errors and only reported line-ending normalization warnings for existing touched files.
+- Follow-up: start `docs/UI_WORKFLOW_REDESIGN_BACKLOG.md` with `UIR-001` page ownership matrix, then implement one medium-safe redesign story at a time.
+
+#### Post-UIWF-010 Redesign Pass - June 11-12, 2026
+
+These layout/functionality changes happened after `UIWF-010` split the frontend into workflow-owned modules. No `UIR-*` page redesign story should be treated as pre-rebuild work.
+
+- `UIR-001` completed the page ownership matrix and clutter triage buckets for active workflow pages, parked Data Products, and Help Center.
+- `UIR-002` redesigned Home / Find Data as a centered search/ask landing state, then removed all secondary Home workbench content after user review so Home stays search-only by default.
+- `UIR-003` kept Search / Catalog as an internal advanced console and added lightweight recent-search recall without reintroducing a Home card.
+- `UIR-004` moved lineage into selected-asset lineage reached from Home/Asset Detail and kept graph/evidence as drilldowns rather than the default first view.
+- The Search + Lineage merge removed `Lineage Assistant`, `Lineage Explorer`, and Search / Catalog from primary navigation while preserving their routes as internal/deep-link surfaces.
+- `UIR-005` through `UIR-012` completed the remaining redesign pass for Glossary, Metrics, Governance Ops, Connections, Profiling, Lineage Acquisition, Platform Admin, visual smoke anchors, and post-redesign guardrails.
+- Backend contracts, role visibility, search ranking, lineage confidence, profile execution, connector runtime, schedule persistence, and publish semantics were preserved unless explicitly called out in the owning story.
+
+### Profiling Queue Clarity Capability - June 13, 2026
+
+This capability is the follow-on cleanup for Profiling after the Search/Home and Asset Detail redesigns. The goal is to make Profiling answer "what is running, what worked, what needs me, and what happens next" without making the user inspect worker controls, raw schedule fields, run artifacts, or queue internals first.
+
+#### Codex Entry Point
+
+Tell a new chat: "Start the Profiling Queue Clarity capability in `docs/PROJECT_BACKLOG.md`. Read ADR-005, `docs/UI_WORKFLOW_SPEC.md`, `docs/CODEX_UI_WORK_PACKET_TEMPLATE.md`, and the `UIPROF` stories. Pick the first open story, create the required work packet before editing, and stop if any upgrade-and-stop trigger applies."
+
+#### Capability Guardrails
+
+- Medium-safe stories must not change connector runtime behavior, profile execution, queue persistence, scheduler cadence, Windows-auth handling, publish semantics, or live profile artifacts.
+- Default Profiling should behave like Search/Asset Detail: one primary status answer first, selected queue detail second, advanced operator tools last.
+- The page must use existing schedule, queue preview, scheduler status, and run-history APIs unless a story explicitly stops for a backend contract.
+- Live queues must not be deactivated, restarted, deleted, reseeded, or manually run as part of UI-only stories.
+- If exact pending totals, next-object prediction, durable production worker ownership, enterprise credentials, or SQL-backed schedule persistence are required, stop and create a backend story instead of guessing in the frontend.
+
+#### Story Backlog
+
+| ID | Priority | Status | Medium-safe? | Story |
+| --- | --- | --- | --- | --- |
+| UIPROF-001 | Critical | Done | Yes | Create a Profiling view-model layer that translates existing schedules, queue previews, scheduler status, last runs, blockers, next run times, live success counts, and timeout penalties into plain-English queue health rows. |
+| UIPROF-002 | Critical | Done | Yes | Redesign the default Profiling page into a clean queue health home with a single hero answer, summary cards for running/completed/needs-attention/next-run, and a Search-style list of live profile queues. |
+| UIPROF-003 | Critical | Done | Yes | Add a selected Queue Detail surface, analogous to Asset Detail, showing one queue's health summary, completed live profiles, recent changes, current blocker, next run, and primary actions without exposing raw scheduler machinery by default. |
+| UIPROF-004 | High | Done | Yes | Move worker/runtime controls, raw run history, publish readiness, schedule settings, and low-level queue internals behind an Advanced / Operator Tools section so they no longer compete with the default queue-health answer. |
+| UIPROF-005 | High | Done | Yes | Replace system-native labels and error phrasing on Profiling with user-facing status language such as "Running normally", "Needs VPN or login", "Waiting for next scheduled run", "Finished this batch", and "Will retry timed-out tables later". |
+| UIPROF-006 | High | Done | Yes | Add visual and Playwright smoke coverage proving the default Profiling page shows queue health first, exposes completed live profile counts and next run times, and keeps worker/runtime controls hidden until Advanced is opened. |
+| UIPROF-007 | Medium | Done | Yes | Add guardrails that prevent future Profiling changes from reintroducing always-visible worker controls, schedule editors, raw runtime fields, or multi-job dashboard clutter above the queue-health experience. |
+| UIPROF-008 | Medium | Done | Conditional | If existing APIs cannot support a trusted progress explanation, define a backend read-only queue health summary contract that returns completed, pending/unknown, failed, skipped, last delta, next run, and recommended operator action without changing scheduler execution. |
+
+#### UIPROF-001 Work Packet
+
+**Primary job**: Teach the frontend to explain profile queue state in plain English using existing data only.
+
+**Files likely touched**: `docker/frontend/app.js`; optional helper module only if the view-model code becomes too large for a medium-safe slice.
+
+**Acceptance criteria**:
+
+- Add computed/helper functions for queue health rows without changing APIs or scheduler behavior.
+- Each row should derive queue name, connector, profile type, health state, plain-English summary, last run, next run, completed live count when available, timeout/deferred notes when available, and primary next action.
+- Missing counts must be labeled as unknown or unavailable rather than guessed.
+- Existing Profiling behavior remains intact until later stories consume the new helpers.
+
+**Upgrade-and-stop triggers**:
+
+- Stop if the implementation needs new backend fields.
+- Stop if queue health requires changing schedule persistence, profile execution, or live queue selection.
+- Stop if the story grows into a layout rewrite; that belongs to `UIPROF-002`.
+
+#### UIPROF-001 Completion Note - June 13, 2026
+
+- Status changed from `Open` to `Done`.
+- Added Profiling queue-health view-model helpers in `docker/frontend/app.js`: `profileQueueHealthRows`, `profileQueueHealthSummary`, `profileQueueHeroAnswer`, and row translators for plain status, explanation, counts, blockers, last/next run, source, type, and recommended next action.
+- Missing per-schedule queue totals are labeled `Unknown` instead of guessed when the current schedule list/run APIs do not expose detailed counts for that schedule.
+- Preserved connector runtime behavior, profile execution, queue persistence, scheduler cadence, Windows-auth handling, publish semantics, and live profile artifacts.
+- Partially advanced `UIPROF-002` by wiring the default Profiling page in `docker/frontend/workflows/connectAndOperateTemplates.js` to the new helpers and adding compact `profile-queue-answer` styles in `docker/frontend/app.css`.
+- Validation evidence: `node --check docker/frontend/app.js` passed; `node --check docker/frontend/workflows/connectAndOperateTemplates.js` passed; `npm run ui:workflow:guardrails` passed; `npm run test:e2e -- tests/e2e/ui-workflow.spec.js` passed 15/15; `npm run build` passed as the project placeholder build; `npm run catalog:repo:check` passed; `git diff --check` found no whitespace errors and only reported line-ending normalization warnings.
+- Follow-up: complete `UIPROF-002` by moving visible Run Now, Queue Detail, Run History, Publish Readiness, and Schedule Settings tabs behind the intended clean queue-health home or Advanced / Operator Tools lane without changing backend semantics.
+
+#### UIPROF-002 Work Packet
+
+**Primary job**: Make the default Profiling page a clean monitoring home instead of an operator console.
+
+**Files likely touched**: `docker/frontend/workflows/connectAndOperateTemplates.js`, `docker/frontend/app.css`, `docker/frontend/app.js`.
+
+**Acceptance criteria**:
+
+- The first visible Profiling area answers whether live profiling is healthy, blocked, or waiting.
+- Show summary cards for running queues, completed live profiles, attention needed, and next scheduled run.
+- Show queue rows/cards for Sonic_DW, VendorData, SSRS, and other schedules using the `UIPROF-001` view-model helpers.
+- Keep Run Now, Schedule Settings, Worker Controls, Run History, and Publish Readiness out of the default first screen.
+- Existing actions remain reachable through later tabs/advanced links until `UIPROF-004` reorganizes them.
+
+**Upgrade-and-stop triggers**:
+
+- Stop if the layout requires changing route ownership or role visibility.
+- Stop if product asks for new backend queue math instead of using known fields.
+- Stop if the work requires changing live scheduler behavior.
+
+#### UIPROF-002 Completion Note - June 13, 2026
+
+- Status changed from `In Progress` to `Done`.
+- Reworked the default Profiling surface in `docker/frontend/workflows/connectAndOperateTemplates.js` so the first visible area is a queue-health answer, followed by summary cards for total queues, running queues, finished queues, queues needing attention, and next scheduled run.
+- Replaced the grouped operator-style schedule sections with a scan-friendly live profile queue list powered by the `UIPROF-001` queue-health rows.
+- Removed default-screen `Run Now`, `Edit`, `Run`, `Activate`, `Deactivate`, `Schedule Settings`, `Run History`, `Publish Readiness`, and worker/runtime controls from the queue-health home.
+- Kept existing operator actions reachable through a collapsed `Advanced / Operator Tools` lane and existing deep-link tab state; no backend API, scheduler execution, queue persistence, role visibility, publish behavior, or live profile artifact semantics changed.
+- Added compact queue-home styling in `docker/frontend/app.css` for the queue answer, operator lane spacing, and queue-health rows.
+- Validation evidence: `node --check docker/frontend/app.js` passed; `node --check docker/frontend/workflows/connectAndOperateTemplates.js` passed; `npm run ui:workflow:guardrails` passed; `npm run test:e2e -- tests/e2e/ui-workflow.spec.js` passed 15/15.
+- Follow-up: `UIPROF-003` should add the selected Queue Detail surface so `Open Queue` lands on a focused queue-health detail rather than the current operator queue workspace.
+
+#### UIPROF-003 Work Packet
+
+**Primary job**: Add a focused Queue Detail experience for one selected profile queue.
+
+**Files likely touched**: `docker/frontend/workflows/connectAndOperateTemplates.js`, `docker/frontend/app.js`, `docker/frontend/app.css`.
+
+**Acceptance criteria**:
+
+- Selecting a queue opens a focused detail region or page for that queue.
+- The detail starts with a plain-English health summary, then shows progress, recent completed objects, timeout/deferred notes, last run result, next run, and blocker/remediation.
+- Primary actions are limited to safe existing actions: Open failures/details, Run now, Pause/Activate where already supported.
+- Raw run artifacts and scheduler internals remain below the fold or behind Advanced.
+
+**Upgrade-and-stop triggers**:
+
+- Stop if a new route system or navigation restructure is required.
+- Stop if the detail needs exact object-level progress unavailable from the current queue preview.
+- Stop if action semantics need backend changes.
+
+#### UIPROF-003 Completion Note - June 13, 2026
+
+- Status changed from `Open` to `Done`.
+- Added a focused selected Queue Detail region in `docker/frontend/workflows/connectAndOperateTemplates.js` for the queue opened from the live queue list.
+- Queue Detail now starts with a plain-English health summary, completed/failed/remaining/selected/fresh-skip/timeout counts, last result, next run, current blockers, and existing safe actions: `Run Now`, `Pause`, and `Activate`.
+- Moved object-level queue tables for next objects, deferred objects, freshness skips, and timeout retries behind a collapsed `Queue Internals` lane.
+- Added detail styling in `docker/frontend/app.css`; no new routes, backend fields, queue selection semantics, or action behavior changed.
+
+#### UIPROF-004 Work Packet
+
+**Primary job**: Move operator-only Profiling controls behind an Advanced / Operator Tools lane.
+
+**Files likely touched**: `docker/frontend/workflows/connectAndOperateTemplates.js`, `docker/frontend/app.css`, `docker/frontend/app.js`.
+
+**Acceptance criteria**:
+
+- Worker/runtime controls are collapsed by default.
+- Run history, publish readiness, schedule settings, and queue internals are grouped as support lanes, not primary page content.
+- Advanced sections have plain labels that explain why a user would open them.
+- No operator control is deleted; this is a visibility and hierarchy pass only.
+
+**Upgrade-and-stop triggers**:
+
+- Stop if controls must be removed rather than reorganized.
+- Stop if role-based permissions are required.
+- Stop if backend safety checks need to change.
+
+#### UIPROF-004 Completion Note - June 13, 2026
+
+- Status changed from `Open` to `Done`.
+- Moved worker controls, runtime status, Run Now, Queue Detail, Run History, Publish Readiness, and Schedule Settings into the collapsed `Advanced / Operator Tools` lane below the queue-health answer and live queue list.
+- Kept all existing operator controls reachable through the existing `integrations.schedulerOpsTab` model and deep-link state; no controls were deleted and no backend safety checks changed.
+- Kept selected queue object internals behind the collapsed `Queue Internals` lane rather than defaulting to raw queue tables.
+
+#### UIPROF-005 Work Packet
+
+**Primary job**: Replace raw Profiling status language with user-facing explanations.
+
+**Files likely touched**: `docker/frontend/app.js`, `docker/frontend/workflows/connectAndOperateTemplates.js`, `docker/frontend/app.css`.
+
+**Acceptance criteria**:
+
+- Convert schedule and queue state into plain labels and short explanations.
+- Known connection/auth/network failures should explain likely causes without exposing credentials.
+- Technical details remain available in Advanced details for troubleshooting.
+- The UI should distinguish "blocked", "waiting", "running", "succeeded recently", and "completed with retryable skips".
+
+**Upgrade-and-stop triggers**:
+
+- Stop if reliable error classification requires backend-normalized error codes.
+- Stop if the story requires changing connector error generation.
+- Stop if sensitive credential or server information would need to be displayed.
+
+#### UIPROF-005 Completion Note - June 13, 2026
+
+- Status changed from `Open` to `Done`.
+- Added `profileQueueFriendlyError` in `docker/frontend/app.js` to translate common missing-column, login/auth/permission, timeout, network/connectivity, and publish failures into user-facing status language without exposing credentials or sensitive server details.
+- Wired default Profiling blockers and last-result copy through the friendly error helper while preserving raw details in advanced/operator areas.
+- Existing queue labels now distinguish waiting, running normally, needs attention, finished this batch, setup not ready, paused, running with issues, and retryable timeout states.
+
+#### UIPROF-006 Work Packet
+
+**Primary job**: Lock the clean Profiling default into smoke coverage.
+
+**Files likely touched**: `tests/e2e/ui-workflow.spec.js`; optional test helpers if already used.
+
+**Acceptance criteria**:
+
+- E2E coverage confirms Profiling shows a queue health heading/hero.
+- Coverage confirms completed live profile counts and next-run language are visible when schedule data is loaded.
+- Coverage confirms worker/runtime controls are not visible by default.
+- Existing workflow smoke tests still pass.
+
+**Upgrade-and-stop triggers**:
+
+- Stop if test data must be seeded by changing live queues.
+- Stop if browser instability requires broad test-harness refactoring.
+- Stop if assertions need backend fixture work beyond current UI smoke patterns.
+
+#### UIPROF-006 Completion Note - June 13, 2026
+
+- Status changed from `Open` to `Done`.
+- Updated `tests/e2e/ui-workflow.spec.js` so Profiling smoke coverage asserts the queue-health hero, live profile queue list, completed/needs-attention/next-run language, collapsed Advanced lane, hidden worker controls, and absence of default publish controls.
+- Validation evidence: `npm run test:e2e -- tests/e2e/ui-workflow.spec.js` passed 15/15.
+
+#### UIPROF-007 Work Packet
+
+**Primary job**: Prevent Profiling from drifting back into a mixed operator dashboard.
+
+**Files likely touched**: `scripts/check-ui-workflow-guardrails.mjs`, `package.json`, `tests/e2e/ui-workflow.spec.js` if needed.
+
+**Acceptance criteria**:
+
+- Guardrails fail when always-visible Profiling markup reintroduces worker controls, raw scheduler settings, or run-history tables above the queue-health default.
+- Guardrails allow those controls inside Advanced / Operator Tools.
+- Documentation or failure messages tell future Codex sessions how to fix violations.
+
+**Upgrade-and-stop triggers**:
+
+- Stop if static guardrails cannot distinguish default content from advanced/collapsed content.
+- Stop if the guardrail requires parsing Vue templates beyond the current script's safe complexity.
+- Stop if broader workflow guardrail baselines need redesign.
+
+#### UIPROF-007 Completion Note - June 13, 2026
+
+- Status changed from `Open` to `Done`.
+- Added Profiling-specific static guardrails in `scripts/check-ui-workflow-guardrails.mjs`.
+- The guardrail now requires the queue-health answer and live queue list to appear before `Advanced / Operator Tools`, blocks default-screen operator labels such as worker controls, run history, publish readiness, schedule settings, and queue settings above the queue-health experience, and requires selected queue internals to stay behind `profile-queue-internals-lane`.
+- Validation evidence: `npm run ui:workflow:guardrails` passed.
+
+#### UIPROF-008 Work Packet
+
+**Primary job**: Define, but do not automatically implement, a backend queue health summary contract if the frontend cannot produce trustworthy status from existing APIs.
+
+**Files likely touched**: `docs/PROFILING_EXECUTION_FRAMEWORK.md`, `docs/PROJECT_BACKLOG.md`; implementation files only after explicit approval.
+
+**Acceptance criteria**:
+
+- Document a read-only queue health response shape with completed, pending or unknown, failed, skipped, timeout penalties, last delta, next run, and recommended operator action.
+- State that the contract must not change execution, scheduling, queue selection, credentials, profile artifacts, or publish behavior.
+- Add follow-up implementation stories only if the frontend stories prove existing APIs are insufficient.
+
+**Upgrade-and-stop triggers**:
+
+- Stop before implementing backend routes unless the user explicitly approves that next scope.
+- Stop if exact pending counts require new persistent queue state.
+- Stop if production worker ownership, enterprise auth, or SQL-backed persistence becomes part of the ask.
+
+#### UIPROF-008 Completion Note - June 13, 2026
+
+- Status changed from `Open` to `Done`.
+- Added a future read-only queue-health contract to `docs/PROFILING_EXECUTION_FRAMEWORK.md`.
+- Documented `GET /api/v1/connectors/profile-schedules/queue-health` and `GET /api/v1/connectors/profile-schedules/:scheduleId/queue-health` as optional future summary endpoints only.
+- Defined response fields for completed live profiles, pending/unknown counts, failed live profiles, freshness skips, timeout penalties, selected-this-run count, last delta, last/next run, blocker category, publish status, warnings, and recommended operator action.
+- Explicitly stated the contract must not change execution, scheduling, queue selection, timeout penalties, freshness windows, credentials, Windows-auth behavior, runtime permissions, profile artifacts, publish behavior, artifact scrubbing, or role visibility.
+- No implementation follow-up was added because `UIPROF-001` through `UIPROF-007` proved the current UI can produce trustworthy queue explanations from existing APIs when unknown totals are clearly labeled.
+
+#### Historical Guardrail Closeout Before UIWF-010 - June 11, 2026
+
+- This note is retained only as delivery history for the guardrails/smoke coverage that made the later `UIWF-010` split safer.
+- Tightened `scripts/check-ui-workflow-guardrails.mjs` so the retired `Command Center` primary label was no longer accepted as a transitional navigation label.
+- Validation evidence at the time: `node --check scripts/check-ui-workflow-guardrails.mjs` passed; `npm run ui:workflow:guardrails` passed; `npm run test:e2e -- tests/e2e/ui-workflow.spec.js` passed 14/14; `git diff --check` found no whitespace errors and only reported line-ending normalization warnings for unrelated files plus `docker/frontend/app.css`.
+
+#### UIWF-023 - June 11, 2026
+
+- Status changed from `Planned` to `In Progress`.
+- Added Playwright smoke coverage in `tests/e2e/ui-workflow.spec.js` for Home / Find Data, Search / Catalog, Lineage Explorer, Review Work / Governance Ops, Profiling, Connections, and Lineage Acquisition.
+- Current tests map target workflow names to pre-migration navigation labels where needed: `Command Center`, `Profile Operations`, `Queues & Schedules`, and `Ingestion Studio`.
+- Validation evidence: `npm run test:e2e -- tests/e2e/ui-workflow.spec.js` passed 7/7 workflow smoke tests; `git diff --check` found no whitespace errors and only reported pre-existing CRLF normalization warnings for unrelated docs.
+- Follow-up: add screenshot/visual-regression baselines after the workflow labels stabilize, and update the smoke mapping when UIWF-011, UIWF-012, UIWF-014, and UIWF-015 rename or split surfaces.
+
+#### UIWF-024 - June 11, 2026
+
+- Status changed from `Planned` to `In Progress`.
+- Added `scripts/check-ui-workflow-guardrails.mjs` and npm script `ui:workflow:guardrails`.
+- Guardrails validate primary/transitional navigation labels, block `v-tabs` or unknown workflow `v-btn-toggle` models, and prevent connector/profile/publish action-handler counts from increasing beyond the current migration baseline.
+- Validation evidence: `npm run ui:workflow:guardrails` passed; `git diff --check` found no whitespace errors and only reported pre-existing CRLF normalization warnings for unrelated docs.
+- Follow-up: remove transitional label allowances and lower duplicated-action baselines as UIWF-011, UIWF-012, UIWF-013, UIWF-014, UIWF-015, UIWF-018, and UIWF-021 move or retire mixed surfaces.
+
+#### UIWF-025 - June 11, 2026
+
+- Status changed from `Planned` to `In Progress`.
+- Added `docker/frontend/workflowComponents.js` with shared workflow action buttons, status chips, blocker lists, confidence notes, and detail drawers.
+- Registered the shared components in `docker/frontend/app.js` and reused them in connector testing, saved connection rows, one-time profile run, profile schedule rows, profile run publishing, run detail drilldown, and Lineage Explorer confidence explanation.
+- Added shared component styling in `docker/frontend/app.css`.
+- Validation evidence: `npm run ui:workflow:guardrails` passed; `node --check docker/frontend/workflowComponents.js` passed; `node --check docker/frontend/app.js` passed; `npm run test:e2e -- tests/e2e/ui-workflow.spec.js` passed 7/7; `git diff --check` found no whitespace errors and only reported line-ending normalization warnings for unrelated docs plus `docker/frontend/app.css`.
+- Follow-up: replace remaining duplicated native connector/profile buttons and inline status chips as each workflow page is split, then tighten `UIWF-024` action-count baselines.
+
+#### UIWF-011 - June 11, 2026
+
+- Status changed from `Planned` to `In Progress`.
+- Medium setting was sufficient because this pass only reframed the existing `overview` route; it did not change role visibility, remove navigation entries, move controls between workflow owners, or split `docker/frontend/app.js`.
+- Renamed the primary nav/page meta from `Command Center` to `Home / Find Data`.
+- Reworked the default home hero into a search-or-ask-first entry point; later post-`UIWF-010` redesign removed helper pills and role shortcuts so Home stays search-only by default.
+- Updated `tests/e2e/ui-workflow.spec.js` to smoke the new `Home / Find Data` label and search-first default text.
+- Validation evidence: `npm run ui:workflow:guardrails` passed; `node --check docker/frontend/app.js` passed; `npm run test:e2e -- tests/e2e/ui-workflow.spec.js` passed 7/7; `git diff --check` found no whitespace errors and only reported line-ending normalization warnings for unrelated docs plus `docker/frontend/app.css`.
+- Follow-up: `UIWF-022` must handle role-aware navigation separately and should stop/upgrade before changing visibility across User, Analyst, Steward, and Admin roles.
+
+#### UIWF-012 - June 11, 2026
+
+- Status changed from `Planned` to `In Progress`.
+- Required stronger setting because the task replaces the admin-facing `Profile Operations` surface with the Connections workflow owner and touches controls adjacent to profiling.
+- Renamed the admin navigation/page meta and quick links from `Profile Operations` to `Connections`.
+- Reworked the default Connections view into an inventory-first admin surface with type, intelligent name, status, login check, discovery check, and explicit `Open`, `Test`, `Edit`, and disabled `Disable` actions.
+- Added connection inventory view-model helpers that derive login/discovery status from existing connector test state without changing backend connector contracts.
+- Kept profile runs, queues, publishing, and schedule controls as temporary drilldowns/links only; the default Connections page no longer promotes them as the primary job.
+- Tightened `scripts/check-ui-workflow-guardrails.mjs` so `Profile Operations` is no longer accepted as a transitional primary navigation label.
+- Validation evidence: `npm run ui:workflow:guardrails` passed; `node --check docker/frontend/app.js` passed; `npm run test:e2e -- tests/e2e/ui-workflow.spec.js` passed 11/11.
+- Follow-up: `UIWF-013` should fully move any remaining one-time profile, schedule, run history, publish warning, and manual run-now controls out of Connections and into Profiling; backend disable semantics remain undefined and should be specified before enabling the `Disable` action.
+
+#### UIWF-013 - June 11, 2026
+
+- Status changed from `Planned` to `In Progress`.
+- Required stronger setting because this task moves profile controls between Connections and Profiling workflow owners.
+- Added a Profiling-owned `Run Now` tab on the existing `Queues & Schedules` surface for one-time aggregate, BI, and metadata profile runs.
+- Kept schedule builder/list, queue monitoring, run history, publishing, retry publish, and manual run controls on the Profiling surface.
+- Removed the visible one-time profile, schedule builder/list, queue status, run history, and publishing panels from the Connections surface.
+- Left Connections with source-access inventory, connection wizard/detail, access management, and links into Profiling for run-now, runs, and publishing.
+- Updated `runOneTimeProfile` and `prepareScheduleForSelectedConnector` routing so successful/next actions land in the Profiling tabs instead of the Connections workflow tab.
+- Tightened `scripts/check-ui-workflow-guardrails.mjs` by removing the old Connections workflow toggle allowance and lowering schedule/publish action-count baselines.
+- Validation evidence: `npm run ui:workflow:guardrails` passed; `node --check docker/frontend/app.js` passed; `npm run test:e2e -- tests/e2e/ui-workflow.spec.js` passed 11/11.
+- Follow-up: `UIWF-014` should rebuild the Profiling default around the sorted schedule list, one-database scope, schema selection, blockers, queue detail, and publish warning language without changing schedule execution semantics.
+
+#### UIWF-014 - June 11, 2026
+
+- Status changed from `Planned` to `In Progress`.
+- Required stronger setting because this task rebuilds the Profiling workflow around profile schedules and queues while preserving scheduler runtime behavior.
+- Renamed the primary navigation/page label from `Queues & Schedules` to `Profiling`.
+- Reworked the Profiling default `Overview` around a sorted schedule queue grouped as running active, active failed, active successful, deactivated, and drafts.
+- Added schedule state helpers for blocker-first labels such as `Running`, `Running With Errors`, `Active Failed`, `Active Successful`, `Deactivated`, and `Draft`.
+- Moved detailed active queue internals to the `Queues` tab so the default view starts with schedule triage rather than low-level queue tables.
+- Updated the schedule builder with one-database scope messaging, selected database summary, login/discovery checks, schema/table scope copy, and blocker messages.
+- Kept existing scheduler APIs, queue persistence, publish behavior, and runtime permissions unchanged.
+- Tightened `scripts/check-ui-workflow-guardrails.mjs` so `Queues & Schedules` is no longer accepted as a transitional primary navigation label.
+- Validation evidence: `npm run ui:workflow:guardrails` passed; `node --check docker/frontend/app.js` passed; `npm run test:e2e -- tests/e2e/ui-workflow.spec.js` passed 11/11.
+- Follow-up: future work should add true schema picker data once the backend exposes discovered schemas as a stable schedule-builder contract; current schema/table scope continues to use the existing schedule scope field.
+
+#### UIWF-015 - June 11, 2026
+
+- Status changed from `Planned` to `In Progress`.
+- Required stronger setting because this task reframes the workflow owner from `Ingestion Studio` to Lineage Acquisition and touches lineage evidence acquisition UX.
+- Renamed the primary navigation/page label to `Lineage Acquisition`.
+- Added a SONIC_DW domain-first acquisition panel with configured sources `Sonic_DW`, `VendorData`, `StagingDB`, `ETL_Staging`, and `SSIS_UAT`.
+- Made the default action `Refresh Full Domain Evidence`, routed through the existing recommended workflow action without changing backend extraction, confidence, inferred-edge, or cross-source resolution contracts.
+- Reframed connector-specific controls as `Advanced Source Troubleshooting` and `Scope Override` so targeted source refreshes are secondary to the configured domain workflow.
+- Reworded SQL Server, SSIS, Data Factory, Airflow, and Databricks connector cards from raw extraction/generate-markdown language to evidence-source refresh language.
+- Tightened `scripts/check-ui-workflow-guardrails.mjs` so `Ingestion Studio` is no longer accepted as a transitional primary navigation label.
+- Validation evidence: `node --check docker/frontend/app.js` passed; `npm run ui:workflow:guardrails` passed; `npm run test:e2e -- tests/e2e/ui-workflow.spec.js` passed 11/11; `git diff --check` found no whitespace errors and only reported line-ending normalization warnings for unrelated files plus `docker/frontend/app.css`.
+- Follow-up: add a true backend domain-refresh orchestration endpoint when the platform is ready to refresh all configured SONIC_DW sources as one auditable operation.
+
+#### UIWF-016 - June 11, 2026
+
+- Status changed from `Planned` to `In Progress`.
+- Required stronger setting because this task reframes the Lineage Explorer default state for manual impact tracing while preserving lineage confidence, column semantics, graph resolution, and API contracts.
+- Changed the Lineage Explorer shell copy and primary action from graph rendering to answer-first manual tracing.
+- Reworked the default Lineage Explorer card around a table/column/report/metric search prompt, lineage intent selector, and `Get Plain-English Answer` primary CTA.
+- Promoted the plain-English lineage answer, confidence label/tooltip including `Strongly Suggested`, caveats, upstream/downstream counts, and business-logic summary above graph detail.
+- Moved graph rendering, blast radius, evidence audit, fullscreen, format, depth, and SSIS isolation controls into the `Graph & Evidence Drilldowns` area below the readable answer.
+- Removed the duplicate side-panel answer card so Lineage Explorer has one clear answer surface.
+- Updated smoke coverage to assert `Manual Impact Trace`, `Plain-English Lineage Answer`, `Get Plain-English Answer`, and `Graph & Evidence Drilldowns`.
+- Validation evidence: `node --check docker/frontend/app.js` passed; `node --check docker/frontend/workflowComponents.js` passed; `npm run ui:workflow:guardrails` passed; `npm run test:e2e -- tests/e2e/ui-workflow.spec.js` passed 11/11; `git diff --check` found no whitespace errors and only reported line-ending normalization warnings for unrelated files plus `docker/frontend/app.css`.
+- Follow-up: add browser screenshot baselines for the answer-first Lineage Explorer once visual regression snapshots are introduced.
+
+#### UIWF-017 - June 11, 2026
+
+- Status changed from `Planned` to `In Progress`.
+- Stayed on medium because the work was scoped to focused frontend Search / Catalog result-card and detail-page changes without changing search ranking, index contracts, API contracts, or backend scoring.
+- Added Search hero guidance that results show source location, type, match reason, and confidence before opening asset detail.
+- Reworked catalog result cards to surface source location, type pill, match reason, confidence label/score, and plain-English confidence reason before the user opens an asset.
+- Reframed selected asset detail around a `Business Summary` and confidence note before columns and technical metadata.
+- Renamed the column dictionary area to `Columns & Technical Metadata` so business context stays first and technical detail sits below.
+- Added frontend-only helper formatting for source location, asset type labels, match reasons, confidence labels, confidence reasons, and business summaries from existing payload fields.
+- Updated smoke coverage to assert the Search / Catalog disambiguation and business-first contract.
+- Validation evidence: `node --check docker/frontend/app.js` passed; `npm run ui:workflow:guardrails` passed; `npm run test:e2e -- tests/e2e/ui-workflow.spec.js` passed 11/11; `git diff --check` found no whitespace errors and only reported line-ending normalization warnings for unrelated files plus `docker/frontend/app.css`.
+- Follow-up: add richer match-reason and confidence fields from the backend only after search/index contracts are explicitly planned.
+
+#### UIWF-018 - June 11, 2026
+
+- Status changed from `Planned` to `In Progress`.
+- Required stronger setting because this task removes a deprecated primary navigation item and decomposes Trust & Compliance concepts across Review Work and confidence warnings.
+- Removed `Trust & Compliance` from primary navigation while preserving the existing policy, quality, classification, and masking controls as a non-primary `Advanced Trust Controls` drilldown for Steward/Admin roles.
+- Rerouted executive/steward shortcuts and `?view=governance` deep links toward `Governance Ops` so review starts from steward work queues instead of a generic trust page.
+- Added a `Confidence Warnings & Review Queues` panel to Governance Ops with `Failed Profiles`, `Failed Lineage`, and `Suspicious Lineage` queue cards that link to the owning workflows rather than duplicating their controls.
+- Added migration copy on the advanced controls page that points users back to Review Work.
+- Tightened `scripts/check-ui-workflow-guardrails.mjs` so `Trust & Compliance` is no longer allowed as a transitional primary navigation label.
+- Updated smoke and role-navigation coverage to assert the Review Work queue language and hidden deprecated label.
+- Validation evidence: `node --check docker/frontend/app.js` passed; `npm run ui:workflow:guardrails` passed; `npm run test:e2e -- tests/e2e/ui-workflow.spec.js` passed 11/11; `git diff --check` found no whitespace errors and only reported line-ending normalization warnings for unrelated files plus `docker/frontend/app.css`.
+- Follow-up: `UIWF-019` should deepen Governance Ops into durable failed-profile, failed-lineage, and suspicious-lineage queues backed by explicit work-item types, without introducing approval routing or global rule semantics unless upgraded and specified.
+
+#### UIWF-019 - June 11, 2026
+
+- Status changed from `Planned` to `In Progress`.
+- Required stronger setting because this task builds Review Work as cross-workflow steward queues and must avoid duplicating Profiling, Lineage Explorer, or Lineage Acquisition controls.
+- Replaced the count-only confidence warning panel with `Steward Review Work Queues` for `Failed Profiles`, `Failed Lineage`, and `Suspicious Lineage`.
+- Added frontend-only queue derivation from existing Governance Ops tasks, incidents, publication checks, and portfolio alerts; no backend workflow state, approval routing, or global rule semantics changed.
+- Added bite-sized work item cards with issue title, asset id, status, plain-English next action, and deep links to the owning workflow.
+- Linked failed profile items to Profiling, failed lineage items to Lineage Explorer, and suspicious/stale evidence review to Lineage Acquisition or Search/Lineage Explorer where applicable.
+- Kept operational fix controls in their owning workflows; Governance Ops remains a triage and deep-link surface only.
+- Updated smoke coverage to assert `Steward Review Work Queues`, `Failed Profiles`, `Failed Lineage`, `Suspicious Lineage`, and `Open Owning Workflow`.
+- Validation evidence: `node --check docker/frontend/app.js` passed; `npm run ui:workflow:guardrails` passed; `npm run test:e2e -- tests/e2e/ui-workflow.spec.js` passed 11/11; `git diff --check` found no whitespace errors and only reported line-ending normalization warnings for unrelated files plus `docker/frontend/app.css`.
+- Follow-up: add explicit backend work-item types for failed profiles, failed lineage, suspicious lineage, metric review, and approvals when workflow-state contracts are ready.
+
+#### UIWF-020 - June 11, 2026
+
+- Status changed from `Planned` to `In Progress`.
+- Reframed Glossary copy so business-authored definitions lead and technical mappings are described as supporting evidence.
+- Reframed Metrics around `Metric Meaning`, display-only grouping of existing metric registry rows, selected-metric meaning, grouped variant cards, and in-review engine suggestions based on current metric state/confidence fields.
+- Moved metric logic and impact links ahead of source-column/profile/runtime evidence; source columns, profile/runtime evidence, and advanced profile runs are now supporting lanes with Catalog and selected-asset lineage links instead of duplicating those workflows.
+- Added smoke coverage for Business Glossary and Metric Intelligence default states.
+- Validation evidence: `node --check docker/frontend/app.js` passed; `npm run ui:workflow:guardrails` passed; `npm run test:e2e -- tests/e2e/ui-workflow.spec.js` passed 13/13; `git diff --check` found no whitespace errors and only reported line-ending normalization warnings for unrelated files plus `docker/frontend/app.css`.
+- Follow-up: backend metric concept grouping, certification, approval, and review workflow state remain out of scope until metric semantics/contracts are explicitly designed.
+
+#### UIWF-021 - June 11, 2026
+
+- Status changed from `Planned` to `In Progress`.
+- Medium setting was sufficient because this pass marked Data Products as future-state instead of removing the nav item, deleting code, changing role visibility, or defining product contracts.
+- Reframed the Data Products page metadata as `Future` and made the default page explain that Data Products is parked until the product definition is explicit.
+- Routed current report/product metadata needs to Home/Asset Detail, selected-asset lineage, and Metrics with action cards rather than promoting Data Products as a primary workflow.
+- Preserved the existing product cards as draft/reference content only; no backend data, product contracts, or lifecycle semantics changed.
+- Added smoke coverage for the parked Data Products future-state page.
+- Validation evidence: `node --check docker/frontend/app.js` passed; `npm run ui:workflow:guardrails` passed; `npm run test:e2e -- tests/e2e/ui-workflow.spec.js` passed 14/14; `git diff --check` found no whitespace errors and only reported line-ending normalization warnings for unrelated files plus `docker/frontend/app.css`.
+- Follow-up: define product owner, consumer promise, asset bundle contract, certification rules, access posture, lifecycle states, and success metrics before Data Products returns as a real workflow.
+
+#### UIWF-022 - June 11, 2026
+
+- Status changed from `Planned` to `In Progress`.
+- Required stronger setting because this changes role-based navigation visibility across User, Analyst, Data Steward, and Admin.
+- Added frontend navigation audience metadata and role-profile mapping from existing user roles: `Viewer/User` to User, `Analyst` to Analyst, `PowerUser/Steward` to Data Steward, and `Admin` to Admin.
+- Rendered `visibleNavSections` so normal users do not see advanced/raw operator pages such as `Profile Operations`, `Ingestion Studio`, `Queues & Schedules`, and `Platform Admin`.
+- Added blocked deep-link handling so hidden pages return to `Home / Find Data` with a plain-English toast instead of exposing operator navigation.
+- Filtered page quick actions through the same role visibility model.
+- Expanded `tests/e2e/ui-workflow.spec.js` with User, Analyst, Data Steward, and Admin navigation matrix coverage using the existing dev-login role mapping.
+- Validation evidence: `npm run ui:workflow:guardrails` passed; `node --check docker/frontend/app.js` passed; `npm run test:e2e -- tests/e2e/ui-workflow.spec.js` passed 11/11; `git diff --check` found no whitespace errors and only reported line-ending normalization warnings for unrelated docs plus `docker/frontend/app.css`.
+- Follow-up: backend/API authorization remains unchanged and should stay the source of truth for enforcement; later UIWF work should rename deprecated labels and then tighten the transitional guardrail allowlist.
+
 > **Non-Negotiable Architecture Principles**:
 >
 > **Layer 1 – Markdown Source of Truth (the dominant layer — ~80% of all governance content)**

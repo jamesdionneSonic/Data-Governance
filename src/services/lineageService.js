@@ -40,7 +40,8 @@ export function buildLineageGraph(objects) {
           referenceIndex,
           lowerObjects
         );
-        if (depId) {
+        const depMetadata = depId ? objects.get(depId) : null;
+        if (depId && !isLookupOrReferenceRead(depMetadata, metadata)) {
           graph.get(objectId).add(depId);
         }
       }
@@ -49,8 +50,6 @@ export function buildLineageGraph(objects) {
     const creatorEdges = [
       ...(Array.isArray(metadata.created_by) ? metadata.created_by : []),
       ...(Array.isArray(metadata.created_via) ? metadata.created_via : []),
-      ...(Array.isArray(metadata.contextual_reads) ? metadata.contextual_reads : []),
-      ...(Array.isArray(metadata.reads_from) ? metadata.reads_from : []),
     ];
 
     for (const creator of creatorEdges) {
@@ -67,11 +66,25 @@ export function buildLineageGraph(objects) {
       }
     }
 
+    for (const source of Array.isArray(metadata.reads_from) ? metadata.reads_from : []) {
+      const sourceId = resolveObjectId(
+        source,
+        metadata,
+        objects,
+        nameIndex,
+        referenceIndex,
+        lowerObjects
+      );
+      const sourceMetadata = sourceId ? objects.get(sourceId) : null;
+      if (sourceId && !isLookupOrReferenceRead(sourceMetadata, metadata)) {
+        graph.get(objectId).add(sourceId);
+      }
+    }
+
     // Make writes_to/calls resolve back to the emitting object so downstream graphs stay connected.
     const forwardEdges = [
       ...(Array.isArray(metadata.writes_to) ? metadata.writes_to : []),
       ...(Array.isArray(metadata.calls) ? metadata.calls : []),
-      ...(Array.isArray(metadata.used_by) ? metadata.used_by : []),
     ];
 
     if (forwardEdges.length > 0) {
@@ -92,9 +105,50 @@ export function buildLineageGraph(objects) {
         }
       }
     }
+
+    for (const target of Array.isArray(metadata.used_by) ? metadata.used_by : []) {
+      const targetId = resolveObjectId(
+        target,
+        metadata,
+        objects,
+        nameIndex,
+        referenceIndex,
+        lowerObjects
+      );
+      const targetMetadata = targetId ? objects.get(targetId) : null;
+      if (targetId && !isLookupOrReferenceRead(metadata, targetMetadata)) {
+        if (!graph.has(targetId)) {
+          graph.set(targetId, new Set());
+        }
+        graph.get(targetId).add(objectId);
+      }
+    }
   }
 
   return graph;
+}
+
+function normalizedLineageText(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function isLookupOrReferenceRead(sourceMetadata = {}, consumerMetadata = {}) {
+  if (!sourceMetadata || !consumerMetadata) return false;
+  const consumerType = normalizedLineageText(consumerMetadata.type);
+  if (!['procedure', 'stored_procedure', 'proc', 'view'].includes(consumerType)) return false;
+
+  const sourceType = normalizedLineageText(sourceMetadata.type);
+  if (sourceType === 'synonym') return false;
+
+  const sourceSchema = normalizedLineageText(sourceMetadata.schema);
+  const sourceName = normalizedLineageText(sourceMetadata.name);
+  if (['wrk', 'stage', 'stg', 'landing', 'source'].includes(sourceSchema)) return false;
+  if (/^(wrk|stage|stg|tmp|temp|landing|src|synwrk)/.test(sourceName)) return false;
+
+  return (
+    /^(dim|lkp|lookup|ref|map)/.test(sourceName) ||
+    /lookup|reference|bridge|xref/.test(sourceName)
+  );
 }
 
 function buildLowerObjectIndex(objects) {

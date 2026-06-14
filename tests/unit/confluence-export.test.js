@@ -123,18 +123,18 @@ describe('Confluence Export Service', () => {
 
     expect(result.manifest.pages.map((page) => page.title)).toEqual(
       expect.arrayContaining([
-        '[AUTO] Sonic Data Lineage README',
-        '[AUTO] Latest Rebuild Report',
-        '[AUTO] Governance Portal',
-        '[AUTO] Object Index',
+        'Sonic Data Lineage README',
+        'Latest Rebuild Report',
+        'Governance Portal',
+        'Object Index',
       ])
     );
     expect(result.manifest.shard_pages).toHaveLength(2);
     expect(result.manifest.object_locator_pages.length).toBeGreaterThan(0);
     expect(result.manifest.quick_context_pages.length).toBeGreaterThan(0);
-    expect(result.manifest.object_locator_pages[0].title).toContain('[AUTO] Object Locator');
+    expect(result.manifest.object_locator_pages[0].title).toContain('Object Locator');
     expect(result.manifest.quick_context_pages[0].title).toContain(
-      '[AUTO] Lineage Quick Context'
+      'Lineage Quick Context'
     );
     expect(result.manifest.shard_pages.every((page) => page.publish === true)).toBe(true);
     expect(result.manifest.object_locator_pages.every((page) => page.publish === true)).toBe(true);
@@ -161,17 +161,13 @@ describe('Confluence Export Service', () => {
     );
     expect(quickContextPages.join('\n')).toContain('object_id: DW01.Sonic_DW.dbo.FactClaim');
     expect(quickContextPages.join('\n')).toContain('direct_downstream_count: 1');
-    expect(quickContextPages.join('\n')).toContain(
-      'shard_title: "[AUTO] Catalog Shard'
-    );
+    expect(quickContextPages.join('\n')).toMatch(/shard_title: "?Catalog Shard/);
 
     const objectLocatorPages = await Promise.all(
       result.manifest.object_locator_pages.map((page) => readFile(join(outputRoot, page.file), 'utf8'))
     );
     expect(objectLocatorPages.join('\n')).toContain('object_id: DW01.Sonic_DW.dbo.FactClaim');
-    expect(objectLocatorPages.join('\n')).toContain(
-      'quick_context_title: "[AUTO] Lineage Quick Context'
-    );
+    expect(objectLocatorPages.join('\n')).toMatch(/quick_context_title: "?Lineage Quick Context/);
 
     const manifest = JSON.parse(
       await readFile(join(outputRoot, 'confluence-export-manifest.json'), 'utf8')

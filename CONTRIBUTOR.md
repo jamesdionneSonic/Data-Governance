@@ -2,23 +2,25 @@
 
 Welcome to the Data Governance project! This document outlines the best practices and standards for contributing to this project. We build scalable, maintainable applications using Vue.js and Vuetify with a focus on modular architecture, thorough testing, and comprehensive documentation.
 
-> **Non-Negotiable Engineering Guardrails:** We build with **Backend-for-Frontend (BFF)** architecture for frontend-facing APIs and follow **Infrastructure as Code (IaC) First** for all environment and platform changes.
+> **Non-Negotiable Engineering Guardrails:** We build with **Backend-for-Frontend (BFF)** architecture for frontend-facing APIs, follow **Infrastructure as Code (IaC) First** for all environment and platform changes, use **one shared connector runtime** for source connections, testing, ingestion, profiling, lineage, and schedules, and enforce **workflow-led UI surfaces** so pages do not become monolithic data dumps.
 
 ---
 
 ## Table of Contents
 
 1. [Architecture & Design Principles](#architecture--design-principles)
-2. [Vue.js & Vuetify Best Practices](#vuejs--vuetify-best-practices)
-3. [Code Organization & Modularity](#code-organization--modularity)
-4. [Backend-for-Frontend (BFF) Standards](#backend-for-frontend-bff-standards)
-5. [Response Validation](#response-validation)
-6. [Testing Requirements](#testing-requirements)
-7. [Infrastructure as Code (IaC) First](#infrastructure-as-code-iac-first)
-8. [CI/CD Integration](#cicd-integration)
-9. [Documentation Standards](#documentation-standards)
-10. [Profile Index Safety Rules](#profile-index-safety-rules)
-11. [Submission Process](#submission-process)
+2. [Workflow-Led UI Standards](#workflow-led-ui-standards)
+3. [Vue.js & Vuetify Best Practices](#vuejs--vuetify-best-practices)
+4. [Code Organization & Modularity](#code-organization--modularity)
+5. [Shared Connector Runtime Standards](#shared-connector-runtime-standards)
+6. [Backend-for-Frontend (BFF) Standards](#backend-for-frontend-bff-standards)
+7. [Response Validation](#response-validation)
+8. [Testing Requirements](#testing-requirements)
+9. [Infrastructure as Code (IaC) First](#infrastructure-as-code-iac-first)
+10. [CI/CD Integration](#cicd-integration)
+11. [Documentation Standards](#documentation-standards)
+12. [Profile Index Safety Rules](#profile-index-safety-rules)
+13. [Submission Process](#submission-process)
 
 ---
 #### Data lineage rules
@@ -62,6 +64,68 @@ src/
 ```
 
 Each module should be self-contained and re-usable across the application.
+
+---
+
+## Workflow-Led UI Standards
+
+### One Page, One Workflow
+
+Every primary UI page must have one workflow owner, one primary user job, one default state, and one primary call to action. Do not add panels, tables, cards, buttons, tabs, or navigation entries until the owning workflow is identified.
+
+Workflow owners are defined in `docs/UI_WORKFLOW_SPEC.md` and governed by `docs/adr/ADR-005-Workflow-Led-UI-Surfaces.md`:
+
+- Home / Find Data
+- Search / Catalog
+- Lineage Explorer
+- Glossary & Metrics
+- Review Work / Governance Ops
+- Profiling
+- Connections
+- Lineage Acquisition
+- Platform Admin
+
+### No Monolithic UI Surfaces
+
+Monolithic code is prohibited, and monolithic workflows are prohibited. A screen must not combine setup, execution, operations, review, and troubleshooting in one default view.
+
+Examples:
+
+- Connections owns reusable connection inventory, draft creation, login/discovery testing, and access eligibility. It must not show schedule configuration, queue progress, profile run history, publishing controls, or profile execution on the main surface.
+- Profiling owns profile schedules, queue execution, run history, and manual `Run Now`. It must not create or edit source connection credentials.
+- Lineage Acquisition owns evidence refresh for configured investigation domains. It must not become the end-user lineage answer page.
+- Lineage Explorer owns business-friendly lineage and impact answers. It should show plain-English answers before graphs, SQL, package XML, parser logs, or raw evidence.
+- Review Work owns steward queues and deep links to fixes. It must not duplicate operational controls from Connections, Profiling, or Lineage Acquisition.
+
+### Progressive Disclosure Required
+
+Default pages must lead with context, status, and next action. Raw logs, JSON, SQL snippets, package XML, parser output, queue internals, and large tables belong behind detail drawers, drilldowns, or advanced troubleshooting surfaces unless troubleshooting is the page's primary job.
+
+### UI Complexity Budget
+
+- One primary CTA above the fold.
+- No more than two secondary CTAs above the fold.
+- No more than three major panels on a default page state.
+- One stepper or one tab row per page; no nested workflow tabs.
+- If the page cannot be described as "Use this page to ___" in one sentence, do not implement it yet.
+
+### Shared Actions
+
+Actions that appear in more than one workflow must use shared components, shared view-model functions, or shared service contracts. Do not reimplement `Test`, `Run Now`, `Save Draft`, `Activate`, `Publish`, `Retry`, or connector/schedule status behavior inside separate pages.
+
+### Required UI PR Evidence
+
+Any UI PR must include:
+
+- workflow owner
+- target role
+- page job statement
+- primary CTA
+- default success state
+- default error/blocker state
+- related workflows linked but not duplicated
+- technical details hidden until drilldown
+- shared component or shared action reused
 
 ---
 
@@ -185,6 +249,52 @@ import { validateEmail } from '../validators/userValidators.js';
 // ✗ BAD
 import * as utils from '../utils.js';
 ```
+
+---
+
+## Shared Connector Runtime Standards
+
+### One Engine Rule
+
+Source connectivity must have one shared implementation per source family. Saved connectors, Ingestion Studio, connection tests, profile schedules, live profiling, lineage extraction, and ad-hoc admin tools must call the shared connector runtime instead of building separate driver/client logic.
+
+For SQL Server and SSIS, all connection behavior must flow through the shared connector runtime modules under `src/services/connectorRuntime/` or a successor module explicitly documented in an ADR. Do not create another `mssql` pool builder, named-instance resolver, Windows-auth wrapper, certificate/trust configuration, or SSIS catalog connection path in a route, UI handler, scheduler, or one-off service.
+
+AI agents and human troubleshooters must not run ad-hoc SQL Server, ODBC, `mssql`, `msnodesqlv8`, `sqlcmd`, or SSIS connection probes that bypass the shared runtime. If deeper diagnostics are needed, add a guarded diagnostic mode inside `src/services/connectorRuntime/` or call an existing exported connector service method, with hard timeout behavior and structured diagnostics.
+
+### Shared Responsibilities
+
+The shared runtime owns:
+
+- credential mode handling, including Windows integrated auth behavior
+- server, instance, port, encryption, and certificate/trust options
+- connection probes and test-only diagnostics
+- runtime identity reporting
+- timeout, retry, and cancellation behavior
+- standardized connector errors with phase, connector id/type, endpoint, remediation, and details
+- metadata discovery and targeted metadata enrichment used before live profile planning
+
+Adapters may contain source-specific API/query details. They must not duplicate cross-cutting connection, diagnostics, scheduling, permission, or profile orchestration logic.
+
+### Test-Only Means Test-Only
+
+A saved connector `TEST` action must validate the exact saved connector through the shared runtime and return structured diagnostics. It must not run a full metadata harvest, live profile, schedule tick, lineage extraction, or long-running stream extraction.
+
+### Recurring Schedule Guardrails
+
+Recurring profile schedules are operational jobs, not previews. They must be saved with `dry_run: false`; preview/dry-run behavior belongs only to explicit ad-hoc plan or manual preview endpoints.
+
+If live profile planning selects assets with missing column metadata, the scheduler must enrich the missing columns through the saved connector, replan the same run, and then either execute live profile actions or fail/partial-fail visibly. A schedule run must not be marked successful when selected live assets produce zero actions because column metadata is missing.
+
+### Drift Prevention Tests
+
+Any PR that touches connector testing, source connection config, SQL/SSIS extraction, Ingestion Studio, profile scheduling, or live profiling must include tests proving:
+
+- the UI/API path calls the shared runtime rather than a duplicate connector implementation
+- each saved connector row tests its own connector id
+- test-only calls do not perform extraction
+- recurring schedules cannot persist `dry_run: true`
+- missing column metadata is enriched before live profile planning or fails with a clear operator-facing error
 
 ---
 
@@ -808,6 +918,8 @@ Never persist:
 - [ ] Infrastructure changes are done through IaC (no manual portal drift)
 - [ ] IaC validation and plan output are attached for infra changes
 - [ ] Profile/index changes follow `docs/PROFILE_INDEX_SPEC.md` and do not persist forbidden raw values or secrets
+- [ ] Connector/profile changes reuse the shared connector runtime and do not introduce duplicate source connection, probe, or extraction code
+- [ ] Recurring profile schedules cannot be saved as dry-run-only jobs
 
 ### PR Requirements
 
@@ -834,6 +946,8 @@ Reviewers will verify:
 - [ ] Performance is acceptable
 - [ ] BFF contract boundaries and DTO mappings are enforced
 - [ ] IaC standards and reviewed plan are present for infra changes
+- [ ] Connector changes preserve the one-engine rule for tests, ingestion, profiling, lineage, and schedules
+- [ ] Live profile runs cannot report success when selected assets are skipped only because column metadata is missing
 
 ## Production Database Safety & Zero-Impact Reads
 

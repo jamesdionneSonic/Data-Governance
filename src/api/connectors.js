@@ -9,6 +9,7 @@ import { sendErrorResponse } from '../middleware/errorHandler.js';
 import { logActivity } from '../services/activityService.js';
 import {
   deleteConnector,
+  diagnoseConnectorConnection,
   deleteConnectorProfileSchedule,
   getConnector,
   getConnectorAdapterCoverage,
@@ -35,6 +36,7 @@ import {
   runDueConnectorProfileSchedules,
   startProfileSchedulerWorker,
   stopProfileSchedulerWorker,
+  testConnector,
   upsertConnectorProfileSchedule,
   upsertConnector,
 } from '../services/connectorService.js';
@@ -329,6 +331,35 @@ router.post('/:id/run', authenticate, async (req, res) => {
       summary: run.summary,
     });
     return res.json({ status: 'success', run });
+  } catch (err) {
+    return connectorError(res, req, err);
+  }
+});
+
+router.post('/:id/test', authenticate, async (req, res) => {
+  try {
+    const test = await testConnector(req.params.id, req.body || {}, req.user);
+    logActivity(actorId(req.user), 'connector_test', req.params.id, {
+      status: test.status,
+      elapsed_ms: test.summary?.elapsed_ms,
+      phase: test.summary?.phase,
+      connector_type: test.connector_type,
+    });
+    return res.json({ status: test.status === 'succeeded' ? 'success' : 'failed', test });
+  } catch (err) {
+    return connectorError(res, req, err);
+  }
+});
+
+router.post('/:id/diagnose-connection', authenticate, requireAdmin, async (req, res) => {
+  try {
+    const diagnostic = await diagnoseConnectorConnection(req.params.id, req.body || {}, req.user);
+    logActivity(actorId(req.user), 'connector_connection_diagnostic', req.params.id, {
+      status: diagnostic.status,
+      connector_type: diagnostic.connector_type,
+      variant_count: diagnostic.diagnostic?.results?.length || 0,
+    });
+    return res.json({ status: diagnostic.status === 'succeeded' ? 'success' : 'failed', diagnostic });
   } catch (err) {
     return connectorError(res, req, err);
   }
