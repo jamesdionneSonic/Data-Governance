@@ -8,8 +8,7 @@ let typedLineageEdgeIndex = indexTypedLineageEdges([]);
 
 export function setCatalogRuntime(runtime = {}) {
   catalogDataPath = runtime.dataPath || '';
-  objectFileIndex =
-    runtime.objectFileIndex instanceof Map ? runtime.objectFileIndex : new Map();
+  objectFileIndex = runtime.objectFileIndex instanceof Map ? runtime.objectFileIndex : new Map();
   lineageGraph = runtime.lineageGraph instanceof Map ? runtime.lineageGraph : lineageGraph;
   typedLineageEdges = Array.isArray(runtime.typedEdges) ? runtime.typedEdges : [];
   typedLineageEdgeIndex =

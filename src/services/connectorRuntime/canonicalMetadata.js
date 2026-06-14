@@ -107,7 +107,8 @@ export function summarizeCanonicalEvents(events = []) {
     ).length,
     column_count: events.filter((event) => event.type === CANONICAL_EVENT_TYPES.COLUMN).length,
     metric_count: events.filter((event) => event.type === CANONICAL_EVENT_TYPES.METRIC).length,
-    lineage_edge_count: events.filter((event) => event.type === CANONICAL_EVENT_TYPES.LINEAGE_EDGE).length,
+    lineage_edge_count: events.filter((event) => event.type === CANONICAL_EVENT_TYPES.LINEAGE_EDGE)
+      .length,
     warning_count: events.filter((event) => event.type === CANONICAL_EVENT_TYPES.WARNING).length,
   };
 }

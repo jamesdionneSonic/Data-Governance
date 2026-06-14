@@ -183,10 +183,7 @@ function sqlNameKey(value) {
 }
 
 function splitSqlObjectParts(reference) {
-  return normalizeSqlReference(reference)
-    .split('.')
-    .map(cleanSqlName)
-    .filter(Boolean);
+  return normalizeSqlReference(reference).split('.').map(cleanSqlName).filter(Boolean);
 }
 
 function splitCommaAware(value) {
@@ -229,14 +226,20 @@ function stripColumnAlias(expression) {
 
 function expressionLooksCalculated(expression) {
   const text = String(expression || '');
-  if (/\b(CASE|CAST|CONVERT|COALESCE|ISNULL|NULLIF|ROUND|SUM|AVG|MIN|MAX|COUNT|DATEADD|DATEDIFF)\b/i.test(text)) {
+  if (
+    /\b(CASE|CAST|CONVERT|COALESCE|ISNULL|NULLIF|ROUND|SUM|AVG|MIN|MAX|COUNT|DATEADD|DATEDIFF)\b/i.test(
+      text
+    )
+  ) {
     return true;
   }
   return /[+\-*/]/.test(text.replace(/\[[^\]]+\]/g, ''));
 }
 
 function compactSqlEvidence(value, maxLength = 500) {
-  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  const text = String(value || '')
+    .replace(/\s+/g, ' ')
+    .trim();
   if (text.length <= maxLength) return text;
   return `${text.slice(0, maxLength)}...`;
 }
@@ -260,7 +263,10 @@ function containsSelectStarExpression(expression) {
 
 function findColumnTokens(expression) {
   const tokens = [];
-  const pattern = new RegExp(`(${SQL_IDENTIFIER_PATTERN})\\s*\\.\\s*(${SQL_IDENTIFIER_PATTERN}|\\*)`, 'gi');
+  const pattern = new RegExp(
+    `(${SQL_IDENTIFIER_PATTERN})\\s*\\.\\s*(${SQL_IDENTIFIER_PATTERN}|\\*)`,
+    'gi'
+  );
   let match = pattern.exec(expression || '');
   while (match) {
     const alias = cleanSqlName(match[1]);
@@ -310,10 +316,7 @@ function isNoiseSqlReference(reference) {
 
   if (noiseTokens.has(value)) return true;
   const parts = value.split('.').filter(Boolean);
-  if (
-    parts.length === 2 &&
-    ['source', 'target', 'src', 'inserted', 'deleted'].includes(parts[0])
-  ) {
+  if (parts.length === 2 && ['source', 'target', 'src', 'inserted', 'deleted'].includes(parts[0])) {
     return true;
   }
   if (value.startsWith('#')) return true;
@@ -341,7 +344,9 @@ class MarkdownGenerator {
       const nameKey = columnNameKey(name);
       const uniqueKeys = (object.uniqueConstraints || [])
         .filter((constraint) =>
-          (constraint.columns || []).some((constraintColumn) => columnNameKey(constraintColumn.name) === nameKey)
+          (constraint.columns || []).some(
+            (constraintColumn) => columnNameKey(constraintColumn.name) === nameKey
+          )
         )
         .map((constraint) => constraint.name)
         .filter(Boolean);
@@ -393,7 +398,9 @@ class MarkdownGenerator {
         referenced_by_foreign_keys: referencedByForeignKeys,
         indexes,
         sensitivity: column.sensitivity || 'internal',
-        classification_tags: Array.isArray(column.classificationTags) ? column.classificationTags : [],
+        classification_tags: Array.isArray(column.classificationTags)
+          ? column.classificationTags
+          : [],
         extraction_evidence: {
           source: 'sys.columns',
           extracted_at: metadata.extractedAt || null,
@@ -474,9 +481,15 @@ class MarkdownGenerator {
       candidates.push([context.server, context.database, ...parts].filter(Boolean).join('.'));
       candidates.push(parts.join('.'));
     } else {
-      candidates.push([context.server, context.database, context.schema || 'dbo', parts[0]].filter(Boolean).join('.'));
+      candidates.push(
+        [context.server, context.database, context.schema || 'dbo', parts[0]]
+          .filter(Boolean)
+          .join('.')
+      );
       if (context.schema !== 'dbo') {
-        candidates.push([context.server, context.database, 'dbo', parts[0]].filter(Boolean).join('.'));
+        candidates.push(
+          [context.server, context.database, 'dbo', parts[0]].filter(Boolean).join('.')
+        );
       }
     }
 
@@ -702,8 +715,10 @@ class MarkdownGenerator {
             severity: 'high',
             usage_context: 'select_list',
             evidence_text: cleaned,
-            reason: 'SELECT * or alias.* hides column-level dependencies from explicit parser evidence.',
-            suggested_action: 'Replace star expansion with an explicit column list before relying on column impact answers.',
+            reason:
+              'SELECT * or alias.* hides column-level dependencies from explicit parser evidence.',
+            suggested_action:
+              'Replace star expansion with an explicit column list before relying on column impact answers.',
           });
         }
         const usageType = expressionLooksCalculated(cleaned) ? 'calculation' : 'read';
@@ -725,7 +740,8 @@ class MarkdownGenerator {
         object_id: target?.id || null,
         evidence_text: sqlEvidenceWindow(sql, match.index, match[0]),
         reason: 'INSERT target columns are positional because no explicit column list was found.',
-        suggested_action: 'Add an explicit INSERT column list so source-to-target column impact can be validated.',
+        suggested_action:
+          'Add an explicit INSERT column list so source-to-target column impact can be validated.',
       });
       match = insertWithoutColumnPattern.exec(sql);
     }
@@ -775,7 +791,8 @@ class MarkdownGenerator {
       match = mergePattern.exec(sql);
     }
 
-    const mergeUpdatePattern = /\bWHEN\s+MATCHED\b[\s\S]*?\bUPDATE\s+SET\s+([\s\S]*?)(?=\bWHEN\b|;|$)/gi;
+    const mergeUpdatePattern =
+      /\bWHEN\s+MATCHED\b[\s\S]*?\bUPDATE\s+SET\s+([\s\S]*?)(?=\bWHEN\b|;|$)/gi;
     match = mergeUpdatePattern.exec(sql);
     while (match) {
       for (const assignment of splitCommaAware(match[1])) {
@@ -818,14 +835,16 @@ class MarkdownGenerator {
       match = mergeInsertPattern.exec(sql);
     }
 
-    const joinOnPattern = /\bON\b\s+([\s\S]*?)(?=\b(?:INNER|LEFT|RIGHT|FULL|CROSS)?\s*JOIN\b|\bWHERE\b|\bGROUP\s+BY\b|\bORDER\s+BY\b|\bHAVING\b|\bWHEN\b|;|$)/gi;
+    const joinOnPattern =
+      /\bON\b\s+([\s\S]*?)(?=\b(?:INNER|LEFT|RIGHT|FULL|CROSS)?\s*JOIN\b|\bWHERE\b|\bGROUP\s+BY\b|\bORDER\s+BY\b|\bHAVING\b|\bWHEN\b|;|$)/gi;
     match = joinOnPattern.exec(sql);
     while (match) {
       addTokensFromExpression(match[1], 'join_key', 'join_on');
       match = joinOnPattern.exec(sql);
     }
 
-    const wherePattern = /\bWHERE\b\s+([\s\S]*?)(?=\bGROUP\s+BY\b|\bORDER\s+BY\b|\bHAVING\b|\bUNION\b|;|$)/gi;
+    const wherePattern =
+      /\bWHERE\b\s+([\s\S]*?)(?=\bGROUP\s+BY\b|\bORDER\s+BY\b|\bHAVING\b|\bUNION\b|;|$)/gi;
     match = wherePattern.exec(sql);
     while (match) {
       addTokensFromExpression(match[1], 'filter', 'where');
@@ -850,7 +869,8 @@ class MarkdownGenerator {
       match = orderByPattern.exec(sql);
     }
 
-    const dynamicSqlPattern = /\bsp_executesql\b|\bEXEC(?:UTE)?\s*\(\s*@|\bEXEC(?:UTE)?\s+@[A-Za-z_][A-Za-z0-9_]*/gi;
+    const dynamicSqlPattern =
+      /\bsp_executesql\b|\bEXEC(?:UTE)?\s*\(\s*@|\bEXEC(?:UTE)?\s+@[A-Za-z_][A-Za-z0-9_]*/gi;
     match = dynamicSqlPattern.exec(sql);
     while (match) {
       addRiskFlag('dynamic_sql', {
@@ -858,7 +878,8 @@ class MarkdownGenerator {
         usage_context: 'dynamic_sql',
         evidence_text: sqlEvidenceWindow(sql, match.index, match[0]),
         reason: 'Dynamic SQL can hide table and column dependencies from static parsing.',
-        suggested_action: 'Capture runtime-expanded SQL or document the dynamic targets explicitly.',
+        suggested_action:
+          'Capture runtime-expanded SQL or document the dynamic targets explicitly.',
       });
       match = dynamicSqlPattern.exec(sql);
     }
@@ -872,7 +893,8 @@ class MarkdownGenerator {
         usage_context: 'dynamic_table_name',
         evidence_text: sqlEvidenceWindow(sql, match.index, match[0]),
         reason: 'A table/object name appears to be assembled dynamically.',
-        suggested_action: 'Document allowed runtime table names or add runtime SQL capture evidence.',
+        suggested_action:
+          'Document allowed runtime table names or add runtime SQL capture evidence.',
       });
       match = dynamicTablePattern.exec(sql);
     }
@@ -897,7 +919,8 @@ class MarkdownGenerator {
         usage_context: 'column_resolution',
         evidence_text: unresolved[0]?.evidence_text || unresolved[0]?.expression || '',
         reason: `${unresolved.length} column usage record(s) could not be validated to a known object/column.`,
-        suggested_action: 'Review unresolved_column_usage before treating column impact answers as complete.',
+        suggested_action:
+          'Review unresolved_column_usage before treating column impact answers as complete.',
       });
     }
 
@@ -948,7 +971,9 @@ class MarkdownGenerator {
       new Set(
         relationships
           .filter((r) => r.toTable === table.id)
-          .filter((r) => ['procedure', 'ssis', 'package', 'etl_pattern', 'loads', 'calls'].includes(r.type))
+          .filter((r) =>
+            ['procedure', 'ssis', 'package', 'etl_pattern', 'loads', 'calls'].includes(r.type)
+          )
           .map((r) => r.fromTable)
           .filter((ref) => !isNoiseSqlReference(ref))
       )
@@ -957,7 +982,18 @@ class MarkdownGenerator {
       new Set(
         relationships
           .filter((r) => r.fromTable === table.id)
-          .filter((r) => ['procedure', 'view', 'ssis', 'package', 'reads', 'extracts', 'loads', 'calls'].includes(r.type))
+          .filter((r) =>
+            [
+              'procedure',
+              'view',
+              'ssis',
+              'package',
+              'reads',
+              'extracts',
+              'loads',
+              'calls',
+            ].includes(r.type)
+          )
           .map((r) => r.toTable)
           .filter((ref) => !isNoiseSqlReference(ref))
       )
@@ -966,7 +1002,9 @@ class MarkdownGenerator {
       new Set(
         relationships
           .filter((r) => r.fromTable === table.id || r.toTable === table.id)
-          .filter((r) => ['column_match', 'reference', 'lookup', 'helper', 'contextual_read'].includes(r.type))
+          .filter((r) =>
+            ['column_match', 'reference', 'lookup', 'helper', 'contextual_read'].includes(r.type)
+          )
           .map((r) => (r.fromTable === table.id ? r.toTable : r.fromTable))
           .filter((ref) => !isNoiseSqlReference(ref))
       )
@@ -991,7 +1029,11 @@ class MarkdownGenerator {
         ...directCreators,
         ...relationships
           .filter((r) => r.fromTable === table.id)
-          .filter((r) => ['foreign_key', 'etl_pattern', 'many_to_many_bridge', 'reads', 'extracts'].includes(r.type))
+          .filter((r) =>
+            ['foreign_key', 'etl_pattern', 'many_to_many_bridge', 'reads', 'extracts'].includes(
+              r.type
+            )
+          )
           .map((r) => r.toTable)
           .filter((ref) => !isNoiseSqlReference(ref)),
       ])
@@ -1002,37 +1044,40 @@ class MarkdownGenerator {
     const mediumConfidence = relationships.filter((r) => r.confidence >= 0.6 && r.confidence < 0.8);
     const lowConfidence = relationships.filter((r) => r.confidence < 0.6);
 
-    const frontmatter = applyDictionaryEnrichmentContract({
-      id: table.id,
-      name: table.name,
-      server: table.serverName || this.metadata.serverName || 'unknown',
-      database: this.metadata.database,
-      type: table.type,
-      schema: table.schema,
-      owner: 'Data Team', // TODO: Extract from extended properties
-      sensitivity: 'internal', // TODO: Infer from data classification
-      tags: MarkdownGenerator.inferTags(table),
-      depends_on: dependsOn,
-      created_by: directCreators,
-      created_via: createdVia,
-      used_by: usedBy,
-      contextual_reads: contextualReads,
-      lineage_status: lineageStatus,
-      external_source: Boolean(table.external_source),
-      lineage_quality: {
-        validated_edges: highConfidence.length + mediumConfidence.length,
-        probable_edges: lowConfidence.length,
-        unresolved_facts: 0,
+    const frontmatter = applyDictionaryEnrichmentContract(
+      {
+        id: table.id,
+        name: table.name,
+        server: table.serverName || this.metadata.serverName || 'unknown',
+        database: this.metadata.database,
+        type: table.type,
+        schema: table.schema,
+        owner: 'Data Team', // TODO: Extract from extended properties
+        sensitivity: 'internal', // TODO: Infer from data classification
+        tags: MarkdownGenerator.inferTags(table),
+        depends_on: dependsOn,
+        created_by: directCreators,
+        created_via: createdVia,
+        used_by: usedBy,
+        contextual_reads: contextualReads,
+        lineage_status: lineageStatus,
+        external_source: Boolean(table.external_source),
+        lineage_quality: {
+          validated_edges: highConfidence.length + mediumConfidence.length,
+          probable_edges: lowConfidence.length,
+          unresolved_facts: 0,
+        },
+        row_count: table.rowCount,
+        size_kb: table.sizeKb,
+        column_count: table.columns?.length || 0,
+        columns: MarkdownGenerator.buildColumnInventory(table, this.metadata),
+        index_count: table.indexes?.length || 0,
+        check_constraint_count: table.checkConstraints?.length || 0,
+        extraction_warnings: extractionWarnings.map((warning) => warning.code),
+        extracted_at: this.metadata.extractedAt,
       },
-      row_count: table.rowCount,
-      size_kb: table.sizeKb,
-      column_count: table.columns?.length || 0,
-      columns: MarkdownGenerator.buildColumnInventory(table, this.metadata),
-      index_count: table.indexes?.length || 0,
-      check_constraint_count: table.checkConstraints?.length || 0,
-      extraction_warnings: extractionWarnings.map((warning) => warning.code),
-      extracted_at: this.metadata.extractedAt,
-    }, { extractedAt: this.metadata.extractedAt });
+      { extractedAt: this.metadata.extractedAt }
+    );
 
     let markdown = renderFrontmatter(frontmatter);
 
@@ -1119,7 +1164,8 @@ class MarkdownGenerator {
     // Relationships
     if (relationships.length > 0) {
       markdown += '## Relationships\n\n';
-      markdown += '> Note: Creator, usage, and contextual references are split in frontmatter. Column-match evidence remains below for review.\n\n';
+      markdown +=
+        '> Note: Creator, usage, and contextual references are split in frontmatter. Column-match evidence remains below for review.\n\n';
 
       if (highConfidence.length > 0) {
         markdown += '### High Confidence (≥ 0.8)\n\n';
@@ -1206,35 +1252,44 @@ class MarkdownGenerator {
       ...(view.reads_from || []),
     ];
     const { direct: dependsOn, contextual } = MarkdownGenerator.splitSqlReferences(rawReferences);
-    const usedBy = Array.from(new Set((view.used_by || []).filter((ref) => !isNoiseSqlReference(ref))));
-    const columnUsage = MarkdownGenerator.extractSqlColumnUsage(view.definition, view, this.metadata);
-    const frontmatter = applyDictionaryEnrichmentContract({
-      id: view.id,
-      name: view.name,
-      server: view.serverName || this.metadata.serverName || 'unknown',
-      database: this.metadata.database,
-      type: 'view', // parser-accepted type
-      schema: view.schema,
-      owner: 'Data Team',
-      sensitivity: 'internal',
-      tags: ['view', 'auto-extracted'],
-      depends_on: dependsOn, // ADDED: Wires up the graph
-      reads_from: MarkdownGenerator.extractReadSources(view.definition),
-      contextual_reads: contextual,
-      used_by: usedBy,
-      lineage_quality: {
-        validated_edges: dependsOn.length,
-        probable_edges: 0,
-        unresolved_facts: 0,
+    const usedBy = Array.from(
+      new Set((view.used_by || []).filter((ref) => !isNoiseSqlReference(ref)))
+    );
+    const columnUsage = MarkdownGenerator.extractSqlColumnUsage(
+      view.definition,
+      view,
+      this.metadata
+    );
+    const frontmatter = applyDictionaryEnrichmentContract(
+      {
+        id: view.id,
+        name: view.name,
+        server: view.serverName || this.metadata.serverName || 'unknown',
+        database: this.metadata.database,
+        type: 'view', // parser-accepted type
+        schema: view.schema,
+        owner: 'Data Team',
+        sensitivity: 'internal',
+        tags: ['view', 'auto-extracted'],
+        depends_on: dependsOn, // ADDED: Wires up the graph
+        reads_from: MarkdownGenerator.extractReadSources(view.definition),
+        contextual_reads: contextual,
+        used_by: usedBy,
+        lineage_quality: {
+          validated_edges: dependsOn.length,
+          probable_edges: 0,
+          unresolved_facts: 0,
+        },
+        dependency_count: view.dependencies?.length || 0,
+        column_count: view.columns?.length || 0,
+        columns: MarkdownGenerator.buildColumnInventory(view, this.metadata),
+        column_usage: columnUsage.column_usage,
+        unresolved_column_usage: columnUsage.unresolved_column_usage,
+        column_risk_flags: columnUsage.column_risk_flags,
+        extracted_at: this.metadata.extractedAt,
       },
-      dependency_count: view.dependencies?.length || 0,
-      column_count: view.columns?.length || 0,
-      columns: MarkdownGenerator.buildColumnInventory(view, this.metadata),
-      column_usage: columnUsage.column_usage,
-      unresolved_column_usage: columnUsage.unresolved_column_usage,
-      column_risk_flags: columnUsage.column_risk_flags,
-      extracted_at: this.metadata.extractedAt,
-    }, { extractedAt: this.metadata.extractedAt });
+      { extractedAt: this.metadata.extractedAt }
+    );
 
     let markdown = renderFrontmatter(frontmatter);
 
@@ -1292,7 +1347,9 @@ class MarkdownGenerator {
       new Set(
         references
           .map((reference) => MarkdownGenerator.normalizeObjectReference(reference))
-          .filter((reference) => reference && !reference.startsWith('#') && !reference.startsWith('@'))
+          .filter(
+            (reference) => reference && !reference.startsWith('#') && !reference.startsWith('@')
+          )
       )
     );
   }
@@ -1315,7 +1372,8 @@ class MarkdownGenerator {
   static extractWriteTargets(definition = '') {
     const sql = stripSqlComments(definition);
     const targets = [];
-    const pattern = /\b(?:INSERT\s+INTO|MERGE(?:\s+INTO)?)\s+((?:\[[^\]]+\]|\w+)(?:\s*\.\s*(?:\[[^\]]+\]|\w+)){0,4})/gi;
+    const pattern =
+      /\b(?:INSERT\s+INTO|MERGE(?:\s+INTO)?)\s+((?:\[[^\]]+\]|\w+)(?:\s*\.\s*(?:\[[^\]]+\]|\w+)){0,4})/gi;
     let match = pattern.exec(sql);
     while (match) {
       targets.push(match[1]);
@@ -1359,34 +1417,41 @@ class MarkdownGenerator {
     const { direct: rawReadsFrom } = MarkdownGenerator.splitSqlReferences(readRefs);
     const readsFrom = MarkdownGenerator.excludeWriteTargets(rawReadsFrom, writesTo);
     const { direct: calls } = MarkdownGenerator.splitSqlReferences(callRefs);
-    const columnUsage = MarkdownGenerator.extractSqlColumnUsage(proc.definition, proc, this.metadata);
-    const frontmatter = applyDictionaryEnrichmentContract({
-      id: proc.id,
-      name: proc.name,
-      server: proc.serverName || this.metadata.serverName || 'unknown',
-      database: this.metadata.database,
-      type: 'procedure', // parser-accepted type
-      schema: proc.schema,
-      owner: 'Data Team',
-      tags: ['procedure', 'auto-extracted'],
-      depends_on: dependsOn, // ADDED: Wires up the graph
-      reads_from: readsFrom,
-      writes_to: writesTo,
-      calls,
-      created_by: [],
-      contextual_reads: contextual,
-      lineage_quality: {
-        validated_edges: readsFrom.length + writesTo.length + calls.length,
-        probable_edges: 0,
-        unresolved_facts: 0,
+    const columnUsage = MarkdownGenerator.extractSqlColumnUsage(
+      proc.definition,
+      proc,
+      this.metadata
+    );
+    const frontmatter = applyDictionaryEnrichmentContract(
+      {
+        id: proc.id,
+        name: proc.name,
+        server: proc.serverName || this.metadata.serverName || 'unknown',
+        database: this.metadata.database,
+        type: 'procedure', // parser-accepted type
+        schema: proc.schema,
+        owner: 'Data Team',
+        tags: ['procedure', 'auto-extracted'],
+        depends_on: dependsOn, // ADDED: Wires up the graph
+        reads_from: readsFrom,
+        writes_to: writesTo,
+        calls,
+        created_by: [],
+        contextual_reads: contextual,
+        lineage_quality: {
+          validated_edges: readsFrom.length + writesTo.length + calls.length,
+          probable_edges: 0,
+          unresolved_facts: 0,
+        },
+        dependency_count: proc.dependencies?.length || 0,
+        parameter_count: proc.parameters?.length || 0,
+        column_usage: columnUsage.column_usage,
+        unresolved_column_usage: columnUsage.unresolved_column_usage,
+        column_risk_flags: columnUsage.column_risk_flags,
+        extracted_at: this.metadata.extractedAt,
       },
-      dependency_count: proc.dependencies?.length || 0,
-      parameter_count: proc.parameters?.length || 0,
-      column_usage: columnUsage.column_usage,
-      unresolved_column_usage: columnUsage.unresolved_column_usage,
-      column_risk_flags: columnUsage.column_risk_flags,
-      extracted_at: this.metadata.extractedAt,
-    }, { extractedAt: this.metadata.extractedAt });
+      { extractedAt: this.metadata.extractedAt }
+    );
 
     let markdown = renderFrontmatter(frontmatter);
 
@@ -1432,29 +1497,36 @@ class MarkdownGenerator {
    */
   generateFunctionMarkdown(func) {
     const dependsOn = (func.dependencies || []).map((dep) => dep.referencedObject);
-    const columnUsage = MarkdownGenerator.extractSqlColumnUsage(func.definition, func, this.metadata);
-    const frontmatter = applyDictionaryEnrichmentContract({
-      id: func.id,
-      name: func.name,
-      server: func.serverName || this.metadata.serverName || 'unknown',
-      database: this.metadata.database,
-      type: 'function',
-      schema: func.schema,
-      owner: 'Data Team',
-      tags: ['function', 'auto-extracted'],
-      depends_on: dependsOn, // ADDED: Wires up the graph
-      lineage_quality: {
-        validated_edges: dependsOn.length,
-        probable_edges: 0,
-        unresolved_facts: 0,
+    const columnUsage = MarkdownGenerator.extractSqlColumnUsage(
+      func.definition,
+      func,
+      this.metadata
+    );
+    const frontmatter = applyDictionaryEnrichmentContract(
+      {
+        id: func.id,
+        name: func.name,
+        server: func.serverName || this.metadata.serverName || 'unknown',
+        database: this.metadata.database,
+        type: 'function',
+        schema: func.schema,
+        owner: 'Data Team',
+        tags: ['function', 'auto-extracted'],
+        depends_on: dependsOn, // ADDED: Wires up the graph
+        lineage_quality: {
+          validated_edges: dependsOn.length,
+          probable_edges: 0,
+          unresolved_facts: 0,
+        },
+        dependency_count: func.dependencies?.length || 0,
+        parameter_count: func.parameters?.length || 0,
+        column_usage: columnUsage.column_usage,
+        unresolved_column_usage: columnUsage.unresolved_column_usage,
+        column_risk_flags: columnUsage.column_risk_flags,
+        extracted_at: this.metadata.extractedAt,
       },
-      dependency_count: func.dependencies?.length || 0,
-      parameter_count: func.parameters?.length || 0,
-      column_usage: columnUsage.column_usage,
-      unresolved_column_usage: columnUsage.unresolved_column_usage,
-      column_risk_flags: columnUsage.column_risk_flags,
-      extracted_at: this.metadata.extractedAt,
-    }, { extractedAt: this.metadata.extractedAt });
+      { extractedAt: this.metadata.extractedAt }
+    );
 
     let markdown = renderFrontmatter(frontmatter);
 
@@ -1500,29 +1572,36 @@ class MarkdownGenerator {
    */
   generateTriggerMarkdown(trigger) {
     const dependsOn = (trigger.dependencies || []).map((dep) => dep.referencedObject);
-    const columnUsage = MarkdownGenerator.extractSqlColumnUsage(trigger.definition, trigger, this.metadata);
-    const frontmatter = applyDictionaryEnrichmentContract({
-      id: trigger.id,
-      name: trigger.name,
-      server: trigger.serverName || this.metadata.serverName || 'unknown',
-      database: this.metadata.database,
-      type: 'procedure', // Store triggers as 'procedure'
-      schema: trigger.schema,
-      owner: 'Data Team',
-      parent_object: trigger.parentObject,
-      tags: ['trigger', 'auto-extracted'],
-      depends_on: dependsOn, // ADDED: Wires up the graph
-      lineage_quality: {
-        validated_edges: dependsOn.length,
-        probable_edges: 0,
-        unresolved_facts: 0,
+    const columnUsage = MarkdownGenerator.extractSqlColumnUsage(
+      trigger.definition,
+      trigger,
+      this.metadata
+    );
+    const frontmatter = applyDictionaryEnrichmentContract(
+      {
+        id: trigger.id,
+        name: trigger.name,
+        server: trigger.serverName || this.metadata.serverName || 'unknown',
+        database: this.metadata.database,
+        type: 'procedure', // Store triggers as 'procedure'
+        schema: trigger.schema,
+        owner: 'Data Team',
+        parent_object: trigger.parentObject,
+        tags: ['trigger', 'auto-extracted'],
+        depends_on: dependsOn, // ADDED: Wires up the graph
+        lineage_quality: {
+          validated_edges: dependsOn.length,
+          probable_edges: 0,
+          unresolved_facts: 0,
+        },
+        dependency_count: trigger.dependencies?.length || 0,
+        column_usage: columnUsage.column_usage,
+        unresolved_column_usage: columnUsage.unresolved_column_usage,
+        column_risk_flags: columnUsage.column_risk_flags,
+        extracted_at: this.metadata.extractedAt,
       },
-      dependency_count: trigger.dependencies?.length || 0,
-      column_usage: columnUsage.column_usage,
-      unresolved_column_usage: columnUsage.unresolved_column_usage,
-      column_risk_flags: columnUsage.column_risk_flags,
-      extracted_at: this.metadata.extractedAt,
-    }, { extractedAt: this.metadata.extractedAt });
+      { extractedAt: this.metadata.extractedAt }
+    );
 
     let markdown = renderFrontmatter(frontmatter);
 
@@ -1561,28 +1640,33 @@ class MarkdownGenerator {
   generateSynonymMarkdown(synonym) {
     let dependencies = [];
     if (Array.isArray(synonym.dependencies)) {
-      dependencies = synonym.dependencies.map((dep) => normalizeSynonymReference(dep.referencedObject || dep));
+      dependencies = synonym.dependencies.map((dep) =>
+        normalizeSynonymReference(dep.referencedObject || dep)
+      );
     } else if (synonym.baseObjectName) {
       dependencies = [normalizeSynonymReference(synonym.baseObjectName)];
     }
 
-    const frontmatter = applyDictionaryEnrichmentContract({
-      id: synonym.id,
-      name: synonym.name,
-      server: synonym.serverName || this.metadata.serverName || 'unknown',
-      database: this.metadata.database,
-      type: 'synonym',
-      schema: synonym.schema,
-      owner: 'Data Team',
-      tags: ['synonym', 'auto-extracted'],
-      depends_on: dependencies,
-      lineage_quality: {
-        validated_edges: dependencies.length,
-        probable_edges: 0,
-        unresolved_facts: 0,
+    const frontmatter = applyDictionaryEnrichmentContract(
+      {
+        id: synonym.id,
+        name: synonym.name,
+        server: synonym.serverName || this.metadata.serverName || 'unknown',
+        database: this.metadata.database,
+        type: 'synonym',
+        schema: synonym.schema,
+        owner: 'Data Team',
+        tags: ['synonym', 'auto-extracted'],
+        depends_on: dependencies,
+        lineage_quality: {
+          validated_edges: dependencies.length,
+          probable_edges: 0,
+          unresolved_facts: 0,
+        },
+        extracted_at: this.metadata.extractedAt,
       },
-      extracted_at: this.metadata.extractedAt,
-    }, { extractedAt: this.metadata.extractedAt });
+      { extractedAt: this.metadata.extractedAt }
+    );
 
     let markdown = renderFrontmatter(frontmatter);
 

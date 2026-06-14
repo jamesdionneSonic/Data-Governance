@@ -4,18 +4,13 @@ describe('Visualization Service', () => {
   it('includes parent SSIS packages when bridge tables are loaded by child packages', () => {
     const focusId = 'L1-5FSQL-01.Sonic_DW.dbo.FACT_JMA_CLAIMS_TBL';
     const loadFactProcId = 'L1-5FSQL-01.ETL_Staging.JMA.LOAD_FACT_JMA_CLAIMS_TBL';
-    const etlTableId =
-      'L1-5FSQL-01.ETL_Staging.JMA.ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL';
-    const loadVendorProcId =
-      'L1-5FSQL-01.ETL_Staging.JMA.Load_Claim_Financial_Transactions';
-    const vendorTableId =
-      'L1-DWASQL-02,12010.VendorData.JMA.JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL';
+    const etlTableId = 'L1-5FSQL-01.ETL_Staging.JMA.ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL';
+    const loadVendorProcId = 'L1-5FSQL-01.ETL_Staging.JMA.Load_Claim_Financial_Transactions';
+    const vendorTableId = 'L1-DWASQL-02,12010.VendorData.JMA.JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL';
     const stagingTableId =
       'L1-DWASQL-02,12010.StagingDB.JMA.STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL';
-    const childPackageId =
-      'V1-SSIS25-01, 11040.SSISDB.DOWC.DOWC.Dowc_ClaimsFileLoad.dtsx';
-    const masterPackageId =
-      'V1-SSIS25-01, 11040.SSISDB.DOWC.DOWC.DOWC_Master_Dev.dtsx';
+    const childPackageId = 'V1-SSIS25-01, 11040.SSISDB.DOWC.DOWC.Dowc_ClaimsFileLoad.dtsx';
+    const masterPackageId = 'V1-SSIS25-01, 11040.SSISDB.DOWC.DOWC.DOWC_Master_Dev.dtsx';
 
     const objects = new Map([
       [

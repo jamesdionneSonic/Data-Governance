@@ -71,7 +71,11 @@ const PROFILE_CHECKS = Object.freeze([
     id: 'usage_or_refresh',
     label: 'Usage / refresh / subscriptions',
     passes: (profile) =>
-      profile.usage.length + profile.schedules.length + profile.subscriptions.length + profile.alerts.length > 0,
+      profile.usage.length +
+        profile.schedules.length +
+        profile.subscriptions.length +
+        profile.alerts.length >
+      0,
   },
   {
     id: 'ownership',
@@ -89,7 +93,8 @@ export function buildBiProfilePlan({ connector, definition, adapter, options = {
     throw new ConnectorConfigError(`Connector '${connector.id}' is not a BI/reporting connector.`, {
       connector_id: connector.id,
       connector_type: connector.type,
-      remediation: 'Run BI profile only for reporting/semantic connectors. Use database profiling for tables.',
+      remediation:
+        'Run BI profile only for reporting/semantic connectors. Use database profiling for tables.',
     });
   }
   const capabilities = adapter.getCapabilities();
@@ -127,7 +132,13 @@ export function buildBiProfilePlan({ connector, definition, adapter, options = {
   };
 }
 
-export function buildBiProfileFromExtraction({ connector, definition, adapter, extraction, options = {} }) {
+export function buildBiProfileFromExtraction({
+  connector,
+  definition,
+  adapter,
+  extraction,
+  options = {},
+}) {
   if (!supportsBiProfile(definition)) {
     throw new ConnectorConfigError(`Connector '${connector.id}' is not a BI/reporting connector.`, {
       connector_id: connector.id,
@@ -342,9 +353,21 @@ function sanitizeLineageEdge(event) {
   const object = sanitizeProfileObject(event);
   return {
     ...object,
-    from: event.attributes?.from || event.attributes?.source || event.external_id?.split('->')?.[0] || null,
-    to: event.attributes?.to || event.attributes?.target || event.external_id?.split('->')?.[1] || null,
-    relationship_type: event.attributes?.relationship_type || event.attributes?.type || event.object_type || 'depends_on',
+    from:
+      event.attributes?.from ||
+      event.attributes?.source ||
+      event.external_id?.split('->')?.[0] ||
+      null,
+    to:
+      event.attributes?.to ||
+      event.attributes?.target ||
+      event.external_id?.split('->')?.[1] ||
+      null,
+    relationship_type:
+      event.attributes?.relationship_type ||
+      event.attributes?.type ||
+      event.object_type ||
+      'depends_on',
   };
 }
 
@@ -439,7 +462,10 @@ function buildSummary(profile, extraction) {
     metric_count: profile.metrics.length,
     field_count: profile.fields.length,
     usage_signal_count:
-      profile.usage.length + profile.schedules.length + profile.subscriptions.length + profile.alerts.length,
+      profile.usage.length +
+      profile.schedules.length +
+      profile.subscriptions.length +
+      profile.alerts.length,
     lineage_edge_count: profile.lineage_edges.length,
     warning_count: profile.warnings.length,
     error_count: profile.errors.length,
@@ -468,7 +494,8 @@ function buildTopImpactCandidates(profile) {
       object_type: item.object_type,
       source_url: item.source_url,
       confidence: item.confidence,
-      relationship_count: downstreamCounts.get(item.external_id) || downstreamCounts.get(item.id) || 0,
+      relationship_count:
+        downstreamCounts.get(item.external_id) || downstreamCounts.get(item.id) || 0,
       owners: item.owners,
     }))
     .sort((a, b) => b.relationship_count - a.relationship_count || b.confidence - a.confidence)

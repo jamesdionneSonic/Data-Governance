@@ -76,7 +76,9 @@ function normalizeList(value) {
 }
 
 function normalizeType(value) {
-  const type = String(value || '').trim().toLowerCase();
+  const type = String(value || '')
+    .trim()
+    .toLowerCase();
   if (type === 'storedprocedure' || type === 'procedure') return 'storedprocedure';
   return type;
 }
@@ -315,12 +317,8 @@ function buildFacetsResponse() {
     databases: [...new Set(values.map((o) => canonicalDatabaseName(o.database)))]
       .filter(Boolean)
       .sort(),
-    types: [...new Set(values.map((o) => o.type))]
-      .filter(Boolean)
-      .sort(),
-    owners: [...new Set(values.map((o) => o.owner))]
-      .filter(Boolean)
-      .sort(),
+    types: [...new Set(values.map((o) => o.type))].filter(Boolean).sort(),
+    owners: [...new Set(values.map((o) => o.owner))].filter(Boolean).sort(),
     sensitivity: ['public', 'internal', 'confidential', 'restricted'],
     tags: [...new Set(values.flatMap((o) => o.tags || []))].sort(),
     quality: ['gold', 'silver', 'bronze', 'unrated'],
@@ -540,9 +538,7 @@ router.get('/', authenticate, async (req, res) => {
               `Elasticsearch unavailable (${esError.message}); searched the markdown catalog instead.`,
             ];
           } else if (esHits.length === 0 && canonical.totalHits > 0) {
-            warnings = [
-              'Elasticsearch returned no hits; searched the markdown catalog instead.',
-            ];
+            warnings = ['Elasticsearch returned no hits; searched the markdown catalog instead.'];
           }
         } else if (esHits.length > 0 || (!esError && objectCache.size === 0)) {
           results = esHits;
@@ -564,9 +560,7 @@ router.get('/', authenticate, async (req, res) => {
               `Elasticsearch unavailable (${esError.message}); searched the in-memory catalog instead.`,
             ];
           } else if (fallback.totalHits > 0) {
-            warnings = [
-              'Elasticsearch returned no hits; searched the in-memory catalog instead.',
-            ];
+            warnings = ['Elasticsearch returned no hits; searched the in-memory catalog instead.'];
           }
         }
 
@@ -662,9 +656,9 @@ router.get('/facets', authenticate, async (req, res) => {
     }
 
     return res.json({
-    status: 'success',
-    message: 'Available facets',
-    facets: buildFacetsResponse(),
+      status: 'success',
+      message: 'Available facets',
+      facets: buildFacetsResponse(),
     });
   } catch (err) {
     return sendErrorResponse(res, req, 500, err.message, {

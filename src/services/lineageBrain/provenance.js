@@ -23,7 +23,9 @@ function numberOrNull(value) {
 }
 
 export function sha256Text(value) {
-  return createHash('sha256').update(String(value || '')).digest('hex');
+  return createHash('sha256')
+    .update(String(value || ''))
+    .digest('hex');
 }
 
 export function splitLineageEdges(metadata = {}) {
@@ -157,7 +159,8 @@ export function templateValuesFromRecord(record = {}, lane = 'table', overrides 
       overrides.check_constraint_count ?? metadata.check_constraint_count ?? 0,
     edge_count: overrides.edge_count ?? totalEdgeCount(edgeGroups),
     edge_quality_score: overrides.edge_quality_score ?? edgeQualityScore({ ...record, edgeGroups }),
-    lineage_confidence: overrides.lineage_confidence || lineageConfidence({ ...record, edgeGroups }),
+    lineage_confidence:
+      overrides.lineage_confidence || lineageConfidence({ ...record, edgeGroups }),
     lineage_strategy:
       overrides.lineage_strategy || (isSsis ? 'ssis-package-lineage' : 'sql-reference-count'),
     lineage_pattern_class:

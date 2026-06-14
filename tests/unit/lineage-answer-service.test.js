@@ -1,4 +1,7 @@
-import { buildLineageAnswer, buildLineageQuestionHelp } from '../../src/services/lineageAnswerService.js';
+import {
+  buildLineageAnswer,
+  buildLineageQuestionHelp,
+} from '../../src/services/lineageAnswerService.js';
 
 describe('Lineage Answer Service', () => {
   const tableId = 'L1-5FSQL-01.Sonic_DW.dbo.DimVehicle';
@@ -109,9 +112,7 @@ describe('Lineage Answer Service', () => {
 
     expect(answer.plain_english).toContain('DimVehicle is maintained by dbo.usp_DimVehicle.');
     expect(answer.caveats).toEqual(
-      expect.arrayContaining([
-        expect.stringContaining('Maintenance reads are shown separately'),
-      ])
+      expect.arrayContaining([expect.stringContaining('Maintenance reads are shown separately')])
     );
     expect(answer.impacted_objects).toEqual(
       expect.arrayContaining([
@@ -163,12 +164,12 @@ describe('Lineage Answer Service', () => {
         }),
       ])
     );
-    expect(answer.plain_english).toContain('1 downstream business consumer, 1 maintenance/load-path procedure');
+    expect(answer.plain_english).toContain(
+      '1 downstream business consumer, 1 maintenance/load-path procedure'
+    );
     expect(answer.plain_english).toContain('1 orchestrating SSIS package');
     expect(answer.caveats).toEqual(
-      expect.arrayContaining([
-        expect.stringContaining('shown separately'),
-      ])
+      expect.arrayContaining([expect.stringContaining('shown separately')])
     );
   });
 

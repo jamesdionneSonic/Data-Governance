@@ -151,7 +151,10 @@ export async function searchObjects(indexName, query, options = {}) {
       }
     }
     if (options.trust_level) {
-      const levels = String(options.trust_level).split(',').map((s) => s.trim().toLowerCase()).filter(Boolean);
+      const levels = String(options.trust_level)
+        .split(',')
+        .map((s) => s.trim().toLowerCase())
+        .filter(Boolean);
       if (levels.length > 0) filters.push({ terms: { 'trust_level.keyword': levels } });
     }
     if (options.tags) {
@@ -172,7 +175,15 @@ export async function searchObjects(indexName, query, options = {}) {
           {
             multi_match: {
               query,
-              fields: ['name^5', 'packageName^6', 'packagePath^4', 'database^3', 'description', 'owner', 'tags'],
+              fields: [
+                'name^5',
+                'packageName^6',
+                'packagePath^4',
+                'database^3',
+                'description',
+                'owner',
+                'tags',
+              ],
               fuzziness: 'AUTO',
               type: 'best_fields',
             },

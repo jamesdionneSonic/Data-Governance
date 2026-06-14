@@ -22,7 +22,12 @@ describe('schemaDictionaryService', () => {
         tags: ['orders'],
         columns: [
           { name: 'order_id', data_type: 'int', keyOrdinal: 1 },
-          { name: 'gross_amount', data_type: 'decimal', semantic_type: 'metric', description: 'Gross sale amount' },
+          {
+            name: 'gross_amount',
+            data_type: 'decimal',
+            semantic_type: 'metric',
+            description: 'Gross sale amount',
+          },
         ],
       },
     ],

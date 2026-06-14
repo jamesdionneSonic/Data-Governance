@@ -22,7 +22,9 @@ function ensureArray(value) {
 }
 
 function normalizeKey(value) {
-  return String(value || '').trim().toLowerCase();
+  return String(value || '')
+    .trim()
+    .toLowerCase();
 }
 
 function columnIdFor(objectId, columnName) {
@@ -30,7 +32,9 @@ function columnIdFor(objectId, columnName) {
 }
 
 function compactEvidence(value, maxLength = 300) {
-  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  const text = String(value || '')
+    .replace(/\s+/g, ' ')
+    .trim();
   return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
 }
 
@@ -43,8 +47,7 @@ function findColumn(objects, objectId, columnNameOrId) {
   if (!object) return null;
   const key = normalizeKey(columnNameOrId);
   const column = ensureArray(object.columns).find(
-    (candidate) =>
-      normalizeKey(candidate.column_id) === key || normalizeKey(candidate.name) === key
+    (candidate) => normalizeKey(candidate.column_id) === key || normalizeKey(candidate.name) === key
   );
   if (!column) return null;
   return {
@@ -207,7 +210,8 @@ function makeLineageImpact(edge, targetColumn, process, changeType, distance) {
 }
 
 function riskSeverity(flagType, changeType) {
-  if (['dynamic_sql', 'dynamic_table_name', 'dynamic_column_name'].includes(flagType)) return 'high';
+  if (['dynamic_sql', 'dynamic_table_name', 'dynamic_column_name'].includes(flagType))
+    return 'high';
   if (['insert_without_column_list', 'merge_without_explicit_column_mapping'].includes(flagType)) {
     return BREAKING_CHANGES.has(changeType) || changeType === 'add_column' ? 'high' : 'medium';
   }
@@ -223,8 +227,12 @@ function collectRiskFlags(objects, impactedProcessIds, sourceObjectId, changeTyp
     const objectId = getObjectId(mapKey, metadata);
     const isImpacted = impacted.has(normalizeKey(objectId));
     const touchesSource =
-      ensureArray(metadata.reads_from).some((ref) => normalizeKey(ref) === normalizeKey(sourceObjectId)) ||
-      ensureArray(metadata.depends_on).some((ref) => normalizeKey(ref) === normalizeKey(sourceObjectId));
+      ensureArray(metadata.reads_from).some(
+        (ref) => normalizeKey(ref) === normalizeKey(sourceObjectId)
+      ) ||
+      ensureArray(metadata.depends_on).some(
+        (ref) => normalizeKey(ref) === normalizeKey(sourceObjectId)
+      );
     if (!isImpacted && !touchesSource) continue;
 
     for (const flag of ensureArray(metadata.column_risk_flags)) {
@@ -272,7 +280,8 @@ function collectUnresolvedRisks(objects, column, impactedProcessIds, changeType)
         validation_status: record.validation_status || 'unresolved',
         reason: record.reason || 'unresolved_column_usage',
         suggested_action:
-          record.suggested_action || 'Resolve this SQL parser ambiguity before approving the change.',
+          record.suggested_action ||
+          'Resolve this SQL parser ambiguity before approving the change.',
         evidence_type: record.evidence_type || 'unresolved_column_usage',
         evidence_text: compactEvidence(record.evidence_text || record.expression),
       });
@@ -366,7 +375,9 @@ export function analyzeColumnImpact(objects = new Map(), request = {}) {
     for (const edge of lineageIndex.downstream.get(currentColumnKey) || []) {
       const targetColumn = columnIndex.byId.get(normalizeKey(edge.target_column_id));
       const process = objects.get(edge.process_id);
-      impacts.push(makeLineageImpact(edge, targetColumn, process, changeType, current.distance + 1));
+      impacts.push(
+        makeLineageImpact(edge, targetColumn, process, changeType, current.distance + 1)
+      );
       impactedProcessIds.add(edge.process_id);
 
       const targetKey = normalizeKey(edge.target_column_id);
@@ -390,7 +401,8 @@ export function analyzeColumnImpact(objects = new Map(), request = {}) {
       validation_status: 'validated',
       distance: 0,
       evidence_type: 'column_inventory',
-      evidence_text: 'Adding a nullable/ignored column is metadata-only unless downstream SELECT * or positional inserts are present.',
+      evidence_text:
+        'Adding a nullable/ignored column is metadata-only unless downstream SELECT * or positional inserts are present.',
     });
   }
 

@@ -19,6 +19,8 @@ export function isExpectedHighFanoutSSIS(record, keywords) {
 }
 
 export function isExpectedHighFanoutTable(record, sqlText, keywords) {
-  const text = normalizeBlob([record.objectName, record.objectType, record.description, sqlText].join(' '));
+  const text = normalizeBlob(
+    [record.objectName, record.objectType, record.description, sqlText].join(' ')
+  );
   return matchesAny(text, keywords);
 }

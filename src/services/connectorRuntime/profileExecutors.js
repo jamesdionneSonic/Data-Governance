@@ -39,15 +39,23 @@ function connectionStrategy(connector = {}, options = {}) {
       connector.config?.connection_strategy ||
       connector.config?.connectionStrategy ||
       ''
-  ).trim().toLowerCase();
+  )
+    .trim()
+    .toLowerCase();
 }
 
 function usesSqlcmdWindowsAuth(connector = {}, options = {}) {
-  return ['sqlcmd_windows_auth', 'sqlcmd', 'sqlcmd_windows_integrated'].includes(connectionStrategy(connector, options));
+  return ['sqlcmd_windows_auth', 'sqlcmd', 'sqlcmd_windows_integrated'].includes(
+    connectionStrategy(connector, options)
+  );
 }
 
 function sqlcmdServer(connector = {}) {
-  const server = connector.config?.server || connector.config?.host || connector.config?.data_source || connector.config?.dataSource;
+  const server =
+    connector.config?.server ||
+    connector.config?.host ||
+    connector.config?.data_source ||
+    connector.config?.dataSource;
   const port = connector.config?.port;
   if (port && !String(server || '').includes(',')) return `${server},${port}`;
   return server;
@@ -63,7 +71,12 @@ function sqlcmdJson(output = '') {
     .map((line) => line.trimEnd())
     .filter((line) => {
       const value = line.trim();
-      return value && !/^JSON_/i.test(value) && !/^-+$/.test(value) && !/^\(\d+ rows affected\)$/i.test(value);
+      return (
+        value &&
+        !/^JSON_/i.test(value) &&
+        !/^-+$/.test(value) &&
+        !/^\(\d+ rows affected\)$/i.test(value)
+      );
     })
     .join('');
   return body ? JSON.parse(body) : null;
@@ -78,16 +91,23 @@ function splitSqlStatements(sql = '') {
 
 function sqlcmdProfileSql(sql = '') {
   const statements = splitSqlStatements(sql);
-  const selectIndex = [...statements].reverse().findIndex((statement) => /^select\b/i.test(statement));
+  const selectIndex = [...statements]
+    .reverse()
+    .findIndex((statement) => /^select\b/i.test(statement));
   if (selectIndex < 0) return sql;
   const actualIndex = statements.length - 1 - selectIndex;
-  const preamble = statements.slice(0, actualIndex).map((statement) => `${statement};`).join('\n');
+  const preamble = statements
+    .slice(0, actualIndex)
+    .map((statement) => `${statement};`)
+    .join('\n');
   const select = statements[actualIndex].replace(/;+\s*$/, '');
   return [
     'SET NOCOUNT ON;',
     preamble,
     `SELECT * FROM (${select}) AS profile_row FOR JSON PATH, WITHOUT_ARRAY_WRAPPER;`,
-  ].filter(Boolean).join('\n');
+  ]
+    .filter(Boolean)
+    .join('\n');
 }
 
 async function runSqlcmdJsonQuery({ connector, action, sql }) {
@@ -101,24 +121,24 @@ async function runSqlcmdJsonQuery({ connector, action, sql }) {
       'Set connector config.server and config.database before running live SQL Server profiles through sqlcmd.'
     );
   }
-  const { stdout } = await execFileAsync(connector.config?.sqlcmd_path || connector.config?.sqlcmdPath || 'sqlcmd', [
-    '-S',
-    server,
-    '-E',
-    '-C',
-    '-d',
-    database,
-    '-w',
-    '65535',
-    '-y',
-    '0',
-    '-Q',
-    sql,
-  ], {
-    windowsHide: true,
-    maxBuffer: Number(connector.config?.sqlcmd_max_buffer || connector.config?.sqlcmdMaxBuffer || 128 * 1024 * 1024),
-    timeout: Number(action.query?.timeout_ms || connector.config?.sqlcmd_timeout_ms || connector.config?.sqlcmdTimeoutMs || 120000),
-  });
+  const { stdout } = await execFileAsync(
+    connector.config?.sqlcmd_path || connector.config?.sqlcmdPath || 'sqlcmd',
+    ['-S', server, '-E', '-C', '-d', database, '-w', '65535', '-y', '0', '-Q', sql],
+    {
+      windowsHide: true,
+      maxBuffer: Number(
+        connector.config?.sqlcmd_max_buffer ||
+          connector.config?.sqlcmdMaxBuffer ||
+          128 * 1024 * 1024
+      ),
+      timeout: Number(
+        action.query?.timeout_ms ||
+          connector.config?.sqlcmd_timeout_ms ||
+          connector.config?.sqlcmdTimeoutMs ||
+          120000
+      ),
+    }
+  );
   return sqlcmdJson(stdout) || {};
 }
 
@@ -148,13 +168,16 @@ export function createProfileExecutor({ connector, options = {} }) {
     async runProfileAction(action) {
       if (options.mockProfileRows || connector.config?.mockProfileRows) {
         const rows = options.mockProfileRows || connector.config.mockProfileRows;
-        const row = Array.isArray(rows) ? rows.shift() || rows[0] || {} : rows[action.asset_id] || rows.default || rows;
+        const row = Array.isArray(rows)
+          ? rows.shift() || rows[0] || {}
+          : rows[action.asset_id] || rows.default || rows;
         return profileFromAggregateRow(action, row);
       }
       if (connector.config?.profile_endpoint || options.profile_endpoint) {
         return runProfileEndpoint({ connector, action, options });
       }
-      if (connector.type === 'sql_server') return runSqlServerProfile({ connector, action, options });
+      if (connector.type === 'sql_server')
+        return runSqlServerProfile({ connector, action, options });
       if (connector.type === 'postgresql') return runPostgresProfile({ connector, action });
       if (connector.type === 'snowflake') return runSnowflakeProfile({ connector, action });
       if (connector.type === 'bigquery') return runBigQueryProfile({ connector, action });
@@ -168,7 +191,11 @@ export function createProfileExecutor({ connector, options = {} }) {
 async function runSqlServerProfile({ connector, action, options = {} }) {
   if (usesSqlcmdWindowsAuth(connector, options)) {
     try {
-      const row = await runSqlcmdJsonQuery({ connector, action, sql: sqlcmdProfileSql(action.query.sql) });
+      const row = await runSqlcmdJsonQuery({
+        connector,
+        action,
+        sql: sqlcmdProfileSql(action.query.sql),
+      });
       return profileFromAggregateRow(action, row);
     } catch (err) {
       if (err instanceof ConnectorRuntimeError) throw err;
@@ -268,7 +295,9 @@ async function runSnowflakeProfile({ connector, action }) {
     schema: connector.config.schema,
     role: connector.config.role,
   });
-  await new Promise((resolve, reject) => connection.connect((err) => (err ? reject(err) : resolve())));
+  await new Promise((resolve, reject) =>
+    connection.connect((err) => (err ? reject(err) : resolve()))
+  );
   try {
     const rows = await new Promise((resolve, reject) => {
       connection.execute({
@@ -304,7 +333,8 @@ async function runBigQueryProfile({ connector, action }) {
       query: action.query.sql,
       useLegacySql: false,
       timeoutMs: action.query.timeout_ms,
-      maximumBytesBilled: connector.config.maximumBytesBilled || connector.config.maximum_bytes_billed,
+      maximumBytesBilled:
+        connector.config.maximumBytesBilled || connector.config.maximum_bytes_billed,
     }),
   });
   const json = await response.json().catch(() => ({}));
@@ -360,7 +390,10 @@ async function runDatabricksProfile({ connector, action }) {
   }
   const columns = json.manifest?.schema?.columns || [];
   const values = json.result?.data_array?.[0] || [];
-  return profileFromAggregateRow(action, Object.fromEntries(columns.map((column, index) => [column.name, values[index]])));
+  return profileFromAggregateRow(
+    action,
+    Object.fromEntries(columns.map((column, index) => [column.name, values[index]]))
+  );
 }
 
 async function runRedshiftProfile({ connector, action }) {
@@ -389,7 +422,8 @@ async function runRedshiftProfile({ connector, action }) {
   } = redshiftData.default || redshiftData;
   const region = connector.config.region || connector.config.aws_region;
   const database = connector.config.database || action.database;
-  const clusterIdentifier = connector.config.cluster_identifier || connector.config.clusterIdentifier;
+  const clusterIdentifier =
+    connector.config.cluster_identifier || connector.config.clusterIdentifier;
   const workgroupName = connector.config.workgroup_name || connector.config.workgroupName;
   const dbUser = credentialValue(connector, 'db_user', 'dbUser', 'username', 'user');
   const secretArn = credentialValue(connector, 'secret_arn', 'secretArn');
@@ -416,7 +450,9 @@ async function runRedshiftProfile({ connector, action }) {
   const executeInput = {
     Database: database,
     Sql: sqlText,
-    StatementName: `profile-${String(action.asset_id || 'asset').replace(/[^a-zA-Z0-9_-]/g, '-').slice(0, 400)}`,
+    StatementName: `profile-${String(action.asset_id || 'asset')
+      .replace(/[^a-zA-Z0-9_-]/g, '-')
+      .slice(0, 400)}`,
     ResultFormat: 'JSON',
     ...(clusterIdentifier ? { ClusterIdentifier: clusterIdentifier } : {}),
     ...(workgroupName ? { WorkgroupName: workgroupName } : {}),
@@ -473,7 +509,11 @@ export function firstExecutableSqlStatement(sql = '') {
     .split(';')
     .map((part) => part.trim())
     .filter(Boolean);
-  return statements.find((statement) => /^select\b/i.test(statement)) || statements[statements.length - 1] || String(sql);
+  return (
+    statements.find((statement) => /^select\b/i.test(statement)) ||
+    statements[statements.length - 1] ||
+    String(sql)
+  );
 }
 
 export function redshiftFieldValue(field = {}) {
@@ -489,7 +529,9 @@ export function redshiftFieldValue(field = {}) {
 export function redshiftResultRow(result = {}) {
   const columns = result.ColumnMetadata || [];
   const record = result.Records?.[0] || [];
-  return Object.fromEntries(columns.map((column, index) => [column.name, redshiftFieldValue(record[index])]));
+  return Object.fromEntries(
+    columns.map((column, index) => [column.name, redshiftFieldValue(record[index])])
+  );
 }
 
 function sleep(ms) {
@@ -522,7 +564,11 @@ async function runProfileEndpoint({ connector, action, options = {} }) {
       action,
       `Profile endpoint returned HTTP ${response.status}.`,
       'Check profile endpoint health, connector authorization, source permissions, and timeout settings.',
-      { status: response.status, endpoint: safeEndpoint(url), error: json.message || json.error || null }
+      {
+        status: response.status,
+        endpoint: safeEndpoint(url),
+        error: json.message || json.error || null,
+      }
     );
   }
   return json.profile || profileFromAggregateRow(action, json.row || json.rows?.[0] || json);

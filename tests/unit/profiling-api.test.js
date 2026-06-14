@@ -54,19 +54,23 @@ describe('Profiling API', () => {
       expect.arrayContaining(['dry_run', 'simulate', 'live'])
     );
     expect(res.body.contract.supported_dialects).toEqual(
-      expect.arrayContaining(['sql_server', 'postgresql', 'snowflake', 'bigquery', 'databricks', 'redshift'])
+      expect.arrayContaining([
+        'sql_server',
+        'postgresql',
+        'snowflake',
+        'bigquery',
+        'databricks',
+        'redshift',
+      ])
     );
     expect(res.body.contract.connector_dialects.aws_redshift).toBe('redshift');
   });
 
   test('plans safe profiling SQL from catalog objects', async () => {
-    const res = await request(seedApp())
-      .post('/api/v1/profiling/plan')
-      .set(authHeaders())
-      .send({
-        asset_id: 'finance.dbo.Invoice',
-        profile_mode: 'sample',
-      });
+    const res = await request(seedApp()).post('/api/v1/profiling/plan').set(authHeaders()).send({
+      asset_id: 'finance.dbo.Invoice',
+      profile_mode: 'sample',
+    });
 
     expect(res.status).toBe(200);
     expect(res.body.plan.summary.planned_assets).toBe(1);
@@ -74,14 +78,11 @@ describe('Profiling API', () => {
   });
 
   test('runs simulated profile and returns answer package', async () => {
-    const res = await request(seedApp())
-      .post('/api/v1/profiling/run')
-      .set(authHeaders())
-      .send({
-        asset_id: 'finance.dbo.Invoice',
-        profile_mode: 'sample',
-        execution_mode: 'simulate',
-      });
+    const res = await request(seedApp()).post('/api/v1/profiling/run').set(authHeaders()).send({
+      asset_id: 'finance.dbo.Invoice',
+      profile_mode: 'sample',
+      execution_mode: 'simulate',
+    });
 
     expect(res.status).toBe(200);
     expect(res.body.data.answer.answer).toContain('retained no raw data');
@@ -125,7 +126,9 @@ describe('Profiling API', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.asset.row_count).toBe(111);
-    expect(res.body.asset.columns.find((column) => column.name === 'total_amount').null_count).toBe(1);
+    expect(res.body.asset.columns.find((column) => column.name === 'total_amount').null_count).toBe(
+      1
+    );
   });
 
   test('delegates profiling runs to managed connectors when connector_id is supplied', async () => {
@@ -135,7 +138,12 @@ describe('Profiling API', () => {
         type: 'sql_server',
         label: 'Profile SQL Generic',
         config: { server: 'sql.example.com', database: 'finance' },
-        credential: { mode: 'service_account', username: 'svc', password: 'secret', secret_ref: 'kv://sql' },
+        credential: {
+          mode: 'service_account',
+          username: 'svc',
+          password: 'secret',
+          secret_ref: 'kv://sql',
+        },
       },
       { id: 'admin', email: 'admin@example.com', roles: ['Admin'] }
     );

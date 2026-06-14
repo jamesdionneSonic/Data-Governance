@@ -65,7 +65,11 @@ router.get('/runtime-pack', authenticate, async (req, res) => {
 
 router.get('/tables/:assetId', authenticate, async (req, res) => {
   try {
-    const answer = buildTableMetricAnswer(runtimeObjects(), runtimeLineageGraph(), req.params.assetId);
+    const answer = buildTableMetricAnswer(
+      runtimeObjects(),
+      runtimeLineageGraph(),
+      req.params.assetId
+    );
     if (!answer) {
       return sendErrorResponse(res, req, 404, `Object '${req.params.assetId}' not found`, {
         code: 'NOT_FOUND',
@@ -116,7 +120,11 @@ router.post('/logic', authenticate, async (req, res) => {
 
 router.post('/formula-impact', authenticate, async (req, res) => {
   try {
-    const impact = assessMetricFormulaImpact(runtimeObjects(), runtimeLineageGraph(), req.body || {});
+    const impact = assessMetricFormulaImpact(
+      runtimeObjects(),
+      runtimeLineageGraph(),
+      req.body || {}
+    );
     if (!impact) {
       return sendErrorResponse(res, req, 404, 'Metric object was not found', { code: 'NOT_FOUND' });
     }
@@ -132,7 +140,11 @@ router.post('/formula-impact', authenticate, async (req, res) => {
 
 router.post('/profile', authenticate, async (req, res) => {
   try {
-    const profile = buildMetricProfileAnswer(runtimeObjects(), runtimeLineageGraph(), req.body || {});
+    const profile = buildMetricProfileAnswer(
+      runtimeObjects(),
+      runtimeLineageGraph(),
+      req.body || {}
+    );
     if (!profile) {
       return sendErrorResponse(res, req, 404, 'Metric object was not found', { code: 'NOT_FOUND' });
     }

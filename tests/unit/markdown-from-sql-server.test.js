@@ -155,11 +155,7 @@ describe('Markdown From SQL Server', () => {
           serverName: 'DW01',
           schema: 'dbo',
           name: 'FactClaim',
-          columns: [
-            { name: 'ClaimID' },
-            { name: 'DealerID' },
-            { name: 'ClaimAmount' },
-          ],
+          columns: [{ name: 'ClaimID' }, { name: 'DealerID' }, { name: 'ClaimAmount' }],
         },
         {
           id: 'DW01.Sonic_DW.staging.Claims',
@@ -178,10 +174,7 @@ describe('Markdown From SQL Server', () => {
           serverName: 'DW01',
           schema: 'dbo',
           name: 'DimDealer',
-          columns: [
-            { name: 'DealerID' },
-            { name: 'DealerCode' },
-          ],
+          columns: [{ name: 'DealerID' }, { name: 'DealerCode' }],
         },
       ],
     });
@@ -259,20 +252,14 @@ describe('Markdown From SQL Server', () => {
           serverName: 'DW01',
           schema: 'dbo',
           name: 'FactClaim',
-          columns: [
-            { name: 'ClaimID' },
-            { name: 'ClaimAmount' },
-          ],
+          columns: [{ name: 'ClaimID' }, { name: 'ClaimAmount' }],
         },
         {
           id: 'DW01.Sonic_DW.staging.Claims',
           serverName: 'DW01',
           schema: 'staging',
           name: 'Claims',
-          columns: [
-            { name: 'ClaimID' },
-            { name: 'Amount' },
-          ],
+          columns: [{ name: 'ClaimID' }, { name: 'Amount' }],
         },
       ],
     });
@@ -333,20 +320,14 @@ describe('Markdown From SQL Server', () => {
           serverName: 'DW01',
           schema: 'dbo',
           name: 'FactClaim',
-          columns: [
-            { name: 'ClaimID' },
-            { name: 'ClaimAmount' },
-          ],
+          columns: [{ name: 'ClaimID' }, { name: 'ClaimAmount' }],
         },
         {
           id: 'DW01.Sonic_DW.staging.Claims',
           serverName: 'DW01',
           schema: 'staging',
           name: 'Claims',
-          columns: [
-            { name: 'ClaimID' },
-            { name: 'Amount' },
-          ],
+          columns: [{ name: 'ClaimID' }, { name: 'Amount' }],
         },
       ],
     });
@@ -400,10 +381,7 @@ describe('Markdown From SQL Server', () => {
           serverName: 'DW01',
           schema: 'staging',
           name: 'Claims',
-          columns: [
-            { name: 'ClaimID' },
-            { name: 'Status' },
-          ],
+          columns: [{ name: 'ClaimID' }, { name: 'Status' }],
         },
       ],
     });
@@ -464,10 +442,7 @@ describe('Markdown From SQL Server', () => {
           database: 'VendorData',
           schema: 'JMA',
           name: 'Claims',
-          columns: [
-            { name: 'ClaimID' },
-            { name: 'ClaimAmount' },
-          ],
+          columns: [{ name: 'ClaimID' }, { name: 'ClaimAmount' }],
         },
       ],
     });
@@ -564,20 +539,14 @@ describe('Markdown From SQL Server', () => {
           serverName: 'DW01',
           schema: 'dbo',
           name: 'FactClaim',
-          columns: [
-            { name: 'ClaimID' },
-            { name: 'ClaimAmount' },
-          ],
+          columns: [{ name: 'ClaimID' }, { name: 'ClaimAmount' }],
         },
         {
           id: 'DW01.Sonic_DW.staging.Claims',
           serverName: 'DW01',
           schema: 'staging',
           name: 'Claims',
-          columns: [
-            { name: 'ClaimID' },
-            { name: 'Amount' },
-          ],
+          columns: [{ name: 'ClaimID' }, { name: 'Amount' }],
         },
       ],
     });
@@ -633,10 +602,8 @@ describe('Markdown From SQL Server', () => {
       database: 'ETL_Staging',
       extractedAt: '2026-06-02T00:00:00.000Z',
     });
-    const sourceTable =
-      'L1-DWASQL-02,12010.VENDORDATA.JMA.JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL';
-    const targetTable =
-      'L1-5FSQL-01.ETL_STAGING.JMA.ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL';
+    const sourceTable = 'L1-DWASQL-02,12010.VENDORDATA.JMA.JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL';
+    const targetTable = 'L1-5FSQL-01.ETL_STAGING.JMA.ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL';
     const markdown = generator.generateStoredProcedureMarkdown({
       id: 'L1-5FSQL-01.ETL_Staging.JMA.Load_Claim_Financial_Transactions',
       name: 'Load_Claim_Financial_Transactions',
@@ -648,10 +615,7 @@ describe('Markdown From SQL Server', () => {
         SELECT *
         FROM [L1-DWASQL-02,12010].VENDORDATA.JMA.JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL;
       `,
-      dependencies: [
-        { referencedObject: targetTable },
-        { referencedObject: sourceTable },
-      ],
+      dependencies: [{ referencedObject: targetTable }, { referencedObject: sourceTable }],
       parameters: [],
     });
 
@@ -690,7 +654,10 @@ describe('Markdown From SQL Server', () => {
         ON target.JMA_CLAIMS_REF = source.JMA_CLAIMS_REF;
       `,
       dependencies: [
-        { referencedObject: 'L1-5FSQL-01.ETL_Staging.JMA.ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL' },
+        {
+          referencedObject:
+            'L1-5FSQL-01.ETL_Staging.JMA.ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL',
+        },
         { referencedObject: targetTable },
       ],
       parameters: [],

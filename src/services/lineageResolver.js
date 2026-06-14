@@ -59,10 +59,7 @@ function buildAliasIndex(records) {
 
   for (const record of records) {
     const { metadata } = record;
-    const aliases = [
-      metadata.id,
-      ...(Array.isArray(metadata.aliases) ? metadata.aliases : []),
-    ]
+    const aliases = [metadata.id, ...(Array.isArray(metadata.aliases) ? metadata.aliases : [])]
       .filter(Boolean)
       .map((alias) => normalizeId(alias));
 
@@ -96,7 +93,8 @@ function resolveReference(reference, aliasIndex, sourceMetadata = {}) {
     const target = normalizeId(matchId);
     const targetParts = target.split('.').filter(Boolean);
     const targetServer = targetParts.length > 3 ? targetParts[0] : '';
-    const targetDatabase = targetParts.length > 3 ? targetParts[1] : targetParts.length > 2 ? targetParts[0] : '';
+    const targetDatabase =
+      targetParts.length > 3 ? targetParts[1] : targetParts.length > 2 ? targetParts[0] : '';
 
     if (sourceServer && targetServer && sourceServer !== targetServer) return false;
     if (sourceDatabase && targetDatabase && sourceDatabase !== targetDatabase) return false;
@@ -117,7 +115,10 @@ function filterTopologyReferences(referenceList, objectById, relationshipType) {
       result.push(reference);
       continue;
     }
-    if (relationshipType === 'created_via' && String(target.type || '').toLowerCase() !== 'package') {
+    if (
+      relationshipType === 'created_via' &&
+      String(target.type || '').toLowerCase() !== 'package'
+    ) {
       continue;
     }
     result.push(target.id);
@@ -272,9 +273,21 @@ export async function resolveLineageCorpus(dataPath) {
     const incomingWrites = Array.from(outgoingWrites.get(metadata.id) || []);
     const directCreators = Array.from(new Set([...existingCreators, ...incomingWrites])).sort();
     const resolvedCreators = filterTopologyReferences(directCreators, objectById, 'creator');
-    const createdVia = filterTopologyReferences(packageAncestorsFor(resolvedCreators), objectById, 'created_via');
-    const usedBy = filterTopologyReferences(Array.from(outgoingReads.get(metadata.id) || []).sort(), objectById, 'used_by');
-    const contextualReads = filterTopologyReferences(ensureArray(metadata.contextual_reads), objectById, 'contextual');
+    const createdVia = filterTopologyReferences(
+      packageAncestorsFor(resolvedCreators),
+      objectById,
+      'created_via'
+    );
+    const usedBy = filterTopologyReferences(
+      Array.from(outgoingReads.get(metadata.id) || []).sort(),
+      objectById,
+      'used_by'
+    );
+    const contextualReads = filterTopologyReferences(
+      ensureArray(metadata.contextual_reads),
+      objectById,
+      'contextual'
+    );
     const existingExternalSource = Boolean(metadata.external_source);
     let lineageStatus = 'creator_unresolved';
     if (resolvedCreators.length > 0) {

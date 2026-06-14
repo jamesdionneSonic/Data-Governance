@@ -139,7 +139,10 @@ describe('Lineage engine rule contracts', () => {
 
     const edges = buildSemanticLineageEdges(objects);
     const writeEdges = edges.filter(
-      (edge) => edge.source === procId && edge.target === targetId && /_write$|^write$/.test(edge.semantic_type)
+      (edge) =>
+        edge.source === procId &&
+        edge.target === targetId &&
+        /_write$|^write$/.test(edge.semantic_type)
     );
     const pack = buildSemanticLineagePack(objects, targetId);
 
@@ -305,7 +308,9 @@ describe('Lineage engine rule contracts', () => {
       ])
     );
     expect(edges.map((edge) => edge.id || `${edge.from}->${edge.to}:${edge.edgeType}`)).toEqual(
-      Array.from(new Set(edges.map((edge) => edge.id || `${edge.from}->${edge.to}:${edge.edgeType}`)))
+      Array.from(
+        new Set(edges.map((edge) => edge.id || `${edge.from}->${edge.to}:${edge.edgeType}`))
+      )
     );
   });
 

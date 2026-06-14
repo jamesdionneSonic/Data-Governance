@@ -224,7 +224,9 @@ describe('Lineage Answer API', () => {
         has_table: true,
       })
     );
-    expect(response.body.data.plain_english).toBe('WebV has 2 tables in the loaded lineage catalog.');
+    expect(response.body.data.plain_english).toBe(
+      'WebV has 2 tables in the loaded lineage catalog.'
+    );
     expect(response.body.data.table.rows[0]).toEqual(
       expect.objectContaining({
         database: 'WebV',

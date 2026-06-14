@@ -39,11 +39,14 @@ function normalizeNumber(value, fallback = 0) {
 function columnStats(asset = {}, columnName = '', profile = {}) {
   const profileColumn =
     profile?.columns?.[columnName] ||
-    toArray(profile?.columns).find((column) => column.name === columnName || column.column_name === columnName) ||
+    toArray(profile?.columns).find(
+      (column) => column.name === columnName || column.column_name === columnName
+    ) ||
     {};
-  const assetColumn = toArray(asset.columns).find(
-    (column) => column.name === columnName || column.column_name === columnName
-  ) || {};
+  const assetColumn =
+    toArray(asset.columns).find(
+      (column) => column.name === columnName || column.column_name === columnName
+    ) || {};
   return { ...assetColumn, ...profileColumn };
 }
 
@@ -146,11 +149,14 @@ export function listQualitySchedules() {
 }
 
 export function listQualityRules(filter = {}) {
-  return Array.from(ruleStore.values()).filter((rule) => {
-    if (filter.asset_id && rule.asset_id !== '*' && rule.asset_id !== filter.asset_id) return false;
-    if (filter.enabled !== undefined && rule.enabled !== filter.enabled) return false;
-    return true;
-  }).map((rule) => ({ ...rule }));
+  return Array.from(ruleStore.values())
+    .filter((rule) => {
+      if (filter.asset_id && rule.asset_id !== '*' && rule.asset_id !== filter.asset_id)
+        return false;
+      if (filter.enabled !== undefined && rule.enabled !== filter.enabled) return false;
+      return true;
+    })
+    .map((rule) => ({ ...rule }));
 }
 
 function evaluateThreshold(rule, stats) {
@@ -159,9 +165,14 @@ function evaluateThreshold(rule, stats) {
     case 'null_percent': {
       const rowCount = normalizeNumber(stats.row_count || stats.rowCount, 0);
       const nullCount = normalizeNumber(stats.null_count || stats.nullCount, 0);
-      const actual = stats.null_percent ?? stats.null_pct ?? (rowCount ? (nullCount / rowCount) * 100 : 0);
+      const actual =
+        stats.null_percent ?? stats.null_pct ?? (rowCount ? (nullCount / rowCount) * 100 : 0);
       const max = normalizeNumber(threshold.max ?? threshold.max_percent, 0);
-      return { actual: normalizeNumber(actual), expected: `<= ${max}%`, passing: normalizeNumber(actual) <= max };
+      return {
+        actual: normalizeNumber(actual),
+        expected: `<= ${max}%`,
+        passing: normalizeNumber(actual) <= max,
+      };
     }
     case 'cardinality_bounds': {
       const actual = normalizeNumber(stats.distinct_count ?? stats.cardinality);
@@ -190,7 +201,11 @@ function evaluateThreshold(rule, stats) {
       const distinctCount = normalizeNumber(stats.distinct_count ?? stats.cardinality, 0);
       const actual = stats.unique_percent ?? (rowCount ? (distinctCount / rowCount) * 100 : 0);
       const min = normalizeNumber(threshold.min_percent, 100);
-      return { actual: normalizeNumber(actual), expected: `>= ${min}% unique`, passing: normalizeNumber(actual) >= min };
+      return {
+        actual: normalizeNumber(actual),
+        expected: `>= ${min}% unique`,
+        passing: normalizeNumber(actual) >= min,
+      };
     }
     default:
       return { actual: null, expected: 'known quality rule type', passing: false };
@@ -232,7 +247,11 @@ export function runQualityRules(assets = new Map(), options = {}) {
     for (const assetId of assetIds) {
       const asset = assetMap.get(assetId);
       if (!asset) continue;
-      const result = evaluateQualityRule(rule, asset, profiles[assetId] || profiles[asset.name] || {});
+      const result = evaluateQualityRule(
+        rule,
+        asset,
+        profiles[assetId] || profiles[asset.name] || {}
+      );
       results.push(result);
       if (!result.passing) {
         incidentStore.push({
@@ -252,7 +271,11 @@ export function runQualityRules(assets = new Map(), options = {}) {
 
   const execution = {
     id: randomUUID(),
-    status: results.some((result) => result.status === 'failed') ? 'failed' : results.some((result) => result.status === 'warning') ? 'warning' : 'passed',
+    status: results.some((result) => result.status === 'failed')
+      ? 'failed'
+      : results.some((result) => result.status === 'warning')
+        ? 'warning'
+        : 'passed',
     evaluated_rules: rules.length,
     evaluated_results: results.length,
     passed: results.filter((result) => result.passing).length,
@@ -303,7 +326,9 @@ export function buildProfileSummary(profile = {}) {
     row_count: normalizeNumber(profile.row_count || profile.rowCount, 0),
     profiled_columns: profiledColumns,
     numeric_columns: numericColumns,
-    average_null_percent: profiledColumns ? Math.round((totalNullPercent / profiledColumns) * 10) / 10 : 0,
+    average_null_percent: profiledColumns
+      ? Math.round((totalNullPercent / profiledColumns) * 10) / 10
+      : 0,
     high_null_columns: highNullColumns,
     low_cardinality_columns: lowCardinalityColumns,
     generated_at: nowIso(),
@@ -324,7 +349,8 @@ export function detectQualityAnomalies(currentProfile = {}, baselineProfile = {}
   const rowDeltaPercent = baseline.row_count
     ? Math.round(((current.row_count - baseline.row_count) / baseline.row_count) * 1000) / 10
     : 0;
-  const nullDelta = Math.round((current.average_null_percent - baseline.average_null_percent) * 10) / 10;
+  const nullDelta =
+    Math.round((current.average_null_percent - baseline.average_null_percent) * 10) / 10;
   const rowThreshold = 25 / sensitivity;
   const nullThreshold = 10 / sensitivity;
 
@@ -383,7 +409,14 @@ export function buildQualityScorecard(profile = {}, validationExecution = null) 
   const uniqueness = Math.max(0, 100 - summary.low_cardinality_columns.length * 4);
   const overall = Math.max(
     0,
-    Math.round((completeness * 0.4 + consistency * 0.25 + uniqueness * 0.2 + 100 * 0.15 - validationPenalty) * 10) / 10
+    Math.round(
+      (completeness * 0.4 +
+        consistency * 0.25 +
+        uniqueness * 0.2 +
+        100 * 0.15 -
+        validationPenalty) *
+        10
+    ) / 10
   );
   const scorecard = {
     asset_id: summary.asset_id,
@@ -440,7 +473,16 @@ export function exportProfile(profile = {}, format = 'json') {
     const columns = Array.isArray(profile.columns)
       ? profile.columns
       : Object.entries(profile.columns || {}).map(([name, stats]) => ({ name, ...stats }));
-    const header = ['asset_id', 'column_name', 'row_count', 'null_percent', 'distinct_count', 'min', 'max', 'mean'];
+    const header = [
+      'asset_id',
+      'column_name',
+      'row_count',
+      'null_percent',
+      'distinct_count',
+      'min',
+      'max',
+      'mean',
+    ];
     const rows = columns.map((column) =>
       [
         summary.asset_id,
@@ -453,9 +495,17 @@ export function exportProfile(profile = {}, format = 'json') {
         column.mean ?? '',
       ].join(',')
     );
-    return { ...payload, content_type: 'text/csv', content: [header.join(','), ...rows].join('\n') };
+    return {
+      ...payload,
+      content_type: 'text/csv',
+      content: [header.join(','), ...rows].join('\n'),
+    };
   }
-  return { ...payload, content_type: 'application/json', content: JSON.stringify(payload, null, 2) };
+  return {
+    ...payload,
+    content_type: 'application/json',
+    content: JSON.stringify(payload, null, 2),
+  };
 }
 
 export function exportScorecard(scorecard = {}, format = 'json') {
@@ -484,16 +534,26 @@ export function exportScorecard(scorecard = {}, format = 'json') {
       ...Object.entries(dimensions).map(([key, value]) => ['dimension', key, value ?? '']),
       ...Object.entries(fitness).map(([key, value]) => ['fitness', key, value || '']),
       ['summary', 'high_null_columns', (scorecard.summary?.high_null_columns || []).join('|')],
-      ['summary', 'low_cardinality_columns', (scorecard.summary?.low_cardinality_columns || []).join('|')],
+      [
+        'summary',
+        'low_cardinality_columns',
+        (scorecard.summary?.low_cardinality_columns || []).join('|'),
+      ],
     ];
     return {
       ...payload,
       content_type: 'text/csv',
-      content: rows.map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(',')).join('\n'),
+      content: rows
+        .map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(','))
+        .join('\n'),
     };
   }
 
-  return { ...payload, content_type: 'application/json', content: JSON.stringify(payload, null, 2) };
+  return {
+    ...payload,
+    content_type: 'application/json',
+    content: JSON.stringify(payload, null, 2),
+  };
 }
 
 export function evaluateQualitySla(scorecard = {}, sla = {}) {

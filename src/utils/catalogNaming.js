@@ -21,7 +21,10 @@ export function databaseNameMatches(actual, requested) {
   const requestedRaw = String(requested || '').trim();
   if (!requestedRaw) return true;
   if (actualRaw.toLowerCase() === requestedRaw.toLowerCase()) return true;
-  if (canonicalDatabaseName(actualRaw).toLowerCase() === canonicalDatabaseName(requestedRaw).toLowerCase()) {
+  if (
+    canonicalDatabaseName(actualRaw).toLowerCase() ===
+    canonicalDatabaseName(requestedRaw).toLowerCase()
+  ) {
     return true;
   }
   return databaseAliasKey(actualRaw) === databaseAliasKey(requestedRaw);

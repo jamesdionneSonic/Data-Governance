@@ -266,7 +266,9 @@ function termChanged(existing, next) {
     'body',
     'parent',
   ];
-  if (keys.some((key) => JSON.stringify(existing[key] || null) !== JSON.stringify(next[key] || null))) {
+  if (
+    keys.some((key) => JSON.stringify(existing[key] || null) !== JSON.stringify(next[key] || null))
+  ) {
     return true;
   }
 
@@ -559,7 +561,10 @@ function objectEntries(objects) {
   if (!objects) return [];
   if (objects instanceof Map) return Array.from(objects.entries());
   if (Array.isArray(objects)) {
-    return objects.map((asset) => [asset.id || `${asset.database || 'unknown'}.${asset.name}`, asset]);
+    return objects.map((asset) => [
+      asset.id || `${asset.database || 'unknown'}.${asset.name}`,
+      asset,
+    ]);
   }
   return Object.entries(objects);
 }
@@ -627,7 +632,11 @@ export async function resolveBusinessQuery(query, objects, options = {}) {
     }
   }
 
-  const termLabels = matchedTerms.flatMap((term) => [term.term, term.slug, ...(term.synonyms || [])]);
+  const termLabels = matchedTerms.flatMap((term) => [
+    term.term,
+    term.slug,
+    ...(term.synonyms || []),
+  ]);
   for (const [assetId, asset] of objectEntries(objects)) {
     const text = objectSearchText(asset, assetId);
     const match = termLabels.find((label) => label && text.includes(String(label).toLowerCase()));

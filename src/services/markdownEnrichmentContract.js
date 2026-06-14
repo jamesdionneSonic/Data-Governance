@@ -54,17 +54,7 @@ const METRIC_TERMS = [
   'value',
 ];
 
-const IDENTIFIER_TERMS = [
-  'id',
-  'key',
-  'code',
-  'guid',
-  'hash',
-  'vin',
-  'uuid',
-  'number',
-  'num',
-];
+const IDENTIFIER_TERMS = ['id', 'key', 'code', 'guid', 'hash', 'vin', 'uuid', 'number', 'num'];
 
 const DIMENSION_TERMS = [
   'category',
@@ -88,9 +78,7 @@ const PII_PATTERNS = [
   [/(first|last|middle|full|customer|employee|person|contact)_?name/i, 'PII'],
 ];
 
-const PHI_PATTERNS = [
-  [/patient|diagnosis|medical|clinic|provider|claim_diagnosis/i, 'PHI'],
-];
+const PHI_PATTERNS = [[/patient|diagnosis|medical|clinic|provider|claim_diagnosis/i, 'PHI']];
 
 const FINANCIAL_PATTERNS = [
   [/salary|wage|compensation|commission/i, 'Financial'],
@@ -168,9 +156,11 @@ export function inferBusinessProcesses(object = {}) {
 
   const haystack = nameHaystack(object).toLowerCase();
   const processes = [];
-  if (/stg|stage|staging|etl|ssis|load|extract/.test(haystack)) processes.push('Metadata ingestion and data load');
+  if (/stg|stage|staging|etl|ssis|load|extract/.test(haystack))
+    processes.push('Metadata ingestion and data load');
   if (/fact|report|view|mart|dashboard/.test(haystack)) processes.push('Reporting and analytics');
-  if (/dim|xref|lookup|master/.test(haystack)) processes.push('Reference and master data management');
+  if (/dim|xref|lookup|master/.test(haystack))
+    processes.push('Reference and master data management');
   if (/claim|jma/.test(haystack)) processes.push('Claims processing');
   if (/vehicle|vin/.test(haystack)) processes.push('Vehicle data management');
   if (/sales|lead|customer/.test(haystack)) processes.push('Sales operations');
@@ -186,9 +176,11 @@ export function inferUseCases(object = {}) {
   const type = text(object.type).toLowerCase();
   const haystack = nameHaystack(object).toLowerCase();
   if (['table', 'view', 'dataset'].includes(type)) useCases.push('Data dictionary lookup');
-  if (/fact|metric|amount|report|view|mart/.test(haystack)) useCases.push('Analytics and reporting');
+  if (/fact|metric|amount|report|view|mart/.test(haystack))
+    useCases.push('Analytics and reporting');
   if (/dim|xref|lookup/.test(haystack)) useCases.push('Business attribute lookup');
-  if (/ssis|package|etl|load|staging/.test(haystack)) useCases.push('Lineage and load path analysis');
+  if (/ssis|package|etl|load|staging/.test(haystack))
+    useCases.push('Lineage and load path analysis');
   return unique(useCases);
 }
 
@@ -226,8 +218,10 @@ function inferSemanticType(column = {}) {
   const booleanLike = BOOLEAN_TYPES.test(dataType);
 
   if (dateLike || includesAny(tokens, ['date', 'time', 'timestamp'])) return 'date';
-  if (booleanLike || /^(is|has|can|should)[A-Z_]/.test(name) || /^is_|^has_|^can_/.test(lowerName)) return 'flag';
-  if (includesAny(tokens, IDENTIFIER_TERMS) || /(^|_)id$|(^|_)key$|(^|_)code$/.test(lowerName)) return 'identifier';
+  if (booleanLike || /^(is|has|can|should)[A-Z_]/.test(name) || /^is_|^has_|^can_/.test(lowerName))
+    return 'flag';
+  if (includesAny(tokens, IDENTIFIER_TERMS) || /(^|_)id$|(^|_)key$|(^|_)code$/.test(lowerName))
+    return 'identifier';
   if (numeric && includesAny(tokens, METRIC_TERMS)) return 'metric';
   if (includesAny(tokens, DIMENSION_TERMS)) return 'dimension';
   if (numeric) return 'measure_candidate';
@@ -263,7 +257,10 @@ export function enrichColumnMetadata(column = {}, parent = {}) {
     ...ensureArray(column.tags),
   ]);
   const classifications = unique([...existingClassifications, ...inferredClassifications]);
-  const sensitivity = strongerSensitivity(column.sensitivity || parent.sensitivity, classifications);
+  const sensitivity = strongerSensitivity(
+    column.sensitivity || parent.sensitivity,
+    classifications
+  );
   const businessName = text(column.business_name || column.businessName) || humanizeName(name);
 
   return {
@@ -282,16 +279,19 @@ export function enrichColumnMetadata(column = {}, parent = {}) {
 }
 
 export function applyDictionaryEnrichmentContract(metadata = {}, options = {}) {
-  const enrichedAt = options.enrichedAt || options.extractedAt || metadata.extracted_at || new Date().toISOString();
+  const enrichedAt =
+    options.enrichedAt || options.extractedAt || metadata.extracted_at || new Date().toISOString();
   const enriched = { ...metadata };
   const businessDomain = inferBusinessDomain(enriched);
 
   if (!hasMeaningfulValue(enriched.business_domain)) enriched.business_domain = businessDomain;
   for (const [field, fallback] of Object.entries(EMPTY_OBJECT_FIELDS)) {
-    if (!Object.hasOwn(enriched, field)) enriched[field] = Array.isArray(fallback) ? [...fallback] : fallback;
+    if (!Object.hasOwn(enriched, field))
+      enriched[field] = Array.isArray(fallback) ? [...fallback] : fallback;
   }
 
-  if (!hasMeaningfulValue(enriched.business_processes)) enriched.business_processes = inferBusinessProcesses(enriched);
+  if (!hasMeaningfulValue(enriched.business_processes))
+    enriched.business_processes = inferBusinessProcesses(enriched);
   if (!hasMeaningfulValue(enriched.use_cases)) enriched.use_cases = inferUseCases(enriched);
 
   if (Array.isArray(enriched.columns)) {
@@ -304,7 +304,9 @@ export function applyDictionaryEnrichmentContract(metadata = {}, options = {}) {
     source: 'raw_metadata',
     enrichment_version: 1,
     enriched_at: enrichedAt,
-    ...(enriched.data_dictionary && typeof enriched.data_dictionary === 'object' ? enriched.data_dictionary : {}),
+    ...(enriched.data_dictionary && typeof enriched.data_dictionary === 'object'
+      ? enriched.data_dictionary
+      : {}),
   };
 
   return enriched;

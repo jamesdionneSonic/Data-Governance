@@ -63,7 +63,8 @@ router.get('/lineage-help', authenticate, (_req, res) =>
     status: 'success',
     message: 'Lineage help retrieved',
     data: buildLineageQuestionHelp(),
-  }));
+  })
+);
 
 /**
  * POST /api/v1/discovery/lineage-question
@@ -357,13 +358,9 @@ router.get('/graph/:objectId', authenticate, async (req, res) => {
         case 'cytoscape':
         default:
           return enrichGraphWithSemanticTerms(
-            buildCytoscapeGraph(
-              objectId,
-              cachedLineageGraph,
-              cachedObjects,
-              effectiveDepth,
-              { typedEdges }
-            ),
+            buildCytoscapeGraph(objectId, cachedLineageGraph, cachedObjects, effectiveDepth, {
+              typedEdges,
+            }),
             cachedObjects,
             glossaryTerms
           );

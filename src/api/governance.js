@@ -43,7 +43,12 @@ router.get('/context/:assetId', authenticate, async (req, res) => {
   }
 
   const glossaryTerms = await loadAllTerms();
-  const context = await buildGovernanceContext(assetId, assetCache, lineageGraphCache, glossaryTerms);
+  const context = await buildGovernanceContext(
+    assetId,
+    assetCache,
+    lineageGraphCache,
+    glossaryTerms
+  );
 
   if (!context) {
     return sendErrorResponse(res, req, 404, `Asset '${assetId}' not found`, {

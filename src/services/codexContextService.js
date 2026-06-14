@@ -11,11 +11,15 @@ function ensureArray(value) {
 }
 
 function normalizeKey(value) {
-  return String(value || '').trim().toLowerCase();
+  return String(value || '')
+    .trim()
+    .toLowerCase();
 }
 
 function compact(value, maxLength = 220) {
-  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  const text = String(value || '')
+    .replace(/\s+/g, ' ')
+    .trim();
   return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
 }
 
@@ -143,9 +147,7 @@ function renderObjectList(title, objects = []) {
     return lines.join('\n');
   }
   for (const object of objects) {
-    lines.push(
-      `- ${object.id} (${object.type}${object.database ? `, ${object.database}` : ''})`
-    );
+    lines.push(`- ${object.id} (${object.type}${object.database ? `, ${object.database}` : ''})`);
   }
   return lines.join('\n');
 }
@@ -253,7 +255,11 @@ export function renderCodexColumnContextMarkdown(context) {
   ].join('\n\n');
 }
 
-export function buildCodexColumnContext(objects = new Map(), lineageGraph = new Map(), request = {}) {
+export function buildCodexColumnContext(
+  objects = new Map(),
+  lineageGraph = new Map(),
+  request = {}
+) {
   const resolved = resolveColumn(objects, request);
   if (!resolved) {
     throw new Error('Requested column was not found in the markdown catalog');

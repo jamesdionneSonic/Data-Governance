@@ -37,7 +37,13 @@ describe('Connectors API', () => {
       .get('/api/v1/connectors/definitions?category=business_intelligence')
       .set(authHeaders(viewer));
     expect(reportingRes.body.definitions.map((definition) => definition.type)).toEqual(
-      expect.arrayContaining(['microstrategy_cloud', 'ssas_on_prem', 'power_bi', 'tableau', 'qlik_cloud'])
+      expect.arrayContaining([
+        'microstrategy_cloud',
+        'ssas_on_prem',
+        'power_bi',
+        'tableau',
+        'qlik_cloud',
+      ])
     );
 
     const sqlServer = res.body.definitions.find((definition) => definition.type === 'sql_server');
@@ -166,10 +172,19 @@ describe('Connectors API', () => {
             status: 'ready',
             live_connection_valid: true,
             metadata_discovery_valid: true,
-            details: { server_name: 'sql.example.com', database_name: 'finance', credential_mode: 'service_account' },
+            details: {
+              server_name: 'sql.example.com',
+              database_name: 'finance',
+              credential_mode: 'service_account',
+            },
           },
         },
-        credential: { mode: 'service_account', username: 'svc', password: 'profile-password', secret_ref: 'kv://sql' },
+        credential: {
+          mode: 'service_account',
+          username: 'svc',
+          password: 'profile-password',
+          secret_ref: 'kv://sql',
+        },
       });
 
     const planRes = await request(app)
@@ -218,7 +233,9 @@ describe('Connectors API', () => {
 
     expect(runRes.status).toBe(200);
     expect(runRes.body.run.status).toBe('succeeded');
-    expect(runRes.body.run.profile.run.profiles['finance.dbo.Invoice'].columns.total_amount).toEqual(
+    expect(
+      runRes.body.run.profile.run.profiles['finance.dbo.Invoice'].columns.total_amount
+    ).toEqual(
       expect.objectContaining({
         null_count: 4,
         null_percent: 2,
@@ -338,7 +355,11 @@ describe('Connectors API', () => {
             status: 'ready',
             live_connection_valid: true,
             metadata_discovery_valid: true,
-            details: { server_name: 'L1-5FSQL-01', database_name: 'Sonic_DW', credential_mode: 'windows_integrated' },
+            details: {
+              server_name: 'L1-5FSQL-01',
+              database_name: 'Sonic_DW',
+              credential_mode: 'windows_integrated',
+            },
           },
         },
         credential: { mode: 'windows_integrated' },
@@ -480,7 +501,9 @@ describe('Connectors API', () => {
     );
     expect(JSON.stringify(scheduleRes.body)).not.toContain('do-not-return');
 
-    const listRes = await request(app).get('/api/v1/connectors/profile-schedules').set(authHeaders(admin));
+    const listRes = await request(app)
+      .get('/api/v1/connectors/profile-schedules')
+      .set(authHeaders(admin));
     expect(listRes.status).toBe(200);
     expect(listRes.body.schedules).toHaveLength(1);
 
@@ -526,14 +549,20 @@ describe('Connectors API', () => {
       .send({ now: runRes.body.result.schedule.next_run_at });
     expect(tickRes.status).toBe(200);
     expect(tickRes.body.result.due_count).toBe(1);
-    expect(tickRes.body.result.results[0]).toEqual(expect.objectContaining({ status: 'succeeded' }));
+    expect(tickRes.body.result.results[0]).toEqual(
+      expect.objectContaining({ status: 'succeeded' })
+    );
 
     const deleteRes = await request(app)
       .delete(`/api/v1/connectors/profile-schedules/${scheduleRes.body.schedule.id}`)
       .set(authHeaders(admin));
     expect(deleteRes.status).toBe(200);
     expect(deleteRes.body.deleted).toBe(true);
-    const responseJson = JSON.stringify({ scheduleRes: scheduleRes.body, runRes: runRes.body, tickRes: tickRes.body });
+    const responseJson = JSON.stringify({
+      scheduleRes: scheduleRes.body,
+      runRes: runRes.body,
+      tickRes: tickRes.body,
+    });
     expect(responseJson).not.toContain('hidden-api-key');
     expect(responseJson).not.toContain('kv://openapi/schedule');
   });

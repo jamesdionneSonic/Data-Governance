@@ -75,7 +75,9 @@ function absoluteFromRelative(root, relativePath) {
 }
 
 function compactString(value, maxLength = 500) {
-  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  const text = String(value || '')
+    .replace(/\s+/g, ' ')
+    .trim();
   return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
 }
 
@@ -164,12 +166,14 @@ function setCachedDetail(cacheKey, value) {
 }
 
 function summarizeColumns(columns) {
-  return ensureArray(columns).slice(0, 25).map((column) => ({
-    name: column.name,
-    column_id: column.column_id,
-    data_type: column.data_type || '',
-    nullable: column.nullable ?? null,
-  }));
+  return ensureArray(columns)
+    .slice(0, 25)
+    .map((column) => ({
+      name: column.name,
+      column_id: column.column_id,
+      data_type: column.data_type || '',
+      nullable: column.nullable ?? null,
+    }));
 }
 
 function appendColumnRecords(output, metadata) {

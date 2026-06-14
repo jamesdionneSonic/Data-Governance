@@ -110,9 +110,7 @@ describe('Lineage Service', () => {
             packagePath: 'DOWC.DOWC.Dowc_ClaimsFileLoad.dtsx',
             database: 'ssisdb',
             type: 'package',
-            calls: [
-              'V1-SQL-03\\INST1,11041.ETL_Staging.JMA.Load_Claim_Financial_Transactions',
-            ],
+            calls: ['V1-SQL-03\\INST1,11041.ETL_Staging.JMA.Load_Claim_Financial_Transactions'],
             writes_to: [
               'V1-SQL-03\\INST1,11041.StagingDb.JMA.STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL',
             ],

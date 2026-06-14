@@ -1,5 +1,9 @@
 import { basename, join } from 'path';
-import { extractSsisEvidence, extractTableEvidence, hydrateEvidenceRecord } from './evidenceExtractor.js';
+import {
+  extractSsisEvidence,
+  extractTableEvidence,
+  hydrateEvidenceRecord,
+} from './evidenceExtractor.js';
 import { classifySsisRecords, classifyTableRecords } from './anomalyClassifier.js';
 import { buildSsisPrompt, buildTablePrompt } from './promptBuilder.js';
 import { rewriteMarkdownFromRecord } from './markdownRewriter.js';
@@ -12,11 +16,7 @@ import {
   REJECTED_RULES_PATH,
 } from './constants.js';
 import { sha256Text } from './provenance.js';
-import {
-  appendRuleProposals,
-  buildRuleProposals,
-  loadLineageBrainRules,
-} from './rulesStore.js';
+import { appendRuleProposals, buildRuleProposals, loadLineageBrainRules } from './rulesStore.js';
 
 function buildDraftPath(record, draftRoot, lane) {
   if (!draftRoot) return null;
@@ -78,7 +78,10 @@ function laneSignature(lane, target, rules) {
     anomalyCount: classified.anomalies?.length || 0,
     anomalyPaths: (classified.anomalies || [])
       .slice()
-      .sort((left, right) => right.edgeCount - left.edgeCount || left.markdownPath.localeCompare(right.markdownPath))
+      .sort(
+        (left, right) =>
+          right.edgeCount - left.edgeCount || left.markdownPath.localeCompare(right.markdownPath)
+      )
       .slice(0, 25)
       .map((record) => record.markdownPath),
   };
@@ -115,10 +118,14 @@ function writeLiveCorrections(results, { applyCorrections, confirmLiveWrite, max
 }
 
 function runSsis(options = {}) {
-  const records = extractSsisEvidence({ target: options.target }).filter((record) => matchesTarget(record, options.target));
+  const records = extractSsisEvidence({ target: options.target }).filter((record) =>
+    matchesTarget(record, options.target)
+  );
   const { baseline, anomalies } = classifySsisRecords(records, options.rules);
   const selectedAnomalies = applyLimit(
-    anomalies.slice().sort((a, b) => b.edgeCount - a.edgeCount || a.markdownPath.localeCompare(b.markdownPath)),
+    anomalies
+      .slice()
+      .sort((a, b) => b.edgeCount - a.edgeCount || a.markdownPath.localeCompare(b.markdownPath)),
     options.maxChanges
   );
   const results = [];
@@ -147,16 +154,29 @@ function runSsis(options = {}) {
       outputPath: draftPath || undefined,
     });
     const diff = buildDiffSummary(hydratedAnomaly.markdownPath, correctionMarkdown);
-    results.push({ lane: 'ssis', baseline: hydratedBaseline, anomaly: hydratedAnomaly, anomalies, prompt, correctionMarkdown, diff, draftPath });
+    results.push({
+      lane: 'ssis',
+      baseline: hydratedBaseline,
+      anomaly: hydratedAnomaly,
+      anomalies,
+      prompt,
+      correctionMarkdown,
+      diff,
+      draftPath,
+    });
   }
   return { results, reportLines };
 }
 
 function runTable(options = {}) {
-  const records = extractTableEvidence({ target: options.target }).filter((record) => matchesTarget(record, options.target));
+  const records = extractTableEvidence({ target: options.target }).filter((record) =>
+    matchesTarget(record, options.target)
+  );
   const { baseline, anomalies } = classifyTableRecords(records, options.rules);
   const selectedAnomalies = applyLimit(
-    anomalies.slice().sort((a, b) => b.edgeCount - a.edgeCount || a.markdownPath.localeCompare(b.markdownPath)),
+    anomalies
+      .slice()
+      .sort((a, b) => b.edgeCount - a.edgeCount || a.markdownPath.localeCompare(b.markdownPath)),
     options.maxChanges
   );
   const results = [];
@@ -185,7 +205,16 @@ function runTable(options = {}) {
       outputPath: draftPath || undefined,
     });
     const diff = buildDiffSummary(hydratedAnomaly.markdownPath, correctionMarkdown);
-    results.push({ lane: 'table', baseline: hydratedBaseline, anomaly: hydratedAnomaly, anomalies, prompt, correctionMarkdown, diff, draftPath });
+    results.push({
+      lane: 'table',
+      baseline: hydratedBaseline,
+      anomaly: hydratedAnomaly,
+      anomalies,
+      prompt,
+      correctionMarkdown,
+      diff,
+      draftPath,
+    });
   }
   return { results, reportLines };
 }
@@ -234,13 +263,17 @@ export function runLineageBrain(mode = 'both', options = {}) {
       : [
           ...buildRuleProposals({
             lane: 'ssis',
-            records: results.filter((result) => result.lane === 'ssis').map((result) => result.anomaly),
+            records: results
+              .filter((result) => result.lane === 'ssis')
+              .map((result) => result.anomaly),
             rules,
             generatedAt,
           }),
           ...buildRuleProposals({
             lane: 'table',
-            records: results.filter((result) => result.lane === 'table').map((result) => result.anomaly),
+            records: results
+              .filter((result) => result.lane === 'table')
+              .map((result) => result.anomaly),
             rules,
             generatedAt,
           }),

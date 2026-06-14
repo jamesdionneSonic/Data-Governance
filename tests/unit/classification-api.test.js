@@ -117,7 +117,9 @@ describe('Classification API', () => {
 
   test('returns classification policy templates and effective policy decisions', async () => {
     const app = seedApp();
-    const templatesRes = await request(app).get('/api/v1/classification/policies').set(authHeaders());
+    const templatesRes = await request(app)
+      .get('/api/v1/classification/policies')
+      .set(authHeaders());
 
     expect(templatesRes.status).toBe(200);
     expect(templatesRes.body.policies.map((policy) => policy.id)).toEqual(
@@ -264,7 +266,9 @@ describe('Classification API', () => {
         expect.objectContaining({ column_name: 'salary_amount', is_metric: true }),
       ])
     );
-    expect(res.body.semantics.columns.find((column) => column.column_name === 'employee_key')).toMatchObject({
+    expect(
+      res.body.semantics.columns.find((column) => column.column_name === 'employee_key')
+    ).toMatchObject({
       semantic_type: 'identifier',
       is_metric: false,
     });

@@ -36,11 +36,35 @@ Thanks for contributing to Data Governance.
 4. Run local checks
 5. Open PR using the project template
 
+## Required Local Checks
+
+Before committing or pushing, run:
+
+```bash
+npm run verify:ci
+```
+
+This intentionally mirrors the GitHub Actions gates and also checks that local Git
+identity and reachable `HEAD` history do not contain blocked contributor metadata.
+Commits for this repository must use:
+
+- `user.name`: `jamesdionneSonic`
+- `user.email`: `james.dionne@sonicautomotive.com`
+
+Do not commit with personal, placeholder, or stale identities such as
+`GleanChef`, `jadionne@gleanchef.com`, `Your Name`, or `you@example.com`.
+
+If GitHub still shows a removed contributor after a history rewrite, audit and
+clean every reachable remote ref, including stale feature branches, pull refs,
+and tags. GitHub UI contributor sidebars can lag behind the API, but old refs can
+also keep old contributor metadata legitimately reachable.
+
 ## Definition of Done
 
 - Acceptance criteria met
 - Tests added/updated and passing
 - Security and validation checks pass
+- `npm run verify:ci` passes locally
 - Documentation updated
 
 For detailed standards, see [CONTRIBUTOR.md](CONTRIBUTOR.md).

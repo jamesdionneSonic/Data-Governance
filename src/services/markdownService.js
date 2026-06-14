@@ -52,8 +52,7 @@ export function parseMarkdownContent(content, source = 'inline-content', options
     metadata = parseFrontmatterLenient(frontmatterContent);
   }
   const markdownContent = normalizedContent.substring(frontmatterMatch[0].length).trim();
-  const description =
-    options.includeDescription === false ? '' : extractPlainText(markdownContent);
+  const description = options.includeDescription === false ? '' : extractPlainText(markdownContent);
 
   const required = ['name', 'database', 'type'];
   for (const field of required) {
@@ -90,9 +89,7 @@ export function parseMarkdownContent(content, source = 'inline-content', options
     unresolved_column_usage: Array.isArray(metadata.unresolved_column_usage)
       ? metadata.unresolved_column_usage
       : [],
-    column_risk_flags: Array.isArray(metadata.column_risk_flags)
-      ? metadata.column_risk_flags
-      : [],
+    column_risk_flags: Array.isArray(metadata.column_risk_flags) ? metadata.column_risk_flags : [],
     column_lineage: Array.isArray(metadata.column_lineage) ? metadata.column_lineage : [],
     unresolved_column_lineage: Array.isArray(metadata.unresolved_column_lineage)
       ? metadata.unresolved_column_lineage
@@ -143,7 +140,9 @@ function buildCanonicalObjectId(metadata) {
     return String(metadata.id).trim();
   }
 
-  const server = String(metadata.server || metadata.serverName || metadata.server_name || '').trim();
+  const server = String(
+    metadata.server || metadata.serverName || metadata.server_name || ''
+  ).trim();
   const database = String(metadata.database || '').trim();
   const schema = String(metadata.schema || '').trim();
   const name = String(metadata.name || '').trim();
@@ -152,8 +151,12 @@ function buildCanonicalObjectId(metadata) {
     const packageName = String(metadata.package_name || metadata.packageName || name || '').trim();
     const packagePath = String(metadata.package_path || metadata.packagePath || '').trim();
     const pathParts = packagePath ? packagePath.replace(/\\/g, '/').split('/').filter(Boolean) : [];
-    const folderName = String(metadata.folder_name || metadata.folderName || pathParts[0] || '').trim();
-    const projectName = String(metadata.project_name || metadata.projectName || pathParts[1] || '').trim();
+    const folderName = String(
+      metadata.folder_name || metadata.folderName || pathParts[0] || ''
+    ).trim();
+    const projectName = String(
+      metadata.project_name || metadata.projectName || pathParts[1] || ''
+    ).trim();
     const packageSegment = String(
       metadata.package_base_name ||
         metadata.packageBaseName ||
@@ -255,19 +258,16 @@ async function readMarkdownFrontmatter(filePath) {
     fileHandle = await open(filePath, 'r');
 
     while (bytesReadTotal < MAX_FRONTMATTER_READ_BYTES) {
-      const { bytesRead } = await fileHandle.read(
-        buffer,
-        0,
-        buffer.length,
-        bytesReadTotal
-      );
+      const { bytesRead } = await fileHandle.read(buffer, 0, buffer.length, bytesReadTotal);
 
       if (bytesRead === 0) break;
 
       chunks.push(Buffer.from(buffer.subarray(0, bytesRead)));
       bytesReadTotal += bytesRead;
 
-      const content = Buffer.concat(chunks).toString('utf-8').replace(/^\uFEFF/, '');
+      const content = Buffer.concat(chunks)
+        .toString('utf-8')
+        .replace(/^\uFEFF/, '');
       if (!content.startsWith('---')) {
         return content;
       }
@@ -331,7 +331,11 @@ async function getManifestMarkdownFiles(dirPath) {
     }
 
     return manifest.files
-      .map((file) => String(file || '').replace(/\\/g, '/').trim())
+      .map((file) =>
+        String(file || '')
+          .replace(/\\/g, '/')
+          .trim()
+      )
       .filter((file) => file && extname(file) === '.md' && !isAbsolute(file))
       .filter((file) => !file.split('/').includes('..'))
       .map((file) => join(dirPath, file));
@@ -355,7 +359,11 @@ export async function validateMarkdownManifest(dataPath) {
   }
 
   const manifestFiles = manifest.files
-    .map((file) => String(file || '').replace(/\\/g, '/').trim())
+    .map((file) =>
+      String(file || '')
+        .replace(/\\/g, '/')
+        .trim()
+    )
     .filter((file) => file && extname(file) === '.md' && !isAbsolute(file))
     .filter((file) => !file.split('/').includes('..'));
 
@@ -370,27 +378,24 @@ export async function validateMarkdownManifest(dataPath) {
   const concurrency = Math.max(1, Number(process.env.MARKDOWN_LOAD_CONCURRENCY) || 64);
   let nextIndex = 0;
 
-  const workers = Array.from(
-    { length: Math.min(concurrency, manifestFiles.length) },
-    async () => {
-      while (nextIndex < manifestFiles.length) {
-        const manifestFile = manifestFiles[nextIndex];
-        nextIndex += 1;
+  const workers = Array.from({ length: Math.min(concurrency, manifestFiles.length) }, async () => {
+    while (nextIndex < manifestFiles.length) {
+      const manifestFile = manifestFiles[nextIndex];
+      nextIndex += 1;
 
-        const filePath = join(dataPath, manifestFile);
-        try {
-          await access(filePath);
-          results.valid += 1;
-        } catch (err) {
-          results.invalid += 1;
-          results.errors.push({
-            id: manifestFile,
-            errors: [err.message],
-          });
-        }
+      const filePath = join(dataPath, manifestFile);
+      try {
+        await access(filePath);
+        results.valid += 1;
+      } catch (err) {
+        results.invalid += 1;
+        results.errors.push({
+          id: manifestFile,
+          errors: [err.message],
+        });
       }
     }
-  );
+  });
 
   await Promise.all(workers);
   return results;

@@ -42,8 +42,16 @@ describe('Semantic Lineage Runtime Grouping', () => {
 
     const groups = deriveSemanticLineageGroups(objectId, contextPack, {
       orchestratorsByTarget: new Map([
-        ['L1-5FSQL-01.Sonic_DW.dbo.usp_DimVehicle', new Set(['V1-SSIS25-01, 11040.SSISDB.DimVehicle.DimVehicle.DimVehicle_DIM_DimVehicle.dtsx'])],
-        ['L1-5FSQL-01.Sonic_DW.dbo.usp_Process_DimVehicle_NewVehicleKey', new Set(['V1-SSIS25-01, 11040.SSISDB.DimVehicle.DimVehicle.DimVehicle_Master.dtsx'])],
+        [
+          'L1-5FSQL-01.Sonic_DW.dbo.usp_DimVehicle',
+          new Set([
+            'V1-SSIS25-01, 11040.SSISDB.DimVehicle.DimVehicle.DimVehicle_DIM_DimVehicle.dtsx',
+          ]),
+        ],
+        [
+          'L1-5FSQL-01.Sonic_DW.dbo.usp_Process_DimVehicle_NewVehicleKey',
+          new Set(['V1-SSIS25-01, 11040.SSISDB.DimVehicle.DimVehicle.DimVehicle_Master.dtsx']),
+        ],
       ]),
     });
 
@@ -82,7 +90,8 @@ describe('Semantic Lineage Runtime Grouping', () => {
     expect(groups.orchestrators).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          object_id: 'V1-SSIS25-01, 11040.SSISDB.DimVehicle.DimVehicle.DimVehicle_DIM_DimVehicle.dtsx',
+          object_id:
+            'V1-SSIS25-01, 11040.SSISDB.DimVehicle.DimVehicle.DimVehicle_DIM_DimVehicle.dtsx',
           role: 'Orchestrating SSIS package',
         }),
         expect.objectContaining({

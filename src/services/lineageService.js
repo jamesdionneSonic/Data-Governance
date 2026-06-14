@@ -129,7 +129,9 @@ export function buildLineageGraph(objects) {
 }
 
 function normalizedLineageText(value) {
-  return String(value || '').trim().toLowerCase();
+  return String(value || '')
+    .trim()
+    .toLowerCase();
 }
 
 function isLookupOrReferenceRead(sourceMetadata = {}, consumerMetadata = {}) {
@@ -146,8 +148,7 @@ function isLookupOrReferenceRead(sourceMetadata = {}, consumerMetadata = {}) {
   if (/^(wrk|stage|stg|tmp|temp|landing|src|synwrk)/.test(sourceName)) return false;
 
   return (
-    /^(dim|lkp|lookup|ref|map)/.test(sourceName) ||
-    /lookup|reference|bridge|xref/.test(sourceName)
+    /^(dim|lkp|lookup|ref|map)/.test(sourceName) || /lookup|reference|bridge|xref/.test(sourceName)
   );
 }
 
@@ -276,7 +277,9 @@ function resolveObjectId(
     deterministicCandidates.push(`${metadata.database}.${unwrapped}`);
     if (metadata.server || metadata.serverName) {
       deterministicCandidates.push(
-        [metadata.server || metadata.serverName, metadata.database, ...tokens].filter(Boolean).join('.')
+        [metadata.server || metadata.serverName, metadata.database, ...tokens]
+          .filter(Boolean)
+          .join('.')
       );
     }
   } else if (tokens.length === 3 && (metadata.server || metadata.serverName)) {
@@ -292,12 +295,7 @@ function resolveObjectId(
     deterministicCandidates.push(tokens.slice(-2).join('.'));
   }
 
-  const candidates = [
-    ref,
-    unwrapped,
-    strippedTail,
-    ...deterministicCandidates,
-  ].filter(Boolean);
+  const candidates = [ref, unwrapped, strippedTail, ...deterministicCandidates].filter(Boolean);
 
   for (const candidate of candidates) {
     const lowerCandidate = String(candidate || '').toLowerCase();
@@ -445,10 +443,12 @@ export function getTypedLineageEdgesForNode(edgeSource, objectId, direction = 'b
   if (edgeSource?.incoming instanceof Map || edgeSource?.outgoing instanceof Map) {
     if (direction === 'incoming') return edgeSource.incoming.get(objectId) || [];
     if (direction === 'outgoing') return edgeSource.outgoing.get(objectId) || [];
-    return edgeSource.byNode?.get(objectId) || [
-      ...(edgeSource.incoming?.get(objectId) || []),
-      ...(edgeSource.outgoing?.get(objectId) || []),
-    ];
+    return (
+      edgeSource.byNode?.get(objectId) || [
+        ...(edgeSource.incoming?.get(objectId) || []),
+        ...(edgeSource.outgoing?.get(objectId) || []),
+      ]
+    );
   }
 
   const edges = Array.isArray(edgeSource) ? edgeSource : [];

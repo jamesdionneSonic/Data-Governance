@@ -21,7 +21,9 @@ function objectLabel(metadata = {}, objectId = '') {
 }
 
 function fullObjectName(metadata = {}, objectId = '') {
-  const parts = [metadata.server, metadata.database, metadata.schema, metadata.name].filter(Boolean);
+  const parts = [metadata.server, metadata.database, metadata.schema, metadata.name].filter(
+    Boolean
+  );
   return parts.length > 0 ? parts.join('.') : objectId;
 }
 
@@ -42,7 +44,9 @@ function canonicalIntent(question = '') {
 function canonicalCatalogIntent(question = '') {
   const text = normalizeKey(question);
   if (/\blist\b.*\bdatabases\b|\bdatabases\b.*\bcatalog\b/.test(text)) return 'database_list';
-  if (/\bhow many\b.*\b(table|tables|view|views|procedure|procedures|object|objects)\b/.test(text)) {
+  if (
+    /\bhow many\b.*\b(table|tables|view|views|procedure|procedures|object|objects)\b/.test(text)
+  ) {
     return 'database_count';
   }
   return '';
@@ -84,18 +88,29 @@ function countByType(objects = []) {
 
 function findDatabaseObjects(objects = new Map(), databaseName = '') {
   const requested = normalizeKey(databaseName);
-  return Array.from(objects.values()).filter((object) => normalizeKey(object.database) === requested);
+  return Array.from(objects.values()).filter(
+    (object) => normalizeKey(object.database) === requested
+  );
 }
 
 function databaseNames(objects = new Map()) {
   return Array.from(
-    new Set(Array.from(objects.values()).map((object) => object.database).filter(Boolean))
-  ).sort((left, right) => String(left).localeCompare(String(right), undefined, { sensitivity: 'base' }));
+    new Set(
+      Array.from(objects.values())
+        .map((object) => object.database)
+        .filter(Boolean)
+    )
+  ).sort((left, right) =>
+    String(left).localeCompare(String(right), undefined, { sensitivity: 'base' })
+  );
 }
 
 function candidateTokens(question = '') {
   const text = stripSqlDelimiters(question);
-  const explicit = /(?:for|uses|loads|feeds|lineage|logic|object|table|view|procedure|proc)\s+([a-zA-Z0-9_$#.[\]-]+(?:\.[a-zA-Z0-9_$#.[\]-]+){0,4})/i.exec(text);
+  const explicit =
+    /(?:for|uses|loads|feeds|lineage|logic|object|table|view|procedure|proc)\s+([a-zA-Z0-9_$#.[\]-]+(?:\.[a-zA-Z0-9_$#.[\]-]+){0,4})/i.exec(
+      text
+    );
   const tokens = explicit?.[1]
     ? [explicit[1]]
     : text
@@ -159,12 +174,19 @@ function resolveObject(objects = new Map(), question = '') {
     for (const [objectId, metadata] of objects.entries()) {
       const score = scoreObjectMatch(objectId, metadata, token);
       if (score > 0) {
-        matches.push({ object_id: objectId, score, label: objectLabel(metadata, objectId), type: metadata.type || 'object' });
+        matches.push({
+          object_id: objectId,
+          score,
+          label: objectLabel(metadata, objectId),
+          type: metadata.type || 'object',
+        });
       }
     }
   }
 
-  matches.sort((left, right) => right.score - left.score || left.object_id.localeCompare(right.object_id));
+  matches.sort(
+    (left, right) => right.score - left.score || left.object_id.localeCompare(right.object_id)
+  );
   const deduped = [];
   const seen = new Set();
   for (const match of matches) {
@@ -268,7 +290,9 @@ function buildDatabaseListAnswer(objects = new Map()) {
       columns: ['Database', 'Objects', 'Tables', 'Views', 'Procedures', 'Packages'],
       rows,
     },
-    sources: [{ source: 'app_runtime_cache', detail: 'Counts are computed from loaded catalog objects.' }],
+    sources: [
+      { source: 'app_runtime_cache', detail: 'Counts are computed from loaded catalog objects.' },
+    ],
   };
 }
 
@@ -277,7 +301,8 @@ function buildDatabaseCountAnswer(objects = new Map(), question = '') {
   if (!database) {
     return {
       answer_type: 'needs_database',
-      plain_english: 'I can answer that, but I need the database name. Try: "how many tables are in WebV".',
+      plain_english:
+        'I can answer that, but I need the database name. Try: "how many tables are in WebV".',
       table: { columns: [], rows: [] },
       sources: [],
     };
@@ -288,8 +313,18 @@ function buildDatabaseCountAnswer(objects = new Map(), question = '') {
     return {
       answer_type: 'database_not_found',
       plain_english: `I could not find a loaded database named ${database}.`,
-      table: { columns: ['Nearby database names'], rows: databaseNames(objects).filter((name) => normalizeKey(name).includes(normalizeKey(database))).map((name) => ({ database: name })) },
-      sources: [{ source: 'app_runtime_cache', detail: 'Searched loaded catalog objects by exact database name.' }],
+      table: {
+        columns: ['Nearby database names'],
+        rows: databaseNames(objects)
+          .filter((name) => normalizeKey(name).includes(normalizeKey(database)))
+          .map((name) => ({ database: name })),
+      },
+      sources: [
+        {
+          source: 'app_runtime_cache',
+          detail: 'Searched loaded catalog objects by exact database name.',
+        },
+      ],
     };
   }
 
@@ -316,7 +351,12 @@ function buildDatabaseCountAnswer(objects = new Map(), question = '') {
         },
       ],
     },
-    sources: [{ source: 'app_runtime_cache', detail: `Counted loaded objects where database equals ${database}.` }],
+    sources: [
+      {
+        source: 'app_runtime_cache',
+        detail: `Counted loaded objects where database equals ${database}.`,
+      },
+    ],
   };
 }
 
@@ -350,9 +390,12 @@ export function answerLineageQuestion(objects = new Map(), request = {}) {
     return asAssistantResponse({
       question,
       answer_type: 'object_not_found',
-      plain_english: 'I could not resolve a lineage object from that question. Try the exact table, view, procedure, or package name.',
+      plain_english:
+        'I could not resolve a lineage object from that question. Try the exact table, view, procedure, or package name.',
       table: { columns: ['Candidate'], rows: [] },
-      sources: [{ source: 'app_runtime_cache', detail: 'Searched loaded catalog object names and ids.' }],
+      sources: [
+        { source: 'app_runtime_cache', detail: 'Searched loaded catalog object names and ids.' },
+      ],
     });
   }
 

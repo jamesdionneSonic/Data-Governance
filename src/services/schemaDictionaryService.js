@@ -29,17 +29,29 @@ function serverName(object = {}) {
 }
 
 function normalizeColumn(column = {}, index = 0, parent = {}) {
-  const name = text(column.name || column.column_name || column.columnName || column.id || `column_${index + 1}`);
+  const name = text(
+    column.name || column.column_name || column.columnName || column.id || `column_${index + 1}`
+  );
   const semanticType =
     column.semantic_type ||
     column.semanticType ||
-    (column.is_metric ? 'metric' : column.is_identifier ? 'identifier' : column.is_dimension ? 'dimension' : null);
+    (column.is_metric
+      ? 'metric'
+      : column.is_identifier
+        ? 'identifier'
+        : column.is_dimension
+          ? 'dimension'
+          : null);
 
   return {
-    column_id: text(column.column_id || column.columnId || column.id || `${objectId(parent.id, parent)}.${name}`),
+    column_id: text(
+      column.column_id || column.columnId || column.id || `${objectId(parent.id, parent)}.${name}`
+    ),
     name,
     ordinal: Number(column.ordinal || column.ordinal_position || column.keyOrdinal || index + 1),
-    data_type: text(column.data_type || column.dataType || column.type || column.system_type || 'unknown'),
+    data_type: text(
+      column.data_type || column.dataType || column.type || column.system_type || 'unknown'
+    ),
     nullable: column.nullable ?? column.is_nullable ?? column.isNullable ?? null,
     max_length: column.max_length ?? column.maxLength ?? null,
     precision: column.precision ?? null,
@@ -47,13 +59,19 @@ function normalizeColumn(column = {}, index = 0, parent = {}) {
     description: text(column.description || column.business_definition || ''),
     business_name: text(column.business_name || column.businessName || ''),
     sensitivity: text(column.sensitivity || parent.sensitivity || ''),
-    classifications: ensureArray(column.classifications || column.classification || column.classification_tags || column.tags).filter(Boolean),
+    classifications: ensureArray(
+      column.classifications || column.classification || column.classification_tags || column.tags
+    ).filter(Boolean),
     semantic_type: semanticType,
     is_metric: Boolean(column.is_metric || semanticType === 'metric'),
     is_identifier: Boolean(column.is_identifier || semanticType === 'identifier'),
     is_dimension: Boolean(column.is_dimension || semanticType === 'dimension'),
-    is_key: Boolean(column.is_key || column.primary_key || column.isPrimaryKey || column.keyOrdinal),
-    source_expression: text(column.expression || column.source_expression || column.calculation || ''),
+    is_key: Boolean(
+      column.is_key || column.primary_key || column.isPrimaryKey || column.keyOrdinal
+    ),
+    source_expression: text(
+      column.expression || column.source_expression || column.calculation || ''
+    ),
     dictionary_confidence: text(column.dictionary_confidence || ''),
   };
 }
@@ -130,7 +148,11 @@ export function buildSchemaDictionary(objects, lineageGraph = new Map(), filters
     .filter((summary) => !schema || lower(summary.schema) === schema)
     .filter((summary) => !type || lower(summary.type) === type)
     .filter((summary) => matchesQuery(summary, query))
-    .sort((a, b) => [a.database, a.schema, a.name].join('.').localeCompare([b.database, b.schema, b.name].join('.')));
+    .sort((a, b) =>
+      [a.database, a.schema, a.name]
+        .join('.')
+        .localeCompare([b.database, b.schema, b.name].join('.'))
+    );
 
   const hierarchy = new Map();
   for (const summary of summaries) {
@@ -155,7 +177,12 @@ export function buildSchemaDictionary(objects, lineageGraph = new Map(), filters
 
   return {
     generated_at: new Date().toISOString(),
-    filters: { database: filters.database || null, schema: filters.schema || null, type: filters.type || null, q: filters.q || filters.query || null },
+    filters: {
+      database: filters.database || null,
+      schema: filters.schema || null,
+      type: filters.type || null,
+      q: filters.q || filters.query || null,
+    },
     pagination: {
       limit,
       offset,
@@ -182,24 +209,32 @@ export function buildObjectDictionary(objects, lineageGraph = new Map(), assetId
 
   const summary = summarizeObject(assetId, object, lineageGraph);
   const upstream = lineageGraph?.get(summary.id);
-  const columns = ensureArray(object.columns).map((column, index) => normalizeColumn(column, index, { ...object, id: summary.id }));
+  const columns = ensureArray(object.columns).map((column, index) =>
+    normalizeColumn(column, index, { ...object, id: summary.id })
+  );
 
   return {
     generated_at: new Date().toISOString(),
     object: {
       ...summary,
       business_justification: text(object.business_justification || ''),
-      business_processes: ensureArray(object.business_processes || object.business_process || object.use_cases).filter(Boolean),
-      related_dashboards: ensureArray(object.related_dashboards || object.dashboards).filter(Boolean),
+      business_processes: ensureArray(
+        object.business_processes || object.business_process || object.use_cases
+      ).filter(Boolean),
+      related_dashboards: ensureArray(object.related_dashboards || object.dashboards).filter(
+        Boolean
+      ),
       documentation_links: ensureArray(object.documentation_links || object.links).filter(Boolean),
     },
     columns,
     relationships: {
       upstream: upstream instanceof Set ? Array.from(upstream) : ensureArray(upstream),
       downstream: Array.from(objects || new Map())
-      .filter(([mapKey, candidate]) => {
+        .filter(([mapKey, candidate]) => {
           const deps = lineageGraph?.get(objectId(mapKey, candidate));
-          return deps instanceof Set ? deps.has(summary.id) : ensureArray(deps).includes(summary.id);
+          return deps instanceof Set
+            ? deps.has(summary.id)
+            : ensureArray(deps).includes(summary.id);
         })
         .map(([mapKey, candidate]) => summarizeObject(mapKey, candidate, lineageGraph)),
     },
@@ -233,8 +268,9 @@ export function buildDictionaryMarkdownExport(dictionary) {
     '',
     '| Column | Type | Nullable | Semantic Type | Description |',
     '| --- | --- | --- | --- | --- |',
-    ...dictionary.columns.map((column) =>
-      `| ${column.name} | ${column.data_type} | ${column.nullable ?? ''} | ${column.semantic_type || ''} | ${column.description || ''} |`
+    ...dictionary.columns.map(
+      (column) =>
+        `| ${column.name} | ${column.data_type} | ${column.nullable ?? ''} | ${column.semantic_type || ''} | ${column.description || ''} |`
     ),
   ];
   return `${lines.join('\n')}\n`;
@@ -259,7 +295,15 @@ export function normalizeBusinessMetadataUpdates(input = {}) {
   const updates = {};
   for (const field of allowed) {
     if (!(field in input)) continue;
-    if (['tags', 'business_processes', 'use_cases', 'documentation_links', 'related_dashboards'].includes(field)) {
+    if (
+      [
+        'tags',
+        'business_processes',
+        'use_cases',
+        'documentation_links',
+        'related_dashboards',
+      ].includes(field)
+    ) {
       updates[field] = ensureArray(input[field])
         .flatMap((value) => (typeof value === 'string' ? value.split(',') : [value]))
         .map((value) => text(value))

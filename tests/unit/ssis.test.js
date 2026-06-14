@@ -898,7 +898,9 @@ describe('SSIS-007: package XML column mappings', () => {
           edgeType: 'READS_FROM',
           evidence_type: 'ssis_external_source_component',
           target_external_source: true,
-          to: expect.stringContaining('SSIS01.SSISDB.external_sources.ETL.Claims.LoadExternalClaims.Flat_File_Source'),
+          to: expect.stringContaining(
+            'SSIS01.SSISDB.external_sources.ETL.Claims.LoadExternalClaims.Flat_File_Source'
+          ),
           validation_status: 'validated',
         }),
       ])

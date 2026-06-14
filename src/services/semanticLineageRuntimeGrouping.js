@@ -1,5 +1,7 @@
 function normalizeKey(value) {
-  return String(value || '').trim().toLowerCase();
+  return String(value || '')
+    .trim()
+    .toLowerCase();
 }
 
 function ensureArray(value) {
@@ -33,7 +35,8 @@ function compactLabel(objectId = '') {
 function roleLabel(kind, objectType) {
   if (kind === 'orchestrators') return 'Orchestrating SSIS package';
   if (kind === 'maintenance_reads') return 'Maintenance / load-path procedure';
-  if (kind === 'loaders') return objectType === 'ssis_package' ? 'Loader package' : 'Loader procedure';
+  if (kind === 'loaders')
+    return objectType === 'ssis_package' ? 'Loader package' : 'Loader procedure';
   if (kind === 'business_consumers') {
     if (objectType === 'view') return 'Business consumer view';
     if (objectType === 'procedure') return 'Business consumer procedure';
@@ -73,14 +76,12 @@ export function deriveSemanticLineageGroups(objectId = '', contextPack = {}, opt
 
   const writesToFocus = directEdgeTypes(
     lineage,
-    (edge) =>
-      edge.target === objectId && ['loads', 'created_by'].includes(normalizeKey(edge.type))
+    (edge) => edge.target === objectId && ['loads', 'created_by'].includes(normalizeKey(edge.type))
   );
   const readsFromFocus = directEdgeTypes(
     lineage,
     (edge) =>
-      edge.source === objectId &&
-      ['used_by', 'reads', 'extracts'].includes(normalizeKey(edge.type))
+      edge.source === objectId && ['used_by', 'reads', 'extracts'].includes(normalizeKey(edge.type))
   );
 
   const maintenanceIds = [...readsFromFocus.keys()].filter((id) => writesToFocus.has(id));
@@ -88,10 +89,14 @@ export function deriveSemanticLineageGroups(objectId = '', contextPack = {}, opt
   const loaderIds = [...writesToFocus.keys()];
 
   const maintenanceReads = maintenanceIds.map((id) => relatedObject('maintenance_reads', id));
-  const businessConsumers = businessConsumerIds.map((id) => relatedObject('business_consumers', id));
+  const businessConsumers = businessConsumerIds.map((id) =>
+    relatedObject('business_consumers', id)
+  );
   const loaders = loaderIds.map((id) => relatedObject('loaders', id));
   const orchestratorIds = uniqueStrings(
-    [...loaderIds, ...maintenanceIds].flatMap((id) => Array.from(orchestratorsByTarget.get(id) || []))
+    [...loaderIds, ...maintenanceIds].flatMap((id) =>
+      Array.from(orchestratorsByTarget.get(id) || [])
+    )
   );
   const orchestrators = orchestratorIds.map((id) => relatedObject('orchestrators', id));
 

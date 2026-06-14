@@ -50,7 +50,16 @@ describe('Phase 7 - Governance Operations API', () => {
           database: 'sales',
         },
       ],
-      ['sales.raw_orders', { id: 'sales.raw_orders', name: 'raw_orders', owner: 'unknown', tags: [], database: 'sales' }],
+      [
+        'sales.raw_orders',
+        {
+          id: 'sales.raw_orders',
+          name: 'raw_orders',
+          owner: 'unknown',
+          tags: [],
+          database: 'sales',
+        },
+      ],
     ]);
     const lineageGraph = new Map([['sales.raw_orders', new Set(['sales.orders'])]]);
     initializeCache(app, objects, lineageGraph);
@@ -73,7 +82,9 @@ describe('Phase 7 - Governance Operations API', () => {
   });
 
   test('returns ownership role model, steward portfolio, and bulk assignment plans', async () => {
-    const modelResponse = await request(app).get('/api/v1/governance-ops/ownership/model').set(auth());
+    const modelResponse = await request(app)
+      .get('/api/v1/governance-ops/ownership/model')
+      .set(auth());
     expect(modelResponse.status).toBe(200);
     expect(modelResponse.body.data.roles.map((role) => role.role)).toEqual(
       expect.arrayContaining(['owner', 'steward', 'domain_manager', 'custodian'])
@@ -130,7 +141,9 @@ describe('Phase 7 - Governance Operations API', () => {
     expect(incidentResponse.status).toBe(201);
 
     const communicationResponse = await request(app)
-      .post(`/api/v1/governance-ops/incidents/${incidentResponse.body.data.incidentId}/communications`)
+      .post(
+        `/api/v1/governance-ops/incidents/${incidentResponse.body.data.incidentId}/communications`
+      )
       .set(auth(['Admin']))
       .send({ channel: 'email', message: 'Investigating freshness delay.' });
 
@@ -189,7 +202,9 @@ describe('Phase 7 - Governance Operations API', () => {
     expect(statusResponse.status).toBe(200);
     expect(statusResponse.body.data.counts.tasks).toBe(1);
 
-    const exportResponse = await request(app).get('/api/v1/governance-ops/export').set(auth(['Admin']));
+    const exportResponse = await request(app)
+      .get('/api/v1/governance-ops/export')
+      .set(auth(['Admin']));
 
     expect(exportResponse.status).toBe(200);
     expect(exportResponse.body.data.tasks).toHaveLength(1);

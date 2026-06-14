@@ -152,7 +152,9 @@ router.put('/:id', authenticate, async (req, res) => {
   ];
 
   const updates = normalizeBusinessMetadataUpdates(
-    Object.fromEntries(Object.entries(req.body || {}).filter(([key]) => allowedFields.includes(key)))
+    Object.fromEntries(
+      Object.entries(req.body || {}).filter(([key]) => allowedFields.includes(key))
+    )
   );
 
   try {

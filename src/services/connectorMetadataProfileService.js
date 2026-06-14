@@ -59,7 +59,8 @@ const PROFILE_CHECKS = Object.freeze([
   {
     id: 'schema_or_object_detail',
     label: 'Schema / object detail',
-    passes: (profile) => profile.schemas.length + profile.columns.length + profile.objects.length > 0,
+    passes: (profile) =>
+      profile.schemas.length + profile.columns.length + profile.objects.length > 0,
   },
   {
     id: 'connections_or_locations',
@@ -79,7 +80,12 @@ const PROFILE_CHECKS = Object.freeze([
   {
     id: 'operational_signals',
     label: 'Operational signals',
-    passes: (profile) => profile.pipelines.length + profile.jobs.length + profile.schedules.length + profile.usage.length > 0,
+    passes: (profile) =>
+      profile.pipelines.length +
+        profile.jobs.length +
+        profile.schedules.length +
+        profile.usage.length >
+      0,
   },
 ]);
 
@@ -87,7 +93,12 @@ export function supportsConnectorMetadataProfile(definition = {}) {
   return SUPPORTED_METADATA_PROFILE_TYPES.has(definition.type);
 }
 
-export function buildConnectorMetadataProfilePlan({ connector, definition, adapter, options = {} }) {
+export function buildConnectorMetadataProfilePlan({
+  connector,
+  definition,
+  adapter,
+  options = {},
+}) {
   assertMetadataProfileSupport(connector, definition);
   const streams = adapter.selectedStreams(options);
   return {
@@ -119,7 +130,13 @@ export function buildConnectorMetadataProfilePlan({ connector, definition, adapt
   };
 }
 
-export function buildConnectorMetadataProfileFromExtraction({ connector, definition, adapter, extraction, options = {} }) {
+export function buildConnectorMetadataProfileFromExtraction({
+  connector,
+  definition,
+  adapter,
+  extraction,
+  options = {},
+}) {
   assertMetadataProfileSupport(connector, definition);
   const profile = emptyProfile({ connector, definition, adapter, extraction, options });
   for (const event of extraction.events || []) addProfileEvent(profile, event);
@@ -214,16 +231,19 @@ export function connectorMetadataProfileAnswer(profile) {
 
 function assertMetadataProfileSupport(connector, definition) {
   if (supportsConnectorMetadataProfile(definition)) return;
-  throw new ConnectorConfigError(`Connector '${connector.id}' does not support metadata profiling yet.`, {
-    connector_id: connector.id,
-    connector_type: connector.type,
-    remediation:
-      'Use metadata profiling for Salesforce, cloud storage, catalog platforms, pipeline/orchestration tools, code repositories, APIs, Kafka, and SAP.',
-    details: {
-      supported_connector_types: Array.from(SUPPORTED_METADATA_PROFILE_TYPES),
-      next_pass: [],
-    },
-  });
+  throw new ConnectorConfigError(
+    `Connector '${connector.id}' does not support metadata profiling yet.`,
+    {
+      connector_id: connector.id,
+      connector_type: connector.type,
+      remediation:
+        'Use metadata profiling for Salesforce, cloud storage, catalog platforms, pipeline/orchestration tools, code repositories, APIs, Kafka, and SAP.',
+      details: {
+        supported_connector_types: Array.from(SUPPORTED_METADATA_PROFILE_TYPES),
+        next_pass: [],
+      },
+    }
+  );
 }
 
 function emptyProfile({ connector, definition, adapter, extraction, options }) {
@@ -322,10 +342,13 @@ function classifyObjectEvent(event) {
   if (/job|crawler/.test(text)) return PROFILE_BUCKETS.JOBS;
   if (/schedule|trigger/.test(text)) return PROFILE_BUCKETS.SCHEDULES;
   if (/repository|repo/.test(text)) return PROFILE_BUCKETS.REPOSITORIES;
-  if (/python|sql_file|sql files|notebook|dbt_artifact|script|code/.test(text)) return PROFILE_BUCKETS.CODE_ASSETS;
+  if (/python|sql_file|sql files|notebook|dbt_artifact|script|code/.test(text))
+    return PROFILE_BUCKETS.CODE_ASSETS;
   if (/openapi|endpoint|operation|path|swagger/.test(text)) return PROFILE_BUCKETS.API_ENDPOINTS;
-  if (/kafka|topic|schema|consumer|cluster|stream/.test(text)) return PROFILE_BUCKETS.STREAMING_ASSETS;
-  if (/sap|extractor|odata|servicecollection|business object/.test(text)) return PROFILE_BUCKETS.SAP_EXTRACTORS;
+  if (/kafka|topic|schema|consumer|cluster|stream/.test(text))
+    return PROFILE_BUCKETS.STREAMING_ASSETS;
+  if (/sap|extractor|odata|servicecollection|business object/.test(text))
+    return PROFILE_BUCKETS.SAP_EXTRACTORS;
   if (/test/.test(text)) return PROFILE_BUCKETS.TESTS;
   return PROFILE_BUCKETS.OBJECTS;
 }
@@ -355,9 +378,21 @@ function sanitizeLineageEdge(event) {
   const object = sanitizeProfileObject(event);
   return {
     ...object,
-    from: event.attributes?.from || event.attributes?.source || event.external_id?.split('->')?.[0] || null,
-    to: event.attributes?.to || event.attributes?.target || event.external_id?.split('->')?.[1] || null,
-    relationship_type: event.attributes?.relationship_type || event.attributes?.type || event.object_type || 'depends_on',
+    from:
+      event.attributes?.from ||
+      event.attributes?.source ||
+      event.external_id?.split('->')?.[0] ||
+      null,
+    to:
+      event.attributes?.to ||
+      event.attributes?.target ||
+      event.external_id?.split('->')?.[1] ||
+      null,
+    relationship_type:
+      event.attributes?.relationship_type ||
+      event.attributes?.type ||
+      event.object_type ||
+      'depends_on',
   };
 }
 
@@ -410,7 +445,8 @@ function buildInventory(profile) {
 
 function summarizeRelationships(edges) {
   const byType = {};
-  for (const edge of edges) byType[edge.relationship_type] = (byType[edge.relationship_type] || 0) + 1;
+  for (const edge of edges)
+    byType[edge.relationship_type] = (byType[edge.relationship_type] || 0) + 1;
   return { count: edges.length, by_type: byType };
 }
 
@@ -441,7 +477,9 @@ function buildCoverageChecks(profile, extraction) {
 function calculateCoverageScore(checks) {
   const scoreable = checks.filter((check) => check.status !== 'error');
   if (!scoreable.length) return 0;
-  return Math.round((scoreable.filter((check) => check.status === 'pass').length / scoreable.length) * 100);
+  return Math.round(
+    (scoreable.filter((check) => check.status === 'pass').length / scoreable.length) * 100
+  );
 }
 
 function buildSummary(profile, extraction) {
@@ -495,7 +533,8 @@ function buildTopImpactCandidates(profile) {
       object_type: item.object_type,
       source_url: item.source_url,
       confidence: item.confidence,
-      relationship_count: relationshipCounts.get(item.external_id) || relationshipCounts.get(item.id) || 0,
+      relationship_count:
+        relationshipCounts.get(item.external_id) || relationshipCounts.get(item.id) || 0,
       owners: item.owners,
     }))
     .sort((a, b) => b.relationship_count - a.relationship_count || b.confidence - a.confidence)

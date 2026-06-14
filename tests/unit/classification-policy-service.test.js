@@ -56,7 +56,10 @@ describe('classificationPolicyService', () => {
             columns: [{ name: 'employee_email', data_type: 'varchar' }],
           },
         ],
-        ['ops.notes', { id: 'ops.notes', columns: [{ name: 'comment_text', data_type: 'varchar' }] }],
+        [
+          'ops.notes',
+          { id: 'ops.notes', columns: [{ name: 'comment_text', data_type: 'varchar' }] },
+        ],
       ]),
       [{ action: 'pii_policy_evaluated', details: { decision: 'approval_required' } }]
     );

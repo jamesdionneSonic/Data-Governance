@@ -205,7 +205,7 @@ function buildSsisPackageMarkdown(result, packageRow, serverName) {
     ].map((value) => String(value || '').toLowerCase());
     return edgeKeys.some((key) => packageKeys.has(key));
   });
-  
+
   // Separate Data Flow Sources (Upstream)
   const upstream = collectResolvedReferences(
     packageEdges,
@@ -233,7 +233,7 @@ function buildSsisPackageMarkdown(result, packageRow, serverName) {
 
   const warnings = (result.warnings || []).slice(0, 15);
 
-return `---
+  return `---
 id: ${packageId}
 name: ${objectName}
 server: ${serverName}
@@ -314,12 +314,12 @@ function persistSsisMarkdown(result, outputPath) {
   const defaultBasePath = './data/markdown';
   const baseOutputPath = resolve(process.cwd(), outputPath || defaultBasePath);
   const serverName = extractServerNameFromConfig(result.connectionConfig || {});
-  
+
   // Group by server so package IDs cannot collide across SSIS hosts.
   const serverDir = join(baseOutputPath, 'servers', sanitizePathSegment(serverName));
   const packageDir = join(serverDir, 'ssis_packages');
   const summaryDir = join(serverDir, 'ssis_summaries');
-  
+
   mkdirSync(packageDir, { recursive: true });
   mkdirSync(summaryDir, { recursive: true });
 
@@ -474,7 +474,9 @@ router.post('/extract', authenticate, requireAdmin, async (req, res) => {
     });
     if (connectorExtraction.status === 'failed' || !connectorExtraction.metadata) {
       const firstError = connectorExtraction.errors?.[0];
-      throw new Error(firstError?.message || 'SSIS connector extraction failed before metadata was returned.');
+      throw new Error(
+        firstError?.message || 'SSIS connector extraction failed before metadata was returned.'
+      );
     }
     result = connectorExtraction.metadata;
     result.connectionConfig = connConfig;
@@ -489,7 +491,9 @@ router.post('/extract', authenticate, requireAdmin, async (req, res) => {
   let markdownOutput = null;
   if (opts.generateMarkdownOutput !== false) {
     markdownOutput = persistSsisMarkdown(result, opts.markdownOutputPath);
-    const runtimeCatalog = await loadRuntimeCatalog(markdownOutput.baseOutputPath, { rebuild: true });
+    const runtimeCatalog = await loadRuntimeCatalog(markdownOutput.baseOutputPath, {
+      rebuild: true,
+    });
     initializeCache(runtimeCatalog.objects, runtimeCatalog.lineageGraph, runtimeCatalog);
   }
 
@@ -550,7 +554,10 @@ router.post('/lineage', authenticate, async (req, res) => {
     });
     if (connectorExtraction.status === 'failed' || !connectorExtraction.metadata) {
       const firstError = connectorExtraction.errors?.[0];
-      throw new Error(firstError?.message || 'SSIS connector lineage extraction failed before metadata was returned.');
+      throw new Error(
+        firstError?.message ||
+          'SSIS connector lineage extraction failed before metadata was returned.'
+      );
     }
     result = connectorExtraction.metadata;
   } catch (err) {
@@ -607,7 +614,10 @@ router.post('/catalog', authenticate, async (req, res) => {
     });
     if (connectorExtraction.status === 'failed' || !connectorExtraction.metadata) {
       const firstError = connectorExtraction.errors?.[0];
-      throw new Error(firstError?.message || 'SSIS connector catalog extraction failed before metadata was returned.');
+      throw new Error(
+        firstError?.message ||
+          'SSIS connector catalog extraction failed before metadata was returned.'
+      );
     }
     result = connectorExtraction.metadata;
   } catch (err) {
@@ -664,7 +674,10 @@ router.post('/agent-jobs', authenticate, async (req, res) => {
     });
     if (connectorExtraction.status === 'failed' || !connectorExtraction.metadata) {
       const firstError = connectorExtraction.errors?.[0];
-      throw new Error(firstError?.message || 'SSIS connector agent job extraction failed before metadata was returned.');
+      throw new Error(
+        firstError?.message ||
+          'SSIS connector agent job extraction failed before metadata was returned.'
+      );
     }
     result = connectorExtraction.metadata;
   } catch (err) {

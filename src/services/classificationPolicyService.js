@@ -137,13 +137,13 @@ function bracketName(value) {
 function maskFunctionForStrategy(strategy) {
   switch (strategy) {
     case 'email':
-      return "email()";
+      return 'email()';
     case 'last4':
       return "partial(0, '****', 4)";
     case 'null':
-      return "default()";
+      return 'default()';
     default:
-      return "default()";
+      return 'default()';
   }
 }
 
@@ -173,7 +173,8 @@ export function buildDatabaseControlPlan(asset = {}) {
       }
     : {
         enabled: false,
-        reason: 'No row-level restriction control is required by the current classification policy.',
+        reason:
+          'No row-level restriction control is required by the current classification policy.',
         statements: [],
       };
 
@@ -184,7 +185,10 @@ export function buildDatabaseControlPlan(asset = {}) {
     object: name.object,
     platform: 'sql_server',
     enforcement_mode: 'advisory_sql_review_required',
-    status: maskingStatements.length || rowLevelSecurity.enabled ? 'controls_recommended' : 'no_controls_required',
+    status:
+      maskingStatements.length || rowLevelSecurity.enabled
+        ? 'controls_recommended'
+        : 'no_controls_required',
     access_role: accessRole,
     controls: policy.controls,
     masking: {
@@ -220,7 +224,10 @@ export function buildPolicyEffectivenessReport(assets = new Map(), auditEvents =
       templateCoverage.set(template.id, (templateCoverage.get(template.id) || 0) + 1);
     }
     for (const classification of policy.classifications) {
-      classificationCoverage.set(classification, (classificationCoverage.get(classification) || 0) + 1);
+      classificationCoverage.set(
+        classification,
+        (classificationCoverage.get(classification) || 0) + 1
+      );
     }
   }
 
@@ -249,10 +256,13 @@ export function buildPolicyEffectivenessReport(assets = new Map(), auditEvents =
     }));
 
   const percent = (value) => (totalAssets ? Math.round((value / totalAssets) * 1000) / 10 : 0);
-  const coverageScore = Math.round(
-    (percent(classifiedAssets) * 0.4 + percent(governedAssets) * 0.4 + percent(loggedAssets) * 0.2) *
-      10
-  ) / 10;
+  const coverageScore =
+    Math.round(
+      (percent(classifiedAssets) * 0.4 +
+        percent(governedAssets) * 0.4 +
+        percent(loggedAssets) * 0.2) *
+        10
+    ) / 10;
 
   return {
     total_assets: totalAssets,

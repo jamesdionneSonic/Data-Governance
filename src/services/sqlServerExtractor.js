@@ -12,7 +12,6 @@ const { Parser } = require('node-sql-parser');
 
 const parser = new Parser();
 
-
 /**
  * Extract table references from SQL text using an AST-first strategy.
  *
@@ -34,7 +33,12 @@ const parser = new Parser();
  * @param {string} defaultSchema - Fallback schema name; defaults to dbo.
  * @returns {Array<{server: string, database: string, schema: string, object: string}>}
  */
-export function extractTablesFromSQL(sqlText, defaultServer, defaultDatabase, defaultSchema = 'dbo') {
+export function extractTablesFromSQL(
+  sqlText,
+  defaultServer,
+  defaultDatabase,
+  defaultSchema = 'dbo'
+) {
   // Keep the parser invocation isolated so unsupported dialect quirks do not
   // impact the rest of the extractor.
   let tableList = [];
@@ -61,7 +65,8 @@ export function extractTablesFromSQL(sqlText, defaultServer, defaultDatabase, de
     const record = parseSqlObjectReference(entry, defaultServer, defaultDatabase, defaultSchema);
     if (!record.object) continue;
 
-    const key = `${record.server}.${record.database}.${record.schema}.${record.object}`.toLowerCase();
+    const key =
+      `${record.server}.${record.database}.${record.schema}.${record.object}`.toLowerCase();
     if (seen.has(key)) continue;
     seen.add(key);
     results.push(record);
@@ -77,7 +82,10 @@ function parseSqlObjectReference(reference, defaultServer, defaultDatabase, defa
   }
 
   if (text.includes('::')) {
-    const parts = text.split('::').map((part) => part.trim()).filter(Boolean);
+    const parts = text
+      .split('::')
+      .map((part) => part.trim())
+      .filter(Boolean);
     const [, qualifierCandidate = '', objectNameCandidate = '', fallbackObjectName = ''] = parts;
     const qualifier = parts.length >= 3 ? qualifierCandidate : '';
     const objectName = parts.length >= 3 ? objectNameCandidate : fallbackObjectName;
@@ -121,7 +129,10 @@ function parseSqlObjectReference(reference, defaultServer, defaultDatabase, defa
     .replace(/\]\.\[/g, '.')
     .replace(/\[|\]/g, '')
     .replace(/\s+/g, ' ');
-  const parts = normalized.split('.').map((part) => part.trim()).filter(Boolean);
+  const parts = normalized
+    .split('.')
+    .map((part) => part.trim())
+    .filter(Boolean);
 
   if (parts.length >= 4) {
     return {
@@ -181,27 +192,72 @@ function stripSqlComments(sqlText) {
     .replace(/--[^\r\n]*/g, ' ');
 }
 
-
 /**
  * Standard ETL, Metadata, and Audit columns to exclude from automated lineage detection
  * to prevent false-positive relationships between tables.
  */
 const EXCLUDED_LINEAGE_COLUMNS = [
-  'ETLEXECUTION_ID', 'ETLEXECUTIONID', 'FILEPROCESSEDLOGID', 'META_ACTIONFLAG', 
-  'META_LASTDMLACTION', 'META_ROWLASTDMLACTION', 'META_SRC_SYS_ID', 'METASRC_SYS_ID', 
-  'META_SRCSYSID', 'META_SOURCESYSTEMNAME', 'METASOURCESYSTEMNAME', 'META_COMPUTERNAME', 
-  'METACOMPUTERNAME', 'META_SOURCEFILENAME', 'META_LOADDATE', 'METALOADDATE', 
-  'META_SYSTEMLOADDATE', 'META_ROWEFFECTIVEDATE', 'METAROWEFFECTIVEDATE', 
-  'META_ROWEXPIREDDATE', 'METAROWEXPIREDDATE', 'META_ROWISCURRENT', 'METAROWISCURRENT', 
-  'META_ROWLASTCHANGEDDATE', 'METAROWLASTCHANGEDDATE', 'META_ROWLASTCHANGEDATE', 
-  'META_ROWLLASTCHANGEDDATE', 'META_LASTMODIFIEDDATE', 'SYSSTARTTIME', 'SYSENDTIME',
-  'CREATED', 'CREATEDDATE', 'CREATEDON', 'ROWCREATEDATE', 'CREATEDBY', 'CREATEDBYUSERNAME', 
-  'UPDATED', 'UPDATEDDATE', 'UPDATEDON', 'MODIFIEDDATE', 'MODIFIEDON', 'MODIFIEDBY', 
-  'MODIFIEDBYUSERNAME', 'USER_ID', 'USERID', 'META_USERID', 'METAUSERID', 
-  'META_USERCHANGEID', 'META_LASTCHANGEUSERNAME', 'META_AUDITKEY', 'METAAUDITKEY', 
-  'META_AUDITSCORE', 'METAAUDITSCORE', 'META_CHECKSUM', 'METACHECKSUM', 'CHECKSUMHASH', 
-  'META_CHECKSUM_TYPE1', 'META_CHECKSUM_TYPE2', 'META_NATURALKEY', 'METANATURALKEY', 
-  'METANATURALKEYU'
+  'ETLEXECUTION_ID',
+  'ETLEXECUTIONID',
+  'FILEPROCESSEDLOGID',
+  'META_ACTIONFLAG',
+  'META_LASTDMLACTION',
+  'META_ROWLASTDMLACTION',
+  'META_SRC_SYS_ID',
+  'METASRC_SYS_ID',
+  'META_SRCSYSID',
+  'META_SOURCESYSTEMNAME',
+  'METASOURCESYSTEMNAME',
+  'META_COMPUTERNAME',
+  'METACOMPUTERNAME',
+  'META_SOURCEFILENAME',
+  'META_LOADDATE',
+  'METALOADDATE',
+  'META_SYSTEMLOADDATE',
+  'META_ROWEFFECTIVEDATE',
+  'METAROWEFFECTIVEDATE',
+  'META_ROWEXPIREDDATE',
+  'METAROWEXPIREDDATE',
+  'META_ROWISCURRENT',
+  'METAROWISCURRENT',
+  'META_ROWLASTCHANGEDDATE',
+  'METAROWLASTCHANGEDDATE',
+  'META_ROWLASTCHANGEDATE',
+  'META_ROWLLASTCHANGEDDATE',
+  'META_LASTMODIFIEDDATE',
+  'SYSSTARTTIME',
+  'SYSENDTIME',
+  'CREATED',
+  'CREATEDDATE',
+  'CREATEDON',
+  'ROWCREATEDATE',
+  'CREATEDBY',
+  'CREATEDBYUSERNAME',
+  'UPDATED',
+  'UPDATEDDATE',
+  'UPDATEDON',
+  'MODIFIEDDATE',
+  'MODIFIEDON',
+  'MODIFIEDBY',
+  'MODIFIEDBYUSERNAME',
+  'USER_ID',
+  'USERID',
+  'META_USERID',
+  'METAUSERID',
+  'META_USERCHANGEID',
+  'META_LASTCHANGEUSERNAME',
+  'META_AUDITKEY',
+  'METAAUDITKEY',
+  'META_AUDITSCORE',
+  'METAAUDITSCORE',
+  'META_CHECKSUM',
+  'METACHECKSUM',
+  'CHECKSUMHASH',
+  'META_CHECKSUM_TYPE1',
+  'META_CHECKSUM_TYPE2',
+  'META_NATURALKEY',
+  'METANATURALKEY',
+  'METANATURALKEYU',
 ];
 
 /**
@@ -434,7 +490,8 @@ class SqlServerMetadataExtractor {
   static extractTableReferencesFromClause(clause = '', defaultServer = '', defaultDatabase = '') {
     const normalizedClause = stripSqlComments(clause);
     const refs = [];
-    const pattern = /\b(?:FROM|JOIN|USING)\s+((?:\[[^\]]+\]|\w+)(?:\s*\.\s*(?:\[[^\]]+\]|\w+)){0,4}|OPENQUERY\s*\(\s*[^,]+,\s*'(?:''|[^'])*'\s*\))/gi;
+    const pattern =
+      /\b(?:FROM|JOIN|USING)\s+((?:\[[^\]]+\]|\w+)(?:\s*\.\s*(?:\[[^\]]+\]|\w+)){0,4}|OPENQUERY\s*\(\s*[^,]+,\s*'(?:''|[^'])*'\s*\))/gi;
     let match = pattern.exec(normalizedClause);
     while (match) {
       refs.push(match[1]);
@@ -466,13 +523,20 @@ class SqlServerMetadataExtractor {
               isOpenQuery: false,
             };
           })
-          .filter((item) => item.reference && !SqlServerMetadataExtractor.isNoiseSqlReference(item.reference))
+          .filter(
+            (item) =>
+              item.reference && !SqlServerMetadataExtractor.isNoiseSqlReference(item.reference)
+          )
           .map((item) => JSON.stringify(item))
       )
     ).map((item) => JSON.parse(item));
   }
 
-  static extractWriteTargetsFromDefinition(definition = '', defaultServer = '', defaultDatabase = '') {
+  static extractWriteTargetsFromDefinition(
+    definition = '',
+    defaultServer = '',
+    defaultDatabase = ''
+  ) {
     const targets = [];
     const sql = stripSqlComments(definition);
     const pattern =
@@ -587,7 +651,9 @@ class SqlServerMetadataExtractor {
         }
       }
 
-      const openQueryLiteral = SqlServerMetadataExtractor.extractOpenQueryLiteral(proc.definition || '');
+      const openQueryLiteral = SqlServerMetadataExtractor.extractOpenQueryLiteral(
+        proc.definition || ''
+      );
       if (openQueryLiteral) {
         relationships.push({
           id: `${openQueryLiteral}->${procId}:reads`,
@@ -663,7 +729,7 @@ class SqlServerMetadataExtractor {
       const filteredRows = result.recordset.filter((row) => {
         const schemaName = String(row.schema_name || '').toLowerCase();
         const schemaTableId = `${schemaName}.${row.table_name}`.toLowerCase();
-        
+
         // Exclusions take priority
         if (excludeSchemas.has(schemaName) || excludeTables.has(schemaTableId)) return false;
 
@@ -708,7 +774,7 @@ class SqlServerMetadataExtractor {
       const filteredRows = fallback.recordset.filter((row) => {
         const schemaName = String(row.schema_name || '').toLowerCase();
         const schemaTableId = `${schemaName}.${row.table_name}`.toLowerCase();
-        
+
         if (excludeSchemas.has(schemaName) || excludeTables.has(schemaTableId)) return false;
 
         const schemaMatch = selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
@@ -718,7 +784,8 @@ class SqlServerMetadataExtractor {
 
       this.metadata.extractionWarnings.push({
         code: 'MISSING_VIEW_DATABASE_STATE',
-        message: 'Missing VIEW DATABASE STATE permission. Row count and size metrics are unavailable.',
+        message:
+          'Missing VIEW DATABASE STATE permission. Row count and size metrics are unavailable.',
       });
 
       return filteredRows.map((row) => ({
@@ -839,23 +906,43 @@ class SqlServerMetadataExtractor {
     `;
 
     const typeSummary = {
-      table: 0, view: 0, storedProcedure: 0, scalarFunction: 0, inlineTableFunction: 0,
-      tableFunction: 0, trigger: 0, synonym: 0, sequence: 0, tableType: 0, other: 0,
+      table: 0,
+      view: 0,
+      storedProcedure: 0,
+      scalarFunction: 0,
+      inlineTableFunction: 0,
+      tableFunction: 0,
+      trigger: 0,
+      synonym: 0,
+      sequence: 0,
+      tableType: 0,
+      other: 0,
     };
 
     const mapType = (typeCode) => {
       switch (typeCode) {
-        case 'U': return 'table';
-        case 'V': return 'view';
-        case 'P': return 'storedProcedure';
-        case 'FN': return 'scalarFunction';
-        case 'IF': return 'inlineTableFunction';
-        case 'TF': return 'tableFunction';
-        case 'TR': return 'trigger';
-        case 'SN': return 'synonym';
-        case 'SO': return 'sequence';
-        case 'TT': return 'tableType';
-        default: return 'other';
+        case 'U':
+          return 'table';
+        case 'V':
+          return 'view';
+        case 'P':
+          return 'storedProcedure';
+        case 'FN':
+          return 'scalarFunction';
+        case 'IF':
+          return 'inlineTableFunction';
+        case 'TF':
+          return 'tableFunction';
+        case 'TR':
+          return 'trigger';
+        case 'SN':
+          return 'synonym';
+        case 'SO':
+          return 'sequence';
+        case 'TT':
+          return 'tableType';
+        default:
+          return 'other';
       }
     };
 
@@ -863,7 +950,7 @@ class SqlServerMetadataExtractor {
       const result = await this.pool.request().query(query);
       const selectedSchemas = new Set((scope.schemas || []).map((s) => s.toLowerCase()));
       const excludeSchemas = new Set((scope.excludeSchemas || []).map((s) => s.toLowerCase()));
-      
+
       const filteredRows = result.recordset.filter((row) => {
         const schemaName = String(row.schema_name || '').toLowerCase();
         if (excludeSchemas.has(schemaName)) return false;
@@ -875,7 +962,10 @@ class SqlServerMetadataExtractor {
         typeSummary[normalizedType] = (typeSummary[normalizedType] || 0) + (row.object_count || 0);
       });
 
-      typeSummary.total = Object.values(typeSummary).reduce((sum, count) => sum + (Number(count) || 0), 0);
+      typeSummary.total = Object.values(typeSummary).reduce(
+        (sum, count) => sum + (Number(count) || 0),
+        0
+      );
       return typeSummary;
     } catch (err) {
       console.error('Error extracting object inventory:', err.message);
@@ -883,21 +973,56 @@ class SqlServerMetadataExtractor {
     }
   }
 
-  static buildCoverageResearchReport({ inventory, extracted, relationshipCount, columnLineageEnabled }) {
-    const expectedFunctions = (inventory.scalarFunction || 0) + (inventory.inlineTableFunction || 0) + (inventory.tableFunction || 0);
-    const extractedCoreTotal = (extracted.tables || 0) + (extracted.views || 0) + (extracted.storedProcedures || 0) + (extracted.functions || 0) + (extracted.triggers || 0);
-    const expectedCoreTotal = (inventory.table || 0) + (inventory.view || 0) + (inventory.storedProcedure || 0) + expectedFunctions + (inventory.trigger || 0);
-    const coveragePercent = expectedCoreTotal > 0 ? Number(((extractedCoreTotal / expectedCoreTotal) * 100).toFixed(2)) : 100;
-    
+  static buildCoverageResearchReport({
+    inventory,
+    extracted,
+    relationshipCount,
+    columnLineageEnabled,
+  }) {
+    const expectedFunctions =
+      (inventory.scalarFunction || 0) +
+      (inventory.inlineTableFunction || 0) +
+      (inventory.tableFunction || 0);
+    const extractedCoreTotal =
+      (extracted.tables || 0) +
+      (extracted.views || 0) +
+      (extracted.storedProcedures || 0) +
+      (extracted.functions || 0) +
+      (extracted.triggers || 0);
+    const expectedCoreTotal =
+      (inventory.table || 0) +
+      (inventory.view || 0) +
+      (inventory.storedProcedure || 0) +
+      expectedFunctions +
+      (inventory.trigger || 0);
+    const coveragePercent =
+      expectedCoreTotal > 0
+        ? Number(((extractedCoreTotal / expectedCoreTotal) * 100).toFixed(2))
+        : 100;
+
     const missingOrUncaptured = [];
-    if ((inventory.table || 0) > (extracted.tables || 0)) missingOrUncaptured.push('Some tables were not extracted (scope filtering or permissions).');
-    if ((inventory.view || 0) > (extracted.views || 0)) missingOrUncaptured.push('Some views were not extracted.');
-    if ((inventory.storedProcedure || 0) > (extracted.storedProcedures || 0)) missingOrUncaptured.push('Some stored procedures were not extracted.');
-    if (expectedFunctions > (extracted.functions || 0)) missingOrUncaptured.push('Some functions were not extracted (FN/IF/TF).');
-    if ((inventory.trigger || 0) > (extracted.triggers || 0)) missingOrUncaptured.push('Some triggers were not extracted.');
-    if ((inventory.synonym || 0) > 0) missingOrUncaptured.push(`Synonyms detected (${inventory.synonym}) but not currently modeled for lineage.`);
-    if ((inventory.sequence || 0) > 0) missingOrUncaptured.push(`Sequences detected (${inventory.sequence}) but not currently modeled in markdown output.`);
-    if ((inventory.tableType || 0) > 0) missingOrUncaptured.push(`User-defined table types detected (${inventory.tableType}) but not currently extracted.`);
+    if ((inventory.table || 0) > (extracted.tables || 0))
+      missingOrUncaptured.push('Some tables were not extracted (scope filtering or permissions).');
+    if ((inventory.view || 0) > (extracted.views || 0))
+      missingOrUncaptured.push('Some views were not extracted.');
+    if ((inventory.storedProcedure || 0) > (extracted.storedProcedures || 0))
+      missingOrUncaptured.push('Some stored procedures were not extracted.');
+    if (expectedFunctions > (extracted.functions || 0))
+      missingOrUncaptured.push('Some functions were not extracted (FN/IF/TF).');
+    if ((inventory.trigger || 0) > (extracted.triggers || 0))
+      missingOrUncaptured.push('Some triggers were not extracted.');
+    if ((inventory.synonym || 0) > 0)
+      missingOrUncaptured.push(
+        `Synonyms detected (${inventory.synonym}) but not currently modeled for lineage.`
+      );
+    if ((inventory.sequence || 0) > 0)
+      missingOrUncaptured.push(
+        `Sequences detected (${inventory.sequence}) but not currently modeled in markdown output.`
+      );
+    if ((inventory.tableType || 0) > 0)
+      missingOrUncaptured.push(
+        `User-defined table types detected (${inventory.tableType}) but not currently extracted.`
+      );
 
     const recommendations = [
       'Add column-level extraction to markdown output for table-level lineage validation.',
@@ -906,10 +1031,21 @@ class SqlServerMetadataExtractor {
     ];
 
     if (!columnLineageEnabled) {
-      recommendations.unshift('Run scoped extraction (smaller schema/table set) with full mode to enable column-level lineage detection.');
+      recommendations.unshift(
+        'Run scoped extraction (smaller schema/table set) with full mode to enable column-level lineage detection.'
+      );
     }
 
-    return { coveragePercent, expectedCoreObjects: expectedCoreTotal, extractedCoreObjects: extractedCoreTotal, relationshipCount, columnLineageEnabled, inventory, missingOrUncaptured, recommendations };
+    return {
+      coveragePercent,
+      expectedCoreObjects: expectedCoreTotal,
+      extractedCoreObjects: extractedCoreTotal,
+      relationshipCount,
+      columnLineageEnabled,
+      inventory,
+      missingOrUncaptured,
+      recommendations,
+    };
   }
 
   /**
@@ -949,7 +1085,7 @@ class SqlServerMetadataExtractor {
       const selectedTables = new Set((scope.tables || []).map((t) => t.toLowerCase()));
       const excludeSchemas = new Set((scope.excludeSchemas || []).map((s) => s.toLowerCase()));
       const excludeTables = new Set((scope.excludeTables || []).map((t) => t.toLowerCase()));
-      
+
       const indexesByTable = new Map();
 
       result.recordset.forEach((row) => {
@@ -963,12 +1099,13 @@ class SqlServerMetadataExtractor {
         const tableKey = schemaTableId.toLowerCase();
         const objectKey = tableId.toLowerCase();
         const schemaName = String(row.schema_name || '').toLowerCase();
-        
+
         if (
           excludeSchemas.has(schemaName) ||
           excludeTables.has(tableKey) ||
           excludeTables.has(objectKey)
-        ) return;
+        )
+          return;
 
         const schemaMatch = selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
         const tableMatch =
@@ -1070,7 +1207,7 @@ class SqlServerMetadataExtractor {
       const selectedTables = new Set((scope.tables || []).map((t) => t.toLowerCase()));
       const excludeSchemas = new Set((scope.excludeSchemas || []).map((s) => s.toLowerCase()));
       const excludeTables = new Set((scope.excludeTables || []).map((t) => t.toLowerCase()));
-      
+
       const constraintsByTable = new Map();
 
       const ensureTableBucket = (tableId) => {
@@ -1095,12 +1232,13 @@ class SqlServerMetadataExtractor {
         const tableKey = schemaTableId.toLowerCase();
         const objectKey = tableId.toLowerCase();
         const schemaName = String(row.schema_name || '').toLowerCase();
-        
+
         if (
           excludeSchemas.has(schemaName) ||
           excludeTables.has(tableKey) ||
           excludeTables.has(objectKey)
-        ) return;
+        )
+          return;
 
         const schemaMatch = selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
         const tableMatch =
@@ -1137,12 +1275,13 @@ class SqlServerMetadataExtractor {
         const tableKey = schemaTableId.toLowerCase();
         const objectKey = tableId.toLowerCase();
         const schemaName = String(row.schema_name || '').toLowerCase();
-        
+
         if (
           excludeSchemas.has(schemaName) ||
           excludeTables.has(tableKey) ||
           excludeTables.has(objectKey)
-        ) return;
+        )
+          return;
 
         const schemaMatch = selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
         const tableMatch =
@@ -1198,13 +1337,13 @@ class SqlServerMetadataExtractor {
       const result = await this.pool.request().query(query);
       const selectedSchemas = new Set((scope.schemas || []).map((s) => s.toLowerCase()));
       const excludeSchemas = new Set((scope.excludeSchemas || []).map((s) => s.toLowerCase()));
-      
+
       const parameterMap = new Map();
 
       result.recordset.forEach((row) => {
         const routineKey = `${row.schema_name}.${row.routine_name}`;
         const schemaName = String(row.schema_name || '').toLowerCase();
-        
+
         if (excludeSchemas.has(schemaName)) return;
 
         const schemaMatch = selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
@@ -1350,10 +1489,10 @@ class SqlServerMetadataExtractor {
       const selectedTables = new Set((scope.tables || []).map((t) => t.toLowerCase()));
       const excludeSchemas = new Set((scope.excludeSchemas || []).map((s) => s.toLowerCase()));
       const excludeTables = new Set((scope.excludeTables || []).map((t) => t.toLowerCase()));
-      
+
       const columnsByObject = new Map();
 
-        result.recordset.forEach((row) => {
+      result.recordset.forEach((row) => {
         const objectId = SqlServerMetadataExtractor.qualifySqlObjectId(
           SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
           this.metadata.database || this.config?.database || '',
@@ -1363,12 +1502,13 @@ class SqlServerMetadataExtractor {
         const objectKey = objectId.toLowerCase();
         const schemaTableKey = `${row.schema_name}.${row.object_name}`.toLowerCase();
         const schemaName = String(row.schema_name || '').toLowerCase();
-        
+
         if (
           excludeSchemas.has(schemaName) ||
           excludeTables.has(objectKey) ||
           excludeTables.has(schemaTableKey)
-        ) return;
+        )
+          return;
 
         // Only keep objects that are in the user's selected scope
         const schemaMatch = selectedSchemas.size === 0 || selectedSchemas.has(schemaName);
@@ -1936,17 +2076,16 @@ class SqlServerMetadataExtractor {
       triggers,
       fks,
       objectInventory,
-    ] =
-      await Promise.all([
-        this.extractTables(database, scope),
-        this.extractSynonyms(scope),
-        this.extractViews(scope),
-        this.extractStoredProcedures(scope),
-        this.extractFunctions(scope),
-        this.extractTriggers(scope),
-        this.extractForeignKeys(),
-        this.extractObjectTypeInventory(scope),
-      ]);
+    ] = await Promise.all([
+      this.extractTables(database, scope),
+      this.extractSynonyms(scope),
+      this.extractViews(scope),
+      this.extractStoredProcedures(scope),
+      this.extractFunctions(scope),
+      this.extractTriggers(scope),
+      this.extractForeignKeys(),
+      this.extractObjectTypeInventory(scope),
+    ]);
     let tables = initialTables;
 
     console.log(
@@ -2033,7 +2172,7 @@ class SqlServerMetadataExtractor {
       parameters: routineParameters.get(func.id) || [],
     }));
     const triggersWithDependencies = attachDependencies(triggers);
-    
+
     // For large extractions, skip expensive column-level analysis to avoid timeout
     let columnMatches = [];
     let etlPatterns = [];

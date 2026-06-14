@@ -46,7 +46,8 @@ export class ConnectorCredentialError extends ConnectorError {
       code: 'CONNECTOR_CREDENTIAL_ERROR',
       phase: 'authentication',
       status: 400,
-      remediation: 'Confirm the connector has a valid credential mode and secret reference or managed identity.',
+      remediation:
+        'Confirm the connector has a valid credential mode and secret reference or managed identity.',
       ...options,
     });
   }
@@ -58,7 +59,8 @@ export class ConnectorRuntimeError extends ConnectorError {
       code: 'CONNECTOR_RUNTIME_ERROR',
       phase: 'execution',
       status: 502,
-      remediation: 'Check source API availability, service-account permissions, and connector stream configuration.',
+      remediation:
+        'Check source API availability, service-account permissions, and connector stream configuration.',
       ...options,
     });
   }
@@ -70,7 +72,8 @@ export class ConnectorStreamError extends ConnectorError {
       code: 'CONNECTOR_STREAM_ERROR',
       phase: 'stream',
       status: 400,
-      remediation: 'Use a supported stream for this connector type or update the adapter stream map.',
+      remediation:
+        'Use a supported stream for this connector type or update the adapter stream map.',
       ...options,
     });
   }
@@ -86,7 +89,8 @@ export function serializeConnectorError(err) {
     message: err?.message || String(err),
     phase: err?.phase || 'unknown',
     status: err?.status || 500,
-    remediation: err?.remediation || 'Review connector logs and retry after correcting the reported issue.',
+    remediation:
+      err?.remediation || 'Review connector logs and retry after correcting the reported issue.',
     details: err?.details || null,
   };
 }

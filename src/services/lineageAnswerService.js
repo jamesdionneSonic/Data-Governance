@@ -1,7 +1,9 @@
 import { buildSemanticLineagePack } from './semanticLineageService.js';
 
 function normalizeKey(value) {
-  return String(value || '').trim().toLowerCase();
+  return String(value || '')
+    .trim()
+    .toLowerCase();
 }
 
 function ensureArray(value) {
@@ -15,7 +17,9 @@ function objectLabel(metadata = {}, objectId = '') {
 }
 
 function compactText(value, maxLength = 260) {
-  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  const text = String(value || '')
+    .replace(/\s+/g, ' ')
+    .trim();
   return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
 }
 
@@ -168,25 +172,37 @@ export function buildLineageAnswer(objects = new Map(), request = {}) {
 
   switch (intent) {
     case 'feeds':
-      impactedObjects = dedupeById([...orchestrators, ...loaders, ...sourceInputs, ...lookupDependencies]);
+      impactedObjects = dedupeById([
+        ...orchestrators,
+        ...loaders,
+        ...sourceInputs,
+        ...lookupDependencies,
+      ]);
       plainEnglish = `${objectLabel(focusMetadata, objectId)} is fed by its load chain. ${semanticPack.summary.plain_english}`;
-      caveats = maintenanceReads.length > 0
-        ? ['Maintenance reads are implementation detail and are not counted as upstream sources.']
-        : [];
+      caveats =
+        maintenanceReads.length > 0
+          ? ['Maintenance reads are implementation detail and are not counted as upstream sources.']
+          : [];
       break;
     case 'loads':
       impactedObjects = dedupeById([...orchestrators, ...loaders, ...maintenanceReads]);
       plainEnglish = `${objectLabel(focusMetadata, objectId)} is maintained by the following loaders and orchestrators. ${semanticPack.summary.plain_english}`;
-      caveats = maintenanceReads.length > 0
-        ? ['The maintenance read below is part of the write path, not a downstream business consumer.']
-        : [];
+      caveats =
+        maintenanceReads.length > 0
+          ? [
+              'The maintenance read below is part of the write path, not a downstream business consumer.',
+            ]
+          : [];
       break;
     case 'uses':
       impactedObjects = dedupeById([...businessConsumers, ...maintenanceReads, ...orchestrators]);
       plainEnglish = `${objectLabel(focusMetadata, objectId)} has ${businessConsumers.length} downstream business ${businessConsumers.length === 1 ? 'consumer' : 'consumers'}, ${maintenanceReads.length} maintenance/load-path ${maintenanceReads.length === 1 ? 'procedure' : 'procedures'} that also read the table during write processing, and ${orchestrators.length} orchestrating ${orchestrators.length === 1 ? 'SSIS package' : 'SSIS packages'} in that load path.`;
-      caveats = maintenanceReads.length > 0
-        ? ['Maintenance/load-path procedures are shown separately so technical users keep the exact object names without treating those procedures as ordinary business consumers.']
-        : [];
+      caveats =
+        maintenanceReads.length > 0
+          ? [
+              'Maintenance/load-path procedures are shown separately so technical users keep the exact object names without treating those procedures as ordinary business consumers.',
+            ]
+          : [];
       break;
     default:
       impactedObjects = dedupeById([
@@ -197,9 +213,12 @@ export function buildLineageAnswer(objects = new Map(), request = {}) {
         ...businessConsumers,
         ...maintenanceReads,
       ]);
-      caveats = maintenanceReads.length > 0
-        ? ['Maintenance reads are shown separately so upsert logic does not look like a normal downstream consumer.']
-        : [];
+      caveats =
+        maintenanceReads.length > 0
+          ? [
+              'Maintenance reads are shown separately so upsert logic does not look like a normal downstream consumer.',
+            ]
+          : [];
       break;
   }
 

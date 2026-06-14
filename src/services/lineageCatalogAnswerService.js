@@ -1,5 +1,7 @@
 function countObjectEntries(value = {}) {
-  return Object.entries(value || {}).sort(([, left], [, right]) => Number(right || 0) - Number(left || 0));
+  return Object.entries(value || {}).sort(
+    ([, left], [, right]) => Number(right || 0) - Number(left || 0)
+  );
 }
 
 function formatCountedEntries(value = {}, limit = 4) {
@@ -23,7 +25,9 @@ function sampleObjectsForDatabase(databaseName, rowsByDatabase = new Map(), limi
 
 function databaseNote(name, info = {}, samples = []) {
   const numericSchemaNames = Object.keys(info.schemas || {}).filter(isNumericCatalogName);
-  const sampleLooksIpSplit = samples.some((sample) => /^\d+\./.test(String(sample.display_name || sample.object_id || '')));
+  const sampleLooksIpSplit = samples.some((sample) =>
+    /^\d+\./.test(String(sample.display_name || sample.object_id || ''))
+  );
 
   if (isNumericCatalogName(name)) {
     if (numericSchemaNames.length > 0 || sampleLooksIpSplit) {
@@ -53,7 +57,9 @@ function sortCatalogRows(left, right) {
   const leftNumeric = isNumericCatalogName(left.database);
   const rightNumeric = isNumericCatalogName(right.database);
   if (leftNumeric !== rightNumeric) return Number(leftNumeric) - Number(rightNumeric);
-  return String(left.database).localeCompare(String(right.database), undefined, { sensitivity: 'base' });
+  return String(left.database).localeCompare(String(right.database), undefined, {
+    sensitivity: 'base',
+  });
 }
 
 export function buildDatabaseCatalogAnswer(databaseIndex = {}, rowsByDatabase = new Map()) {
@@ -76,9 +82,13 @@ export function buildDatabaseCatalogAnswer(databaseIndex = {}, rowsByDatabase = 
         ? `The lineage catalog has ${rows.length} database entries. ${databases.length} look like normal database names, and ${anomalousEntries.length} numeric entries should be treated as catalog-quality anomalies until the extraction source is verified.`
         : `The lineage catalog has ${rows.length} database entries.`,
     format_guidance: {
-      default_view: 'Show normal databases in a table, then list numeric/anomalous entries in a separate quality note.',
+      default_view:
+        'Show normal databases in a table, then list numeric/anomalous entries in a separate quality note.',
       columns: ['Database', 'Objects', 'Main types', 'Schemas', 'Notes'],
-      avoid: ['Do not render database names as a comma-separated inline list.', 'Do not mix numeric/anomalous entries into the normal database list without explanation.'],
+      avoid: [
+        'Do not render database names as a comma-separated inline list.',
+        'Do not mix numeric/anomalous entries into the normal database list without explanation.',
+      ],
     },
     databases,
     anomalous_entries: anomalousEntries,
@@ -86,7 +96,10 @@ export function buildDatabaseCatalogAnswer(databaseIndex = {}, rowsByDatabase = 
 }
 
 function markdownTable(rows) {
-  const lines = ['| Database | Objects | Main types | Schemas | Notes |', '| --- | ---: | --- | --- | --- |'];
+  const lines = [
+    '| Database | Objects | Main types | Schemas | Notes |',
+    '| --- | ---: | --- | --- | --- |',
+  ];
   for (const row of rows) {
     lines.push(
       `| \`${row.database}\` | ${row.object_count} | ${row.main_types} | ${row.schema_count}: ${row.top_schemas} | ${row.note || ''} |`

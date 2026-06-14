@@ -21,12 +21,16 @@ Welcome to the Data Governance project! This document outlines the best practice
 11. [Documentation Standards](#documentation-standards)
 12. [Profile Index Safety Rules](#profile-index-safety-rules)
 13. [Submission Process](#submission-process)
+14. [Git Identity and CI Hygiene](#git-identity-and-ci-hygiene)
 
 ---
+
 #### Data lineage rules
+
 Whenever you are asked to modify data extraction, graph resolution, or SSIS parsing, you MUST strictly adhere to the rules defined in docs/LINEAGE_ENGINE_SPEC.md.
 
 #### Profile index and raw-data safety rules
+
 Whenever you are asked to modify profiling, connector output, DevOps/Azure data pack export, markdown profile summaries, skill runtime packages, metric profile evidence, PII detection, or data-quality indexes, you MUST strictly adhere to the rules defined in docs/PROFILE_INDEX_SPEC.md.
 
 The short version:
@@ -37,6 +41,33 @@ The short version:
 - The DevOps/Azure data pack may contain sanitized profile indexes, not raw source data.
 - Codex skills must read compact profile indexes first for profile questions and use markdown only as evidence or explanation.
 - If connector APIs return raw values, discard, aggregate, mask, or classify them before persistence.
+
+#### Git identity and CI hygiene rules
+
+Every AI agent and human developer must run the repository's CI-equivalent local
+gate before committing or pushing:
+
+```bash
+npm run verify:ci
+```
+
+Repository commits must use `jamesdionneSonic <james.dionne@sonicautomotive.com>`.
+Never create commits or tags using personal, placeholder, or stale identities,
+including `GleanChef`, `jadionne@gleanchef.com`, `Your Name`, or
+`you@example.com`.
+
+When rewriting history to remove contributor metadata, audit all reachable refs,
+not only `main`. Stale feature branches, pull refs, and annotated tags can keep
+old identities visible in GitHub contributor surfaces even after the default
+branch is clean. Verify with:
+
+```bash
+git log --all --format="%H%x09%an%x09%ae%x09%cn%x09%ce"
+npm run git:identity:check
+```
+
+Formatting is a CI gate. Run `npm run format:check` after linting and before
+committing so GitHub Actions does not fail on Prettier-only drift.
 
 ## Architecture & Design Principles
 
@@ -107,7 +138,7 @@ Default pages must lead with context, status, and next action. Raw logs, JSON, S
 - No more than two secondary CTAs above the fold.
 - No more than three major panels on a default page state.
 - One stepper or one tab row per page; no nested workflow tabs.
-- If the page cannot be described as "Use this page to ___" in one sentence, do not implement it yet.
+- If the page cannot be described as "Use this page to \_\_\_" in one sentence, do not implement it yet.
 
 ### Shared Actions
 

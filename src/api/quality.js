@@ -49,7 +49,8 @@ router.get('/rules', authenticate, (req, res) =>
       asset_id: req.query.asset_id,
       enabled: req.query.enabled === undefined ? undefined : req.query.enabled !== 'false',
     }),
-  }));
+  })
+);
 
 router.post('/rules', authenticate, (req, res) => {
   try {
@@ -89,10 +90,12 @@ router.get('/deployments', authenticate, (req, res) =>
   res.json({
     status: 'success',
     deployments: listQualityRuleDeployments({ rule_id: req.query.rule_id }),
-  }));
+  })
+);
 
 router.get('/schedules', authenticate, (_req, res) =>
-  res.json({ status: 'success', schedules: listQualitySchedules() }));
+  res.json({ status: 'success', schedules: listQualitySchedules() })
+);
 
 router.post('/schedules', authenticate, (req, res) => {
   const schedule = upsertQualitySchedule(req.body || {}, actorFromUser(req.user));
@@ -115,19 +118,22 @@ router.post('/run', authenticate, (req, res) => {
 });
 
 router.get('/executions', authenticate, (_req, res) =>
-  res.json({ status: 'success', executions: listQualityExecutions() }));
+  res.json({ status: 'success', executions: listQualityExecutions() })
+);
 
 router.get('/incidents', authenticate, (req, res) =>
   res.json({
     status: 'success',
     incidents: listQualityIncidents({ status: req.query.status }),
-  }));
+  })
+);
 
 router.post('/profiles/summary', authenticate, (req, res) =>
   res.json({
     status: 'success',
     profile: buildProfileSummary(req.body?.profile || req.body || {}),
-  }));
+  })
+);
 
 router.post('/profiles/export', authenticate, (req, res) => {
   const exported = exportProfile(req.body?.profile || {}, req.body?.format || 'json');
@@ -140,18 +146,18 @@ router.post('/profiles/export', authenticate, (req, res) => {
 router.post('/profiles/anomalies', authenticate, (req, res) =>
   res.json({
     status: 'success',
-    anomaly_report: detectQualityAnomalies(
-      req.body?.current || {},
-      req.body?.baseline || {},
-      { sensitivity: req.body?.sensitivity }
-    ),
-  }));
+    anomaly_report: detectQualityAnomalies(req.body?.current || {}, req.body?.baseline || {}, {
+      sensitivity: req.body?.sensitivity,
+    }),
+  })
+);
 
 router.get('/profiles/:assetId/trend', authenticate, (req, res) =>
   res.json({
     status: 'success',
     trend: getQualityTrend(req.params.assetId),
-  }));
+  })
+);
 
 router.post('/scorecard', authenticate, (req, res) => {
   const latestExecution = listQualityExecutions()[0] || null;

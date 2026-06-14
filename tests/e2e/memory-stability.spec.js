@@ -67,7 +67,9 @@ test.describe('App memory stability', () => {
 
     expect(pageErrors).toEqual([]);
     expect(
-      consoleErrors.filter((message) => !/favicon|ResizeObserver|Failed to load resource/i.test(message))
+      consoleErrors.filter(
+        (message) => !/favicon|ResizeObserver|Failed to load resource/i.test(message)
+      )
     ).toEqual([]);
     expect(httpErrors.filter((item) => !/favicon|\.ico($|\?)/i.test(item.url))).toEqual([]);
     if (endingHeap) {

@@ -47,10 +47,13 @@
     "lineage:publish": "npm run catalog:refresh && npm run catalog:repo:export && npm run catalog:repo:check && npm run confluence:publish",
     "lineage:replace": "npm run catalog:refresh && npm run catalog:repo:export && npm run catalog:repo:check && npm run confluence:replace",
     "lint": "eslint src tests docker scripts --fix --max-warnings=0",
-    "format": "prettier --write 'src/**/*.js' 'tests/**/*.js'",
+    "format": "prettier --write \"src/**/*.js\" \"tests/**/*.js\"",
+    "format:check": "prettier --check \"src/**/*.js\" \"tests/**/*.js\"",
+    "git:identity:check": "node scripts/check-git-identity.mjs",
     "check-framework": "node scripts/check-framework.js",
     "ui:workflow:guardrails": "node scripts/check-ui-workflow-guardrails.mjs",
     "verify": "npm run lint && npm run test",
+    "verify:ci": "npm run git:identity:check && npm run lint && npm run format:check && npm run test:coverage && npm run build",
     "prepare": "husky install"
   },
   "keywords": [

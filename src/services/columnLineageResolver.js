@@ -54,7 +54,9 @@ function splitReference(value) {
 }
 
 function compactEvidence(value, maxLength = 300) {
-  const text = String(value ?? '').replace(/\s+/g, ' ').trim();
+  const text = String(value ?? '')
+    .replace(/\s+/g, ' ')
+    .trim();
   return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
 }
 
@@ -134,7 +136,10 @@ export function buildColumnResolutionIndex(objects = new Map()) {
         name: column.name,
       };
       columnById.set(normalizeKey(columnId), columnRecord);
-      columnByObjectAndName.set(`${normalizeKey(objectId)}|${normalizeKey(column.name)}`, columnRecord);
+      columnByObjectAndName.set(
+        `${normalizeKey(objectId)}|${normalizeKey(column.name)}`,
+        columnRecord
+      );
     }
   }
 
@@ -169,7 +174,11 @@ function resolveObjectIds(index, reference, candidateObjectIds = []) {
 
   const parts = splitReference(reference);
   const scopedCandidates = Array.from(
-    new Set(ensureArray(candidateObjectIds).filter(Boolean).map((candidate) => String(candidate)))
+    new Set(
+      ensureArray(candidateObjectIds)
+        .filter(Boolean)
+        .map((candidate) => String(candidate))
+    )
   );
   if (scopedCandidates.length > 0) {
     const matches = scopedCandidates.filter((candidateId) =>
@@ -190,7 +199,10 @@ function resolveObjectIds(index, reference, candidateObjectIds = []) {
   if (parts.length < 3) {
     return {
       status: 'rejected',
-      reason: parts.length <= 1 ? 'name_only_object_reference_not_promoted' : 'partial_object_reference_not_promoted',
+      reason:
+        parts.length <= 1
+          ? 'name_only_object_reference_not_promoted'
+          : 'partial_object_reference_not_promoted',
       matches: [],
     };
   }
@@ -271,14 +283,17 @@ function resolveColumnReference(index, reference = {}) {
     return {
       status: objectResolution.status,
       reason: objectResolution.reason,
-      object_ref: reference.object_ref || reference.objectRef || reference.object_id || reference.objectId,
+      object_ref:
+        reference.object_ref || reference.objectRef || reference.object_id || reference.objectId,
       column_name: columnName,
       matches: objectResolution.matches,
     };
   }
 
   const objectId = objectResolution.matches[0];
-  const column = index.columnByObjectAndName.get(`${normalizeKey(objectId)}|${normalizeKey(columnName)}`);
+  const column = index.columnByObjectAndName.get(
+    `${normalizeKey(objectId)}|${normalizeKey(columnName)}`
+  );
   if (!column) {
     return {
       status: 'unresolved',
@@ -329,7 +344,11 @@ function resolveUniqueScopedCandidateColumn(
   if (!normalizedColumn) return null;
 
   const candidateIds = Array.from(
-    new Set(ensureArray(candidateObjectIds).filter(Boolean).map((candidate) => String(candidate)))
+    new Set(
+      ensureArray(candidateObjectIds)
+        .filter(Boolean)
+        .map((candidate) => String(candidate))
+    )
   );
   const hintMatches = candidateIds.filter((candidateId) =>
     candidateMatchesObjectHint(index, candidateId, objectHint)
@@ -489,8 +508,10 @@ function resolveColumnPair(index, payload, output) {
       target_column_id: target.column_id || payload.target?.column_id || payload.target?.columnId,
       source_column_name: payload.source?.column_name || payload.source?.columnName,
       target_column_name: payload.target?.column_name || payload.target?.columnName,
-      source_object: payload.source?.object_ref || payload.source?.objectRef || payload.source?.object_id,
-      target_object: payload.target?.object_ref || payload.target?.objectRef || payload.target?.object_id,
+      source_object:
+        payload.source?.object_ref || payload.source?.objectRef || payload.source?.object_id,
+      target_object:
+        payload.target?.object_ref || payload.target?.objectRef || payload.target?.object_id,
       reason,
     })
   );
@@ -511,15 +532,19 @@ function resolveExistingLineage(metadata, index, output) {
       continue;
     }
 
-    resolveColumnPair(index, {
-      process_id: record.process_id || metadata.id,
-      source: { column_id: record.source_column_id },
-      target: { column_id: record.target_column_id },
-      transform_type: transformType,
-      expression: record.expression,
-      evidence_type: record.evidence_type || 'existing_column_lineage',
-      evidence_text: record.evidence_text,
-    }, output);
+    resolveColumnPair(
+      index,
+      {
+        process_id: record.process_id || metadata.id,
+        source: { column_id: record.source_column_id },
+        target: { column_id: record.target_column_id },
+        transform_type: transformType,
+        expression: record.expression,
+        evidence_type: record.evidence_type || 'existing_column_lineage',
+        evidence_text: record.evidence_text,
+      },
+      output
+    );
   }
 }
 
@@ -553,24 +578,29 @@ function resolveSsisMappings(metadata, index, output) {
       continue;
     }
 
-    resolveColumnPair(index, {
-      process_id: processId,
-      package_id: processId,
-      source: {
-        object_ref: mapping.source_object,
-        column_name: mapping.input_column || mapping.source_column || mapping.output_column,
-        candidateObjectIds: sourceCandidates,
+    resolveColumnPair(
+      index,
+      {
+        process_id: processId,
+        package_id: processId,
+        source: {
+          object_ref: mapping.source_object,
+          column_name: mapping.input_column || mapping.source_column || mapping.output_column,
+          candidateObjectIds: sourceCandidates,
+        },
+        target: {
+          object_ref: mapping.destination_object,
+          column_name:
+            mapping.external_metadata_column || mapping.output_column || mapping.target_column,
+          candidateObjectIds: targetCandidates,
+        },
+        transform_type: mapping.transform_type,
+        expression: mapping.expression,
+        evidence_type: mapping.evidence_type || 'ssis_dataflow_column_mapping',
+        evidence_text: mapping.evidence_text,
       },
-      target: {
-        object_ref: mapping.destination_object,
-        column_name: mapping.external_metadata_column || mapping.output_column || mapping.target_column,
-        candidateObjectIds: targetCandidates,
-      },
-      transform_type: mapping.transform_type,
-      expression: mapping.expression,
-      evidence_type: mapping.evidence_type || 'ssis_dataflow_column_mapping',
-      evidence_text: mapping.evidence_text,
-    }, output);
+      output
+    );
   }
 
   for (const unresolved of ensureArray(metadata.unresolved_ssis_column_mappings)) {
@@ -639,8 +669,7 @@ function resolveSqlUsage(metadata, output, options = {}) {
           expression: source.expression,
           evidence_type: source.evidence_type || 'sql_definition',
           evidence_text: source.evidence_text,
-          reason:
-            'sql_column_usage_does_not_encode_explicit_source_target_mapping_id',
+          reason: 'sql_column_usage_does_not_encode_explicit_source_target_mapping_id',
           suggested_action:
             'Add resolver evidence that ties this source expression to the target column before promotion.',
         })

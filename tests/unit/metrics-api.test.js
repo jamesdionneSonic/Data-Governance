@@ -111,9 +111,7 @@ describe('Metric Intelligence API', () => {
       'Review downstream reports and procedures that consume this metric.'
     );
 
-    const runtimeRes = await request(app)
-      .get('/api/v1/metrics/runtime-pack')
-      .set(authHeaders());
+    const runtimeRes = await request(app).get('/api/v1/metrics/runtime-pack').set(authHeaders());
 
     expect(runtimeRes.status).toBe(200);
     expect(runtimeRes.body.data.answer_cards[0]).toEqual(
@@ -128,14 +126,11 @@ describe('Metric Intelligence API', () => {
 
   test('returns metadata-only metric profile answers', async () => {
     const app = seedApp();
-    const res = await request(app)
-      .post('/api/v1/metrics/profile')
-      .set(authHeaders())
-      .send({
-        object_id: 'finance.invoice',
-        column_name: 'tax_rate',
-        freshness_days: 1,
-      });
+    const res = await request(app).post('/api/v1/metrics/profile').set(authHeaders()).send({
+      object_id: 'finance.invoice',
+      column_name: 'tax_rate',
+      freshness_days: 1,
+    });
 
     expect(res.status).toBe(200);
     expect(res.body.data.profile.raw_values_retained).toBe(false);

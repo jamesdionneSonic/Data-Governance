@@ -198,9 +198,11 @@ describe('Search API', () => {
     expect(ids.indexOf('analytics.customer_metrics')).toBeLessThan(
       ids.indexOf('analytics.customer_metrics_shadow')
     );
-    expect(res.body.results.find((item) => item.id === 'analytics.customer_metrics')).toMatchObject({
-      quality_score: 95,
-    });
+    expect(res.body.results.find((item) => item.id === 'analytics.customer_metrics')).toMatchObject(
+      {
+        quality_score: 95,
+      }
+    );
   });
 
   test('filters search results by inferred classification facet', async () => {

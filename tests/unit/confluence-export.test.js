@@ -95,13 +95,7 @@ describe('Confluence Export Service', () => {
   test('builds summary pages, shard pages, attachments, and manifest', async () => {
     const markdownRoot = await seedCatalog();
     const outputRoot = join(tempRoot, 'confluence-export');
-    const staleRunFile = join(
-      outputRoot,
-      'runs',
-      'old-run',
-      'shards',
-      '001__unknown__Sonic_DW.md'
-    );
+    const staleRunFile = join(outputRoot, 'runs', 'old-run', 'shards', '001__unknown__Sonic_DW.md');
     const staleRootFile = join(outputRoot, 'shards', '001__unknown__Sonic_DW.md');
 
     await mkdir(join(outputRoot, 'runs', 'old-run', 'shards'), { recursive: true });
@@ -133,9 +127,7 @@ describe('Confluence Export Service', () => {
     expect(result.manifest.object_locator_pages.length).toBeGreaterThan(0);
     expect(result.manifest.quick_context_pages.length).toBeGreaterThan(0);
     expect(result.manifest.object_locator_pages[0].title).toContain('Object Locator');
-    expect(result.manifest.quick_context_pages[0].title).toContain(
-      'Lineage Quick Context'
-    );
+    expect(result.manifest.quick_context_pages[0].title).toContain('Lineage Quick Context');
     expect(result.manifest.shard_pages.every((page) => page.publish === true)).toBe(true);
     expect(result.manifest.object_locator_pages.every((page) => page.publish === true)).toBe(true);
     expect(result.manifest.quick_context_pages.every((page) => page.publish === true)).toBe(true);
@@ -157,14 +149,18 @@ describe('Confluence Export Service', () => {
     expect(shardPages.join('\n')).toContain('source_markdown_path:');
 
     const quickContextPages = await Promise.all(
-      result.manifest.quick_context_pages.map((page) => readFile(join(outputRoot, page.file), 'utf8'))
+      result.manifest.quick_context_pages.map((page) =>
+        readFile(join(outputRoot, page.file), 'utf8')
+      )
     );
     expect(quickContextPages.join('\n')).toContain('object_id: DW01.Sonic_DW.dbo.FactClaim');
     expect(quickContextPages.join('\n')).toContain('direct_downstream_count: 1');
     expect(quickContextPages.join('\n')).toMatch(/shard_title: "?Catalog Shard/);
 
     const objectLocatorPages = await Promise.all(
-      result.manifest.object_locator_pages.map((page) => readFile(join(outputRoot, page.file), 'utf8'))
+      result.manifest.object_locator_pages.map((page) =>
+        readFile(join(outputRoot, page.file), 'utf8')
+      )
     );
     expect(objectLocatorPages.join('\n')).toContain('object_id: DW01.Sonic_DW.dbo.FactClaim');
     expect(objectLocatorPages.join('\n')).toMatch(/quick_context_title: "?Lineage Quick Context/);

@@ -7,7 +7,10 @@ import createApp from './app.js';
 import { initializeCache } from './utils/cacheInitializer.js';
 import { resolveLineageCorpus } from './services/lineageResolver.js';
 import { loadRuntimeCatalog } from './services/catalogRuntimeService.js';
-import { startProfileSchedulerWorker, stopProfileSchedulerWorker } from './services/connectorService.js';
+import {
+  startProfileSchedulerWorker,
+  stopProfileSchedulerWorker,
+} from './services/connectorService.js';
 
 // Load environment variables
 dotenv.config();

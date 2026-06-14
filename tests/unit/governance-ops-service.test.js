@@ -142,7 +142,10 @@ describe('Phase 7 - Governance Operations Service', () => {
       current: { rowCount: 1500 },
       tolerancePct: 20,
     });
-    const incident = createIncident({ assetId: 'sales.orders', severity: 'high' }, { id: 'steward' });
+    const incident = createIncident(
+      { assetId: 'sales.orders', severity: 'high' },
+      { id: 'steward' }
+    );
 
     expect(adoption[0].assetId).toBe('sales.orders');
     expect(kpis.totalAssets).toBe(3);
@@ -196,7 +199,10 @@ describe('Phase 7 - Governance Operations Service', () => {
     clearGovernanceOps();
 
     try {
-      const task = createGovernanceTask({ assetId: 'sales.orders', title: 'Persist me' }, { id: 'admin' });
+      const task = createGovernanceTask(
+        { assetId: 'sales.orders', title: 'Persist me' },
+        { id: 'admin' }
+      );
       const exported = exportGovernanceOpsState();
 
       clearGovernanceOps();

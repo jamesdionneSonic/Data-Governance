@@ -133,9 +133,7 @@ describe('Confluence Sync Service', () => {
     expect(result.pages).toHaveLength(4);
     expect(result.pages[0].title).toBe('Sonic Data Lineage README');
     expect(result.pages[1].title).toBe('Object Locator 001 - FactClaim to LoadFactClaim');
-    expect(result.pages[2].title).toBe(
-      'Lineage Quick Context 001 - FactClaim to LoadFactClaim'
-    );
+    expect(result.pages[2].title).toBe('Lineage Quick Context 001 - FactClaim to LoadFactClaim');
     expect(result.pages[3].title).toBe('Catalog Shard 001 - DW01 Sonic_DW table');
     expect(result.attachments).toHaveLength(1);
     expect(result.warnings).toEqual([]);
@@ -147,7 +145,7 @@ describe('Confluence Sync Service', () => {
     const deletedUrls = [];
     const createdTitles = [];
     const legacyPagesByParent = {
-      '2221670415': [
+      2221670415: [
         {
           id: 'legacy-root',
           title: '[AUTO] Sonic Data Lineage README',

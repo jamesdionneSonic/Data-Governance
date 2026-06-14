@@ -187,7 +187,9 @@ export function getQualityMetrics(objects, _lineageGraph) {
   const hasText = (value) => String(value || '').trim().length > 0;
   const hasArray = (value) => Array.isArray(value) && value.length > 0;
   const isKnown = (value) => {
-    const text = String(value || '').trim().toLowerCase();
+    const text = String(value || '')
+      .trim()
+      .toLowerCase();
     return text && !['unknown', 'unassigned', 'n/a', 'none', '-'].includes(text);
   };
   const lineageGraph = _lineageGraph || new Map();
@@ -207,13 +209,21 @@ export function getQualityMetrics(objects, _lineageGraph) {
     sensitivity: objectList.filter((obj) => isKnown(obj.sensitivity)).length,
     lineage: objectList.filter((obj) => {
       const upstream = lineageGraph.get(obj.id);
-      const upstreamCount = upstream instanceof Set ? upstream.size : Array.isArray(upstream) ? upstream.length : 0;
-      return upstreamCount > 0 || (downstreamCounts.get(obj.id) || 0) > 0 || obj.upstreamCount > 0 || obj.downstreamCount > 0;
+      const upstreamCount =
+        upstream instanceof Set ? upstream.size : Array.isArray(upstream) ? upstream.length : 0;
+      return (
+        upstreamCount > 0 ||
+        (downstreamCounts.get(obj.id) || 0) > 0 ||
+        obj.upstreamCount > 0 ||
+        obj.downstreamCount > 0
+      );
     }).length,
-    glossary: objectList.filter((obj) =>
-      hasArray(obj.glossary_terms) || hasArray(obj.semantic_terms) || hasArray(obj.business_terms)
+    glossary: objectList.filter(
+      (obj) =>
+        hasArray(obj.glossary_terms) || hasArray(obj.semantic_terms) || hasArray(obj.business_terms)
     ).length,
-    certified: objectList.filter((obj) => obj.certified === true || isKnown(obj.trust_level)).length,
+    certified: objectList.filter((obj) => obj.certified === true || isKnown(obj.trust_level))
+      .length,
   };
 
   const signals = [
@@ -317,14 +327,19 @@ export function getQualityMetrics(objects, _lineageGraph) {
     },
     governance: {
       title: 'Governance Signals',
-      checks: signals.filter((signal) => ['sensitivity', 'lineage', 'glossary', 'certified'].includes(signal.key)),
+      checks: signals.filter((signal) =>
+        ['sensitivity', 'lineage', 'glossary', 'certified'].includes(signal.key)
+      ),
     },
   };
 
   // Check sensitivity classification
   const sensitivities = new Map();
   for (const obj of objectList) {
-    sensitivities.set(obj.sensitivity || 'unknown', (sensitivities.get(obj.sensitivity || 'unknown') || 0) + 1);
+    sensitivities.set(
+      obj.sensitivity || 'unknown',
+      (sensitivities.get(obj.sensitivity || 'unknown') || 0) + 1
+    );
   }
 
   metrics.consistency.checks.push({

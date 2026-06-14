@@ -7,10 +7,7 @@ import { createApiRouter } from '../utils/apiRouter.js';
 import { authenticate } from '../middleware/auth.js';
 import { sendErrorResponse } from '../middleware/errorHandler.js';
 import { getObjectsCache } from '../services/objectCacheStore.js';
-import {
-  planConnectorProfiling,
-  runConnectorProfiling,
-} from '../services/connectorService.js';
+import { planConnectorProfiling, runConnectorProfiling } from '../services/connectorService.js';
 import {
   applyProfileToAsset,
   buildConfluenceProfileSummary,
@@ -41,12 +38,17 @@ router.get('/contract', authenticate, (_req, res) =>
   res.json({
     status: 'success',
     contract: buildProfilingContract(),
-  }));
+  })
+);
 
 router.post('/plan', authenticate, async (req, res) => {
   try {
     if (req.body?.connector_id || req.body?.connectorId) {
-      const plan = await planConnectorProfiling(req.body.connector_id || req.body.connectorId, req.body || {}, req.user);
+      const plan = await planConnectorProfiling(
+        req.body.connector_id || req.body.connectorId,
+        req.body || {},
+        req.user
+      );
       return res.json({
         status: 'success',
         message: 'Connector-backed profiling plan generated',
@@ -67,14 +69,19 @@ router.post('/plan', authenticate, async (req, res) => {
 
 router.post('/run', authenticate, async (req, res) => {
   try {
-    const requestedMode = req.body?.execution_mode || req.body?.executionMode || req.body?.safety?.execution_mode;
+    const requestedMode =
+      req.body?.execution_mode || req.body?.executionMode || req.body?.safety?.execution_mode;
     if (requestedMode === 'live' && !isAdmin(req.user)) {
       return sendErrorResponse(res, req, 403, 'Live profiling requires an Admin role.', {
         code: 'PROFILING_LIVE_FORBIDDEN',
       });
     }
     if (req.body?.connector_id || req.body?.connectorId) {
-      const connectorRun = await runConnectorProfiling(req.body.connector_id || req.body.connectorId, req.body || {}, req.user);
+      const connectorRun = await runConnectorProfiling(
+        req.body.connector_id || req.body.connectorId,
+        req.body || {},
+        req.user
+      );
       return res.json({
         status: 'success',
         message: 'Connector-backed profiling run completed',
@@ -120,7 +127,9 @@ router.post('/apply', authenticate, (req, res) => {
     const assetId = req.body?.asset_id || req.body?.assetId || req.body?.profile?.asset_id;
     const asset = req.body?.asset || runtimeObjects().get(assetId);
     if (!asset) {
-      return sendErrorResponse(res, req, 404, `Asset '${assetId || ''}' not found`, { code: 'NOT_FOUND' });
+      return sendErrorResponse(res, req, 404, `Asset '${assetId || ''}' not found`, {
+        code: 'NOT_FOUND',
+      });
     }
     const updatedAsset = applyProfileToAsset(asset, req.body?.profile || {});
     return res.json({

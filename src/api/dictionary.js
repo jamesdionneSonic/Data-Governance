@@ -40,7 +40,11 @@ router.get('/', authenticate, async (req, res) => {
 router.get('/:assetId', authenticate, async (req, res) => {
   try {
     await ensureCatalogCacheHydrated();
-    const dictionary = buildObjectDictionary(getObjectsCache(), runtimeLineageGraph(), req.params.assetId);
+    const dictionary = buildObjectDictionary(
+      getObjectsCache(),
+      runtimeLineageGraph(),
+      req.params.assetId
+    );
 
     if (!dictionary) {
       return sendErrorResponse(res, req, 404, `Object '${req.params.assetId}' not found`, {
@@ -63,7 +67,11 @@ router.get('/:assetId', authenticate, async (req, res) => {
 router.get('/:assetId/export.md', authenticate, async (req, res) => {
   try {
     await ensureCatalogCacheHydrated();
-    const dictionary = buildObjectDictionary(getObjectsCache(), runtimeLineageGraph(), req.params.assetId);
+    const dictionary = buildObjectDictionary(
+      getObjectsCache(),
+      runtimeLineageGraph(),
+      req.params.assetId
+    );
 
     if (!dictionary) {
       return sendErrorResponse(res, req, 404, `Object '${req.params.assetId}' not found`, {
@@ -72,7 +80,10 @@ router.get('/:assetId/export.md', authenticate, async (req, res) => {
     }
 
     res.setHeader('content-type', 'text/markdown; charset=utf-8');
-    res.setHeader('content-disposition', `attachment; filename="${req.params.assetId.replace(/[^a-z0-9_.-]/gi, '_')}-dictionary.md"`);
+    res.setHeader(
+      'content-disposition',
+      `attachment; filename="${req.params.assetId.replace(/[^a-z0-9_.-]/gi, '_')}-dictionary.md"`
+    );
     return res.send(buildDictionaryMarkdownExport(dictionary));
   } catch (err) {
     return sendErrorResponse(res, req, 500, err.message, {

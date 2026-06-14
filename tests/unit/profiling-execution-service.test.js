@@ -81,7 +81,10 @@ describe('profiling execution service', () => {
     });
 
     const action = plan.actions[0];
-    expect(action.columns.map((column) => column.profile_alias)).toEqual(['dealer_id', 'dealer_id_2']);
+    expect(action.columns.map((column) => column.profile_alias)).toEqual([
+      'dealer_id',
+      'dealer_id_2',
+    ]);
     expect(action.query.sql).toContain('[dealer_id__null_count]');
     expect(action.query.sql).toContain('[dealer_id_2__null_count]');
 
@@ -97,9 +100,19 @@ describe('profiling execution service', () => {
   test.each([
     ['postgresql', '"dbo"."Invoice"', 'SET lock_timeout = 5000;', 'TABLESAMPLE SYSTEM (2)'],
     ['snowflake', '"finance"."dbo"."Invoice"', 'STATEMENT_TIMEOUT_IN_SECONDS', 'SAMPLE (2)'],
-    ['bigquery', '`finance.dbo.Invoice`', 'APPROX_COUNT_DISTINCT', 'TABLESAMPLE SYSTEM (2 PERCENT)'],
+    [
+      'bigquery',
+      '`finance.dbo.Invoice`',
+      'APPROX_COUNT_DISTINCT',
+      'TABLESAMPLE SYSTEM (2 PERCENT)',
+    ],
     ['databricks', '`finance`.`dbo`.`Invoice`', 'approx_count_distinct', 'TABLESAMPLE (2 PERCENT)'],
-    ['redshift', '"dbo"."Invoice"', 'SET statement_timeout TO 30000;', 'APPROXIMATE COUNT(DISTINCT'],
+    [
+      'redshift',
+      '"dbo"."Invoice"',
+      'SET statement_timeout TO 30000;',
+      'APPROXIMATE COUNT(DISTINCT',
+    ],
   ])('builds aggregate profile SQL for %s', (dialect, objectSql, expectedSafety, expectedSql) => {
     const plan = buildProfilingPlan({
       assets: [invoiceAsset],
@@ -138,14 +151,7 @@ describe('profiling execution service', () => {
         { name: 'total_amount__distinct_count' },
         { name: 'total_amount__mean' },
       ],
-      Records: [
-        [
-          { longValue: 200 },
-          { longValue: 4 },
-          { longValue: 120 },
-          { doubleValue: 25.5 },
-        ],
-      ],
+      Records: [[{ longValue: 200 }, { longValue: 4 }, { longValue: 120 }, { doubleValue: 25.5 }]],
     });
 
     expect(row).toEqual({
@@ -154,9 +160,11 @@ describe('profiling execution service', () => {
       total_amount__distinct_count: 120,
       total_amount__mean: 25.5,
     });
-    expect(firstExecutableSqlStatement('SET statement_timeout TO 30000; SELECT COUNT(*) AS row_count FROM t;')).toBe(
-      'SELECT COUNT(*) AS row_count FROM t'
-    );
+    expect(
+      firstExecutableSqlStatement(
+        'SET statement_timeout TO 30000; SELECT COUNT(*) AS row_count FROM t;'
+      )
+    ).toBe('SELECT COUNT(*) AS row_count FROM t');
   });
 
   test('dry run plans but does not execute profiles', async () => {
@@ -232,7 +240,9 @@ describe('profiling execution service', () => {
 
   test('contract and summaries document machine and human outputs', () => {
     const contract = buildProfilingContract();
-    expect(contract.output_targets).toEqual(expect.arrayContaining(['runtime_json', 'confluence_summary']));
+    expect(contract.output_targets).toEqual(
+      expect.arrayContaining(['runtime_json', 'confluence_summary'])
+    );
 
     const emptyRun = {
       run_id: 'run-1',
@@ -241,9 +251,9 @@ describe('profiling execution service', () => {
       summary: { assets_profiled: 0, columns_profiled: 0 },
       profiles: {},
     };
-    expect(buildComputerFriendlyProfilePackage(emptyRun).manifest.output_files_recommended).toContain(
-      'profiles/<asset-id>.profile.json'
-    );
+    expect(
+      buildComputerFriendlyProfilePackage(emptyRun).manifest.output_files_recommended
+    ).toContain('profiles/<asset-id>.profile.json');
     expect(buildConfluenceProfileSummary(emptyRun).content).toContain('Safety Controls');
   });
 });

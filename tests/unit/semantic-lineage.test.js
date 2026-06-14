@@ -150,7 +150,9 @@ describe('Semantic Lineage Service', () => {
 
     expect(pack.summary.plain_english).toContain('DimVehicle is maintained by dbo.usp_DimVehicle.');
     expect(pack.summary.plain_english).toContain('orchestrates dbo.usp_DimVehicle');
-    expect(pack.summary.plain_english).toContain('maintenance read, not a downstream business dependency');
+    expect(pack.summary.plain_english).toContain(
+      'maintenance read, not a downstream business dependency'
+    );
     expect(pack.summary.counts).toEqual(
       expect.objectContaining({
         loaders: 1,

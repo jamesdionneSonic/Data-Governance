@@ -1,6 +1,13 @@
 import { readdirSync } from 'fs';
 import { basename, extname, join, relative } from 'path';
-import { DEFAULT_EDGE_HARD_THRESHOLD, DEFAULT_EDGE_OVERPOPULATED_THRESHOLD, DEFAULT_SNIPPET_LIMIT, TABLE_CURATED_ROOT, TABLE_HIGH_FANOUT_ALLOWLIST, TABLE_RAW_SQL_ROOT } from './constants.js';
+import {
+  DEFAULT_EDGE_HARD_THRESHOLD,
+  DEFAULT_EDGE_OVERPOPULATED_THRESHOLD,
+  DEFAULT_SNIPPET_LIMIT,
+  TABLE_CURATED_ROOT,
+  TABLE_HIGH_FANOUT_ALLOWLIST,
+  TABLE_RAW_SQL_ROOT,
+} from './constants.js';
 import { readTextFile, writeTextFile } from './fileHelpers.js';
 import { getString, parseFrontmatter } from './markdownHelpers.js';
 import { compactPrompt, truncateText, wrapEvidence } from './promptHelpers.js';
@@ -20,8 +27,7 @@ function listMarkdownFiles(rootDir) {
         if (!['_drafts', '_runtime', '_rebuild_backups', '_prompt_queue'].includes(entry.name)) {
           stack.push(fullPath);
         }
-      }
-      else if (entry.isFile() && extname(entry.name) === '.md') files.push(fullPath);
+      } else if (entry.isFile() && extname(entry.name) === '.md') files.push(fullPath);
     }
   }
   return files.sort();
@@ -47,7 +53,10 @@ function buildSnippet(sqlText, objectName) {
   const needle = objectName.toLowerCase();
   const index = lower.indexOf(needle);
   if (index < 0) return truncateText(sqlText, DEFAULT_SNIPPET_LIMIT);
-  return truncateText(sqlText.slice(Math.max(0, index - 240), Math.min(sqlText.length, index + 1200)), DEFAULT_SNIPPET_LIMIT);
+  return truncateText(
+    sqlText.slice(Math.max(0, index - 240), Math.min(sqlText.length, index + 1200)),
+    DEFAULT_SNIPPET_LIMIT
+  );
 }
 
 export function generateTablePrompts(outputFile = 'generated_table_llm_prompts.txt', options = {}) {
@@ -76,7 +85,10 @@ export function generateTablePrompts(outputFile = 'generated_table_llm_prompts.t
   const anomalies = records.filter((record) => {
     if (record.refCount === 0) return true;
     if (record.refCount <= DEFAULT_EDGE_OVERPOPULATED_THRESHOLD) return false;
-    if (record.refCount <= DEFAULT_EDGE_HARD_THRESHOLD && isExpectedHighFanoutTable(record, record.sqlText, TABLE_HIGH_FANOUT_ALLOWLIST)) {
+    if (
+      record.refCount <= DEFAULT_EDGE_HARD_THRESHOLD &&
+      isExpectedHighFanoutTable(record, record.sqlText, TABLE_HIGH_FANOUT_ALLOWLIST)
+    ) {
       return false;
     }
     return !isExpectedHighFanoutTable(record, record.sqlText, TABLE_HIGH_FANOUT_ALLOWLIST);

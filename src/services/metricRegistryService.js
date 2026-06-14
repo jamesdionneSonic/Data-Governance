@@ -27,20 +27,31 @@ function objectIdFor(mapKey, object = {}) {
 }
 
 function objectLabel(objectId, object = {}) {
-  const parts = [object.database, object.schema, object.name || object.objectName].map(text).filter(Boolean);
+  const parts = [object.database, object.schema, object.name || object.objectName]
+    .map(text)
+    .filter(Boolean);
   return parts.length ? parts.join('.') : objectId;
 }
 
 function columnNameFor(column = {}, index = 0) {
-  return text(column.name || column.column_name || column.columnName || column.id || `column_${index + 1}`);
+  return text(
+    column.name || column.column_name || column.columnName || column.id || `column_${index + 1}`
+  );
 }
 
 function columnTypeFor(column = {}) {
-  return text(column.data_type || column.dataType || column.type || column.system_type || 'unknown');
+  return text(
+    column.data_type || column.dataType || column.type || column.system_type || 'unknown'
+  );
 }
 
 function columnIdFor(objectId, column = {}, index = 0) {
-  return text(column.column_id || column.columnId || column.id || `${objectId}.${columnNameFor(column, index)}`);
+  return text(
+    column.column_id ||
+      column.columnId ||
+      column.id ||
+      `${objectId}.${columnNameFor(column, index)}`
+  );
 }
 
 function confidenceBucket(confidence) {
@@ -51,8 +62,9 @@ function confidenceBucket(confidence) {
 
 function metricState(column = {}, semantic = {}) {
   const existingSemantic = lower(column.semantic_type || column.semanticType);
-  const tags = toArray(column.tags || column.classifications || column.classification_tags)
-    .map(lower);
+  const tags = toArray(column.tags || column.classifications || column.classification_tags).map(
+    lower
+  );
   if (
     column.is_metric === true ||
     existingSemantic === 'metric' ||
@@ -123,14 +135,18 @@ function compact(value, maxLength = 280) {
 }
 
 function objectGlossaryTerms(object = {}) {
-  return toArray(object.glossary_terms || object.glossaryTerms || object.business_terms || object.businessTerms)
+  return toArray(
+    object.glossary_terms || object.glossaryTerms || object.business_terms || object.businessTerms
+  )
     .map((term) => (typeof term === 'string' ? { term } : term))
     .filter(Boolean);
 }
 
 function columnGlossaryTerms(column = {}, object = {}) {
   return [
-    ...toArray(column.glossary_terms || column.glossaryTerms || column.business_terms || column.businessTerms),
+    ...toArray(
+      column.glossary_terms || column.glossaryTerms || column.business_terms || column.businessTerms
+    ),
     ...objectGlossaryTerms(object),
   ]
     .map((term) => (typeof term === 'string' ? { term } : term))
@@ -263,12 +279,12 @@ function buildMetricRecord(mapKey, object, column, index, semantic, lineageGraph
       generated_at: profileGeneratedAt({}, column, object),
       profiled: Boolean(
         column.row_count ||
-          column.null_count ||
-          column.null_percent ||
-          column.distinct_count ||
-          column.min ||
-          column.max ||
-          column.mean
+        column.null_count ||
+        column.null_percent ||
+        column.distinct_count ||
+        column.min ||
+        column.max ||
+        column.mean
       ),
     },
     lineage: {
@@ -283,7 +299,9 @@ function metricProfileInput(metric = {}, profile = {}) {
     profile?.columns?.[metric.column_name] ||
     profile?.columns?.[metric.column_id] ||
     toArray(profile?.columns).find(
-      (column) => lower(column.name || column.column_name || column.column_id) === lower(metric.column_name) ||
+      (column) =>
+        lower(column.name || column.column_name || column.column_id) ===
+          lower(metric.column_name) ||
         lower(column.name || column.column_name || column.column_id) === lower(metric.column_id)
     ) ||
     {};
@@ -295,7 +313,8 @@ function metricProfileInput(metric = {}, profile = {}) {
       [metric.column_name]: {
         row_count: profileColumn.row_count ?? profile.row_count ?? metric.profile.row_count ?? 0,
         null_count: profileColumn.null_count ?? metric.profile.null_count ?? 0,
-        null_percent: profileColumn.null_percent ?? profileColumn.null_pct ?? metric.profile.null_percent ?? 0,
+        null_percent:
+          profileColumn.null_percent ?? profileColumn.null_pct ?? metric.profile.null_percent ?? 0,
         distinct_count: profileColumn.distinct_count ?? metric.profile.distinct_count ?? 0,
         min: profileColumn.min ?? metric.profile.min ?? undefined,
         max: profileColumn.max ?? metric.profile.max ?? undefined,
@@ -321,7 +340,9 @@ function metricProfileCaveats(metric = {}, summary = {}, options = {}) {
     caveats.push('No profile statistics are available for this metric column yet.');
   }
   if (ageDays !== null && ageDays > freshnessDays) {
-    caveats.push(`The latest profile evidence is ${ageDays} days old, which is outside the ${freshnessDays}-day freshness window.`);
+    caveats.push(
+      `The latest profile evidence is ${ageDays} days old, which is outside the ${freshnessDays}-day freshness window.`
+    );
   }
   if (ageDays === null) {
     caveats.push('Profile freshness is unknown because no profile timestamp is available.');
@@ -336,9 +357,11 @@ function profileAnswerText(metric = {}, summary = {}, caveats = []) {
   const column = summary.columns?.[metric.column_name] || metric.profile;
   const facts = [];
   if (summary.row_count) facts.push(`${summary.row_count} profiled rows`);
-  if (column.null_percent !== null && column.null_percent !== undefined) facts.push(`${column.null_percent}% nulls`);
+  if (column.null_percent !== null && column.null_percent !== undefined)
+    facts.push(`${column.null_percent}% nulls`);
   if (column.distinct_count) facts.push(`${column.distinct_count} distinct values`);
-  if (column.min !== undefined && column.max !== undefined) facts.push(`range ${column.min} to ${column.max}`);
+  if (column.min !== undefined && column.max !== undefined)
+    facts.push(`range ${column.min} to ${column.max}`);
   const suffix = caveats.length ? ` Caveat: ${caveats[0]}` : '';
   return `${metric.object_label}.${metric.column_name} profile summary: ${facts.join(', ') || 'statistics are limited'}.${suffix}`;
 }
@@ -410,7 +433,9 @@ export function buildMetricRegistry(objects = new Map(), lineageGraph = new Map(
   for (const [mapKey, object] of objects.entries()) {
     for (const [index, column] of assetColumns(object).entries()) {
       const semantic = classifyColumnSemantic(column);
-      const semanticType = lower(column.semantic_type || column.semanticType || semantic.semantic_type);
+      const semanticType = lower(
+        column.semantic_type || column.semanticType || semantic.semantic_type
+      );
       const isMetric =
         semantic.is_metric ||
         column.is_metric === true ||
@@ -421,14 +446,19 @@ export function buildMetricRegistry(objects = new Map(), lineageGraph = new Map(
   }
 
   const database = lower(filters.database);
-  const objectId = lower(filters.object_id || filters.objectId || filters.table || filters.asset_id);
+  const objectId = lower(
+    filters.object_id || filters.objectId || filters.table || filters.asset_id
+  );
   const state = lower(filters.state);
   const query = lower(filters.q || filters.query);
   const limit = Math.max(1, Math.min(Number(filters.limit) || 100, 500));
   const offset = Math.max(0, Number(filters.offset) || 0);
   const filtered = sortMetrics(metrics)
     .filter((metric) => !database || lower(metric.database) === database)
-    .filter((metric) => !objectId || lower(metric.object_id) === objectId || lower(metric.object_label) === objectId)
+    .filter(
+      (metric) =>
+        !objectId || lower(metric.object_id) === objectId || lower(metric.object_label) === objectId
+    )
     .filter((metric) => !state || lower(metric.metric_state) === state)
     .filter((metric) => matchesQuery(metric, query));
 
@@ -450,7 +480,11 @@ export function buildMetricRegistry(objects = new Map(), lineageGraph = new Map(
   };
 }
 
-export function buildTableMetricAnswer(objects = new Map(), lineageGraph = new Map(), objectId = '') {
+export function buildTableMetricAnswer(
+  objects = new Map(),
+  lineageGraph = new Map(),
+  objectId = ''
+) {
   const object = objects.get(objectId);
   if (!object) return null;
   const registry = buildMetricRegistry(objects, lineageGraph, { object_id: objectId, limit: 250 });
@@ -476,7 +510,9 @@ export function buildTableMetricAnswer(objects = new Map(), lineageGraph = new M
     caveats:
       assetColumns(object).length > 0
         ? []
-        : ['No column inventory is available for this object. Re-run extraction with column metadata enabled.'],
+        : [
+            'No column inventory is available for this object. Re-run extraction with column metadata enabled.',
+          ],
     rows: metrics.map((metric) => ({
       column: metric.column_name,
       data_type: metric.data_type,
@@ -544,15 +580,24 @@ export function explainMetricLogic(objects = new Map(), lineageGraph = new Map()
     caveats:
       expression || upstreamSources.length > 0
         ? []
-        : ['No formula text or validated column-level upstream lineage is currently captured for this metric.'],
+        : [
+            'No formula text or validated column-level upstream lineage is currently captured for this metric.',
+          ],
   };
 }
 
-export function assessMetricFormulaImpact(objects = new Map(), lineageGraph = new Map(), request = {}) {
+export function assessMetricFormulaImpact(
+  objects = new Map(),
+  lineageGraph = new Map(),
+  request = {}
+) {
   const objectId = request.object_id || request.objectId || request.asset_id || request.table;
   const columnName = request.column_name || request.columnName || request.column;
   const changeType = request.change_type || request.changeType || 'change_data_type';
-  const logic = explainMetricLogic(objects, lineageGraph, { object_id: objectId, column_name: columnName });
+  const logic = explainMetricLogic(objects, lineageGraph, {
+    object_id: objectId,
+    column_name: columnName,
+  });
   if (!logic?.metric) return logic;
 
   let columnImpact = null;
@@ -574,7 +619,8 @@ export function assessMetricFormulaImpact(objects = new Map(), lineageGraph = ne
     };
   }
 
-  const downstreamCount = columnImpact.summary?.impacted_count || logic.metric.lineage.downstream_object_count || 0;
+  const downstreamCount =
+    columnImpact.summary?.impacted_count || logic.metric.lineage.downstream_object_count || 0;
   const downstreamMetrics = findDownstreamMetricConsumers(objects, logic.metric, lineageGraph);
   const proposedChange = {
     old_formula: request.old_formula || request.oldFormula || logic.logic?.expression || null,
@@ -609,22 +655,28 @@ export function assessMetricFormulaImpact(objects = new Map(), lineageGraph = ne
         {
           type: 'semantic_reporting_risk',
           severity: downstreamCount > 0 ? severity : 'low',
-          reason: 'Reports and semantic consumers may calculate a different business result after formula changes.',
+          reason:
+            'Reports and semantic consumers may calculate a different business result after formula changes.',
         },
         {
           type: 'data_quality_risk',
-          severity: proposedChange.new_formula || proposedChange.changed_source_columns.length ? 'medium' : 'low',
+          severity:
+            proposedChange.new_formula || proposedChange.changed_source_columns.length
+              ? 'medium'
+              : 'low',
           reason: 'Formula changes should be reconciled against metric profile baselines.',
         },
         {
           type: 'runtime_load_failure_risk',
           severity: columnImpact.summary?.by_impact_type?.runtime_load_failure ? 'high' : 'low',
-          reason: 'Runtime failures are likely only when downstream load/write mappings depend on the changed column shape.',
+          reason:
+            'Runtime failures are likely only when downstream load/write mappings depend on the changed column shape.',
         },
         {
           type: 'trust_certification_risk',
           severity: logic.metric.metric_state === 'confirmed' ? 'medium' : 'low',
-          reason: 'Confirmed governed metrics may require steward recertification after formula changes.',
+          reason:
+            'Confirmed governed metrics may require steward recertification after formula changes.',
         },
       ],
       recommended_actions: [
@@ -642,13 +694,23 @@ export function assessMetricFormulaImpact(objects = new Map(), lineageGraph = ne
   };
 }
 
-export function buildMetricProfileAnswer(objects = new Map(), lineageGraph = new Map(), request = {}) {
+export function buildMetricProfileAnswer(
+  objects = new Map(),
+  lineageGraph = new Map(),
+  request = {}
+) {
   const objectId = request.object_id || request.objectId || request.asset_id || request.table;
   const columnName = request.column_name || request.columnName || request.column;
-  const logic = explainMetricLogic(objects, lineageGraph, { object_id: objectId, column_name: columnName });
+  const logic = explainMetricLogic(objects, lineageGraph, {
+    object_id: objectId,
+    column_name: columnName,
+  });
   if (!logic?.metric) return logic;
 
-  const currentProfile = metricProfileInput(logic.metric, request.profile || request.current_profile || {});
+  const currentProfile = metricProfileInput(
+    logic.metric,
+    request.profile || request.current_profile || {}
+  );
   const summary = buildProfileSummary(currentProfile);
   const metricColumnSummary = currentProfile.columns[logic.metric.column_name] || {};
   const enrichedSummary = {
@@ -660,9 +722,13 @@ export function buildMetricProfileAnswer(objects = new Map(), lineageGraph = new
   const caveats = metricProfileCaveats(logic.metric, enrichedSummary, request);
   let anomaly = null;
   if (request.baseline_profile || request.baselineProfile) {
-    anomaly = detectQualityAnomalies(currentProfile, request.baseline_profile || request.baselineProfile, {
-      sensitivity: request.sensitivity,
-    });
+    anomaly = detectQualityAnomalies(
+      currentProfile,
+      request.baseline_profile || request.baselineProfile,
+      {
+        sensitivity: request.sensitivity,
+      }
+    );
   }
 
   return {
@@ -685,7 +751,11 @@ export function buildMetricProfileAnswer(objects = new Map(), lineageGraph = new
   };
 }
 
-export function buildMetricRuntimePack(objects = new Map(), lineageGraph = new Map(), options = {}) {
+export function buildMetricRuntimePack(
+  objects = new Map(),
+  lineageGraph = new Map(),
+  options = {}
+) {
   const registry = buildMetricRegistry(objects, lineageGraph, { limit: options.limit || 500 });
   return {
     generated_at: registry.generated_at,
@@ -701,11 +771,16 @@ export function buildMetricRuntimePack(objects = new Map(), lineageGraph = new M
       profile: {
         profiled: metric.profile.profiled,
         generated_at: metric.profile.generated_at,
-        caveats: metricProfileCaveats(metric, { generated_at: metric.profile.generated_at }, options),
+        caveats: metricProfileCaveats(
+          metric,
+          { generated_at: metric.profile.generated_at },
+          options
+        ),
       },
       formula_impact: {
         downstream_object_count: metric.lineage.downstream_object_count,
-        downstream_metric_count: findDownstreamMetricConsumers(objects, metric, lineageGraph).length,
+        downstream_metric_count: findDownstreamMetricConsumers(objects, metric, lineageGraph)
+          .length,
         default_change_type: 'change_data_type',
       },
     })),

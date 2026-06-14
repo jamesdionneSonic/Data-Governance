@@ -199,7 +199,9 @@ export function detectPiiColumn(column = {}) {
     }
   }
 
-  if (existingTags.some((tag) => ['pii', 'phi', 'pci', 'confidential', 'restricted'].includes(tag))) {
+  if (
+    existingTags.some((tag) => ['pii', 'phi', 'pci', 'confidential', 'restricted'].includes(tag))
+  ) {
     matches.push({
       rule_id: 'existing-classification-tag',
       label: 'Existing sensitivity tag',

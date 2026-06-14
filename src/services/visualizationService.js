@@ -220,12 +220,11 @@ export function buildCytoscapeGraph(objectId, lineageGraph, objects, depth = 2, 
   };
 
   const edgeNeighbors = (id) =>
-    getTypedLineageEdgesForNode(renderEdges, id, 'both')
-      .map((edge) => ({
-        nextId: edge.source === id ? edge.target : edge.source,
-        edge,
-        direction: edge.source === id ? 'outgoing' : 'incoming',
-      }));
+    getTypedLineageEdgesForNode(renderEdges, id, 'both').map((edge) => ({
+      nextId: edge.source === id ? edge.target : edge.source,
+      edge,
+      direction: edge.source === id ? 'outgoing' : 'incoming',
+    }));
 
   addNode(objectId, 'central', 0);
 
@@ -318,11 +317,16 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
       const packageScope = [obj.folderName || obj.folder_name, obj.projectName || obj.project_name]
         .filter(Boolean)
         .join('.');
-      return [packageScope || 'SSIS package', wrapIdentifier(packageName)].filter(Boolean).join('\n');
+      return [packageScope || 'SSIS package', wrapIdentifier(packageName)]
+        .filter(Boolean)
+        .join('\n');
     }
     const inferred = inferObjectScope(id, obj);
     const objectName = obj.name || inferred.name || id;
-    const scope = [inferred.database, inferred.schema && inferred.schema !== 'dbo' ? inferred.schema : null]
+    const scope = [
+      inferred.database,
+      inferred.schema && inferred.schema !== 'dbo' ? inferred.schema : null,
+    ]
       .filter(Boolean)
       .join('.');
 
@@ -396,12 +400,10 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
 
     if (type === 'synonym') return true;
     if (
-      (
-        database === 'etl_staging' ||
+      (database === 'etl_staging' ||
         database === 'stagingdb' ||
         database === 'vendordata' ||
-        database.includes('staging')
-      ) &&
+        database.includes('staging')) &&
       (idToken.includes(focusStem) || nameToken.includes(focusStem) || isSameFamily)
     ) {
       return true;
@@ -560,7 +562,6 @@ export function buildCenteredLineageGraph(objectId, objects, options = {}) {
       );
       addBridgeUpstream(input.source, maxBridgeDepth);
     }
-
   }
 
   for (const edge of consumerEdges) {
@@ -683,7 +684,9 @@ function normalizeEntityStem(value) {
 }
 
 function inferObjectScope(id, obj = {}) {
-  const parts = String(id || '').split('.').filter(Boolean);
+  const parts = String(id || '')
+    .split('.')
+    .filter(Boolean);
   const inferred = {
     database: obj.database || '',
     schema: obj.schema || '',
@@ -706,7 +709,9 @@ function inferObjectScope(id, obj = {}) {
 }
 
 function wrapIdentifier(value, maxLineLength = 28) {
-  const text = String(value || '').replace(/\.dtsx$/i, '').trim();
+  const text = String(value || '')
+    .replace(/\.dtsx$/i, '')
+    .trim();
   if (!text || text.length <= maxLineLength) return text;
 
   const segments = text.split(/([_.\-\s]+)/).filter(Boolean);

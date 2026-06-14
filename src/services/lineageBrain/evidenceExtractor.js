@@ -70,7 +70,12 @@ function compactMetadata(metadata, keepEdgeValues) {
     }
   }
   if (keepEdgeValues) {
-    for (const key of [...EDGE_GROUP_KEYS, ...REVERSE_EDGE_GROUP_KEYS, ...INFERRED_EDGE_GROUP_KEYS, ...CONTEXT_EDGE_GROUP_KEYS]) {
+    for (const key of [
+      ...EDGE_GROUP_KEYS,
+      ...REVERSE_EDGE_GROUP_KEYS,
+      ...INFERRED_EDGE_GROUP_KEYS,
+      ...CONTEXT_EDGE_GROUP_KEYS,
+    ]) {
       if (Object.prototype.hasOwnProperty.call(metadata, key)) {
         output[key] = metadata[key];
       }
@@ -176,9 +181,7 @@ function findMatchingTableRawFile(markdownPath) {
   const databaseIndex = parts.findIndex((part) => part === 'databases');
   const candidates = [
     join(TABLE_RAW_SQL_ROOT, 'servers', rel),
-    databaseIndex >= 0
-      ? join(TABLE_RAW_SQL_ROOT, parts.slice(databaseIndex).join('/'))
-      : null,
+    databaseIndex >= 0 ? join(TABLE_RAW_SQL_ROOT, parts.slice(databaseIndex).join('/')) : null,
     findMatchingRawFile(markdownPath, TABLE_CURATED_ROOT, TABLE_RAW_SQL_ROOT),
   ].filter(Boolean);
   return candidates.find((candidate) => existsSync(candidate)) || markdownPath;
@@ -187,7 +190,9 @@ function findMatchingTableRawFile(markdownPath) {
 export function extractSsisEvidence(options = {}) {
   const keepEdgeValues = Boolean(options.keepEdgeValues);
   const includeRawSnippet = Boolean(options.includeRawSnippet);
-  const files = (options.paths || walkMarkdownFiles(SSIS_CURATED_ROOT)).filter((path) => path.includes('ssis_packages'));
+  const files = (options.paths || walkMarkdownFiles(SSIS_CURATED_ROOT)).filter((path) =>
+    path.includes('ssis_packages')
+  );
   const records = [];
   for (const markdownPath of files) {
     const content = readTextFile(markdownPath);
@@ -208,9 +213,10 @@ export function extractSsisEvidence(options = {}) {
       edgeGroups: compactGroups,
       body: truncateText(body, DEFAULT_SNIPPET_LIMIT),
       metadata: compactMetadata(metadata, keepEdgeValues),
-      rawSnippet: includeRawSnippet && rawXmlPath
-        ? truncateText(readTextFile(rawXmlPath), DEFAULT_SNIPPET_LIMIT)
-        : truncateText(body, DEFAULT_SNIPPET_LIMIT),
+      rawSnippet:
+        includeRawSnippet && rawXmlPath
+          ? truncateText(readTextFile(rawXmlPath), DEFAULT_SNIPPET_LIMIT)
+          : truncateText(body, DEFAULT_SNIPPET_LIMIT),
     };
     if (matchesEvidenceTarget(record, options.target)) records.push(record);
   }
@@ -242,7 +248,9 @@ export function extractTableEvidence(options = {}) {
       edgeGroups: compactGroups,
       body: truncateText(body, DEFAULT_SNIPPET_LIMIT),
       metadata: compactMetadata(metadata, keepEdgeValues),
-      rawSnippet: includeRawSnippet ? truncateText(readTextFile(rawPath), DEFAULT_SNIPPET_LIMIT) : '',
+      rawSnippet: includeRawSnippet
+        ? truncateText(readTextFile(rawPath), DEFAULT_SNIPPET_LIMIT)
+        : '',
     };
     if (matchesEvidenceTarget(record, options.target)) records.push(record);
   }

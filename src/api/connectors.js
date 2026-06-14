@@ -73,13 +73,15 @@ router.get('/definitions', authenticate, (req, res) =>
       cloud: req.query.cloud,
       category: req.query.category,
     }),
-  }));
+  })
+);
 
 router.get('/coverage', authenticate, (_req, res) =>
   res.json({
     status: 'success',
     coverage: getConnectorAdapterCoverage(),
-  }));
+  })
+);
 
 router.get('/', authenticate, (req, res) =>
   res.json({
@@ -93,7 +95,8 @@ router.get('/', authenticate, (req, res) =>
       },
       req.user
     ),
-  }));
+  })
+);
 
 router.post('/', authenticate, requireAdmin, (req, res) => {
   try {
@@ -145,19 +148,22 @@ router.get('/profile-schedules/status', authenticate, requireAdmin, (_req, res) 
   res.json({
     status: 'success',
     scheduler: getProfileSchedulerStatus(),
-  }));
+  })
+);
 
 router.post('/profile-schedules/worker/start', authenticate, requireAdmin, (req, res) =>
   res.json({
     status: 'success',
     scheduler: startProfileSchedulerWorker({ ...(req.body || {}), enabled: true }),
-  }));
+  })
+);
 
 router.post('/profile-schedules/worker/stop', authenticate, requireAdmin, (_req, res) =>
   res.json({
     status: 'success',
     scheduler: stopProfileSchedulerWorker(),
-  }));
+  })
+);
 
 router.post('/profile-schedules/tick', authenticate, requireAdmin, async (req, res) => {
   try {
@@ -187,7 +193,12 @@ router.get('/profile-schedules/:scheduleId/queue', authenticate, async (req, res
       limit: req.query.limit,
       history_limit: req.query.history_limit || req.query.historyLimit,
     });
-    if (!preview) return connectorError(res, req, new Error(`Profile schedule '${req.params.scheduleId}' not found.`));
+    if (!preview)
+      return connectorError(
+        res,
+        req,
+        new Error(`Profile schedule '${req.params.scheduleId}' not found.`)
+      );
     return res.json({ status: 'success', preview });
   } catch (err) {
     return connectorError(res, req, err);
@@ -197,7 +208,12 @@ router.get('/profile-schedules/:scheduleId/queue', authenticate, async (req, res
 router.get('/profile-schedules/:scheduleId', authenticate, (req, res) => {
   try {
     const schedule = getConnectorProfileSchedule(req.params.scheduleId, req.user);
-    if (!schedule) return connectorError(res, req, new Error(`Profile schedule '${req.params.scheduleId}' not found.`));
+    if (!schedule)
+      return connectorError(
+        res,
+        req,
+        new Error(`Profile schedule '${req.params.scheduleId}' not found.`)
+      );
     return res.json({ status: 'success', schedule });
   } catch (err) {
     return connectorError(res, req, err);
@@ -206,7 +222,10 @@ router.get('/profile-schedules/:scheduleId', authenticate, (req, res) => {
 
 router.put('/profile-schedules/:scheduleId', authenticate, requireAdmin, (req, res) => {
   try {
-    const schedule = upsertConnectorProfileSchedule({ ...(req.body || {}), id: req.params.scheduleId }, req.user);
+    const schedule = upsertConnectorProfileSchedule(
+      { ...(req.body || {}), id: req.params.scheduleId },
+      req.user
+    );
     return res.json({ status: 'success', schedule });
   } catch (err) {
     return connectorError(res, req, err);
@@ -359,7 +378,10 @@ router.post('/:id/diagnose-connection', authenticate, requireAdmin, async (req, 
       connector_type: diagnostic.connector_type,
       variant_count: diagnostic.diagnostic?.results?.length || 0,
     });
-    return res.json({ status: diagnostic.status === 'succeeded' ? 'success' : 'failed', diagnostic });
+    return res.json({
+      status: diagnostic.status === 'succeeded' ? 'success' : 'failed',
+      diagnostic,
+    });
   } catch (err) {
     return connectorError(res, req, err);
   }
@@ -436,11 +458,9 @@ router.post('/:id/runs/:runId/publish', authenticate, requireAdmin, async (req, 
 router.get('/:id/runs', authenticate, (req, res) =>
   res.json({
     status: 'success',
-    runs: listConnectorRuns(
-      { connector_id: req.params.id, limit: req.query.limit },
-      req.user
-    ),
-  }));
+    runs: listConnectorRuns({ connector_id: req.params.id, limit: req.query.limit }, req.user),
+  })
+);
 
 router.get('/:id/snapshot', authenticate, (req, res) => {
   try {

@@ -1,7 +1,11 @@
 import { createConnectorAdapter, adapterCoverageReport } from './adapterFactory.js';
 import { serializeConnectorError } from './connectorErrors.js';
 import { summarizeCanonicalEvents, warningEvent } from './canonicalMetadata.js';
-import { buildComputerFriendlyProfilePackage, buildConfluenceProfileSummary, profilingAnswer } from '../profilingExecutionService.js';
+import {
+  buildComputerFriendlyProfilePackage,
+  buildConfluenceProfileSummary,
+  profilingAnswer,
+} from '../profilingExecutionService.js';
 import {
   biProfileAnswer,
   buildBiConfluenceSummary,
@@ -54,7 +58,16 @@ export async function executeConnectorExtraction({ connector, definition, option
         details: serialized,
       })
     );
-    return buildExtractionResult({ connector, adapter, events, streamResults, errors, status: 'failed', options, connectionCheck: null });
+    return buildExtractionResult({
+      connector,
+      adapter,
+      events,
+      streamResults,
+      errors,
+      status: 'failed',
+      options,
+      connectionCheck: null,
+    });
   }
 
   for (const stream of adapter.selectedStreams(options)) {
@@ -91,7 +104,16 @@ export async function executeConnectorExtraction({ connector, definition, option
   }
 
   const status = errors.length ? 'partial_failure' : 'succeeded';
-  return buildExtractionResult({ connector, adapter, events, streamResults, errors, status, options, connectionCheck });
+  return buildExtractionResult({
+    connector,
+    adapter,
+    events,
+    streamResults,
+    errors,
+    status,
+    options,
+    connectionCheck,
+  });
 }
 
 export async function executeConnectorTest({ connector, definition, options = {} }) {
@@ -159,9 +181,17 @@ export async function executeConnectorTest({ connector, definition, options = {}
         connector_id: connector.id,
         connector_type: connector.type,
         phase: serialized.phase || 'connection_validation',
-        server: serialized.details?.server || connector.config?.server || connector.config?.host || null,
-        database: serialized.details?.database || connector.config?.database || connector.config?.catalogDatabase || null,
-        login: serialized.details?.runtime_process_identity || serialized.details?.credential_mode || null,
+        server:
+          serialized.details?.server || connector.config?.server || connector.config?.host || null,
+        database:
+          serialized.details?.database ||
+          connector.config?.database ||
+          connector.config?.catalogDatabase ||
+          null,
+        login:
+          serialized.details?.runtime_process_identity ||
+          serialized.details?.credential_mode ||
+          null,
         elapsed_ms: Date.now() - started,
         connection_status: 'failed',
         live_supported: adapter.getCapabilities().supports_live_read === true,
@@ -254,7 +284,13 @@ export async function executeConnectorBiProfile({ connector, definition, options
         ...options,
       },
     });
-    const profile = buildBiProfileFromExtraction({ connector, definition, adapter, extraction, options });
+    const profile = buildBiProfileFromExtraction({
+      connector,
+      definition,
+      adapter,
+      extraction,
+      options,
+    });
     return {
       status: profile.status,
       connector_id: connector.id,
@@ -265,7 +301,8 @@ export async function executeConnectorBiProfile({ connector, definition, options
       captures_raw_report_data: false,
       secret_exposed: false,
       plan,
-      extraction: options.include_events === false ? { ...extraction, events: undefined } : extraction,
+      extraction:
+        options.include_events === false ? { ...extraction, events: undefined } : extraction,
       profile,
       package: buildBiProfilePackage(profile),
       confluence: buildBiConfluenceSummary(profile),
@@ -317,7 +354,13 @@ export async function executeConnectorMetadataProfile({ connector, definition, o
         ...options,
       },
     });
-    const profile = buildConnectorMetadataProfileFromExtraction({ connector, definition, adapter, extraction, options });
+    const profile = buildConnectorMetadataProfileFromExtraction({
+      connector,
+      definition,
+      adapter,
+      extraction,
+      options,
+    });
     return {
       status: profile.status,
       connector_id: connector.id,
@@ -328,7 +371,8 @@ export async function executeConnectorMetadataProfile({ connector, definition, o
       captures_payload_values: false,
       secret_exposed: false,
       plan,
-      extraction: options.include_events === false ? { ...extraction, events: undefined } : extraction,
+      extraction:
+        options.include_events === false ? { ...extraction, events: undefined } : extraction,
       profile,
       package: buildConnectorMetadataProfilePackage(profile),
       confluence: buildConnectorMetadataConfluenceSummary(profile),
@@ -363,7 +407,16 @@ export async function executeConnectorMetadataProfile({ connector, definition, o
   }
 }
 
-function buildExtractionResult({ connector, adapter, events, streamResults, errors, status, options = {}, connectionCheck = null }) {
+function buildExtractionResult({
+  connector,
+  adapter,
+  events,
+  streamResults,
+  errors,
+  status,
+  options = {},
+  connectionCheck = null,
+}) {
   const summary = summarizeCanonicalEvents(events);
   return {
     status,

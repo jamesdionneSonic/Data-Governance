@@ -296,8 +296,12 @@ function mergeById(primary, fallback) {
 }
 
 function normalizeTaxonomy(raw = {}) {
-  const configuredCategories = toArray(raw.categories).map(normalizeCategory).filter((c) => c.id);
-  const configuredRules = toArray(raw.rules).map(normalizeRule).filter((r) => r.id);
+  const configuredCategories = toArray(raw.categories)
+    .map(normalizeCategory)
+    .filter((c) => c.id);
+  const configuredRules = toArray(raw.rules)
+    .map(normalizeRule)
+    .filter((r) => r.id);
   const categories = mergeById(configuredCategories, DEFAULT_CATEGORIES.map(normalizeCategory));
   const rules = mergeById(configuredRules, DEFAULT_RULES.map(normalizeRule));
 
@@ -539,7 +543,9 @@ export function classifyAssetDetailed(asset = {}, options = {}) {
 
     if (rule.target === 'column') {
       const matchedColumns = columns
-        .filter((column) => regex.test([column.name, column.description, ...(column.tags || [])].join(' ')))
+        .filter((column) =>
+          regex.test([column.name, column.description, ...(column.tags || [])].join(' '))
+        )
         .map((column) => column.name)
         .filter(Boolean);
       if (matchedColumns.length > 0) {
@@ -553,7 +559,9 @@ export function classifyAssetDetailed(asset = {}, options = {}) {
 
     if (rule.target === 'asset') {
       const matchedColumns = columns
-        .filter((column) => regex.test([column.name, column.description, ...(column.tags || [])].join(' ')))
+        .filter((column) =>
+          regex.test([column.name, column.description, ...(column.tags || [])].join(' '))
+        )
         .map((column) => column.name)
         .filter(Boolean);
       const assetMatched = regex.test(searchText);
@@ -668,7 +676,9 @@ export function propagateClassifications(seedAssetId, assets, lineageGraph, opti
           inherited_from: current.id,
           depth: current.depth + 1,
           classifications: inherited,
-          confidence: Number((seed.confidence * Math.max(0.4, 1 - (current.depth + 1) * 0.15)).toFixed(3)),
+          confidence: Number(
+            (seed.confidence * Math.max(0.4, 1 - (current.depth + 1) * 0.15)).toFixed(3)
+          ),
         });
       }
       queue.push({
@@ -689,7 +699,10 @@ export function propagateClassifications(seedAssetId, assets, lineageGraph, opti
 export function bulkClassifyAssets(assets, requests = [], options = {}) {
   const entries =
     requests.length > 0
-      ? requests.map((request) => [request.asset_id || request.id, assets.get(request.asset_id || request.id)])
+      ? requests.map((request) => [
+          request.asset_id || request.id,
+          assets.get(request.asset_id || request.id),
+        ])
       : [...assets.entries()];
 
   return entries

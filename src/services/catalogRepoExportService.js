@@ -10,10 +10,7 @@ import { copyFile, mkdir, readFile, readdir, rm, stat, writeFile } from 'fs/prom
 import path from 'path';
 
 import { loadRuntimeCatalog } from './catalogRuntimeService.js';
-import {
-  getDownstreamDependents,
-  getUpstreamDependencies,
-} from './lineageService.js';
+import { getDownstreamDependents, getUpstreamDependencies } from './lineageService.js';
 
 const DEFAULT_MARKDOWN_ROOT = './data/markdown';
 const DEFAULT_CATALOG_REPO_PATH = '../Sonic-data-lineage';
@@ -51,7 +48,15 @@ const REGISTRY_HEADERS = [
   'source_markdown_path',
   'last_refreshed_at',
 ];
-const GENERATED_DIRECTORIES = ['schemas', 'registry', 'context-packs', 'ssis', 'reports', 'docs', 'servers'];
+const GENERATED_DIRECTORIES = [
+  'schemas',
+  'registry',
+  'context-packs',
+  'ssis',
+  'reports',
+  'docs',
+  'servers',
+];
 const GENERATED_ROOT_FILES = [
   '.gitattributes',
   'README.md',
@@ -68,7 +73,9 @@ function ensureArray(value) {
 }
 
 function compactText(value, fallback = '') {
-  return String(value ?? fallback).replace(/\s+/g, ' ').trim();
+  return String(value ?? fallback)
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function normalizePathForManifest(value) {
@@ -76,7 +83,10 @@ function normalizePathForManifest(value) {
 }
 
 function shortHash(value) {
-  return createHash('sha256').update(String(value || '')).digest('hex').slice(0, 10);
+  return createHash('sha256')
+    .update(String(value || ''))
+    .digest('hex')
+    .slice(0, 10);
 }
 
 function safeSegment(value, fallback = 'unknown', maxLength = 80) {
@@ -160,10 +170,16 @@ function isSsisPackage(object = {}) {
 
 function ssisPathParts(object = {}) {
   const packagePath = compactText(object.packagePath || object.package_path);
-  const packageName = compactText(object.packageName || object.package_name || object.name, 'package.dtsx');
+  const packageName = compactText(
+    object.packageName || object.package_name || object.name,
+    'package.dtsx'
+  );
 
   if (packagePath.includes('/') || packagePath.includes('\\')) {
-    const parts = packagePath.split(/[\\/]/).map((part) => part.trim()).filter(Boolean);
+    const parts = packagePath
+      .split(/[\\/]/)
+      .map((part) => part.trim())
+      .filter(Boolean);
     return {
       folder: parts[0] || 'SSIS',
       project: parts[1] || parts[0] || 'default',
@@ -171,7 +187,10 @@ function ssisPathParts(object = {}) {
     };
   }
 
-  const dotParts = packagePath.split('.').map((part) => part.trim()).filter(Boolean);
+  const dotParts = packagePath
+    .split('.')
+    .map((part) => part.trim())
+    .filter(Boolean);
   if (dotParts.length >= 4 && dotParts[dotParts.length - 1].toLowerCase() === 'dtsx') {
     return {
       folder: dotParts[0],
@@ -201,7 +220,8 @@ function relativeSourcePath(markdownRoot, filePath) {
   const absoluteRoot = path.resolve(process.cwd(), markdownRoot);
   if (!path.isAbsolute(source)) return normalizePathForManifest(source);
   const relative = path.relative(absoluteRoot, source);
-  if (relative.startsWith('..') || path.isAbsolute(relative)) return normalizePathForManifest(source);
+  if (relative.startsWith('..') || path.isAbsolute(relative))
+    return normalizePathForManifest(source);
   return normalizePathForManifest(relative);
 }
 
@@ -238,12 +258,16 @@ function summarizeProcedureLogic({ object = {}, row, definitionSql = '' }) {
   const sourceObjects = readsFrom.filter((id) => /synwrk|stage|wrk|stg|source/i.test(id));
   const dimVin = readsFrom.find((id) => /(^|[.])dimvin$/i.test(id));
   const targetObjects = writesTo.filter((id) => /dimvehicle/i.test(id));
-  const targetDimensions = writesTo.filter((id) => /dimvehicle/i.test(id) && !/(^|[.])dimvehicle$/i.test(id));
+  const targetDimensions = writesTo.filter(
+    (id) => /dimvehicle/i.test(id) && !/(^|[.])dimvehicle$/i.test(id)
+  );
   const lines = detectProcedureStepLines(definitionSql);
   const steps = [];
 
   if (sourceObjects.length > 0) {
-    steps.push(`Reads staged vehicle rows from ${sourceObjects[0].split('.').slice(-3).join('.')}.`);
+    steps.push(
+      `Reads staged vehicle rows from ${sourceObjects[0].split('.').slice(-3).join('.')}.`
+    );
   }
   if (dimVin) {
     steps.push('Uses DimVin to resolve or verify VehicleKey mappings.');
@@ -255,10 +279,12 @@ function summarizeProcedureLogic({ object = {}, row, definitionSql = '' }) {
     steps.push('Inserts missing vehicle rows when no matching target record exists.');
   }
   if (targetDimensions.length > 0) {
-    steps.push(`Maintains related vehicle attribute dimensions such as ${targetDimensions
-      .slice(0, 6)
-      .map((id) => id.split('.').slice(-1)[0])
-      .join(', ')}${targetDimensions.length > 6 ? ', and others' : ''}.`);
+    steps.push(
+      `Maintains related vehicle attribute dimensions such as ${targetDimensions
+        .slice(0, 6)
+        .map((id) => id.split('.').slice(-1)[0])
+        .join(', ')}${targetDimensions.length > 6 ? ', and others' : ''}.`
+    );
   } else if (targetObjects.length > 0) {
     steps.push(`Maintains ${targetObjects.map((id) => id.split('.').slice(-1)[0]).join(', ')}.`);
   }
@@ -312,7 +338,11 @@ function summarizeProcedureLogic({ object = {}, row, definitionSql = '' }) {
 
 function pathBaseForObject(object, id) {
   const hash = shortHash(id);
-  const name = safeSegment(object.name || object.packageName || object.package_name || id, 'object', 60);
+  const name = safeSegment(
+    object.name || object.packageName || object.package_name || id,
+    'object',
+    60
+  );
 
   if (isSsisPackage(object)) {
     const parts = ssisPathParts(object);
@@ -365,9 +395,13 @@ function sortedObjectEntries(objects) {
         compactText(right.object.schema)
       );
       if (schemaCompare) return schemaCompare;
-      const typeCompare = compactText(left.object.type).localeCompare(compactText(right.object.type));
+      const typeCompare = compactText(left.object.type).localeCompare(
+        compactText(right.object.type)
+      );
       if (typeCompare) return typeCompare;
-      return compactText(left.object.name, left.id).localeCompare(compactText(right.object.name, right.id));
+      return compactText(left.object.name, left.id).localeCompare(
+        compactText(right.object.name, right.id)
+      );
     });
 }
 
@@ -426,7 +460,9 @@ async function buildContextPack({ row, object, id, graph, typedEdges, markdownRo
   const sourceMarkdownAbsolutePath = sourceAbsolutePath(markdownRoot, row.source_markdown_path);
   let sourceMarkdownText = '';
   try {
-    sourceMarkdownText = sourceMarkdownAbsolutePath ? await readFile(sourceMarkdownAbsolutePath, 'utf8') : '';
+    sourceMarkdownText = sourceMarkdownAbsolutePath
+      ? await readFile(sourceMarkdownAbsolutePath, 'utf8')
+      : '';
   } catch {
     sourceMarkdownText = '';
   }
@@ -480,12 +516,14 @@ async function buildContextPack({ row, object, id, graph, typedEdges, markdownRo
     },
     columns: {
       count: row.column_count,
-      preview: ensureArray(object.columns).slice(0, CONTEXT_COLUMN_LIMIT).map((column) => ({
-        name: column.name,
-        column_id: column.column_id || '',
-        data_type: column.data_type || '',
-        nullable: column.nullable ?? null,
-      })),
+      preview: ensureArray(object.columns)
+        .slice(0, CONTEXT_COLUMN_LIMIT)
+        .map((column) => ({
+          name: column.name,
+          column_id: column.column_id || '',
+          data_type: column.data_type || '',
+          nullable: column.nullable ?? null,
+        })),
       preview_truncated: row.column_count > CONTEXT_COLUMN_LIMIT,
       usage_count: object.column_usage_count || 0,
       lineage_count: object.column_lineage_count || 0,
@@ -546,7 +584,10 @@ function renderContextPackMarkdown(pack) {
         ['Steward', pack.governance.steward],
         ['Classification', pack.governance.classification],
         ['Criticality', pack.governance.criticality],
-        ['Confidence', `${pack.confidence.label}${pack.confidence.overall === null ? '' : ` (${pack.confidence.overall})`}`],
+        [
+          'Confidence',
+          `${pack.confidence.label}${pack.confidence.overall === null ? '' : ` (${pack.confidence.overall})`}`,
+        ],
         ['Edge Confidence', pack.confidence.edge ?? ''],
         ['Column Confidence', pack.confidence.column ?? ''],
       ]
@@ -554,7 +595,9 @@ function renderContextPackMarkdown(pack) {
     '',
     '## Direct Upstream',
     '',
-    upstreamRows.length ? markdownTable(['Object ID'], upstreamRows) : '- No direct upstream objects recorded.',
+    upstreamRows.length
+      ? markdownTable(['Object ID'], upstreamRows)
+      : '- No direct upstream objects recorded.',
     pack.lineage.upstream_truncated ? '- Upstream list is truncated in this context pack.' : '',
     '',
     '## Direct Downstream',
@@ -566,7 +609,9 @@ function renderContextPackMarkdown(pack) {
     '',
     '## Columns',
     '',
-    columnRows.length ? markdownTable(['Name', 'Type', 'Nullable'], columnRows) : '- No columns recorded.',
+    columnRows.length
+      ? markdownTable(['Name', 'Type', 'Nullable'], columnRows)
+      : '- No columns recorded.',
     pack.columns.preview_truncated ? '- Column preview is truncated in this context pack.' : '',
     '',
     pack.logic_summary ? '## Logic Summary' : '',
@@ -575,7 +620,10 @@ function renderContextPackMarkdown(pack) {
     pack.evidence_snippets?.length ? '' : '',
     pack.evidence_snippets?.length ? '## Evidence Snippets' : '',
     pack.evidence_snippets?.length ? '' : '',
-    ...(pack.evidence_snippets?.map((snippet) => `- ${snippet.label}: line ${snippet.line}${snippet.detail ? ` (${snippet.detail})` : ''}`) || []),
+    ...(pack.evidence_snippets?.map(
+      (snippet) =>
+        `- ${snippet.label}: line ${snippet.line}${snippet.detail ? ` (${snippet.detail})` : ''}`
+    ) || []),
     pack.evidence_snippets?.length ? '' : '',
     '## Evidence',
     '',
@@ -790,7 +838,7 @@ function renderFieldDictionary() {
           confluence_url: 'Human Confluence entry point when available.',
           source_markdown_path: 'Original generated markdown evidence path.',
           last_refreshed_at: 'Timestamp of this export.',
-        }[header] || ''
+        }[header] || '',
       ])
     ),
     '',
@@ -877,11 +925,17 @@ function ssisProjectFromRow(row) {
 }
 
 function ssisFolderLabel(rows, folderKey) {
-  return rows.find((row) => ssisFolderFromRow(row) === folderKey)?.ssis_folder || folderKey || 'SSIS';
+  return (
+    rows.find((row) => ssisFolderFromRow(row) === folderKey)?.ssis_folder || folderKey || 'SSIS'
+  );
 }
 
 function ssisProjectLabel(rows, projectKey) {
-  return rows.find((row) => ssisProjectFromRow(row) === projectKey)?.ssis_project || projectKey || 'default';
+  return (
+    rows.find((row) => ssisProjectFromRow(row) === projectKey)?.ssis_project ||
+    projectKey ||
+    'default'
+  );
 }
 
 function renderSsisReadme(ssisRows) {
@@ -982,7 +1036,9 @@ function objectRegistrySchema() {
     title: 'Sonic Data Lineage Object Registry Row',
     type: 'object',
     required: ['object_id', 'display_name', 'database', 'object_type', 'context_pack_path'],
-    properties: Object.fromEntries(REGISTRY_HEADERS.map((header) => [header, { type: ['string', 'number', 'null'] }])),
+    properties: Object.fromEntries(
+      REGISTRY_HEADERS.map((header) => [header, { type: ['string', 'number', 'null'] }])
+    ),
     additionalProperties: false,
   };
 }
@@ -1093,8 +1149,16 @@ export async function exportCatalogRepo(options = {}) {
   const databaseIndex = buildDatabaseIndex(registryRows);
 
   await resetGeneratedRepoContent(targetRoot);
-  await writeText(targetRoot, '.gitattributes', '* text=auto eol=lf\n*.json text eol=lf\n*.jsonl text eol=lf\n*.csv text eol=lf\n*.md text eol=lf\n');
-  await writeText(targetRoot, 'README.md', renderRootReadme({ generatedAt, registryRows, databaseIndex }));
+  await writeText(
+    targetRoot,
+    '.gitattributes',
+    '* text=auto eol=lf\n*.json text eol=lf\n*.jsonl text eol=lf\n*.csv text eol=lf\n*.md text eol=lf\n'
+  );
+  await writeText(
+    targetRoot,
+    'README.md',
+    renderRootReadme({ generatedAt, registryRows, databaseIndex })
+  );
   await writeText(targetRoot, 'AI_README.md', renderAiReadme({ remoteUrl }));
   await writeJson(targetRoot, 'schemas/object-registry.schema.json', objectRegistrySchema());
   await writeJson(targetRoot, 'schemas/context-pack.schema.json', contextPackSchema());
@@ -1114,7 +1178,9 @@ export async function exportCatalogRepo(options = {}) {
     generated_at: generatedAt,
     object_count: registryRows.length,
     database_count: databaseIndex.database_count,
-    type_counts: Object.fromEntries(groupCount(registryRows, 'object_type').map((item) => [item.name, item.count])),
+    type_counts: Object.fromEntries(
+      groupCount(registryRows, 'object_type').map((item) => [item.name, item.count])
+    ),
     confidence_counts: Object.fromEntries(
       groupCount(registryRows, 'confidence_label').map((item) => [item.name, item.count])
     ),
@@ -1179,12 +1245,25 @@ export async function exportCatalogRepo(options = {}) {
   }
 
   const rebuildReportPath = path.join(markdownRoot, 'rebuild-report.json');
-  const rebuildReport = await maybeCopyJson(rebuildReportPath, targetRoot, 'reports/latest-rebuild-report.json', {
-    generated_at: generatedAt,
-    status: 'missing',
-  });
-  await writeText(targetRoot, 'reports/confidence-summary.md', renderConfidenceSummary(registryRows));
-  await writeText(targetRoot, 'reports/edge-quality-summary.md', renderEdgeQualitySummary(registryRows));
+  const rebuildReport = await maybeCopyJson(
+    rebuildReportPath,
+    targetRoot,
+    'reports/latest-rebuild-report.json',
+    {
+      generated_at: generatedAt,
+      status: 'missing',
+    }
+  );
+  await writeText(
+    targetRoot,
+    'reports/confidence-summary.md',
+    renderConfidenceSummary(registryRows)
+  );
+  await writeText(
+    targetRoot,
+    'reports/edge-quality-summary.md',
+    renderEdgeQualitySummary(registryRows)
+  );
 
   const manifest = {
     schema_version: CATALOG_REPO_VERSION,
@@ -1247,7 +1326,8 @@ export async function validateCatalogRepo(options = {}) {
 
   for (const file of requiredFiles) {
     // eslint-disable-next-line no-await-in-loop
-    if (!(await fileExists(path.join(targetRoot, file)))) failures.push(`Missing required file: ${file}`);
+    if (!(await fileExists(path.join(targetRoot, file))))
+      failures.push(`Missing required file: ${file}`);
   }
 
   let manifest = {};
@@ -1265,10 +1345,14 @@ export async function validateCatalogRepo(options = {}) {
         .filter(Boolean).length - 1;
     const jsonlCount = await countJsonl(path.join(targetRoot, 'registry/object-registry.jsonl'));
     if (jsonlCount !== manifest.object_count) {
-      failures.push(`Registry JSONL count ${jsonlCount} does not match manifest ${manifest.object_count}.`);
+      failures.push(
+        `Registry JSONL count ${jsonlCount} does not match manifest ${manifest.object_count}.`
+      );
     }
     if (csvLineCount !== manifest.object_count) {
-      failures.push(`Registry CSV count ${csvLineCount} does not match manifest ${manifest.object_count}.`);
+      failures.push(
+        `Registry CSV count ${csvLineCount} does not match manifest ${manifest.object_count}.`
+      );
     }
   }
 
@@ -1297,7 +1381,9 @@ export async function validateCatalogRepo(options = {}) {
     }
     // eslint-disable-next-line no-await-in-loop
     if (!(await fileExists(path.join(targetRoot, row.context_pack_json_path)))) {
-      failures.push(`Missing context pack json for ${row.object_id}: ${row.context_pack_json_path}`);
+      failures.push(
+        `Missing context pack json for ${row.object_id}: ${row.context_pack_json_path}`
+      );
     }
   }
 

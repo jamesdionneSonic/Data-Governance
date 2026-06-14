@@ -328,7 +328,9 @@ describe('Phase 3 - Visualization Service', () => {
           { data: { id: 'source_table', label: 'Source Table' }, classes: ['producer'] },
           { data: { id: 'target_view', label: 'Target View' }, classes: ['consumer'] },
         ],
-        edges: [{ data: { source: 'source_table', target: 'target_view', label: 'loads' }, classes: [] }],
+        edges: [
+          { data: { source: 'source_table', target: 'target_view', label: 'loads' }, classes: [] },
+        ],
       };
       const terms = [
         {

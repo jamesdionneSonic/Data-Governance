@@ -31,7 +31,8 @@ describe('Lineage Question Service', () => {
           type: 'procedure',
           reads_from: [tableId],
           writes_to: [tableId],
-          definition: 'UPDATE dbo.DimVehicle SET ModelName = src.ModelName INSERT INTO dbo.DimVehicle SELECT src.ModelName',
+          definition:
+            'UPDATE dbo.DimVehicle SET ModelName = src.ModelName INSERT INTO dbo.DimVehicle SELECT src.ModelName',
         },
       ],
       [
@@ -84,9 +85,7 @@ describe('Lineage Question Service', () => {
       ])
     );
     expect(answer.sources).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({ object_id: viewId }),
-      ])
+      expect.arrayContaining([expect.objectContaining({ object_id: viewId })])
     );
   });
 
@@ -118,9 +117,7 @@ describe('Lineage Question Service', () => {
     expect(answer.assistant.title).toBe('How to Ask Lineage Questions');
     expect(answer.plain_english).toContain('Use "feeds"');
     expect(answer.table.rows).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({ prompt: 'what loads DimVehicle?' }),
-      ])
+      expect.arrayContaining([expect.objectContaining({ prompt: 'what loads DimVehicle?' })])
     );
   });
 });

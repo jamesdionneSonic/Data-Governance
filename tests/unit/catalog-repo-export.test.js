@@ -19,7 +19,14 @@ describe('Catalog Repo Export Service', () => {
   async function seedCatalog() {
     const markdownRoot = join(tempRoot, 'markdown');
     const tableDir = join(markdownRoot, 'servers', 'DW01', 'databases', 'Sonic_DW', 'tables');
-    const procDir = join(markdownRoot, 'servers', 'DW01', 'databases', 'Sonic_DW', 'stored_procedures');
+    const procDir = join(
+      markdownRoot,
+      'servers',
+      'DW01',
+      'databases',
+      'Sonic_DW',
+      'stored_procedures'
+    );
     await mkdir(tableDir, { recursive: true });
     await mkdir(procDir, { recursive: true });
 
@@ -124,7 +131,10 @@ describe('Catalog Repo Export Service', () => {
       targetRoot,
     });
 
-    const procPackPath = await findFile(join(targetRoot, 'context-packs'), /^usp_DimVehicle--.*\.json$/);
+    const procPackPath = await findFile(
+      join(targetRoot, 'context-packs'),
+      /^usp_DimVehicle--.*\.json$/
+    );
     expect(procPackPath).toBeTruthy();
     const procPack = JSON.parse(await readFile(procPackPath, 'utf8'));
     expect(procPack.logic_summary).toContain('Reads staged vehicle rows');

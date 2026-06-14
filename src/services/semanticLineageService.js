@@ -3,11 +3,15 @@ function ensureArray(value) {
 }
 
 function normalizeKey(value) {
-  return String(value || '').trim().toLowerCase();
+  return String(value || '')
+    .trim()
+    .toLowerCase();
 }
 
 function compactText(value, maxLength = 220) {
-  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  const text = String(value || '')
+    .replace(/\s+/g, ' ')
+    .trim();
   return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
 }
 
@@ -93,7 +97,9 @@ function referenceTokens(objectId = '', metadata = {}) {
 function mentionsTarget(definition = '', targetId = '', targetMetadata = {}) {
   const text = normalizeKey(definition).replace(/\[|\]/g, '');
   if (!text) return false;
-  return referenceTokens(targetId, targetMetadata).some((token) => text.includes(normalizeKey(token)));
+  return referenceTokens(targetId, targetMetadata).some((token) =>
+    text.includes(normalizeKey(token))
+  );
 }
 
 function inferWriteOperation(processMetadata = {}, targetId = '', targetMetadata = {}) {
@@ -103,14 +109,16 @@ function inferWriteOperation(processMetadata = {}, targetId = '', targetMetadata
   const writesTo = new Set(ensureArray(processMetadata.writes_to).map(normalizeKey));
   const selfTarget = readsFrom.has(normalizeKey(targetId)) && writesTo.has(normalizeKey(targetId));
 
-  const hasMerge = /\bmerge\b/.test(normalizedDefinition) && mentionsTarget(definition, targetId, targetMetadata);
+  const hasMerge =
+    /\bmerge\b/.test(normalizedDefinition) && mentionsTarget(definition, targetId, targetMetadata);
   const hasInsert = /\binsert\s+into\b/.test(normalizedDefinition)
     ? mentionsTarget(definition, targetId, targetMetadata) || writesTo.has(normalizeKey(targetId))
     : false;
   const hasUpdate = /\bupdate\b/.test(normalizedDefinition)
     ? mentionsTarget(definition, targetId, targetMetadata) || writesTo.has(normalizeKey(targetId))
     : false;
-  const hasDelete = /\bdelete\b/.test(normalizedDefinition) && mentionsTarget(definition, targetId, targetMetadata);
+  const hasDelete =
+    /\bdelete\b/.test(normalizedDefinition) && mentionsTarget(definition, targetId, targetMetadata);
 
   if (hasMerge || (hasInsert && hasUpdate) || selfTarget) return 'upsert_write';
   if (hasUpdate) return 'update_write';
@@ -119,7 +127,12 @@ function inferWriteOperation(processMetadata = {}, targetId = '', targetMetadata
   return 'write';
 }
 
-function buildWriteEvidence(processMetadata = {}, processId = '', targetMetadata = {}, targetId = '') {
+function buildWriteEvidence(
+  processMetadata = {},
+  processId = '',
+  targetMetadata = {},
+  targetId = ''
+) {
   const operation = inferWriteOperation(processMetadata, targetId, targetMetadata);
   const processLabel = objectLabel(processMetadata, processId);
   const targetLabel = objectLabel(targetMetadata, targetId);
@@ -183,7 +196,12 @@ export function buildSemanticLineageEdges(objects = new Map()) {
 
     for (const targetId of writesTo) {
       const targetMetadata = objects.get(targetId) || {};
-      const { operation, evidence } = buildWriteEvidence(metadata, objectId, targetMetadata, targetId);
+      const { operation, evidence } = buildWriteEvidence(
+        metadata,
+        objectId,
+        targetMetadata,
+        targetId
+      );
       pushEdge(
         buildSemanticEdge({
           source: objectId,
@@ -232,9 +250,8 @@ export function buildSemanticLineageEdges(objects = new Map()) {
 
     for (const calledId of calls) {
       const calledMetadata = objects.get(calledId) || {};
-      const semanticType = isOrchestratorLike(metadata) || isProcedureLike(calledMetadata)
-        ? 'orchestrates'
-        : 'calls';
+      const semanticType =
+        isOrchestratorLike(metadata) || isProcedureLike(calledMetadata) ? 'orchestrates' : 'calls';
       pushEdge(
         buildSemanticEdge({
           source: objectId,
@@ -289,7 +306,9 @@ function buildPlainEnglishSummary(focusMetadata = {}, pack = {}) {
   }
 
   const primaryLoader = pack.loaders[0];
-  const orchestrator = pack.orchestrators.find((record) => record.target_loader_id === primaryLoader?.id);
+  const orchestrator = pack.orchestrators.find(
+    (record) => record.target_loader_id === primaryLoader?.id
+  );
   const lead = primaryLoader
     ? `${label} is maintained by ${primaryLoader.label}.`
     : `${label} has no detected loader in the current semantic lineage pack.`;

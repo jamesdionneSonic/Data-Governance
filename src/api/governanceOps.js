@@ -80,22 +80,32 @@ router.get('/overview', authenticate, async (_req, res) => {
 
 router.get('/store/status', authenticate, (_req, res) => ok(res, getGovernanceOpsStoreStatus()));
 
-router.get('/export', authenticate, requireAdmin, (_req, res) => ok(res, exportGovernanceOpsState()));
+router.get('/export', authenticate, requireAdmin, (_req, res) =>
+  ok(res, exportGovernanceOpsState())
+);
 
-router.post('/import', authenticate, requireAdmin, (req, res) => ok(res, importGovernanceOpsState(req.body)));
+router.post('/import', authenticate, requireAdmin, (req, res) =>
+  ok(res, importGovernanceOpsState(req.body))
+);
 
-router.get('/events/deliveries', authenticate, requireSteward, (req, res) => ok(res, {
+router.get('/events/deliveries', authenticate, requireSteward, (req, res) =>
+  ok(res, {
     count: listGovernanceOpsEventDeliveries(req.query).length,
     deliveries: listGovernanceOpsEventDeliveries(req.query),
-  }));
+  })
+);
 
 router.get('/kpis', authenticate, (_req, res) => ok(res, buildKpis(assetCache, lineageGraphCache)));
 
-router.get('/ownership/model', authenticate, (_req, res) => ok(res, {
-  roles: getOwnershipRoleModel(),
-}));
+router.get('/ownership/model', authenticate, (_req, res) =>
+  ok(res, {
+    roles: getOwnershipRoleModel(),
+  })
+);
 
-router.get('/ownership/summary', authenticate, (_req, res) => ok(res, buildOwnershipSummary(assetCache)));
+router.get('/ownership/summary', authenticate, (_req, res) =>
+  ok(res, buildOwnershipSummary(assetCache))
+);
 
 router.get('/ownership/portfolio', authenticate, (req, res) => {
   const subject = req.query.subject || req.query.owner || req.user?.email || req.user?.id || 'all';
@@ -103,16 +113,23 @@ router.get('/ownership/portfolio', authenticate, (req, res) => {
 });
 
 router.post('/ownership/bulk-assignment-plan', authenticate, requireSteward, (req, res) =>
-  ok(res, planBulkOwnershipAssignment(req.body || {}, assetCache, req.user)));
+  ok(res, planBulkOwnershipAssignment(req.body || {}, assetCache, req.user))
+);
 
-router.post('/tasks', authenticate, requireSteward, (req, res) => res.status(201).json({ status: 'success', data: createGovernanceTask(req.body, req.user) }));
+router.post('/tasks', authenticate, requireSteward, (req, res) =>
+  res.status(201).json({ status: 'success', data: createGovernanceTask(req.body, req.user) })
+);
 
-router.get('/tasks', authenticate, (req, res) => ok(res, {
+router.get('/tasks', authenticate, (req, res) =>
+  ok(res, {
     count: listGovernanceTasks(req.query).length,
     tasks: listGovernanceTasks(req.query),
-  }));
+  })
+);
 
-router.post('/tasks/generate', authenticate, requireSteward, (req, res) => ok(res, generateStewardshipTasks(assetCache, req.user, req.body)));
+router.post('/tasks/generate', authenticate, requireSteward, (req, res) =>
+  ok(res, generateStewardshipTasks(assetCache, req.user, req.body))
+);
 
 router.post('/tasks/:taskId/transition', authenticate, requireSteward, (req, res) => {
   try {
@@ -128,46 +145,70 @@ router.post('/tasks/:taskId/transition', authenticate, requireSteward, (req, res
   }
 });
 
-router.post('/assets/:assetId/comments', authenticate, (req, res) => res
+router.post('/assets/:assetId/comments', authenticate, (req, res) =>
+  res
     .status(201)
-    .json({ status: 'success', data: addAssetComment(req.params.assetId, req.body, req.user) }));
+    .json({ status: 'success', data: addAssetComment(req.params.assetId, req.body, req.user) })
+);
 
-router.get('/assets/:assetId/comments', authenticate, (req, res) => ok(res, {
+router.get('/assets/:assetId/comments', authenticate, (req, res) =>
+  ok(res, {
     count: listAssetComments(req.params.assetId).length,
     comments: listAssetComments(req.params.assetId),
-  }));
+  })
+);
 
-router.post('/assets/:assetId/decisions', authenticate, requireSteward, (req, res) => res
+router.post('/assets/:assetId/decisions', authenticate, requireSteward, (req, res) =>
+  res
     .status(201)
-    .json({ status: 'success', data: recordDecision(req.params.assetId, req.body, req.user) }));
+    .json({ status: 'success', data: recordDecision(req.params.assetId, req.body, req.user) })
+);
 
-router.get('/assets/:assetId/decisions', authenticate, (req, res) => ok(res, {
+router.get('/assets/:assetId/decisions', authenticate, (req, res) =>
+  ok(res, {
     count: listDecisions(req.params.assetId).length,
     decisions: listDecisions(req.params.assetId),
-  }));
+  })
+);
 
-router.post('/usage/events', authenticate, (req, res) => res.status(201).json({ status: 'success', data: recordUsageEvent(req.body, req.user) }));
+router.post('/usage/events', authenticate, (req, res) =>
+  res.status(201).json({ status: 'success', data: recordUsageEvent(req.body, req.user) })
+);
 
 router.get('/usage/analytics', authenticate, (req, res) => ok(res, buildUsageAnalytics(req.query)));
 
-router.get('/adoption/scorecards', authenticate, (req, res) => ok(res, {
+router.get('/adoption/scorecards', authenticate, (req, res) =>
+  ok(res, {
     count: buildAdoptionScorecards(assetCache, lineageGraphCache).length,
     scorecards: buildAdoptionScorecards(assetCache, lineageGraphCache),
-  }));
+  })
+);
 
-router.get('/retirement/candidates', authenticate, requireSteward, (req, res) => ok(res, {
+router.get('/retirement/candidates', authenticate, requireSteward, (req, res) =>
+  ok(res, {
     candidates: recommendRetirementCandidates(assetCache, lineageGraphCache),
-  }));
+  })
+);
 
-router.post('/observability/sla/evaluate', authenticate, requireSteward, (req, res) => ok(res, evaluateServiceLevel(req.body, req.user)));
+router.post('/observability/sla/evaluate', authenticate, requireSteward, (req, res) =>
+  ok(res, evaluateServiceLevel(req.body, req.user))
+);
 
-router.post('/observability/anomaly/evaluate', authenticate, requireSteward, (req, res) => ok(res, evaluateAnomaly(req.body, req.user)));
+router.post('/observability/anomaly/evaluate', authenticate, requireSteward, (req, res) =>
+  ok(res, evaluateAnomaly(req.body, req.user))
+);
 
-router.post('/observability/schema-change', authenticate, requireSteward, (req, res) => ok(res, detectSchemaChange(req.body, req.user)));
+router.post('/observability/schema-change', authenticate, requireSteward, (req, res) =>
+  ok(res, detectSchemaChange(req.body, req.user))
+);
 
-router.post('/incidents', authenticate, requireSteward, (req, res) => res.status(201).json({ status: 'success', data: createIncident(req.body, req.user) }));
+router.post('/incidents', authenticate, requireSteward, (req, res) =>
+  res.status(201).json({ status: 'success', data: createIncident(req.body, req.user) })
+);
 
-router.get('/incidents', authenticate, (req, res) => ok(res, { count: listIncidents(req.query).length, incidents: listIncidents(req.query) }));
+router.get('/incidents', authenticate, (req, res) =>
+  ok(res, { count: listIncidents(req.query).length, incidents: listIncidents(req.query) })
+);
 
 router.post('/incidents/:incidentId/transition', authenticate, requireSteward, (req, res) => {
   try {
@@ -193,13 +234,17 @@ router.post('/incidents/:incidentId/communications', authenticate, requireStewar
   return res.status(201).json({ status: 'success', data: communication });
 });
 
-router.post('/impact/risk-assessment', authenticate, requireSteward, (req, res) => ok(res, assessChangeRisk(req.body, assetCache, lineageGraphCache)));
+router.post('/impact/risk-assessment', authenticate, requireSteward, (req, res) =>
+  ok(res, assessChangeRisk(req.body, assetCache, lineageGraphCache))
+);
 
-router.post('/context/query', authenticate, (req, res) => ok(res, resolveGovernanceQuestion(req.body.query || '', assetCache)));
+router.post('/context/query', authenticate, (req, res) =>
+  ok(res, resolveGovernanceQuestion(req.body.query || '', assetCache))
+);
 
-router.post('/glossary/reviews', authenticate, requireSteward, (req, res) => res
-    .status(201)
-    .json({ status: 'success', data: createGlossaryReview(req.body, req.user) }));
+router.post('/glossary/reviews', authenticate, requireSteward, (req, res) =>
+  res.status(201).json({ status: 'success', data: createGlossaryReview(req.body, req.user) })
+);
 
 router.post('/glossary/reviews/:reviewId/decision', authenticate, requireSteward, (req, res) => {
   const review = decideGlossaryReview(req.params.reviewId, req.body, req.user);
@@ -216,23 +261,33 @@ router.get('/glossary/health', authenticate, async (_req, res) => {
   return ok(res, buildGlossaryHealth(terms));
 });
 
-router.post('/trust/:assetId/certify', authenticate, requireSteward, (req, res) => res
+router.post('/trust/:assetId/certify', authenticate, requireSteward, (req, res) =>
+  res
     .status(201)
-    .json({ status: 'success', data: certifyAsset(req.params.assetId, req.body, req.user) }));
+    .json({ status: 'success', data: certifyAsset(req.params.assetId, req.body, req.user) })
+);
 
-router.post('/trust/:assetId/endorse', authenticate, (req, res) => res
+router.post('/trust/:assetId/endorse', authenticate, (req, res) =>
+  res
     .status(201)
-    .json({ status: 'success', data: endorseAsset(req.params.assetId, req.body, req.user) }));
+    .json({ status: 'success', data: endorseAsset(req.params.assetId, req.body, req.user) })
+);
 
-router.get('/trust/:assetId/history', authenticate, (req, res) => ok(res, {
+router.get('/trust/:assetId/history', authenticate, (req, res) =>
+  ok(res, {
     assetId: req.params.assetId,
     actions: getTrustActions(req.params.assetId),
-  }));
+  })
+);
 
 router.post('/roi/calculate', authenticate, (req, res) => ok(res, calculateRoi(req.body)));
 
-router.post('/publication/checks/:name', authenticate, requireAdmin, (req, res) => ok(res, recordPublicationCheck(req.params.name, req.body)));
+router.post('/publication/checks/:name', authenticate, requireAdmin, (req, res) =>
+  ok(res, recordPublicationCheck(req.params.name, req.body))
+);
 
-router.get('/publication/status', authenticate, (_req, res) => ok(res, buildPublicationStatus(assetCache, lineageGraphCache)));
+router.get('/publication/status', authenticate, (_req, res) =>
+  ok(res, buildPublicationStatus(assetCache, lineageGraphCache))
+);
 
 export default router;

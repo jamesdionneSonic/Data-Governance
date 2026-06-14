@@ -59,7 +59,9 @@ describe('Dictionary API', () => {
 
   test('exports object dictionary markdown', async () => {
     const app = createApp();
-    const res = await request(app).get('/api/v1/dictionary/sales.orders/export.md').set(authHeaders());
+    const res = await request(app)
+      .get('/api/v1/dictionary/sales.orders/export.md')
+      .set(authHeaders());
 
     expect(res.status).toBe(200);
     expect(res.headers['content-type']).toContain('text/markdown');

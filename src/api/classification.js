@@ -62,7 +62,8 @@ router.get('/policies', authenticate, (_req, res) =>
   res.json({
     status: 'success',
     policies: getPolicyTemplates(),
-  }));
+  })
+);
 
 router.get('/policies/effectiveness', authenticate, (req, res) => {
   if (!assetCache) {
@@ -72,7 +73,10 @@ router.get('/policies/effectiveness', authenticate, (req, res) => {
   }
   return res.json({
     status: 'success',
-    report: buildPolicyEffectivenessReport(assetCache, getAuditLog({ action: 'pii_policy_evaluated' })),
+    report: buildPolicyEffectivenessReport(
+      assetCache,
+      getAuditLog({ action: 'pii_policy_evaluated' })
+    ),
   });
 });
 
@@ -394,7 +398,8 @@ router.get('/columns/:assetId/semantics', authenticate, (req, res) => {
         }
       : {
           question: 'which column in this table is a metric?',
-          caveat: 'No column metadata is available for this asset. Re-run extraction with column inventory enabled.',
+          caveat:
+            'No column metadata is available for this asset. Re-run extraction with column inventory enabled.',
           metric_columns: [],
         },
   });

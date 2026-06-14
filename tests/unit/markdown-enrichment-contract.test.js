@@ -38,7 +38,9 @@ describe('markdownEnrichmentContract', () => {
   });
 
   test('infers business domain from technical metadata', () => {
-    expect(inferBusinessDomain({ database: 'VehicleMart', name: 'FactVehicleSales' })).toBe('Vehicle');
+    expect(inferBusinessDomain({ database: 'VehicleMart', name: 'FactVehicleSales' })).toBe(
+      'Vehicle'
+    );
     expect(inferBusinessDomain({ database: 'HRData', name: 'Employee' })).toBe('Human Resources');
   });
 
