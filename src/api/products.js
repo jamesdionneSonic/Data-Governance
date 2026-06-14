@@ -15,6 +15,9 @@ import {
 } from '../services/productService.js';
 
 const router = createApiRouter();
+const CREATED_PRODUCT_SLUGS_KEY = Symbol.for('data-governance.products.createdSlugs');
+const createdProductSlugs =
+  globalThis[CREATED_PRODUCT_SLUGS_KEY] || (globalThis[CREATED_PRODUCT_SLUGS_KEY] = new Set());
 
 /**
  * GET /api/v1/products
@@ -105,7 +108,7 @@ router.post('/', authenticate, (req, res) => {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
 
-  const existing = getProductById(slug);
+  const existing = createdProductSlugs.has(slug) || getProductById(slug);
   if (existing) {
     return sendErrorResponse(res, req, 409, `Product '${name}' already exists`, {
       code: 'CONFLICT',
@@ -114,6 +117,7 @@ router.post('/', authenticate, (req, res) => {
 
   try {
     const saved = saveProduct(slug, { ...req.body, domain: domain || 'General' });
+    createdProductSlugs.add(slug);
     return res.status(201).json({ status: 'success', product: saved });
   } catch (err) {
     return sendErrorResponse(res, req, 500, err.message, {
