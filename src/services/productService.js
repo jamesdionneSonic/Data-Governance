@@ -12,7 +12,8 @@ const fileName = fileURLToPath(import.meta.url);
 const dirName = path.dirname(fileName);
 
 const PRODUCTS_DIR = path.resolve(dirName, '../../data/products');
-const testProducts = new Map();
+const TEST_PRODUCTS_KEY = Symbol.for('data-governance.productService.testProducts');
+const testProducts = globalThis[TEST_PRODUCTS_KEY] || (globalThis[TEST_PRODUCTS_KEY] = new Map());
 
 function isTestRuntime() {
   return process.env.NODE_ENV === 'test' || Boolean(process.env.JEST_WORKER_ID);
