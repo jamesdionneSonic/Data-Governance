@@ -9,15 +9,22 @@ import { sendErrorResponse } from '../middleware/errorHandler.js';
 import {
   loadAllProducts,
   getProductById,
-  getProductsByDomain,
   getCertifiedProducts,
   saveProduct,
 } from '../services/productService.js';
 
 const router = createApiRouter();
-const CREATED_PRODUCT_SLUGS_KEY = Symbol.for('data-governance.products.createdSlugs');
-const createdProductSlugs =
-  globalThis[CREATED_PRODUCT_SLUGS_KEY] || (globalThis[CREATED_PRODUCT_SLUGS_KEY] = new Set());
+const CREATED_PRODUCTS_KEY = Symbol.for('data-governance.products.createdProducts');
+const createdProducts =
+  globalThis[CREATED_PRODUCTS_KEY] || (globalThis[CREATED_PRODUCTS_KEY] = new Map());
+
+function mergeCreatedProducts(products) {
+  const merged = new Map(products.map((product) => [product.slug, product]));
+  for (const [slug, product] of createdProducts.entries()) {
+    merged.set(slug, product);
+  }
+  return Array.from(merged.values()).sort((a, b) => a.name.localeCompare(b.name));
+}
 
 /**
  * GET /api/v1/products
@@ -27,10 +34,10 @@ const createdProductSlugs =
 router.get('/', authenticate, (req, res) => {
   const { domain, certified, status } = req.query;
 
-  let products = loadAllProducts();
+  let products = mergeCreatedProducts(loadAllProducts());
 
   if (domain) {
-    products = getProductsByDomain(domain);
+    products = products.filter((p) => p.domain.toLowerCase() === domain.toLowerCase());
   }
 
   if (certified === 'true') {
@@ -69,7 +76,7 @@ router.get('/', authenticate, (req, res) => {
  * List only certified products
  */
 router.get('/certified', authenticate, (_req, res) => {
-  const products = getCertifiedProducts();
+  const products = mergeCreatedProducts(getCertifiedProducts()).filter((p) => p.certified);
   return res.json({ status: 'success', count: products.length, products });
 });
 
@@ -78,7 +85,7 @@ router.get('/certified', authenticate, (_req, res) => {
  * Get a single data product by slug or product_id
  */
 router.get('/:id', authenticate, (req, res) => {
-  const product = getProductById(req.params.id);
+  const product = getProductById(req.params.id) || createdProducts.get(req.params.id);
 
   if (!product) {
     return sendErrorResponse(res, req, 404, `Data Product '${req.params.id}' not found`, {
@@ -108,7 +115,7 @@ router.post('/', authenticate, (req, res) => {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
 
-  const existing = createdProductSlugs.has(slug) || getProductById(slug);
+  const existing = createdProducts.has(slug) || getProductById(slug);
   if (existing) {
     return sendErrorResponse(res, req, 409, `Product '${name}' already exists`, {
       code: 'CONFLICT',
@@ -117,7 +124,7 @@ router.post('/', authenticate, (req, res) => {
 
   try {
     const saved = saveProduct(slug, { ...req.body, domain: domain || 'General' });
-    createdProductSlugs.add(slug);
+    createdProducts.set(slug, saved);
     return res.status(201).json({ status: 'success', product: saved });
   } catch (err) {
     return sendErrorResponse(res, req, 500, err.message, {
@@ -131,7 +138,7 @@ router.post('/', authenticate, (req, res) => {
  * Update an existing data product
  */
 router.put('/:id', authenticate, (req, res) => {
-  const product = getProductById(req.params.id);
+  const product = getProductById(req.params.id) || createdProducts.get(req.params.id);
 
   if (!product) {
     return sendErrorResponse(res, req, 404, `Data Product '${req.params.id}' not found`, {
@@ -141,6 +148,7 @@ router.put('/:id', authenticate, (req, res) => {
 
   try {
     const updated = saveProduct(product.slug, { ...product, ...req.body });
+    createdProducts.set(product.slug, updated);
     return res.json({ status: 'success', product: updated });
   } catch (err) {
     return sendErrorResponse(res, req, 500, err.message, {
