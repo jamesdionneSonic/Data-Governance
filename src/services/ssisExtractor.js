@@ -204,37 +204,6 @@ function splitSsisObjectReference(reference) {
   };
 }
 
-function splitSchemaObjectReference(reference) {
-  const cleaned = normalizeSsisReference(reference);
-  const parts = cleaned.split('.').filter(Boolean);
-
-  if (parts.length === 1) {
-    return {
-      schemaName: '',
-      objectName: cleaned,
-    };
-  }
-
-  if (parts.length === 2) {
-    return {
-      schemaName: parts[0],
-      objectName: parts[1],
-    };
-  }
-
-  if (parts.length >= 3) {
-    return {
-      schemaName: parts[parts.length - 2],
-      objectName: parts[parts.length - 1],
-    };
-  }
-
-  return {
-    schemaName: '',
-    objectName: cleaned,
-  };
-}
-
 function extractBinaryPayload(recordsetRow) {
   if (!recordsetRow || typeof recordsetRow !== 'object') return null;
 
@@ -339,12 +308,20 @@ function filterAgentJobsToSsisScope(agentJobs = {}, scope = {}) {
     const command = String(step.command || '');
     const commandLower = command.toLowerCase();
     const catalogPathMatch = command.match(/\\SSISDB\\([^\\]+)\\([^\\]+)\\([^\\"]+\.dtsx)/i);
-    const matchedFolder = catalogPathMatch ? cleanSsisSegment(catalogPathMatch[1]).toLowerCase() : '';
-    const matchedProject = catalogPathMatch ? cleanSsisSegment(catalogPathMatch[2]).toLowerCase() : '';
-    const matchedPackage = catalogPathMatch ? cleanSsisSegment(catalogPathMatch[3]).toLowerCase() : '';
+    const matchedFolder = catalogPathMatch
+      ? cleanSsisSegment(catalogPathMatch[1]).toLowerCase()
+      : '';
+    const matchedProject = catalogPathMatch
+      ? cleanSsisSegment(catalogPathMatch[2]).toLowerCase()
+      : '';
+    const matchedPackage = catalogPathMatch
+      ? cleanSsisSegment(catalogPathMatch[3]).toLowerCase()
+      : '';
 
-    const folderMatches = !folder || matchedFolder === folder || commandLower.includes(`\\${folder}\\`);
-    const projectMatches = !project || matchedProject === project || commandLower.includes(`\\${project}\\`);
+    const folderMatches =
+      !folder || matchedFolder === folder || commandLower.includes(`\\${folder}\\`);
+    const projectMatches =
+      !project || matchedProject === project || commandLower.includes(`\\${project}\\`);
     const packageMatches =
       packages.size === 0 ||
       packages.has(matchedPackage) ||
@@ -443,9 +420,7 @@ function splitSsisTableReference(reference) {
 }
 
 function looksLikeSqlCommand(value) {
-  return /\b(SELECT|INSERT|UPDATE|DELETE|MERGE|EXEC(?:UTE)?|WITH)\b/i.test(
-    String(value || '')
-  );
+  return /\b(SELECT|INSERT|UPDATE|DELETE|MERGE|EXEC(?:UTE)?|WITH)\b/i.test(String(value || ''));
 }
 
 function extractSsisSqlTableReferences(sql = '', clauses = ['FROM', 'JOIN']) {
@@ -492,8 +467,13 @@ function buildSsisReference(connection, schemaName, objectName, fallbackServer =
   const parsed = splitSsisTableReference(objectName);
   const rawConnectionString = connection?.rawConnectionString || connection?.filePath || '';
   return buildCanonicalSqlId(
-    parsed.serverName || connection?.serverName || parseConnectionStringServer(rawConnectionString) || fallbackServer,
-    parsed.databaseName || connection?.databaseName || parseConnectionStringDatabase(rawConnectionString),
+    parsed.serverName ||
+      connection?.serverName ||
+      parseConnectionStringServer(rawConnectionString) ||
+      fallbackServer,
+    parsed.databaseName ||
+      connection?.databaseName ||
+      parseConnectionStringDatabase(rawConnectionString),
     parsed.schemaName || schemaName || 'dbo',
     parsed.objectName || objectName
   );
@@ -531,7 +511,9 @@ function componentNameFromSsisRef(value) {
 }
 
 function compactEvidence(value, maxLength = 300) {
-  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  const text = String(value || '')
+    .replace(/\s+/g, ' ')
+    .trim();
   return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 }
 
@@ -700,7 +682,8 @@ function connectionManagerNameFromRef(value = '') {
 
 function getCaseInsensitiveProperty(object = {}, key = '') {
   const match = Object.entries(object || {}).find(
-    ([candidate]) => cleanSsisSegment(candidate).toLowerCase() === cleanSsisSegment(key).toLowerCase()
+    ([candidate]) =>
+      cleanSsisSegment(candidate).toLowerCase() === cleanSsisSegment(key).toLowerCase()
   );
   return match ? match[1] : undefined;
 }
@@ -847,10 +830,18 @@ function buildSsisValueMap({
     const rowFolder = cleanSsisSegment(row.folder_name || row.folderName || '');
     const rowProject = cleanSsisSegment(row.project_name || row.projectName || '');
     const rowPackage = cleanSsisSegment(row.package_name || row.packageName || '');
-    if (rowFolder && folderName && rowFolder.toLowerCase() !== cleanSsisSegment(folderName).toLowerCase()) {
+    if (
+      rowFolder &&
+      folderName &&
+      rowFolder.toLowerCase() !== cleanSsisSegment(folderName).toLowerCase()
+    ) {
       continue;
     }
-    if (rowProject && projectName && rowProject.toLowerCase() !== cleanSsisSegment(projectName).toLowerCase()) {
+    if (
+      rowProject &&
+      projectName &&
+      rowProject.toLowerCase() !== cleanSsisSegment(projectName).toLowerCase()
+    ) {
       continue;
     }
     if (
@@ -866,7 +857,8 @@ function buildSsisValueMap({
       projectName,
       packageName,
     });
-    const value = environmentValue || (row.default_value ?? row.design_default_value ?? row.value ?? '');
+    const value =
+      environmentValue || (row.default_value ?? row.design_default_value ?? row.value ?? '');
     addSsisValue(values, parameterName, value);
     addSsisValue(values, `Project::${parameterName}`, value);
     addSsisValue(values, `Package::${parameterName}`, value);
@@ -930,11 +922,18 @@ function resolveConnectionManagers(connectionManagers = [], context = {}) {
   const valueMap = buildSsisValueMap(context);
   return connectionManagers.map((cm) => {
     const dynamicExpressions = cm.dynamicExpressions || {};
-    const expressionConnectionString = dynamicExpressions.ConnectionString || cm.expressionConnectionString || '';
-    const resolvedConnectionString = resolveSsisExpressionValue(expressionConnectionString, valueMap);
+    const expressionConnectionString =
+      dynamicExpressions.ConnectionString || cm.expressionConnectionString || '';
+    const resolvedConnectionString = resolveSsisExpressionValue(
+      expressionConnectionString,
+      valueMap
+    );
     const resolvedServerName =
       parseConnectionStringServer(resolvedConnectionString) ||
-      resolveSsisExpressionValue(dynamicExpressions.ServerName || dynamicExpressions.DataSource, valueMap);
+      resolveSsisExpressionValue(
+        dynamicExpressions.ServerName || dynamicExpressions.DataSource,
+        valueMap
+      );
     const resolvedDatabaseName =
       parseConnectionStringDatabase(resolvedConnectionString) ||
       resolveSsisExpressionValue(
@@ -960,8 +959,11 @@ function resolveConnectionManagers(connectionManagers = [], context = {}) {
 
     const dynamicResolved = Boolean(
       cm.dynamicResolved ||
-        (cm.hasDynamicExpression &&
-          (resolvedConnectionString || resolvedServerName || resolvedDatabaseName || resolvedFilePath))
+      (cm.hasDynamicExpression &&
+        (resolvedConnectionString ||
+          resolvedServerName ||
+          resolvedDatabaseName ||
+          resolvedFilePath))
     );
 
     return {
@@ -1092,8 +1094,10 @@ function extractConnectionManagers(packageXml) {
           'connectionManager',
           'ConnectionManager',
         ]).find((value) => value && typeof value === 'object') || {};
-      const refId = raw['@_DTS:refId'] || raw['@_refId'] || inner['@_DTS:refId'] || inner['@_refId'] || '';
-      const id = raw['@_DTS:DTSID'] || raw['@_DTSID'] || inner['@_DTS:DTSID'] || inner['@_DTSID'] || '';
+      const refId =
+        raw['@_DTS:refId'] || raw['@_refId'] || inner['@_DTS:refId'] || inner['@_refId'] || '';
+      const id =
+        raw['@_DTS:DTSID'] || raw['@_DTSID'] || inner['@_DTS:DTSID'] || inner['@_DTSID'] || '';
       const refName = String(refId || '').match(/ConnectionManagers\[([^\]]+)\]/i)?.[1] || '';
       const connType =
         raw['@_DTS:CreationName'] ||
@@ -1116,7 +1120,12 @@ function extractConnectionManagers(packageXml) {
       ];
       for (const p of propNodes) {
         const pName = p?.['@_DTS:Name'] || p?.['@_Name'] || '';
-        const pVal = (p && typeof p === 'object' && p['#text'] !== undefined) ? String(p['#text']) : (typeof p !== 'object' ? String(p) : '');
+        const pVal =
+          p && typeof p === 'object' && p['#text'] !== undefined
+            ? String(p['#text'])
+            : typeof p !== 'object'
+              ? String(p)
+              : '';
         if (pName) props[pName] = String(pVal);
       }
 
@@ -1155,12 +1164,12 @@ function extractConnectionManagers(packageXml) {
         connName,
         connType,
         hasDynamicExpression: Object.keys(dynamicProps).length > 0,
-        dynamicVariables: Object.entries(dynamicProps)
-          .flatMap(([, expr]) => {
-            const matches = String(expr || '').match(/@\[\$?[A-Za-z0-9_]+::([A-Za-z0-9_]+)\]/g) || [];
-            return matches.map((m) => m.replace(/^@\[\$?[A-Za-z0-9_]+::/, '').replace(/\]$/, ''));
-          }),
-        serverName: props.ServerName || props.DataSource || expressionServerName || rawServerName || '',
+        dynamicVariables: Object.entries(dynamicProps).flatMap(([, expr]) => {
+          const matches = String(expr || '').match(/@\[\$?[A-Za-z0-9_]+::([A-Za-z0-9_]+)\]/g) || [];
+          return matches.map((m) => m.replace(/^@\[\$?[A-Za-z0-9_]+::/, '').replace(/\]$/, ''));
+        }),
+        serverName:
+          props.ServerName || props.DataSource || expressionServerName || rawServerName || '',
         databaseName:
           props.DatabaseName ||
           props.InitialCatalog ||
@@ -1212,8 +1221,8 @@ function extractDataFlowComponents(packageXml) {
       const inputColumns = collectColumnNodes(c, ['inputColumn', 'DTS:inputColumn']).map((node) =>
         normalizeSsisColumnNode(node, 'input')
       );
-      const outputColumns = collectColumnNodes(c, ['outputColumn', 'DTS:outputColumn']).map((node) =>
-        normalizeSsisColumnNode(node, 'output')
+      const outputColumns = collectColumnNodes(c, ['outputColumn', 'DTS:outputColumn']).map(
+        (node) => normalizeSsisColumnNode(node, 'output')
       );
       const externalMetadataColumns = Array.from(
         new Map(
@@ -1298,11 +1307,7 @@ function componentTableName(component) {
     .join('.');
   const sqlRefs = extractSsisSqlTableReferences(component?.sqlCommand || '', ['FROM', 'JOIN']);
   return cleanSsisSegment(
-    component?.tableName ||
-      component?.lookupTable ||
-      explicitRef ||
-      sqlRefs[0] ||
-      ''
+    component?.tableName || component?.lookupTable || explicitRef || sqlRefs[0] || ''
   );
 }
 
@@ -1362,7 +1367,10 @@ function extractSsisColumnMappingsFromComponents(components = [], options = {}) 
           columnNameFromSsisRef(inputColumn.externalMetadataColumnId) || inputColumn.name;
         const sourceComponentName = componentNameFromSsisRef(inputColumn.lineageId);
         const sourceComponent = componentByName.get(sourceComponentName.toLowerCase());
-        const sourceColumn = columnNameFromSsisRef(inputColumn.lineageId) || inputColumn.cachedName || inputColumn.name;
+        const sourceColumn =
+          columnNameFromSsisRef(inputColumn.lineageId) ||
+          inputColumn.cachedName ||
+          inputColumn.name;
 
         if (!externalName || !sourceColumn) {
           addUnresolved({
@@ -1417,11 +1425,14 @@ function extractSsisColumnMappingsFromComponents(components = [], options = {}) 
           destination_object: null,
           input_column: null,
           output_column: outputColumn.name,
-          external_metadata_column: columnNameFromSsisRef(outputColumn.externalMetadataColumnId) || null,
+          external_metadata_column:
+            columnNameFromSsisRef(outputColumn.externalMetadataColumnId) || null,
           transform_type: 'lookup',
           expression: outputColumn.expression || outputColumn.name,
           evidence_type: 'ssis_lookup_output',
-          evidence_text: compactEvidence(outputColumn.lineageId || outputColumn.refId || outputColumn.name),
+          evidence_text: compactEvidence(
+            outputColumn.lineageId || outputColumn.refId || outputColumn.name
+          ),
           validation_status: 'validated',
         });
       }
@@ -1532,8 +1543,9 @@ function extractExecutePackageTasks(packageXml) {
       const objectData = raw['DTS:ObjectData'] || raw.ObjectData || {};
       const taskData =
         objectData.ExecutePackageTask ||
-        objectData['ExecutePackageTask'] ||
-        collectXmlValues(objectData, ['ExecutePackageTask']).find((value) => value && typeof value === 'object') ||
+        collectXmlValues(objectData, ['ExecutePackageTask']).find(
+          (value) => value && typeof value === 'object'
+        ) ||
         {};
       const packageNameNode =
         taskData['@_PackageName'] ||
@@ -1547,9 +1559,7 @@ function extractExecutePackageTasks(packageXml) {
         packageNameNode && typeof packageNameNode === 'object'
           ? packageNameNode['#text'] || packageNameNode['@_PackageName'] || ''
           : packageNameNode;
-      const packageName = normalizePackageTaskName(
-        packageNameText
-      );
+      const packageName = normalizePackageTaskName(packageNameText);
 
       if (packageName) {
         tasks.push({
@@ -1604,7 +1614,8 @@ class SsisMetadataExtractor {
 
   async extractCatalogInventory(warnings, options = {}) {
     const limit = Number(options.limit || options.catalogLimit);
-    const topClause = Number.isFinite(limit) && limit > 0 ? `TOP (${Math.min(Math.trunc(limit), 1000)})` : '';
+    const topClause =
+      Number.isFinite(limit) && limit > 0 ? `TOP (${Math.min(Math.trunc(limit), 1000)})` : '';
     const { rows, error } = await safeQuery(
       this.pool,
       `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
@@ -1779,10 +1790,12 @@ class SsisMetadataExtractor {
     const filteredProjects = (projects || []).filter((project) => {
       const folderMatches =
         !configuredFolder ||
-        cleanSsisSegment(project.folder_name || '').toLowerCase() === configuredFolder.toLowerCase();
+        cleanSsisSegment(project.folder_name || '').toLowerCase() ===
+          configuredFolder.toLowerCase();
       const projectMatches =
         !configuredProject ||
-        cleanSsisSegment(project.project_name || '').toLowerCase() === configuredProject.toLowerCase();
+        cleanSsisSegment(project.project_name || '').toLowerCase() ===
+          configuredProject.toLowerCase();
       return folderMatches && projectMatches;
     });
     if ((projects || []).length && filteredProjects.length === 0) {
@@ -2192,7 +2205,9 @@ class SsisMetadataExtractor {
       });
       const packageId = resolvePackageId(objectName, xmlPkg.projectName);
       const catalogRow =
-        catalogByProjectPackage.get(`${cleanSsisSegment(xmlPkg.projectName)}.${cleanSsisSegment(objectName)}`.toLowerCase()) ||
+        catalogByProjectPackage.get(
+          `${cleanSsisSegment(xmlPkg.projectName)}.${cleanSsisSegment(objectName)}`.toLowerCase()
+        ) ||
         catalogByPackage.get(cleanSsisSegment(objectName).toLowerCase()) ||
         {};
       const packageContext = {
@@ -2278,7 +2293,9 @@ class SsisMetadataExtractor {
           '';
         return {
           sql: resolved,
-          evidenceType: resolved ? 'ssis_source_sql_command_variable' : 'ssis_source_sql_command_variable_unresolved',
+          evidenceType: resolved
+            ? 'ssis_source_sql_command_variable'
+            : 'ssis_source_sql_command_variable_unresolved',
         };
       };
 
@@ -2295,7 +2312,8 @@ class SsisMetadataExtractor {
           edgeType: 'UNRESOLVED_DYNAMIC_EDGE',
           validation_status: 'unresolved',
           evidence_type: 'ssis_dynamic_connection',
-          evidence_text: cm.expressionConnectionString || JSON.stringify(cm.dynamicExpressions || {}),
+          evidence_text:
+            cm.expressionConnectionString || JSON.stringify(cm.dynamicExpressions || {}),
           confidence: 0.0,
           packageName: objectName,
           variableName,
@@ -2345,7 +2363,9 @@ class SsisMetadataExtractor {
           );
         } else if (sourceSql.sql) {
           sourceTables.push(
-            ...parsedSourceSql.reads.map((ref) => combineConnectionAndTable(srcConnection, ref, hostServer))
+            ...parsedSourceSql.reads.map((ref) =>
+              combineConnectionAndTable(srcConnection, ref, hostServer)
+            )
           );
         }
         if (
@@ -2475,7 +2495,9 @@ class SsisMetadataExtractor {
           via: `${packageId}/Destination/${dst.componentName}`,
           edgeType: 'WRITES_TO',
           validation_status: 'validated',
-          evidence_type: dstExternalId ? 'ssis_external_destination_component' : 'ssis_dataflow_destination',
+          evidence_type: dstExternalId
+            ? 'ssis_external_destination_component'
+            : 'ssis_dataflow_destination',
           evidence_text: dst.sqlCommand || dst.tableName || '',
           confidence: dstExternalId ? 0.85 : 0.95,
           packageName: objectName,
@@ -2498,7 +2520,10 @@ class SsisMetadataExtractor {
             evidence_text: task.sqlStatement || '',
             confidence: 0.0,
             packageName: objectName,
-            variableName: String(task.connectionManagerId || '').match(/@\[\$[A-Za-z0-9_]+::([A-Za-z0-9_]+)\]/)?.[1] || 'UNKNOWN_VARIABLE',
+            variableName:
+              String(task.connectionManagerId || '').match(
+                /@\[\$[A-Za-z0-9_]+::([A-Za-z0-9_]+)\]/
+              )?.[1] || 'UNKNOWN_VARIABLE',
           });
           continue;
         }
@@ -2637,7 +2662,9 @@ export async function extractSsisMetadata(connectionConfig, opts = {}) {
   const looksLikeConnector =
     resolvedConfig &&
     typeof resolvedConfig === 'object' &&
-    (resolvedConfig.type === 'ssis' || resolvedConfig.type === 'sql_server' || resolvedConfig.credential);
+    (resolvedConfig.type === 'ssis' ||
+      resolvedConfig.type === 'sql_server' ||
+      resolvedConfig.credential);
 
   if (looksLikeConnector) {
     const credentialMode = sqlServerCredentialMode(resolvedConfig);

@@ -4,30 +4,19 @@
     "es2021": true,
     "jest": true
   },
-  "extends": [
-    "airbnb-base",
-    "prettier"
-  ],
+  "extends": ["airbnb-base", "prettier"],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
   "settings": {
-    "import/core-modules": [
-      "archiver",
-      "mssql",
-      "mssql/msnodesqlv8.js"
-    ]
+    "import/core-modules": ["@jest/globals", "archiver", "mssql", "mssql/msnodesqlv8.js"]
   },
   "rules": {
     "no-console": [
       "warn",
       {
-        "allow": [
-          "log",
-          "warn",
-          "error"
-        ]
+        "allow": ["log", "warn", "error"]
       }
     ],
     "no-unused-vars": [
@@ -37,16 +26,8 @@
       }
     ],
     "consistent-return": "error",
-    "no-param-reassign": "warn",
     "implicit-arrow-linebreak": "off",
-    "no-use-before-define": [
-      "error",
-      {
-        "functions": false,
-        "classes": true,
-        "variables": true
-      }
-    ],
+    "func-names": "off",
     "import/extensions": [
       "error",
       "ignorePackages",
@@ -59,23 +40,33 @@
     "import/no-extraneous-dependencies": [
       "error",
       {
-        "packageDir": [
-          "./"
-        ],
-        "devDependencies": [
-          "tests/**",
-          "**/*.test.js",
-          "**/*.spec.js",
-          "jest.config.js"
-        ]
+        "packageDir": ["./"],
+        "devDependencies": ["tests/**", "**/*.test.js", "**/*.spec.js", "jest.config.js"]
       }
-    ]
+    ],
+    "camelcase": "off",
+    "class-methods-use-this": "off",
+    "default-param-last": "off",
+    "import/no-cycle": "off",
+    "import/prefer-default-export": "off",
+    "max-classes-per-file": "off",
+    "no-await-in-loop": "off",
+    "no-bitwise": "off",
+    "no-constant-condition": "off",
+    "no-empty-function": "off",
+    "no-nested-ternary": "off",
+    "no-param-reassign": "off",
+    "no-plusplus": "off",
+    "no-promise-executor-return": "off",
+    "no-shadow": "off",
+    "no-use-before-define": "off",
+    "no-useless-escape": "off",
+    "no-underscore-dangle": "off",
+    "prefer-template": "off"
   },
   "overrides": [
     {
-      "files": [
-        "src/components/**/*.js"
-      ],
+      "files": ["src/components/**/*.js", "docker/frontend/**/*.js", "tests/e2e/**/*.js"],
       "env": {
         "browser": true
       },

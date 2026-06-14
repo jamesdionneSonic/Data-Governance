@@ -1,4 +1,4 @@
-﻿/* eslint-env browser */
+/* eslint-env browser */
 
 export const dataProductsPageTemplate = `
             <div v-if="activeView === 'products'">

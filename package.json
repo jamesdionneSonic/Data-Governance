@@ -46,7 +46,7 @@
     "confluence:replace": "npm run confluence:export && npm run confluence:check && npm run confluence:dry-run && npm run confluence:sync -- --publish --replace-generated",
     "lineage:publish": "npm run catalog:refresh && npm run catalog:repo:export && npm run catalog:repo:check && npm run confluence:publish",
     "lineage:replace": "npm run catalog:refresh && npm run catalog:repo:export && npm run catalog:repo:check && npm run confluence:replace",
-    "lint": "eslint src tests --fix",
+    "lint": "eslint src tests docker scripts --fix --max-warnings=0",
     "format": "prettier --write 'src/**/*.js' 'tests/**/*.js'",
     "check-framework": "node scripts/check-framework.js",
     "ui:workflow:guardrails": "node scripts/check-ui-workflow-guardrails.mjs",

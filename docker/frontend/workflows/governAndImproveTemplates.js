@@ -1,4 +1,4 @@
-﻿/* eslint-env browser */
+/* eslint-env browser */
 
 export const businessGlossaryPageTemplate = `
             <div v-if="activeView === 'glossary'">

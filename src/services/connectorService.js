@@ -5,13 +5,7 @@
 
 import { randomUUID } from 'crypto';
 import { spawn } from 'child_process';
-import {
-  appendFileSync,
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  writeFileSync,
-} from 'fs';
+import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 import {
   buildAdapterCoverage,
@@ -108,7 +102,8 @@ export function connectorRuntimeAuthRemediationPacket(connector = {}, requestedI
   if (!isWindowsAuthFailure) return null;
 
   const server = connector.config?.server || connector.config?.host || details.server || null;
-  const database = connector.config?.database || connector.config?.catalogDatabase || details.database || null;
+  const database =
+    connector.config?.database || connector.config?.catalogDatabase || details.database || null;
   const authMode = sanitizeCredential(connector.credential).mode || details.credential_mode || null;
   const runtimeIdentity =
     details.runtime_process_identity ||
@@ -130,7 +125,9 @@ export function connectorRuntimeAuthRemediationPacket(connector = {}, requestedI
       resolved_endpoint: details.resolved_endpoint || null,
       uses_named_instance: details.uses_named_instance === true,
       trust_server_certificate:
-        connector.config?.trustServerCertificate ?? connector.config?.trust_server_certificate ?? null,
+        connector.config?.trustServerCertificate ??
+        connector.config?.trust_server_certificate ??
+        null,
       encrypt: connector.config?.encrypt ?? null,
       server_spn_configured: Boolean(connector.config?.serverSpn || connector.config?.server_spn),
     },
@@ -154,7 +151,8 @@ export function connectorRuntimeAuthRemediationPacket(connector = {}, requestedI
 }
 
 const AUTH_MODE_HELP = Object.freeze({
-  windows_integrated: 'Use the Windows account running the app. No password is stored in the connector.',
+  windows_integrated:
+    'Use the Windows account running the app. No password is stored in the connector.',
   managed_identity: 'Use the runtime managed identity for Azure-hosted access.',
   service_account: 'Use a username and password, or store the password in a secret reference.',
   secret_reference: 'Use a username plus a secret-store reference for the password or token.',
@@ -180,32 +178,119 @@ const CONNECTOR_WIZARD_METADATA = Object.freeze({
     supports_discovery: true,
     recommended_test_options: { dry_run: false, streams: ['schemas', 'tables', 'views'] },
     basic_fields: [
-      { key: 'server_host', label: 'Server', input: 'text', required: true, placeholder: 'L1-5FSQL-01', config_group: 'sql_server_endpoint', config_part: 'host' },
-      { key: 'instance_name', label: 'Instance', input: 'text', placeholder: 'INST1', config_group: 'sql_server_endpoint', config_part: 'instance' },
-      { key: 'database', label: 'Database', input: 'text', required: true, placeholder: 'Sonic_DW', config_key: 'database' },
+      {
+        key: 'server_host',
+        label: 'Server',
+        input: 'text',
+        required: true,
+        placeholder: 'L1-5FSQL-01',
+        config_group: 'sql_server_endpoint',
+        config_part: 'host',
+      },
+      {
+        key: 'instance_name',
+        label: 'Instance',
+        input: 'text',
+        placeholder: 'INST1',
+        config_group: 'sql_server_endpoint',
+        config_part: 'instance',
+      },
+      {
+        key: 'database',
+        label: 'Database',
+        input: 'text',
+        required: true,
+        placeholder: 'Sonic_DW',
+        config_key: 'database',
+      },
       { key: 'port', label: 'Port', input: 'number', placeholder: '1433', config_key: 'port' },
     ],
     advanced_fields: [
-      { key: 'schema', label: 'Default schema', input: 'text', placeholder: 'dbo', config_key: 'schema' },
+      {
+        key: 'schema',
+        label: 'Default schema',
+        input: 'text',
+        placeholder: 'dbo',
+        config_key: 'schema',
+      },
       { key: 'encrypt', label: 'Encrypt connection', input: 'toggle', config_key: 'encrypt' },
-      { key: 'trustServerCertificate', label: 'Trust server certificate', input: 'toggle', config_key: 'trustServerCertificate' },
-      { key: 'connectionTimeout', label: 'Connection timeout (ms)', input: 'number', placeholder: '15000', config_key: 'connectionTimeout' },
+      {
+        key: 'trustServerCertificate',
+        label: 'Trust server certificate',
+        input: 'toggle',
+        config_key: 'trustServerCertificate',
+      },
+      {
+        key: 'connectionTimeout',
+        label: 'Connection timeout (ms)',
+        input: 'number',
+        placeholder: '15000',
+        config_key: 'connectionTimeout',
+      },
     ],
   },
   ssis: {
     supports_test: true,
     supports_discovery: true,
-    recommended_test_options: { dry_run: false, streams: ['catalog', 'packages', 'tasks', 'connections'] },
+    recommended_test_options: {
+      dry_run: false,
+      streams: ['catalog', 'packages', 'tasks', 'connections'],
+    },
     basic_fields: [
-      { key: 'server_host', label: 'Catalog server', input: 'text', required: true, placeholder: 'L1-5FSQL-01', config_group: 'sql_server_endpoint', config_part: 'host' },
-      { key: 'instance_name', label: 'Instance', input: 'text', placeholder: 'INST1', config_group: 'sql_server_endpoint', config_part: 'instance' },
-      { key: 'catalogDatabase', label: 'Catalog database', input: 'text', placeholder: 'SSISDB', config_key: 'database' },
-      { key: 'folder', label: 'Folder (optional)', input: 'text', placeholder: 'FinanceETL', config_key: 'folder' },
-      { key: 'project', label: 'Project (optional)', input: 'text', placeholder: 'NightlyLoads', config_key: 'project' },
+      {
+        key: 'server_host',
+        label: 'Catalog server',
+        input: 'text',
+        required: true,
+        placeholder: 'L1-5FSQL-01',
+        config_group: 'sql_server_endpoint',
+        config_part: 'host',
+      },
+      {
+        key: 'instance_name',
+        label: 'Instance',
+        input: 'text',
+        placeholder: 'INST1',
+        config_group: 'sql_server_endpoint',
+        config_part: 'instance',
+      },
+      {
+        key: 'catalogDatabase',
+        label: 'Catalog database',
+        input: 'text',
+        placeholder: 'SSISDB',
+        config_key: 'database',
+      },
+      {
+        key: 'folder',
+        label: 'Folder (optional)',
+        input: 'text',
+        placeholder: 'FinanceETL',
+        config_key: 'folder',
+      },
+      {
+        key: 'project',
+        label: 'Project (optional)',
+        input: 'text',
+        placeholder: 'NightlyLoads',
+        config_key: 'project',
+      },
     ],
     advanced_fields: [
-      { key: 'environment', label: 'Environment', input: 'text', placeholder: 'UAT', config_key: 'environment' },
-      { key: 'connectionString', label: 'Override connection string', input: 'textarea', placeholder: 'Data Source=...;', config_key: 'connectionString' },
+      {
+        key: 'environment',
+        label: 'Environment',
+        input: 'text',
+        placeholder: 'UAT',
+        config_key: 'environment',
+      },
+      {
+        key: 'connectionString',
+        label: 'Override connection string',
+        input: 'textarea',
+        placeholder: 'Data Source=...;',
+        config_key: 'connectionString',
+      },
     ],
   },
   postgresql: {
@@ -213,24 +298,69 @@ const CONNECTOR_WIZARD_METADATA = Object.freeze({
     supports_discovery: true,
     recommended_test_options: { dry_run: false, streams: ['schemas', 'tables', 'views'] },
     basic_fields: [
-      { key: 'host', label: 'Host', input: 'text', required: true, placeholder: 'postgres.example.com', config_key: 'host' },
+      {
+        key: 'host',
+        label: 'Host',
+        input: 'text',
+        required: true,
+        placeholder: 'postgres.example.com',
+        config_key: 'host',
+      },
       { key: 'port', label: 'Port', input: 'number', placeholder: '5432', config_key: 'port' },
-      { key: 'database', label: 'Database', input: 'text', required: true, placeholder: 'analytics', config_key: 'database' },
-      { key: 'schema', label: 'Schema', input: 'text', placeholder: 'public', config_key: 'schema' },
+      {
+        key: 'database',
+        label: 'Database',
+        input: 'text',
+        required: true,
+        placeholder: 'analytics',
+        config_key: 'database',
+      },
+      {
+        key: 'schema',
+        label: 'Schema',
+        input: 'text',
+        placeholder: 'public',
+        config_key: 'schema',
+      },
     ],
-    advanced_fields: [
-      { key: 'ssl', label: 'Use SSL', input: 'toggle', config_key: 'ssl' },
-    ],
+    advanced_fields: [{ key: 'ssl', label: 'Use SSL', input: 'toggle', config_key: 'ssl' }],
   },
   snowflake: {
     supports_test: true,
     supports_discovery: true,
     recommended_test_options: { dry_run: false, streams: ['databases', 'schemas', 'tables'] },
     basic_fields: [
-      { key: 'account', label: 'Account', input: 'text', required: true, placeholder: 'xy12345.us-east-1', config_key: 'account' },
-      { key: 'warehouse', label: 'Warehouse', input: 'text', required: true, placeholder: 'COMPUTE_WH', config_key: 'warehouse' },
-      { key: 'database', label: 'Database', input: 'text', required: true, placeholder: 'ANALYTICS', config_key: 'database' },
-      { key: 'schema', label: 'Schema', input: 'text', placeholder: 'PUBLIC', config_key: 'schema' },
+      {
+        key: 'account',
+        label: 'Account',
+        input: 'text',
+        required: true,
+        placeholder: 'xy12345.us-east-1',
+        config_key: 'account',
+      },
+      {
+        key: 'warehouse',
+        label: 'Warehouse',
+        input: 'text',
+        required: true,
+        placeholder: 'COMPUTE_WH',
+        config_key: 'warehouse',
+      },
+      {
+        key: 'database',
+        label: 'Database',
+        input: 'text',
+        required: true,
+        placeholder: 'ANALYTICS',
+        config_key: 'database',
+      },
+      {
+        key: 'schema',
+        label: 'Schema',
+        input: 'text',
+        placeholder: 'PUBLIC',
+        config_key: 'schema',
+      },
     ],
     advanced_fields: [
       { key: 'role', label: 'Role', input: 'text', placeholder: 'SYSADMIN', config_key: 'role' },
@@ -241,13 +371,47 @@ const CONNECTOR_WIZARD_METADATA = Object.freeze({
     supports_discovery: true,
     recommended_test_options: { dry_run: false, streams: ['accounts', 'containers', 'paths'] },
     basic_fields: [
-      { key: 'account', label: 'Storage account', input: 'text', required: true, placeholder: 'sonicdatalake', config_key: 'account' },
-      { key: 'container', label: 'Container / filesystem', input: 'text', placeholder: 'raw', config_key: 'container' },
-      { key: 'path', label: 'Path prefix', input: 'text', placeholder: '/landing/vendor', config_key: 'path' },
+      {
+        key: 'account',
+        label: 'Storage account',
+        input: 'text',
+        required: true,
+        placeholder: 'sonicdatalake',
+        config_key: 'account',
+      },
+      {
+        key: 'container',
+        label: 'Container / filesystem',
+        input: 'text',
+        placeholder: 'raw',
+        config_key: 'container',
+      },
+      {
+        key: 'path',
+        label: 'Path prefix',
+        input: 'text',
+        placeholder: '/landing/vendor',
+        config_key: 'path',
+      },
     ],
     advanced_fields: [
-      { key: 'base_url', label: 'Custom endpoint', input: 'text', placeholder: 'https://account.dfs.core.windows.net', config_key: 'base_url' },
-      { key: 'account_kind', label: 'Storage kind', input: 'select', config_key: 'account_kind', options: [{ title: 'ADLS Gen2', value: 'adls_gen2' }, { title: 'Blob Storage', value: 'blob' }] },
+      {
+        key: 'base_url',
+        label: 'Custom endpoint',
+        input: 'text',
+        placeholder: 'https://account.dfs.core.windows.net',
+        config_key: 'base_url',
+      },
+      {
+        key: 'account_kind',
+        label: 'Storage kind',
+        input: 'select',
+        config_key: 'account_kind',
+        options: [
+          { title: 'ADLS Gen2', value: 'adls_gen2' },
+          { title: 'Blob Storage', value: 'blob' },
+        ],
+      },
     ],
   },
   power_bi: {
@@ -255,13 +419,44 @@ const CONNECTOR_WIZARD_METADATA = Object.freeze({
     supports_discovery: true,
     recommended_test_options: { dry_run: false, streams: ['workspaces', 'datasets', 'reports'] },
     basic_fields: [
-      { key: 'tenant_id', label: 'Tenant ID', input: 'text', required: true, placeholder: '00000000-0000-0000-0000-000000000000', config_key: 'tenant_id' },
-      { key: 'workspace_id', label: 'Workspace ID', input: 'text', placeholder: 'workspace-guid', config_key: 'workspace_id' },
-      { key: 'organization', label: 'Organization', input: 'text', placeholder: 'myorg', config_key: 'organization' },
+      {
+        key: 'tenant_id',
+        label: 'Tenant ID',
+        input: 'text',
+        required: true,
+        placeholder: '00000000-0000-0000-0000-000000000000',
+        config_key: 'tenant_id',
+      },
+      {
+        key: 'workspace_id',
+        label: 'Workspace ID',
+        input: 'text',
+        placeholder: 'workspace-guid',
+        config_key: 'workspace_id',
+      },
+      {
+        key: 'organization',
+        label: 'Organization',
+        input: 'text',
+        placeholder: 'myorg',
+        config_key: 'organization',
+      },
     ],
     advanced_fields: [
-      { key: 'activity_start', label: 'Activity start override', input: 'text', placeholder: '2026-01-01T00:00:00Z', config_key: 'activity_start' },
-      { key: 'activity_end', label: 'Activity end override', input: 'text', placeholder: '2026-01-02T00:00:00Z', config_key: 'activity_end' },
+      {
+        key: 'activity_start',
+        label: 'Activity start override',
+        input: 'text',
+        placeholder: '2026-01-01T00:00:00Z',
+        config_key: 'activity_start',
+      },
+      {
+        key: 'activity_end',
+        label: 'Activity end override',
+        input: 'text',
+        placeholder: '2026-01-02T00:00:00Z',
+        config_key: 'activity_end',
+      },
     ],
   },
   tableau: {
@@ -269,25 +464,68 @@ const CONNECTOR_WIZARD_METADATA = Object.freeze({
     supports_discovery: true,
     recommended_test_options: { dry_run: false, streams: ['projects', 'workbooks', 'datasources'] },
     basic_fields: [
-      { key: 'server_url', label: 'Server URL', input: 'text', required: true, placeholder: 'https://tableau.company.com', config_key: 'server_url' },
-      { key: 'site_id', label: 'Site ID', input: 'text', required: true, placeholder: 'marketing', config_key: 'site_id' },
+      {
+        key: 'server_url',
+        label: 'Server URL',
+        input: 'text',
+        required: true,
+        placeholder: 'https://tableau.company.com',
+        config_key: 'server_url',
+      },
+      {
+        key: 'site_id',
+        label: 'Site ID',
+        input: 'text',
+        required: true,
+        placeholder: 'marketing',
+        config_key: 'site_id',
+      },
     ],
     advanced_fields: [
-      { key: 'api_version', label: 'API version', input: 'text', placeholder: '3.21', config_key: 'api_version' },
+      {
+        key: 'api_version',
+        label: 'API version',
+        input: 'text',
+        placeholder: '3.21',
+        config_key: 'api_version',
+      },
     ],
   },
   git_repository: {
     supports_test: true,
     supports_discovery: true,
-    recommended_test_options: { dry_run: false, streams: ['repositories', 'python_scripts', 'sql_files'] },
+    recommended_test_options: {
+      dry_run: false,
+      streams: ['repositories', 'python_scripts', 'sql_files'],
+    },
     basic_fields: [
-      { key: 'repo_url', label: 'Repository URL', input: 'text', required: true, placeholder: 'https://dev.azure.com/org/project/_git/repo', config_key: 'repo_url' },
+      {
+        key: 'repo_url',
+        label: 'Repository URL',
+        input: 'text',
+        required: true,
+        placeholder: 'https://dev.azure.com/org/project/_git/repo',
+        config_key: 'repo_url',
+      },
       { key: 'branch', label: 'Branch', input: 'text', placeholder: 'main', config_key: 'branch' },
       { key: 'path', label: 'Root path', input: 'text', placeholder: '/', config_key: 'path' },
-      { key: 'files', label: 'Known files (optional)', input: 'textarea', placeholder: 'jobs/load_vehicle.py\nsql/stage_vehicle.sql', config_key: 'files', value_format: 'newline_array' },
+      {
+        key: 'files',
+        label: 'Known files (optional)',
+        input: 'textarea',
+        placeholder: 'jobs/load_vehicle.py\nsql/stage_vehicle.sql',
+        config_key: 'files',
+        value_format: 'newline_array',
+      },
     ],
     advanced_fields: [
-      { key: 'repository_api_url', label: 'Repository API URL override', input: 'text', placeholder: 'https://api.github.com/repos/org/repo', config_key: 'repository_api_url' },
+      {
+        key: 'repository_api_url',
+        label: 'Repository API URL override',
+        input: 'text',
+        placeholder: 'https://api.github.com/repos/org/repo',
+        config_key: 'repository_api_url',
+      },
     ],
   },
   openapi: {
@@ -295,11 +533,30 @@ const CONNECTOR_WIZARD_METADATA = Object.freeze({
     supports_discovery: false,
     recommended_test_options: { dry_run: false, streams: ['openapi_spec', 'endpoints', 'schemas'] },
     basic_fields: [
-      { key: 'spec_url', label: 'OpenAPI spec URL', input: 'text', required: true, placeholder: 'https://api.company.com/openapi.json', config_key: 'spec_url' },
-      { key: 'base_url', label: 'Base API URL', input: 'text', placeholder: 'https://api.company.com', config_key: 'base_url' },
+      {
+        key: 'spec_url',
+        label: 'OpenAPI spec URL',
+        input: 'text',
+        required: true,
+        placeholder: 'https://api.company.com/openapi.json',
+        config_key: 'spec_url',
+      },
+      {
+        key: 'base_url',
+        label: 'Base API URL',
+        input: 'text',
+        placeholder: 'https://api.company.com',
+        config_key: 'base_url',
+      },
     ],
     advanced_fields: [
-      { key: 'lineage_endpoint', label: 'Lineage endpoint override', input: 'text', placeholder: 'https://api.company.com/metadata', config_key: 'lineage_endpoint' },
+      {
+        key: 'lineage_endpoint',
+        label: 'Lineage endpoint override',
+        input: 'text',
+        placeholder: 'https://api.company.com/metadata',
+        config_key: 'lineage_endpoint',
+      },
     ],
   },
 });
@@ -332,7 +589,17 @@ export const CONNECTOR_TYPES = Object.freeze({
     provider: 'Microsoft',
     category: CONNECTOR_CATEGORIES.DATABASE,
     cloud: 'hybrid',
-    metadata: ['schemas', 'tables', 'views', 'columns', 'procedures', 'functions', 'constraints', 'indexes', 'lineage hints'],
+    metadata: [
+      'schemas',
+      'tables',
+      'views',
+      'columns',
+      'procedures',
+      'functions',
+      'constraints',
+      'indexes',
+      'lineage hints',
+    ],
     credentialKinds: ['service_account', 'managed_identity', 'windows_integrated'],
   },
   POSTGRESQL: {
@@ -368,7 +635,16 @@ export const CONNECTOR_TYPES = Object.freeze({
     provider: 'Databricks',
     category: CONNECTOR_CATEGORIES.WAREHOUSE,
     cloud: 'multi-cloud',
-    metadata: ['workspaces', 'unity catalog', 'schemas', 'tables', 'views', 'jobs', 'clusters', 'notebooks'],
+    metadata: [
+      'workspaces',
+      'unity catalog',
+      'schemas',
+      'tables',
+      'views',
+      'jobs',
+      'clusters',
+      'notebooks',
+    ],
     credentialKinds: ['service_principal', 'pat', 'oauth'],
   },
   AZURE_PURVIEW: {
@@ -404,7 +680,17 @@ export const CONNECTOR_TYPES = Object.freeze({
     provider: 'Microsoft',
     category: CONNECTOR_CATEGORIES.PIPELINE,
     cloud: 'on_prem',
-    metadata: ['catalog folders', 'projects', 'packages', 'tasks', 'connections', 'parameters', 'environments', 'agent jobs', 'lineage edges'],
+    metadata: [
+      'catalog folders',
+      'projects',
+      'packages',
+      'tasks',
+      'connections',
+      'parameters',
+      'environments',
+      'agent jobs',
+      'lineage edges',
+    ],
     credentialKinds: ['windows_integrated', 'service_account', 'secret_reference'],
   },
   AWS_GLUE: {
@@ -467,7 +753,18 @@ export const CONNECTOR_TYPES = Object.freeze({
     provider: 'MicroStrategy',
     category: CONNECTOR_CATEGORIES.BI,
     cloud: 'saas',
-    metadata: ['projects', 'dossiers', 'documents', 'reports', 'cubes', 'attributes', 'metrics', 'facts', 'prompts', 'data sources'],
+    metadata: [
+      'projects',
+      'dossiers',
+      'documents',
+      'reports',
+      'cubes',
+      'attributes',
+      'metrics',
+      'facts',
+      'prompts',
+      'data sources',
+    ],
     credentialKinds: ['oauth', 'api_token_reference', 'service_account'],
   },
   SSAS_ON_PREM: {
@@ -476,7 +773,18 @@ export const CONNECTOR_TYPES = Object.freeze({
     provider: 'Microsoft',
     category: CONNECTOR_CATEGORIES.BI,
     cloud: 'on_prem',
-    metadata: ['servers', 'databases', 'models', 'cubes', 'perspectives', 'dimensions', 'measures', 'partitions', 'roles', 'data sources'],
+    metadata: [
+      'servers',
+      'databases',
+      'models',
+      'cubes',
+      'perspectives',
+      'dimensions',
+      'measures',
+      'partitions',
+      'roles',
+      'data sources',
+    ],
     credentialKinds: ['windows_integrated', 'service_account', 'secret_reference'],
   },
   POWER_BI: {
@@ -494,7 +802,14 @@ export const CONNECTOR_TYPES = Object.freeze({
     provider: 'Microsoft',
     category: CONNECTOR_CATEGORIES.BI,
     cloud: 'on_prem',
-    metadata: ['folders', 'pbix reports', 'paginated reports', 'mobile reports', 'linked reports', 'datasource references'],
+    metadata: [
+      'folders',
+      'pbix reports',
+      'paginated reports',
+      'mobile reports',
+      'linked reports',
+      'datasource references',
+    ],
     credentialKinds: ['windows_integrated', 'service_account', 'secret_reference'],
   },
   SSRS: {
@@ -503,7 +818,14 @@ export const CONNECTOR_TYPES = Object.freeze({
     provider: 'Microsoft',
     category: CONNECTOR_CATEGORIES.BI,
     cloud: 'on_prem',
-    metadata: ['folders', 'rdl reports', 'subscriptions', 'shared data sources', 'shared datasets', 'parameters'],
+    metadata: [
+      'folders',
+      'rdl reports',
+      'subscriptions',
+      'shared data sources',
+      'shared datasets',
+      'parameters',
+    ],
     credentialKinds: ['windows_integrated', 'service_account', 'secret_reference'],
   },
   TABLEAU: {
@@ -521,7 +843,16 @@ export const CONNECTOR_TYPES = Object.freeze({
     provider: 'Qlik',
     category: CONNECTOR_CATEGORIES.BI,
     cloud: 'saas',
-    metadata: ['spaces', 'apps', 'sheets', 'charts', 'datasets', 'fields', 'measures', 'reload tasks'],
+    metadata: [
+      'spaces',
+      'apps',
+      'sheets',
+      'charts',
+      'datasets',
+      'fields',
+      'measures',
+      'reload tasks',
+    ],
     credentialKinds: ['oauth', 'api_key_reference'],
   },
   QLIK_SENSE: {
@@ -530,7 +861,16 @@ export const CONNECTOR_TYPES = Object.freeze({
     provider: 'Qlik',
     category: CONNECTOR_CATEGORIES.BI,
     cloud: 'hybrid',
-    metadata: ['streams', 'apps', 'sheets', 'charts', 'reload tasks', 'data connections', 'fields', 'measures'],
+    metadata: [
+      'streams',
+      'apps',
+      'sheets',
+      'charts',
+      'reload tasks',
+      'data connections',
+      'fields',
+      'measures',
+    ],
     credentialKinds: ['certificate_reference', 'service_account', 'api_key_reference'],
   },
   DOMO: {
@@ -611,7 +951,15 @@ export const CONNECTOR_TYPES = Object.freeze({
     provider: 'IBM',
     category: CONNECTOR_CATEGORIES.BI,
     cloud: 'hybrid',
-    metadata: ['packages', 'reports', 'dashboards', 'data modules', 'queries', 'dimensions', 'measures'],
+    metadata: [
+      'packages',
+      'reports',
+      'dashboards',
+      'data modules',
+      'queries',
+      'dimensions',
+      'measures',
+    ],
     credentialKinds: ['service_account', 'oauth', 'secret_reference'],
   },
   SAP_BUSINESSOBJECTS: {
@@ -620,7 +968,14 @@ export const CONNECTOR_TYPES = Object.freeze({
     provider: 'SAP',
     category: CONNECTOR_CATEGORIES.BI,
     cloud: 'hybrid',
-    metadata: ['universes', 'web intelligence documents', 'crystal reports', 'folders', 'objects', 'data foundations'],
+    metadata: [
+      'universes',
+      'web intelligence documents',
+      'crystal reports',
+      'folders',
+      'objects',
+      'data foundations',
+    ],
     credentialKinds: ['service_account', 'secret_reference'],
   },
   ORACLE_ANALYTICS: {
@@ -629,7 +984,14 @@ export const CONNECTOR_TYPES = Object.freeze({
     provider: 'Oracle',
     category: CONNECTOR_CATEGORIES.BI,
     cloud: 'hybrid',
-    metadata: ['workbooks', 'analyses', 'dashboards', 'datasets', 'semantic models', 'subject areas'],
+    metadata: [
+      'workbooks',
+      'analyses',
+      'dashboards',
+      'datasets',
+      'semantic models',
+      'subject areas',
+    ],
     credentialKinds: ['oauth', 'api_token_reference', 'service_account'],
   },
   THOUGHTSPOT: {
@@ -683,7 +1045,15 @@ export const CONNECTOR_TYPES = Object.freeze({
     provider: 'GitHub / Azure DevOps / GitLab / Bitbucket',
     category: CONNECTOR_CATEGORIES.REPOSITORY,
     cloud: 'multi-cloud',
-    metadata: ['repositories', 'branches', 'python scripts', 'sql files', 'dbt manifests', 'notebooks', 'pipeline code'],
+    metadata: [
+      'repositories',
+      'branches',
+      'python scripts',
+      'sql files',
+      'dbt manifests',
+      'notebooks',
+      'pipeline code',
+    ],
     credentialKinds: ['oauth_app', 'pat_reference', 'ssh_key_reference'],
   },
   KAFKA: {
@@ -726,7 +1096,11 @@ const PROFILE_SCHEDULE_STATUSES = new Set(['ACTIVE', 'PAUSED']);
 const PROFILE_SCHEDULER_DEFAULT_INTERVAL_MS = 60_000;
 const PROFILE_SCHEDULER_MAX_HISTORY = 1000;
 const PROFILE_CONNECTOR_MAX_HISTORY = 5000;
-const RUNTIME_USER = { id: 'profile-scheduler', email: 'scheduler@platform.local', roles: ['Admin'] };
+const RUNTIME_USER = {
+  id: 'profile-scheduler',
+  email: 'scheduler@platform.local',
+  roles: ['Admin'],
+};
 let runtimeStoreHydrated = false;
 let profileSchedulerTimer = null;
 let profileSchedulerStatus = {
@@ -769,7 +1143,9 @@ function toArray(value) {
 }
 
 function normalizeConnectorType(type) {
-  const normalized = String(type || '').trim().toLowerCase();
+  const normalized = String(type || '')
+    .trim()
+    .toLowerCase();
   const found = Object.values(CONNECTOR_TYPES).find((definition) => definition.type === normalized);
   if (!found) {
     throw new Error(`Unsupported connector type '${type}'.`);
@@ -778,7 +1154,9 @@ function normalizeConnectorType(type) {
 }
 
 function connectorWizardMetadataForType(type) {
-  const normalized = String(type || '').trim().toLowerCase();
+  const normalized = String(type || '')
+    .trim()
+    .toLowerCase();
   const wizard = CONNECTOR_WIZARD_METADATA[normalized];
   if (wizard) return { ...wizard };
   return {
@@ -811,7 +1189,9 @@ function sanitizeCredential(credential = {}) {
   }
   const visibleFields = Object.fromEntries(
     Object.entries(credential)
-      .filter(([key]) => !['secret_ref', 'secretRef', 'vault', 'status', 'fields', 'values'].includes(key))
+      .filter(
+        ([key]) => !['secret_ref', 'secretRef', 'vault', 'status', 'fields', 'values'].includes(key)
+      )
       .filter(([key]) => !SENSITIVE_FIELD_PATTERN.test(key))
   );
   return {
@@ -839,7 +1219,17 @@ function normalizeCredentialForPersistence(credential = {}) {
   if (vault) normalized.vault = 'stored_reference';
   for (const [key, value] of Object.entries(credential)) {
     if (
-      ['mode', 'kind', 'secret_ref', 'secretRef', 'vault', 'vault_name', 'status', 'fields', 'values'].includes(key) ||
+      [
+        'mode',
+        'kind',
+        'secret_ref',
+        'secretRef',
+        'vault',
+        'vault_name',
+        'status',
+        'fields',
+        'values',
+      ].includes(key) ||
       SENSITIVE_FIELD_PATTERN.test(key) ||
       value === undefined ||
       value === null ||
@@ -862,7 +1252,9 @@ function sanitizeConnector(connector) {
 }
 
 function normalizeConnectorLookupValue(value = '') {
-  return String(value || '').trim().toLowerCase();
+  return String(value || '')
+    .trim()
+    .toLowerCase();
 }
 
 function connectorLookupAliases(connector = {}) {
@@ -882,15 +1274,18 @@ function connectorLookupAliases(connector = {}) {
 function resolveConnectorRecord(id) {
   hydrateRuntimeStore();
   const exact = connectorStore.get(id);
-  if (exact) return { connector: exact, requested_id: id, resolved_id: exact.id, alias_match: false };
+  if (exact)
+    return { connector: exact, requested_id: id, resolved_id: exact.id, alias_match: false };
 
   const requested = normalizeConnectorLookupValue(id);
-  if (!requested) return { connector: null, requested_id: id, resolved_id: null, alias_match: false };
+  if (!requested)
+    return { connector: null, requested_id: id, resolved_id: null, alias_match: false };
 
   const matches = [...connectorStore.values()].filter((connector) =>
     connectorLookupAliases(connector).includes(requested)
   );
-  if (matches.length !== 1) return { connector: null, requested_id: id, resolved_id: null, alias_match: false };
+  if (matches.length !== 1)
+    return { connector: null, requested_id: id, resolved_id: null, alias_match: false };
   return { connector: matches[0], requested_id: id, resolved_id: matches[0].id, alias_match: true };
 }
 
@@ -903,7 +1298,12 @@ function sanitizeProfileOptions(options = {}) {
 }
 
 function scheduleDryRunRequested(options = {}) {
-  return options.dry_run === true || options.dryRun === true || options.execution_mode === 'dry_run' || options.executionMode === 'dry_run';
+  return (
+    options.dry_run === true ||
+    options.dryRun === true ||
+    options.execution_mode === 'dry_run' ||
+    options.executionMode === 'dry_run'
+  );
 }
 
 function normalizeScheduleRuntimeOptions(options = {}, warnings = []) {
@@ -911,7 +1311,10 @@ function normalizeScheduleRuntimeOptions(options = {}, warnings = []) {
     fail_fast: false,
     ...options,
     dry_run: false,
-    execution_mode: options.execution_mode && options.execution_mode !== 'dry_run' ? options.execution_mode : 'live',
+    execution_mode:
+      options.execution_mode && options.execution_mode !== 'dry_run'
+        ? options.execution_mode
+        : 'live',
   });
   delete normalized.dryRun;
   delete normalized.executionMode;
@@ -926,10 +1329,13 @@ function normalizeScheduleRuntimeOptions(options = {}, warnings = []) {
 
 function assertProfileScheduleNotDryRun(options = {}) {
   if (!scheduleDryRunRequested(options)) return;
-  const error = new Error('Recurring profile schedules cannot be saved as dry runs. Use a one-time profile run for dry-run previews.');
+  const error = new Error(
+    'Recurring profile schedules cannot be saved as dry runs. Use a one-time profile run for dry-run previews.'
+  );
   error.code = 'CONNECTOR_CONFIG_ERROR';
   error.status = 400;
-  error.remediation = 'Set options.dry_run to false and execution_mode to live before saving the schedule.';
+  error.remediation =
+    'Set options.dry_run to false and execution_mode to live before saving the schedule.';
   error.details = {
     dry_run: options.dry_run ?? options.dryRun ?? null,
     execution_mode: options.execution_mode || options.executionMode || null,
@@ -958,7 +1364,9 @@ function sanitizeProfileSchedule(schedule) {
 }
 
 function normalizePersistedProfileSchedule(schedule = {}) {
-  const warnings = Array.isArray(schedule.validation_warnings) ? [...schedule.validation_warnings] : [];
+  const warnings = Array.isArray(schedule.validation_warnings)
+    ? [...schedule.validation_warnings]
+    : [];
   const options = normalizeScheduleRuntimeOptions(schedule.options || {}, warnings);
   return {
     ...schedule,
@@ -975,11 +1383,16 @@ function runtimePersistenceEnabled() {
 }
 
 function profileRuntimeDir() {
-  return process.env.PROFILE_RUNTIME_DIR || path.join(process.cwd(), 'data', '_runtime', 'profiles');
+  return (
+    process.env.PROFILE_RUNTIME_DIR || path.join(process.cwd(), 'data', '_runtime', 'profiles')
+  );
 }
 
 function profileSchedulerStorePath() {
-  return process.env.PROFILE_SCHEDULER_STORE_PATH || path.join(profileRuntimeDir(), 'profile-scheduler-store.json');
+  return (
+    process.env.PROFILE_SCHEDULER_STORE_PATH ||
+    path.join(profileRuntimeDir(), 'profile-scheduler-store.json')
+  );
 }
 
 function profileRunArtifactDir() {
@@ -987,7 +1400,10 @@ function profileRunArtifactDir() {
 }
 
 function profileMarkdownDir() {
-  return process.env.PROFILE_MARKDOWN_DIR || path.join(process.cwd(), 'data', 'markdown', '_runtime', 'profile-runs');
+  return (
+    process.env.PROFILE_MARKDOWN_DIR ||
+    path.join(process.cwd(), 'data', 'markdown', '_runtime', 'profile-runs')
+  );
 }
 
 function profilePublicationQueuePath() {
@@ -1010,10 +1426,12 @@ function sanitizeForPersistence(value) {
 }
 
 function safePathSegment(value) {
-  return String(value || 'unknown')
-    .replace(/[^a-z0-9_.-]+/gi, '_')
-    .replace(/^_+|_+$/g, '')
-    .slice(0, 120) || 'unknown';
+  return (
+    String(value || 'unknown')
+      .replace(/[^a-z0-9_.-]+/gi, '_')
+      .replace(/^_+|_+$/g, '')
+      .slice(0, 120) || 'unknown'
+  );
 }
 
 function profileRunKind(run = {}) {
@@ -1051,14 +1469,20 @@ function columnRowsFromRun(run = {}) {
 }
 
 function successfulProfileAssetIds(run = {}) {
-  return profileRowsFromRun(run).map((row) => row.asset_id).filter(Boolean);
+  return profileRowsFromRun(run)
+    .map((row) => row.asset_id)
+    .filter(Boolean);
 }
 
 function failedProfileAssetIds(run = {}) {
   const errors = run.errors || run.profile?.errors || run.profile?.run?.errors || [];
-  return [...new Set(errors
-    .map((error) => error?.asset_id || error?.assetId || error?.object_id || error?.objectId)
-    .filter(Boolean))];
+  return [
+    ...new Set(
+      errors
+        .map((error) => error?.asset_id || error?.assetId || error?.object_id || error?.objectId)
+        .filter(Boolean)
+    ),
+  ];
 }
 
 function profilePublishState(run = {}) {
@@ -1149,7 +1573,9 @@ function tableMarkdown(headers, rows) {
   if (!rows.length) return '';
   const header = `| ${headers.join(' | ')} |`;
   const divider = `| ${headers.map(() => '---').join(' | ')} |`;
-  const body = rows.map((row) => `| ${headers.map((key) => String(row[key] ?? '').replace(/\|/g, '\\|')).join(' | ')} |`);
+  const body = rows.map(
+    (row) => `| ${headers.map((key) => String(row[key] ?? '').replace(/\|/g, '\\|')).join(' | ')} |`
+  );
   return [header, divider, ...body].join('\n');
 }
 
@@ -1202,15 +1628,32 @@ function exportConnectorRunMarkdown(run = {}) {
       '```',
       '',
       assetRows.length ? '## Profiled Assets' : '',
-      assetRows.length ? tableMarkdown(['asset_id', 'row_count', 'column_count', 'generated_at'], assetRows) : '',
+      assetRows.length
+        ? tableMarkdown(['asset_id', 'row_count', 'column_count', 'generated_at'], assetRows)
+        : '',
       '',
       columnRows.length ? '## Column Profile Results' : '',
       columnRows.length
-        ? tableMarkdown(['asset_id', 'column_name', 'row_count', 'null_count', 'null_percent', 'distinct_count', 'min', 'max', 'mean'], columnRows)
+        ? tableMarkdown(
+            [
+              'asset_id',
+              'column_name',
+              'row_count',
+              'null_count',
+              'null_percent',
+              'distinct_count',
+              'min',
+              'max',
+              'mean',
+            ],
+            columnRows
+          )
         : '',
       '',
       streamRows.length ? '## Metadata Streams' : '',
-      streamRows.length ? tableMarkdown(['stream', 'status', 'event_count', 'endpoint'], streamRows) : '',
+      streamRows.length
+        ? tableMarkdown(['stream', 'status', 'event_count', 'endpoint'], streamRows)
+        : '',
       '',
       '## DevOps Upload',
       '',
@@ -1230,7 +1673,9 @@ function exportConnectorRunMarkdown(run = {}) {
     writeFileSync(mdPath, markdown);
     writeFileSync(jsonPath, JSON.stringify(jsonPayload, null, 2));
     const pendingPath = path.join(root, 'devops-upload-pending.json');
-    const existing = existsSync(pendingPath) ? JSON.parse(readFileSync(pendingPath, 'utf8')) : { version: 1, runs: [] };
+    const existing = existsSync(pendingPath)
+      ? JSON.parse(readFileSync(pendingPath, 'utf8'))
+      : { version: 1, runs: [] };
     const entry = {
       run_id: run.id,
       connector_id: run.connector_id,
@@ -1262,7 +1707,8 @@ function exportConnectorRunMarkdown(run = {}) {
       error: {
         code: 'CONNECTOR_RUN_MARKDOWN_EXPORT_ERROR',
         message: err.message,
-        remediation: 'Check data/markdown/_runtime/profile-runs permissions and retry the connector/profile run.',
+        remediation:
+          'Check data/markdown/_runtime/profile-runs permissions and retry the connector/profile run.',
       },
     };
   }
@@ -1277,7 +1723,9 @@ function autoPublishTargets(options = {}) {
   const rawTargets = Array.isArray(options.auto_publish_targets || options.autoPublishTargets)
     ? options.auto_publish_targets || options.autoPublishTargets
     : String(options.auto_publish_targets || options.autoPublishTargets || 'devops').split(',');
-  const normalized = [...new Set(rawTargets.map((target) => String(target).trim().toLowerCase()).filter(Boolean))];
+  const normalized = [
+    ...new Set(rawTargets.map((target) => String(target).trim().toLowerCase()).filter(Boolean)),
+  ];
   return normalized.filter((target) => ['devops', 'confluence'].includes(target));
 }
 
@@ -1347,7 +1795,9 @@ function runNpmScript(scriptName, args = []) {
     const direct = directScriptCommand(scriptName, args);
     const npmCli = direct ? null : npmCliPath();
     const command = direct?.command || (npmCli ? process.execPath : npmCommand());
-    const commandArgs = direct?.args || (npmCli ? [npmCli, 'run', scriptName, ...args] : ['run', scriptName, ...args]);
+    const commandArgs =
+      direct?.args ||
+      (npmCli ? [npmCli, 'run', scriptName, ...args] : ['run', scriptName, ...args]);
     const child = spawn(command, commandArgs, {
       cwd: process.cwd(),
       env: process.env,
@@ -1418,7 +1868,9 @@ function refreshPublishedRunArtifacts(run = {}) {
       `- Last published at: ${publishedAt}`,
       `- Pending assets: ${publish.pending_assets.length}`,
       `- Published assets: ${publish.published_asset_count}`,
-      publish.last_error?.message ? `- Last error: ${publish.last_error.message}` : '- Last error: none',
+      publish.last_error?.message
+        ? `- Last error: ${publish.last_error.message}`
+        : '- Last error: none',
       '',
     ].join('\n');
 
@@ -1445,8 +1897,10 @@ function profileRunsEligibleForPublication(filters = {}, user = {}) {
     .filter((run) => !filters.run_id || run.id === filters.run_id)
     .filter((run) => profilePublishState(run).successful_asset_count > 0)
     .filter((run) => {
-      const status = profilePublishState(run).status;
-      return filters.include_published === true || !['published', 'partial_published'].includes(status);
+      const { status } = profilePublishState(run);
+      return (
+        filters.include_published === true || !['published', 'partial_published'].includes(status)
+      );
     })
     .filter((run) => {
       const connector = connectorStore.get(run.connector_id);
@@ -1458,20 +1912,24 @@ function publicationTargets(options = {}) {
   const rawTargets = Array.isArray(options.targets)
     ? options.targets
     : String(options.targets || 'devops,confluence').split(',');
-  return [...new Set(rawTargets.map((target) => String(target).trim().toLowerCase()).filter(Boolean))]
-    .filter((target) => ['devops', 'confluence'].includes(target));
+  return [
+    ...new Set(rawTargets.map((target) => String(target).trim().toLowerCase()).filter(Boolean)),
+  ].filter((target) => ['devops', 'confluence'].includes(target));
 }
 
 export async function publishConnectorProfileRuns(options = {}, user = {}) {
   hydrateRuntimeStore();
   if (!isAdmin(user)) {
-    const error = new Error('Only Admin users can publish profile indexes to DevOps or Confluence.');
+    const error = new Error(
+      'Only Admin users can publish profile indexes to DevOps or Confluence.'
+    );
     error.code = 'CONNECTOR_FORBIDDEN';
     error.status = 403;
     throw error;
   }
   const targets = publicationTargets(options);
-  const dryRun = options.dry_run === true || options.dryRun === true || process.env.NODE_ENV === 'test';
+  const dryRun =
+    options.dry_run === true || options.dryRun === true || process.env.NODE_ENV === 'test';
   const eligibleRuns = profileRunsEligibleForPublication(
     {
       connector_id: options.connector_id || options.connectorId,
@@ -1519,18 +1977,24 @@ export async function publishConnectorProfileRuns(options = {}, user = {}) {
   if (targets.includes('confluence')) {
     steps.push({ target: 'confluence', script: 'confluence:export', args: [] });
     steps.push({ target: 'confluence', script: 'confluence:check', args: [] });
-    steps.push({ target: 'confluence', script: 'confluence:publish', args: dryRun ? ['--', '--dry-run'] : [] });
+    steps.push({
+      target: 'confluence',
+      script: 'confluence:publish',
+      args: dryRun ? ['--', '--dry-run'] : [],
+    });
   }
 
   const results = [];
   if (dryRun && options.execute_dry_run !== true && options.executeDryRun !== true) {
-    results.push(...steps.map((step) => ({
-      ...step,
-      status: 'planned',
-      exit_code: null,
-      stdout: '',
-      stderr: '',
-    })));
+    results.push(
+      ...steps.map((step) => ({
+        ...step,
+        status: 'planned',
+        exit_code: null,
+        stdout: '',
+        stderr: '',
+      }))
+    );
   } else {
     for (const step of steps) {
       const result = await runNpmScript(step.script, step.args);
@@ -1552,7 +2016,8 @@ export async function publishConnectorProfileRuns(options = {}, user = {}) {
     const existing = profilePublishState(run);
     mergeRunPublishState(run, {
       status: dryRun ? 'publish_ready' : finalStatus,
-      published_asset_count: dryRun || failedStep ? existing.published_asset_count : successfulAssets.length,
+      published_asset_count:
+        dryRun || failedStep ? existing.published_asset_count : successfulAssets.length,
       published_assets: dryRun || failedStep ? existing.published_assets : successfulAssets,
       pending_assets: dryRun || failedStep ? successfulAssets : [],
       last_published_at: dryRun || failedStep ? null : completedAt,
@@ -1577,12 +2042,14 @@ export async function publishConnectorProfileRuns(options = {}, user = {}) {
     run_count: eligibleRuns.length,
     successful_asset_count: allPublishedAssets.length,
     failed_asset_count: eligibleRuns.flatMap((run) => failedProfileAssetIds(run)).length,
-    runs: eligibleRuns.map((run) => sanitizeForPersistence({
-      id: run.id,
-      connector_id: run.connector_id,
-      status: run.status,
-      profile_publish: profilePublishState(run),
-    })),
+    runs: eligibleRuns.map((run) =>
+      sanitizeForPersistence({
+        id: run.id,
+        connector_id: run.connector_id,
+        status: run.status,
+        profile_publish: profilePublishState(run),
+      })
+    ),
     steps: results,
     queue: readPublicationQueue(),
   };
@@ -1635,39 +2102,40 @@ export function recordPublishedConnectorProfileRuns(options = {}, user = {}) {
   persistRuntimeStore();
 
   return {
-    status: eligibleRuns.some((run) => failedProfileAssetIds(run).length > 0) ? 'partial_published' : 'published',
+    status: eligibleRuns.some((run) => failedProfileAssetIds(run).length > 0)
+      ? 'partial_published'
+      : 'published',
     targets,
     run_count: eligibleRuns.length,
     successful_asset_count: eligibleRuns.flatMap((run) => successfulProfileAssetIds(run)).length,
     failed_asset_count: eligibleRuns.flatMap((run) => failedProfileAssetIds(run)).length,
-    runs: eligibleRuns.map((run) => sanitizeForPersistence({
-      id: run.id,
-      connector_id: run.connector_id,
-      status: run.status,
-      profile_publish: profilePublishState(run),
-    })),
+    runs: eligibleRuns.map((run) =>
+      sanitizeForPersistence({
+        id: run.id,
+        connector_id: run.connector_id,
+        status: run.status,
+        profile_publish: profilePublishState(run),
+      })
+    ),
     queue: readPublicationQueue(),
   };
 }
 
 function maybeAutoPublishProfiles(run, user, options = {}) {
   const autoPublishRequested =
-    options.auto_publish === true ||
-    options.autoPublish === true ||
-    shouldAutoPublishProfiles();
+    options.auto_publish === true || options.autoPublish === true || shouldAutoPublishProfiles();
   if (!autoPublishRequested || profilePublishState(run).successful_asset_count <= 0) return;
   const targets = autoPublishTargets(options);
-  publishConnectorProfileRuns({ run_id: run.id, targets }, user)
-    .catch((err) => {
-      mergeRunPublishState(run, {
-        status: 'publish_failed',
-        last_error: {
-          code: err.code || 'PROFILE_AUTO_PUBLISH_ERROR',
-          message: err.message,
-        },
-      });
-      persistRuntimeStore();
+  publishConnectorProfileRuns({ run_id: run.id, targets }, user).catch((err) => {
+    mergeRunPublishState(run, {
+      status: 'publish_failed',
+      last_error: {
+        code: err.code || 'PROFILE_AUTO_PUBLISH_ERROR',
+        message: err.message,
+      },
     });
+    persistRuntimeStore();
+  });
 }
 
 function connectorForPersistence(connector) {
@@ -1714,7 +2182,9 @@ function persistRuntimeStore() {
           version: 1,
           saved_at: nowIso(),
           connectors: [...connectorStore.values()].map(connectorForPersistence),
-          connector_runs: runHistoryStore.slice(0, PROFILE_CONNECTOR_MAX_HISTORY).map(connectorRunForPersistence),
+          connector_runs: runHistoryStore
+            .slice(0, PROFILE_CONNECTOR_MAX_HISTORY)
+            .map(connectorRunForPersistence),
           snapshots: [...snapshotStore.values()].map(sanitizeForPersistence),
           profile_schedules: [...profileScheduleStore.values()].map(sanitizeProfileSchedule),
           profile_schedule_runs: profileScheduleRunStore
@@ -1746,7 +2216,8 @@ function hydrateRuntimeStore() {
       if (connector?.id && !connectorStore.has(connector.id)) {
         const normalizedCredential = normalizeCredentialForPersistence(connector.credential || {});
         migratedConnectors =
-          migratedConnectors || JSON.stringify(normalizedCredential) !== JSON.stringify(connector.credential || {});
+          migratedConnectors ||
+          JSON.stringify(normalizedCredential) !== JSON.stringify(connector.credential || {});
         connectorStore.set(connector.id, {
           ...connector,
           credential: normalizedCredential,
@@ -1768,7 +2239,9 @@ function hydrateRuntimeStore() {
     for (const schedule of parsed.profile_schedules || []) {
       if (schedule?.id && !profileScheduleStore.has(schedule.id)) {
         const normalized = normalizePersistedProfileSchedule(schedule);
-        migratedSchedules = migratedSchedules || JSON.stringify(normalized.options || {}) !== JSON.stringify(schedule.options || {});
+        migratedSchedules =
+          migratedSchedules ||
+          JSON.stringify(normalized.options || {}) !== JSON.stringify(schedule.options || {});
         profileScheduleStore.set(schedule.id, normalized);
       }
     }
@@ -1843,7 +2316,9 @@ function recordProfileScheduleRun(entry) {
 
 function permissionDefaults(createdBy) {
   return {
-    users: createdBy ? { [createdBy]: [CONNECTOR_ACTIONS.VIEW, CONNECTOR_ACTIONS.RUN, CONNECTOR_ACTIONS.EDIT] } : {},
+    users: createdBy
+      ? { [createdBy]: [CONNECTOR_ACTIONS.VIEW, CONNECTOR_ACTIONS.RUN, CONNECTOR_ACTIONS.EDIT] }
+      : {},
     roles: {
       Admin: [
         CONNECTOR_ACTIONS.VIEW,
@@ -1887,7 +2362,9 @@ export function listConnectorDefinitions(filters = {}) {
   const cloud = String(filters.cloud || '').toLowerCase();
   const category = String(filters.category || '').toLowerCase();
   return Object.values(CONNECTOR_TYPES)
-    .filter((definition) => !cloud || definition.cloud === cloud || definition.cloud === 'multi-cloud')
+    .filter(
+      (definition) => !cloud || definition.cloud === cloud || definition.cloud === 'multi-cloud'
+    )
     .filter((definition) => !category || definition.category === category)
     .map((definition) => ({
       ...definition,
@@ -1943,14 +2420,19 @@ export function listConnectors(filters = {}, user = {}) {
   return [...connectorStore.values()]
     .filter((connector) => !filters.type || connector.type === filters.type)
     .filter((connector) => !filters.category || connector.category === filters.category)
-    .filter((connector) => !filters.cloud || connector.cloud === filters.cloud || connector.cloud === 'multi-cloud')
-    .filter((connector) => canUseConnector(connector, user, filters.action || CONNECTOR_ACTIONS.VIEW))
+    .filter(
+      (connector) =>
+        !filters.cloud || connector.cloud === filters.cloud || connector.cloud === 'multi-cloud'
+    )
+    .filter((connector) =>
+      canUseConnector(connector, user, filters.action || CONNECTOR_ACTIONS.VIEW)
+    )
     .map(sanitizeConnector);
 }
 
 export function getConnector(id, user = {}, action = CONNECTOR_ACTIONS.VIEW) {
   const resolved = resolveConnectorRecord(id);
-  const connector = resolved.connector;
+  const { connector } = resolved;
   if (!connector) return null;
   if (!canUseConnector(connector, user, action)) {
     const error = new Error(`User is not allowed to ${action} connector '${id}'.`);
@@ -2019,12 +2501,15 @@ function estimateHarvest(connector) {
   const targetCount = configuredTargets.length || definition.metadata.length;
   const base = Math.max(1, targetCount);
   const repositoryScripts =
-    connector.type === CONNECTOR_TYPES.GIT_REPOSITORY.type ? extractPythonScripts(connector.config) : [];
+    connector.type === CONNECTOR_TYPES.GIT_REPOSITORY.type
+      ? extractPythonScripts(connector.config)
+      : [];
   return {
     planned_objects: base + repositoryScripts.length,
     planned_columns: connector.category === CONNECTOR_CATEGORIES.REPOSITORY ? 0 : base * 8,
     planned_lineage_edges:
-      connector.category === CONNECTOR_CATEGORIES.PIPELINE || connector.category === CONNECTOR_CATEGORIES.REPOSITORY
+      connector.category === CONNECTOR_CATEGORIES.PIPELINE ||
+      connector.category === CONNECTOR_CATEGORIES.REPOSITORY
         ? Math.max(1, base + repositoryScripts.length)
         : Math.max(0, Math.floor(base / 2)),
     python_scripts: repositoryScripts,
@@ -2078,7 +2563,8 @@ export async function runConnector(id, options = {}, user = {}) {
     );
   } catch (err) {
     writeConnectorRuntimeLog({
-      event: err?.code === 'CONNECTOR_RUN_TIMEOUT' ? 'connector.run.timed_out' : 'connector.run.crashed',
+      event:
+        err?.code === 'CONNECTOR_RUN_TIMEOUT' ? 'connector.run.timed_out' : 'connector.run.crashed',
       connector_id: id,
       connector_type: connector.type,
       actor: actorId(user),
@@ -2115,15 +2601,17 @@ export async function runConnector(id, options = {}, user = {}) {
         : {
             discovered_objects: extraction.summary.object_count ?? estimate.planned_objects,
             discovered_columns: extraction.summary.column_count ?? estimate.planned_columns,
-            discovered_lineage_edges: extraction.summary.lineage_edge_count ?? estimate.planned_lineage_edges,
+            discovered_lineage_edges:
+              extraction.summary.lineage_edge_count ?? estimate.planned_lineage_edges,
             dry_run_only: false,
             source_contacted: true,
           }),
       ...extraction.summary,
-      connection_status: extraction.connection_check?.status || (extraction.status === 'failed' ? 'failed' : 'unknown'),
+      connection_status:
+        extraction.connection_check?.status ||
+        (extraction.status === 'failed' ? 'failed' : 'unknown'),
       live_connection_valid: extraction.connection_check?.live_connection_valid === true,
-      metadata_discovery_valid:
-        extraction.connection_check?.metadata_discovery_valid !== false,
+      metadata_discovery_valid: extraction.connection_check?.metadata_discovery_valid !== false,
       connection_details: sanitizeForPersistence(extraction.connection_check?.details || {}),
       credential_mode: sanitizeCredential(connector.credential).mode,
       secret_exposed: false,
@@ -2133,7 +2621,9 @@ export async function runConnector(id, options = {}, user = {}) {
     stream_results: extraction.stream_results,
     errors: extraction.errors,
     warnings: [
-      ...(dryRun ? ['Dry run only: no external source was contacted and no raw data was captured.'] : []),
+      ...(dryRun
+        ? ['Dry run only: no external source was contacted and no raw data was captured.']
+        : []),
       ...extraction.events
         .filter((event) => event.type === 'extraction.warning')
         .map((event) => event.attributes?.message)
@@ -2164,9 +2654,15 @@ export async function runConnector(id, options = {}, user = {}) {
       connector_id: id,
       run_id: run.id,
       captured_at: run.completed_at,
-      object_count: dryRun ? estimate.planned_objects : extraction.summary.object_count ?? estimate.planned_objects,
-      column_count: dryRun ? estimate.planned_columns : extraction.summary.column_count ?? estimate.planned_columns,
-      lineage_edge_count: dryRun ? estimate.planned_lineage_edges : extraction.summary.lineage_edge_count ?? estimate.planned_lineage_edges,
+      object_count: dryRun
+        ? estimate.planned_objects
+        : (extraction.summary.object_count ?? estimate.planned_objects),
+      column_count: dryRun
+        ? estimate.planned_columns
+        : (extraction.summary.column_count ?? estimate.planned_columns),
+      lineage_edge_count: dryRun
+        ? estimate.planned_lineage_edges
+        : (extraction.summary.lineage_edge_count ?? estimate.planned_lineage_edges),
       canonical_summary: extraction.summary,
       stream_results: extraction.stream_results,
       python_scripts: estimate.python_scripts,
@@ -2178,7 +2674,7 @@ export async function runConnector(id, options = {}, user = {}) {
 
 export async function testConnector(id, options = {}, user = {}) {
   const resolved = resolveConnectorRecord(id);
-  const connector = resolved.connector;
+  const { connector } = resolved;
   if (!connector) {
     throw new Error(`Connector '${id}' not found.`);
   }
@@ -2263,9 +2759,12 @@ export async function testConnector(id, options = {}, user = {}) {
       ],
     };
   }
-  const testError = test.errors?.[0] || test.diagnostics?.actionable_error || test.diagnostics?.error || {};
+  const testError =
+    test.errors?.[0] || test.diagnostics?.actionable_error || test.diagnostics?.error || {};
   const remediationPacket =
-    test.status === 'failed' ? connectorRuntimeAuthRemediationPacket(connector, id, testError) : null;
+    test.status === 'failed'
+      ? connectorRuntimeAuthRemediationPacket(connector, id, testError)
+      : null;
   if (remediationPacket) {
     test.diagnostics = {
       ...(test.diagnostics || {}),
@@ -2318,7 +2817,10 @@ export async function testConnector(id, options = {}, user = {}) {
     diagnostics: sanitizeForPersistence(test.diagnostics || {}),
     errors: test.errors || [],
     warnings: (test.diagnostics?.warnings || [])
-      .map((warning) => warning?.attributes?.message || warning?.message || warning?.name || String(warning))
+      .map(
+        (warning) =>
+          warning?.attributes?.message || warning?.message || warning?.name || String(warning)
+      )
       .filter(Boolean),
   };
   writeConnectorRuntimeLog({
@@ -2339,7 +2841,7 @@ export async function testConnector(id, options = {}, user = {}) {
 
 export async function diagnoseConnectorConnection(id, options = {}, user = {}) {
   const resolved = resolveConnectorRecord(id);
-  const connector = resolved.connector;
+  const { connector } = resolved;
   if (!connector) {
     throw new Error(`Connector '${id}' not found.`);
   }
@@ -2349,7 +2851,9 @@ export async function diagnoseConnectorConnection(id, options = {}, user = {}) {
     throw error;
   }
   if (!['sql_server', 'ssis'].includes(connector.type)) {
-    const error = new Error(`Connector diagnostics are not supported for connector type '${connector.type}'.`);
+    const error = new Error(
+      `Connector diagnostics are not supported for connector type '${connector.type}'.`
+    );
     error.code = 'CONNECTOR_DIAGNOSTIC_UNSUPPORTED';
     error.status = 400;
     throw error;
@@ -2364,7 +2868,10 @@ export async function diagnoseConnectorConnection(id, options = {}, user = {}) {
     actor: actorId(user),
   });
   const diagnostic = await diagnoseSqlServerConnectionVariants(connector, {
-    variantTimeoutMs: Math.min(Number(options.variantTimeoutMs || options.timeout_ms || 3000), 10000),
+    variantTimeoutMs: Math.min(
+      Number(options.variantTimeoutMs || options.timeout_ms || 3000),
+      10000
+    ),
     drivers: options.drivers,
     stopOnSuccess: options.stopOnSuccess !== false,
   });
@@ -2430,7 +2937,8 @@ export async function runConnectorProfiling(id, options = {}, user = {}) {
     error.code = 'CONNECTOR_FORBIDDEN';
     throw error;
   }
-  const requestedMode = options.execution_mode || options.executionMode || options.safety?.execution_mode;
+  const requestedMode =
+    options.execution_mode || options.executionMode || options.safety?.execution_mode;
   if (requestedMode === 'live' && !isAdmin(user)) {
     const error = new Error(`Live profiling requires Admin permission on connector '${id}'.`);
     error.code = 'CONNECTOR_FORBIDDEN';
@@ -2515,8 +3023,14 @@ export async function runConnectorBiProfiling(id, options = {}, user = {}) {
     profile: profileResult,
     errors: profileResult.errors || [],
     warnings: [
-      ...(options.dry_run === false ? [] : ['Dry run only: no external source was contacted and no report result rows were captured.']),
-      ...((profileResult.warnings || []).map((warning) => warning.attributes?.message || warning.name).filter(Boolean)),
+      ...(options.dry_run === false
+        ? []
+        : [
+            'Dry run only: no external source was contacted and no report result rows were captured.',
+          ]),
+      ...(profileResult.warnings || [])
+        .map((warning) => warning.attributes?.message || warning.name)
+        .filter(Boolean),
     ],
   };
   run.artifact = exportConnectorRunMarkdown(run);
@@ -2586,8 +3100,14 @@ export async function runConnectorMetadataProfiling(id, options = {}, user = {})
     profile: profileResult,
     errors: profileResult.errors || [],
     warnings: [
-      ...(options.dry_run === false ? [] : ['Dry run only: no external source was contacted and no raw source payload values were captured.']),
-      ...((profileResult.warnings || []).map((warning) => warning.attributes?.message || warning.name).filter(Boolean)),
+      ...(options.dry_run === false
+        ? []
+        : [
+            'Dry run only: no external source was contacted and no raw source payload values were captured.',
+          ]),
+      ...(profileResult.warnings || [])
+        .map((warning) => warning.attributes?.message || warning.name)
+        .filter(Boolean),
     ],
   };
   run.artifact = exportConnectorRunMarkdown(run);
@@ -2619,35 +3139,49 @@ function inferProfileScheduleType(connector, requestedType = 'auto') {
     throw error;
   }
   if (type !== 'auto') return type;
-  if ([CONNECTOR_CATEGORIES.DATABASE, CONNECTOR_CATEGORIES.WAREHOUSE].includes(definition.category)) return 'aggregate';
+  if ([CONNECTOR_CATEGORIES.DATABASE, CONNECTOR_CATEGORIES.WAREHOUSE].includes(definition.category))
+    return 'aggregate';
   if (definition.category === CONNECTOR_CATEGORIES.BI) return 'bi';
   return 'metadata';
 }
 
 function normalizeQueueState(queueState = {}) {
   return {
-    timeout_penalties: typeof queueState.timeout_penalties === 'object' && queueState.timeout_penalties
-      ? { ...queueState.timeout_penalties }
-      : {},
-    live_successes: typeof queueState.live_successes === 'object' && queueState.live_successes
-      ? { ...queueState.live_successes }
-      : {},
+    timeout_penalties:
+      typeof queueState.timeout_penalties === 'object' && queueState.timeout_penalties
+        ? { ...queueState.timeout_penalties }
+        : {},
+    live_successes:
+      typeof queueState.live_successes === 'object' && queueState.live_successes
+        ? { ...queueState.live_successes }
+        : {},
   };
 }
 
 function normalizeAssetQueueKey(value = '') {
-  return String(value || '').trim().toLowerCase().replace(/[\[\]`"]/g, '').replace(/^([^.,]+),\d+\./, '$1.');
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[\[\]`"]/g, '')
+    .replace(/^([^.,]+),\d+\./, '$1.');
 }
 
 function timeoutLikeError(error = {}) {
-  const text = `${error.code || ''} ${error.message || ''} ${error.remediation || ''}`.toLowerCase();
+  const text =
+    `${error.code || ''} ${error.message || ''} ${error.remediation || ''}`.toLowerCase();
   return /timeout|timed out|requesttimeout|statement_timeout|lock timeout|econnreset/.test(text);
 }
 
 function updateQueueStateFromRun(queueState = {}, run = {}) {
   const next = normalizeQueueState(queueState);
-  const actionAssetIds = [...new Set((run?.profile?.plan?.actions || []).map((action) => action?.asset_id).filter(Boolean))];
-  const errorByAsset = new Map((run?.errors || []).map((error) => [normalizeAssetQueueKey(error?.asset_id), error]));
+  const actionAssetIds = [
+    ...new Set(
+      (run?.profile?.plan?.actions || []).map((action) => action?.asset_id).filter(Boolean)
+    ),
+  ];
+  const errorByAsset = new Map(
+    (run?.errors || []).map((error) => [normalizeAssetQueueKey(error?.asset_id), error])
+  );
   const completedAt = run?.completed_at || nowIso();
 
   for (const assetId of actionAssetIds) {
@@ -2727,14 +3261,21 @@ export function upsertConnectorProfileSchedule(input = {}, actor = {}) {
   const intervalMinutes = normalizeScheduleInterval(input);
   const requestedStatus = String(input.status || '').toUpperCase();
   assertProfileScheduleNotDryRun(input.options || {});
-  const validationWarnings = Array.isArray(existing?.validation_warnings) ? [...existing.validation_warnings] : [];
+  const validationWarnings = Array.isArray(existing?.validation_warnings)
+    ? [...existing.validation_warnings]
+    : [];
   const schedule = {
     id,
     connector_id: connectorId,
     connector_type: connector.type,
     name: input.name || existing?.name || `${connector.label || connector.id} profile schedule`,
-    profile_type: inferProfileScheduleType(connector, input.profile_type || input.profileType || existing?.profile_type || 'auto'),
-    status: PROFILE_SCHEDULE_STATUSES.has(requestedStatus) ? requestedStatus : existing?.status || 'ACTIVE',
+    profile_type: inferProfileScheduleType(
+      connector,
+      input.profile_type || input.profileType || existing?.profile_type || 'auto'
+    ),
+    status: PROFILE_SCHEDULE_STATUSES.has(requestedStatus)
+      ? requestedStatus
+      : existing?.status || 'ACTIVE',
     cadence: input.cadence || input.frequency || existing?.cadence || 'daily',
     interval_minutes: intervalMinutes,
     timezone: input.timezone || existing?.timezone || 'UTC',
@@ -2762,10 +3303,14 @@ export function upsertConnectorProfileSchedule(input = {}, actor = {}) {
   };
   if (schedule.profile_type === 'aggregate') {
     schedule.options.max_live_tables = Math.max(1, Number(schedule.options.max_live_tables || 15));
-    schedule.options.live_profile_stale_days = Math.max(1, Number(schedule.options.live_profile_stale_days || 30));
+    schedule.options.live_profile_stale_days = Math.max(
+      1,
+      Number(schedule.options.live_profile_stale_days || 30)
+    );
     schedule.options.execution_mode = 'live';
   }
-  schedule.next_run_at = schedule.next_run_at || computeNextRunAt(schedule, new Date(schedule.start_at));
+  schedule.next_run_at =
+    schedule.next_run_at || computeNextRunAt(schedule, new Date(schedule.start_at));
   profileScheduleStore.set(id, schedule);
   persistRuntimeStore();
   return sanitizeProfileSchedule(schedule);
@@ -2831,16 +3376,24 @@ export async function runConnectorProfileSchedule(id, actor = {}) {
   const runnerUser = isAdmin(actor) ? actor : RUNTIME_USER;
   const startedAt = nowIso();
   try {
-    const queueState = normalizeQueueState(schedule.options?.queue_state || schedule.options?.queueState || {});
+    const queueState = normalizeQueueState(
+      schedule.options?.queue_state || schedule.options?.queueState || {}
+    );
     const effectiveOptions = {
       ...schedule.options,
       dry_run: false,
       max_live_tables: Math.max(1, Number(schedule.options?.max_live_tables || 15)),
       live_profile_stale_days: Math.max(1, Number(schedule.options?.live_profile_stale_days || 30)),
-      execution_mode: schedule.profile_type === 'aggregate' ? 'live' : schedule.options?.execution_mode || 'live',
+      execution_mode:
+        schedule.profile_type === 'aggregate' ? 'live' : schedule.options?.execution_mode || 'live',
       queue_state: queueState,
     };
-    const run = await runConnectorProfileByType(schedule.connector_id, schedule.profile_type, effectiveOptions, runnerUser);
+    const run = await runConnectorProfileByType(
+      schedule.connector_id,
+      schedule.profile_type,
+      effectiveOptions,
+      runnerUser
+    );
     const completedAt = nowIso();
     const succeeded = !['failed', 'partial_failure'].includes(run.status);
     const nextQueueState = updateQueueStateFromRun(queueState, run);
@@ -2897,7 +3450,9 @@ export async function runConnectorProfileSchedule(id, actor = {}) {
       last_error: {
         code: err.code || 'PROFILE_SCHEDULE_RUN_ERROR',
         message: err.message,
-        remediation: err.remediation || 'Review connector permissions, profile type, schedule options, and source availability.',
+        remediation:
+          err.remediation ||
+          'Review connector permissions, profile type, schedule options, and source availability.',
       },
       next_run_at: computeNextRunAt(schedule, new Date(completedAt)),
       updated_at: completedAt,
@@ -2934,7 +3489,9 @@ export async function runDueConnectorProfileSchedules(options = {}, actor = {}) 
   for (const schedule of due) {
     try {
       const result = await runConnectorProfileSchedule(schedule.id, actor);
-      const status = ['failed', 'partial_failure'].includes(result.run?.status) ? 'failed' : 'succeeded';
+      const status = ['failed', 'partial_failure'].includes(result.run?.status)
+        ? 'failed'
+        : 'succeeded';
       results.push({ schedule_id: schedule.id, status, result });
     } catch (err) {
       results.push({
@@ -2943,7 +3500,8 @@ export async function runDueConnectorProfileSchedules(options = {}, actor = {}) 
         error: {
           code: err.code || 'PROFILE_SCHEDULE_RUN_ERROR',
           message: err.message,
-          remediation: err.remediation || 'Review profile schedule configuration and connector state.',
+          remediation:
+            err.remediation || 'Review profile schedule configuration and connector state.',
         },
       });
     }
@@ -2975,7 +3533,14 @@ function queuePreviewObjectType(asset = {}) {
 }
 
 function queuePreviewAssetId(asset = {}) {
-  return asset?.id || asset?.object_id || asset?.qualified_name || asset?.qualifiedName || asset?.name || '';
+  return (
+    asset?.id ||
+    asset?.object_id ||
+    asset?.qualified_name ||
+    asset?.qualifiedName ||
+    asset?.name ||
+    ''
+  );
 }
 
 function queuePreviewObjectName(asset = {}) {
@@ -2987,11 +3552,16 @@ function queuePreviewSchema(asset = {}) {
 }
 
 function queuePreviewNormalizeObjectId(value = '') {
-  return String(value || '').replace(/[\[\]`"]/g, '').trim().toLowerCase();
+  return String(value || '')
+    .replace(/[\[\]`"]/g, '')
+    .trim()
+    .toLowerCase();
 }
 
 function queuePreviewStripServerPort(value = '') {
-  return String(value || '').replace(/^([^.,]+),\d+\./, '$1.').trim();
+  return String(value || '')
+    .replace(/^([^.,]+),\d+\./, '$1.')
+    .trim();
 }
 
 function queuePreviewTimeoutPenalty(asset = {}, queueState = {}) {
@@ -3020,23 +3590,32 @@ export async function getConnectorProfileScheduleQueuePreview(scheduleId, user =
     throw error;
   }
 
-  const queueState = normalizeQueueState(schedule.options?.queue_state || schedule.options?.queueState || {});
+  const queueState = normalizeQueueState(
+    schedule.options?.queue_state || schedule.options?.queueState || {}
+  );
   const effectiveOptions = {
     ...schedule.options,
     dry_run: false,
     max_live_tables: Math.max(1, Number(schedule.options?.max_live_tables || 15)),
     live_profile_stale_days: Math.max(1, Number(schedule.options?.live_profile_stale_days || 30)),
-    execution_mode: schedule.profile_type === 'aggregate' ? 'live' : schedule.options?.execution_mode || 'live',
+    execution_mode:
+      schedule.profile_type === 'aggregate' ? 'live' : schedule.options?.execution_mode || 'live',
     queue_state: queueState,
   };
-  const latestConnectorRun = runHistoryStore.find((run) =>
-    run.connector_id === schedule.connector_id &&
-    run.profile?.plan?.coverage &&
-    ['live', 'metadata_harvest', 'dry_run'].includes(String(run.mode || '').toLowerCase())
+  const latestConnectorRun = runHistoryStore.find(
+    (run) =>
+      run.connector_id === schedule.connector_id &&
+      run.profile?.plan?.coverage &&
+      ['live', 'metadata_harvest', 'dry_run'].includes(String(run.mode || '').toLowerCase())
   );
   let plan = latestConnectorRun?.profile?.plan || null;
   if (!plan || filters.refresh === true || filters.refresh === 'true') {
-    const planResult = await planConnectorProfileByType(schedule.connector_id, schedule.profile_type, effectiveOptions, user);
+    const planResult = await planConnectorProfileByType(
+      schedule.connector_id,
+      schedule.profile_type,
+      effectiveOptions,
+      user
+    );
     plan = planResult?.profile?.plan || planResult?.plan || planResult;
   }
   const historicalQueue = plan?.coverage?.live_upgrade_queue || [];
@@ -3045,16 +3624,25 @@ export async function getConnectorProfileScheduleQueuePreview(scheduleId, user =
   const liveCapableAssets = coverageAssets.filter((asset) =>
     ['table', 'view'].includes(queuePreviewObjectType(asset))
   );
-  const actionAssets = [...new Set((plan?.actions || []).map((action) => action.asset_id).filter(Boolean))];
-  const liveEligibleIds = new Set(queue.map((item) => queuePreviewNormalizeObjectId(item.asset_id)));
+  const actionAssets = [
+    ...new Set((plan?.actions || []).map((action) => action.asset_id).filter(Boolean)),
+  ];
+  const liveEligibleIds = new Set(
+    queue.map((item) => queuePreviewNormalizeObjectId(item.asset_id))
+  );
   const freshSkippedAssets = liveCapableAssets
-    .filter((asset) => !liveEligibleIds.has(queuePreviewNormalizeObjectId(queuePreviewAssetId(asset))))
+    .filter(
+      (asset) => !liveEligibleIds.has(queuePreviewNormalizeObjectId(queuePreviewAssetId(asset)))
+    )
     .map((asset) => ({
       asset_id: queuePreviewAssetId(asset),
       object_name: queuePreviewObjectName(asset),
       object_type: queuePreviewObjectType(asset) || 'unknown',
       schema: queuePreviewSchema(asset),
-      estimated_rows: Number(asset?.estimated_rows ?? asset?.estimatedRows ?? asset?.row_count ?? asset?.rowCount ?? 0) || 0,
+      estimated_rows:
+        Number(
+          asset?.estimated_rows ?? asset?.estimatedRows ?? asset?.row_count ?? asset?.rowCount ?? 0
+        ) || 0,
       column_count: Array.isArray(asset?.columns) ? asset.columns.length : 0,
       skip_reason: 'fresh_within_window',
     }));
@@ -3068,17 +3656,19 @@ export async function getConnectorProfileScheduleQueuePreview(scheduleId, user =
   const limit = Math.max(1, Number(filters.limit || 25));
   const desiredBatch = Math.max(1, Number(effectiveOptions.max_live_tables || 15));
   const queueByAssetId = new Map(queue.map((item) => [item.asset_id, item]));
-  const nextAssets = actionAssets.length >= desiredBatch
-    ? actionAssets
-      .slice(0, Math.min(limit, desiredBatch))
-      .map((assetId, index) => queueByAssetId.get(assetId) || {
-        asset_id: assetId,
-        object_name: assetId.split('.').slice(-1)[0] || assetId,
-        object_type: 'unknown',
-        schema: assetId.split('.').slice(-2, -1)[0] || 'dbo',
-        queue_rank: index + 1,
-      })
-    : queue.slice(0, Math.min(limit, desiredBatch));
+  const nextAssets =
+    actionAssets.length >= desiredBatch
+      ? actionAssets.slice(0, Math.min(limit, desiredBatch)).map(
+          (assetId, index) =>
+            queueByAssetId.get(assetId) || {
+              asset_id: assetId,
+              object_name: assetId.split('.').slice(-1)[0] || assetId,
+              object_type: 'unknown',
+              schema: assetId.split('.').slice(-2, -1)[0] || 'dbo',
+              queue_rank: index + 1,
+            }
+        )
+      : queue.slice(0, Math.min(limit, desiredBatch));
   const recentRuns = profileScheduleRunStore
     .filter((run) => run.schedule_id === scheduleId)
     .slice(0, Number(filters.history_limit || 10))
@@ -3138,7 +3728,12 @@ export function startProfileSchedulerWorker(options = {}) {
     (explicitEnabled !== 'false' && explicitEnabled !== 'off' && process.env.NODE_ENV !== 'test');
   const intervalMs = Math.max(
     5_000,
-    Number(options.interval_ms || options.intervalMs || process.env.PROFILE_SCHEDULER_INTERVAL_MS || PROFILE_SCHEDULER_DEFAULT_INTERVAL_MS)
+    Number(
+      options.interval_ms ||
+        options.intervalMs ||
+        process.env.PROFILE_SCHEDULER_INTERVAL_MS ||
+        PROFILE_SCHEDULER_DEFAULT_INTERVAL_MS
+    )
   );
   profileSchedulerStatus = {
     ...profileSchedulerStatus,
@@ -3161,7 +3756,9 @@ export function startProfileSchedulerWorker(options = {}) {
       profileSchedulerStatus.last_error = {
         code: err.code || 'PROFILE_SCHEDULER_WORKER_ERROR',
         message: err.message,
-        remediation: err.remediation || 'Review scheduler store, connector configuration, and profile options.',
+        remediation:
+          err.remediation ||
+          'Review scheduler store, connector configuration, and profile options.',
       };
     }
   }, intervalMs);
@@ -3221,7 +3818,10 @@ export function listConnectorRuns(filters = {}, user = {}) {
     if (!run.artifact?.markdown_path) {
       run.artifact = exportConnectorRunMarkdown(run);
       backfilled = true;
-    } else if (!run.artifact?.profile_publish && profilePublishState(run).successful_asset_count > 0) {
+    } else if (
+      !run.artifact?.profile_publish &&
+      profilePublishState(run).successful_asset_count > 0
+    ) {
       run.artifact = {
         ...(run.artifact || {}),
         profile_publish: updateProfilePublicationQueue(run),
@@ -3242,14 +3842,16 @@ export function getConnectorSnapshot(id, user = {}) {
     error.code = 'CONNECTOR_FORBIDDEN';
     throw error;
   }
-  return snapshotStore.get(id) || {
-    connector_id: id,
-    captured_at: null,
-    object_count: 0,
-    column_count: 0,
-    lineage_edge_count: 0,
-    python_scripts: [],
-  };
+  return (
+    snapshotStore.get(id) || {
+      connector_id: id,
+      captured_at: null,
+      object_count: 0,
+      column_count: 0,
+      lineage_edge_count: 0,
+      python_scripts: [],
+    }
+  );
 }
 
 export function deleteConnector(id, actor = {}) {

@@ -119,7 +119,9 @@ async function getAzureAccessToken(payload) {
   if (payload.accessToken) return payload.accessToken;
   const { tenantId, clientId, clientSecret } = payload;
   if (!tenantId || !clientId || !clientSecret) {
-    throw new Error('tenantId, clientId, and clientSecret are required unless accessToken is provided');
+    throw new Error(
+      'tenantId, clientId, and clientSecret are required unless accessToken is provided'
+    );
   }
   const body = new URLSearchParams({
     client_id: clientId,
@@ -135,7 +137,14 @@ async function getAzureAccessToken(payload) {
   return token.access_token;
 }
 
-function connectorMarkdownFrontmatter({ id, name, type, sourceSystem, dependsOn = [], description }) {
+function connectorMarkdownFrontmatter({
+  id,
+  name,
+  type,
+  sourceSystem,
+  dependsOn = [],
+  description,
+}) {
   return `---
 id: ${JSON.stringify(id)}
 name: ${JSON.stringify(name)}
@@ -252,9 +261,9 @@ function buildAirflowHeaders(payload) {
   if (payload.token) return { Authorization: `Bearer ${payload.token}` };
   if (payload.username || payload.password) {
     return {
-      Authorization: `Basic ${Buffer.from(`${payload.username || ''}:${payload.password || ''}`).toString(
-        'base64'
-      )}`,
+      Authorization: `Basic ${Buffer.from(
+        `${payload.username || ''}:${payload.password || ''}`
+      ).toString('base64')}`,
     };
   }
   return {};
@@ -286,7 +295,10 @@ function buildAirflowMarkdown(discovery) {
     .map((dag) => `- ${dag.dag_id || dag.dagId} (${dag.is_paused ? 'paused' : 'active'})`)
     .join('\n');
   const connectionRows = discovery.connections
-    .map((conn) => `- ${conn.connection_id || conn.conn_id || conn.id} (${conn.conn_type || 'connection'})`)
+    .map(
+      (conn) =>
+        `- ${conn.connection_id || conn.conn_id || conn.id} (${conn.conn_type || 'connection'})`
+    )
     .join('\n');
   return [
     {
@@ -345,7 +357,9 @@ async function discoverDatabricks(payload) {
 
 function buildDatabricksMarkdown(discovery) {
   const jobRows = discovery.jobs
-    .map((job) => `- ${job.settings?.name || job.job_id} (${(job.settings?.tasks || []).length} tasks)`)
+    .map(
+      (job) => `- ${job.settings?.name || job.job_id} (${(job.settings?.tasks || []).length} tasks)`
+    )
     .join('\n');
   const catalogRows = discovery.catalogs.map((catalog) => `- ${catalog.name}`).join('\n');
   return [
@@ -371,10 +385,14 @@ ${jobRows || '- No jobs discovered.'}
 
 ## Catalogs
 ${catalogRows || '- No catalogs discovered or Unity Catalog permissions unavailable.'}
-${discovery.clusterWarning || discovery.catalogWarning ? `\n## Warnings\n${[discovery.clusterWarning, discovery.catalogWarning]
-  .filter(Boolean)
-  .map((warning) => `- ${warning}`)
-  .join('\n')}\n` : ''}
+${
+  discovery.clusterWarning || discovery.catalogWarning
+    ? `\n## Warnings\n${[discovery.clusterWarning, discovery.catalogWarning]
+        .filter(Boolean)
+        .map((warning) => `- ${warning}`)
+        .join('\n')}\n`
+    : ''
+}
 `,
     },
   ];
@@ -394,8 +412,7 @@ async function buildSqlConnectionContext(payload) {
       'Windows integrated auth requires msnodesqlv8 on a Windows host. Use SQL Server auth or NTLM on Linux/Docker.',
     windowsIntegratedCredentialMessage:
       'For NTLM Windows auth, provide both username and password. For integrated auth, leave both blank.',
-    windowsDriverInstallMessage:
-      'Windows integrated auth requires msnodesqlv8.',
+    windowsDriverInstallMessage: 'Windows integrated auth requires msnodesqlv8.',
     azureAdMode: 'azure-active-directory-service-principal-secret',
   });
 }
@@ -498,7 +515,7 @@ router.post('/load', authenticate, requireAdmin, async (req, res) => {
 
     // Load compact runtime indexes instead of full column-level markdown.
     const runtimeCatalog = await loadRuntimeCatalog(safeDataPath, { rebuild: true });
-    const objects = runtimeCatalog.objects;
+    const { objects } = runtimeCatalog;
 
     if (objects.size === 0) {
       return sendErrorResponse(res, req, 400, 'No markdown files found', {
@@ -663,10 +680,13 @@ router.post('/connect-sql-server', authenticate, requireAdmin, async (req, res) 
 
     if (extraction.status === 'failed' || !extraction.metadata) {
       const firstError = extraction.errors?.[0];
-      throw new Error(firstError?.message || 'SQL Server connector extraction failed before metadata was returned.');
+      throw new Error(
+        firstError?.message ||
+          'SQL Server connector extraction failed before metadata was returned.'
+      );
     }
 
-    const metadata = extraction.metadata;
+    const { metadata } = extraction;
 
     // 1. DETERMINE OUTPUT PATH
     const defaultBasePath = './data/markdown';
@@ -1039,7 +1059,11 @@ router.get('/export-zip', authenticate, requireAdmin, (req, res) => {
 
     return undefined;
   } catch (err) {
-    if (String(err?.message || '').toLowerCase().includes('invalid datapath')) {
+    if (
+      String(err?.message || '')
+        .toLowerCase()
+        .includes('invalid datapath')
+    ) {
       return sendErrorResponse(res, req, 404, 'Directory not found', {
         code: 'NOT_FOUND',
       });

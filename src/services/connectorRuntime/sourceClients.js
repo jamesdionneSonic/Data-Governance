@@ -29,9 +29,11 @@ const SOURCE_PATHS = {
   },
   azure_storage: {
     containers: () => '?comp=list',
-    objects: ({ config }) => `${config.container ? `/${encodeURIComponent(config.container)}` : ''}?restype=container&comp=list`,
+    objects: ({ config }) =>
+      `${config.container ? `/${encodeURIComponent(config.container)}` : ''}?restype=container&comp=list`,
     schemas: ({ config }) => config.schema_manifest_url || config.manifest_url || null,
-    classifications: ({ config }) => config.classification_manifest_url || config.manifest_url || null,
+    classifications: ({ config }) =>
+      config.classification_manifest_url || config.manifest_url || null,
     lineage: ({ config }) => config.lineage_manifest_url || config.manifest_url || null,
   },
   aws_glue: {
@@ -53,12 +55,14 @@ const SOURCE_PATHS = {
   },
   bigquery: {
     datasets: ({ config }) => `/bigquery/v2/projects/${config.project_id}/datasets`,
-    tables: ({ config }) => `/bigquery/v2/projects/${config.project_id}/datasets/${config.dataset_id || config.dataset || '-'}/tables`,
+    tables: ({ config }) =>
+      `/bigquery/v2/projects/${config.project_id}/datasets/${config.dataset_id || config.dataset || '-'}/tables`,
     jobs: ({ config }) => `/bigquery/v2/projects/${config.project_id}/jobs`,
   },
   databricks: {
     catalogs: () => '/api/2.1/unity-catalog/catalogs',
-    schemas: ({ config }) => `/api/2.1/unity-catalog/schemas?catalog_name=${encodeURIComponent(config.catalog || '')}`,
+    schemas: ({ config }) =>
+      `/api/2.1/unity-catalog/schemas?catalog_name=${encodeURIComponent(config.catalog || '')}`,
     tables: ({ config }) =>
       `/api/2.1/unity-catalog/tables?catalog_name=${encodeURIComponent(config.catalog || '')}&schema_name=${encodeURIComponent(config.schema || '')}`,
     jobs: () => '/api/2.1/jobs/list',
@@ -70,10 +74,12 @@ const SOURCE_PATHS = {
     dataflows: () => '/v1/dataflows',
   },
   gcp_dataplex: {
-    lakes: ({ config }) => `/v1/projects/${config.project_id}/locations/${config.location || '-'}/lakes`,
+    lakes: ({ config }) =>
+      `/v1/projects/${config.project_id}/locations/${config.location || '-'}/lakes`,
     zones: ({ config }) =>
       `/v1/projects/${config.project_id}/locations/${config.location || '-'}/lakes/${config.lake || '-'}/zones`,
-    entries: ({ config }) => `/v1/projects/${config.project_id}/locations/${config.location || '-'}/entryGroups/-/entries`,
+    entries: ({ config }) =>
+      `/v1/projects/${config.project_id}/locations/${config.location || '-'}/entryGroups/-/entries`,
   },
   gcs: {
     buckets: ({ config }) => `/storage/v1/b?project=${encodeURIComponent(config.project_id)}`,
@@ -160,8 +166,10 @@ const SOURCE_PATHS = {
     apps: () => '/api/v1/items?resourceType=app',
     sheets: () => '/api/v1/items?resourceType=sheet',
     datasets: () => '/api/v1/data-connections',
-    fields: ({ config }) => `/api/v1/apps/${encodeURIComponent(config.app_id || '-')}/data/metadata`,
-    metrics: ({ config }) => `/api/v1/apps/${encodeURIComponent(config.app_id || '-')}/data/metadata`,
+    fields: ({ config }) =>
+      `/api/v1/apps/${encodeURIComponent(config.app_id || '-')}/data/metadata`,
+    metrics: ({ config }) =>
+      `/api/v1/apps/${encodeURIComponent(config.app_id || '-')}/data/metadata`,
   },
   qlik_sense: {
     streams: () => '/qrs/stream/full',
@@ -169,12 +177,20 @@ const SOURCE_PATHS = {
     connections: () => '/qrs/dataconnection/full',
   },
   quicksight: {
-    analyses: ({ config }) => `/accounts/${encodeURIComponent(config.aws_account_id || config.account_id || '-')}/analyses`,
-    dashboards: ({ config }) => `/accounts/${encodeURIComponent(config.aws_account_id || config.account_id || '-')}/dashboards`,
-    datasets: ({ config }) => `/accounts/${encodeURIComponent(config.aws_account_id || config.account_id || '-')}/data-sets`,
-    data_sources: ({ config }) => `/accounts/${encodeURIComponent(config.aws_account_id || config.account_id || '-')}/data-sources`,
-    metrics: ({ config }) => config.metrics_endpoint || `/accounts/${encodeURIComponent(config.aws_account_id || config.account_id || '-')}/analyses`,
-    lineage: ({ config }) => config.lineage_endpoint || `/accounts/${encodeURIComponent(config.aws_account_id || config.account_id || '-')}/analyses`,
+    analyses: ({ config }) =>
+      `/accounts/${encodeURIComponent(config.aws_account_id || config.account_id || '-')}/analyses`,
+    dashboards: ({ config }) =>
+      `/accounts/${encodeURIComponent(config.aws_account_id || config.account_id || '-')}/dashboards`,
+    datasets: ({ config }) =>
+      `/accounts/${encodeURIComponent(config.aws_account_id || config.account_id || '-')}/data-sets`,
+    data_sources: ({ config }) =>
+      `/accounts/${encodeURIComponent(config.aws_account_id || config.account_id || '-')}/data-sources`,
+    metrics: ({ config }) =>
+      config.metrics_endpoint ||
+      `/accounts/${encodeURIComponent(config.aws_account_id || config.account_id || '-')}/analyses`,
+    lineage: ({ config }) =>
+      config.lineage_endpoint ||
+      `/accounts/${encodeURIComponent(config.aws_account_id || config.account_id || '-')}/analyses`,
   },
   redash: {
     data_sources: () => '/api/data_sources',
@@ -183,17 +199,28 @@ const SOURCE_PATHS = {
     alerts: () => '/api/alerts',
   },
   salesforce: {
-    objects: ({ config }) => `/services/data/${config.api_version || DEFAULT_API_VERSION.salesforce}/sobjects`,
-    reports: ({ config }) => `/services/data/${config.api_version || DEFAULT_API_VERSION.salesforce}/analytics/reports`,
-    dashboards: ({ config }) => `/services/data/${config.api_version || DEFAULT_API_VERSION.salesforce}/analytics/dashboards`,
+    objects: ({ config }) =>
+      `/services/data/${config.api_version || DEFAULT_API_VERSION.salesforce}/sobjects`,
+    reports: ({ config }) =>
+      `/services/data/${config.api_version || DEFAULT_API_VERSION.salesforce}/analytics/reports`,
+    dashboards: ({ config }) =>
+      `/services/data/${config.api_version || DEFAULT_API_VERSION.salesforce}/analytics/dashboards`,
   },
   sap: {
     objects: () => '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection?$format=json',
-    fields: ({ config }) => config.fields_endpoint || '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection?$format=json',
+    fields: ({ config }) =>
+      config.fields_endpoint ||
+      '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection?$format=json',
     relationships: ({ config }) =>
-      config.relationships_endpoint || config.lineage_endpoint || '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection?$format=json',
-    extractors: ({ config }) => config.extractors_endpoint || '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection?$format=json',
-    lineage: ({ config }) => config.lineage_endpoint || '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection?$format=json',
+      config.relationships_endpoint ||
+      config.lineage_endpoint ||
+      '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection?$format=json',
+    extractors: ({ config }) =>
+      config.extractors_endpoint ||
+      '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection?$format=json',
+    lineage: ({ config }) =>
+      config.lineage_endpoint ||
+      '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection?$format=json',
   },
   sigma: {
     workbooks: () => '/v2/workbooks',
@@ -214,10 +241,14 @@ const SOURCE_PATHS = {
     dashboards: () => '/api/v1/dashboard/',
   },
   tableau: {
-    projects: ({ config }) => `/api/${config.api_version || DEFAULT_API_VERSION.tableau}/sites/${config.site_id}/projects`,
-    workbooks: ({ config }) => `/api/${config.api_version || DEFAULT_API_VERSION.tableau}/sites/${config.site_id}/workbooks`,
-    views: ({ config }) => `/api/${config.api_version || DEFAULT_API_VERSION.tableau}/sites/${config.site_id}/views`,
-    datasources: ({ config }) => `/api/${config.api_version || DEFAULT_API_VERSION.tableau}/sites/${config.site_id}/datasources`,
+    projects: ({ config }) =>
+      `/api/${config.api_version || DEFAULT_API_VERSION.tableau}/sites/${config.site_id}/projects`,
+    workbooks: ({ config }) =>
+      `/api/${config.api_version || DEFAULT_API_VERSION.tableau}/sites/${config.site_id}/workbooks`,
+    views: ({ config }) =>
+      `/api/${config.api_version || DEFAULT_API_VERSION.tableau}/sites/${config.site_id}/views`,
+    datasources: ({ config }) =>
+      `/api/${config.api_version || DEFAULT_API_VERSION.tableau}/sites/${config.site_id}/datasources`,
   },
   thoughtspot: {
     answers: () => '/api/rest/2.0/metadata/search',
@@ -228,7 +259,8 @@ const SOURCE_PATHS = {
   },
   kafka: {
     clusters: () => '/v3/clusters',
-    topics: ({ config }) => `/v3/clusters/${encodeURIComponent(config.cluster_id || config.cluster || '-')}/topics`,
+    topics: ({ config }) =>
+      `/v3/clusters/${encodeURIComponent(config.cluster_id || config.cluster || '-')}/topics`,
     schemas: () => '/subjects',
     consumers: ({ config }) => `/consumers/${encodeURIComponent(config.group_id || '-')}`,
   },
@@ -259,21 +291,25 @@ const SOURCE_BASE_URL = {
   gcp_dataplex: () => 'https://dataplex.googleapis.com',
   gcs: () => 'https://storage.googleapis.com',
   power_bi: () => 'https://api.powerbi.com',
-  azure_purview: (config) => (config.account ? `https://${config.account}.purview.azure.com` : null),
-  azure_storage: (config) => (config.account ? `https://${config.account}.blob.core.windows.net` : null),
+  azure_purview: (config) =>
+    config.account ? `https://${config.account}.purview.azure.com` : null,
+  azure_storage: (config) =>
+    config.account ? `https://${config.account}.blob.core.windows.net` : null,
   aws_glue: (config) => `https://glue.${config.region || 'us-east-1'}.amazonaws.com`,
   aws_s3: (config) => `https://s3.${config.region || 'us-east-1'}.amazonaws.com`,
   aws_redshift: (config) => `https://redshift-data.${config.region || 'us-east-1'}.amazonaws.com`,
   quicksight: (config) => `https://quicksight.${config.region || 'us-east-1'}.amazonaws.com`,
 };
 
-const SDK_REQUIRED = new Set([
-  'postgresql',
-  'snowflake',
-  'ssas_on_prem',
-]);
+const SDK_REQUIRED = new Set(['postgresql', 'snowflake', 'ssas_on_prem']);
 
-export async function fetchSourceMetadata({ connector, stream, bridge, headers = {}, options = {} }) {
+export async function fetchSourceMetadata({
+  connector,
+  stream,
+  bridge,
+  headers = {},
+  options = {},
+}) {
   const config = connector.config || {};
   const streamName = stream?.name;
 
@@ -287,7 +323,8 @@ export async function fetchSourceMetadata({ connector, stream, bridge, headers =
   const endpointOverride = endpointOverrideForStream(config, streamName);
   const pathBuilder = SOURCE_PATHS[connector.type]?.[streamName];
   const baseUrl = resolveBaseUrl(connector);
-  const path = endpointOverride || (pathBuilder ? pathBuilder({ config, connector, stream }) : null);
+  const path =
+    endpointOverride || (pathBuilder ? pathBuilder({ config, connector, stream }) : null);
 
   if (!path) {
     if (SDK_REQUIRED.has(connector.type)) {
@@ -343,24 +380,32 @@ async function fetchJson({ connector, stream, url, headers, options }) {
     headers: requestHeaders,
   });
   if (!response.ok) {
-    throw new ConnectorRuntimeError(`${connector.type} source API returned HTTP ${response.status} for stream '${stream.name}'.`, {
-      connector_id: connector.id,
-      connector_type: connector.type,
-      stream: stream.name,
-      remediation: 'Check source URL, API version, tenant/site/project IDs, service-account permissions, and network/firewall access.',
-      details: { status: response.status, endpoint: safeUrl(url) },
-    });
+    throw new ConnectorRuntimeError(
+      `${connector.type} source API returned HTTP ${response.status} for stream '${stream.name}'.`,
+      {
+        connector_id: connector.id,
+        connector_type: connector.type,
+        stream: stream.name,
+        remediation:
+          'Check source URL, API version, tenant/site/project IDs, service-account permissions, and network/firewall access.',
+        details: { status: response.status, endpoint: safeUrl(url) },
+      }
+    );
   }
   try {
     return response.json();
   } catch (err) {
-    throw new ConnectorRuntimeError(`${connector.type} source API did not return JSON for stream '${stream.name}'.`, {
-      connector_id: connector.id,
-      connector_type: connector.type,
-      stream: stream.name,
-      remediation: 'Use a JSON metadata API endpoint or add a source-specific parser for this response format.',
-      details: { endpoint: safeUrl(url), parse_error: err.message },
-    });
+    throw new ConnectorRuntimeError(
+      `${connector.type} source API did not return JSON for stream '${stream.name}'.`,
+      {
+        connector_id: connector.id,
+        connector_type: connector.type,
+        stream: stream.name,
+        remediation:
+          'Use a JSON metadata API endpoint or add a source-specific parser for this response format.',
+        details: { endpoint: safeUrl(url), parse_error: err.message },
+      }
+    );
   }
 }
 
@@ -419,7 +464,11 @@ async function fetchPostgresMetadata({ connector, stream, bridge }) {
   try {
     await client.connect();
     const result = await client.query(postgresQueryForStream(stream.name));
-    return { [stream.name]: result.rows || [], extracted_at: new Date().toISOString(), source: 'postgresql_driver' };
+    return {
+      [stream.name]: result.rows || [],
+      extracted_at: new Date().toISOString(),
+      source: 'postgresql_driver',
+    };
   } finally {
     await client.end().catch(() => {});
   }
@@ -447,7 +496,9 @@ async function fetchSnowflakeMetadata({ connector, stream, bridge }) {
     role: connector.config.role,
   });
 
-  await new Promise((resolve, reject) => connection.connect((err) => (err ? reject(err) : resolve())));
+  await new Promise((resolve, reject) =>
+    connection.connect((err) => (err ? reject(err) : resolve()))
+  );
   try {
     const rows = await new Promise((resolve, reject) => {
       connection.execute({
@@ -455,7 +506,11 @@ async function fetchSnowflakeMetadata({ connector, stream, bridge }) {
         complete: (err, _statement, resultRows) => (err ? reject(err) : resolve(resultRows || [])),
       });
     });
-    return { [stream.name]: rows, extracted_at: new Date().toISOString(), source: 'snowflake_driver' };
+    return {
+      [stream.name]: rows,
+      extracted_at: new Date().toISOString(),
+      source: 'snowflake_driver',
+    };
   } finally {
     connection.destroy(() => {});
   }
@@ -472,17 +527,23 @@ async function fetchSsasMetadata({ connector, stream, bridge }) {
   throw nativeDependencyError(connector, stream, bridge, {
     packageName: 'xmla-or-adomd-client',
     clientFamily: 'ssas-xmla-client',
-    installHint: 'add XMLA SOAP request support or an ADOMD/XMLA client module before live SSAS extraction',
+    installHint:
+      'add XMLA SOAP request support or an ADOMD/XMLA client module before live SSAS extraction',
   });
 }
 
 function postgresQueryForStream(streamName) {
   const queries = {
-    schemas: "select schema_name as id, schema_name as name from information_schema.schemata where schema_name not in ('pg_catalog','information_schema')",
-    tables: "select table_schema, table_name, table_schema || '.' || table_name as id, table_name as name, table_type as type from information_schema.tables where table_schema not in ('pg_catalog','information_schema')",
-    columns: "select table_schema, table_name, column_name as id, column_name as name, data_type, is_nullable from information_schema.columns where table_schema not in ('pg_catalog','information_schema')",
-    constraints: "select constraint_schema, constraint_name as id, constraint_name as name, table_name, constraint_type from information_schema.table_constraints",
-    routines: "select routine_schema, routine_name as id, routine_name as name, routine_type from information_schema.routines",
+    schemas:
+      "select schema_name as id, schema_name as name from information_schema.schemata where schema_name not in ('pg_catalog','information_schema')",
+    tables:
+      "select table_schema, table_name, table_schema || '.' || table_name as id, table_name as name, table_type as type from information_schema.tables where table_schema not in ('pg_catalog','information_schema')",
+    columns:
+      "select table_schema, table_name, column_name as id, column_name as name, data_type, is_nullable from information_schema.columns where table_schema not in ('pg_catalog','information_schema')",
+    constraints:
+      'select constraint_schema, constraint_name as id, constraint_name as name, table_name, constraint_type from information_schema.table_constraints',
+    routines:
+      'select routine_schema, routine_name as id, routine_name as name, routine_type from information_schema.routines',
   };
   return queries[streamName] || queries.tables;
 }
@@ -490,32 +551,51 @@ function postgresQueryForStream(streamName) {
 function snowflakeQueryForStream(streamName) {
   const queries = {
     databases: 'show databases',
-    schemas: 'select catalog_name, schema_name as id, schema_name as name from information_schema.schemata',
-    tables: 'select table_catalog, table_schema, table_name as id, table_name as name, table_type from information_schema.tables',
-    columns: 'select table_catalog, table_schema, table_name, column_name as id, column_name as name, data_type, is_nullable from information_schema.columns',
+    schemas:
+      'select catalog_name, schema_name as id, schema_name as name from information_schema.schemata',
+    tables:
+      'select table_catalog, table_schema, table_name as id, table_name as name, table_type from information_schema.tables',
+    columns:
+      'select table_catalog, table_schema, table_name, column_name as id, column_name as name, data_type, is_nullable from information_schema.columns',
     tags: 'select * from table(information_schema.tag_references_all_columns())',
   };
   return queries[streamName] || queries.tables;
 }
 
-function nativeDependencyError(connector, stream, bridge, { packageName, clientFamily, installHint }) {
-  return new ConnectorRuntimeError(`${connector.type} native live extraction requires ${packageName} for stream '${stream?.name}'.`, {
-    connector_id: connector.id,
-    connector_type: connector.type,
-    stream: stream?.name,
-    remediation: installHint,
-    details: {
-      required_package: packageName,
-      required_client_family: clientFamily,
-      documented_endpoint: stream?.endpoint || null,
-      docs: bridge?.docs || [],
-    },
-  });
+function nativeDependencyError(
+  connector,
+  stream,
+  bridge,
+  { packageName, clientFamily, installHint }
+) {
+  return new ConnectorRuntimeError(
+    `${connector.type} native live extraction requires ${packageName} for stream '${stream?.name}'.`,
+    {
+      connector_id: connector.id,
+      connector_type: connector.type,
+      stream: stream?.name,
+      remediation: installHint,
+      details: {
+        required_package: packageName,
+        required_client_family: clientFamily,
+        documented_endpoint: stream?.endpoint || null,
+        docs: bridge?.docs || [],
+      },
+    }
+  );
 }
 
 function normalizeOpenApi(stream, spec = {}) {
   if (stream.name === 'openapi_spec') {
-    return { openapi_spec: [{ id: spec.info?.title || 'openapi', name: spec.info?.title || 'OpenAPI spec', version: spec.info?.version }] };
+    return {
+      openapi_spec: [
+        {
+          id: spec.info?.title || 'openapi',
+          name: spec.info?.title || 'OpenAPI spec',
+          version: spec.info?.version,
+        },
+      ],
+    };
   }
   if (stream.name === 'endpoints') {
     const endpoints = Object.entries(spec.paths || {}).flatMap(([path, methods]) =>
@@ -545,7 +625,16 @@ function normalizeOpenApi(stream, spec = {}) {
         Object.entries(methods || {}).flatMap(([method, operation]) =>
           Object.values(operation.responses || {}).flatMap((response) => {
             const ref = response?.content?.['application/json']?.schema?.$ref;
-            return ref ? [{ id: `${method}:${path}->${ref}`, from: `${method.toUpperCase()} ${path}`, to: ref.split('/').pop(), type: 'returns_schema' }] : [];
+            return ref
+              ? [
+                  {
+                    id: `${method}:${path}->${ref}`,
+                    from: `${method.toUpperCase()} ${path}`,
+                    to: ref.split('/').pop(),
+                    type: 'returns_schema',
+                  },
+                ]
+              : [];
           })
         )
       ),
@@ -556,10 +645,22 @@ function normalizeOpenApi(stream, spec = {}) {
 
 function normalizeSalesforce(stream, json = {}) {
   if (stream.name === 'objects') {
-    return { objects: (json.sobjects || json.objects || []).map((item) => ({ ...item, id: item.name, object_type: 'salesforce_object' })) };
+    return {
+      objects: (json.sobjects || json.objects || []).map((item) => ({
+        ...item,
+        id: item.name,
+        object_type: 'salesforce_object',
+      })),
+    };
   }
   if (stream.name === 'fields') {
-    return { fields: (json.fields || []).map((item) => ({ ...item, id: item.name, object_type: 'salesforce_field' })) };
+    return {
+      fields: (json.fields || []).map((item) => ({
+        ...item,
+        id: item.name,
+        object_type: 'salesforce_field',
+      })),
+    };
   }
   if (stream.name === 'relationships') {
     return {
@@ -583,10 +684,22 @@ function normalizeGitRepository(connector, stream, json) {
     dbt_artifacts: /(^|\/)(manifest|catalog|sources)\.json$/i,
   };
   if (stream.name === 'repositories') {
-    return { repositories: [{ id: connector.config.repo_url, name: connector.label || connector.config.repo_url, url: connector.config.repo_url }] };
+    return {
+      repositories: [
+        {
+          id: connector.config.repo_url,
+          name: connector.label || connector.config.repo_url,
+          url: connector.config.repo_url,
+        },
+      ],
+    };
   }
   if (filters[stream.name]) {
-    return { [stream.name]: files.filter((file) => filters[stream.name].test(file.path || file.name || '')).map(fileObject) };
+    return {
+      [stream.name]: files
+        .filter((file) => filters[stream.name].test(file.path || file.name || ''))
+        .map(fileObject),
+    };
   }
   return { [stream.name]: files.map(fileObject) };
 }
@@ -600,7 +713,12 @@ function normalizeDbt(connector, stream, json) {
   if (stream.name === 'lineage') {
     return {
       lineage: Object.entries(manifest.parent_map || {}).flatMap(([child, parents]) =>
-        (parents || []).map((parent) => ({ id: `${parent}->${child}`, from: parent, to: child, type: 'dbt_depends_on' }))
+        (parents || []).map((parent) => ({
+          id: `${parent}->${child}`,
+          from: parent,
+          to: child,
+          type: 'dbt_depends_on',
+        }))
       ),
     };
   }
@@ -630,7 +748,11 @@ function fileObject(file) {
     id: path,
     name: path?.split('/').pop() || path,
     path,
-    object_type: path?.endsWith('.py') ? 'python_script' : path?.endsWith('.sql') ? 'sql_file' : 'repository_file',
+    object_type: path?.endsWith('.py')
+      ? 'python_script'
+      : path?.endsWith('.sql')
+        ? 'sql_file'
+        : 'repository_file',
   };
 }
 
@@ -642,7 +764,16 @@ function valuesOfType(nodes = {}, resourceType) {
 
 function extractArray(json) {
   if (Array.isArray(json)) return json;
-  for (const key of ['value', 'items', 'data', 'result', 'results', 'records', 'sobjects', 'files']) {
+  for (const key of [
+    'value',
+    'items',
+    'data',
+    'result',
+    'results',
+    'records',
+    'sobjects',
+    'files',
+  ]) {
     if (Array.isArray(json?.[key])) return json[key];
   }
   if (json && typeof json === 'object') return [json];
@@ -650,32 +781,40 @@ function extractArray(json) {
 }
 
 function sourceClientMissingError(connector, stream, bridge) {
-  return new ConnectorRuntimeError(`${connector.type} has no direct source API endpoint configured for stream '${stream?.name}'.`, {
-    connector_id: connector.id,
-    connector_type: connector.type,
-    stream: stream?.name,
-    remediation:
-      'Add stream_endpoints/source_endpoints for this stream, provide metadata_payload/seed_metadata, or implement the next vendor-specific client method in sourceClients.js.',
-    details: {
-      documented_endpoint: stream?.endpoint || null,
-      docs: bridge?.docs || [],
-    },
-  });
+  return new ConnectorRuntimeError(
+    `${connector.type} has no direct source API endpoint configured for stream '${stream?.name}'.`,
+    {
+      connector_id: connector.id,
+      connector_type: connector.type,
+      stream: stream?.name,
+      remediation:
+        'Add stream_endpoints/source_endpoints for this stream, provide metadata_payload/seed_metadata, or implement the next vendor-specific client method in sourceClients.js.',
+      details: {
+        documented_endpoint: stream?.endpoint || null,
+        docs: bridge?.docs || [],
+      },
+    }
+  );
 }
 
 function sdkRequiredError(connector, stream, bridge) {
-  return new ConnectorRuntimeError(`${connector.type} requires a native SDK/driver-backed live extractor for stream '${stream?.name}'.`, {
-    connector_id: connector.id,
-    connector_type: connector.type,
-    stream: stream?.name,
-    remediation:
-      'Use metadata_payload/seed_metadata now, or add the vendor SDK/driver client for signed/native access while keeping the shared parser and canonical event contract.',
-    details: {
-      documented_endpoint: stream?.endpoint || null,
-      docs: bridge?.docs || [],
-      required_client_family: connector.type.startsWith('aws_') ? 'aws-sdk-v3-with-sigv4' : 'native-driver-or-vendor-sdk',
-    },
-  });
+  return new ConnectorRuntimeError(
+    `${connector.type} requires a native SDK/driver-backed live extractor for stream '${stream?.name}'.`,
+    {
+      connector_id: connector.id,
+      connector_type: connector.type,
+      stream: stream?.name,
+      remediation:
+        'Use metadata_payload/seed_metadata now, or add the vendor SDK/driver client for signed/native access while keeping the shared parser and canonical event contract.',
+      details: {
+        documented_endpoint: stream?.endpoint || null,
+        docs: bridge?.docs || [],
+        required_client_family: connector.type.startsWith('aws_')
+          ? 'aws-sdk-v3-with-sigv4'
+          : 'native-driver-or-vendor-sdk',
+      },
+    }
+  );
 }
 
 function safeUrl(url) {
@@ -716,27 +855,38 @@ function gitRepositoryApiUrl(config = {}, mode = 'items') {
 function signAwsHeaders({ connector, stream, url, headers }) {
   const config = connector.config || {};
   const credential = connector.credential || {};
-  const accessKeyId = credential.access_key_id || credential.accessKeyId || config.access_key_id || config.accessKeyId;
+  const accessKeyId =
+    credential.access_key_id ||
+    credential.accessKeyId ||
+    config.access_key_id ||
+    config.accessKeyId;
   const secretAccessKey =
     credential.secret_access_key ||
     credential.secretAccessKey ||
     credential.secret_key ||
     config.secret_access_key ||
     config.secretAccessKey;
-  const sessionToken = credential.session_token || credential.sessionToken || config.session_token || config.sessionToken;
+  const sessionToken =
+    credential.session_token ||
+    credential.sessionToken ||
+    config.session_token ||
+    config.sessionToken;
 
   if (!accessKeyId || !secretAccessKey) {
-    throw new ConnectorRuntimeError(`${connector.type} live extraction needs AWS credentials resolved before signing stream '${stream?.name}'.`, {
-      connector_id: connector.id,
-      connector_type: connector.type,
-      stream: stream?.name,
-      remediation:
-        'Resolve the connector secret_ref into access_key_id and secret_access_key, or run with an IAM role/metadata sidecar that supplies signed stream_endpoints.',
-      details: {
-        accepted_credentials: ['access_key_id', 'secret_access_key', 'session_token'],
-        credential_mode: credential.mode || credential.kind || null,
-      },
-    });
+    throw new ConnectorRuntimeError(
+      `${connector.type} live extraction needs AWS credentials resolved before signing stream '${stream?.name}'.`,
+      {
+        connector_id: connector.id,
+        connector_type: connector.type,
+        stream: stream?.name,
+        remediation:
+          'Resolve the connector secret_ref into access_key_id and secret_access_key, or run with an IAM role/metadata sidecar that supplies signed stream_endpoints.',
+        details: {
+          accepted_credentials: ['access_key_id', 'secret_access_key', 'session_token'],
+          credential_mode: credential.mode || credential.kind || null,
+        },
+      }
+    );
   }
 
   const parsed = new URL(url);
@@ -747,7 +897,7 @@ function signAwsHeaders({ connector, stream, url, headers }) {
   const dateStamp = amzDate.slice(0, 8);
   const canonicalUri = parsed.pathname || '/';
   const canonicalQuery = parsed.searchParams.toString();
-  const host = parsed.host;
+  const { host } = parsed;
   const signedHeaders = 'host;x-amz-date';
   const payloadHash = createHash('sha256').update('').digest('hex');
   const canonicalRequest = [
@@ -775,8 +925,7 @@ function signAwsHeaders({ connector, stream, url, headers }) {
     Host: host,
     'x-amz-date': amzDate,
     ...(sessionToken ? { 'x-amz-security-token': sessionToken } : {}),
-    Authorization:
-      `AWS4-HMAC-SHA256 Credential=${accessKeyId}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`,
+    Authorization: `AWS4-HMAC-SHA256 Credential=${accessKeyId}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`,
   };
 }
 

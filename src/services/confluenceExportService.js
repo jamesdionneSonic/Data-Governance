@@ -15,10 +15,7 @@ import { ZipArchive } from 'archiver';
 
 import { loadRuntimeCatalog } from './catalogRuntimeService.js';
 import { getMarkdownFiles } from './markdownService.js';
-import {
-  getDownstreamDependents,
-  getUpstreamDependencies,
-} from './lineageService.js';
+import { getDownstreamDependents, getUpstreamDependencies } from './lineageService.js';
 
 const DEFAULT_MARKDOWN_ROOT = './data/markdown';
 const DEFAULT_EXPORT_ROOT = './data/confluence/export';
@@ -136,7 +133,9 @@ function confidenceScore(object = {}) {
 }
 
 function compactDisplayValue(value, fallback = '') {
-  return String(value ?? fallback).replace(/\s+/g, ' ').trim();
+  return String(value ?? fallback)
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function csvCell(value) {
@@ -264,8 +263,8 @@ function objectCriticality(object = {}) {
 }
 
 function buildObjectRegistryRow({ entry, graph, generatedAt, quickContext, shard }) {
-  const object = entry.object;
-  const id = entry.id;
+  const { object } = entry;
+  const { id } = entry;
   return {
     object_id: id,
     system: compactDisplayValue(object.server, 'unknown'),
@@ -330,7 +329,9 @@ function renderReadmePage({ generatedAt, rootPageUrl, summary }) {
     '',
     '## Repository Root',
     '',
-    rootPageUrl ? `- ${rootPageUrl}` : '- Set CONFLUENCE_PARENT_PAGE_ID and CONFLUENCE_BASE_URL before live sync.',
+    rootPageUrl
+      ? `- ${rootPageUrl}`
+      : '- Set CONFLUENCE_PARENT_PAGE_ID and CONFLUENCE_BASE_URL before live sync.',
     '',
     `Generated at: ${generatedAt}`,
     '',
@@ -348,7 +349,10 @@ function renderConfidenceGuide() {
     markdownTable(
       ['Label', 'Meaning'],
       [
-        ['very_high', 'Strong canonical object identity, validated edges, and low unresolved risk.'],
+        [
+          'very_high',
+          'Strong canonical object identity, validated edges, and low unresolved risk.',
+        ],
         ['high', 'Good confidence with small or explainable unresolved areas.'],
         ['medium', 'Usable for exploration, but review diagnostics before change decisions.'],
         ['low', 'Object-level lineage exists but important facts are unresolved or weak.'],
@@ -380,15 +384,24 @@ function renderSourceInventoryPage({ objects, generatedAt }) {
     '',
     '## Object Counts By Server',
     '',
-    markdownTable(['Server', 'Objects'], servers.map((item) => [item.name, item.count])),
+    markdownTable(
+      ['Server', 'Objects'],
+      servers.map((item) => [item.name, item.count])
+    ),
     '',
     '## Object Counts By Database',
     '',
-    markdownTable(['Database', 'Objects'], databases.map((item) => [item.name, item.count])),
+    markdownTable(
+      ['Database', 'Objects'],
+      databases.map((item) => [item.name, item.count])
+    ),
     '',
     '## Object Counts By Type',
     '',
-    markdownTable(['Type', 'Objects'], types.map((item) => [item.name, item.count])),
+    markdownTable(
+      ['Type', 'Objects'],
+      types.map((item) => [item.name, item.count])
+    ),
     '',
     '## Confidence Distribution',
     '',
@@ -406,15 +419,13 @@ function renderGovernancePortalPage({
   governedAssetDefinitions,
   generatedAt,
 }) {
-  const certifiedRows = registryRows
-    .filter((row) => row.criticality === 'certified')
-    .slice(0, 25);
+  const certifiedRows = registryRows.filter((row) => row.criticality === 'certified').slice(0, 25);
   const criticalRows = registryRows
-    .filter((row) => ['critical_reporting', 'dimensional_model', 'classified'].includes(row.criticality))
+    .filter((row) =>
+      ['critical_reporting', 'dimensional_model', 'classified'].includes(row.criticality)
+    )
     .slice(0, 25);
-  const stewardRows = registryRows
-    .filter((row) => row.steward)
-    .slice(0, 25);
+  const stewardRows = registryRows.filter((row) => row.steward).slice(0, 25);
 
   return [
     '# Governance Portal',
@@ -692,7 +703,6 @@ function quickContextAliases(object, id) {
 function buildQuickContextRecord({ object, id, graph, markdownRoot, shard }) {
   const allUpstream = getUpstreamDependencies(id, graph, 1);
   const allDownstream = getDownstreamDependents(id, graph, 1);
-  const columns = ensureArray(object.columns);
 
   return {
     object_id: id,
@@ -816,9 +826,10 @@ function objectLocatorRange(entries) {
 }
 
 function buildObjectLocatorTitle(number, entries) {
-  return `Object Locator ${String(number).padStart(3, '0')} - ${objectLocatorRange(
-    entries
-  )}`.slice(0, 240);
+  return `Object Locator ${String(number).padStart(3, '0')} - ${objectLocatorRange(entries)}`.slice(
+    0,
+    240
+  );
 }
 
 function renderObjectLocatorPage({ page, quickContextLookup, shardLookup, generatedAt }) {
@@ -881,7 +892,9 @@ function renderCatalogManifestPage({ manifestJson, generatedAt }) {
     '## Preview',
     '',
     ...files.slice(0, 100).map((file) => `- \`${file}\``),
-    files.length > 100 ? `- ... ${files.length - 100} additional files in the attachment bundle.` : '',
+    files.length > 100
+      ? `- ... ${files.length - 100} additional files in the attachment bundle.`
+      : '',
     '',
   ]
     .filter((line) => line !== '')
@@ -924,14 +937,16 @@ function relativeSourcePath(markdownRoot, filePath) {
 }
 
 function compactRiskFlags(object) {
-  return ensureArray(object.column_risk_flags).slice(0, SHARD_RISK_PREVIEW_LIMIT).map((risk) => ({
-    process_id: risk.process_id || risk.object_id || '',
-    flag_type: risk.flag_type || risk.reason || 'risk',
-    severity: risk.severity || '',
-    validation_status: risk.validation_status || '',
-    evidence_type: risk.evidence_type || '',
-    evidence_text: risk.evidence_text || '',
-  }));
+  return ensureArray(object.column_risk_flags)
+    .slice(0, SHARD_RISK_PREVIEW_LIMIT)
+    .map((risk) => ({
+      process_id: risk.process_id || risk.object_id || '',
+      flag_type: risk.flag_type || risk.reason || 'risk',
+      severity: risk.severity || '',
+      validation_status: risk.validation_status || '',
+      evidence_type: risk.evidence_type || '',
+      evidence_text: risk.evidence_text || '',
+    }));
 }
 
 function buildShardObjectContext({ object, id, graph, markdownRoot }) {
@@ -980,8 +995,7 @@ function buildShardObjectContext({ object, id, graph, markdownRoot }) {
     ),
     risk_flags: compactRiskFlags(object),
     risk_flags_truncated:
-      countField(object, 'column_risk_flags', 'column_risk_flag_count') >
-      SHARD_RISK_PREVIEW_LIMIT,
+      countField(object, 'column_risk_flags', 'column_risk_flag_count') > SHARD_RISK_PREVIEW_LIMIT,
   };
 }
 
@@ -1339,7 +1353,10 @@ function buildQuickContextDefinitions(entries, options) {
     shardLookup,
   } = options;
   const limit = Math.max(25, Number(quickContextObjectLimit) || DEFAULT_QUICK_CONTEXT_OBJECT_LIMIT);
-  const maxBytes = Math.max(50_000, Number(quickContextMaxBytes) || DEFAULT_QUICK_CONTEXT_MAX_BYTES);
+  const maxBytes = Math.max(
+    50_000,
+    Number(quickContextMaxBytes) || DEFAULT_QUICK_CONTEXT_MAX_BYTES
+  );
   const contextualEntries = entries
     .map((entry) => {
       const context = buildQuickContextRecord({
@@ -1414,8 +1431,14 @@ function buildObjectLocatorDefinitions(entries, options) {
     quickContextLookup,
     shardLookup,
   } = options;
-  const limit = Math.max(25, Number(objectLocatorObjectLimit) || DEFAULT_OBJECT_LOCATOR_OBJECT_LIMIT);
-  const maxBytes = Math.max(50_000, Number(objectLocatorMaxBytes) || DEFAULT_OBJECT_LOCATOR_MAX_BYTES);
+  const limit = Math.max(
+    25,
+    Number(objectLocatorObjectLimit) || DEFAULT_OBJECT_LOCATOR_OBJECT_LIMIT
+  );
+  const maxBytes = Math.max(
+    50_000,
+    Number(objectLocatorMaxBytes) || DEFAULT_OBJECT_LOCATOR_MAX_BYTES
+  );
   const locatorEntries = entries
     .map((entry) => {
       const record = buildObjectLocatorRecord({
@@ -1502,7 +1525,7 @@ function governedAssetScore(entry) {
 }
 
 function buildGovernedAssetTitle(number, entry) {
-  const object = entry.object;
+  const { object } = entry;
   return `Governed Asset ${String(number).padStart(3, '0')} - ${titleSegment(
     object.name || entry.id
   )}`.slice(0, 240);
@@ -1543,8 +1566,8 @@ function buildGovernedAssetDefinitions(entries, options) {
 
 function renderGovernedAssetPage({ definition, graph, markdownRoot, generatedAt }) {
   const { entry, quickContext, shard, reasons } = definition;
-  const object = entry.object;
-  const id = entry.id;
+  const { object } = entry;
+  const { id } = entry;
   const columns = ensureArray(object.columns).slice(0, GOVERNED_ASSET_COLUMN_PREVIEW_LIMIT);
   const allUpstream = getUpstreamDependencies(id, graph, 1);
   const allDownstream = getDownstreamDependents(id, graph, 1);
@@ -1580,7 +1603,10 @@ function renderGovernedAssetPage({ definition, graph, markdownRoot, generatedAt 
         ['Domain', registryRow.domain],
         ['Classification', registryRow.classification],
         ['Criticality', registryRow.criticality],
-        ['Confidence', `${registryRow.confidence_label}${registryRow.confidence === null ? '' : ` (${registryRow.confidence})`}`],
+        [
+          'Confidence',
+          `${registryRow.confidence_label}${registryRow.confidence === null ? '' : ` (${registryRow.confidence})`}`,
+        ],
         ['Source markdown', relativeSourcePath(markdownRoot, object.filePath)],
         ['Quick context page', quickContext?.title || ''],
         ['Catalog shard page', shard?.title || ''],
@@ -1665,10 +1691,9 @@ async function createCatalogZip({
     archive.append(Readable.from(jsonArrayChunks(objectRegistry)), {
       name: 'catalog-object-registry.json',
     });
-    archive.append(
-      `${csvTable(OBJECT_REGISTRY_HEADERS, objectRegistry)}\n`,
-      { name: 'catalog-object-registry.csv' }
-    );
+    archive.append(`${csvTable(OBJECT_REGISTRY_HEADERS, objectRegistry)}\n`, {
+      name: 'catalog-object-registry.csv',
+    });
     archive.append(`${generatedAt}\n`, { name: 'export-generated-at.txt' });
     if (catalogManifest) archive.append(catalogManifest, { name: 'catalog-manifest.json' });
     if (rebuildReport) archive.append(rebuildReport, { name: 'rebuild-report.json' });
@@ -1738,15 +1763,11 @@ export async function buildConfluenceExport(options = {}) {
     Number(process.env.CONFLUENCE_GOVERNED_OBJECT_PAGE_LIMIT || DEFAULT_GOVERNED_OBJECT_PAGE_LIMIT);
   const generatedAt = nowIso();
   const runId =
-    options.runId ||
-    process.env.CONFLUENCE_EXPORT_RUN_ID ||
-    generatedAt.replace(/[:.]/g, '-');
+    options.runId || process.env.CONFLUENCE_EXPORT_RUN_ID || generatedAt.replace(/[:.]/g, '-');
   const artifactRoot = options.useRunFolder === false ? '' : path.join('runs', safeSegment(runId));
   const config = {
     confluenceBaseUrl:
-      options.confluenceBaseUrl ||
-      process.env.CONFLUENCE_BASE_URL ||
-      DEFAULT_CONFLUENCE_BASE_URL,
+      options.confluenceBaseUrl || process.env.CONFLUENCE_BASE_URL || DEFAULT_CONFLUENCE_BASE_URL,
     spaceKey: options.spaceKey || process.env.CONFLUENCE_SPACE_KEY || DEFAULT_CONFLUENCE_SPACE_KEY,
     parentPageId:
       options.parentPageId ||
@@ -1761,7 +1782,7 @@ export async function buildConfluenceExport(options = {}) {
   }
 
   const runtimeCatalog = await loadRuntimeCatalog(markdownRoot, { autoRebuild: true });
-  const objects = runtimeCatalog.objects;
+  const { objects } = runtimeCatalog;
   const graph = runtimeCatalog.lineageGraph;
   const objectEntries = sortedObjectEntries(objects);
   const shardDefinitions = buildShardDefinitions(objectEntries, {
@@ -1944,7 +1965,11 @@ export async function buildConfluenceExport(options = {}) {
   ];
 
   const pageRecords = await mapWithConcurrency(pageDefinitions, 8, async (definition) => {
-    const fileInfo = await writeExportFile(outputRoot, definition.relativePath, definition.content());
+    const fileInfo = await writeExportFile(
+      outputRoot,
+      definition.relativePath,
+      definition.content()
+    );
     return pageRecord(definition.title, fileInfo, {
       labels: definition.labels,
       parentTitle: definition.parentTitle,
@@ -1968,16 +1993,20 @@ export async function buildConfluenceExport(options = {}) {
   );
   manifest.object_locator_pages.push(...objectLocatorRecords);
 
-  const quickContextRecords = await mapWithConcurrency(quickContextDefinitions, 16, async (page) => {
-    const fileInfo = await writeExportFile(
-      outputRoot,
-      page.file,
-      renderQuickContextPage({ page, graph, markdownRoot, shardLookup, generatedAt })
-    );
-    return pageRecord(page.title, fileInfo, {
-      labels: ['lineage-quick-context'],
-    });
-  });
+  const quickContextRecords = await mapWithConcurrency(
+    quickContextDefinitions,
+    16,
+    async (page) => {
+      const fileInfo = await writeExportFile(
+        outputRoot,
+        page.file,
+        renderQuickContextPage({ page, graph, markdownRoot, shardLookup, generatedAt })
+      );
+      return pageRecord(page.title, fileInfo, {
+        labels: ['lineage-quick-context'],
+      });
+    }
+  );
   manifest.quick_context_pages.push(...quickContextRecords);
 
   const shardRecords = await mapWithConcurrency(shardDefinitions, 16, async (shard) => {

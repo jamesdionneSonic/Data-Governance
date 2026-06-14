@@ -53,11 +53,14 @@ const CONNECTOR_DIALECTS = Object.freeze({
 
 const PROFILE_MODES = new Set(['metadata_only', 'sample', 'full_scan']);
 const EXECUTION_MODES = new Set(['dry_run', 'simulate', 'live']);
-const NUMERIC_TYPE = /\b(bigint|int|smallint|tinyint|decimal|numeric|money|smallmoney|float|real|double|number)\b/i;
+const NUMERIC_TYPE =
+  /\b(bigint|int|smallint|tinyint|decimal|numeric|money|smallmoney|float|real|double|number)\b/i;
 const DATE_TYPE = /\b(date|datetime|datetime2|smalldatetime|time|timestamp)\b/i;
-const TEXT_TYPE = /\b(char|nchar|varchar|nvarchar|text|ntext|string|xml|json|uniqueidentifier|uuid)\b/i;
+const TEXT_TYPE =
+  /\b(char|nchar|varchar|nvarchar|text|ntext|string|xml|json|uniqueidentifier|uuid)\b/i;
 const LEGACY_SQL_SERVER_TEXT_TYPE = /\b(text|ntext)\b/i;
-const SENSITIVE_NAME = /ssn|social|tax.?id|email|phone|address|dob|birth|name|vin|license|account|routing|card|token|secret|password/i;
+const SENSITIVE_NAME =
+  /ssn|social|tax.?id|email|phone|address|dob|birth|name|vin|license|account|routing|card|token|secret|password/i;
 const ADAPTIVE_PROFILE_RULES = Object.freeze({
   large_rows: 5_000_000,
   huge_rows: 20_000_000,
@@ -105,7 +108,13 @@ function normalizeDialect(input = {}) {
     input.sourceDialect ||
     CONNECTOR_DIALECTS[input.connector_type || input.connectorType] ||
     DEFAULT_SAFETY.dialect;
-  return DIALECT_ALIASES[String(requested || '').trim().toLowerCase()] || DEFAULT_SAFETY.dialect;
+  return (
+    DIALECT_ALIASES[
+      String(requested || '')
+        .trim()
+        .toLowerCase()
+    ] || DEFAULT_SAFETY.dialect
+  );
 }
 
 export function normalizeProfileSafety(input = {}) {
@@ -133,7 +142,12 @@ export function normalizeProfileSafety(input = {}) {
       1_000_000_000,
       DEFAULT_SAFETY.max_estimated_rows
     ),
-    sample_percent: clampNumber(input.sample_percent ?? input.samplePercent, 0.1, 25, DEFAULT_SAFETY.sample_percent),
+    sample_percent: clampNumber(
+      input.sample_percent ?? input.samplePercent,
+      0.1,
+      25,
+      DEFAULT_SAFETY.sample_percent
+    ),
     query_timeout_ms: clampNumber(
       input.query_timeout_ms ?? input.queryTimeoutMs,
       1_000,
@@ -150,14 +164,24 @@ export function normalizeProfileSafety(input = {}) {
     include_distinct: normalizeBoolean(input.include_distinct ?? input.includeDistinct, true),
     include_min_max: normalizeBoolean(input.include_min_max ?? input.includeMinMax, true),
     include_mean: normalizeBoolean(input.include_mean ?? input.includeMean, true),
-    include_text_min_max: normalizeBoolean(input.include_text_min_max ?? input.includeTextMinMax, false),
+    include_text_min_max: normalizeBoolean(
+      input.include_text_min_max ?? input.includeTextMinMax,
+      false
+    ),
     raw_values_retained: false,
     isolation_level: DEFAULT_SAFETY.isolation_level,
   };
 }
 
 function objectName(asset = {}) {
-  return asset.full_name || asset.qualified_name || asset.qualifiedName || asset.name || asset.id || 'unknown';
+  return (
+    asset.full_name ||
+    asset.qualified_name ||
+    asset.qualifiedName ||
+    asset.name ||
+    asset.id ||
+    'unknown'
+  );
 }
 
 function objectType(asset = {}) {
@@ -200,9 +224,17 @@ function normalizeAssets(input = {}, objectCache = new Map()) {
   );
   if (directAssets.length) return directAssets;
 
-  const ids = toArray(input.asset_id || input.assetId || input.object_id || input.objectId || input.ids);
+  const ids = toArray(
+    input.asset_id || input.assetId || input.object_id || input.objectId || input.ids
+  );
   return ids
-    .map((id) => objectCache.get(id) || Array.from(objectCache.values()).find((asset) => asset.id === id || objectName(asset) === id))
+    .map(
+      (id) =>
+        objectCache.get(id) ||
+        Array.from(objectCache.values()).find(
+          (asset) => asset.id === id || objectName(asset) === id
+        )
+    )
     .filter(Boolean);
 }
 
@@ -255,7 +287,14 @@ function uniqueSqlAlias(baseAlias, usedAliases) {
 }
 
 function tableName(asset = {}) {
-  return asset.table || asset.table_name || asset.name || String(asset.id || '').split('.').pop();
+  return (
+    asset.table ||
+    asset.table_name ||
+    asset.name ||
+    String(asset.id || '')
+      .split('.')
+      .pop()
+  );
 }
 
 function quoteDouble(value) {
@@ -279,7 +318,9 @@ function qualifiedName(asset, quoteIdentifier, options = {}) {
 }
 
 function bigQueryObjectName(asset = {}) {
-  return quoteBacktick([objectDatabase(asset), objectSchema(asset), tableName(asset)].filter(Boolean).join('.'));
+  return quoteBacktick(
+    [objectDatabase(asset), objectSchema(asset), tableName(asset)].filter(Boolean).join('.')
+  );
 }
 
 function selectExpressions(columns, dialect) {
@@ -290,14 +331,23 @@ function selectExpressions(columns, dialect) {
     const alias = uniqueSqlAlias(column.profile_alias || column.name, usedAliases);
     column.profile_alias = alias;
     if (column.actions.includes('null_count')) {
-      parts.push(`SUM(CASE WHEN ${colSql} IS NULL THEN 1 ELSE 0 END) AS ${dialect.quoteIdentifier(`${alias}__null_count`)}`);
+      parts.push(
+        `SUM(CASE WHEN ${colSql} IS NULL THEN 1 ELSE 0 END) AS ${dialect.quoteIdentifier(`${alias}__null_count`)}`
+      );
     }
     if (column.actions.includes('distinct_count')) {
-      parts.push(`${dialect.distinctExpression(colSql)} AS ${dialect.quoteIdentifier(`${alias}__distinct_count`)}`);
+      parts.push(
+        `${dialect.distinctExpression(colSql)} AS ${dialect.quoteIdentifier(`${alias}__distinct_count`)}`
+      );
     }
-    if (column.actions.includes('min')) parts.push(`MIN(${colSql}) AS ${dialect.quoteIdentifier(`${alias}__min`)}`);
-    if (column.actions.includes('max')) parts.push(`MAX(${colSql}) AS ${dialect.quoteIdentifier(`${alias}__max`)}`);
-    if (column.actions.includes('mean')) parts.push(`${dialect.meanExpression(colSql)} AS ${dialect.quoteIdentifier(`${alias}__mean`)}`);
+    if (column.actions.includes('min'))
+      parts.push(`MIN(${colSql}) AS ${dialect.quoteIdentifier(`${alias}__min`)}`);
+    if (column.actions.includes('max'))
+      parts.push(`MAX(${colSql}) AS ${dialect.quoteIdentifier(`${alias}__max`)}`);
+    if (column.actions.includes('mean'))
+      parts.push(
+        `${dialect.meanExpression(colSql)} AS ${dialect.quoteIdentifier(`${alias}__mean`)}`
+      );
   }
   return parts;
 }
@@ -325,7 +375,8 @@ const DIALECT_BUILDERS = Object.freeze({
     rowCountExpression: () => 'COUNT_BIG(*) AS [row_count]',
     distinctExpression: (columnSql) => `COUNT(DISTINCT ${columnSql})`,
     meanExpression: (columnSql) => `AVG(CAST(${columnSql} AS float))`,
-    tableHint: (safety) => (['metadata_only', 'sample'].includes(safety.profile_mode) ? '' : ' WITH (READUNCOMMITTED)'),
+    tableHint: (safety) =>
+      ['metadata_only', 'sample'].includes(safety.profile_mode) ? '' : ' WITH (READUNCOMMITTED)',
     sampleClause: (safety) => ` TABLESAMPLE (${safety.sample_percent} PERCENT)`,
     fromClause: defaultFromClause,
     preamble: (safety) => [
@@ -359,8 +410,12 @@ const DIALECT_BUILDERS = Object.freeze({
     meanExpression: (columnSql) => `AVG(TRY_TO_DOUBLE(${columnSql}))`,
     sampleClause: (safety) => ` SAMPLE (${safety.sample_percent})`,
     fromClause: defaultFromClause,
-    preamble: (safety) => [`ALTER SESSION SET STATEMENT_TIMEOUT_IN_SECONDS = ${Math.ceil(safety.query_timeout_ms / 1000)};`],
-    safety_notes: ['Uses statement timeout and approximate distinct counts to reduce warehouse work.'],
+    preamble: (safety) => [
+      `ALTER SESSION SET STATEMENT_TIMEOUT_IN_SECONDS = ${Math.ceil(safety.query_timeout_ms / 1000)};`,
+    ],
+    safety_notes: [
+      'Uses statement timeout and approximate distinct counts to reduce warehouse work.',
+    ],
   },
   bigquery: {
     label: 'BigQuery',
@@ -372,7 +427,9 @@ const DIALECT_BUILDERS = Object.freeze({
     sampleClause: (safety) => ` TABLESAMPLE SYSTEM (${safety.sample_percent} PERCENT)`,
     fromClause: defaultFromClause,
     preamble: () => [],
-    safety_notes: ['Uses approximate distinct counts; enforce timeout and bytes limits in the BigQuery job config.'],
+    safety_notes: [
+      'Uses approximate distinct counts; enforce timeout and bytes limits in the BigQuery job config.',
+    ],
   },
   databricks: {
     label: 'Databricks / Spark SQL',
@@ -384,7 +441,9 @@ const DIALECT_BUILDERS = Object.freeze({
     sampleClause: (safety) => ` TABLESAMPLE (${safety.sample_percent} PERCENT)`,
     fromClause: defaultFromClause,
     preamble: () => [],
-    safety_notes: ['Uses approximate distinct counts; enforce timeout and cluster policy in the Databricks SQL warehouse.'],
+    safety_notes: [
+      'Uses approximate distinct counts; enforce timeout and cluster policy in the Databricks SQL warehouse.',
+    ],
   },
   redshift: {
     label: 'Amazon Redshift',
@@ -396,7 +455,9 @@ const DIALECT_BUILDERS = Object.freeze({
     sampleClause: null,
     fromClause: defaultFromClause,
     preamble: (safety) => [`SET statement_timeout TO ${safety.query_timeout_ms};`],
-    safety_notes: ['Uses statement timeout and approximate distinct counts when supported; sampling should be enforced by workload management or connector SQL wrapper.'],
+    safety_notes: [
+      'Uses statement timeout and approximate distinct counts when supported; sampling should be enforced by workload management or connector SQL wrapper.',
+    ],
   },
 });
 
@@ -408,16 +469,23 @@ function buildColumnActions(column, safety) {
   const sensitive = isSensitiveColumn(column);
   const kind = columnKind(column);
   const sqlServerLegacyText =
-    safety.dialect === 'sql_server' && LEGACY_SQL_SERVER_TEXT_TYPE.test(String(column.data_type || column.type || ''));
+    safety.dialect === 'sql_server' &&
+    LEGACY_SQL_SERVER_TEXT_TYPE.test(String(column.data_type || column.type || ''));
   const actions = ['null_count'];
   if (safety.include_distinct && !sensitive && !sqlServerLegacyText) actions.push('distinct_count');
-  if (safety.include_min_max && !sensitive && (kind === 'numeric' || kind === 'date' || safety.include_text_min_max)) {
+  if (
+    safety.include_min_max &&
+    !sensitive &&
+    (kind === 'numeric' || kind === 'date' || safety.include_text_min_max)
+  ) {
     actions.push('min', 'max');
   }
   if (safety.include_mean && !sensitive && kind === 'numeric') actions.push('mean');
   const skippedStatistics = [];
   if (sensitive) {
-    skippedStatistics.push(...['distinct_count', 'min', 'max', 'mean'].filter((stat) => !actions.includes(stat)));
+    skippedStatistics.push(
+      ...['distinct_count', 'min', 'max', 'mean'].filter((stat) => !actions.includes(stat))
+    );
   }
   if (sqlServerLegacyText) skippedStatistics.push('distinct_count');
   return {
@@ -446,12 +514,21 @@ function assetStrategy(asset = {}, columns = [], safety = {}, dialect = null) {
   const nextSafety = { ...safety };
   const warnings = [];
   let strategy = 'standard';
-  let chunkColumns = Math.min(nextSafety.max_columns_per_table, ADAPTIVE_PROFILE_RULES.chunk_columns_default);
+  let chunkColumns = Math.min(
+    nextSafety.max_columns_per_table,
+    ADAPTIVE_PROFILE_RULES.chunk_columns_default
+  );
 
-  if (estimatedRows >= ADAPTIVE_PROFILE_RULES.large_rows || columnCount >= ADAPTIVE_PROFILE_RULES.wide_columns) {
+  if (
+    estimatedRows >= ADAPTIVE_PROFILE_RULES.large_rows ||
+    columnCount >= ADAPTIVE_PROFILE_RULES.wide_columns
+  ) {
     strategy = 'large_table_sampling';
     nextSafety.profile_mode = dialect?.sampleClause ? 'sample' : 'metadata_only';
-    nextSafety.query_timeout_ms = Math.max(nextSafety.query_timeout_ms, ADAPTIVE_PROFILE_RULES.query_timeout_large_ms);
+    nextSafety.query_timeout_ms = Math.max(
+      nextSafety.query_timeout_ms,
+      ADAPTIVE_PROFILE_RULES.query_timeout_large_ms
+    );
     nextSafety.lock_timeout_ms = Math.max(nextSafety.lock_timeout_ms, 10_000);
     nextSafety.include_mean = false;
     nextSafety.include_text_min_max = false;
@@ -461,11 +538,20 @@ function assetStrategy(asset = {}, columns = [], safety = {}, dialect = null) {
     );
   }
 
-  if (estimatedRows >= ADAPTIVE_PROFILE_RULES.huge_rows || columnCount >= ADAPTIVE_PROFILE_RULES.very_wide_columns) {
+  if (
+    estimatedRows >= ADAPTIVE_PROFILE_RULES.huge_rows ||
+    columnCount >= ADAPTIVE_PROFILE_RULES.very_wide_columns
+  ) {
     strategy = 'huge_table_sampling';
     nextSafety.profile_mode = dialect?.sampleClause ? 'sample' : 'metadata_only';
-    nextSafety.query_timeout_ms = Math.max(nextSafety.query_timeout_ms, ADAPTIVE_PROFILE_RULES.query_timeout_huge_ms);
-    nextSafety.sample_percent = Math.min(nextSafety.sample_percent, ADAPTIVE_PROFILE_RULES.sample_percent_huge);
+    nextSafety.query_timeout_ms = Math.max(
+      nextSafety.query_timeout_ms,
+      ADAPTIVE_PROFILE_RULES.query_timeout_huge_ms
+    );
+    nextSafety.sample_percent = Math.min(
+      nextSafety.sample_percent,
+      ADAPTIVE_PROFILE_RULES.sample_percent_huge
+    );
     nextSafety.include_distinct = false;
     nextSafety.include_min_max = false;
     nextSafety.include_mean = false;
@@ -474,16 +560,23 @@ function assetStrategy(asset = {}, columns = [], safety = {}, dialect = null) {
       `Adaptive profiling reduced statistics for ${objectName(asset)} because it is very large (${estimatedRows || 0} rows, ${columnCount} columns).`
     );
   } else if (strategy === 'large_table_sampling') {
-    nextSafety.sample_percent = Math.min(nextSafety.sample_percent, ADAPTIVE_PROFILE_RULES.sample_percent_large);
+    nextSafety.sample_percent = Math.min(
+      nextSafety.sample_percent,
+      ADAPTIVE_PROFILE_RULES.sample_percent_large
+    );
     if (estimatedRows >= ADAPTIVE_PROFILE_RULES.large_rows) {
       nextSafety.include_distinct = false;
-      warnings.push(`Distinct counts were disabled for ${objectName(asset)} to reduce timeout risk on a large object.`);
+      warnings.push(
+        `Distinct counts were disabled for ${objectName(asset)} to reduce timeout risk on a large object.`
+      );
     }
   }
 
   if (nextSafety.profile_mode === 'sample' && !dialect?.sampleClause) {
     nextSafety.profile_mode = 'metadata_only';
-    warnings.push(`${dialect?.label || 'This dialect'} does not support portable TABLESAMPLE here, so profiling fell back to metadata-only mode.`);
+    warnings.push(
+      `${dialect?.label || 'This dialect'} does not support portable TABLESAMPLE here, so profiling fell back to metadata-only mode.`
+    );
   }
 
   return {
@@ -495,7 +588,7 @@ function assetStrategy(asset = {}, columns = [], safety = {}, dialect = null) {
   };
 }
 
-function buildMetadataOnlyProfile(asset, columns, safety) {
+function buildMetadataOnlyProfile(asset, columns, _safety) {
   const rowCount = estimateRows(asset);
   const assetType = objectType(asset) || 'unknown';
   const parameterCount = toArray(asset.parameters).length;
@@ -545,7 +638,9 @@ function buildMetadataOnlyProfile(asset, columns, safety) {
       live_profile_eligible: ['table', 'view'].includes(assetType),
     },
     limitations: metadataOnlyObject
-      ? [`${assetType} objects receive metadata-only profiles in this run; live row profiling is reserved for tables/views.`]
+      ? [
+          `${assetType} objects receive metadata-only profiles in this run; live row profiling is reserved for tables/views.`,
+        ]
       : ['metadata-only profile; not queried from source during this run'],
   };
 }
@@ -556,14 +651,18 @@ export function metadataOnlyProfileForAsset(asset = {}, safety = {}) {
     profile_mode: 'metadata_only',
     raw_values_retained: false,
   };
-  const columns = toArray(asset.columns).map(normalizeColumn).filter((column) => column.name);
+  const columns = toArray(asset.columns)
+    .map(normalizeColumn)
+    .filter((column) => column.name);
   return buildMetadataOnlyProfile(asset, columns, effectiveSafety);
 }
 
 function simulateProfile(asset, columns, safety) {
   const baseRows = estimateRows(asset) || 10_000;
   const sampleRows =
-    safety.profile_mode === 'sample' ? Math.max(1, Math.round((baseRows * safety.sample_percent) / 100)) : baseRows;
+    safety.profile_mode === 'sample'
+      ? Math.max(1, Math.round((baseRows * safety.sample_percent) / 100))
+      : baseRows;
   const profileColumns = {};
   columns.forEach((column, index) => {
     const nullPercent = Number(((index % 7) * 1.75).toFixed(2));
@@ -629,7 +728,12 @@ export function buildProfilingContract() {
     supported_profile_modes: Array.from(PROFILE_MODES),
     safety_defaults: { ...DEFAULT_SAFETY },
     statistics: ['row_count', 'null_count', 'null_percent', 'distinct_count', 'min', 'max', 'mean'],
-    output_targets: ['runtime_json', 'markdown_frontmatter_update', 'quality_api_export', 'confluence_summary'],
+    output_targets: [
+      'runtime_json',
+      'markdown_frontmatter_update',
+      'quality_api_export',
+      'confluence_summary',
+    ],
     live_execution_requirements: [
       'source connector with approved credentials',
       'read-only database permission',
@@ -657,7 +761,9 @@ export function buildProfilingPlan(input = {}, objectCache = new Map()) {
     }
 
     const estimatedRows = estimateRows(asset);
-    const columns = toArray(asset.columns).map(normalizeColumn).filter((column) => column.name);
+    const columns = toArray(asset.columns)
+      .map(normalizeColumn)
+      .filter((column) => column.name);
     if (!columns.length) {
       skipped.push(buildSkipped(asset, 'No columns are available in the catalog metadata.'));
       continue;
@@ -666,7 +772,13 @@ export function buildProfilingPlan(input = {}, objectCache = new Map()) {
     const adaptive = assetStrategy(asset, columns, safety, dialect);
     const actionSafety = adaptive.safety;
     if (actionSafety.profile_mode === 'full_scan' && !actionSafety.allow_full_scan) {
-      skipped.push(buildSkipped(asset, 'Full-scan profiling is blocked unless allow_full_scan is true.', 'error'));
+      skipped.push(
+        buildSkipped(
+          asset,
+          'Full-scan profiling is blocked unless allow_full_scan is true.',
+          'error'
+        )
+      );
       continue;
     }
     if (
@@ -691,14 +803,20 @@ export function buildProfilingPlan(input = {}, objectCache = new Map()) {
       warnings.push(`Column list truncated from ${columns.length} to ${selectedColumns.length}.`);
     }
     if (selectedColumns.some((column) => column.sensitive)) {
-      warnings.push('Sensitive columns will only receive null-count style aggregate checks; value range/cardinality is suppressed.');
+      warnings.push(
+        'Sensitive columns will only receive null-count style aggregate checks; value range/cardinality is suppressed.'
+      );
     }
     if (actionSafety.profile_mode === 'sample' && !dialect.sampleClause) {
-      warnings.push(`${dialect.label} does not have a portable TABLESAMPLE clause in this framework; enforce sampling in the connector or workload manager.`);
+      warnings.push(
+        `${dialect.label} does not have a portable TABLESAMPLE clause in this framework; enforce sampling in the connector or workload manager.`
+      );
     }
     const columnChunks = chunkArray(selectedColumns, adaptive.chunk_columns);
     if (columnChunks.length > 1) {
-      warnings.push(`Profile columns were split into ${columnChunks.length} batches to reduce timeout risk.`);
+      warnings.push(
+        `Profile columns were split into ${columnChunks.length} batches to reduce timeout risk.`
+      );
     }
 
     columnChunks.forEach((columnChunk, chunkIndex) => {
@@ -741,7 +859,8 @@ export function buildProfilingPlan(input = {}, objectCache = new Map()) {
   return {
     plan_id: randomUUID(),
     generated_at: nowIso(),
-    status: skipped.some((item) => item.severity === 'error') && !actions.length ? 'blocked' : 'ready',
+    status:
+      skipped.some((item) => item.severity === 'error') && !actions.length ? 'blocked' : 'ready',
     safety,
     summary: {
       requested_assets: assets.length,
@@ -768,7 +887,9 @@ function normalizeExecutedProfile(action, result) {
       schema: profile.schema || action.schema,
       row_count: asNumber(profile.row_count ?? profile.rowCount, 0),
       profile_mode: action.profile_mode,
-      profile_tier: profile.profile_tier || (action.profile_mode === 'sample' ? 'sample_live' : 'standard_live'),
+      profile_tier:
+        profile.profile_tier ||
+        (action.profile_mode === 'sample' ? 'sample_live' : 'standard_live'),
       profile_status: profile.profile_status || 'succeeded',
       generated_at: profile.generated_at || profile.profiled_at || nowIso(),
       raw_values_retained: false,
@@ -798,11 +919,15 @@ function mergeProfiles(existing = null, incoming = null, action = {}) {
     schema: existing.schema || incoming.schema || action.schema,
     row_count: existing.row_count ?? incoming.row_count ?? 0,
     profile_mode: existing.profile_mode || incoming.profile_mode || action.profile_mode,
-    profile_tier: incoming.profile_tier || existing.profile_tier || (action.profile_mode === 'sample' ? 'sample_live' : 'standard_live'),
+    profile_tier:
+      incoming.profile_tier ||
+      existing.profile_tier ||
+      (action.profile_mode === 'sample' ? 'sample_live' : 'standard_live'),
     profile_status: incoming.profile_status || existing.profile_status || 'succeeded',
     generated_at: incoming.generated_at || existing.generated_at || nowIso(),
     connector_id: incoming.connector_id || existing.connector_id || action.connector_id || null,
-    source_dialect: incoming.source_dialect || existing.source_dialect || action.query?.dialect || null,
+    source_dialect:
+      incoming.source_dialect || existing.source_dialect || action.query?.dialect || null,
     raw_values_retained: false,
     columns: mergeProfileColumns(existing.columns || {}, incoming.columns || {}),
   };
@@ -810,7 +935,12 @@ function mergeProfiles(existing = null, incoming = null, action = {}) {
 
 function normalizeAggregateRow(row = {}) {
   return Object.fromEntries(
-    Object.entries(row || {}).map(([key, value]) => [String(key).replace(/^\[|\]$/g, '').toLowerCase(), value])
+    Object.entries(row || {}).map(([key, value]) => [
+      String(key)
+        .replace(/^\[|\]$/g, '')
+        .toLowerCase(),
+      value,
+    ])
   );
 }
 
@@ -887,7 +1017,9 @@ export async function executeProfilingPlan(plan, executor = null) {
     },
     profiles: {},
     skipped: [...plan.skipped],
-    warnings: plan.actions.flatMap((action) => action.warnings.map((message) => ({ asset_id: action.asset_id, message }))),
+    warnings: plan.actions.flatMap((action) =>
+      action.warnings.map((message) => ({ asset_id: action.asset_id, message }))
+    ),
     errors: [],
   };
 
@@ -904,7 +1036,9 @@ export async function executeProfilingPlan(plan, executor = null) {
           ? simulateProfile(action.asset, action.columns, plan.safety)
           : normalizeExecutedProfile(action, await executor?.runProfileAction?.(action));
       if (!profile) {
-        throw new Error('Live profiling requires an executor with runProfileAction(action) that returns aggregate profile results.');
+        throw new Error(
+          'Live profiling requires an executor with runProfileAction(action) that returns aggregate profile results.'
+        );
       }
       profile.raw_values_retained = false;
       const mergedProfile = mergeProfiles(run.profiles[action.asset_id] || null, profile, action);
@@ -966,7 +1100,9 @@ export function applyMinimumCoverageProfiles(run = {}, plan = {}) {
   nextRun.summary.coverage_assets_live = Math.max(0, allProfiles.length - metadataOnlyCount);
   nextRun.summary.coverage_asset_types = plan.summary?.coverage_asset_types || {};
   nextRun.summary.coverage_live_queue = plan.summary?.coverage_live_queue || 0;
-  const failedLiveAssets = [...new Set((nextRun.errors || []).map((error) => error.asset_id).filter(Boolean))];
+  const failedLiveAssets = [
+    ...new Set((nextRun.errors || []).map((error) => error.asset_id).filter(Boolean)),
+  ];
   nextRun.summary.coverage_queue_status = {
     total_assets: coverageAssets.length,
     live_eligible_assets: plan.coverage?.live_eligible_assets?.length || 0,
@@ -1083,7 +1219,9 @@ export function buildConfluenceProfileSummary(run = {}) {
   ];
 
   if (!profiles.length) {
-    lines.push('No source profile was executed. Use dry-run output to review the safe SQL plan, or run simulate/live mode.');
+    lines.push(
+      'No source profile was executed. Use dry-run output to review the safe SQL plan, or run simulate/live mode.'
+    );
   } else {
     for (const profile of profiles) {
       lines.push(

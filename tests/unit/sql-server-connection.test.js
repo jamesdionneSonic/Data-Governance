@@ -160,12 +160,15 @@ describe('SQL Server connector connection config', () => {
   });
 
   test('adds named-instance hints for endpoint failures without direct SQL probes', () => {
-    const error = sqlServerConnectionRuntimeError(new Error('Server is not found or not accessible.'), {
-      id: 'ETL_Staging',
-      type: 'sql_server',
-      config: { server: 'L1-5FSQL-01\\INST1', database: 'ETL_Staging' },
-      credential: { mode: 'windows_integrated' },
-    });
+    const error = sqlServerConnectionRuntimeError(
+      new Error('Server is not found or not accessible.'),
+      {
+        id: 'ETL_Staging',
+        type: 'sql_server',
+        config: { server: 'L1-5FSQL-01\\INST1', database: 'ETL_Staging' },
+        credential: { mode: 'windows_integrated' },
+      }
+    );
 
     expect(error.details).toMatchObject({
       failure_category: 'endpoint_unreachable_or_incorrect',
@@ -185,11 +188,13 @@ describe('SQL Server connector connection config', () => {
           this.config = config;
           attempted.push(config.connectionString);
         }
+
         async connect() {
           if (this.config.connectionString.includes('Driver={Bad Driver}')) {
             throw new Error('driver failed');
           }
         }
+
         request() {
           return {
             async query() {
@@ -205,6 +210,7 @@ describe('SQL Server connector connection config', () => {
             },
           };
         }
+
         async close() {}
       },
     };
@@ -246,6 +252,7 @@ describe('SQL Server connector connection config', () => {
         async connect() {
           return new Promise(() => {});
         }
+
         async close() {}
       },
     };

@@ -45,7 +45,9 @@ function cleanLabel(value) {
 }
 
 function escapeCqlString(value) {
-  return String(value || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  return String(value || '')
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"');
 }
 
 function pageStorageFromMarkdown(markdown) {
@@ -75,7 +77,8 @@ export function loadConfluenceSyncConfig(env = process.env, overrides = {}) {
     dryRun: overrides.dryRun ?? truthy(env.CONFLUENCE_DRY_RUN),
     publishObjectPages:
       overrides.publishObjectPages ?? env.CONFLUENCE_PUBLISH_OBJECT_PAGES !== 'false',
-    publishAttachments: overrides.publishAttachments ?? env.CONFLUENCE_PUBLISH_ATTACHMENTS !== 'false',
+    publishAttachments:
+      overrides.publishAttachments ?? env.CONFLUENCE_PUBLISH_ATTACHMENTS !== 'false',
     syncConcurrency: positiveInteger(
       overrides.syncConcurrency || env.CONFLUENCE_SYNC_CONCURRENCY,
       DEFAULT_SYNC_CONCURRENCY
@@ -110,7 +113,10 @@ function confluenceHeaders(config, extra = {}) {
 }
 
 function httpRetryCount(config) {
-  return positiveInteger(config.httpRetries || process.env.CONFLUENCE_HTTP_RETRIES, DEFAULT_HTTP_RETRIES);
+  return positiveInteger(
+    config.httpRetries || process.env.CONFLUENCE_HTTP_RETRIES,
+    DEFAULT_HTTP_RETRIES
+  );
 }
 
 function httpRetryBaseMs(config) {
@@ -150,7 +156,9 @@ export function summarizeConfluenceError(err) {
         ? err.response.data.message.slice(0, 500)
         : null,
     responseReason:
-      typeof err.response?.data?.reason === 'string' ? err.response.data.reason.slice(0, 500) : null,
+      typeof err.response?.data?.reason === 'string'
+        ? err.response.data.reason.slice(0, 500)
+        : null,
     target: err.syncTarget || null,
     method: err.config?.method || null,
     url: err.config?.url || err.request?._currentUrl || null,
@@ -256,7 +264,8 @@ async function findChildPage(http, config, title, parentPageId = config.parentPa
       limit: 1,
     },
   });
-  const titledPage = (titleResponse.data?.results || []).find((page) => page.title === title) || null;
+  const titledPage =
+    (titleResponse.data?.results || []).find((page) => page.title === title) || null;
   if (titledPage) return titledPage;
 
   const spaceCql = `space="${escapeCqlString(config.spaceKey)}" and type=page and title="${escapeCqlString(title)}"`;
@@ -472,7 +481,9 @@ async function collectGeneratedPageTree(http, parentPageId) {
 
 async function collectLegacyAutoPageTree(http, parentPageId) {
   const directChildren = await listChildPages(http, parentPageId);
-  const legacyRoots = directChildren.filter((page) => String(page?.title || '').startsWith('[AUTO]'));
+  const legacyRoots = directChildren.filter((page) =>
+    String(page?.title || '').startsWith('[AUTO]')
+  );
   return collectPageTree(http, legacyRoots);
 }
 
@@ -531,7 +542,7 @@ async function deletePagesByTitle({ http, config, titles = [], parentTitle = nul
   const cleanTitles = titles.map((title) => String(title || '').trim()).filter(Boolean);
   if (cleanTitles.length === 0) return [];
 
-  let parentPageId = config.parentPageId;
+  let { parentPageId } = config;
   if (parentTitle) {
     const parentPage = await findChildPage(http, config, parentTitle);
     if (!parentPage?.id) {
@@ -571,10 +582,14 @@ async function deletePagesByTitle({ http, config, titles = [], parentTitle = nul
 function syncWarnings(manifest, config) {
   const warnings = [];
   if ((manifest.object_pages || []).length > 0 && !config.publishObjectPages) {
-    warnings.push('Governed asset detail pages are present but object page publishing is disabled.');
+    warnings.push(
+      'Governed asset detail pages are present but object page publishing is disabled.'
+    );
   }
   if ((manifest.object_locator_pages || []).length === 0) {
-    warnings.push('No object locator pages were found. Ambiguous object-name searches may be slower.');
+    warnings.push(
+      'No object locator pages were found. Ambiguous object-name searches may be slower.'
+    );
   }
   if ((manifest.quick_context_pages || []).length === 0) {
     warnings.push('No lineage quick context pages were found. Object lookup may be slower.');
@@ -601,7 +616,14 @@ async function mapWithConcurrency(items, limit, mapper) {
   return results;
 }
 
-function dryRunResult({ pages, attachments, manifest, config, deleteTitles = [], deleteParentTitle = null }) {
+function dryRunResult({
+  pages,
+  attachments,
+  manifest,
+  config,
+  deleteTitles = [],
+  deleteParentTitle = null,
+}) {
   return {
     mode: 'dry-run',
     status: 'ready',
@@ -632,19 +654,17 @@ async function syncPagesInHierarchy({ http, config, exportRoot, pages }) {
   const rootPages = pages.filter((page) => !page.parent_title);
   const childPages = pages.filter((page) => page.parent_title);
 
-  const rootResults = await mapWithConcurrency(
-    rootPages,
-    config.syncConcurrency,
-    (page) => syncPage({ http, config, exportRoot, page })
+  const rootResults = await mapWithConcurrency(rootPages, config.syncConcurrency, (page) =>
+    syncPage({ http, config, exportRoot, page })
   );
   results.push(...rootResults);
   for (const result of rootResults) {
     if (result?.title && result?.id) pageIdsByTitle.set(result.title, result.id);
   }
 
-  const missingParentTitles = Array.from(new Set(childPages.map((page) => page.parent_title))).filter(
-    (title) => !pageIdsByTitle.has(title)
-  );
+  const missingParentTitles = Array.from(
+    new Set(childPages.map((page) => page.parent_title))
+  ).filter((title) => !pageIdsByTitle.has(title));
   for (const title of missingParentTitles) {
     // eslint-disable-next-line no-await-in-loop
     const existingParent = await findChildPage(http, config, title);
@@ -655,8 +675,12 @@ async function syncPagesInHierarchy({ http, config, exportRoot, pages }) {
   while (pending.length > 0) {
     const ready = pending.filter((page) => pageIdsByTitle.has(page.parent_title));
     if (ready.length === 0) {
-      const missingParents = Array.from(new Set(pending.map((page) => page.parent_title))).join(', ');
-      throw new Error(`Cannot publish child Confluence pages; missing parent page ids for: ${missingParents}`);
+      const missingParents = Array.from(new Set(pending.map((page) => page.parent_title))).join(
+        ', '
+      );
+      throw new Error(
+        `Cannot publish child Confluence pages; missing parent page ids for: ${missingParents}`
+      );
     }
 
     // eslint-disable-next-line no-await-in-loop
@@ -701,7 +725,9 @@ export async function syncConfluenceExport(options = {}) {
     };
   }
 
-  const onlyTitleSet = new Set((options.onlyTitles || []).map((title) => String(title).trim()).filter(Boolean));
+  const onlyTitleSet = new Set(
+    (options.onlyTitles || []).map((title) => String(title).trim()).filter(Boolean)
+  );
   const pages = publishablePages(manifest, config).filter(
     (page) => onlyTitleSet.size === 0 || onlyTitleSet.has(page.title)
   );
@@ -710,7 +736,9 @@ export async function syncConfluenceExport(options = {}) {
     !skipAttachments && config.publishAttachments
       ? manifest.attachments.filter((attachment) => attachment.publish !== false)
       : [];
-  const deleteTitles = (options.deleteTitles || []).map((title) => String(title).trim()).filter(Boolean);
+  const deleteTitles = (options.deleteTitles || [])
+    .map((title) => String(title).trim())
+    .filter(Boolean);
   const deleteParentTitle = options.deleteParentTitle || null;
 
   if (dryRun) {

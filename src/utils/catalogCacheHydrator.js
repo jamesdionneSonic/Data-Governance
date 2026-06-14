@@ -28,7 +28,7 @@ export async function ensureCatalogCacheHydrated({ force = false } = {}) {
     const runtimeCatalog = await loadRuntimeCatalog(dataPath, {
       autoRebuild: process.env.NODE_ENV === 'test',
     });
-    const objects = runtimeCatalog.objects;
+    const { objects } = runtimeCatalog;
 
     if (objects.size > 0) {
       initializeCache(objects, runtimeCatalog.lineageGraph, runtimeCatalog);

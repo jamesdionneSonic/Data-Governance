@@ -47,13 +47,17 @@ export function parseSqlServerEndpoint(serverValue, portValue) {
     instance: instance || null,
     port: Number.isFinite(numericPort) && numericPort > 0 ? numericPort : undefined,
     uses_named_instance: Boolean(instance),
-    resolved_endpoint: Number.isFinite(numericPort) && numericPort > 0 ? `${server},${numericPort}` : rawServer || server,
+    resolved_endpoint:
+      Number.isFinite(numericPort) && numericPort > 0
+        ? `${server},${numericPort}`
+        : rawServer || server,
   };
 }
 
 function escapeConnectionStringValue(value) {
   const text = String(value ?? '');
-  return /[;{}]/.test(text) ? '{' + text.replace(/}/g, '}}') + '}' : text;
+  if (!/[;{}]/.test(text)) return text;
+  return '{' + text.replace(/}/g, '}}') + '}';
 }
 
 function boolKeyword(value) {
@@ -97,7 +101,10 @@ function buildTrustedConnectionString(connector = {}, endpoint = {}) {
     ['TrustServerCertificate', boolKeyword(trustServerCertificate)],
     ['ApplicationIntent', 'ReadOnly'],
     ['ServerSPN', connector.config?.serverSpn || connector.config?.server_spn],
-    ['FailoverPartnerSPN', connector.config?.failoverPartnerSpn || connector.config?.failover_partner_spn],
+    [
+      'FailoverPartnerSPN',
+      connector.config?.failoverPartnerSpn || connector.config?.failover_partner_spn,
+    ],
   ].filter(([, value]) => value !== undefined && value !== null && value !== '');
 
   return entries.map(([key, value]) => `${key}=${connectionStringValue(key, value)}`).join(';');
@@ -122,7 +129,10 @@ export function sqlServerCredentialMode(connector = {}) {
 
 export function buildSqlServerConnectionConfig(connector = {}, timeoutMs) {
   const credentialMode = sqlServerCredentialMode(connector);
-  const endpoint = parseSqlServerEndpoint(connector.config?.server || connector.config?.host, connector.config?.port);
+  const endpoint = parseSqlServerEndpoint(
+    connector.config?.server || connector.config?.host,
+    connector.config?.port
+  );
   const { server, port, instance } = endpoint;
   const windowsIntegrated = credentialMode === 'windows_integrated';
   const baseConfig = {
@@ -137,8 +147,10 @@ export function buildSqlServerConnectionConfig(connector = {}, timeoutMs) {
       ...(instance && !port ? { instanceName: instance } : {}),
       ...(connector.config?.options || {}),
     },
-    requestTimeout: timeoutMs || connector.config?.requestTimeout || connector.config?.query_timeout_ms,
-    connectionTimeout: connector.config?.connectionTimeout || timeoutMs || connector.config?.query_timeout_ms,
+    requestTimeout:
+      timeoutMs || connector.config?.requestTimeout || connector.config?.query_timeout_ms,
+    connectionTimeout:
+      connector.config?.connectionTimeout || timeoutMs || connector.config?.query_timeout_ms,
     pool: { max: 1, min: 0, idleTimeoutMillis: 5000 },
   };
 
@@ -183,7 +195,10 @@ function diagnosticVariants(connector = {}, options = {}) {
   const drivers = requestedDrivers.length
     ? requestedDrivers
     : [
-        connector.config?.odbcDriver || connector.config?.odbc_driver || connector.config?.sqlDriver || connector.config?.sql_driver,
+        connector.config?.odbcDriver ||
+          connector.config?.odbc_driver ||
+          connector.config?.sqlDriver ||
+          connector.config?.sql_driver,
         'ODBC Driver 17 for SQL Server',
         'ODBC Driver 18 for SQL Server',
         'SQL Server Native Client 11.0',
@@ -230,7 +245,9 @@ function childDiagnosticTimeout(connector, timeoutMs, label) {
 
 function runIsolatedSqlServerDiagnostic(connector = {}, options = {}) {
   const timeoutMs = Math.min(Number(options.workerTimeoutMs || options.timeout_ms || 15000), 60000);
-  const workerPath = fileURLToPath(new URL('../../../scripts/sql-server-connection-diagnostic-worker.mjs', import.meta.url));
+  const workerPath = fileURLToPath(
+    new URL('../../../scripts/sql-server-connection-diagnostic-worker.mjs', import.meta.url)
+  );
   const payload = {
     connector,
     options: {
@@ -254,7 +271,10 @@ function runIsolatedSqlServerDiagnostic(connector = {}, options = {}) {
         status: 'failed',
         tested_at: new Date().toISOString(),
         credential_mode: sqlServerCredentialMode(connector),
-        endpoint: parseSqlServerEndpoint(connector.config?.server || connector.config?.host, connector.config?.port),
+        endpoint: parseSqlServerEndpoint(
+          connector.config?.server || connector.config?.host,
+          connector.config?.port
+        ),
         ...runtimeProcessIdentityDetails(),
         results: [
           {
@@ -265,7 +285,8 @@ function runIsolatedSqlServerDiagnostic(connector = {}, options = {}) {
               code: err.code || 'SQL_SERVER_DIAGNOSTIC_WORKER_FAILED',
               message: err.message,
               category: 'diagnostic_worker_failed',
-              remediation: 'The diagnostic worker could not start. Check Node.js runtime permissions on the app host.',
+              remediation:
+                'The diagnostic worker could not start. Check Node.js runtime permissions on the app host.',
             },
           },
         ],
@@ -279,7 +300,13 @@ function runIsolatedSqlServerDiagnostic(connector = {}, options = {}) {
       if (settled) return;
       settled = true;
       child.kill('SIGKILL');
-      resolve(childDiagnosticTimeout(connector, Date.now() - started, 'SQL Server connection diagnostic worker'));
+      resolve(
+        childDiagnosticTimeout(
+          connector,
+          Date.now() - started,
+          'SQL Server connection diagnostic worker'
+        )
+      );
     }, timeoutMs);
 
     child.stdout.on('data', (chunk) => {
@@ -296,7 +323,10 @@ function runIsolatedSqlServerDiagnostic(connector = {}, options = {}) {
         status: 'failed',
         tested_at: new Date().toISOString(),
         credential_mode: sqlServerCredentialMode(connector),
-        endpoint: parseSqlServerEndpoint(connector.config?.server || connector.config?.host, connector.config?.port),
+        endpoint: parseSqlServerEndpoint(
+          connector.config?.server || connector.config?.host,
+          connector.config?.port
+        ),
         ...runtimeProcessIdentityDetails(),
         results: [
           {
@@ -307,7 +337,8 @@ function runIsolatedSqlServerDiagnostic(connector = {}, options = {}) {
               code: 'SQL_SERVER_DIAGNOSTIC_WORKER_FAILED',
               message: err.message,
               category: 'diagnostic_worker_failed',
-              remediation: 'The diagnostic worker could not start. Check Node.js runtime permissions on the app host.',
+              remediation:
+                'The diagnostic worker could not start. Check Node.js runtime permissions on the app host.',
             },
           },
         ],
@@ -324,7 +355,10 @@ function runIsolatedSqlServerDiagnostic(connector = {}, options = {}) {
           status: 'failed',
           tested_at: new Date().toISOString(),
           credential_mode: sqlServerCredentialMode(connector),
-          endpoint: parseSqlServerEndpoint(connector.config?.server || connector.config?.host, connector.config?.port),
+          endpoint: parseSqlServerEndpoint(
+            connector.config?.server || connector.config?.host,
+            connector.config?.port
+          ),
           ...runtimeProcessIdentityDetails(),
           results: [
             {
@@ -367,11 +401,21 @@ export async function diagnoseSqlServerConnectionVariantsInProcess(connector = {
     let pool;
     try {
       pool = new sqlDriver.ConnectionPool(config);
-      await withTimeout(pool.connect(), timeoutMs, `SQL Server diagnostic variant '${variant.name}'`);
+      await withTimeout(
+        pool.connect(),
+        timeoutMs,
+        `SQL Server diagnostic variant '${variant.name}'`
+      );
       const query = pool
         .request()
-        .query('SELECT DB_NAME() AS database_name, @@SERVERNAME AS server_name, SYSTEM_USER AS login_name;');
-      const result = await withTimeout(query, timeoutMs, `SQL Server diagnostic query '${variant.name}'`);
+        .query(
+          'SELECT DB_NAME() AS database_name, @@SERVERNAME AS server_name, SYSTEM_USER AS login_name;'
+        );
+      const result = await withTimeout(
+        query,
+        timeoutMs,
+        `SQL Server diagnostic query '${variant.name}'`
+      );
       const row = result.recordset?.[0] || {};
       results.push({
         driver: variant.name,
@@ -389,7 +433,11 @@ export async function diagnoseSqlServerConnectionVariantsInProcess(connector = {
       });
       if (options.stopOnSuccess !== false) break;
     } catch (err) {
-      const runtimeError = sqlServerConnectionRuntimeError(err, variant.connector, 'connection_diagnostic');
+      const runtimeError = sqlServerConnectionRuntimeError(
+        err,
+        variant.connector,
+        'connection_diagnostic'
+      );
       results.push({
         driver: variant.name,
         status: 'failed',
@@ -407,7 +455,12 @@ export async function diagnoseSqlServerConnectionVariantsInProcess(connector = {
         details: runtimeError.details,
       });
     } finally {
-      if (pool) await withTimeout(pool.close().catch(() => {}), 1000, `SQL Server diagnostic close '${variant.name}'`).catch(() => {});
+      if (pool)
+        await withTimeout(
+          pool.close().catch(() => {}),
+          1000,
+          `SQL Server diagnostic close '${variant.name}'`
+        ).catch(() => {});
     }
   }
 
@@ -415,7 +468,10 @@ export async function diagnoseSqlServerConnectionVariantsInProcess(connector = {
     status: results.some((result) => result.status === 'succeeded') ? 'succeeded' : 'failed',
     tested_at: new Date().toISOString(),
     credential_mode: credentialMode,
-    endpoint: parseSqlServerEndpoint(connector.config?.server || connector.config?.host, connector.config?.port),
+    endpoint: parseSqlServerEndpoint(
+      connector.config?.server || connector.config?.host,
+      connector.config?.port
+    ),
     ...runtimeProcessIdentityDetails(),
     results,
   };
@@ -460,7 +516,7 @@ export async function buildSqlServerApiConnectionContext(
     trustServerCertificate = defaultTrustServerCertificate,
   } = payload;
   const hasExplicitPort = rawPort !== undefined && rawPort !== null && rawPort !== '';
-  const port = hasExplicitPort ? rawPort : undefined;
+  const port = hasExplicitPort ? rawPort : defaultPort;
 
   if (!server || (requireDatabase && !database)) {
     return {
@@ -605,7 +661,10 @@ export async function buildSqlServerApiConnectionContext(
       credentialMode,
       diagnostics: {
         authentication,
-        connection_variant: credentialMode === 'windows_integrated' ? 'windows_integrated_shared' : 'credential_shared',
+        connection_variant:
+          credentialMode === 'windows_integrated'
+            ? 'windows_integrated_shared'
+            : 'credential_shared',
         endpoint: parseSqlServerEndpoint(server, hasExplicitPort ? rawPort : undefined),
         ...runtimeProcessIdentityDetails(),
       },
@@ -643,7 +702,10 @@ export function sqlServerConnectionRemediation(err, credentialMode = 'secret_ref
       'for the host and port, run the app as the domain user that has read access, or add the correct serverSpn in the connector config.'
     );
   }
-  if (credentialMode === 'windows_integrated' && (lower.includes('server is not found') || lower.includes('failed to connect'))) {
+  if (
+    credentialMode === 'windows_integrated' &&
+    (lower.includes('server is not found') || lower.includes('failed to connect'))
+  ) {
     return (
       'Windows Integrated Auth could not complete the SQL Server connection. Verify server/port/DNS/firewall first; if TCP is open, ' +
       'verify the SQL Server MSSQLSvc SPN for the host and port or add the correct serverSpn in the connector config.'
@@ -652,7 +714,11 @@ export function sqlServerConnectionRemediation(err, credentialMode = 'secret_ref
   if (lower.includes('login failed')) {
     return 'Verify the configured SQL login or Windows account has read access to the selected database.';
   }
-  if (lower.includes('enotfound') || lower.includes('server is not found') || lower.includes('failed to connect')) {
+  if (
+    lower.includes('enotfound') ||
+    lower.includes('server is not found') ||
+    lower.includes('failed to connect')
+  ) {
     return 'Verify server, port, DNS, firewall, SQL Server TCP/IP configuration, and the connector endpoint format.';
   }
   return 'Verify SQL Server availability, read-only permissions, driver installation, encryption settings, and connector configuration.';
@@ -684,7 +750,11 @@ export function sqlServerConnectionFailureCategory(err, credentialMode = 'secret
     return 'endpoint_unreachable_or_incorrect';
   }
   if (lower.includes('login failed')) return 'login_failed';
-  if (lower.includes('encrypt') || lower.includes('ssl provider') || lower.includes('certificate')) {
+  if (
+    lower.includes('encrypt') ||
+    lower.includes('ssl provider') ||
+    lower.includes('certificate')
+  ) {
     return 'encryption_or_certificate_failed';
   }
   return 'unknown_sql_server_connection_failure';
@@ -692,21 +762,36 @@ export function sqlServerConnectionFailureCategory(err, credentialMode = 'secret
 
 export function sqlServerConnectionDiagnosticHints(err, connector = {}) {
   const credentialMode = sqlServerCredentialMode(connector);
-  const endpoint = parseSqlServerEndpoint(connector.config?.server || connector.config?.host, connector.config?.port);
+  const endpoint = parseSqlServerEndpoint(
+    connector.config?.server || connector.config?.host,
+    connector.config?.port
+  );
   const category = sqlServerConnectionFailureCategory(err, credentialMode);
   const hints = [];
   if (category === 'windows_security_negotiation_failed') {
-    hints.push('Do not create a new SQL connection path; fix Windows auth/SPN/runtime identity in the shared connector runtime configuration.');
-    hints.push('If SSMS works, compare its exact server, port/instance, encryption, trust, and Windows identity to this connector.');
+    hints.push(
+      'Do not create a new SQL connection path; fix Windows auth/SPN/runtime identity in the shared connector runtime configuration.'
+    );
+    hints.push(
+      'If SSMS works, compare its exact server, port/instance, encryption, trust, and Windows identity to this connector.'
+    );
   }
   if (category === 'endpoint_unreachable_or_incorrect') {
-    hints.push('Verify DNS, SQL Server TCP/IP enablement, firewall, and whether the saved connector should use a fixed port or named instance.');
+    hints.push(
+      'Verify DNS, SQL Server TCP/IP enablement, firewall, and whether the saved connector should use a fixed port or named instance.'
+    );
   }
   if (endpoint.uses_named_instance && !endpoint.port) {
     hints.push('Named instances may require SQL Browser/UDP 1434 or a configured fixed TCP port.');
   }
-  if (credentialMode === 'windows_integrated' && !connector.config?.serverSpn && !connector.config?.server_spn) {
-    hints.push('For Kerberos issues, add serverSpn only after confirming the MSSQLSvc SPN with infrastructure/DBA.');
+  if (
+    credentialMode === 'windows_integrated' &&
+    !connector.config?.serverSpn &&
+    !connector.config?.server_spn
+  ) {
+    hints.push(
+      'For Kerberos issues, add serverSpn only after confirming the MSSQLSvc SPN with infrastructure/DBA.'
+    );
   }
   return hints;
 }
@@ -714,10 +799,16 @@ export function sqlServerConnectionDiagnosticHints(err, connector = {}) {
 export function sqlServerConnectionRuntimeError(err, connector = {}, phase = 'profile_execution') {
   const credentialMode = sqlServerCredentialMode(connector);
   const { config } = buildSqlServerConnectionConfig(connector);
-  const endpoint = parseSqlServerEndpoint(connector.config?.server || connector.config?.host, connector.config?.port);
+  const endpoint = parseSqlServerEndpoint(
+    connector.config?.server || connector.config?.host,
+    connector.config?.port
+  );
   const failureCategory = sqlServerConnectionFailureCategory(err, credentialMode);
   return new ConnectorRuntimeError(`SQL Server connection failed: ${err.message}`, {
-    code: credentialMode === 'windows_integrated' ? 'SQL_SERVER_WINDOWS_INTEGRATED_CONNECTION_FAILED' : 'SQL_SERVER_CONNECTION_FAILED',
+    code:
+      credentialMode === 'windows_integrated'
+        ? 'SQL_SERVER_WINDOWS_INTEGRATED_CONNECTION_FAILED'
+        : 'SQL_SERVER_CONNECTION_FAILED',
     connector_id: connector.id,
     connector_type: connector.type,
     phase,
@@ -734,7 +825,8 @@ export function sqlServerConnectionRuntimeError(err, connector = {}, phase = 'pr
       uses_named_instance: endpoint.uses_named_instance,
       failure_category: failureCategory,
       connection_variant:
-        credentialMode === 'windows_integrated' && connector.config?.windowsIntegratedCompat !== false
+        credentialMode === 'windows_integrated' &&
+        connector.config?.windowsIntegratedCompat !== false
           ? 'windows_integrated_shared'
           : credentialMode,
       diagnostic_hints: sqlServerConnectionDiagnosticHints(err, connector),

@@ -1,14 +1,18 @@
+import { existsSync, readFileSync, statSync } from 'fs';
+import path from 'path';
 import {
   ConnectorConfigError,
   ConnectorCredentialError,
   ConnectorRuntimeError,
   ConnectorStreamError,
 } from './connectorErrors.js';
-import { existsSync, readFileSync, statSync } from 'fs';
-import path from 'path';
 import { CANONICAL_EVENT_TYPES, canonicalEvent, warningEvent } from './canonicalMetadata.js';
 import { fetchSourceMetadata } from './sourceClients.js';
-import { applyMinimumCoverageProfiles, buildProfilingPlan, executeProfilingPlan } from '../profilingExecutionService.js';
+import {
+  applyMinimumCoverageProfiles,
+  buildProfilingPlan,
+  executeProfilingPlan,
+} from '../profilingExecutionService.js';
 import { createProfileExecutor, supportsConnectorLiveProfiling } from './profileExecutors.js';
 
 let lineageUsageCache = null;
@@ -24,7 +28,15 @@ function toArray(value) {
 }
 
 function objectName(object = {}) {
-  return object.name || object.objectName || object.object_name || object.table_name || object.tableName || object.id || 'unknown';
+  return (
+    object.name ||
+    object.objectName ||
+    object.object_name ||
+    object.table_name ||
+    object.tableName ||
+    object.id ||
+    'unknown'
+  );
 }
 
 function objectType(object = {}) {
@@ -50,14 +62,21 @@ function metadataProfileAssets(metadata = {}, connector = {}) {
   const groups = [
     { items: metadata.tables || [], object_type: 'table' },
     { items: metadata.views || [], object_type: 'view' },
-    { items: metadata.storedProcedures || metadata.stored_procedures || metadata.procedures || [], object_type: 'stored_procedure' },
+    {
+      items: metadata.storedProcedures || metadata.stored_procedures || metadata.procedures || [],
+      object_type: 'stored_procedure',
+    },
     { items: metadata.functions || [], object_type: 'function' },
     { items: metadata.triggers || [], object_type: 'trigger' },
     { items: metadata.synonyms || [], object_type: 'synonym' },
   ];
   return groups
-    .flatMap(({ items, object_type }) => items.map((asset) => normalizeProfileAsset({ ...asset, object_type }, connector)))
-    .filter((asset, index, all) => all.findIndex((candidate) => candidate.id === asset.id) === index);
+    .flatMap(({ items, object_type }) =>
+      items.map((asset) => normalizeProfileAsset({ ...asset, object_type }, connector))
+    )
+    .filter(
+      (asset, index, all) => all.findIndex((candidate) => candidate.id === asset.id) === index
+    );
 }
 
 function lookupKey(value) {
@@ -82,11 +101,15 @@ function matchesRequestedAsset(asset = {}, requested = '') {
     [asset.database, asset.schema, asset.name || asset.object_name].filter(Boolean).join('.'),
     [asset.schema, asset.name || asset.object_name].filter(Boolean).join('.'),
   ].map(lookupKey);
-  return candidates.includes(target) || candidates.some((candidate) => candidate.endsWith(`.${target}`));
+  return (
+    candidates.includes(target) || candidates.some((candidate) => candidate.endsWith(`.${target}`))
+  );
 }
 
 function filterRequestedAssets(assets = [], options = {}) {
-  const requested = toArray(options.asset_id || options.assetId || options.object_id || options.objectId || options.ids);
+  const requested = toArray(
+    options.asset_id || options.assetId || options.object_id || options.objectId || options.ids
+  );
   if (!requested.length) return assets;
   return assets.filter((asset) => requested.some((id) => matchesRequestedAsset(asset, id)));
 }
@@ -94,12 +117,19 @@ function filterRequestedAssets(assets = [], options = {}) {
 function coverageMode(options = {}) {
   const value = String(
     options.coverage_mode ||
-    options.coverageMode ||
-    options.profile_scope ||
-    options.profileScope ||
-    ''
+      options.coverageMode ||
+      options.profile_scope ||
+      options.profileScope ||
+      ''
   ).toLowerCase();
-  return ['all_tables', 'table_coverage', 'database_coverage', 'minimum_all_tables', 'all_objects', 'minimum_all_objects'].includes(value)
+  return [
+    'all_tables',
+    'table_coverage',
+    'database_coverage',
+    'minimum_all_tables',
+    'all_objects',
+    'minimum_all_objects',
+  ].includes(value)
     ? value
     : '';
 }
@@ -116,39 +146,48 @@ function coverageIncludesAllObjects(options = {}) {
 function coverageLiveTableLimit(options = {}, fallback = 15) {
   const raw = Number(
     options.max_live_tables ??
-    options.maxLiveTables ??
-    options.live_table_limit ??
-    options.liveTableLimit ??
-    fallback
+      options.maxLiveTables ??
+      options.live_table_limit ??
+      options.liveTableLimit ??
+      fallback
   );
   return Number.isFinite(raw) && raw > 0 ? Math.round(raw) : fallback;
 }
 
 function coveragePriority(options = {}) {
-  const value = String(options.live_priority || options.livePriority || 'smallest_first').toLowerCase();
-  return ['smallest_first', 'largest_first', 'alphabetical', 'most_used_first'].includes(value) ? value : 'smallest_first';
+  const value = String(
+    options.live_priority || options.livePriority || 'smallest_first'
+  ).toLowerCase();
+  return ['smallest_first', 'largest_first', 'alphabetical', 'most_used_first'].includes(value)
+    ? value
+    : 'smallest_first';
 }
 
 function assetRowEstimate(asset = {}) {
-  return Number(
-    asset.row_count ??
-    asset.rowCount ??
-    asset.estimated_rows ??
-    asset.estimatedRows ??
+  return (
+    Number(asset.row_count ?? asset.rowCount ?? asset.estimated_rows ?? asset.estimatedRows ?? 0) ||
     0
-  ) || 0;
+  );
 }
 
 function normalizeDependencyId(value = '') {
-  return String(value || '').trim().toLowerCase();
+  return String(value || '')
+    .trim()
+    .toLowerCase();
 }
 
 function stripServerPort(value = '') {
-  return String(value || '').replace(/^([^.,]+),\d+\./, '$1.').trim();
+  return String(value || '')
+    .replace(/^([^.,]+),\d+\./, '$1.')
+    .trim();
 }
 
 function normalizeObjectId(value = '') {
-  return normalizeDependencyId(String(value || '').replace(/[\[\]`"]/g, '').trim());
+  return normalizeDependencyId(
+    String(value || '')
+      .replace(/[\[\]`"]/g, '')
+      .trim()
+  );
 }
 
 function runtimeStorePath() {
@@ -166,21 +205,28 @@ function uniqueAssetIds(actions = []) {
 
 function normalizeQueueState(queueState = {}) {
   return {
-    timeout_penalties: typeof queueState.timeout_penalties === 'object' && queueState.timeout_penalties
-      ? { ...queueState.timeout_penalties }
-      : {},
-    live_successes: typeof queueState.live_successes === 'object' && queueState.live_successes
-      ? { ...queueState.live_successes }
-      : {},
+    timeout_penalties:
+      typeof queueState.timeout_penalties === 'object' && queueState.timeout_penalties
+        ? { ...queueState.timeout_penalties }
+        : {},
+    live_successes:
+      typeof queueState.live_successes === 'object' && queueState.live_successes
+        ? { ...queueState.live_successes }
+        : {},
   };
 }
 
 function readPublishedLiveProfileState(connectorId = '') {
-  const cacheKey = String(connectorId || '').trim().toLowerCase();
+  const cacheKey = String(connectorId || '')
+    .trim()
+    .toLowerCase();
   if (!cacheKey) return new Map();
   const storePath = runtimeStorePath();
   const storeStamp = existsSync(storePath) ? statSync(storePath).mtimeMs : 0;
-  if (publishedLiveProfileCache?.connectorId === cacheKey && publishedLiveProfileCache?.storeStamp === storeStamp) {
+  if (
+    publishedLiveProfileCache?.connectorId === cacheKey &&
+    publishedLiveProfileCache?.storeStamp === storeStamp
+  ) {
     return publishedLiveProfileCache.map;
   }
 
@@ -190,12 +236,23 @@ function readPublishedLiveProfileState(connectorId = '') {
       const store = JSON.parse(readFileSync(storePath, 'utf8'));
       const runs = Array.isArray(store.connector_runs) ? store.connector_runs : [];
       for (const run of runs) {
-        if (String(run?.connector_id || '').trim().toLowerCase() !== cacheKey) continue;
+        if (
+          String(run?.connector_id || '')
+            .trim()
+            .toLowerCase() !== cacheKey
+        )
+          continue;
         if (String(run?.mode || '').toLowerCase() !== 'live') continue;
         if (!normalizePublishedStatus(run?.artifact?.profile_publish?.status)) continue;
         const actionIds = uniqueAssetIds(run?.profile?.plan?.actions || []);
-        const failedAssetIds = new Set((run?.errors || []).map((error) => normalizeObjectId(error?.asset_id)).filter(Boolean));
-        const completedAt = run?.artifact?.profile_publish?.last_published_at || run?.completed_at || run?.started_at || null;
+        const failedAssetIds = new Set(
+          (run?.errors || []).map((error) => normalizeObjectId(error?.asset_id)).filter(Boolean)
+        );
+        const completedAt =
+          run?.artifact?.profile_publish?.last_published_at ||
+          run?.completed_at ||
+          run?.started_at ||
+          null;
         for (const assetId of actionIds) {
           const normalized = normalizeObjectId(assetId);
           if (!normalized || failedAssetIds.has(normalized)) continue;
@@ -205,7 +262,10 @@ function readPublishedLiveProfileState(connectorId = '') {
             source: 'published_live_run',
           };
           const existing = map.get(normalized);
-          if (!existing || String(nextValue.profiled_at || '') > String(existing.profiled_at || '')) {
+          if (
+            !existing ||
+            String(nextValue.profiled_at || '') > String(existing.profiled_at || '')
+          ) {
             map.set(normalized, nextValue);
             map.set(normalizeObjectId(stripServerPort(assetId)), nextValue);
           }
@@ -255,8 +315,13 @@ function timeoutScoreForAsset(asset = {}, queueState = {}) {
   return 0;
 }
 
-function assetNeedsLiveRefresh(asset = {}, publishedState = new Map(), queueState = {}, staleDays = 30) {
-  const cutoff = Date.now() - (staleDays * 24 * 60 * 60 * 1000);
+function assetNeedsLiveRefresh(
+  asset = {},
+  publishedState = new Map(),
+  queueState = {},
+  staleDays = 30
+) {
+  const cutoff = Date.now() - staleDays * 24 * 60 * 60 * 1000;
   const recentSuccess = queueSuccessAt(asset, queueState);
   if (recentSuccess) {
     const successTime = Date.parse(recentSuccess);
@@ -282,11 +347,11 @@ function assetNeedsLiveRefresh(asset = {}, publishedState = new Map(), queueStat
 function dependencyReferenceId(dependency = {}) {
   return normalizeDependencyId(
     dependency.referencedObject ||
-    dependency.referenced_object ||
-    dependency.toTable ||
-    dependency.to_table ||
-    dependency.object_id ||
-    dependency.id
+      dependency.referenced_object ||
+      dependency.toTable ||
+      dependency.to_table ||
+      dependency.object_id ||
+      dependency.id
   );
 }
 
@@ -349,7 +414,12 @@ function assetUsageCount(asset = {}, usageCounts = new Map()) {
     asset.object_id,
     asset.qualified_name,
     asset.qualifiedName,
-    [asset.serverName || asset.server || '', asset.database || '', asset.schema || '', asset.name || asset.object_name || '']
+    [
+      asset.serverName || asset.server || '',
+      asset.database || '',
+      asset.schema || '',
+      asset.name || asset.object_name || '',
+    ]
       .filter(Boolean)
       .join('.'),
     stripServerPort(asset.id || asset.object_id || ''),
@@ -366,7 +436,9 @@ function isLiveProfileEligible(asset = {}) {
 }
 
 function assetColumnsMissing(asset = {}) {
-  return isLiveProfileEligible(asset) && (!Array.isArray(asset.columns) || asset.columns.length === 0);
+  return (
+    isLiveProfileEligible(asset) && (!Array.isArray(asset.columns) || asset.columns.length === 0)
+  );
 }
 
 function selectedAssetNames(assets = []) {
@@ -376,18 +448,27 @@ function selectedAssetNames(assets = []) {
 function mergeEnrichedAssets(assets = [], enrichedAssets = []) {
   if (!Array.isArray(enrichedAssets) || !enrichedAssets.length) return assets;
   return assets.map((asset) => {
-    const match = enrichedAssets.find((candidate) => matchesRequestedAsset(candidate, asset.id || asset.object_id || objectName(asset)));
+    const match = enrichedAssets.find((candidate) =>
+      matchesRequestedAsset(candidate, asset.id || asset.object_id || objectName(asset))
+    );
     if (!match) return asset;
-    return normalizeProfileAsset({ ...asset, ...match, columns: match.columns || asset.columns }, {});
+    return normalizeProfileAsset(
+      { ...asset, ...match, columns: match.columns || asset.columns },
+      {}
+    );
   });
 }
 
 function missingColumnSkippedItems(plan = {}) {
-  return (plan.skipped || []).filter((item) => /No columns are available in the catalog metadata/i.test(item.reason || item.message || ''));
+  return (plan.skipped || []).filter((item) =>
+    /No columns are available in the catalog metadata/i.test(item.reason || item.message || '')
+  );
 }
 
 function liveProfilingBlockedByMissingColumns(plan = {}, run = {}) {
-  const selectedForRun = Number(plan.coverage?.queue_status?.selected_for_this_run || plan.coverage?.live_assets?.length || 0);
+  const selectedForRun = Number(
+    plan.coverage?.queue_status?.selected_for_this_run || plan.coverage?.live_assets?.length || 0
+  );
   return (
     selectedForRun > 0 &&
     Number(run.summary?.actions_planned || plan.actions?.length || 0) === 0 &&
@@ -397,7 +478,9 @@ function liveProfilingBlockedByMissingColumns(plan = {}, run = {}) {
 
 function applyMissingColumnBlock(run = {}, plan = {}) {
   if (!liveProfilingBlockedByMissingColumns(plan, run)) return run;
-  const affectedObjects = missingColumnSkippedItems(plan).map((item) => item.object_name || item.asset_id).filter(Boolean);
+  const affectedObjects = missingColumnSkippedItems(plan)
+    .map((item) => item.object_name || item.asset_id)
+    .filter(Boolean);
   const message = 'Live profiling blocked by missing column metadata.';
   return {
     ...run,
@@ -445,8 +528,12 @@ function groupCoverageCounts(assets = []) {
 }
 
 function buildLiveUpgradeQueue(eligibleAssets = [], selectedAssets = [], options = {}) {
-  const selectedIds = new Set(selectedAssets.map((asset) => asset.id || asset.object_id || asset.name));
-  const targetTier = String(options.target_live_tier || options.targetLiveTier || 'standard_live').toLowerCase();
+  const selectedIds = new Set(
+    selectedAssets.map((asset) => asset.id || asset.object_id || asset.name)
+  );
+  const targetTier = String(
+    options.target_live_tier || options.targetLiveTier || 'standard_live'
+  ).toLowerCase();
   const usageCounts = options.usage_counts instanceof Map ? options.usage_counts : new Map();
   return eligibleAssets
     .filter((asset) => !selectedIds.has(asset.id || asset.object_id || asset.name))
@@ -464,23 +551,33 @@ function buildLiveUpgradeQueue(eligibleAssets = [], selectedAssets = [], options
     }));
 }
 
-function sortCoverageAssets(assets = [], priority = 'smallest_first', usageCounts = new Map(), queueState = {}) {
+function sortCoverageAssets(
+  assets = [],
+  priority = 'smallest_first',
+  usageCounts = new Map(),
+  queueState = {}
+) {
   const sorted = [...assets];
   sorted.sort((left, right) => {
-    const timeoutDelta = timeoutScoreForAsset(left, queueState) - timeoutScoreForAsset(right, queueState);
+    const timeoutDelta =
+      timeoutScoreForAsset(left, queueState) - timeoutScoreForAsset(right, queueState);
     if (timeoutDelta !== 0) return timeoutDelta;
     const usageDelta = assetUsageCount(right, usageCounts) - assetUsageCount(left, usageCounts);
     if (priority === 'most_used_first' && usageDelta !== 0) return usageDelta;
     if (priority === 'alphabetical') {
-      return `${left.schema || 'dbo'}.${left.name || left.object_name || left.id || ''}`
-        .localeCompare(`${right.schema || 'dbo'}.${right.name || right.object_name || right.id || ''}`);
+      return `${left.schema || 'dbo'}.${left.name || left.object_name || left.id || ''}`.localeCompare(
+        `${right.schema || 'dbo'}.${right.name || right.object_name || right.id || ''}`
+      );
     }
     const rowDelta = assetRowEstimate(left) - assetRowEstimate(right);
     const columnDelta = (left.columns?.length || 0) - (right.columns?.length || 0);
-    const lexical = `${left.schema || 'dbo'}.${left.name || left.object_name || left.id || ''}`
-      .localeCompare(`${right.schema || 'dbo'}.${right.name || right.object_name || right.id || ''}`);
-    if (priority === 'largest_first') return rowDelta !== 0 ? -rowDelta : (columnDelta !== 0 ? -columnDelta : lexical);
-    return rowDelta !== 0 ? rowDelta : (columnDelta !== 0 ? columnDelta : lexical);
+    const lexical =
+      `${left.schema || 'dbo'}.${left.name || left.object_name || left.id || ''}`.localeCompare(
+        `${right.schema || 'dbo'}.${right.name || right.object_name || right.id || ''}`
+      );
+    if (priority === 'largest_first')
+      return rowDelta !== 0 ? -rowDelta : columnDelta !== 0 ? -columnDelta : lexical;
+    return rowDelta !== 0 ? rowDelta : columnDelta !== 0 ? columnDelta : lexical;
   });
   return sorted;
 }
@@ -586,7 +683,13 @@ export class BaseConnectorAdapter {
     if (this.requiredCredentialModes.includes('none')) return true;
     const mode = this.credential.mode || this.credential.kind || 'secret_reference';
     const hasSecretReference =
-      this.credential.secret_ref || this.credential.secretRef || this.credential.vault || mode === 'managed_identity' || mode === 'iam_role' || mode === 'workload_identity' || mode === 'windows_integrated';
+      this.credential.secret_ref ||
+      this.credential.secretRef ||
+      this.credential.vault ||
+      mode === 'managed_identity' ||
+      mode === 'iam_role' ||
+      mode === 'workload_identity' ||
+      mode === 'windows_integrated';
     if (!hasSecretReference) {
       throw new ConnectorCredentialError(
         `${this.definition?.label || this.type} connector requires a credential reference or managed identity mode.`,
@@ -615,12 +718,15 @@ export class BaseConnectorAdapter {
   streamByName(name) {
     const stream = this.streams.find((item) => item.name === name);
     if (!stream) {
-      throw new ConnectorStreamError(`Connector '${this.type}' does not support stream '${name}'.`, {
-        connector_id: this.id,
-        connector_type: this.type,
-        stream: name,
-        details: { supported_streams: this.streams.map((item) => item.name) },
-      });
+      throw new ConnectorStreamError(
+        `Connector '${this.type}' does not support stream '${name}'.`,
+        {
+          connector_id: this.id,
+          connector_type: this.type,
+          stream: name,
+          details: { supported_streams: this.streams.map((item) => item.name) },
+        }
+      );
     }
     return stream;
   }
@@ -673,16 +779,28 @@ export class BaseConnectorAdapter {
     let enrichment = null;
     const requestedCoverageMode = coverageMode(options);
     const needsResolvedAssets =
-      !assets.length || toArray(options.asset_id || options.assetId || options.object_id || options.objectId || options.ids).length > 0;
-    if (needsResolvedAssets && !this.lastMetadata && options.dry_run === false && typeof this.loadMetadata === 'function') {
+      !assets.length ||
+      toArray(
+        options.asset_id || options.assetId || options.object_id || options.objectId || options.ids
+      ).length > 0;
+    if (
+      needsResolvedAssets &&
+      !this.lastMetadata &&
+      options.dry_run === false &&
+      typeof this.loadMetadata === 'function'
+    ) {
       await this.loadMetadata({ ...options, dry_run: false });
     }
     if (needsResolvedAssets && this.lastMetadata) {
-      const resolvedAssets = filterRequestedAssets(metadataProfileAssets(this.lastMetadata, this.connector), options);
+      const resolvedAssets = filterRequestedAssets(
+        metadataProfileAssets(this.lastMetadata, this.connector),
+        options
+      );
       if (requestedCoverageMode) {
-        const usageCounts = coveragePriority(options) === 'most_used_first'
-          ? readLineageUsageCounts()
-          : buildDependencyUsageCounts(this.lastMetadata);
+        const usageCounts =
+          coveragePriority(options) === 'most_used_first'
+            ? readLineageUsageCounts()
+            : buildDependencyUsageCounts(this.lastMetadata);
         const queueState = normalizeQueueState(options.queue_state || options.queueState || {});
         const publishedState = readPublishedLiveProfileState(this.id);
         const staleDays = liveProfileStaleDays(options);
@@ -692,22 +810,35 @@ export class BaseConnectorAdapter {
           return objectType(asset) === 'table';
         });
         const priority = coveragePriority(options);
-        const liveEligibleAssets = coverageAssets.filter((asset) =>
-          coverageIncludesViews(options) || coverageIncludesAllObjects(options)
-            ? isLiveProfileEligible(asset)
-            : objectType(asset) === 'table'
-        )
+        const liveEligibleAssets = coverageAssets
+          .filter((asset) =>
+            coverageIncludesViews(options) || coverageIncludesAllObjects(options)
+              ? isLiveProfileEligible(asset)
+              : objectType(asset) === 'table'
+          )
           .filter((asset) => assetNeedsLiveRefresh(asset, publishedState, queueState, staleDays));
-        const sortedCoverageAssets = sortCoverageAssets(liveEligibleAssets, priority, usageCounts, queueState);
+        const sortedCoverageAssets = sortCoverageAssets(
+          liveEligibleAssets,
+          priority,
+          usageCounts,
+          queueState
+        );
         assets = sortedCoverageAssets.slice(0, coverageLiveTableLimit(options, 15));
         options = { ...options, usage_counts: usageCounts, queue_state: queueState };
       } else {
         assets = resolvedAssets;
       }
     }
-    const liveExecutionRequested = options.dry_run === false || options.execution_mode === 'live' || options.executionMode === 'live';
+    const liveExecutionRequested =
+      options.dry_run === false ||
+      options.execution_mode === 'live' ||
+      options.executionMode === 'live';
     const missingColumnAssets = assets.filter(assetColumnsMissing);
-    if (liveExecutionRequested && missingColumnAssets.length && typeof this.enrichProfileAssetColumns === 'function') {
+    if (
+      liveExecutionRequested &&
+      missingColumnAssets.length &&
+      typeof this.enrichProfileAssetColumns === 'function'
+    ) {
       try {
         enrichment = await this.enrichProfileAssetColumns(missingColumnAssets, options);
         const enrichedAssets = enrichment?.assets || [];
@@ -735,8 +866,10 @@ export class BaseConnectorAdapter {
         affected_assets: selectedAssetNames(missingColumnAssets),
         error: {
           code: 'PROFILE_METADATA_ENRICHMENT_UNSUPPORTED',
-          message: 'Live profiling blocked by missing column metadata and this connector cannot enrich selected object columns.',
-          remediation: 'Run metadata ingestion for the connector or add a connector-specific selected-object column enrichment implementation.',
+          message:
+            'Live profiling blocked by missing column metadata and this connector cannot enrich selected object columns.',
+          remediation:
+            'Run metadata ingestion for the connector or add a connector-specific selected-object column enrichment implementation.',
         },
       };
     }
@@ -746,7 +879,9 @@ export class BaseConnectorAdapter {
         connector_id: this.id,
         connector_type: this.type,
         dialect: options.dialect || this.config.dialect || this.type,
-        max_tables: requestedCoverageMode ? Math.max(1, assets.length || coverageLiveTableLimit(options, 15)) : options.max_tables,
+        max_tables: requestedCoverageMode
+          ? Math.max(1, assets.length || coverageLiveTableLimit(options, 15))
+          : options.max_tables,
         assets,
       },
       options.objectCache || new Map()
@@ -761,7 +896,11 @@ export class BaseConnectorAdapter {
               ? 'partial'
               : 'succeeded',
         affected_assets: enrichment.affected_assets || selectedAssetNames(missingColumnAssets),
-        enriched_assets: enrichment.enriched_assets || selectedAssetNames((enrichment.assets || []).filter((asset) => !assetColumnsMissing(asset))),
+        enriched_assets:
+          enrichment.enriched_assets ||
+          selectedAssetNames(
+            (enrichment.assets || []).filter((asset) => !assetColumnsMissing(asset))
+          ),
       };
     }
     if (requestedCoverageMode) {
@@ -774,14 +913,23 @@ export class BaseConnectorAdapter {
       const queueState = normalizeQueueState(options.queue_state || options.queueState || {});
       const publishedState = readPublishedLiveProfileState(this.id);
       const staleDays = liveProfileStaleDays(options);
-      const liveEligibleAssets = coverageAssets.filter((asset) =>
-        coverageIncludesViews(options) || coverageIncludesAllObjects(options)
-          ? isLiveProfileEligible(asset)
-          : objectType(asset) === 'table'
-      )
+      const liveEligibleAssets = coverageAssets
+        .filter((asset) =>
+          coverageIncludesViews(options) || coverageIncludesAllObjects(options)
+            ? isLiveProfileEligible(asset)
+            : objectType(asset) === 'table'
+        )
         .filter((asset) => assetNeedsLiveRefresh(asset, publishedState, queueState, staleDays));
-      const sortedLiveEligibleAssets = sortCoverageAssets(liveEligibleAssets, coveragePriority(options), usageCounts, queueState);
-      const liveQueue = buildLiveUpgradeQueue(sortedLiveEligibleAssets, assets, { ...options, usage_counts: usageCounts });
+      const sortedLiveEligibleAssets = sortCoverageAssets(
+        liveEligibleAssets,
+        coveragePriority(options),
+        usageCounts,
+        queueState
+      );
+      const liveQueue = buildLiveUpgradeQueue(sortedLiveEligibleAssets, assets, {
+        ...options,
+        usage_counts: usageCounts,
+      });
       plan.coverage = {
         enabled: true,
         mode: requestedCoverageMode,
@@ -791,7 +939,9 @@ export class BaseConnectorAdapter {
         live_asset_limit: coverageLiveTableLimit(options, 15),
         assets: coverageAssets,
         live_assets: assets.map((asset) => asset.id || asset.object_id || asset.name),
-        live_eligible_assets: liveEligibleAssets.map((asset) => asset.id || asset.object_id || asset.name),
+        live_eligible_assets: liveEligibleAssets.map(
+          (asset) => asset.id || asset.object_id || asset.name
+        ),
         total_assets: coverageAssets.length,
         metadata_only_assets: Math.max(0, coverageAssets.length - assets.length),
         asset_counts_by_type: groupCoverageCounts(coverageAssets),
@@ -810,7 +960,10 @@ export class BaseConnectorAdapter {
       plan.summary.requested_assets = coverageAssets.length;
       plan.summary.coverage_assets_total = coverageAssets.length;
       plan.summary.coverage_live_assets = assets.length;
-      plan.summary.coverage_metadata_only_assets = Math.max(0, coverageAssets.length - assets.length);
+      plan.summary.coverage_metadata_only_assets = Math.max(
+        0,
+        coverageAssets.length - assets.length
+      );
       plan.summary.coverage_asset_types = groupCoverageCounts(coverageAssets);
       plan.summary.coverage_live_queue = liveQueue.length;
     }
@@ -836,7 +989,8 @@ export class BaseConnectorAdapter {
       external_id: `${this.id}/${stream.name}/sample`,
       name: `${this.definition?.label || this.type} ${stream.label || stream.name}`,
       object_type: stream.object_type || stream.name,
-      source_url: this.config.base_url || this.config.workspace_url || this.config.server_url || null,
+      source_url:
+        this.config.base_url || this.config.workspace_url || this.config.server_url || null,
       attributes: {
         extraction_mode: 'planned_stream',
         documented_endpoint: stream.endpoint || null,
@@ -941,54 +1095,71 @@ export class BaseConnectorAdapter {
     try {
       url = new URL(String(endpoint));
     } catch {
-      throw new ConnectorRuntimeError(`${this.definition?.label || this.type} metadata endpoint is not a valid URL.`, {
-        connector_id: this.id,
-        connector_type: this.type,
-        stream: stream?.name,
-        remediation: 'Use a fully qualified http or https metadata_endpoint URL.',
-        details: { endpoint },
-      });
+      throw new ConnectorRuntimeError(
+        `${this.definition?.label || this.type} metadata endpoint is not a valid URL.`,
+        {
+          connector_id: this.id,
+          connector_type: this.type,
+          stream: stream?.name,
+          remediation: 'Use a fully qualified http or https metadata_endpoint URL.',
+          details: { endpoint },
+        }
+      );
     }
     if (!['https:', 'http:'].includes(url.protocol)) {
-      throw new ConnectorRuntimeError(`${this.definition?.label || this.type} metadata endpoint must use HTTP or HTTPS.`, {
-        connector_id: this.id,
-        connector_type: this.type,
-        stream: stream?.name,
-        remediation: 'Use an HTTPS metadata_endpoint whenever possible.',
-        details: { endpoint },
-      });
+      throw new ConnectorRuntimeError(
+        `${this.definition?.label || this.type} metadata endpoint must use HTTP or HTTPS.`,
+        {
+          connector_id: this.id,
+          connector_type: this.type,
+          stream: stream?.name,
+          remediation: 'Use an HTTPS metadata_endpoint whenever possible.',
+          details: { endpoint },
+        }
+      );
     }
 
     let response;
     try {
       response = await fetch(url, { headers: this.bridgeHeaders() });
     } catch (err) {
-      throw new ConnectorRuntimeError(`${this.definition?.label || this.type} metadata endpoint request failed: ${err.message}`, {
-        connector_id: this.id,
-        connector_type: this.type,
-        stream: stream?.name,
-        details: { endpoint: url.origin + url.pathname },
-      });
+      throw new ConnectorRuntimeError(
+        `${this.definition?.label || this.type} metadata endpoint request failed: ${err.message}`,
+        {
+          connector_id: this.id,
+          connector_type: this.type,
+          stream: stream?.name,
+          details: { endpoint: url.origin + url.pathname },
+        }
+      );
     }
     if (!response.ok) {
-      throw new ConnectorRuntimeError(`${this.definition?.label || this.type} metadata endpoint returned HTTP ${response.status}.`, {
-        connector_id: this.id,
-        connector_type: this.type,
-        stream: stream?.name,
-        remediation: 'Check source URL, service-account permissions, API scopes, tenant settings, and firewall rules.',
-        details: { status: response.status, endpoint: url.origin + url.pathname },
-      });
+      throw new ConnectorRuntimeError(
+        `${this.definition?.label || this.type} metadata endpoint returned HTTP ${response.status}.`,
+        {
+          connector_id: this.id,
+          connector_type: this.type,
+          stream: stream?.name,
+          remediation:
+            'Check source URL, service-account permissions, API scopes, tenant settings, and firewall rules.',
+          details: { status: response.status, endpoint: url.origin + url.pathname },
+        }
+      );
     }
     try {
       return response.json();
     } catch (err) {
-      throw new ConnectorRuntimeError(`${this.definition?.label || this.type} metadata endpoint did not return JSON metadata.`, {
-        connector_id: this.id,
-        connector_type: this.type,
-        stream: stream?.name,
-        remediation: 'Return JSON metadata or add a source-specific response parser to this bridge adapter.',
-        details: { endpoint: url.origin + url.pathname, parse_error: err.message },
-      });
+      throw new ConnectorRuntimeError(
+        `${this.definition?.label || this.type} metadata endpoint did not return JSON metadata.`,
+        {
+          connector_id: this.id,
+          connector_type: this.type,
+          stream: stream?.name,
+          remediation:
+            'Return JSON metadata or add a source-specific response parser to this bridge adapter.',
+          details: { endpoint: url.origin + url.pathname, parse_error: err.message },
+        }
+      );
     }
   }
 
@@ -1040,7 +1211,8 @@ export class BaseConnectorAdapter {
       ...(stream.aliases || []),
     ].filter(Boolean);
     const items = extractMetadataItems(metadata, aliases);
-    const sourceUrl = this.config.base_url || this.config.workspace_url || this.config.server_url || null;
+    const sourceUrl =
+      this.config.base_url || this.config.workspace_url || this.config.server_url || null;
 
     return items.map((item, index) => {
       const id =
@@ -1062,8 +1234,17 @@ export class BaseConnectorAdapter {
         stream: stream.name,
         external_id: id,
         name,
-        object_type: stream.canonical_type === CANONICAL_EVENT_TYPES.LINEAGE_EDGE ? 'lineage_edge' : objectType,
-        parent_id: item.parent_id || item.parentId || item.datasetId || item.workspaceId || item.projectId || null,
+        object_type:
+          stream.canonical_type === CANONICAL_EVENT_TYPES.LINEAGE_EDGE
+            ? 'lineage_edge'
+            : objectType,
+        parent_id:
+          item.parent_id ||
+          item.parentId ||
+          item.datasetId ||
+          item.workspaceId ||
+          item.projectId ||
+          null,
         source_url: item.source_url || item.webUrl || item.url || sourceUrl,
         attributes: {
           ...item,
@@ -1072,7 +1253,18 @@ export class BaseConnectorAdapter {
         },
         lineage:
           stream.canonical_type === CANONICAL_EVENT_TYPES.LINEAGE_EDGE && (from || to)
-            ? [{ from, to, type: item.edge_type || item.edgeType || item.relationship || item.type || 'depends_on' }]
+            ? [
+                {
+                  from,
+                  to,
+                  type:
+                    item.edge_type ||
+                    item.edgeType ||
+                    item.relationship ||
+                    item.type ||
+                    'depends_on',
+                },
+              ]
             : [],
         confidence: item.confidence || 0.78,
         evidence: {

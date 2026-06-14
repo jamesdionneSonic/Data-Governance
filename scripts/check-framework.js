@@ -1,13 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
 
-import { exec } from 'child_process';
-import { fileURLToPath } from 'url';
-import path from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 // Check that all required modules can be loaded
 const requiredModules = [
   'express',

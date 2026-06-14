@@ -697,7 +697,11 @@ const appConfig = {
       if (roles.some((role) => ['admin', 'administrator', 'platformadmin'].includes(role))) {
         return 'admin';
       }
-      if (roles.some((role) => ['poweruser', 'steward', 'datasteward', 'governancesteward'].includes(role))) {
+      if (
+        roles.some((role) =>
+          ['poweruser', 'steward', 'datasteward', 'governancesteward'].includes(role)
+        )
+      ) {
         return 'steward';
       }
       if (roles.some((role) => ['analyst', 'bianalyst', 'reportanalyst'].includes(role))) {
@@ -737,20 +741,26 @@ const appConfig = {
         this.visibleNavSections.find((section) =>
           section.items.some((item) => item.key === this.activeView)
         ) ||
-        this.navSections.find((section) => section.items.some((item) => item.key === this.activeView)) ||
+        this.navSections.find((section) =>
+          section.items.some((item) => item.key === this.activeView)
+        ) ||
         null
       );
     },
     activePageMeta() {
-      return pageWorkflowMeta[this.activeView] || {
-        title: this.activeNavItem?.label || 'Workspace',
-        subtitle: 'Review the selected governance workflow.',
-        workflow: this.activeNavSection?.label || 'Workspace',
-        primaryAction: this.recommendedWorkflowAction?.label || 'Run next step',
-      };
+      return (
+        pageWorkflowMeta[this.activeView] || {
+          title: this.activeNavItem?.label || 'Workspace',
+          subtitle: 'Review the selected governance workflow.',
+          workflow: this.activeNavSection?.label || 'Workspace',
+          primaryAction: this.recommendedWorkflowAction?.label || 'Run next step',
+        }
+      );
     },
     pageQuickActions() {
-      return (workflowQuickActions[this.activeView] || []).filter((action) => this.canAccessView(action.view));
+      return (workflowQuickActions[this.activeView] || []).filter((action) =>
+        this.canAccessView(action.view)
+      );
     },
     isAuthenticated() {
       return !!this.token;
@@ -846,17 +856,25 @@ const appConfig = {
         this.integrations.selectedConnectorId ||
         this.integrations.profileRunEditor.connectorId ||
         this.integrations.profileScheduleEditor.connectorId;
-      return (this.integrations.managedConnectors || []).find((connector) => connector.id === selectedId) || null;
+      return (
+        (this.integrations.managedConnectors || []).find(
+          (connector) => connector.id === selectedId
+        ) || null
+      );
     },
     selectedProfileScheduleEditorConnector() {
-      return (this.integrations.managedConnectors || []).find(
-        (connector) => connector.id === this.integrations.profileScheduleEditor.connectorId
-      ) || null;
+      return (
+        (this.integrations.managedConnectors || []).find(
+          (connector) => connector.id === this.integrations.profileScheduleEditor.connectorId
+        ) || null
+      );
     },
     selectedConnectorDefinition() {
-      return this.integrations.connectorDefinitions.find(
-        (item) => item.type === this.integrations.connectorEditor.type
-      ) || null;
+      return (
+        this.integrations.connectorDefinitions.find(
+          (item) => item.type === this.integrations.connectorEditor.type
+        ) || null
+      );
     },
     selectedConnectorWizard() {
       const wizard = this.selectedConnectorDefinition?.wizard || {};
@@ -879,25 +897,47 @@ const appConfig = {
       if (this.selectedConnectorWizard.supports_discovery) {
         steps.push({ key: 'discovery', label: '5. Discover' });
       }
-      steps.push({ key: 'advanced', label: this.selectedConnectorWizard.supports_discovery ? '6. Advanced' : '5. Advanced' });
-      steps.push({ key: 'save', label: this.selectedConnectorWizard.supports_discovery ? '7. Save' : '6. Save' });
+      steps.push({
+        key: 'advanced',
+        label: this.selectedConnectorWizard.supports_discovery ? '6. Advanced' : '5. Advanced',
+      });
+      steps.push({
+        key: 'save',
+        label: this.selectedConnectorWizard.supports_discovery ? '7. Save' : '6. Save',
+      });
       return steps;
     },
     currentConnectorWizardStep() {
-      const index = Math.max(0, Math.min(this.integrations.connectorEditor.wizardStep || 0, this.connectorWizardStepDefinitions.length - 1));
+      const index = Math.max(
+        0,
+        Math.min(
+          this.integrations.connectorEditor.wizardStep || 0,
+          this.connectorWizardStepDefinitions.length - 1
+        )
+      );
       return this.connectorWizardStepDefinitions[index] || this.connectorWizardStepDefinitions[0];
     },
     visibleConnectorBasicFields() {
-      return this.selectedConnectorWizard.basic_fields.filter((field) => this.connectorWizardFieldVisible(field));
+      return this.selectedConnectorWizard.basic_fields.filter((field) =>
+        this.connectorWizardFieldVisible(field)
+      );
     },
     visibleConnectorAdvancedFields() {
-      return this.selectedConnectorWizard.advanced_fields.filter((field) => this.connectorWizardFieldVisible(field));
+      return this.selectedConnectorWizard.advanced_fields.filter((field) =>
+        this.connectorWizardFieldVisible(field)
+      );
     },
     selectedConnectorAuthModeMeta() {
-      return this.selectedConnectorWizard.auth_modes.find((mode) => mode.value === this.integrations.connectorEditor.credentialMode) || null;
+      return (
+        this.selectedConnectorWizard.auth_modes.find(
+          (mode) => mode.value === this.integrations.connectorEditor.credentialMode
+        ) || null
+      );
     },
     connectorCredentialFields() {
-      return this.connectorCredentialFieldsForMode(this.integrations.connectorEditor.credentialMode);
+      return this.connectorCredentialFieldsForMode(
+        this.integrations.connectorEditor.credentialMode
+      );
     },
     connectorGeneratedConfigPreview() {
       return JSON.stringify(this.buildConnectorConfigFromWizard(), null, 2);
@@ -908,7 +948,9 @@ const appConfig = {
         type: 'Continue to Authentication',
         auth: 'Continue to Connection',
         connection: 'Continue to Test',
-        test: this.selectedConnectorWizard.supports_discovery ? 'Continue to Discovery' : 'Continue to Advanced',
+        test: this.selectedConnectorWizard.supports_discovery
+          ? 'Continue to Discovery'
+          : 'Continue to Advanced',
         discovery: 'Continue to Advanced',
         advanced: 'Continue to Review',
       };
@@ -923,10 +965,16 @@ const appConfig = {
     },
     connectorWizardManagedConfigKeys() {
       const keys = new Set();
-      [...this.selectedConnectorWizard.basic_fields, ...this.selectedConnectorWizard.advanced_fields].forEach((field) => {
+      [
+        ...this.selectedConnectorWizard.basic_fields,
+        ...this.selectedConnectorWizard.advanced_fields,
+      ].forEach((field) => {
         if (field.config_key) keys.add(field.config_key);
       });
-      if (this.integrations.connectorEditor.type === 'sql_server' || this.integrations.connectorEditor.type === 'ssis') {
+      if (
+        this.integrations.connectorEditor.type === 'sql_server' ||
+        this.integrations.connectorEditor.type === 'ssis'
+      ) {
         keys.add('server');
       }
       return [...keys];
@@ -935,7 +983,9 @@ const appConfig = {
       const advanced = this.connectorAdvancedConfigPreview;
       if (!advanced || typeof advanced !== 'object' || Array.isArray(advanced)) return [];
       const managed = new Set(this.connectorWizardManagedConfigKeys);
-      return Object.keys(advanced).filter((key) => !managed.has(key)).sort();
+      return Object.keys(advanced)
+        .filter((key) => !managed.has(key))
+        .sort();
     },
     connectorDiscoveryCollections() {
       const snapshot = this.integrations.connectorEditor.discoverySummary || {};
@@ -955,14 +1005,18 @@ const appConfig = {
       const editor = this.integrations.connectorEditor;
       if (!(editor.type === 'sql_server' || editor.type === 'ssis')) return '';
       if (editor.discoveringDatabases) return 'Refreshing database list for the current server...';
-      if (editor.databaseDiscoveryError) return `Database discovery failed: ${editor.databaseDiscoveryError}. You can still type a database name manually.`;
-      if (editor.availableDatabases.length > 0) return `${editor.availableDatabases.length} database(s) found. Pick one or type a name manually.`;
+      if (editor.databaseDiscoveryError)
+        return `Database discovery failed: ${editor.databaseDiscoveryError}. You can still type a database name manually.`;
+      if (editor.availableDatabases.length > 0)
+        return `${editor.availableDatabases.length} database(s) found. Pick one or type a name manually.`;
       return 'Authenticate first, then refresh databases for this server.';
     },
     selectedConnectorSchedules() {
       const connectorId = this.selectedManagedConnector?.id;
       if (!connectorId) return [];
-      return (this.integrations.profileSchedules || []).filter((schedule) => schedule.connector_id === connectorId);
+      return (this.integrations.profileSchedules || []).filter(
+        (schedule) => schedule.connector_id === connectorId
+      );
     },
     operatorScheduleCandidates() {
       const selectedConnectorId = this.selectedManagedConnector?.id || '';
@@ -976,10 +1030,16 @@ const appConfig = {
         const leftLastRun = left.last_run_at ? new Date(left.last_run_at).getTime() : 0;
         const rightLastRun = right.last_run_at ? new Date(right.last_run_at).getTime() : 0;
         if (leftLastRun !== rightLastRun) return rightLastRun - leftLastRun;
-        const leftNextRun = left.next_run_at ? new Date(left.next_run_at).getTime() : Number.MAX_SAFE_INTEGER;
-        const rightNextRun = right.next_run_at ? new Date(right.next_run_at).getTime() : Number.MAX_SAFE_INTEGER;
+        const leftNextRun = left.next_run_at
+          ? new Date(left.next_run_at).getTime()
+          : Number.MAX_SAFE_INTEGER;
+        const rightNextRun = right.next_run_at
+          ? new Date(right.next_run_at).getTime()
+          : Number.MAX_SAFE_INTEGER;
         if (leftNextRun !== rightNextRun) return leftNextRun - rightNextRun;
-        return String(left.name || left.id || '').localeCompare(String(right.name || right.id || ''));
+        return String(left.name || left.id || '').localeCompare(
+          String(right.name || right.id || '')
+        );
       });
     },
     sortedProfileSchedules() {
@@ -987,13 +1047,19 @@ const appConfig = {
         const leftRank = this.profileScheduleStateMeta(left).rank;
         const rightRank = this.profileScheduleStateMeta(right).rank;
         if (leftRank !== rightRank) return leftRank - rightRank;
-        const leftNextRun = left.next_run_at ? new Date(left.next_run_at).getTime() : Number.MAX_SAFE_INTEGER;
-        const rightNextRun = right.next_run_at ? new Date(right.next_run_at).getTime() : Number.MAX_SAFE_INTEGER;
+        const leftNextRun = left.next_run_at
+          ? new Date(left.next_run_at).getTime()
+          : Number.MAX_SAFE_INTEGER;
+        const rightNextRun = right.next_run_at
+          ? new Date(right.next_run_at).getTime()
+          : Number.MAX_SAFE_INTEGER;
         if (leftNextRun !== rightNextRun) return leftNextRun - rightNextRun;
         const leftLastRun = left.last_run_at ? new Date(left.last_run_at).getTime() : 0;
         const rightLastRun = right.last_run_at ? new Date(right.last_run_at).getTime() : 0;
         if (leftLastRun !== rightLastRun) return rightLastRun - leftLastRun;
-        return String(left.name || left.id || '').localeCompare(String(right.name || right.id || ''));
+        return String(left.name || left.id || '').localeCompare(
+          String(right.name || right.id || '')
+        );
       });
     },
     profileScheduleSections() {
@@ -1025,7 +1091,8 @@ const appConfig = {
         {
           key: 'drafts',
           title: 'Drafts',
-          helper: 'Saved setup work that cannot run until blockers are resolved and the schedule is activated.',
+          helper:
+            'Saved setup work that cannot run until blockers are resolved and the schedule is activated.',
           schedules: [],
         },
       ];
@@ -1052,9 +1119,18 @@ const appConfig = {
         completed: rows.filter((row) => row.healthKey === 'completed').length,
         needsAttention: rows.filter((row) => row.needsAttention).length,
         waiting: rows.filter((row) => row.healthKey === 'waiting').length,
-        completedLiveProfiles: rows.reduce((sum, row) => sum + (Number(row.completedLiveProfiles) || 0), 0),
-        failedLiveProfiles: rows.reduce((sum, row) => sum + (Number(row.failedLiveProfiles) || 0), 0),
-        timeoutPenalties: rows.reduce((sum, row) => sum + (Number(row.timeoutPenaltyCount) || 0), 0),
+        completedLiveProfiles: rows.reduce(
+          (sum, row) => sum + (Number(row.completedLiveProfiles) || 0),
+          0
+        ),
+        failedLiveProfiles: rows.reduce(
+          (sum, row) => sum + (Number(row.failedLiveProfiles) || 0),
+          0
+        ),
+        timeoutPenalties: rows.reduce(
+          (sum, row) => sum + (Number(row.timeoutPenaltyCount) || 0),
+          0
+        ),
         nextRunAt: nextRuns.length ? new Date(nextRuns[0]).toISOString() : null,
       };
     },
@@ -1073,7 +1149,9 @@ const appConfig = {
       return 'Profiling is waiting for the next scheduled run.';
     },
     selectedConnectorActiveSchedule() {
-      return this.selectedConnectorSchedules.find((schedule) => schedule.status === 'ACTIVE') || null;
+      return (
+        this.selectedConnectorSchedules.find((schedule) => schedule.status === 'ACTIVE') || null
+      );
     },
     preferredProfileScheduleId() {
       return (
@@ -1086,7 +1164,10 @@ const appConfig = {
     },
     focusedProfileSchedule() {
       const scheduleId = this.preferredProfileScheduleId;
-      return (this.integrations.profileSchedules || []).find((schedule) => schedule.id === scheduleId) || null;
+      return (
+        (this.integrations.profileSchedules || []).find((schedule) => schedule.id === scheduleId) ||
+        null
+      );
     },
     focusedProfileQueueStatus() {
       return this.integrations.profileQueuePreview?.queue_status || null;
@@ -1108,17 +1189,28 @@ const appConfig = {
     },
     focusedQueueDeferredAssets() {
       return this.focusedQueueQueuedAssets
-        .filter((asset) => !this.focusedQueueNextAssets.some((nextAsset) => nextAsset.asset_id === asset.asset_id))
+        .filter(
+          (asset) =>
+            !this.focusedQueueNextAssets.some((nextAsset) => nextAsset.asset_id === asset.asset_id)
+        )
         .slice(0, 12);
     },
     connectorPendingPublishRuns() {
-      return (this.integrations.connectorRuns || []).filter((run) => this.connectorRunCanPublish(run));
+      return (this.integrations.connectorRuns || []).filter((run) =>
+        this.connectorRunCanPublish(run)
+      );
     },
     connectorPublishFailures() {
-      return (this.integrations.connectorRuns || []).filter((run) => this.connectorRunPublishStatus(run) === 'publish_failed');
+      return (this.integrations.connectorRuns || []).filter(
+        (run) => this.connectorRunPublishStatus(run) === 'publish_failed'
+      );
     },
     connectorRecentPublishedRuns() {
-      return (this.integrations.connectorRuns || []).filter((run) => ['published', 'partial_published'].includes(this.connectorRunPublishStatus(run))).slice(0, 5);
+      return (this.integrations.connectorRuns || [])
+        .filter((run) =>
+          ['published', 'partial_published'].includes(this.connectorRunPublishStatus(run))
+        )
+        .slice(0, 5);
     },
     selectedConnectorRunDetailItems() {
       const run = this.integrations.selectedConnectorRun;
@@ -1146,13 +1238,20 @@ const appConfig = {
       return `${this.focusedProfileSchedule.connector_id} live queue`;
     },
     schedulerFocusedConnectorId() {
-      return this.focusedProfileSchedule?.connector_id || this.integrations.selectedConnectorId || '-';
+      return (
+        this.focusedProfileSchedule?.connector_id || this.integrations.selectedConnectorId || '-'
+      );
     },
     selectedConnectorSupportsProfiling() {
       const connector = this.selectedManagedConnector;
-      return ['sql_server', 'postgresql', 'snowflake', 'bigquery', 'databricks', 'aws_redshift'].includes(
-        connector?.type
-      );
+      return [
+        'sql_server',
+        'postgresql',
+        'snowflake',
+        'bigquery',
+        'databricks',
+        'aws_redshift',
+      ].includes(connector?.type);
     },
     connectorWorkflowSteps() {
       const hasConnector = Boolean(this.selectedManagedConnector);
@@ -1163,7 +1262,11 @@ const appConfig = {
         { key: 'run', label: '2. Run one-time profile', done: hasProfile },
         { key: 'schedule', label: '3. Configure queue', done: hasSchedule },
         { key: 'access', label: '4. Grant access', done: hasConnector },
-        { key: 'history', label: '5. Review runs', done: this.integrations.connectorRuns.length > 0 },
+        {
+          key: 'history',
+          label: '5. Review runs',
+          done: this.integrations.connectorRuns.length > 0,
+        },
       ];
     },
     accessTokenPreview() {
@@ -1200,7 +1303,10 @@ const appConfig = {
           type: 'Database',
           status: sqlObjects > 0 ? 'Extracted' : 'Ready',
           statusColor: sqlObjects > 0 ? 'success' : 'primary',
-          metric: sqlObjects > 0 ? `${sqlObjects.toLocaleString()} objects` : `${this.importer.sqlServer.database || 'No database'} selected`,
+          metric:
+            sqlObjects > 0
+              ? `${sqlObjects.toLocaleString()} objects`
+              : `${this.importer.sqlServer.database || 'No database'} selected`,
           description: 'Discover schemas, tables, views, procedures, and relationship confidence.',
         },
         {
@@ -1208,10 +1314,16 @@ const appConfig = {
           icon: 'mdi-package-variant',
           label: 'SSIS',
           type: 'ETL',
-          status: ssisPackages > 0 ? 'Extracted' : this.importer.ssis.inventory ? 'Discovered' : 'Ready',
-          statusColor: ssisPackages > 0 ? 'success' : this.importer.ssis.inventory ? 'warning' : 'primary',
-          metric: ssisPackages > 0 ? `${ssisPackages.toLocaleString()} packages` : `${this.importer.ssis.server || 'No server'} configured`,
-          description: 'Extract packages, jobs, execution history, XML lineage, and generated markdown.',
+          status:
+            ssisPackages > 0 ? 'Extracted' : this.importer.ssis.inventory ? 'Discovered' : 'Ready',
+          statusColor:
+            ssisPackages > 0 ? 'success' : this.importer.ssis.inventory ? 'warning' : 'primary',
+          metric:
+            ssisPackages > 0
+              ? `${ssisPackages.toLocaleString()} packages`
+              : `${this.importer.ssis.server || 'No server'} configured`,
+          description:
+            'Extract packages, jobs, execution history, XML lineage, and generated markdown.',
         },
         {
           key: 'markdown',
@@ -1220,7 +1332,10 @@ const appConfig = {
           type: 'File ingest',
           status: parsedMarkdown > 0 ? 'Parsed' : 'Ready',
           statusColor: parsedMarkdown > 0 ? 'success' : 'primary',
-          metric: parsedMarkdown > 0 ? `${parsedMarkdown.toLocaleString()} files` : 'Upload governance markdown',
+          metric:
+            parsedMarkdown > 0
+              ? `${parsedMarkdown.toLocaleString()} files`
+              : 'Upload governance markdown',
           description: 'Upload curated markdown files and inspect parse results before validation.',
         },
         {
@@ -1228,13 +1343,24 @@ const appConfig = {
           icon: 'mdi-factory',
           label: 'Data Factory',
           type: 'Cloud pipeline',
-          status: dataFactoryPipelines > 0 ? 'Extracted' : dataFactoryDiscovered > 0 ? 'Discovered' : 'Ready',
-          statusColor: dataFactoryPipelines > 0 ? 'success' : dataFactoryDiscovered > 0 ? 'warning' : 'primary',
+          status:
+            dataFactoryPipelines > 0
+              ? 'Extracted'
+              : dataFactoryDiscovered > 0
+                ? 'Discovered'
+                : 'Ready',
+          statusColor:
+            dataFactoryPipelines > 0
+              ? 'success'
+              : dataFactoryDiscovered > 0
+                ? 'warning'
+                : 'primary',
           metric:
             dataFactoryPipelines > 0
               ? `${dataFactoryPipelines.toLocaleString()} pipelines`
               : this.importer.dataFactory.factoryName || 'Azure pipelines',
-          description: 'Discover ADF pipelines, activities, datasets, linked services, and triggers.',
+          description:
+            'Discover ADF pipelines, activities, datasets, linked services, and triggers.',
         },
         {
           key: 'airflow',
@@ -1254,8 +1380,10 @@ const appConfig = {
           icon: 'mdi-cube-outline',
           label: 'Databricks',
           type: 'Lakehouse',
-          status: databricksJobs > 0 ? 'Extracted' : databricksDiscovered > 0 ? 'Discovered' : 'Ready',
-          statusColor: databricksJobs > 0 ? 'success' : databricksDiscovered > 0 ? 'warning' : 'primary',
+          status:
+            databricksJobs > 0 ? 'Extracted' : databricksDiscovered > 0 ? 'Discovered' : 'Ready',
+          statusColor:
+            databricksJobs > 0 ? 'success' : databricksDiscovered > 0 ? 'warning' : 'primary',
           metric:
             databricksJobs > 0
               ? `${databricksJobs.toLocaleString()} jobs`
@@ -1287,7 +1415,8 @@ const appConfig = {
     },
     lineageAcquisitionSourceRows() {
       return this.lineageAcquisitionDomain.sources.map((source) => {
-        const connector = this.ingestionConnectorOptions.find((item) => item.key === source.connectorKey) || {};
+        const connector =
+          this.ingestionConnectorOptions.find((item) => item.key === source.connectorKey) || {};
         return {
           ...source,
           status: connector.status || 'Ready',
@@ -1301,7 +1430,8 @@ const appConfig = {
       return {
         domain: this.lineageAcquisitionDomain.label,
         sourceCount: sources.length,
-        refreshed: sources.filter((source) => ['Extracted', 'Parsed'].includes(source.status)).length,
+        refreshed: sources.filter((source) => ['Extracted', 'Parsed'].includes(source.status))
+          .length,
         ready: sources.filter((source) => source.status === 'Ready').length,
         warnings: sources.filter((source) => source.status === 'Discovered').length,
         indexedObjects:
@@ -1336,9 +1466,12 @@ const appConfig = {
       const discovered =
         Number(this.importer.sqlServer.discoveredObjectCount || 0) > 0 || governedObjects > 0;
       const extracted =
-        Number(this.importer.sqlServer.result?.totalObjectsExtracted || 0) > 0 || governedObjects > 0;
+        Number(this.importer.sqlServer.result?.totalObjectsExtracted || 0) > 0 ||
+        governedObjects > 0;
       const validated =
-        Number(this.importer.validationResult?.valid || 0) > 0 || qualityScore > 0 || governedObjects > 0;
+        Number(this.importer.validationResult?.valid || 0) > 0 ||
+        qualityScore > 0 ||
+        governedObjects > 0;
       const loaded = indexedObjects > 0;
       const analyzed = Number(this.reports.blastRows?.length || 0) > 0 || dependencies > 0;
 
@@ -1428,13 +1561,19 @@ const appConfig = {
       const parts = [];
 
       if (loaders.length) {
-        parts.push(`${loaders.length} loader${loaders.length === 1 ? '' : 's'} write or maintain the focus object`);
+        parts.push(
+          `${loaders.length} loader${loaders.length === 1 ? '' : 's'} write or maintain the focus object`
+        );
       }
       if (orchestrators.length) {
-        parts.push(`${orchestrators.length} orchestrator${orchestrators.length === 1 ? '' : 's'} run the load path`);
+        parts.push(
+          `${orchestrators.length} orchestrator${orchestrators.length === 1 ? '' : 's'} run the load path`
+        );
       }
       if (maintenanceReads.length) {
-        parts.push(`${maintenanceReads.length} maintenance read${maintenanceReads.length === 1 ? '' : 's'} are separated from business consumers`);
+        parts.push(
+          `${maintenanceReads.length} maintenance read${maintenanceReads.length === 1 ? '' : 's'} are separated from business consumers`
+        );
       }
 
       return parts.length
@@ -1442,7 +1581,11 @@ const appConfig = {
         : 'No transformation or load-path logic was found in the current lineage evidence for this answer.';
     },
     selectedAssetLineageTitle() {
-      return this.selectedObjectDetail?.name || this.objectNameFromId(this.selectedObjectId) || this.selectedObjectId;
+      return (
+        this.selectedObjectDetail?.name ||
+        this.objectNameFromId(this.selectedObjectId) ||
+        this.selectedObjectId
+      );
     },
     selectedAssetLineagePlainEnglish() {
       return (
@@ -1462,7 +1605,9 @@ const appConfig = {
         if (confidence >= 0.5) return 'Strongly Suggested';
         return 'Needs Review';
       }
-      return this.lineageAnswer.impacted_objects?.length ? 'Strongly Suggested' : 'Evidence Pending';
+      return this.lineageAnswer.impacted_objects?.length
+        ? 'Strongly Suggested'
+        : 'Evidence Pending';
     },
     lineageExplorerConfidenceTooltip() {
       if (!this.lineageAnswer) {
@@ -1504,7 +1649,11 @@ const appConfig = {
         qualityScore: metrics.qualityScore,
         blastObjects: metrics.blastObjects,
         validationIssues: validation.invalid || 0,
-        indexedObjects: metrics.indexedObjects || lastLoad.totalObjects || this.importer.status?.loadedObjectCount || 0,
+        indexedObjects:
+          metrics.indexedObjects ||
+          lastLoad.totalObjects ||
+          this.importer.status?.loadedObjectCount ||
+          0,
       };
 
       switch (this.resolvedPersona) {
@@ -1678,19 +1827,24 @@ const appConfig = {
         const visible = this.filteredCatalogResults.length;
         return `Showing ${visible} of ${total} object(s) in ${this.catalogDatabaseLabel(this.selectedBrowseDatabase)}.`;
       }
-      if (!this.browseSearchSubmitted) return 'Search by object name, column, owner, tag, or business meaning.';
+      if (!this.browseSearchSubmitted)
+        return 'Search by object name, column, owner, tag, or business meaning.';
       const query = String(this.browseQuery || '').trim();
       return `Showing ${this.filteredCatalogResults.length} result(s)${query ? ` for "${query}"` : ''}.`;
     },
     catalogSearchPlaceholder() {
       const selectedTypes = this.selectedFacetFilters.types || [];
       if (selectedTypes.includes('table')) return 'Enter a table name, like DimVehicle...';
-      if (selectedTypes.includes('column')) return 'Enter a column name, like email, amount, or customer_id...';
-      if (selectedTypes.includes('storedProcedure')) return 'Enter a procedure name, like usp_DimVehicle...';
+      if (selectedTypes.includes('column'))
+        return 'Enter a column name, like email, amount, or customer_id...';
+      if (selectedTypes.includes('storedProcedure'))
+        return 'Enter a procedure name, like usp_DimVehicle...';
       return 'Search tables, columns, procedures, owners, tags...';
     },
     visibleCatalogRecentSearches() {
-      const current = String(this.browseQuery || '').trim().toLowerCase();
+      const current = String(this.browseQuery || '')
+        .trim()
+        .toLowerCase();
       return (this.catalogRecentSearches || [])
         .filter((query) => String(query || '').trim())
         .filter((query) => String(query).trim().toLowerCase() !== current)
@@ -1698,12 +1852,42 @@ const appConfig = {
     },
     catalogHelperActions() {
       return [
-        { key: 'find-table', label: 'Find table', icon: 'mdi-table', description: 'Search only table assets.' },
-        { key: 'find-column', label: 'Find column', icon: 'mdi-table-column', description: 'Search column names and metadata.' },
-        { key: 'find-pii', label: 'Find PII', icon: 'mdi-shield-lock', description: 'Look for sensitive or restricted data.' },
-        { key: 'find-metric', label: 'Find metric', icon: 'mdi-function-variant', description: 'Search for metric columns and measures.' },
-        { key: 'browse-database', label: 'Browse database', icon: 'mdi-database-search', description: 'Choose a database and browse its objects.' },
-        { key: 'needs-owner', label: 'Needs owner', icon: 'mdi-account-alert', description: 'Find assets missing owner or steward context.' },
+        {
+          key: 'find-table',
+          label: 'Find table',
+          icon: 'mdi-table',
+          description: 'Search only table assets.',
+        },
+        {
+          key: 'find-column',
+          label: 'Find column',
+          icon: 'mdi-table-column',
+          description: 'Search column names and metadata.',
+        },
+        {
+          key: 'find-pii',
+          label: 'Find PII',
+          icon: 'mdi-shield-lock',
+          description: 'Look for sensitive or restricted data.',
+        },
+        {
+          key: 'find-metric',
+          label: 'Find metric',
+          icon: 'mdi-function-variant',
+          description: 'Search for metric columns and measures.',
+        },
+        {
+          key: 'browse-database',
+          label: 'Browse database',
+          icon: 'mdi-database-search',
+          description: 'Choose a database and browse its objects.',
+        },
+        {
+          key: 'needs-owner',
+          label: 'Needs owner',
+          icon: 'mdi-account-alert',
+          description: 'Find assets missing owner or steward context.',
+        },
       ];
     },
     overviewRecentObjects() {
@@ -1753,12 +1937,16 @@ const appConfig = {
       return points.slice(0, 12).reverse();
     },
     catalogHasLoadedObjects() {
-      return Number(this.overview?.overview?.totalObjects || 0) > 0 || this.overviewRecentObjects.length > 0;
+      return (
+        Number(this.overview?.overview?.totalObjects || 0) > 0 ||
+        this.overviewRecentObjects.length > 0
+      );
     },
     hasStaleDemoCatalogState() {
       return (
         !this.demoModeEnabled &&
-        (this.isDemoCatalogSnapshot(this.objectList) || this.isDemoCatalogSnapshot(this.browseResults))
+        (this.isDemoCatalogSnapshot(this.objectList) ||
+          this.isDemoCatalogSnapshot(this.browseResults))
       );
     },
     browseCatalogStatusText() {
@@ -1793,7 +1981,9 @@ const appConfig = {
         ? this.searchFacets.types.map((value) => normalizeType(value)).filter(Boolean)
         : Array.from(sourceTypes);
       const facetDatabases = this.searchFacets?.databases
-        ? this.searchFacets.databases.filter(Boolean).map((database) => this.catalogDatabaseLabel(database))
+        ? this.searchFacets.databases
+            .filter(Boolean)
+            .map((database) => this.catalogDatabaseLabel(database))
         : Array.from(sourceDatabases).map((database) => this.catalogDatabaseLabel(database));
 
       return {
@@ -1899,9 +2089,7 @@ const appConfig = {
         const qualityMatch = selectedQuality.length === 0 || selectedQuality.includes(itemQuality);
         const databaseMatch =
           selectedDatabases.length === 0 ||
-          selectedDatabases.some((database) =>
-            this.catalogDatabaseMatches(itemDatabase, database)
-          );
+          selectedDatabases.some((database) => this.catalogDatabaseMatches(itemDatabase, database));
 
         return typeMatch && qualityMatch && databaseMatch && matchesQuery(item);
       });
@@ -2013,13 +2201,13 @@ const appConfig = {
     browseQuery() {
       this.queueBrowseSearch();
     },
-    'integrations.selectedConnectorId'() {
+    'integrations.selectedConnectorId': function () {
       this.persistProfileOpsFocus();
     },
-    'integrations.profileQueueScheduleId'() {
+    'integrations.profileQueueScheduleId': function () {
       this.persistProfileOpsFocus();
     },
-    'integrations.schedulerOpsTab'(value) {
+    'integrations.schedulerOpsTab': function (value) {
       localStorage.setItem('dg_profile_ops_tab', value || 'overview');
     },
     'importer.sqlServer.server': 'handleSqlServerConnectionChange',
@@ -2089,7 +2277,10 @@ const appConfig = {
     metricNeedsReview(metric = {}) {
       const state = String(metric.metric_state || metric.status || '').toLowerCase();
       const confidence = String(metric.confidence_label || '').toLowerCase();
-      return ['suggested', 'in_review', 'in review', 'inferred', 'candidate', 'draft'].includes(state) || confidence.includes('inferred');
+      return (
+        ['suggested', 'in_review', 'in review', 'inferred', 'candidate', 'draft'].includes(state) ||
+        confidence.includes('inferred')
+      );
     },
     metricStateLabel(metric = {}) {
       const state = String(metric.metric_state || metric.status || 'suggested').replace(/_/g, ' ');
@@ -2098,7 +2289,8 @@ const appConfig = {
     metricStateColor(metric = {}) {
       const state = String(metric.metric_state || metric.status || '').toLowerCase();
       if (['certified', 'confirmed', 'approved'].includes(state)) return 'success';
-      if (['suggested', 'in_review', 'in review', 'inferred', 'candidate'].includes(state)) return 'info';
+      if (['suggested', 'in_review', 'in review', 'inferred', 'candidate'].includes(state))
+        return 'info';
       if (state === 'deprecated') return 'error';
       return 'warning';
     },
@@ -2186,7 +2378,10 @@ const appConfig = {
     },
     persistProfileOpsFocus() {
       localStorage.setItem('dg_profile_connector_id', this.integrations.selectedConnectorId || '');
-      localStorage.setItem('dg_profile_queue_schedule_id', this.integrations.profileQueueScheduleId || '');
+      localStorage.setItem(
+        'dg_profile_queue_schedule_id',
+        this.integrations.profileQueueScheduleId || ''
+      );
     },
     decodeTokenPayload(token) {
       if (!token || typeof token !== 'string') {
@@ -2371,7 +2566,8 @@ const appConfig = {
       this.browseSearchTotal = null;
       this.browseSearchEngine = '';
       if (!this.demoModeEnabled || this.hasRealData) {
-        this.discoveryGraph = this.discoveryGraph === demoSnapshot.graph ? null : this.discoveryGraph;
+        this.discoveryGraph =
+          this.discoveryGraph === demoSnapshot.graph ? null : this.discoveryGraph;
       }
     },
     async refreshSessionToken() {
@@ -2669,7 +2865,7 @@ const appConfig = {
             this.clearDemoCatalogState();
             this.showToast('Sign in to load the markdown catalog.');
           }
-          return;
+          return null;
         }
       }
 
@@ -2691,6 +2887,7 @@ const appConfig = {
         this.bootstrapInProgress = false;
         this.bootstrapPromise = null;
       }
+      return null;
     },
     async loadActiveViewData(view = this.activeView) {
       if (view === 'browse') {
@@ -2728,20 +2925,14 @@ const appConfig = {
         return;
       }
       if (view === 'reports') {
-        await Promise.allSettled([
-          this.loadSchedules(),
-          this.loadMarketplaceRequests(),
-        ]);
+        await Promise.allSettled([this.loadSchedules(), this.loadMarketplaceRequests()]);
         this.buildBlastRadiusReport();
         await nextTick();
         this.renderBlastRadiusChart();
         return;
       }
       if (view === 'integrations') {
-        await Promise.allSettled([
-          this.loadIntegrations(),
-          this.loadLinks(),
-        ]);
+        await Promise.allSettled([this.loadIntegrations(), this.loadLinks()]);
         return;
       }
       if (view === 'scheduler') {
@@ -3354,7 +3545,10 @@ const appConfig = {
         return;
       }
       canvas.width = Math.max(320, canvas.clientWidth || canvas.parentElement?.clientWidth || 640);
-      canvas.height = Math.max(240, canvas.clientHeight || canvas.parentElement?.clientHeight || 320);
+      canvas.height = Math.max(
+        240,
+        canvas.clientHeight || canvas.parentElement?.clientHeight || 320
+      );
       const blastGradient = ctx.createLinearGradient(0, 0, 420, 0);
       blastGradient.addColorStop(0, 'rgba(14, 165, 233, 0.92)');
       blastGradient.addColorStop(0.5, 'rgba(99, 102, 241, 0.86)');
@@ -3465,7 +3659,10 @@ const appConfig = {
       const next = [
         normalized,
         ...(this.catalogRecentSearches || []).filter(
-          (item) => String(item || '').trim().toLowerCase() !== normalized.toLowerCase()
+          (item) =>
+            String(item || '')
+              .trim()
+              .toLowerCase() !== normalized.toLowerCase()
         ),
       ].slice(0, 6);
       this.catalogRecentSearches = next;
@@ -3708,7 +3905,9 @@ const appConfig = {
         const database = encodeURIComponent(this.selectedFacetFilters.databases.join(','));
         const type = encodeURIComponent(this.selectedFacetFilters.types.join(','));
         const owner = encodeURIComponent((this.selectedFacetFilters.owners || []).join(','));
-        const sensitivity = encodeURIComponent((this.selectedFacetFilters.sensitivity || []).join(','));
+        const sensitivity = encodeURIComponent(
+          (this.selectedFacetFilters.sensitivity || []).join(',')
+        );
         const tags = encodeURIComponent((this.selectedFacetFilters.tags || []).join(','));
         const quality = encodeURIComponent((this.selectedFacetFilters.quality || []).join(','));
         const search = await this.api(
@@ -3904,7 +4103,16 @@ const appConfig = {
       }
 
       try {
-        const [detailResult, upstreamResult, downstreamResult, impactResult, governanceContextResult, piiPolicyResult, columnSemanticsResult, dictionaryResult] = await Promise.allSettled([
+        const [
+          detailResult,
+          upstreamResult,
+          downstreamResult,
+          impactResult,
+          governanceContextResult,
+          piiPolicyResult,
+          columnSemanticsResult,
+          dictionaryResult,
+        ] = await Promise.allSettled([
           this.api(`/api/v1/objects/${encodeURIComponent(this.selectedObjectId)}`),
           this.api(
             `/api/v1/lineage/${encodeURIComponent(this.selectedObjectId)}/upstream?depth=${this.discoveryDepth}`
@@ -3915,7 +4123,9 @@ const appConfig = {
           this.api(`/api/v1/discovery/impact/${encodeURIComponent(this.selectedObjectId)}`),
           this.api(`/api/v1/governance/context/${encodeURIComponent(this.selectedObjectId)}`),
           this.api(`/api/v1/classification/pii/${encodeURIComponent(this.selectedObjectId)}`),
-          this.api(`/api/v1/classification/columns/${encodeURIComponent(this.selectedObjectId)}/semantics`),
+          this.api(
+            `/api/v1/classification/columns/${encodeURIComponent(this.selectedObjectId)}/semantics`
+          ),
           this.api(`/api/v1/dictionary/${encodeURIComponent(this.selectedObjectId)}`),
         ]);
         if (detailResult.status !== 'fulfilled') {
@@ -3923,12 +4133,16 @@ const appConfig = {
         }
 
         const detail = detailResult.value || {};
-        const upstream = upstreamResult.status === 'fulfilled' ? upstreamResult.value : { data: [] };
-        const downstream = downstreamResult.status === 'fulfilled' ? downstreamResult.value : { data: [] };
+        const upstream =
+          upstreamResult.status === 'fulfilled' ? upstreamResult.value : { data: [] };
+        const downstream =
+          downstreamResult.status === 'fulfilled' ? downstreamResult.value : { data: [] };
         const impact = impactResult.status === 'fulfilled' ? impactResult.value : { data: [] };
-        const governanceContext = governanceContextResult.status === 'fulfilled' ? governanceContextResult.value : {};
+        const governanceContext =
+          governanceContextResult.status === 'fulfilled' ? governanceContextResult.value : {};
         const piiPolicy = piiPolicyResult.status === 'fulfilled' ? piiPolicyResult.value : {};
-        const columnSemantics = columnSemanticsResult.status === 'fulfilled' ? columnSemanticsResult.value : {};
+        const columnSemantics =
+          columnSemanticsResult.status === 'fulfilled' ? columnSemanticsResult.value : {};
         const dictionary = dictionaryResult.status === 'fulfilled' ? dictionaryResult.value : {};
 
         this.selectedObjectDetail = detail.data
@@ -3952,10 +4166,16 @@ const appConfig = {
           tags: this.csvFromValue(detail.data?.tags),
           business_domain: detail.data?.business_domain || detail.data?.domain || '',
           business_justification: detail.data?.business_justification || '',
-          business_processes: this.csvFromValue(detail.data?.business_processes || detail.data?.business_process),
+          business_processes: this.csvFromValue(
+            detail.data?.business_processes || detail.data?.business_process
+          ),
           use_cases: this.csvFromValue(detail.data?.use_cases),
-          documentation_links: this.csvFromValue(detail.data?.documentation_links || detail.data?.links),
-          related_dashboards: this.csvFromValue(detail.data?.related_dashboards || detail.data?.dashboards),
+          documentation_links: this.csvFromValue(
+            detail.data?.documentation_links || detail.data?.links
+          ),
+          related_dashboards: this.csvFromValue(
+            detail.data?.related_dashboards || detail.data?.dashboards
+          ),
         };
         this.lineageRaw = {
           upstream,
@@ -4002,9 +4222,9 @@ const appConfig = {
       };
 
       return this.api(`/api/v1/objects/${encodeURIComponent(this.selectedObjectId)}`, {
-          method: 'PUT',
-          body: JSON.stringify(bodyPayload),
-        })
+        method: 'PUT',
+        body: JSON.stringify(bodyPayload),
+      })
         .then(async () => {
           this.showToast('Metadata updated successfully');
           await this.loadObjectContext();
@@ -4041,7 +4261,9 @@ const appConfig = {
           const selectedStillVisible = this.glossary.terms.some(
             (term) => term.slug === this.glossary.selected?.slug
           );
-          await this.openGlossaryTerm(selectedStillVisible ? this.glossary.selected.slug : firstTerm.slug);
+          await this.openGlossaryTerm(
+            selectedStillVisible ? this.glossary.selected.slug : firstTerm.slug
+          );
         } else {
           this.glossary.selected = null;
         }
@@ -4089,7 +4311,7 @@ const appConfig = {
         return;
       }
 
-      const selected = this.glossary.selected;
+      const { selected } = this.glossary;
       this.glossary.editMode = 'edit';
       this.glossary.editing = true;
       this.glossary.editor = {
@@ -4110,7 +4332,7 @@ const appConfig = {
       this.glossary.editing = false;
     },
     async saveGlossaryTerm() {
-      const editor = this.glossary.editor;
+      const { editor } = this.glossary;
       if (!editor.term.trim()) {
         this.showToast('Term name is required.');
         return;
@@ -4287,15 +4509,21 @@ const appConfig = {
           this.api('/api/v1/governance-ops/usage/analytics'),
           this.api('/api/v1/governance-ops/publication/status'),
           this.api('/api/v1/governance-ops/store/status').catch(() => ({ data: null })),
-          this.api('/api/v1/governance-ops/events/deliveries').catch(() => ({ data: { deliveries: [] } })),
+          this.api('/api/v1/governance-ops/events/deliveries').catch(() => ({
+            data: { deliveries: [] },
+          })),
           this.api('/api/v1/governance-ops/ownership/model').catch(() => ({ data: { roles: [] } })),
           this.api('/api/v1/governance-ops/ownership/summary').catch(() => ({ data: null })),
-          this.api(`/api/v1/governance-ops/ownership/portfolio?subject=${encodeURIComponent(this.governanceOps.portfolioSubject || 'all')}`).catch(() => ({ data: null })),
+          this.api(
+            `/api/v1/governance-ops/ownership/portfolio?subject=${encodeURIComponent(this.governanceOps.portfolioSubject || 'all')}`
+          ).catch(() => ({ data: null })),
         ]);
         this.governanceOps.overview = overview.data || null;
         this.governanceOps.ownershipModel = ownershipModel.data?.roles || [];
-        this.governanceOps.ownershipSummary = ownershipSummary.data || overview.data?.ownership || null;
-        this.governanceOps.stewardPortfolio = stewardPortfolio.data || overview.data?.stewardPortfolio || null;
+        this.governanceOps.ownershipSummary =
+          ownershipSummary.data || overview.data?.ownership || null;
+        this.governanceOps.stewardPortfolio =
+          stewardPortfolio.data || overview.data?.stewardPortfolio || null;
         this.governanceOps.tasks = tasks.data?.tasks || [];
         this.governanceOps.incidents = incidents.data?.incidents || [];
         this.governanceOps.usage = usage.data || null;
@@ -4326,7 +4554,9 @@ const appConfig = {
     async loadStewardPortfolio() {
       try {
         this.governanceOps.loading = true;
-        const payload = await this.api(`/api/v1/governance-ops/ownership/portfolio?subject=${encodeURIComponent(this.governanceOps.portfolioSubject || 'all')}`);
+        const payload = await this.api(
+          `/api/v1/governance-ops/ownership/portfolio?subject=${encodeURIComponent(this.governanceOps.portfolioSubject || 'all')}`
+        );
         this.governanceOps.stewardPortfolio = payload.data || null;
       } catch (err) {
         this.showToast(`Portfolio load failed: ${err.message}`);
@@ -4379,10 +4609,13 @@ const appConfig = {
     async transitionGovernanceOpsTask(task, status) {
       if (!task?.taskId) return;
       try {
-        await this.api(`/api/v1/governance-ops/tasks/${encodeURIComponent(task.taskId)}/transition`, {
-          method: 'POST',
-          body: JSON.stringify({ status }),
-        });
+        await this.api(
+          `/api/v1/governance-ops/tasks/${encodeURIComponent(task.taskId)}/transition`,
+          {
+            method: 'POST',
+            body: JSON.stringify({ status }),
+          }
+        );
         await this.loadGovernanceOps();
       } catch (err) {
         this.showToast(`Task update failed: ${err.message}`);
@@ -4468,10 +4701,7 @@ const appConfig = {
     },
     qualityTrendLabel(item) {
       const trend =
-        item?.quality_trend ??
-        item?.qualityTrend ??
-        item?.quality?.trend ??
-        item?.scorecard?.trend;
+        item?.quality_trend ?? item?.qualityTrend ?? item?.quality?.trend ?? item?.scorecard?.trend;
       if (typeof trend === 'number') {
         if (trend > 0) return `+${trend}`;
         if (trend < 0) return String(trend);
@@ -4497,17 +4727,22 @@ const appConfig = {
       return labels[type] || type.charAt(0).toUpperCase() + type.slice(1);
     },
     homeAssetDisplayLabel(item = {}) {
-      const explicitLabel = item.business_name || item.businessName || item.display_name || item.displayName || item.title || item.label;
+      const explicitLabel =
+        item.business_name ||
+        item.businessName ||
+        item.display_name ||
+        item.displayName ||
+        item.title ||
+        item.label;
       if (explicitLabel) return explicitLabel;
 
-      const rawText = [
-        item.name,
-        item.id,
-        item.description,
-        item.packagePath,
-      ].filter(Boolean).join(' ').toLowerCase();
+      const rawText = [item.name, item.id, item.description, item.packagePath]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
 
-      if (rawText.includes('column_mapping') || rawText.includes('column mapping')) return 'Column mapping evidence';
+      if (rawText.includes('column_mapping') || rawText.includes('column mapping'))
+        return 'Column mapping evidence';
       if (rawText.includes('.dtsx') || rawText.includes('ssis')) return 'SSIS package evidence';
       if (rawText.includes('report')) return 'Report metadata';
       if (rawText.includes('metric')) return 'Metric definition';
@@ -4519,12 +4754,10 @@ const appConfig = {
       return `${this.catalogAssetTypeLabel(item)} evidence`;
     },
     homeAssetContextLine(item = {}) {
-      const rawText = [
-        item.name,
-        item.id,
-        item.description,
-        item.packagePath,
-      ].filter(Boolean).join(' ').toLowerCase();
+      const rawText = [item.name, item.id, item.description, item.packagePath]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
 
       if (rawText.includes('column_mapping') || rawText.includes('column mapping')) {
         return 'Column-level mapping captured for lineage and impact analysis.';
@@ -4544,15 +4777,22 @@ const appConfig = {
       ].filter(Boolean);
       if (parts.length) return parts.join(' / ');
 
-      const idParts = String(item.id || '').split('.').filter(Boolean);
+      const idParts = String(item.id || '')
+        .split('.')
+        .filter(Boolean);
       if (idParts.length >= 3) return idParts.slice(0, -1).join(' / ');
       if (item.packagePath) return item.packagePath;
       return item.location || 'Location not captured';
     },
     catalogMatchReason(item = {}) {
       if (item.match_reason || item.matchReason) return item.match_reason || item.matchReason;
-      const query = String(this.browseQuery || '').trim().toLowerCase();
-      if (!query) return this.browseMode === 'browse' ? 'Shown from selected database' : 'Suggested catalog match';
+      const query = String(this.browseQuery || '')
+        .trim()
+        .toLowerCase();
+      if (!query)
+        return this.browseMode === 'browse'
+          ? 'Shown from selected database'
+          : 'Suggested catalog match';
 
       const fields = [
         ['name', item.name || item.id],
@@ -4563,9 +4803,14 @@ const appConfig = {
         ['classification', (item.classifications || []).join(' ')],
         ['tag', (item.tags || []).join(' ')],
       ];
-      const match = fields.find(([, value]) => String(value || '').toLowerCase().includes(query));
+      const match = fields.find(([, value]) =>
+        String(value || '')
+          .toLowerCase()
+          .includes(query)
+      );
       if (match) return `Matched ${match[0]}`;
-      if (Number(item.score) > 0 || Number(item.rankScore) > 0) return 'Matched search index relevance';
+      if (Number(item.score) > 0 || Number(item.rankScore) > 0)
+        return 'Matched search index relevance';
       return 'Matched catalog filters';
     },
     catalogConfidenceScore(item = {}) {
@@ -4595,7 +4840,8 @@ const appConfig = {
           : 'Missing business description or confidence evidence; inspect details before using.';
       }
       if (score >= 85) return 'Strong metadata/profile evidence is available for this asset.';
-      if (score >= 60) return 'Some evidence is available, but confirm caveats and ownership before relying on it.';
+      if (score >= 60)
+        return 'Some evidence is available, but confirm caveats and ownership before relying on it.';
       return 'Low confidence means metadata, profile, lineage, or parse evidence is incomplete.';
     },
     catalogBusinessSummary(item = {}) {
@@ -4607,7 +4853,8 @@ const appConfig = {
 
       const rawDescription = String(item.description || '').trim();
       const cleanDescription = this.cleanCatalogDescription(rawDescription);
-      if (cleanDescription && !/^Metadata was auto-extracted/i.test(cleanDescription)) return [cleanDescription];
+      if (cleanDescription && !/^Metadata was auto-extracted/i.test(cleanDescription))
+        return [cleanDescription];
 
       const columns = this.assetColumnRows(item);
       const name = item.name || this.objectNameFromId(item.id) || 'This asset';
@@ -4618,22 +4865,26 @@ const appConfig = {
         .filter(Boolean)
         .filter((columnName) => !/^meta/i.test(columnName))
         .slice(0, 6);
-      const lines = [
-        `${name} is a ${type} in ${location}.`,
-      ];
+      const lines = [`${name} is a ${type} in ${location}.`];
       if (cleanDescription) lines.push(cleanDescription);
       if (columns.length) {
-        lines.push(`It has ${columns.length} captured column${columns.length === 1 ? '' : 's'}${notableColumns.length ? `, including ${notableColumns.join(', ')}.` : '.'}`);
+        lines.push(
+          `It has ${columns.length} captured column${columns.length === 1 ? '' : 's'}${notableColumns.length ? `, including ${notableColumns.join(', ')}.` : '.'}`
+        );
       }
       const upstreamCount = this.assetLineageCount('upstream', item);
       const downstreamCount = this.assetLineageCount('downstream', item);
       if (upstreamCount || downstreamCount) {
-        lines.push(`Current curated lineage evidence shows ${upstreamCount} upstream and ${downstreamCount} downstream related object${downstreamCount === 1 ? '' : 's'}.`);
+        lines.push(
+          `Current curated lineage evidence shows ${upstreamCount} upstream and ${downstreamCount} downstream related object${downstreamCount === 1 ? '' : 's'}.`
+        );
       }
       return lines;
     },
     cleanCatalogDescription(description = '') {
-      const text = String(description || '').replace(/\r/g, '').trim();
+      const text = String(description || '')
+        .replace(/\r/g, '')
+        .trim();
       if (!text) return '';
       const withoutColumns = text.split(/\n\s*Columns\s*\n/i)[0] || text;
       const lines = withoutColumns
@@ -4645,10 +4896,13 @@ const appConfig = {
         .filter((line) => !/^\|/.test(line));
       const facts = {};
       lines.forEach((line) => {
-        line.replace(/\b(Type|Schema|Row Count|Size):\s*([^:]+?)(?=\s+\b(?:Type|Schema|Row Count|Size):|$)/gi, (_match, key, value) => {
-          facts[key.toLowerCase()] = String(value || '').trim();
-          return '';
-        });
+        line.replace(
+          /\b(Type|Schema|Row Count|Size):\s*([^:]+?)(?=\s+\b(?:Type|Schema|Row Count|Size):|$)/gi,
+          (_match, key, value) => {
+            facts[key.toLowerCase()] = String(value || '').trim();
+            return '';
+          }
+        );
       });
       if (Object.keys(facts).length) {
         const parts = [];
@@ -4661,11 +4915,19 @@ const appConfig = {
       return lines.join(' ').replace(/\s+/g, ' ').trim();
     },
     objectNameFromId(id = '') {
-      return String(id || '').split('.').filter(Boolean).pop() || '';
+      return (
+        String(id || '')
+          .split('.')
+          .filter(Boolean)
+          .pop() || ''
+      );
     },
     assetColumnRows(item = this.selectedObjectDetail) {
       if (Array.isArray(item?.columns) && item.columns.length) return item.columns;
-      if (item?.id === this.selectedObjectId && Array.isArray(this.selectedObjectDictionary?.columns)) {
+      if (
+        item?.id === this.selectedObjectId &&
+        Array.isArray(this.selectedObjectDictionary?.columns)
+      ) {
         return this.selectedObjectDictionary.columns;
       }
       return [];
@@ -4683,7 +4945,11 @@ const appConfig = {
         dictionaryColumns.map((column) => [this.columnDisplayName(column).toLowerCase(), column])
       );
       return detailColumns.map((column, index) =>
-        this.mergeColumnMetadata(column, dictionaryByName.get(this.columnDisplayName(column).toLowerCase()) || {}, index)
+        this.mergeColumnMetadata(
+          column,
+          dictionaryByName.get(this.columnDisplayName(column).toLowerCase()) || {},
+          index
+        )
       );
     },
     mergeColumnMetadata(source = {}, dictionary = {}, index = 0) {
@@ -4692,20 +4958,50 @@ const appConfig = {
         if (second !== undefined && second !== null && second !== '') return second;
         return fallback;
       };
-      const name = pick(source.name || source.column_name || source.columnName, dictionary.name || dictionary.column_name || dictionary.columnName, `column_${index + 1}`);
+      const name = pick(
+        source.name || source.column_name || source.columnName,
+        dictionary.name || dictionary.column_name || dictionary.columnName,
+        `column_${index + 1}`
+      );
       return {
         ...dictionary,
         ...source,
-        column_id: pick(source.column_id || source.columnId || source.id, dictionary.column_id || dictionary.columnId || dictionary.id, `${this.selectedObjectId}.${name}`),
+        column_id: pick(
+          source.column_id || source.columnId || source.id,
+          dictionary.column_id || dictionary.columnId || dictionary.id,
+          `${this.selectedObjectId}.${name}`
+        ),
         name,
         column_name: name,
-        data_type: pick(source.data_type || source.dataType || source.type || source.system_type, dictionary.data_type || dictionary.dataType || dictionary.type || dictionary.system_type, 'unknown'),
-        max_length: pick(source.max_length ?? source.maxLength ?? source.character_maximum_length ?? source.length, dictionary.max_length ?? dictionary.maxLength ?? dictionary.character_maximum_length ?? dictionary.length),
-        precision: pick(source.precision ?? source.numeric_precision, dictionary.precision ?? dictionary.numeric_precision),
-        scale: pick(source.scale ?? source.numeric_scale, dictionary.scale ?? dictionary.numeric_scale),
+        data_type: pick(
+          source.data_type || source.dataType || source.type || source.system_type,
+          dictionary.data_type || dictionary.dataType || dictionary.type || dictionary.system_type,
+          'unknown'
+        ),
+        max_length: pick(
+          source.max_length ?? source.maxLength ?? source.character_maximum_length ?? source.length,
+          dictionary.max_length ??
+            dictionary.maxLength ??
+            dictionary.character_maximum_length ??
+            dictionary.length
+        ),
+        precision: pick(
+          source.precision ?? source.numeric_precision,
+          dictionary.precision ?? dictionary.numeric_precision
+        ),
+        scale: pick(
+          source.scale ?? source.numeric_scale,
+          dictionary.scale ?? dictionary.numeric_scale
+        ),
         sensitivity: pick(dictionary.sensitivity, source.sensitivity, ''),
-        semantic_type: pick(dictionary.semantic_type || dictionary.semanticType, source.semantic_type || source.semanticType),
-        semantic_role: pick(dictionary.semantic_role || dictionary.semanticRole, source.semantic_role || source.semanticRole),
+        semantic_type: pick(
+          dictionary.semantic_type || dictionary.semanticType,
+          source.semantic_type || source.semanticType
+        ),
+        semantic_role: pick(
+          dictionary.semantic_role || dictionary.semanticRole,
+          source.semantic_role || source.semanticRole
+        ),
         description: pick(dictionary.description, source.description, ''),
       };
     },
@@ -4719,14 +5015,20 @@ const appConfig = {
       );
     },
     columnDataTypeLabel(column = {}) {
-      const rawType = String(column.data_type || column.dataType || column.type || column.system_type || 'unknown').trim();
+      const rawType = String(
+        column.data_type || column.dataType || column.type || column.system_type || 'unknown'
+      ).trim();
       const lowerType = rawType.toLowerCase();
-      const rawLength = column.max_length ?? column.maxLength ?? column.character_maximum_length ?? column.length;
+      const rawLength =
+        column.max_length ?? column.maxLength ?? column.character_maximum_length ?? column.length;
       const length = Number(rawLength);
       const precision = column.precision ?? column.numeric_precision;
       const scale = column.scale ?? column.numeric_scale;
 
-      if (['varchar', 'char', 'binary', 'varbinary'].includes(lowerType) && Number.isFinite(length)) {
+      if (
+        ['varchar', 'char', 'binary', 'varbinary'].includes(lowerType) &&
+        Number.isFinite(length)
+      ) {
         return `${rawType}(${length < 0 ? 'max' : length})`;
       }
       if (['varchar', 'char', 'binary', 'varbinary'].includes(lowerType)) {
@@ -4738,7 +5040,12 @@ const appConfig = {
       if (['nvarchar', 'nchar'].includes(lowerType)) {
         return `${rawType} (length not captured)`;
       }
-      if (['decimal', 'numeric'].includes(lowerType) && precision !== null && precision !== undefined && precision !== '') {
+      if (
+        ['decimal', 'numeric'].includes(lowerType) &&
+        precision !== null &&
+        precision !== undefined &&
+        precision !== ''
+      ) {
         const precisionText = Number(precision);
         const scaleText = scale !== null && scale !== undefined && scale !== '' ? Number(scale) : 0;
         if (Number.isFinite(precisionText) && Number.isFinite(scaleText)) {
@@ -4751,7 +5058,8 @@ const appConfig = {
       return rawType || 'unknown';
     },
     columnSemanticLabel(column = {}) {
-      if (column.semantic_type || column.semantic_role) return column.semantic_type || column.semantic_role;
+      if (column.semantic_type || column.semantic_role)
+        return column.semantic_type || column.semantic_role;
       if (column.is_key) return 'key';
       if (column.is_identifier) return 'identifier';
       if (column.is_metric) return 'metric';
@@ -4773,7 +5081,13 @@ const appConfig = {
           if (!entry) return null;
           if (typeof entry === 'string') return { id: entry };
           if (typeof entry === 'object') {
-            const id = entry.id || entry.object_id || entry.objectId || entry.source || entry.target || entry.name;
+            const id =
+              entry.id ||
+              entry.object_id ||
+              entry.objectId ||
+              entry.source ||
+              entry.target ||
+              entry.name;
             return id ? { ...entry, id } : null;
           }
           return null;
@@ -4783,9 +5097,7 @@ const appConfig = {
     curatedAssetLineageItems(direction, item = this.selectedObjectDetail) {
       if (!item) return [];
       const fields =
-        direction === 'upstream'
-          ? ['depends_on', 'created_by', 'created_via']
-          : ['used_by'];
+        direction === 'upstream' ? ['depends_on', 'created_by', 'created_via'] : ['used_by'];
       const byId = new Map();
       fields.forEach((field) => {
         this.lineageReferenceItems(item[field]).forEach((entry) => {
@@ -4799,7 +5111,8 @@ const appConfig = {
       return Array.from(byId.values());
     },
     assetLineageItems(direction) {
-      const payload = direction === 'upstream' ? this.lineageRaw?.upstream : this.lineageRaw?.downstream;
+      const payload =
+        direction === 'upstream' ? this.lineageRaw?.upstream : this.lineageRaw?.downstream;
       return this.lineagePayloadItems(payload);
     },
     assetLineageCount(direction, item = this.selectedObjectDetail) {
@@ -4832,25 +5145,55 @@ const appConfig = {
       const ownershipAlerts = this.governanceOps.stewardPortfolio?.alerts || [];
       const openTasks = tasks.filter((task) => !['done', 'canceled'].includes(task.status));
       const itemFromTask = (task, defaults = {}) => ({
-        id: task.taskId || task.id || `${defaults.key || 'task'}-${task.assetId || task.asset_id || task.title}`,
+        id:
+          task.taskId ||
+          task.id ||
+          `${defaults.key || 'task'}-${task.assetId || task.asset_id || task.title}`,
         title: task.title || defaults.title || 'Review governance task',
         assetId: task.assetId || task.asset_id || defaults.assetId || '',
         status: task.status || defaults.status || 'open',
         severity: task.severity || defaults.severity || 'warning',
-        owner: task.owner || task.steward || task.assignee || task.assignedTo || defaults.owner || 'Unassigned',
-        due: task.dueDate || task.due_at || task.due || task.targetDate || defaults.due || 'No due date',
+        owner:
+          task.owner ||
+          task.steward ||
+          task.assignee ||
+          task.assignedTo ||
+          defaults.owner ||
+          'Unassigned',
+        due:
+          task.dueDate ||
+          task.due_at ||
+          task.due ||
+          task.targetDate ||
+          defaults.due ||
+          'No due date',
         nextAction: defaults.nextAction || 'Open owning workflow',
         primaryView: defaults.primaryView || 'governanceOps',
         secondaryView: defaults.secondaryView || '',
       });
       const itemFromIncident = (incident, defaults = {}) => ({
-        id: incident.incidentId || incident.id || `${defaults.key || 'incident'}-${incident.assetId || incident.title}`,
+        id:
+          incident.incidentId ||
+          incident.id ||
+          `${defaults.key || 'incident'}-${incident.assetId || incident.title}`,
         title: incident.title || defaults.title || 'Review governance incident',
         assetId: incident.assetId || incident.asset_id || defaults.assetId || '',
         status: incident.status || defaults.status || 'open',
         severity: incident.severity || defaults.severity || 'warning',
-        owner: incident.owner || incident.steward || incident.assignee || incident.assignedTo || defaults.owner || 'Unassigned',
-        due: incident.dueDate || incident.due_at || incident.due || incident.targetDate || defaults.due || 'No due date',
+        owner:
+          incident.owner ||
+          incident.steward ||
+          incident.assignee ||
+          incident.assignedTo ||
+          defaults.owner ||
+          'Unassigned',
+        due:
+          incident.dueDate ||
+          incident.due_at ||
+          incident.due ||
+          incident.targetDate ||
+          defaults.due ||
+          'No due date',
         nextAction: defaults.nextAction || 'Open owning workflow',
         primaryView: defaults.primaryView || 'governanceOps',
         secondaryView: defaults.secondaryView || '',
@@ -4867,7 +5210,9 @@ const appConfig = {
             })
           ),
         ...incidents
-          .filter((incident) => /profile|quality/i.test(`${incident.title || ''} ${incident.type || ''}`))
+          .filter((incident) =>
+            /profile|quality/i.test(`${incident.title || ''} ${incident.type || ''}`)
+          )
           .map((incident) =>
             itemFromIncident(incident, {
               key: 'failed-profile-incident',
@@ -4879,7 +5224,9 @@ const appConfig = {
 
       const failedLineageItems = [
         ...openTasks
-          .filter((task) => /lineage|dependency|graph/i.test(`${task.title || ''} ${task.type || ''}`))
+          .filter((task) =>
+            /lineage|dependency|graph/i.test(`${task.title || ''} ${task.type || ''}`)
+          )
           .map((task) =>
             itemFromTask(task, {
               key: 'failed-lineage',
@@ -4889,7 +5236,9 @@ const appConfig = {
             })
           ),
         ...incidents
-          .filter((incident) => /lineage|dependency|graph/i.test(`${incident.title || ''} ${incident.type || ''}`))
+          .filter((incident) =>
+            /lineage|dependency|graph/i.test(`${incident.title || ''} ${incident.type || ''}`)
+          )
           .map((incident) =>
             itemFromIncident(incident, {
               key: 'failed-lineage-incident',
@@ -4899,7 +5248,9 @@ const appConfig = {
             })
           ),
         ...publicationChecks
-          .filter((check) => check.status === 'fail' && /lineage|dependency|graph/i.test(check.name || ''))
+          .filter(
+            (check) => check.status === 'fail' && /lineage|dependency|graph/i.test(check.name || '')
+          )
           .map((check) => ({
             id: `pub-${check.name}`,
             title: check.name,
@@ -4926,7 +5277,11 @@ const appConfig = {
           secondaryView: 'discovery',
         })),
         ...incidents
-          .filter((incident) => /trust|confidence|suspicious/i.test(`${incident.title || ''} ${incident.severity || ''}`))
+          .filter((incident) =>
+            /trust|confidence|suspicious/i.test(
+              `${incident.title || ''} ${incident.severity || ''}`
+            )
+          )
           .map((incident) =>
             itemFromIncident(incident, {
               key: 'suspicious-lineage',
@@ -4957,7 +5312,8 @@ const appConfig = {
         {
           key: 'failed-lineage',
           label: 'Failed Lineage',
-          description: 'Lineage failures link to Search first, with Lineage Acquisition for stale evidence.',
+          description:
+            'Lineage failures link to Search first, with Lineage Acquisition for stale evidence.',
           primaryView: 'browse',
           emptyText: 'No failed lineage work items are currently queued.',
           items: failedLineageItems,
@@ -4965,7 +5321,8 @@ const appConfig = {
         {
           key: 'suspicious-lineage',
           label: 'Suspicious Lineage',
-          description: 'Suspicious or low-confidence lineage is reviewed as evidence, not operated from this page.',
+          description:
+            'Suspicious or low-confidence lineage is reviewed as evidence, not operated from this page.',
           primaryView: 'import',
           emptyText: 'No suspicious lineage work items are currently queued.',
           items: suspiciousLineageItems,
@@ -4979,7 +5336,7 @@ const appConfig = {
       this.onViewChange(item.primaryView || 'governanceOps');
     },
     thresholdFromQualityEditor() {
-      const editor = this.governance.qualityRules.editor;
+      const { editor } = this.governance.qualityRules;
       const threshold = {};
       if (editor.threshold_min !== '') threshold.min = Number(editor.threshold_min);
       if (editor.threshold_max !== '') threshold.max = Number(editor.threshold_max);
@@ -5050,7 +5407,7 @@ const appConfig = {
       }
     },
     async saveQualityRule() {
-      const editor = this.governance.qualityRules.editor;
+      const { editor } = this.governance.qualityRules;
       if (!editor.name.trim()) {
         this.showToast('Quality rule name is required.');
         return;
@@ -5081,9 +5438,11 @@ const appConfig = {
       }
     },
     async deleteQualityRule(rule = null) {
-      const target = rule || this.governance.qualityRules.rules.find(
-        (item) => item.id === this.governance.qualityRules.selectedRuleId
-      );
+      const target =
+        rule ||
+        this.governance.qualityRules.rules.find(
+          (item) => item.id === this.governance.qualityRules.selectedRuleId
+        );
       if (!target?.id) {
         this.showToast('Select a quality rule to delete.');
         return;
@@ -5159,7 +5518,7 @@ const appConfig = {
       }
     },
     async exportQualityScorecard(format = 'json') {
-      let scorecard = this.governance.qualityRules.scorecard;
+      let { scorecard } = this.governance.qualityRules;
       if (!scorecard) {
         scorecard = await this.buildQualityScorecard();
       }
@@ -5170,7 +5529,9 @@ const appConfig = {
           body: JSON.stringify({ scorecard, format }),
         });
         this.governance.qualityRules.scorecardExport = payload.export || null;
-        this.showToast(`Quality scorecard export ready (${payload.export?.content_type || format}).`);
+        this.showToast(
+          `Quality scorecard export ready (${payload.export?.content_type || format}).`
+        );
       } catch (err) {
         this.showToast(`Scorecard export failed: ${err.message}`);
       }
@@ -5182,7 +5543,9 @@ const appConfig = {
         return;
       }
       try {
-        const payload = await this.api(`/api/v1/quality/profiles/${encodeURIComponent(target)}/trend`);
+        const payload = await this.api(
+          `/api/v1/quality/profiles/${encodeURIComponent(target)}/trend`
+        );
         this.governance.qualityRules.trend = payload.trend || null;
       } catch (err) {
         this.showToast(`Quality trend load failed: ${err.message}`);
@@ -5197,11 +5560,15 @@ const appConfig = {
         });
         this.governance.qualityRules.executions = [
           payload.execution,
-          ...this.governance.qualityRules.executions.filter((item) => item.id !== payload.execution.id),
+          ...this.governance.qualityRules.executions.filter(
+            (item) => item.id !== payload.execution.id
+          ),
         ];
         await this.buildQualityScorecard();
         await this.loadQualityRulesPanel();
-        this.showToast(`Quality validation ${payload.execution.status}: ${payload.execution.failed} issue(s).`);
+        this.showToast(
+          `Quality validation ${payload.execution.status}: ${payload.execution.failed} issue(s).`
+        );
       } catch (err) {
         this.showToast(`Quality validation failed: ${err.message}`);
       } finally {
@@ -5359,9 +5726,12 @@ const appConfig = {
       }
 
       try {
-        const response = await this.api(`/api/v1/classification/rules/${encodeURIComponent(rule.id)}`, {
-          method: 'DELETE',
-        });
+        const response = await this.api(
+          `/api/v1/classification/rules/${encodeURIComponent(rule.id)}`,
+          {
+            method: 'DELETE',
+          }
+        );
         this.governance.classification.taxonomy = response.taxonomy || null;
         this.startClassificationRuleCreate();
         this.showToast('Classification rule deleted.');
@@ -5445,7 +5815,9 @@ const appConfig = {
       }
     },
     async chooseExactLineageObjectMatch() {
-      const query = String(this.lineageObjectSearch.query || '').trim().toLowerCase();
+      const query = String(this.lineageObjectSearch.query || '')
+        .trim()
+        .toLowerCase();
       if (!query) return false;
       const exact = this.lineageObjectSearch.results.find(
         (item) => String(item.id || '').toLowerCase() === query
@@ -5660,7 +6032,10 @@ const appConfig = {
           id: `lineage-assistant-${Date.now()}`,
           role: 'assistant',
           title: this.lineageQuestionAnswer?.assistant?.title || 'Lineage Answer',
-          text: this.lineageQuestionAnswer?.assistant?.message || this.lineageQuestionAnswer?.plain_english || '',
+          text:
+            this.lineageQuestionAnswer?.assistant?.message ||
+            this.lineageQuestionAnswer?.plain_english ||
+            '',
           answer: this.lineageQuestionAnswer,
         });
         this.lineageQuestionHistory = [
@@ -5710,7 +6085,10 @@ const appConfig = {
       return [];
     },
     lineageQuestionCell(row = {}, column = '') {
-      const key = String(column || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+      const key = String(column || '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '_')
+        .replace(/^_|_$/g, '');
       const aliases = {
         objects: 'object_count',
         tables: 'table_count',
@@ -5731,11 +6109,17 @@ const appConfig = {
       const groups = [
         {
           title: 'Business Uses',
-          match: (row) => String(row.role || '').toLowerCase().includes('business consumer'),
+          match: (row) =>
+            String(row.role || '')
+              .toLowerCase()
+              .includes('business consumer'),
         },
         {
           title: 'Maintenance Reads',
-          match: (row) => String(row.role || '').toLowerCase().includes('maintenance'),
+          match: (row) =>
+            String(row.role || '')
+              .toLowerCase()
+              .includes('maintenance'),
         },
         {
           title: 'Load Jobs',
@@ -5791,7 +6175,10 @@ const appConfig = {
     lineageExplorerGroupPreview(group = {}) {
       const rows = group.rows || [];
       if (!rows.length) return 'No objects in this group.';
-      const preview = rows.slice(0, 3).map((row) => row.label || row.id).join(', ');
+      const preview = rows
+        .slice(0, 3)
+        .map((row) => row.label || row.id)
+        .join(', ');
       const remaining = rows.length - 3;
       return remaining > 0 ? `${preview}, and ${remaining} more` : preview;
     },
@@ -6490,14 +6877,24 @@ const appConfig = {
           this.integrations.selectedConnectorId = this.integrations.managedConnectors[0].id;
           this.persistProfileOpsFocus();
         }
-        if (!this.integrations.profileRunEditor.connectorId && this.integrations.managedConnectors.length) {
+        if (
+          !this.integrations.profileRunEditor.connectorId &&
+          this.integrations.managedConnectors.length
+        ) {
           this.integrations.profileRunEditor.connectorId = this.integrations.selectedConnectorId;
         }
-        if (!this.integrations.connectorGrant.connectorId && this.integrations.managedConnectors.length) {
+        if (
+          !this.integrations.connectorGrant.connectorId &&
+          this.integrations.managedConnectors.length
+        ) {
           this.integrations.connectorGrant.connectorId = this.integrations.managedConnectors[0].id;
         }
-        if (!this.integrations.profileScheduleEditor.connectorId && this.integrations.managedConnectors.length) {
-          this.integrations.profileScheduleEditor.connectorId = this.integrations.managedConnectors[0].id;
+        if (
+          !this.integrations.profileScheduleEditor.connectorId &&
+          this.integrations.managedConnectors.length
+        ) {
+          this.integrations.profileScheduleEditor.connectorId =
+            this.integrations.managedConnectors[0].id;
         }
         this.syncConnectorCredentialMode();
         this.hydrateConnectorEditorFromDefinition();
@@ -6510,8 +6907,12 @@ const appConfig = {
       }
     },
     connectorWizardFieldVisible(field = {}) {
-      const credentialMode = this.integrations.connectorEditor.credentialMode;
-      if (Array.isArray(field.show_for_modes) && field.show_for_modes.length && !field.show_for_modes.includes(credentialMode)) {
+      const { credentialMode } = this.integrations.connectorEditor;
+      if (
+        Array.isArray(field.show_for_modes) &&
+        field.show_for_modes.length &&
+        !field.show_for_modes.includes(credentialMode)
+      ) {
         return false;
       }
       if (Array.isArray(field.hide_for_modes) && field.hide_for_modes.includes(credentialMode)) {
@@ -6534,7 +6935,8 @@ const appConfig = {
     connectorEditorFieldError(key) {
       const editor = this.integrations.connectorEditor;
       if (key === 'id' && !String(editor.id || '').trim()) return 'Connection ID is required.';
-      if (key === 'label' && !String(editor.label || '').trim()) return 'Display label is required.';
+      if (key === 'label' && !String(editor.label || '').trim())
+        return 'Display label is required.';
       return '';
     },
     connectorWizardFieldError(field = {}) {
@@ -6564,7 +6966,10 @@ const appConfig = {
         const error = this.connectorCredentialFieldError(field);
         if (error) items.push(error);
       });
-      if (this.integrations.connectorEditor.showAdvancedJson && !this.connectorAdvancedConfigPreview) {
+      if (
+        this.integrations.connectorEditor.showAdvancedJson &&
+        !this.connectorAdvancedConfigPreview
+      ) {
         items.push('Advanced config JSON must be valid JSON.');
       }
       return items;
@@ -6581,71 +6986,290 @@ const appConfig = {
       const fieldSets = {
         windows_integrated: [],
         managed_identity: [
-          { key: 'managed_identity_client_id', label: 'Managed identity client ID (optional)', input: 'text', target: 'credential', credential_key: 'client_id' },
+          {
+            key: 'managed_identity_client_id',
+            label: 'Managed identity client ID (optional)',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'client_id',
+          },
         ],
         service_account: [
-          { key: 'credential_username', label: 'Username', input: 'text', target: 'credential', credential_key: 'username' },
-          { key: 'credential_password', label: 'Password', input: 'password', target: 'credential', credential_key: 'password' },
-          { key: 'credential_secret_ref', label: 'Secret reference', input: 'text', target: 'credential', credential_key: 'secret_ref', placeholder: 'kv://metadata/source-password' },
+          {
+            key: 'credential_username',
+            label: 'Username',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'username',
+          },
+          {
+            key: 'credential_password',
+            label: 'Password',
+            input: 'password',
+            target: 'credential',
+            credential_key: 'password',
+          },
+          {
+            key: 'credential_secret_ref',
+            label: 'Secret reference',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'secret_ref',
+            placeholder: 'kv://metadata/source-password',
+          },
         ],
         secret_reference: [
-          { key: 'credential_username', label: 'Username', input: 'text', target: 'credential', credential_key: 'username' },
-          { key: 'credential_secret_ref', label: 'Secret reference', input: 'text', target: 'credential', credential_key: 'secret_ref', placeholder: 'kv://metadata/source-password', required: true },
+          {
+            key: 'credential_username',
+            label: 'Username',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'username',
+          },
+          {
+            key: 'credential_secret_ref',
+            label: 'Secret reference',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'secret_ref',
+            placeholder: 'kv://metadata/source-password',
+            required: true,
+          },
         ],
         service_principal: [
-          { key: 'credential_client_id', label: 'Client ID', input: 'text', target: 'credential', credential_key: 'client_id', required: true },
-          { key: 'credential_client_secret', label: 'Client secret', input: 'password', target: 'credential', credential_key: 'client_secret' },
-          { key: 'credential_secret_ref', label: 'Secret reference', input: 'text', target: 'credential', credential_key: 'secret_ref', placeholder: 'kv://metadata/client-secret' },
+          {
+            key: 'credential_client_id',
+            label: 'Client ID',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'client_id',
+            required: true,
+          },
+          {
+            key: 'credential_client_secret',
+            label: 'Client secret',
+            input: 'password',
+            target: 'credential',
+            credential_key: 'client_secret',
+          },
+          {
+            key: 'credential_secret_ref',
+            label: 'Secret reference',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'secret_ref',
+            placeholder: 'kv://metadata/client-secret',
+          },
         ],
         delegated_oauth: [
-          { key: 'credential_client_id', label: 'Client ID', input: 'text', target: 'credential', credential_key: 'client_id' },
-          { key: 'credential_secret_ref', label: 'Token reference', input: 'text', target: 'credential', credential_key: 'secret_ref', placeholder: 'kv://metadata/oauth-token' },
+          {
+            key: 'credential_client_id',
+            label: 'Client ID',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'client_id',
+          },
+          {
+            key: 'credential_secret_ref',
+            label: 'Token reference',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'secret_ref',
+            placeholder: 'kv://metadata/oauth-token',
+          },
         ],
         oauth: [
-          { key: 'credential_client_id', label: 'Client ID', input: 'text', target: 'credential', credential_key: 'client_id' },
-          { key: 'credential_client_secret', label: 'Client secret', input: 'password', target: 'credential', credential_key: 'client_secret' },
-          { key: 'credential_secret_ref', label: 'Secret reference', input: 'text', target: 'credential', credential_key: 'secret_ref' },
+          {
+            key: 'credential_client_id',
+            label: 'Client ID',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'client_id',
+          },
+          {
+            key: 'credential_client_secret',
+            label: 'Client secret',
+            input: 'password',
+            target: 'credential',
+            credential_key: 'client_secret',
+          },
+          {
+            key: 'credential_secret_ref',
+            label: 'Secret reference',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'secret_ref',
+          },
         ],
         oauth_app: [
-          { key: 'credential_client_id', label: 'App / client ID', input: 'text', target: 'credential', credential_key: 'client_id' },
-          { key: 'credential_client_secret', label: 'App secret', input: 'password', target: 'credential', credential_key: 'client_secret' },
-          { key: 'credential_secret_ref', label: 'Secret reference', input: 'text', target: 'credential', credential_key: 'secret_ref' },
+          {
+            key: 'credential_client_id',
+            label: 'App / client ID',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'client_id',
+          },
+          {
+            key: 'credential_client_secret',
+            label: 'App secret',
+            input: 'password',
+            target: 'credential',
+            credential_key: 'client_secret',
+          },
+          {
+            key: 'credential_secret_ref',
+            label: 'Secret reference',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'secret_ref',
+          },
         ],
         api_client: [
-          { key: 'credential_client_id', label: 'Client ID', input: 'text', target: 'credential', credential_key: 'client_id' },
-          { key: 'credential_client_secret', label: 'Client secret', input: 'password', target: 'credential', credential_key: 'client_secret' },
-          { key: 'credential_secret_ref', label: 'Secret reference', input: 'text', target: 'credential', credential_key: 'secret_ref' },
+          {
+            key: 'credential_client_id',
+            label: 'Client ID',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'client_id',
+          },
+          {
+            key: 'credential_client_secret',
+            label: 'Client secret',
+            input: 'password',
+            target: 'credential',
+            credential_key: 'client_secret',
+          },
+          {
+            key: 'credential_secret_ref',
+            label: 'Secret reference',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'secret_ref',
+          },
         ],
         api_token_reference: [
-          { key: 'credential_token', label: 'API token', input: 'password', target: 'credential', credential_key: 'token' },
-          { key: 'credential_secret_ref', label: 'Token reference', input: 'text', target: 'credential', credential_key: 'secret_ref', required: false },
+          {
+            key: 'credential_token',
+            label: 'API token',
+            input: 'password',
+            target: 'credential',
+            credential_key: 'token',
+          },
+          {
+            key: 'credential_secret_ref',
+            label: 'Token reference',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'secret_ref',
+            required: false,
+          },
         ],
         api_key_reference: [
-          { key: 'credential_api_key', label: 'API key', input: 'password', target: 'credential', credential_key: 'api_key' },
-          { key: 'credential_secret_ref', label: 'API key reference', input: 'text', target: 'credential', credential_key: 'secret_ref' },
+          {
+            key: 'credential_api_key',
+            label: 'API key',
+            input: 'password',
+            target: 'credential',
+            credential_key: 'api_key',
+          },
+          {
+            key: 'credential_secret_ref',
+            label: 'API key reference',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'secret_ref',
+          },
         ],
         bearer_token_reference: [
-          { key: 'credential_token', label: 'Bearer token', input: 'password', target: 'credential', credential_key: 'token' },
-          { key: 'credential_secret_ref', label: 'Token reference', input: 'text', target: 'credential', credential_key: 'secret_ref' },
+          {
+            key: 'credential_token',
+            label: 'Bearer token',
+            input: 'password',
+            target: 'credential',
+            credential_key: 'token',
+          },
+          {
+            key: 'credential_secret_ref',
+            label: 'Token reference',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'secret_ref',
+          },
         ],
         pat: [
-          { key: 'credential_token', label: 'Personal access token', input: 'password', target: 'credential', credential_key: 'token' },
-          { key: 'credential_secret_ref', label: 'PAT reference', input: 'text', target: 'credential', credential_key: 'secret_ref' },
+          {
+            key: 'credential_token',
+            label: 'Personal access token',
+            input: 'password',
+            target: 'credential',
+            credential_key: 'token',
+          },
+          {
+            key: 'credential_secret_ref',
+            label: 'PAT reference',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'secret_ref',
+          },
         ],
         pat_reference: [
-          { key: 'credential_secret_ref', label: 'PAT reference', input: 'text', target: 'credential', credential_key: 'secret_ref', required: true },
+          {
+            key: 'credential_secret_ref',
+            label: 'PAT reference',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'secret_ref',
+            required: true,
+          },
         ],
         key_pair: [
-          { key: 'credential_username', label: 'Username', input: 'text', target: 'credential', credential_key: 'username' },
-          { key: 'credential_private_key', label: 'Private key', input: 'textarea', target: 'credential', credential_key: 'private_key' },
-          { key: 'credential_secret_ref', label: 'Private key reference', input: 'text', target: 'credential', credential_key: 'secret_ref' },
+          {
+            key: 'credential_username',
+            label: 'Username',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'username',
+          },
+          {
+            key: 'credential_private_key',
+            label: 'Private key',
+            input: 'textarea',
+            target: 'credential',
+            credential_key: 'private_key',
+          },
+          {
+            key: 'credential_secret_ref',
+            label: 'Private key reference',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'secret_ref',
+          },
         ],
         sas_reference: [
-          { key: 'credential_token', label: 'SAS token', input: 'password', target: 'credential', credential_key: 'token' },
-          { key: 'credential_secret_ref', label: 'SAS reference', input: 'text', target: 'credential', credential_key: 'secret_ref' },
+          {
+            key: 'credential_token',
+            label: 'SAS token',
+            input: 'password',
+            target: 'credential',
+            credential_key: 'token',
+          },
+          {
+            key: 'credential_secret_ref',
+            label: 'SAS reference',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'secret_ref',
+          },
         ],
         ssh_key_reference: [
-          { key: 'credential_secret_ref', label: 'SSH key reference', input: 'text', target: 'credential', credential_key: 'secret_ref', required: true },
+          {
+            key: 'credential_secret_ref',
+            label: 'SSH key reference',
+            input: 'text',
+            target: 'credential',
+            credential_key: 'secret_ref',
+            required: true,
+          },
         ],
         none: [],
       };
@@ -6671,7 +7295,9 @@ const appConfig = {
       const formValues = {};
       const populate = (field) => {
         if (field.config_group === 'sql_server_endpoint') {
-          const endpoint = this.splitSqlServerEndpoint(config.server || config.serverName || config.dataSource || '');
+          const endpoint = this.splitSqlServerEndpoint(
+            config.server || config.serverName || config.dataSource || ''
+          );
           formValues.server_host = endpoint.host;
           formValues.instance_name = endpoint.instance;
           if (!formValues.port && endpoint.port) formValues.port = endpoint.port;
@@ -6680,7 +7306,7 @@ const appConfig = {
         const sourceKey = field.config_key;
         const value = config?.[sourceKey];
         if (field.value_format === 'newline_array') {
-          formValues[field.key] = Array.isArray(value) ? value.join('\n') : (value || '');
+          formValues[field.key] = Array.isArray(value) ? value.join('\n') : value || '';
           return;
         }
         if (field.input === 'toggle') {
@@ -6691,7 +7317,8 @@ const appConfig = {
       };
       [...(wizard.basic_fields || []), ...(wizard.advanced_fields || [])].forEach(populate);
       this.connectorCredentialFieldsForMode(editor.credentialMode).forEach((field) => {
-        const value = credential?.values?.[field.credential_key] ?? credential?.[field.credential_key];
+        const value =
+          credential?.values?.[field.credential_key] ?? credential?.[field.credential_key];
         formValues[field.key] = value ?? '';
       });
       if (credential?.secret_ref) {
@@ -6708,17 +7335,21 @@ const appConfig = {
       editor.rawJsonEdited = false;
       editor.showAdvancedJson = false;
       editor.testSummary = null;
-      editor.discoverySummary = connector?.id === this.integrations.connectorSnapshot?.connector_id
-        ? this.integrations.connectorSnapshot
-        : null;
+      editor.discoverySummary =
+        connector?.id === this.integrations.connectorSnapshot?.connector_id
+          ? this.integrations.connectorSnapshot
+          : null;
       this.refreshConnectorConfigPreview();
     },
     refreshConnectorConfigPreview() {
       if (this.integrations.connectorEditor.rawJsonEdited) return;
-      this.integrations.connectorEditor.configJson = JSON.stringify(this.buildConnectorConfigFromWizard(), null, 2);
+      this.integrations.connectorEditor.configJson = JSON.stringify(
+        this.buildConnectorConfigFromWizard(),
+        null,
+        2
+      );
     },
     buildConnectorConfigFromWizard() {
-      const editor = this.integrations.connectorEditor;
       const config = {};
       const applyField = (field) => {
         if (!this.connectorWizardFieldVisible(field)) return;
@@ -6740,7 +7371,10 @@ const appConfig = {
           config[field.config_key] = field.input === 'number' ? Number(raw) : raw;
         }
       };
-      [...this.selectedConnectorWizard.basic_fields, ...this.selectedConnectorWizard.advanced_fields].forEach(applyField);
+      [
+        ...this.selectedConnectorWizard.basic_fields,
+        ...this.selectedConnectorWizard.advanced_fields,
+      ].forEach(applyField);
       const host = this.connectorFieldValue('server_host', '').trim();
       const instance = this.connectorFieldValue('instance_name', '').trim();
       const serverPort = this.connectorFieldValue('port', '').trim();
@@ -6794,15 +7428,21 @@ const appConfig = {
       const server = this.buildConnectorConfigFromWizard().server || '';
       if (!server) return false;
       if (editor.credentialMode === 'windows_integrated') return true;
-      if (editor.credentialMode === 'service_account' || editor.credentialMode === 'secret_reference') {
-        return Boolean(this.connectorFieldValue('credential_username', '').trim())
-          && Boolean((this.connectorFieldValue('credential_password', '') || editor.rawSecret).trim());
+      if (
+        editor.credentialMode === 'service_account' ||
+        editor.credentialMode === 'secret_reference'
+      ) {
+        return (
+          Boolean(this.connectorFieldValue('credential_username', '').trim()) &&
+          Boolean((this.connectorFieldValue('credential_password', '') || editor.rawSecret).trim())
+        );
       }
       return false;
     },
     async refreshWizardDatabases({ silent = false } = {}) {
       if (!this.canDiscoverWizardDatabases()) {
-        if (!silent) this.showToast('Enter server and authentication details before refreshing databases.');
+        if (!silent)
+          this.showToast('Enter server and authentication details before refreshing databases.');
         return;
       }
       try {
@@ -6819,9 +7459,11 @@ const appConfig = {
           this.setConnectorFieldValue('database', '');
         }
         if (!silent) {
-          this.showToast(databases.length
-            ? `Discovered ${databases.length} database(s).`
-            : 'No databases were found. You can still type a database name manually.');
+          this.showToast(
+            databases.length
+              ? `Discovered ${databases.length} database(s).`
+              : 'No databases were found. You can still type a database name manually.'
+          );
         }
       } catch (err) {
         this.integrations.connectorEditor.availableDatabases = [];
@@ -6871,10 +7513,17 @@ const appConfig = {
     },
     connectorDiscoveryHeadline() {
       const summary = this.integrations.connectorEditor.discoverySummary?.summary || {};
-      const count = summary.object_count ?? this.integrations.connectorEditor.testSummary?.summary?.discovered_objects ?? 0;
+      const count =
+        summary.object_count ??
+        this.integrations.connectorEditor.testSummary?.summary?.discovered_objects ??
+        0;
       if (!count) return 'Run a connection test to capture discovery details.';
-      const streams = summary.streams?.length ? `${summary.streams.length} stream${summary.streams.length === 1 ? '' : 's'}` : null;
-      return [ `${count} discovered object${count === 1 ? '' : 's'}`, streams ].filter(Boolean).join(' across ');
+      const streams = summary.streams?.length
+        ? `${summary.streams.length} stream${summary.streams.length === 1 ? '' : 's'}`
+        : null;
+      return [`${count} discovered object${count === 1 ? '' : 's'}`, streams]
+        .filter(Boolean)
+        .join(' across ');
     },
     connectorTestErrors() {
       return (this.integrations.connectorEditor.testSummary?.errors || [])
@@ -6894,9 +7543,20 @@ const appConfig = {
     connectorTestHealth() {
       const summary = this.integrations.connectorEditor.testSummary?.summary || {};
       return {
-        config: this.integrations.connectorEditor.id && this.integrations.connectorEditor.type ? 'Ready' : 'Incomplete',
-        connection: summary.live_connection_valid ? 'Passed' : (this.integrations.connectorEditor.testSummary ? 'Failed' : 'Pending'),
-        discovery: summary.metadata_discovery_valid ? 'Passed' : (this.integrations.connectorEditor.testSummary ? 'Blocked' : 'Pending'),
+        config:
+          this.integrations.connectorEditor.id && this.integrations.connectorEditor.type
+            ? 'Ready'
+            : 'Incomplete',
+        connection: summary.live_connection_valid
+          ? 'Passed'
+          : this.integrations.connectorEditor.testSummary
+            ? 'Failed'
+            : 'Pending',
+        discovery: summary.metadata_discovery_valid
+          ? 'Passed'
+          : this.integrations.connectorEditor.testSummary
+            ? 'Blocked'
+            : 'Pending',
       };
     },
     formatDiagnosticValue(value) {
@@ -6929,15 +7589,47 @@ const appConfig = {
       const summary = test.summary || {};
       const diagnostics = test.diagnostics || {};
       const details = summary.connection_details || diagnostics.details || {};
-      const saved = (this.integrations.managedConnectors || []).find((connector) => connector.id === connectorId) || {};
+      const saved =
+        (this.integrations.managedConnectors || []).find(
+          (connector) => connector.id === connectorId
+        ) || {};
       const config = saved.config || {};
       const firstError = this.connectorTestActionableError(connectorId);
       return [
-        ['Result', state.loading ? 'Testing' : (test.status || state.status)],
-        ['Elapsed', summary.elapsed_ms !== undefined ? `${summary.elapsed_ms} ms` : diagnostics.elapsed_ms !== undefined ? `${diagnostics.elapsed_ms} ms` : null],
-        ['Server', summary.server || diagnostics.server || details.server_name || config.server || config.host],
-        ['Database / catalog', summary.database || diagnostics.database || details.database_name || config.database || config.catalog || config.catalogDatabase],
-        ['Login / user', summary.login || diagnostics.login || details.login_name || details.runtime_process_identity || diagnostics.user],
+        ['Result', state.loading ? 'Testing' : test.status || state.status],
+        [
+          'Elapsed',
+          summary.elapsed_ms !== undefined
+            ? `${summary.elapsed_ms} ms`
+            : diagnostics.elapsed_ms !== undefined
+              ? `${diagnostics.elapsed_ms} ms`
+              : null,
+        ],
+        [
+          'Server',
+          summary.server ||
+            diagnostics.server ||
+            details.server_name ||
+            config.server ||
+            config.host,
+        ],
+        [
+          'Database / catalog',
+          summary.database ||
+            diagnostics.database ||
+            details.database_name ||
+            config.database ||
+            config.catalog ||
+            config.catalogDatabase,
+        ],
+        [
+          'Login / user',
+          summary.login ||
+            diagnostics.login ||
+            details.login_name ||
+            details.runtime_process_identity ||
+            diagnostics.user,
+        ],
         ['Connector', summary.connector_id || test.connector_id || connectorId],
         ['Type', summary.connector_type || test.connector_type || saved.type],
         ['Phase', summary.phase || diagnostics.phase || firstError?.phase],
@@ -6951,17 +7643,24 @@ const appConfig = {
         ['Message', error.message],
         ['Remediation', error.remediation],
         ['Details', this.formatDiagnosticValue(error.details)],
-      ].filter(([, value]) => value !== undefined && value !== null && value !== '' && value !== '-');
+      ].filter(
+        ([, value]) => value !== undefined && value !== null && value !== '' && value !== '-'
+      );
     },
     connectorIntelligentName(connector = {}) {
       if (connector.label) return connector.label;
       const config = connector.config || {};
-      const typeLabel = this.connectorDefinitionLabel(connector.type || '').replace(/\s*\([^)]*\)\s*$/, '');
+      const typeLabel = this.connectorDefinitionLabel(connector.type || '').replace(
+        /\s*\([^)]*\)\s*$/,
+        ''
+      );
       if (connector.type === 'ssis' && config.server) return `${config.server} - SSIS`;
       if (config.server && config.database) return `${config.server} - ${config.database}`;
       if (config.workspace) return `${config.workspace} - Reports`;
       if (config.account || config.bucket || config.container) {
-        return [typeLabel, config.account || config.bucket || config.container].filter(Boolean).join(' - ');
+        return [typeLabel, config.account || config.bucket || config.container]
+          .filter(Boolean)
+          .join(' - ');
       }
       return connector.id || 'Unnamed connection';
     },
@@ -6987,22 +7686,27 @@ const appConfig = {
       const summary = rowState.test?.summary || {};
       if (rowState.loading || rowState.status === 'testing') return 'Testing';
       if (summary.metadata_discovery_valid === true) return 'Passed';
-      if (rowState.status === 'failed' || summary.metadata_discovery_valid === false) return 'Failed';
+      if (rowState.status === 'failed' || summary.metadata_discovery_valid === false)
+        return 'Failed';
       return 'Untested';
     },
     connectorInventoryStatusColor(status) {
       if (status === 'Passed') return 'success';
-      if (status === 'Failed' || status === 'Disabled' || status === 'Access Restricted') return 'error';
+      if (status === 'Failed' || status === 'Disabled' || status === 'Access Restricted')
+        return 'error';
       if (status === 'Testing') return 'info';
       return 'warning';
     },
     connectorEditorSavedRecord() {
-      return (this.integrations.managedConnectors || []).find(
-        (connector) => connector.id === this.integrations.connectorEditor.id
-      ) || null;
+      return (
+        (this.integrations.managedConnectors || []).find(
+          (connector) => connector.id === this.integrations.connectorEditor.id
+        ) || null
+      );
     },
     connectorTestDetailPairs() {
-      const details = this.integrations.connectorEditor.testSummary?.summary?.connection_details || {};
+      const details =
+        this.integrations.connectorEditor.testSummary?.summary?.connection_details || {};
       const saved = this.connectorEditorSavedRecord();
       const config = saved?.config || {};
       return [
@@ -7014,7 +7718,12 @@ const appConfig = {
         ['Runtime Identity', details.runtime_process_identity],
         ['Runtime Host', details.runtime_process_host],
         ['Connection Variant', details.connection_variant],
-        ['Credential Mode', details.credential_mode || saved?.credential?.mode || this.integrations.connectorEditor.credentialMode],
+        [
+          'Credential Mode',
+          details.credential_mode ||
+            saved?.credential?.mode ||
+            this.integrations.connectorEditor.credentialMode,
+        ],
       ].filter(([, value]) => value);
     },
     connectorRowTestState(connectorId) {
@@ -7048,9 +7757,10 @@ const appConfig = {
         type: editor.type,
         label: editor.label,
         description: editor.description,
-        metadata_targets: Array.isArray(editor.metadataTargets) && editor.metadataTargets.length
-          ? editor.metadataTargets
-          : (this.selectedConnectorDefinition?.metadata || []),
+        metadata_targets:
+          Array.isArray(editor.metadataTargets) && editor.metadataTargets.length
+            ? editor.metadataTargets
+            : this.selectedConnectorDefinition?.metadata || [],
         config: {
           ...advancedConfig,
           ...generatedConfig,
@@ -7075,10 +7785,14 @@ const appConfig = {
       const step = this.currentConnectorWizardStep?.key;
       if (step === 'type') return Boolean(editor.type);
       if (step === 'connection') {
-        return this.visibleConnectorBasicFields.every((field) => !this.connectorWizardFieldError(field));
+        return this.visibleConnectorBasicFields.every(
+          (field) => !this.connectorWizardFieldError(field)
+        );
       }
       if (step === 'auth') {
-        return this.connectorCredentialFields.every((field) => !this.connectorCredentialFieldError(field));
+        return this.connectorCredentialFields.every(
+          (field) => !this.connectorCredentialFieldError(field)
+        );
       }
       return true;
     },
@@ -7094,7 +7808,10 @@ const appConfig = {
       this.integrations.connectorEditor.wizardStep = nextStepIndex;
     },
     goToConnectorWizardStep(index) {
-      const targetIndex = Math.max(0, Math.min(index, this.connectorWizardStepDefinitions.length - 1));
+      const targetIndex = Math.max(
+        0,
+        Math.min(index, this.connectorWizardStepDefinitions.length - 1)
+      );
       const currentIndex = this.integrations.connectorEditor.wizardStep || 0;
       if (targetIndex <= currentIndex) {
         this.integrations.connectorEditor.wizardStep = targetIndex;
@@ -7107,7 +7824,10 @@ const appConfig = {
       this.integrations.connectorEditor.wizardStep = targetIndex;
     },
     backConnectorWizard() {
-      this.integrations.connectorEditor.wizardStep = Math.max(this.integrations.connectorEditor.wizardStep - 1, 0);
+      this.integrations.connectorEditor.wizardStep = Math.max(
+        this.integrations.connectorEditor.wizardStep - 1,
+        0
+      );
     },
     initializeProfileScheduleEditor(force = false) {
       const editor = this.integrations.profileScheduleEditor;
@@ -7168,9 +7888,12 @@ const appConfig = {
         payload.max_live_tables = Math.max(1, Number(editor.maxLiveTables || 1));
       }
       payload.auto_publish = editor.autoPublish === true;
-      payload.auto_publish_targets = editor.autoPublish === true
-        ? (Array.isArray(editor.publishTargets) && editor.publishTargets.length ? editor.publishTargets : ['devops'])
-        : [];
+      payload.auto_publish_targets =
+        editor.autoPublish === true
+          ? Array.isArray(editor.publishTargets) && editor.publishTargets.length
+            ? editor.publishTargets
+            : ['devops']
+          : [];
       return payload;
     },
     async loadProfileSchedules() {
@@ -7202,7 +7925,9 @@ const appConfig = {
     async loadProfileScheduleRuns(scheduleId) {
       if (!scheduleId) return;
       try {
-        const payload = await this.api(`/api/v1/connectors/profile-schedules/${encodeURIComponent(scheduleId)}/runs?limit=25`);
+        const payload = await this.api(
+          `/api/v1/connectors/profile-schedules/${encodeURIComponent(scheduleId)}/runs?limit=25`
+        );
         this.integrations.profileScheduleRuns = payload.runs || [];
         this.integrations.profileScheduleRunScheduleId = scheduleId;
       } catch (err) {
@@ -7213,7 +7938,9 @@ const appConfig = {
       if (!scheduleId) return;
       try {
         this.integrations.profileQueueLoading = true;
-        const payload = await this.api(`/api/v1/connectors/profile-schedules/${encodeURIComponent(scheduleId)}/queue?limit=25&history_limit=10`);
+        const payload = await this.api(
+          `/api/v1/connectors/profile-schedules/${encodeURIComponent(scheduleId)}/queue?limit=25&history_limit=10`
+        );
         this.integrations.profileQueuePreview = payload.preview || null;
         this.integrations.profileQueueScheduleId = scheduleId;
         if (payload.preview?.schedule?.connector_id) {
@@ -7237,7 +7964,8 @@ const appConfig = {
       const scheduleId = typeof schedule === 'string' ? schedule : schedule?.id;
       const scheduleConnectorId =
         typeof schedule === 'string'
-          ? (this.integrations.profileSchedules || []).find((item) => item.id === schedule)?.connector_id
+          ? (this.integrations.profileSchedules || []).find((item) => item.id === schedule)
+              ?.connector_id
           : schedule?.connector_id;
       if (!scheduleId) return;
       if (scheduleConnectorId) this.integrations.selectedConnectorId = scheduleConnectorId;
@@ -7264,7 +7992,9 @@ const appConfig = {
     async stopProfileSchedulerWorker() {
       try {
         this.integrations.profileScheduleLoading = true;
-        const payload = await this.api('/api/v1/connectors/profile-schedules/worker/stop', { method: 'POST' });
+        const payload = await this.api('/api/v1/connectors/profile-schedules/worker/stop', {
+          method: 'POST',
+        });
         this.integrations.profileSchedulerStatus = payload.scheduler || null;
         this.showToast('Profile scheduler worker stopped.');
       } catch (err) {
@@ -7280,7 +8010,9 @@ const appConfig = {
         return;
       }
       if (editor.dryRun === true) {
-        this.showToast('Recurring profile schedules cannot be saved as dry runs. Use Run Now for ad-hoc dry-run previews.');
+        this.showToast(
+          'Recurring profile schedules cannot be saved as dry runs. Use Run Now for ad-hoc dry-run previews.'
+        );
         return;
       }
       const startAt = this.profileScheduleStartIso();
@@ -7343,9 +8075,11 @@ const appConfig = {
       editor.livePriority = schedule.options?.live_priority || 'most_used_first';
       editor.maxLiveTables = Math.max(1, Number(schedule.options?.max_live_tables || 15));
       editor.autoPublish = schedule.options?.auto_publish === true;
-      editor.publishTargets = Array.isArray(schedule.options?.auto_publish_targets) && schedule.options.auto_publish_targets.length
-        ? schedule.options.auto_publish_targets
-        : ['devops'];
+      editor.publishTargets =
+        Array.isArray(schedule.options?.auto_publish_targets) &&
+        schedule.options.auto_publish_targets.length
+          ? schedule.options.auto_publish_targets
+          : ['devops'];
       await this.focusProfileSchedule(schedule);
       this.showToast(`Editing ${schedule.name || schedule.id}.`);
     },
@@ -7383,9 +8117,12 @@ const appConfig = {
     async runProfileSchedule(scheduleId) {
       try {
         this.integrations.profileScheduleLoading = true;
-        const payload = await this.api(`/api/v1/connectors/profile-schedules/${encodeURIComponent(scheduleId)}/run`, {
-          method: 'POST',
-        });
+        const payload = await this.api(
+          `/api/v1/connectors/profile-schedules/${encodeURIComponent(scheduleId)}/run`,
+          {
+            method: 'POST',
+          }
+        );
         this.integrations.profileScheduleResult = payload.result || null;
         await this.loadProfileSchedules();
         await this.loadProfileScheduleRuns(scheduleId);
@@ -7412,7 +8149,9 @@ const appConfig = {
         if (this.integrations.profileQueueScheduleId) {
           await this.loadProfileScheduleQueuePreview(this.integrations.profileQueueScheduleId);
         }
-        this.showToast(`Scheduler tick processed ${payload.result?.due_count || 0} due schedule(s).`);
+        this.showToast(
+          `Scheduler tick processed ${payload.result?.due_count || 0} due schedule(s).`
+        );
       } catch (err) {
         this.showToast(`Scheduler tick failed: ${err.message}`);
       } finally {
@@ -7440,7 +8179,8 @@ const appConfig = {
         await this.api(`/api/v1/connectors/profile-schedules/${encodeURIComponent(scheduleId)}`, {
           method: 'DELETE',
         });
-        if (this.integrations.profileScheduleEditor.id === scheduleId) this.resetProfileScheduleEditor();
+        if (this.integrations.profileScheduleEditor.id === scheduleId)
+          this.resetProfileScheduleEditor();
         if (this.integrations.profileScheduleRunScheduleId === scheduleId) {
           this.integrations.profileScheduleRuns = [];
           this.integrations.profileScheduleRunScheduleId = '';
@@ -7481,7 +8221,11 @@ const appConfig = {
       if (this.focusedProfileSchedule?.id === schedule.id && this.focusedProfileRecentRun) {
         return this.focusedProfileRecentRun;
       }
-      return (this.integrations.profileScheduleRuns || []).find((run) => run.schedule_id === schedule.id || run.scheduleId === schedule.id) || null;
+      return (
+        (this.integrations.profileScheduleRuns || []).find(
+          (run) => run.schedule_id === schedule.id || run.scheduleId === schedule.id
+        ) || null
+      );
     },
     profileQueueStatusForSchedule(schedule = {}) {
       const run = this.profileQueueRunForSchedule(schedule);
@@ -7497,16 +8241,22 @@ const appConfig = {
       if (type === 'metadata') return 'Connector metadata profile queue';
       return 'Profile queue';
     },
-    profileQueuePlainStatus(schedule = {}, state = this.profileScheduleStateMeta(schedule), queueStatus = null) {
+    profileQueuePlainStatus(
+      schedule = {},
+      state = this.profileScheduleStateMeta(schedule),
+      queueStatus = null
+    ) {
       const timeoutCount = this.profileQueueNumber(queueStatus?.timeout_penalty_assets);
       const pendingCount = this.profileQueueNumber(queueStatus?.pending_live_queue);
       const selectedCount = this.profileQueueNumber(queueStatus?.selected_for_this_run);
-      if (timeoutCount > 0 && state.section !== 'failed') return 'Will retry timed-out tables later';
+      if (timeoutCount > 0 && state.section !== 'failed')
+        return 'Will retry timed-out tables later';
       if (state.section === 'drafts') return 'Setup not ready';
       if (state.section === 'deactivated') return 'Paused';
       if (state.section === 'failed') return 'Needs attention';
       if (state.label === 'Running With Errors') return 'Running with issues';
-      if (state.section === 'running' && (selectedCount > 0 || pendingCount > 0)) return 'Running normally';
+      if (state.section === 'running' && (selectedCount > 0 || pendingCount > 0))
+        return 'Running normally';
       if (state.section === 'successful' && pendingCount === 0) return 'Finished this batch';
       if (state.section === 'successful') return 'Waiting for next scheduled run';
       if (state.section === 'running') return 'Waiting for next scheduled run';
@@ -7526,7 +8276,8 @@ const appConfig = {
       if (row.completedLiveProfiles > 0) {
         return `${row.completedLiveProfiles.toLocaleString()} live profile object${row.completedLiveProfiles === 1 ? ' has' : 's have'} completed for this queue.`;
       }
-      if (schedule.next_run_at) return `Next run is scheduled for ${this.formatTimestamp(schedule.next_run_at)}.`;
+      if (schedule.next_run_at)
+        return `Next run is scheduled for ${this.formatTimestamp(schedule.next_run_at)}.`;
       return 'The current APIs do not report detailed queue totals for this schedule yet.';
     },
     profileQueueHealthRow(schedule = {}) {
@@ -7535,16 +8286,20 @@ const appConfig = {
       const lastRun = this.profileQueueRunForSchedule(schedule);
       const blockers = this.profileScheduleBlockers(schedule);
       const completedLiveProfiles = this.profileQueueNumber(
-        queueStatus.completed_live_assets ?? lastRun?.summary?.coverage_queue_status?.completed_live_assets
+        queueStatus.completed_live_assets ??
+          lastRun?.summary?.coverage_queue_status?.completed_live_assets
       );
       const failedLiveProfiles = this.profileQueueNumber(
-        queueStatus.failed_live_assets ?? lastRun?.summary?.coverage_queue_status?.failed_live_assets
+        queueStatus.failed_live_assets ??
+          lastRun?.summary?.coverage_queue_status?.failed_live_assets
       );
       const pendingLiveQueue = this.profileQueueNumber(
-        queueStatus.pending_live_queue ?? lastRun?.summary?.coverage_queue_status?.pending_live_queue
+        queueStatus.pending_live_queue ??
+          lastRun?.summary?.coverage_queue_status?.pending_live_queue
       );
       const selectedThisRun = this.profileQueueNumber(
-        queueStatus.selected_for_this_run ?? lastRun?.summary?.coverage_queue_status?.selected_for_this_run
+        queueStatus.selected_for_this_run ??
+          lastRun?.summary?.coverage_queue_status?.selected_for_this_run
       );
       const freshSkippedCount = this.profileQueueNumber(queueStatus.fresh_skipped_assets);
       const timeoutPenaltyCount = this.profileQueueNumber(queueStatus.timeout_penalty_assets);
@@ -7562,7 +8317,13 @@ const appConfig = {
         typeLabel: this.profileQueueTypeLabel(schedule),
         statusLabel: plainStatus,
         statusColor: needsAttention ? 'error' : state.color,
-        healthKey: needsAttention ? 'attention' : state.section === 'successful' ? 'completed' : state.section === 'running' ? 'running' : 'waiting',
+        healthKey: needsAttention
+          ? 'attention'
+          : state.section === 'successful'
+            ? 'completed'
+            : state.section === 'running'
+              ? 'running'
+              : 'waiting',
         needsAttention,
         nextRunAt: schedule.next_run_at || null,
         lastRunAt: schedule.last_run_at || lastRun?.completed_at || lastRun?.started_at || null,
@@ -7588,47 +8349,60 @@ const appConfig = {
     profileScheduleStateMeta(schedule = {}) {
       const status = String(schedule.status || '').toUpperCase();
       const lastStatus = String(schedule.last_status || '').toLowerCase();
-      const queueStatus = this.focusedProfileSchedule?.id === schedule.id ? this.focusedProfileQueueStatus : null;
+      const queueStatus =
+        this.focusedProfileSchedule?.id === schedule.id ? this.focusedProfileQueueStatus : null;
       const hasRunningQueue =
         status === 'ACTIVE' &&
-        (
-          ['running', 'in_progress', 'started'].includes(lastStatus) ||
+        (['running', 'in_progress', 'started'].includes(lastStatus) ||
           Number(queueStatus?.selected_for_this_run || 0) > 0 ||
-          Number(queueStatus?.pending_live_queue || 0) > 0
-        );
+          Number(queueStatus?.pending_live_queue || 0) > 0);
       const hasFailure =
         status === 'ACTIVE' &&
-        (
-          Boolean(schedule.last_error) ||
+        (Boolean(schedule.last_error) ||
           Number(schedule.failure_count || 0) > 0 ||
-          ['failed', 'failure', 'partial_failure', 'running_with_errors', 'error'].includes(lastStatus)
-        );
+          ['failed', 'failure', 'partial_failure', 'running_with_errors', 'error'].includes(
+            lastStatus
+          ));
       const hasSuccess =
         status === 'ACTIVE' &&
-        (
-          ['success', 'succeeded', 'completed', 'published', 'partial_published'].includes(lastStatus) ||
-          Number(schedule.run_count || 0) > 0
-        );
+        (['success', 'succeeded', 'completed', 'published', 'partial_published'].includes(
+          lastStatus
+        ) ||
+          Number(schedule.run_count || 0) > 0);
 
       if (['DRAFT', 'PLANNED'].includes(status)) {
         return { section: 'drafts', label: 'Draft', color: 'secondary', rank: 50 };
       }
       if (status !== 'ACTIVE') {
-        return { section: 'deactivated', label: status === 'PAUSED' ? 'Deactivated' : (status || 'Inactive'), color: 'warning', rank: 40 };
+        return {
+          section: 'deactivated',
+          label: status === 'PAUSED' ? 'Deactivated' : status || 'Inactive',
+          color: 'warning',
+          rank: 40,
+        };
       }
-      if (hasRunningQueue) return { section: 'running', label: hasFailure ? 'Running With Errors' : 'Running', color: hasFailure ? 'warning' : 'info', rank: 10 };
-      if (hasFailure) return { section: 'failed', label: 'Active Failed', color: 'error', rank: 20 };
-      if (hasSuccess) return { section: 'successful', label: 'Active Successful', color: 'success', rank: 30 };
+      if (hasRunningQueue)
+        return {
+          section: 'running',
+          label: hasFailure ? 'Running With Errors' : 'Running',
+          color: hasFailure ? 'warning' : 'info',
+          rank: 10,
+        };
+      if (hasFailure)
+        return { section: 'failed', label: 'Active Failed', color: 'error', rank: 20 };
+      if (hasSuccess)
+        return { section: 'successful', label: 'Active Successful', color: 'success', rank: 30 };
       return { section: 'running', label: 'Active Ready', color: 'info', rank: 10 };
     },
     profileScheduleLastResult(schedule = {}) {
       if (schedule.last_error) return this.profileQueueFriendlyError(schedule.last_error);
       if (schedule.last_status) return schedule.last_status;
-      if (schedule.run_count) return `${schedule.run_count} run${schedule.run_count === 1 ? '' : 's'}`;
+      if (schedule.run_count)
+        return `${schedule.run_count} run${schedule.run_count === 1 ? '' : 's'}`;
       return 'No completed run yet';
     },
     profileQueueFriendlyError(error) {
-      const message = typeof error === 'string' ? error : (error?.message || String(error || ''));
+      const message = typeof error === 'string' ? error : error?.message || String(error || '');
       const remediation = typeof error === 'object' ? error?.remediation : '';
       const combined = `${message} ${remediation || ''}`.trim();
       if (!combined) return 'Needs attention before the next reliable run.';
@@ -7652,11 +8426,15 @@ const appConfig = {
     profileScheduleBlockers(schedule = {}) {
       const blockers = [];
       const state = this.profileScheduleStateMeta(schedule);
-      if (!schedule.connector_id) blockers.push('Choose one database connection before this schedule can run.');
-      if (state.section === 'drafts') blockers.push('Draft schedules cannot run until they are activated.');
-      if (state.section === 'deactivated') blockers.push('This schedule is deactivated and will not run until activated.');
+      if (!schedule.connector_id)
+        blockers.push('Choose one database connection before this schedule can run.');
+      if (state.section === 'drafts')
+        blockers.push('Draft schedules cannot run until they are activated.');
+      if (state.section === 'deactivated')
+        blockers.push('This schedule is deactivated and will not run until activated.');
       if (schedule.last_error) blockers.push(this.profileQueueFriendlyError(schedule.last_error));
-      if (schedule.last_error?.remediation) blockers.push(this.profileQueueFriendlyError(schedule.last_error.remediation));
+      if (schedule.last_error?.remediation)
+        blockers.push(this.profileQueueFriendlyError(schedule.last_error.remediation));
       if (!this.integrations.profileSchedulerStatus?.running && schedule.status === 'ACTIVE') {
         blockers.push('The scheduler worker is stopped, so active queues are not advancing.');
       }
@@ -7667,22 +8445,42 @@ const appConfig = {
       const connector = this.selectedProfileScheduleEditorConnector;
       const blockers = [];
       if (!editor.connectorId) blockers.push('Choose one saved connection.');
-      if (!connector) blockers.push('The selected connection must exist before this schedule can run.');
-      if (connector && !connector.config?.database && ['sql_server', 'postgresql', 'snowflake', 'bigquery', 'databricks', 'aws_redshift'].includes(connector.type)) {
+      if (!connector)
+        blockers.push('The selected connection must exist before this schedule can run.');
+      if (
+        connector &&
+        !connector.config?.database &&
+        [
+          'sql_server',
+          'postgresql',
+          'snowflake',
+          'bigquery',
+          'databricks',
+          'aws_redshift',
+        ].includes(connector.type)
+      ) {
         blockers.push('Database schedules must point at exactly one database connection.');
       }
-      if (connector && this.connectorLoginCheck(connector) === 'Failed') blockers.push('Resolve the connection login check before activating this schedule.');
-      if (connector && this.connectorDiscoveryCheck(connector) === 'Failed') blockers.push('Resolve discovery/read access before activating this schedule.');
-      if (!editor.name && editor.status === 'ACTIVE') blockers.push('Name the schedule so operators can recognize it in the queue.');
-      if (editor.dryRun === true) blockers.push('Recurring profile schedules cannot be saved as dry runs. Use Run Now for ad-hoc dry-run previews.');
+      if (connector && this.connectorLoginCheck(connector) === 'Failed')
+        blockers.push('Resolve the connection login check before activating this schedule.');
+      if (connector && this.connectorDiscoveryCheck(connector) === 'Failed')
+        blockers.push('Resolve discovery/read access before activating this schedule.');
+      if (!editor.name && editor.status === 'ACTIVE')
+        blockers.push('Name the schedule so operators can recognize it in the queue.');
+      if (editor.dryRun === true)
+        blockers.push(
+          'Recurring profile schedules cannot be saved as dry runs. Use Run Now for ad-hoc dry-run previews.'
+        );
       return blockers;
     },
     profileScheduleNextAction(schedule = {}) {
       const state = this.profileScheduleStateMeta(schedule);
       if (state.section === 'drafts') return 'Resolve blockers, then activate or save draft.';
       if (state.section === 'deactivated') return 'Activate when this source should profile again.';
-      if (state.section === 'failed') return 'Open the queue, review the failure, then run or retry.';
-      if (state.section === 'running') return 'Open queue detail to monitor current table progress.';
+      if (state.section === 'failed')
+        return 'Open the queue, review the failure, then run or retry.';
+      if (state.section === 'running')
+        return 'Open queue detail to monitor current table progress.';
       return 'Monitor next run or run now for an investigation.';
     },
     profileCoverageModeOptions() {
@@ -7737,7 +8535,11 @@ const appConfig = {
       };
     },
     connectorRunMetadataEnrichment(run) {
-      return run?.summary?.metadata_enrichment || run?.summary?.coverage_queue_status?.metadata_enrichment || null;
+      return (
+        run?.summary?.metadata_enrichment ||
+        run?.summary?.coverage_queue_status?.metadata_enrichment ||
+        null
+      );
     },
     connectorRunMetadataEnrichmentStatus(run) {
       const enrichment = this.connectorRunMetadataEnrichment(run);
@@ -7755,7 +8557,11 @@ const appConfig = {
       return (
         summary.live_profile_blocked === true ||
         /missing column metadata/i.test(summary.blocked_reason || '') ||
-        errors.some((error) => error?.code === 'PROFILE_MISSING_COLUMN_METADATA' || /missing column metadata/i.test(error?.message || ''))
+        errors.some(
+          (error) =>
+            error?.code === 'PROFILE_MISSING_COLUMN_METADATA' ||
+            /missing column metadata/i.test(error?.message || '')
+        )
       );
     },
     connectorRunAffectedObjects(run) {
@@ -7804,7 +8610,10 @@ const appConfig = {
       const definition = this.integrations.connectorDefinitions.find((item) => item.type === type);
       return definition ? `${definition.label} (${definition.cloud})` : type;
     },
-    applyManagedConnectorSelection(connector, { focusWorkflow = false, includeProfileContext = true } = {}) {
+    applyManagedConnectorSelection(
+      connector,
+      { focusWorkflow = false, includeProfileContext = true } = {}
+    ) {
       if (!connector) return;
       this.integrations.selectedConnectorId = connector.id;
       if (includeProfileContext) {
@@ -7819,9 +8628,12 @@ const appConfig = {
       this.integrations.connectorEditor.type = connector.type;
       this.integrations.connectorEditor.label = connector.label || connector.id;
       this.integrations.connectorEditor.description = connector.description || '';
-      this.integrations.connectorEditor.credentialMode = connector.credential?.mode || 'secret_reference';
+      this.integrations.connectorEditor.credentialMode =
+        connector.credential?.mode || 'secret_reference';
       this.integrations.connectorEditor.secretRef =
-        connector.credential?.secret_ref === 'stored_reference' ? '' : connector.credential?.secret_ref || '';
+        connector.credential?.secret_ref === 'stored_reference'
+          ? ''
+          : connector.credential?.secret_ref || '';
       this.integrations.connectorEditor.rawSecret = '';
       this.integrations.connectorEditor.draftMode = false;
       this.integrations.connectorEditor.lastResetAt = null;
@@ -7842,13 +8654,18 @@ const appConfig = {
     },
     openManagedConnection(connector) {
       if (!connector) return;
-      this.applyManagedConnectorSelection(connector, { focusWorkflow: true, includeProfileContext: false });
+      this.applyManagedConnectorSelection(connector, {
+        focusWorkflow: true,
+        includeProfileContext: false,
+      });
       this.loadManagedConnectorSnapshot(connector.id);
       this.showToast(`Opened ${connector.label || connector.id}.`);
     },
     disableManagedConnection(connector) {
       const name = connector?.label || connector?.id || 'this connection';
-      this.showToast(`Disable is not wired yet for ${name}; backend disable semantics are tracked outside UIWF-012.`);
+      this.showToast(
+        `Disable is not wired yet for ${name}; backend disable semantics are tracked outside UIWF-012.`
+      );
     },
     useManagedConnector(connector) {
       this.applyManagedConnectorSelection(connector);
@@ -7879,13 +8696,21 @@ const appConfig = {
       } else {
         this.showToast(`Testing ${connector.label || connector.id}...`);
       }
-      this.setConnectorRowTestState(connector.id, { loading: true, status: 'testing', error: null, test: null });
+      this.setConnectorRowTestState(connector.id, {
+        loading: true,
+        status: 'testing',
+        error: null,
+        test: null,
+      });
       try {
         const testTimeoutMs = connector.type === 'ssis' ? 45000 : 15000;
-        const payload = await this.api(`/api/v1/connectors/${encodeURIComponent(connector.id)}/test`, {
-          method: 'POST',
-          body: JSON.stringify({ timeout_ms: testTimeoutMs }),
-        });
+        const payload = await this.api(
+          `/api/v1/connectors/${encodeURIComponent(connector.id)}/test`,
+          {
+            method: 'POST',
+            body: JSON.stringify({ timeout_ms: testTimeoutMs }),
+          }
+        );
         const test = payload.test || null;
         if (syncEditor) {
           this.integrations.connectorEditor.testSummary = test;
@@ -7897,7 +8722,9 @@ const appConfig = {
           error: test?.errors?.[0]?.message || null,
           test,
         });
-        this.showToast(`Connector test ${test?.status || 'completed'} in ${test?.summary?.elapsed_ms ?? '-'} ms.`);
+        this.showToast(
+          `Connector test ${test?.status || 'completed'} in ${test?.summary?.elapsed_ms ?? '-'} ms.`
+        );
       } catch (err) {
         const failure = this.buildConnectorRunFailureSummary(connector, err);
         if (syncEditor) {
@@ -7920,7 +8747,8 @@ const appConfig = {
     buildConnectorRunFailureSummary(connector, err) {
       const saved = connector || this.connectorEditorSavedRecord() || {};
       const config = saved.config || {};
-      const credentialMode = saved.credential?.mode || this.integrations.connectorEditor.credentialMode || 'unknown';
+      const credentialMode =
+        saved.credential?.mode || this.integrations.connectorEditor.credentialMode || 'unknown';
       return {
         id: `failed-${Date.now()}`,
         connector_id: saved.id || this.integrations.connectorEditor.id || '',
@@ -8005,8 +8833,10 @@ const appConfig = {
     },
     profileRunEndpoint(connectorId) {
       const type = this.integrations.profileRunEditor.profileType;
-      if (type === 'bi') return `/api/v1/connectors/${encodeURIComponent(connectorId)}/bi-profile/run`;
-      if (type === 'metadata') return `/api/v1/connectors/${encodeURIComponent(connectorId)}/metadata-profile/run`;
+      if (type === 'bi')
+        return `/api/v1/connectors/${encodeURIComponent(connectorId)}/bi-profile/run`;
+      if (type === 'metadata')
+        return `/api/v1/connectors/${encodeURIComponent(connectorId)}/metadata-profile/run`;
       return `/api/v1/connectors/${encodeURIComponent(connectorId)}/profile/run`;
     },
     async runOneTimeProfile() {
@@ -8023,7 +8853,10 @@ const appConfig = {
         });
         const run = payload.run || null;
         this.integrations.profileRunResult = run;
-        this.integrations.connectorRuns = [run, ...this.integrations.connectorRuns.filter(Boolean)].slice(0, 10);
+        this.integrations.connectorRuns = [
+          run,
+          ...this.integrations.connectorRuns.filter(Boolean),
+        ].slice(0, 10);
         this.integrations.selectedConnectorRun = run;
         this.integrations.schedulerOpsTab = 'runs';
         this.showToast(`Profile run ${run?.status || 'completed'}.`);
@@ -8035,12 +8868,21 @@ const appConfig = {
     },
     connectorRunFailedAssetIds(run) {
       const errors = run?.errors || run?.profile?.errors || run?.profile?.run?.errors || [];
-      return [...new Set(errors
-        .map((error) => error?.asset_id || error?.assetId || error?.object_id || error?.objectId)
-        .filter(Boolean))];
+      return [
+        ...new Set(
+          errors
+            .map(
+              (error) => error?.asset_id || error?.assetId || error?.object_id || error?.objectId
+            )
+            .filter(Boolean)
+        ),
+      ];
     },
     canRerunFailedAssets(run) {
-      return this.connectorRunKind(run) === 'Aggregate profile' && this.connectorRunFailedAssetIds(run).length > 0;
+      return (
+        this.connectorRunKind(run) === 'Aggregate profile' &&
+        this.connectorRunFailedAssetIds(run).length > 0
+      );
     },
     connectorRunPublishState(run) {
       return run?.artifact?.profile_publish || {};
@@ -8048,12 +8890,18 @@ const appConfig = {
     connectorRunPublishStatus(run) {
       const state = this.connectorRunPublishState(run);
       if (state.status) return state.status;
-      if ((state.successful_asset_count || 0) > 0 || run?.artifact?.devops_upload_pending) return 'pending';
+      if ((state.successful_asset_count || 0) > 0 || run?.artifact?.devops_upload_pending)
+        return 'pending';
       return 'not_applicable';
     },
     connectorRunCanPublish(run) {
       const state = this.connectorRunPublishState(run);
-      return (state.successful_asset_count || 0) > 0 && !['published', 'partial_published', 'publishing'].includes(this.connectorRunPublishStatus(run));
+      return (
+        (state.successful_asset_count || 0) > 0 &&
+        !['published', 'partial_published', 'publishing'].includes(
+          this.connectorRunPublishStatus(run)
+        )
+      );
     },
     connectorRunPublishColor(run) {
       const status = this.connectorRunPublishStatus(run);
@@ -8083,18 +8931,24 @@ const appConfig = {
       this.integrations.profileRunEditor.executionMode = 'live';
       this.integrations.profileRunEditor.assetIds = failedAssetIds.join('\n');
       this.integrations.profileRunEditor.streams = '';
-      this.showToast(`Rerunning ${failedAssetIds.length} failed asset${failedAssetIds.length === 1 ? '' : 's'}.`);
+      this.showToast(
+        `Rerunning ${failedAssetIds.length} failed asset${failedAssetIds.length === 1 ? '' : 's'}.`
+      );
       await this.runOneTimeProfile();
     },
     async publishConnectorProfiles(run = null) {
-      const connectorId = run?.connector_id || this.integrations.selectedConnectorId || this.integrations.profileRunEditor.connectorId;
+      const connectorId =
+        run?.connector_id ||
+        this.integrations.selectedConnectorId ||
+        this.integrations.profileRunEditor.connectorId;
       const body = {
         targets: ['devops', 'confluence'],
         dry_run: false,
       };
-      const endpoint = run?.id && connectorId
-        ? `/api/v1/connectors/${encodeURIComponent(connectorId)}/runs/${encodeURIComponent(run.id)}/publish`
-        : '/api/v1/connectors/profile-publications/publish';
+      const endpoint =
+        run?.id && connectorId
+          ? `/api/v1/connectors/${encodeURIComponent(connectorId)}/runs/${encodeURIComponent(run.id)}/publish`
+          : '/api/v1/connectors/profile-publications/publish';
       try {
         this.integrations.connectorPublishLoading = true;
         const payload = await this.api(endpoint, {
@@ -8117,15 +8971,25 @@ const appConfig = {
         this.integrations.managedConnectors[0]?.id ||
         '';
       this.integrations.profileScheduleEditor.connectorId = connectorId;
-      this.integrations.profileScheduleEditor.profileType = this.integrations.profileRunEditor.profileType;
+      this.integrations.profileScheduleEditor.profileType =
+        this.integrations.profileRunEditor.profileType;
       this.integrations.profileScheduleEditor.dryRun = false;
-      this.integrations.profileScheduleEditor.assetIds = this.integrations.profileRunEditor.assetIds || '';
-      this.integrations.profileScheduleEditor.streams = this.integrations.profileRunEditor.streams || '';
-      this.integrations.profileScheduleEditor.coverageMode = this.integrations.profileRunEditor.coverageMode || 'all_objects';
-      this.integrations.profileScheduleEditor.includeViews = this.integrations.profileRunEditor.includeViews === true;
-      this.integrations.profileScheduleEditor.livePriority = this.integrations.profileRunEditor.livePriority || 'most_used_first';
-      this.integrations.profileScheduleEditor.maxLiveTables = Math.max(1, Number(this.integrations.profileRunEditor.maxLiveTables || 15));
-      this.integrations.profileScheduleEditor.autoPublish = this.integrations.profileRunEditor.executionMode === 'live';
+      this.integrations.profileScheduleEditor.assetIds =
+        this.integrations.profileRunEditor.assetIds || '';
+      this.integrations.profileScheduleEditor.streams =
+        this.integrations.profileRunEditor.streams || '';
+      this.integrations.profileScheduleEditor.coverageMode =
+        this.integrations.profileRunEditor.coverageMode || 'all_objects';
+      this.integrations.profileScheduleEditor.includeViews =
+        this.integrations.profileRunEditor.includeViews === true;
+      this.integrations.profileScheduleEditor.livePriority =
+        this.integrations.profileRunEditor.livePriority || 'most_used_first';
+      this.integrations.profileScheduleEditor.maxLiveTables = Math.max(
+        1,
+        Number(this.integrations.profileRunEditor.maxLiveTables || 15)
+      );
+      this.integrations.profileScheduleEditor.autoPublish =
+        this.integrations.profileRunEditor.executionMode === 'live';
       this.integrations.profileScheduleEditor.publishTargets = ['devops'];
       this.initializeProfileScheduleEditor(true);
       this.integrations.schedulerOpsTab = 'settings';
@@ -8179,14 +9043,21 @@ const appConfig = {
     },
     connectorSecretReferenceRequired() {
       const mode = this.integrations.connectorEditor.credentialMode;
-      return !['windows_integrated', 'managed_identity', 'iam_role', 'workload_identity', 'none'].includes(mode);
+      return ![
+        'windows_integrated',
+        'managed_identity',
+        'iam_role',
+        'workload_identity',
+        'none',
+      ].includes(mode);
     },
     syncConnectorCredentialMode() {
       const editor = this.integrations.connectorEditor;
       const options = this.connectorCredentialModeOptions().map((item) => item.value);
       if (!options.includes(editor.credentialMode)) {
-        editor.credentialMode =
-          options.includes('windows_integrated') ? 'windows_integrated' : options[0] || 'none';
+        editor.credentialMode = options.includes('windows_integrated')
+          ? 'windows_integrated'
+          : options[0] || 'none';
       }
       if (editor.credentialMode === 'windows_integrated') {
         editor.secretRef = '';
@@ -8203,17 +9074,17 @@ const appConfig = {
       const keepWorkflowTab = options.keepWorkflowTab === true;
       this.syncConnectorCredentialMode();
       const payload = this.buildConnectorSavePayload();
-      if (!payload) return;
+      if (!payload) return false;
       if (!payload.id || !payload.type || !payload.label) {
         this.showToast('ID, connector type, and label are required.');
-        return;
+        return false;
       }
       const missingCredential = this.connectorCredentialFields.find(
         (field) => field.required && String(this.connectorFieldValue(field.key, '')).trim() === ''
       );
       if (missingCredential) {
         this.showToast(`${missingCredential.label} is required.`);
-        return;
+        return false;
       }
       try {
         this.integrations.connectorLoading = true;
@@ -8280,17 +9151,26 @@ const appConfig = {
     async runManagedConnector(connectorId, options = null) {
       try {
         this.integrations.connectorLoading = true;
-        const payload = await this.api(`/api/v1/connectors/${encodeURIComponent(connectorId)}/run`, {
-          method: 'POST',
-          body: JSON.stringify(options || { dry_run: true }),
-        });
-        this.integrations.connectorRuns = [payload.run, ...this.integrations.connectorRuns].slice(0, 10);
+        const payload = await this.api(
+          `/api/v1/connectors/${encodeURIComponent(connectorId)}/run`,
+          {
+            method: 'POST',
+            body: JSON.stringify(options || { dry_run: true }),
+          }
+        );
+        this.integrations.connectorRuns = [payload.run, ...this.integrations.connectorRuns].slice(
+          0,
+          10
+        );
         await this.loadManagedConnectorSnapshot(connectorId);
         this.integrations.connectorEditor.testSummary = payload.run || null;
-        this.integrations.connectorEditor.discoverySummary = this.integrations.connectorSnapshot || null;
+        this.integrations.connectorEditor.discoverySummary =
+          this.integrations.connectorSnapshot || null;
         const planned = payload.run.summary?.planned_objects ?? 0;
         const discovered = payload.run.summary?.discovered_objects ?? 0;
-        const suffix = payload.run.summary?.dry_run_only ? `${planned} stream/object type(s) planned; source not contacted.` : `${discovered} metadata object(s) harvested.`;
+        const suffix = payload.run.summary?.dry_run_only
+          ? `${planned} stream/object type(s) planned; source not contacted.`
+          : `${discovered} metadata object(s) harvested.`;
         this.showToast(`Connector run ${payload.run.status}: ${suffix}`);
       } catch (err) {
         this.integrations.connectorEditor.testSummary = this.buildConnectorRunFailureSummary(
@@ -8305,7 +9185,9 @@ const appConfig = {
     },
     async loadManagedConnectorSnapshot(connectorId) {
       try {
-        const payload = await this.api(`/api/v1/connectors/${encodeURIComponent(connectorId)}/snapshot`);
+        const payload = await this.api(
+          `/api/v1/connectors/${encodeURIComponent(connectorId)}/snapshot`
+        );
         this.integrations.connectorSnapshot = payload.snapshot || null;
       } catch (err) {
         this.showToast(`Connector snapshot failed: ${err.message}`);
@@ -8314,7 +9196,9 @@ const appConfig = {
     async loadManagedConnectorRuns(connectorId) {
       if (!connectorId) return;
       try {
-        const payload = await this.api(`/api/v1/connectors/${encodeURIComponent(connectorId)}/runs?limit=10`);
+        const payload = await this.api(
+          `/api/v1/connectors/${encodeURIComponent(connectorId)}/runs?limit=10`
+        );
         this.integrations.connectorRuns = payload.runs || [];
         this.integrations.selectedConnectorRun = this.integrations.connectorRuns[0] || null;
       } catch (err) {
@@ -8520,14 +9404,24 @@ const appConfig = {
     getSqlServerConnectionSignature() {
       const sql = this.importer.sqlServer;
       return JSON.stringify({
-        server: String(sql.server || '').trim().toLowerCase(),
+        server: String(sql.server || '')
+          .trim()
+          .toLowerCase(),
         port: Number(sql.port) || 1433,
         authentication: sql.authentication,
         useIntegratedAuth: Boolean(sql.useIntegratedAuth),
-        username: String(sql.username || '').trim().toLowerCase(),
-        domain: String(sql.domain || '').trim().toLowerCase(),
-        clientId: String(sql.clientId || '').trim().toLowerCase(),
-        tenantId: String(sql.tenantId || '').trim().toLowerCase(),
+        username: String(sql.username || '')
+          .trim()
+          .toLowerCase(),
+        domain: String(sql.domain || '')
+          .trim()
+          .toLowerCase(),
+        clientId: String(sql.clientId || '')
+          .trim()
+          .toLowerCase(),
+        tenantId: String(sql.tenantId || '')
+          .trim()
+          .toLowerCase(),
         passwordHash: this.hashText(sql.password),
         clientSecretHash: this.hashText(sql.clientSecret),
         encrypt: Boolean(sql.encrypt),
@@ -9268,7 +10162,9 @@ const appConfig = {
       try {
         if (!this.canLoadToIndex) {
           const esUrl = this.importer.status?.elasticsearchUrl || 'https://localhost:9200';
-          this.showToast(`Load blocked: Elasticsearch index is unavailable at ${esUrl}. Verify service status and retry.`);
+          this.showToast(
+            `Load blocked: Elasticsearch index is unavailable at ${esUrl}. Verify service status and retry.`
+          );
           return;
         }
         if (this.importer.loadPath === './docs' && this.importer.status?.lastGeneratedPath) {
@@ -9410,14 +10306,16 @@ const appConfig = {
         }
         return false;
       }
-      const audience = Array.isArray(item.audience) && item.audience.length ? item.audience : ['admin'];
+      const audience =
+        Array.isArray(item.audience) && item.audience.length ? item.audience : ['admin'];
       return audience.includes(this.navigationRole);
     },
     ensureActiveViewAllowed({ silent = false } = {}) {
       if (this.canAccessView(this.activeView)) {
         return true;
       }
-      const requestedLabel = pageWorkflowMeta[this.activeView]?.title || this.activeNavItem?.label || 'That page';
+      const requestedLabel =
+        pageWorkflowMeta[this.activeView]?.title || this.activeNavItem?.label || 'That page';
       this.activeView = 'overview';
       if (!silent) {
         this.showToast(`${requestedLabel} is hidden for ${this.navigationRoleLabel} navigation.`);
@@ -9426,7 +10324,10 @@ const appConfig = {
     },
     async onViewChange(view) {
       if (!this.canAccessView(view)) {
-        const requestedLabel = pageWorkflowMeta[view]?.title || this.navItems.find((item) => item.key === view)?.label || 'That page';
+        const requestedLabel =
+          pageWorkflowMeta[view]?.title ||
+          this.navItems.find((item) => item.key === view)?.label ||
+          'That page';
         this.activeView = 'overview';
         this.closeMobileSidebar();
         this.showToast(`${requestedLabel} is hidden for ${this.navigationRoleLabel} navigation.`);

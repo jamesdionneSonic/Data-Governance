@@ -1,4 +1,4 @@
-﻿/* eslint-env browser */
+/* eslint-env browser */
 
 export const homeFindDataPageTemplate = `
             <div v-if="activeView === 'overview'" class="home-find-data-page">
@@ -1249,5 +1249,3 @@ export const lineageExplorerPageTemplate = `
 
 
 `;
-
-

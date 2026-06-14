@@ -1,10 +1,10 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
+import { XMLParser } from 'fast-xml-parser';
 import { BaseConnectorAdapter } from './baseAdapter.js';
 import { CANONICAL_EVENT_TYPES, canonicalEvent, warningEvent } from './canonicalMetadata.js';
 import { ConnectorConfigError, ConnectorRuntimeError } from './connectorErrors.js';
 import { hasDirectSourceClient } from './sourceClients.js';
-import { XMLParser } from 'fast-xml-parser';
 import { extractTablesFromSQL } from '../sqlServerExtractor.js';
 import {
   buildSqlServerConnectionConfig,
@@ -48,7 +48,14 @@ class BIConnectorAdapter extends BaseConnectorAdapter {
   constructor(args) {
     super(args);
     this.requiredConfig = ['base_url'];
-    this.requiredCredentialModes = ['oauth', 'api_token_reference', 'service_account', 'service_principal', 'pat', 'secret_reference'];
+    this.requiredCredentialModes = [
+      'oauth',
+      'api_token_reference',
+      'service_account',
+      'service_principal',
+      'pat',
+      'secret_reference',
+    ];
     this.capability = {
       ...this.capability,
       supports_usage: true,
@@ -56,15 +63,32 @@ class BIConnectorAdapter extends BaseConnectorAdapter {
       supports_semantic_models: true,
     };
     this.streams = [
-      stream('folders', STREAM.object, '/folders', { metadata: ['folders', 'projects', 'workspaces'] }),
-      stream('dashboards', STREAM.dashboard, '/dashboards', { metadata: ['dashboards', 'tiles', 'visuals'] }),
+      stream('folders', STREAM.object, '/folders', {
+        metadata: ['folders', 'projects', 'workspaces'],
+      }),
+      stream('dashboards', STREAM.dashboard, '/dashboards', {
+        metadata: ['dashboards', 'tiles', 'visuals'],
+      }),
       stream('reports', STREAM.report, '/reports', { metadata: ['reports', 'pages', 'visuals'] }),
-      stream('datasets', STREAM.dataset, '/datasets', { metadata: ['datasets', 'tables', 'columns'] }),
-      stream('semantic_models', STREAM.semanticModel, '/semantic-models', { metadata: ['models', 'cubes', 'perspectives'] }),
-      stream('metrics', STREAM.metric, '/metrics', { metadata: ['measures', 'metrics', 'calculations'] }),
-      stream('data_sources', STREAM.dataSource, '/datasources', { metadata: ['connections', 'datasources'] }),
-      stream('lineage', STREAM.lineage, '/lineage', { metadata: ['report -> dataset', 'dataset -> source'] }),
-      stream('usage', STREAM.usage, '/activity', { cursor: 'modified_at', metadata: ['views', 'subscribers', 'refreshes'] }),
+      stream('datasets', STREAM.dataset, '/datasets', {
+        metadata: ['datasets', 'tables', 'columns'],
+      }),
+      stream('semantic_models', STREAM.semanticModel, '/semantic-models', {
+        metadata: ['models', 'cubes', 'perspectives'],
+      }),
+      stream('metrics', STREAM.metric, '/metrics', {
+        metadata: ['measures', 'metrics', 'calculations'],
+      }),
+      stream('data_sources', STREAM.dataSource, '/datasources', {
+        metadata: ['connections', 'datasources'],
+      }),
+      stream('lineage', STREAM.lineage, '/lineage', {
+        metadata: ['report -> dataset', 'dataset -> source'],
+      }),
+      stream('usage', STREAM.usage, '/activity', {
+        cursor: 'modified_at',
+        metadata: ['views', 'subscribers', 'refreshes'],
+      }),
     ];
   }
 }
@@ -75,15 +99,43 @@ class PowerBiAdapter extends BIConnectorAdapter {
     this.requiredConfig = ['tenant_id'];
     this.requiredCredentialModes = ['service_principal', 'delegated_oauth'];
     this.streams = [
-      stream('workspaces', STREAM.object, 'GET /v1.0/myorg/admin/groups?$top=5000', { metadata: ['workspaces', 'capacities'] }),
-      stream('dashboards', STREAM.dashboard, 'GET /v1.0/myorg/admin/dashboards', { metadata: ['dashboards', 'tiles'] }),
-      stream('reports', STREAM.report, 'GET /v1.0/myorg/admin/reports', { metadata: ['reports', 'datasetId', 'workspaceId'] }),
-      stream('datasets', STREAM.dataset, 'GET /v1.0/myorg/admin/datasets', { metadata: ['datasets', 'endorsement', 'sensitivity labels'] }),
-      stream('dataflows', STREAM.dataset, 'GET /v1.0/myorg/admin/dataflows', { metadata: ['dataflows', 'datasources'] }),
-      stream('datasources', STREAM.dataSource, 'GET /v1.0/myorg/admin/datasets/{datasetId}/datasources', { metadata: ['datasource type', 'connection details'] }),
-      stream('scanner_metadata', STREAM.semanticModel, 'POST /v1.0/myorg/admin/workspaces/getInfo', { method: 'POST', metadata: ['tables', 'columns', 'measures', 'expressions'] }),
-      stream('activity_events', STREAM.usage, 'GET /v1.0/myorg/admin/activityevents', { cursor: 'activityDateTime', metadata: ['view report', 'refresh', 'share'] }),
-      stream('lineage', STREAM.lineage, 'Power BI artifact relationships and external datasource links', { metadata: ['dataflow -> dataset', 'dataset -> report', 'report -> dashboard'] }),
+      stream('workspaces', STREAM.object, 'GET /v1.0/myorg/admin/groups?$top=5000', {
+        metadata: ['workspaces', 'capacities'],
+      }),
+      stream('dashboards', STREAM.dashboard, 'GET /v1.0/myorg/admin/dashboards', {
+        metadata: ['dashboards', 'tiles'],
+      }),
+      stream('reports', STREAM.report, 'GET /v1.0/myorg/admin/reports', {
+        metadata: ['reports', 'datasetId', 'workspaceId'],
+      }),
+      stream('datasets', STREAM.dataset, 'GET /v1.0/myorg/admin/datasets', {
+        metadata: ['datasets', 'endorsement', 'sensitivity labels'],
+      }),
+      stream('dataflows', STREAM.dataset, 'GET /v1.0/myorg/admin/dataflows', {
+        metadata: ['dataflows', 'datasources'],
+      }),
+      stream(
+        'datasources',
+        STREAM.dataSource,
+        'GET /v1.0/myorg/admin/datasets/{datasetId}/datasources',
+        { metadata: ['datasource type', 'connection details'] }
+      ),
+      stream(
+        'scanner_metadata',
+        STREAM.semanticModel,
+        'POST /v1.0/myorg/admin/workspaces/getInfo',
+        { method: 'POST', metadata: ['tables', 'columns', 'measures', 'expressions'] }
+      ),
+      stream('activity_events', STREAM.usage, 'GET /v1.0/myorg/admin/activityevents', {
+        cursor: 'activityDateTime',
+        metadata: ['view report', 'refresh', 'share'],
+      }),
+      stream(
+        'lineage',
+        STREAM.lineage,
+        'Power BI artifact relationships and external datasource links',
+        { metadata: ['dataflow -> dataset', 'dataset -> report', 'report -> dashboard'] }
+      ),
     ];
   }
 }
@@ -95,13 +147,25 @@ class MicroStrategyAdapter extends BIConnectorAdapter {
     this.requiredCredentialModes = ['oauth', 'api_token_reference', 'service_account'];
     this.streams = [
       stream('projects', STREAM.object, 'GET /api/projects', { metadata: ['projects'] }),
-      stream('dossiers', STREAM.dashboard, 'GET /api/dossiers', { metadata: ['dossiers', 'chapters', 'visualizations'] }),
+      stream('dossiers', STREAM.dashboard, 'GET /api/dossiers', {
+        metadata: ['dossiers', 'chapters', 'visualizations'],
+      }),
       stream('documents', STREAM.report, 'GET /api/documents', { metadata: ['documents'] }),
-      stream('reports', STREAM.report, 'GET /api/v2/reports', { metadata: ['reports', 'grids', 'prompts'] }),
-      stream('cubes', STREAM.dataset, 'GET /api/cubes', { metadata: ['intelligent cubes', 'attributes', 'metrics'] }),
-      stream('schema_objects', STREAM.semanticModel, 'GET /api/model/schema/objects', { metadata: ['facts', 'attributes', 'metrics', 'hierarchies'] }),
-      stream('data_sources', STREAM.dataSource, 'GET /api/datasources', { metadata: ['datasource connections'] }),
-      stream('lineage', STREAM.lineage, 'MicroStrategy object dependencies', { metadata: ['report -> cube', 'cube -> datasource', 'metric -> fact'] }),
+      stream('reports', STREAM.report, 'GET /api/v2/reports', {
+        metadata: ['reports', 'grids', 'prompts'],
+      }),
+      stream('cubes', STREAM.dataset, 'GET /api/cubes', {
+        metadata: ['intelligent cubes', 'attributes', 'metrics'],
+      }),
+      stream('schema_objects', STREAM.semanticModel, 'GET /api/model/schema/objects', {
+        metadata: ['facts', 'attributes', 'metrics', 'hierarchies'],
+      }),
+      stream('data_sources', STREAM.dataSource, 'GET /api/datasources', {
+        metadata: ['datasource connections'],
+      }),
+      stream('lineage', STREAM.lineage, 'MicroStrategy object dependencies', {
+        metadata: ['report -> cube', 'cube -> datasource', 'metric -> fact'],
+      }),
     ];
   }
 }
@@ -112,20 +176,42 @@ class SsasAdapter extends BIConnectorAdapter {
     this.requiredConfig = ['server'];
     this.requiredCredentialModes = ['windows_integrated', 'service_account', 'secret_reference'];
     this.streams = [
-      stream('databases', STREAM.object, 'XMLA Discover DBSCHEMA_CATALOGS', { metadata: ['databases'] }),
-      stream('models', STREAM.semanticModel, 'XMLA Discover MDSCHEMA_CUBES / TMSCHEMA_MODEL', { metadata: ['tabular models', 'multidimensional cubes'] }),
-      stream('dimensions', STREAM.object, 'XMLA Discover MDSCHEMA_DIMENSIONS', { metadata: ['dimensions', 'hierarchies'] }),
-      stream('measures', STREAM.metric, 'XMLA Discover MDSCHEMA_MEASURES / TMSCHEMA_MEASURES', { metadata: ['measures', 'DAX or MDX expressions'] }),
-      stream('partitions', STREAM.dataset, 'XMLA Discover TMSCHEMA_PARTITIONS', { metadata: ['partitions', 'source queries'] }),
-      stream('data_sources', STREAM.dataSource, 'XMLA Discover TMSCHEMA_DATA_SOURCES', { metadata: ['datasource connection metadata'] }),
-      stream('roles', STREAM.object, 'XMLA Discover TMSCHEMA_ROLES', { metadata: ['security roles'] }),
-      stream('lineage', STREAM.lineage, 'XMLA model datasource and partition dependencies', { metadata: ['model -> datasource', 'measure -> table'] }),
+      stream('databases', STREAM.object, 'XMLA Discover DBSCHEMA_CATALOGS', {
+        metadata: ['databases'],
+      }),
+      stream('models', STREAM.semanticModel, 'XMLA Discover MDSCHEMA_CUBES / TMSCHEMA_MODEL', {
+        metadata: ['tabular models', 'multidimensional cubes'],
+      }),
+      stream('dimensions', STREAM.object, 'XMLA Discover MDSCHEMA_DIMENSIONS', {
+        metadata: ['dimensions', 'hierarchies'],
+      }),
+      stream('measures', STREAM.metric, 'XMLA Discover MDSCHEMA_MEASURES / TMSCHEMA_MEASURES', {
+        metadata: ['measures', 'DAX or MDX expressions'],
+      }),
+      stream('partitions', STREAM.dataset, 'XMLA Discover TMSCHEMA_PARTITIONS', {
+        metadata: ['partitions', 'source queries'],
+      }),
+      stream('data_sources', STREAM.dataSource, 'XMLA Discover TMSCHEMA_DATA_SOURCES', {
+        metadata: ['datasource connection metadata'],
+      }),
+      stream('roles', STREAM.object, 'XMLA Discover TMSCHEMA_ROLES', {
+        metadata: ['security roles'],
+      }),
+      stream('lineage', STREAM.lineage, 'XMLA model datasource and partition dependencies', {
+        metadata: ['model -> datasource', 'measure -> table'],
+      }),
     ];
   }
 }
 
 function ssrsDateWindow(options = {}, config = {}) {
-  const months = Number(options.lookback_months || options.lookbackMonths || config.lookback_months || config.lookbackMonths || 6);
+  const months = Number(
+    options.lookback_months ||
+      options.lookbackMonths ||
+      config.lookback_months ||
+      config.lookbackMonths ||
+      6
+  );
   const safeMonths = Number.isFinite(months) && months > 0 ? Math.min(months, 60) : 6;
   return safeMonths;
 }
@@ -141,11 +227,15 @@ function ssrsConnectionStrategy(options = {}, config = {}) {
       config.connection_strategy ||
       config.connectionStrategy ||
       ''
-  ).trim().toLowerCase();
+  )
+    .trim()
+    .toLowerCase();
 }
 
 function ssrsUsesSqlcmdStrategy(options = {}, config = {}) {
-  return ['sqlcmd_windows_auth', 'sqlcmd', 'sqlcmd_windows_integrated'].includes(ssrsConnectionStrategy(options, config));
+  return ['sqlcmd_windows_auth', 'sqlcmd', 'sqlcmd_windows_integrated'].includes(
+    ssrsConnectionStrategy(options, config)
+  );
 }
 
 function ssrsAllowsSqlcmdFallback(options = {}, config = {}) {
@@ -155,7 +245,7 @@ function ssrsAllowsSqlcmdFallback(options = {}, config = {}) {
 
 function ssrsSqlcmdServer(config = {}) {
   const server = config.server || config.host || config.data_source || config.dataSource;
-  const port = config.port;
+  const { port } = config;
   if (server && port && !String(server).includes(',')) return `${server},${port}`;
   return server;
 }
@@ -171,7 +261,9 @@ function sqlcmdRows(output = '', columns = []) {
     .filter((line) => line.trim() && !/^\(\d+ rows affected\)$/i.test(line.trim()))
     .map((line) => {
       const values = line.split('\t');
-      return Object.fromEntries(columns.map((column, index) => [column, (values[index] || '').trim()]));
+      return Object.fromEntries(
+        columns.map((column, index) => [column, (values[index] || '').trim()])
+      );
     });
 }
 
@@ -181,7 +273,12 @@ function sqlcmdJson(output = '') {
     .map((line) => line.trimEnd())
     .filter((line) => {
       const value = line.trim();
-      return value && !/^JSON_/i.test(value) && !/^-+$/.test(value) && !/^\(\d+ rows affected\)$/i.test(value);
+      return (
+        value &&
+        !/^JSON_/i.test(value) &&
+        !/^-+$/.test(value) &&
+        !/^\(\d+ rows affected\)$/i.test(value)
+      );
     })
     .join('');
   return body ? JSON.parse(body) : [];
@@ -191,25 +288,33 @@ async function runSsrsSqlcmdQuery(config = {}, query, { json = false } = {}) {
   const server = ssrsSqlcmdServer(config);
   const database = ssrsSqlcmdDatabase(config);
   if (!server) {
-    throw new ConnectorConfigError('SQL Server sqlcmd extraction requires config.server or config.host.', {
-      connector_type: config.type || 'sql_server',
-      required_config: ['server'],
-    });
+    throw new ConnectorConfigError(
+      'SQL Server sqlcmd extraction requires config.server or config.host.',
+      {
+        connector_type: config.type || 'sql_server',
+        required_config: ['server'],
+      }
+    );
   }
   const args = ['-S', server, '-E', '-C', '-d', database, '-w', '65535', '-Q', query];
   if (json) args.splice(args.length - 2, 0, '-y', '0');
   else args.splice(args.length - 2, 0, '-h', '-1');
-  const { stdout } = await execFileAsync(config.sqlcmd_path || config.sqlcmdPath || 'sqlcmd', args, {
-    windowsHide: true,
-    maxBuffer: Number(config.sqlcmd_max_buffer || config.sqlcmdMaxBuffer || 128 * 1024 * 1024),
-    timeout: Number(config.sqlcmd_timeout_ms || config.sqlcmdTimeoutMs || 120000),
-  });
+  const { stdout } = await execFileAsync(
+    config.sqlcmd_path || config.sqlcmdPath || 'sqlcmd',
+    args,
+    {
+      windowsHide: true,
+      maxBuffer: Number(config.sqlcmd_max_buffer || config.sqlcmdMaxBuffer || 128 * 1024 * 1024),
+      timeout: Number(config.sqlcmd_timeout_ms || config.sqlcmdTimeoutMs || 120000),
+    }
+  );
   return json ? sqlcmdJson(stdout) : stdout;
 }
 
 function ssrsSqlcmdMetadataQueries(lookbackMonths) {
   const reportStart = `DATEADD(month, -${lookbackMonths}, SYSDATETIME())`;
-  const prefix = 'SET QUOTED_IDENTIFIER ON; SET ANSI_NULLS ON; SET ANSI_PADDING ON; SET ANSI_WARNINGS ON; SET CONCAT_NULL_YIELDS_NULL ON; SET ARITHABORT ON; SET NUMERIC_ROUNDABORT OFF; SET NOCOUNT ON;';
+  const prefix =
+    'SET QUOTED_IDENTIFIER ON; SET ANSI_NULLS ON; SET ANSI_PADDING ON; SET ANSI_WARNINGS ON; SET CONCAT_NULL_YIELDS_NULL ON; SET ARITHABORT ON; SET NUMERIC_ROUNDABORT OFF; SET NOCOUNT ON;';
   return {
     connection: `${prefix}
 SELECT CAST(CONCAT(
@@ -429,7 +534,8 @@ function toArray(value) {
 
 function xmlText(value) {
   if (value === undefined || value === null) return '';
-  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return String(value).trim();
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean')
+    return String(value).trim();
   if (typeof value === 'object') return String(value['#text'] || '').trim();
   return '';
 }
@@ -451,12 +557,20 @@ function parseXmlDocument(xmlTextValue) {
 
 function parseConnectionStringValue(connectionString = '', keys = []) {
   const escaped = keys.map((key) => key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
-  const match = String(connectionString || '').match(new RegExp(`(?:${escaped})\\s*=\\s*([^;"]+)`, 'i'));
+  const match = String(connectionString || '').match(
+    new RegExp(`(?:${escaped})\\s*=\\s*([^;"]+)`, 'i')
+  );
   return match ? match[1].trim() : '';
 }
 
 function parseConnectionStringServer(connectionString = '') {
-  return parseConnectionStringValue(connectionString, ['Data Source', 'Server', 'Address', 'Addr', 'Network Address']);
+  return parseConnectionStringValue(connectionString, [
+    'Data Source',
+    'Server',
+    'Address',
+    'Addr',
+    'Network Address',
+  ]);
 }
 
 function parseConnectionStringDatabase(connectionString = '') {
@@ -527,7 +641,9 @@ function storedProcedureReference(commandText = '', defaults = {}) {
 function sqlReferencesFromCommand(commandText = '', commandType = '', defaults = {}) {
   const command = String(commandText || '').trim();
   if (!command) return [];
-  const type = String(commandType || '').trim().toLowerCase();
+  const type = String(commandType || '')
+    .trim()
+    .toLowerCase();
   if (type === 'storedprocedure' || type === 'stored_procedure') {
     const proc = storedProcedureReference(command, defaults);
     return proc?.object_id ? [proc] : [];
@@ -571,25 +687,58 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
       stream('reports', STREAM.report, 'ReportServer.dbo.Catalog', {
         metadata: ['report ItemID', 'path', 'name', 'type', 'created/modified dates'],
       }),
-      stream('data_sources', STREAM.dataSource, 'ReportServer.dbo.DataSource and shared Catalog data sources', {
-        metadata: ['data source references', 'extensions', 'linked shared data sources'],
-      }),
+      stream(
+        'data_sources',
+        STREAM.dataSource,
+        'ReportServer.dbo.DataSource and shared Catalog data sources',
+        {
+          metadata: ['data source references', 'extensions', 'linked shared data sources'],
+        }
+      ),
       stream('datasets', STREAM.dataset, 'ReportServer RDL DataSets and Query definitions', {
-        metadata: ['dataset name', 'data source name', 'command type', 'command text', 'SQL object references'],
+        metadata: [
+          'dataset name',
+          'data source name',
+          'command type',
+          'command text',
+          'SQL object references',
+        ],
       }),
       stream('usage', STREAM.usage, 'ReportServer.dbo.ExecutionLog3', {
         cursor: 'TimeStart',
-        metadata: ['execution counts', 'last access', 'distinct users', 'status', 'format', 'request type'],
+        metadata: [
+          'execution counts',
+          'last access',
+          'distinct users',
+          'status',
+          'format',
+          'request type',
+        ],
       }),
       stream('subscriptions', STREAM.object, 'ReportServer.dbo.Subscriptions', {
-        metadata: ['subscription status', 'last run time', 'delivery extension', 'schedule relationship'],
+        metadata: [
+          'subscription status',
+          'last run time',
+          'delivery extension',
+          'schedule relationship',
+        ],
       }),
-      stream('agent_jobs', STREAM.object, 'msdb.dbo.sysjobs/sysjobhistory joined through ReportSchedule', {
-        metadata: ['SQL Agent job status', 'job run counts', 'last job run'],
-      }),
-      stream('lineage', STREAM.lineage, 'ReportServer report-data-source and schedule-report relationships', {
-        metadata: ['data source -> report', 'SQL Agent schedule -> report'],
-      }),
+      stream(
+        'agent_jobs',
+        STREAM.object,
+        'msdb.dbo.sysjobs/sysjobhistory joined through ReportSchedule',
+        {
+          metadata: ['SQL Agent job status', 'job run counts', 'last job run'],
+        }
+      ),
+      stream(
+        'lineage',
+        STREAM.lineage,
+        'ReportServer report-data-source and schedule-report relationships',
+        {
+          metadata: ['data source -> report', 'SQL Agent schedule -> report'],
+        }
+      ),
     ];
   }
 
@@ -601,7 +750,8 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
         status: this.config.mockConnectionCheck.status || 'ready',
         live_supported: true,
         live_connection_valid: this.config.mockConnectionCheck.live_connection_valid !== false,
-        metadata_discovery_valid: this.config.mockConnectionCheck.metadata_discovery_valid !== false,
+        metadata_discovery_valid:
+          this.config.mockConnectionCheck.metadata_discovery_valid !== false,
         warnings,
         details: this.config.mockConnectionCheck.details || {},
       };
@@ -622,7 +772,10 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
         warnings,
         details: {
           bridge_metadata_payload: true,
-          source_contacted_by: options.metadata_payload_source || this.config.metadata_payload_source || 'external_metadata_harvest',
+          source_contacted_by:
+            options.metadata_payload_source ||
+            this.config.metadata_payload_source ||
+            'external_metadata_harvest',
         },
       };
     }
@@ -631,7 +784,8 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
         warningEvent({
           connector: this.connector,
           stream: 'connection',
-          message: 'SSRS live extraction requires config.server or config.host when dry_run is false.',
+          message:
+            'SSRS live extraction requires config.server or config.host when dry_run is false.',
           details: { required_config: ['server', 'database'] },
         })
       );
@@ -672,7 +826,8 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
           warningEvent({
             connector: this.connector,
             stream: 'connection',
-            message: 'Connected to SQL Server, but required ReportServer catalog objects were not visible.',
+            message:
+              'Connected to SQL Server, but required ReportServer catalog objects were not visible.',
             details: {
               has_catalog: row.has_catalog === 1,
               has_execution_log3: row.has_execution_log3 === 1,
@@ -686,7 +841,9 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
             connector: this.connector,
             stream: 'agent_jobs',
             message: 'Connected to ReportServer, but msdb SQL Agent history is not readable.',
-            details: { required_permission: 'SELECT on msdb.dbo.sysjobs and msdb.dbo.sysjobhistory' },
+            details: {
+              required_permission: 'SELECT on msdb.dbo.sysjobs and msdb.dbo.sysjobhistory',
+            },
           })
         );
       }
@@ -714,7 +871,8 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
           warningEvent({
             connector: this.connector,
             stream: 'connection',
-            message: 'Node SQL Server integrated authentication failed; using sqlcmd Windows-auth fallback.',
+            message:
+              'Node SQL Server integrated authentication failed; using sqlcmd Windows-auth fallback.',
             details: {
               failed_strategy: 'node_sql_driver',
               fallback_strategy: 'sqlcmd_windows_auth',
@@ -751,7 +909,8 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
           warningEvent({
             connector: this.connector,
             stream: 'connection',
-            message: 'sqlcmd connected to SQL Server, but required ReportServer catalog objects were not visible.',
+            message:
+              'sqlcmd connected to SQL Server, but required ReportServer catalog objects were not visible.',
             details: {
               has_catalog: row.has_catalog === '1',
               has_execution_log3: row.has_execution_log3 === '1',
@@ -764,8 +923,11 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
           warningEvent({
             connector: this.connector,
             stream: 'agent_jobs',
-            message: 'sqlcmd connected to ReportServer, but msdb SQL Agent history is not readable.',
-            details: { required_permission: 'SELECT on msdb.dbo.sysjobs and msdb.dbo.sysjobhistory' },
+            message:
+              'sqlcmd connected to ReportServer, but msdb SQL Agent history is not readable.',
+            details: {
+              required_permission: 'SELECT on msdb.dbo.sysjobs and msdb.dbo.sysjobhistory',
+            },
           })
         );
       }
@@ -790,7 +952,11 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
         },
       };
     } catch (err) {
-      throw sqlServerConnectionRuntimeError(err, this.connector, 'ssrs_sqlcmd_connection_validation');
+      throw sqlServerConnectionRuntimeError(
+        err,
+        this.connector,
+        'ssrs_sqlcmd_connection_validation'
+      );
     }
   }
 
@@ -806,10 +972,12 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
       this.config.seed_metadata ||
       this.config.sample_metadata;
     if (configuredMetadata) {
-      const metadata = configuredMetadata.lineage ? configuredMetadata : {
-        ...configuredMetadata,
-        lineage: this.buildSsrsLineage(configuredMetadata),
-      };
+      const metadata = configuredMetadata.lineage
+        ? configuredMetadata
+        : {
+            ...configuredMetadata,
+            lineage: this.buildSsrsLineage(configuredMetadata),
+          };
       this.lastMetadata = metadata;
       return metadata;
     }
@@ -1016,8 +1184,14 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
       'LinkedItemID',
       'LinkedDataSourcePath',
     ]);
-    const reportDefinitions = await runSsrsSqlcmdQuery(this.config, queries.reportDefinitions, { json: true });
-    const sharedDataSourceDefinitions = await runSsrsSqlcmdQuery(this.config, queries.sharedDataSourceDefinitions, { json: true });
+    const reportDefinitions = await runSsrsSqlcmdQuery(this.config, queries.reportDefinitions, {
+      json: true,
+    });
+    const sharedDataSourceDefinitions = await runSsrsSqlcmdQuery(
+      this.config,
+      queries.sharedDataSourceDefinitions,
+      { json: true }
+    );
     const usage = sqlcmdRows(await runSsrsSqlcmdQuery(this.config, queries.usage), [
       'ItemPath',
       'UserName',
@@ -1128,7 +1302,10 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
         id: `sqlobject:${reference.object_id}->report:${dataset.report_path}`,
         from: reference.object_id,
         to: dataset.report_path,
-        type: reference.reference_type === 'stored_procedure' ? 'procedure_feeds_report' : 'source_object_feeds_report',
+        type:
+          reference.reference_type === 'stored_procedure'
+            ? 'procedure_feeds_report'
+            : 'source_object_feeds_report',
         confidence: reference.reference_type === 'stored_procedure' ? 0.9 : 0.82,
         evidence_type: 'RDL DataSet Query',
         report_path: dataset.report_path,
@@ -1149,10 +1326,15 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
   }
 
   extractSharedDataSourceDefinitions(metadata = {}) {
-    const definitions = [...(metadata.shared_data_source_definitions || []), ...(metadata.sharedDataSourceDefinitions || [])];
+    const definitions = [
+      ...(metadata.shared_data_source_definitions || []),
+      ...(metadata.sharedDataSourceDefinitions || []),
+    ];
     const byPath = new Map();
     for (const definition of definitions) {
-      const doc = parseXmlDocument(definition.DefinitionXml || definition.definition_xml || definition.xml);
+      const doc = parseXmlDocument(
+        definition.DefinitionXml || definition.definition_xml || definition.xml
+      );
       const root = doc?.RptDataSource || doc?.DataSourceDefinition || doc?.DataSource;
       const body = root?.ConnectionProperties || root;
       const connectString = xmlText(body?.ConnectString || root?.ConnectString);
@@ -1173,13 +1355,18 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
     if (Array.isArray(metadata.datasets) && metadata.datasets.length) return metadata.datasets;
     const sharedDefinitions = this.extractSharedDataSourceDefinitions(metadata);
     const reportDataSources = metadata.data_sources || metadata.dataSources || [];
-    const definitions = [...(metadata.report_definitions || []), ...(metadata.reportDefinitions || [])];
+    const definitions = [
+      ...(metadata.report_definitions || []),
+      ...(metadata.reportDefinitions || []),
+    ];
     const datasets = [];
 
     for (const definition of definitions) {
       const reportPathValue = definition.Path || definition.path;
       const reportNameValue = definition.Name || definition.name || reportPathValue;
-      const doc = parseXmlDocument(definition.DefinitionXml || definition.definition_xml || definition.xml);
+      const doc = parseXmlDocument(
+        definition.DefinitionXml || definition.definition_xml || definition.xml
+      );
       const report = doc?.Report || doc;
       if (!report) continue;
       const embeddedSources = new Map();
@@ -1193,12 +1380,18 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
           name,
           reference,
           connect_string: connectString || shared?.connect_string || '',
-          server: canonicalSqlServerName(parseConnectionStringServer(connectString) || shared?.server || ''),
-          database: canonicalDatabaseName(parseConnectionStringDatabase(connectString) || shared?.database || ''),
+          server: canonicalSqlServerName(
+            parseConnectionStringServer(connectString) || shared?.server || ''
+          ),
+          database: canonicalDatabaseName(
+            parseConnectionStringDatabase(connectString) || shared?.database || ''
+          ),
           extension: xmlText(child(properties, 'DataProvider')) || shared?.extension || '',
         });
       }
-      const reportSourceRows = reportDataSources.filter((source) => source.ReportPath === reportPathValue);
+      const reportSourceRows = reportDataSources.filter(
+        (source) => source.ReportPath === reportPathValue
+      );
       for (const source of reportSourceRows) {
         if (source.DataSourceName && !embeddedSources.has(source.DataSourceName)) {
           const shared = sharedDefinitions.get(source.LinkedDataSourcePath);
@@ -1217,11 +1410,21 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
         const query = child(dataset, 'Query') || {};
         const dataSourceName = xmlText(child(query, 'DataSourceName'));
         const commandText = xmlText(child(query, 'CommandText'));
-        const commandType = xmlText(child(query, 'CommandType')) || (/^\s*exec(?:ute)?\s+/i.test(commandText) ? 'StoredProcedure' : 'Text');
+        const commandType =
+          xmlText(child(query, 'CommandType')) ||
+          (/^\s*exec(?:ute)?\s+/i.test(commandText) ? 'StoredProcedure' : 'Text');
         const source = embeddedSources.get(dataSourceName) || {};
         const defaults = {
-          server: source.server || canonicalSqlServerName(this.config.source_server || this.config.sourceServer || this.config.server || ''),
-          database: source.database || canonicalDatabaseName(this.config.source_database || this.config.sourceDatabase || 'Sonic_DW'),
+          server:
+            source.server ||
+            canonicalSqlServerName(
+              this.config.source_server || this.config.sourceServer || this.config.server || ''
+            ),
+          database:
+            source.database ||
+            canonicalDatabaseName(
+              this.config.source_database || this.config.sourceDatabase || 'Sonic_DW'
+            ),
           schema: this.config.source_schema || this.config.sourceSchema || 'dbo',
         };
         const sqlReferences = sqlReferencesFromCommand(commandText, commandType, defaults);
@@ -1248,7 +1451,9 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
 
   eventsForStream(streamName, metadata = {}) {
     if (streamName === 'reports') {
-      const usageByReport = new Map((metadata.report_usage || metadata.reportUsage || []).map((item) => [item.ItemPath, item]));
+      const usageByReport = new Map(
+        (metadata.report_usage || metadata.reportUsage || []).map((item) => [item.ItemPath, item])
+      );
       return (metadata.reports || []).map((item) => {
         const usage = usageByReport.get(item.Path) || {};
         return canonicalEvent({
@@ -1282,9 +1487,12 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
           type: STREAM.dataSource,
           connector: this.connector,
           stream: streamName,
-          external_id: item.LinkedDataSourcePath || `${item.ReportPath || item.ItemID}/${item.DataSourceName}`,
+          external_id:
+            item.LinkedDataSourcePath || `${item.ReportPath || item.ItemID}/${item.DataSourceName}`,
           name: item.LinkedDataSourcePath || item.DataSourceName || 'report data source',
-          object_type: item.LinkedDataSourcePath ? 'shared_data_source' : 'embedded_report_data_source',
+          object_type: item.LinkedDataSourcePath
+            ? 'shared_data_source'
+            : 'embedded_report_data_source',
           parent_id: item.ReportPath || item.ItemID || null,
           source_url: item.LinkedDataSourcePath || item.ReportPath || null,
           attributes: {
@@ -1314,7 +1522,9 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
           source_url: item.report_path,
           attributes: {
             ...item,
-            canonical_source_object_ids: (item.sql_references || []).map((reference) => reference.object_id),
+            canonical_source_object_ids: (item.sql_references || []).map(
+              (reference) => reference.object_id
+            ),
             raw_report_result_rows_captured: false,
           },
           confidence: item.sql_references?.length ? 0.88 : 0.65,
@@ -1395,7 +1605,13 @@ class SsrsLiveAdapter extends BIConnectorAdapter {
             last_job_run: item.LastJobRun,
           },
           confidence: 0.9,
-          evidence: { source_tables: ['ReportServer.dbo.ReportSchedule', 'msdb.dbo.sysjobs', 'msdb.dbo.sysjobhistory'] },
+          evidence: {
+            source_tables: [
+              'ReportServer.dbo.ReportSchedule',
+              'msdb.dbo.sysjobs',
+              'msdb.dbo.sysjobhistory',
+            ],
+          },
         })
       );
     }
@@ -1425,12 +1641,27 @@ class TableauAdapter extends BIConnectorAdapter {
     this.requiredConfig = ['base_url', 'site_id'];
     this.requiredCredentialModes = ['pat', 'service_account'];
     this.streams = [
-      stream('projects', STREAM.object, 'REST GET /api/{version}/sites/{siteId}/projects', { metadata: ['projects'] }),
-      stream('workbooks', STREAM.dashboard, 'REST GET /api/{version}/sites/{siteId}/workbooks', { metadata: ['workbooks', 'views'] }),
-      stream('views', STREAM.report, 'REST GET /api/{version}/sites/{siteId}/views', { metadata: ['views', 'sheets'] }),
-      stream('datasources', STREAM.dataSource, 'REST GET /api/{version}/sites/{siteId}/datasources', { metadata: ['published datasources'] }),
-      stream('metadata_graphql', STREAM.lineage, 'Metadata API GraphQL', { metadata: ['databases', 'tables', 'columns', 'workbook dependencies'] }),
-      stream('usage', STREAM.usage, 'REST view/workbook usage stats', { metadata: ['view counts', 'favorites'] }),
+      stream('projects', STREAM.object, 'REST GET /api/{version}/sites/{siteId}/projects', {
+        metadata: ['projects'],
+      }),
+      stream('workbooks', STREAM.dashboard, 'REST GET /api/{version}/sites/{siteId}/workbooks', {
+        metadata: ['workbooks', 'views'],
+      }),
+      stream('views', STREAM.report, 'REST GET /api/{version}/sites/{siteId}/views', {
+        metadata: ['views', 'sheets'],
+      }),
+      stream(
+        'datasources',
+        STREAM.dataSource,
+        'REST GET /api/{version}/sites/{siteId}/datasources',
+        { metadata: ['published datasources'] }
+      ),
+      stream('metadata_graphql', STREAM.lineage, 'Metadata API GraphQL', {
+        metadata: ['databases', 'tables', 'columns', 'workbook dependencies'],
+      }),
+      stream('usage', STREAM.usage, 'REST view/workbook usage stats', {
+        metadata: ['view counts', 'favorites'],
+      }),
     ];
   }
 }
@@ -1439,7 +1670,14 @@ class DataWarehouseAdapter extends BaseConnectorAdapter {
   constructor(args) {
     super(args);
     this.requiredConfig = ['database'];
-    this.requiredCredentialModes = ['service_account', 'secret_reference', 'managed_identity', 'iam_role', 'workload_identity', 'key_pair'];
+    this.requiredCredentialModes = [
+      'service_account',
+      'secret_reference',
+      'managed_identity',
+      'iam_role',
+      'workload_identity',
+      'key_pair',
+    ];
     this.capability = {
       ...this.capability,
       supports_profiling: true,
@@ -1449,12 +1687,25 @@ class DataWarehouseAdapter extends BaseConnectorAdapter {
     };
     this.streams = [
       stream('schemas', STREAM.object, 'information_schema.schemata', { metadata: ['schemas'] }),
-      stream('tables', STREAM.object, 'information_schema.tables', { metadata: ['tables', 'views'] }),
-      stream('columns', STREAM.column, 'information_schema.columns', { metadata: ['columns', 'types', 'nullability'] }),
-      stream('constraints', STREAM.object, 'information_schema constraints', { metadata: ['primary keys', 'foreign keys'] }),
-      stream('routines', STREAM.object, 'information_schema routines', { metadata: ['procedures', 'functions'] }),
-      stream('usage', STREAM.usage, 'query history / audit views', { cursor: 'event_time', metadata: ['queries', 'access'] }),
-      stream('lineage', STREAM.lineage, 'dependency views or parsed SQL', { metadata: ['object dependencies'] }),
+      stream('tables', STREAM.object, 'information_schema.tables', {
+        metadata: ['tables', 'views'],
+      }),
+      stream('columns', STREAM.column, 'information_schema.columns', {
+        metadata: ['columns', 'types', 'nullability'],
+      }),
+      stream('constraints', STREAM.object, 'information_schema constraints', {
+        metadata: ['primary keys', 'foreign keys'],
+      }),
+      stream('routines', STREAM.object, 'information_schema routines', {
+        metadata: ['procedures', 'functions'],
+      }),
+      stream('usage', STREAM.usage, 'query history / audit views', {
+        cursor: 'event_time',
+        metadata: ['queries', 'access'],
+      }),
+      stream('lineage', STREAM.lineage, 'dependency views or parsed SQL', {
+        metadata: ['object dependencies'],
+      }),
     ];
   }
 }
@@ -1480,7 +1731,15 @@ function objectSchema(object = {}) {
 }
 
 function tableName(object = {}) {
-  return object.table || object.table_name || object.name || object.object_name || String(object.id || '').split('.').pop();
+  return (
+    object.table ||
+    object.table_name ||
+    object.name ||
+    object.object_name ||
+    String(object.id || '')
+      .split('.')
+      .pop()
+  );
 }
 
 function sqlStringLiteral(value = '') {
@@ -1493,9 +1752,14 @@ function normalizeMetadataColumn(column = {}) {
     name,
     column_name: name,
     data_type: column.data_type || column.dataType || column.DATA_TYPE || 'unknown',
-    ordinal_position: column.ordinal_position ?? column.ordinalPosition ?? column.ORDINAL_POSITION ?? null,
+    ordinal_position:
+      column.ordinal_position ?? column.ordinalPosition ?? column.ORDINAL_POSITION ?? null,
     is_nullable: column.is_nullable ?? column.isNullable ?? column.IS_NULLABLE ?? null,
-    max_length: column.max_length ?? column.character_maximum_length ?? column.CHARACTER_MAXIMUM_LENGTH ?? null,
+    max_length:
+      column.max_length ??
+      column.character_maximum_length ??
+      column.CHARACTER_MAXIMUM_LENGTH ??
+      null,
     numeric_precision: column.numeric_precision ?? column.NUMERIC_PRECISION ?? null,
     numeric_scale: column.numeric_scale ?? column.NUMERIC_SCALE ?? null,
     source: column.source || 'live_information_schema',
@@ -1506,7 +1770,12 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
   constructor(args) {
     super(args);
     this.requiredConfig = ['database'];
-    this.requiredCredentialModes = ['service_account', 'secret_reference', 'managed_identity', 'windows_integrated'];
+    this.requiredCredentialModes = [
+      'service_account',
+      'secret_reference',
+      'managed_identity',
+      'windows_integrated',
+    ];
     this.capability = {
       ...this.capability,
       supports_live_read: true,
@@ -1515,14 +1784,30 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
       existing_extractor: 'SqlServerMetadataExtractor',
     };
     this.streams = [
-      stream('schemas', STREAM.object, 'sys.schemas and inventory grouping', { metadata: ['schemas'] }),
-      stream('tables', STREAM.object, 'SqlServerMetadataExtractor.extractTables', { metadata: ['tables', 'indexes', 'constraints'] }),
-      stream('views', STREAM.object, 'SqlServerMetadataExtractor.extractViews', { metadata: ['views', 'dependencies'] }),
-      stream('columns', STREAM.column, 'SqlServerMetadataExtractor.extractAllColumns', { metadata: ['columns', 'types', 'nullability'] }),
-      stream('procedures', STREAM.object, 'SqlServerMetadataExtractor.extractStoredProcedures', { metadata: ['procedures', 'parameters', 'dependencies'] }),
-      stream('functions', STREAM.object, 'SqlServerMetadataExtractor.extractFunctions', { metadata: ['functions', 'parameters', 'dependencies'] }),
-      stream('triggers', STREAM.object, 'SqlServerMetadataExtractor.extractTriggers', { metadata: ['triggers', 'dependencies'] }),
-      stream('relationships', STREAM.lineage, 'SqlServerMetadataExtractor.relationships', { metadata: ['foreign keys', 'dependency edges', 'procedure load edges'] }),
+      stream('schemas', STREAM.object, 'sys.schemas and inventory grouping', {
+        metadata: ['schemas'],
+      }),
+      stream('tables', STREAM.object, 'SqlServerMetadataExtractor.extractTables', {
+        metadata: ['tables', 'indexes', 'constraints'],
+      }),
+      stream('views', STREAM.object, 'SqlServerMetadataExtractor.extractViews', {
+        metadata: ['views', 'dependencies'],
+      }),
+      stream('columns', STREAM.column, 'SqlServerMetadataExtractor.extractAllColumns', {
+        metadata: ['columns', 'types', 'nullability'],
+      }),
+      stream('procedures', STREAM.object, 'SqlServerMetadataExtractor.extractStoredProcedures', {
+        metadata: ['procedures', 'parameters', 'dependencies'],
+      }),
+      stream('functions', STREAM.object, 'SqlServerMetadataExtractor.extractFunctions', {
+        metadata: ['functions', 'parameters', 'dependencies'],
+      }),
+      stream('triggers', STREAM.object, 'SqlServerMetadataExtractor.extractTriggers', {
+        metadata: ['triggers', 'dependencies'],
+      }),
+      stream('relationships', STREAM.lineage, 'SqlServerMetadataExtractor.relationships', {
+        metadata: ['foreign keys', 'dependency edges', 'procedure load edges'],
+      }),
     ];
   }
 
@@ -1535,7 +1820,8 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
         status: this.config.mockConnectionCheck.status || 'ready',
         live_supported: true,
         live_connection_valid: this.config.mockConnectionCheck.live_connection_valid !== false,
-        metadata_discovery_valid: this.config.mockConnectionCheck.metadata_discovery_valid !== false,
+        metadata_discovery_valid:
+          this.config.mockConnectionCheck.metadata_discovery_valid !== false,
         warnings,
         details: this.config.mockConnectionCheck.details || {},
       };
@@ -1552,7 +1838,9 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
       await pool.connect();
       const result = await pool
         .request()
-        .query('SELECT DB_NAME() AS database_name, @@SERVERNAME AS server_name, SYSTEM_USER AS login_name;');
+        .query(
+          'SELECT DB_NAME() AS database_name, @@SERVERNAME AS server_name, SYSTEM_USER AS login_name;'
+        );
       const row = result.recordset?.[0] || {};
       return {
         status: 'ready',
@@ -1651,12 +1939,18 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
     const columns = await runSsrsSqlcmdQuery(this.config, queries.columns, { json: true });
     const columnsByParent = new Map();
     for (const column of columns) {
-      const parentId = column.parent_id || [column.database_name, column.schema_name, column.object_name].filter(Boolean).join('.');
+      const parentId =
+        column.parent_id ||
+        [column.database_name, column.schema_name, column.object_name].filter(Boolean).join('.');
       if (!columnsByParent.has(parentId)) columnsByParent.set(parentId, []);
       columnsByParent.get(parentId).push(normalizeMetadataColumn(column));
     }
     const attachColumns = (item) => {
-      const id = item.id || [item.database_name, item.schema_name, item.object_name || item.name].filter(Boolean).join('.');
+      const id =
+        item.id ||
+        [item.database_name, item.schema_name, item.object_name || item.name]
+          .filter(Boolean)
+          .join('.');
       return {
         ...item,
         database: item.database_name || this.config.database,
@@ -1692,7 +1986,9 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
           asset.object_id,
           asset.qualified_name,
           asset.qualifiedName,
-          [asset.database || this.config.database, objectSchema(asset), tableName(asset)].filter(Boolean).join('.'),
+          [asset.database || this.config.database, objectSchema(asset), tableName(asset)]
+            .filter(Boolean)
+            .join('.'),
           [objectSchema(asset), tableName(asset)].filter(Boolean).join('.'),
           tableName(asset),
         ].filter(Boolean);
@@ -1706,7 +2002,9 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
         status: enriched.some((asset) => asset.columns.length) ? 'succeeded' : 'failed',
         phase: 'metadata_enrichment',
         affected_assets: assets.map((asset) => asset.id || objectName(asset)),
-        enriched_assets: enriched.filter((asset) => asset.columns.length).map((asset) => asset.id || objectName(asset)),
+        enriched_assets: enriched
+          .filter((asset) => asset.columns.length)
+          .map((asset) => asset.id || objectName(asset)),
         assets: enriched,
       };
     }
@@ -1733,7 +2031,9 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
           status: enriched.some((asset) => asset.columns.length) ? 'succeeded' : 'failed',
           phase: 'metadata_enrichment',
           affected_assets: assets.map((asset) => asset.id || objectName(asset)),
-          enriched_assets: enriched.filter((asset) => asset.columns.length).map((asset) => asset.id || objectName(asset)),
+          enriched_assets: enriched
+            .filter((asset) => asset.columns.length)
+            .map((asset) => asset.id || objectName(asset)),
           assets: enriched,
         };
       } catch (err) {
@@ -1768,14 +2068,18 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
         `);
         enriched.push({
           ...asset,
-          columns: (result.recordset || []).map(normalizeMetadataColumn).filter((column) => column.name),
+          columns: (result.recordset || [])
+            .map(normalizeMetadataColumn)
+            .filter((column) => column.name),
         });
       }
       return {
         status: enriched.some((asset) => asset.columns.length) ? 'succeeded' : 'failed',
         phase: 'metadata_enrichment',
         affected_assets: assets.map((asset) => asset.id || objectName(asset)),
-        enriched_assets: enriched.filter((asset) => asset.columns.length).map((asset) => asset.id || objectName(asset)),
+        enriched_assets: enriched
+          .filter((asset) => asset.columns.length)
+          .map((asset) => asset.id || objectName(asset)),
         assets: enriched,
       };
     } catch (err) {
@@ -1812,16 +2116,29 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
       });
 
     if (streamName === 'schemas') {
-      const schemas = new Set((metadata.allObjects || []).map((item) => item.schema).filter(Boolean));
+      const schemas = new Set(
+        (metadata.allObjects || []).map((item) => item.schema).filter(Boolean)
+      );
       return [...schemas].map((schema) =>
-        eventBase({ id: `${metadata.database || this.config.database}.${schema}`, name: schema }, STREAM.object, 'schema')
+        eventBase(
+          { id: `${metadata.database || this.config.database}.${schema}`, name: schema },
+          STREAM.object,
+          'schema'
+        )
       );
     }
-    if (streamName === 'tables') return (metadata.tables || []).map((item) => eventBase(item, STREAM.object, 'table'));
-    if (streamName === 'views') return (metadata.views || []).map((item) => eventBase(item, STREAM.object, 'view'));
-    if (streamName === 'procedures') return (metadata.storedProcedures || []).map((item) => eventBase(item, STREAM.object, 'stored_procedure'));
-    if (streamName === 'functions') return (metadata.functions || []).map((item) => eventBase(item, STREAM.object, 'function'));
-    if (streamName === 'triggers') return (metadata.triggers || []).map((item) => eventBase(item, STREAM.object, 'trigger'));
+    if (streamName === 'tables')
+      return (metadata.tables || []).map((item) => eventBase(item, STREAM.object, 'table'));
+    if (streamName === 'views')
+      return (metadata.views || []).map((item) => eventBase(item, STREAM.object, 'view'));
+    if (streamName === 'procedures')
+      return (metadata.storedProcedures || []).map((item) =>
+        eventBase(item, STREAM.object, 'stored_procedure')
+      );
+    if (streamName === 'functions')
+      return (metadata.functions || []).map((item) => eventBase(item, STREAM.object, 'function'));
+    if (streamName === 'triggers')
+      return (metadata.triggers || []).map((item) => eventBase(item, STREAM.object, 'trigger'));
     if (streamName === 'columns') {
       return [...(metadata.tables || []), ...(metadata.views || [])].flatMap((object) =>
         (object.columns || []).map((column) =>
@@ -1849,7 +2166,13 @@ class SqlServerLiveAdapter extends DataWarehouseAdapter {
           name: edge.type || edge.edgeType || 'sql_dependency',
           object_type: 'lineage_edge',
           attributes: edge,
-          lineage: [{ from: edge.fromTable || edge.from, to: edge.toTable || edge.to, type: edge.type || edge.edgeType }],
+          lineage: [
+            {
+              from: edge.fromTable || edge.from,
+              to: edge.toTable || edge.to,
+              type: edge.type || edge.edgeType,
+            },
+          ],
           confidence: edge.confidence || 0.75,
         })
       );
@@ -1862,13 +2185,31 @@ class CloudStorageAdapter extends BaseConnectorAdapter {
   constructor(args) {
     super(args);
     this.requiredConfig = ['account'];
-    this.requiredCredentialModes = ['managed_identity', 'service_principal', 'iam_role', 'workload_identity', 'access_key_reference', 'sas_reference'];
+    this.requiredCredentialModes = [
+      'managed_identity',
+      'service_principal',
+      'iam_role',
+      'workload_identity',
+      'access_key_reference',
+      'sas_reference',
+    ];
     this.streams = [
-      stream('containers', STREAM.object, 'list buckets/containers', { metadata: ['buckets', 'containers'] }),
-      stream('objects', STREAM.object, 'list object metadata', { cursor: 'last_modified', metadata: ['paths', 'size', 'etag', 'last modified'] }),
-      stream('schemas', STREAM.dataset, 'infer schema from safe samples or manifests', { metadata: ['file formats', 'schemas'] }),
-      stream('classifications', STREAM.object, 'classification tags and labels', { metadata: ['sensitivity', 'policy labels'] }),
-      stream('lineage', STREAM.lineage, 'storage path dependencies', { metadata: ['path -> dataset'] }),
+      stream('containers', STREAM.object, 'list buckets/containers', {
+        metadata: ['buckets', 'containers'],
+      }),
+      stream('objects', STREAM.object, 'list object metadata', {
+        cursor: 'last_modified',
+        metadata: ['paths', 'size', 'etag', 'last modified'],
+      }),
+      stream('schemas', STREAM.dataset, 'infer schema from safe samples or manifests', {
+        metadata: ['file formats', 'schemas'],
+      }),
+      stream('classifications', STREAM.object, 'classification tags and labels', {
+        metadata: ['sensitivity', 'policy labels'],
+      }),
+      stream('lineage', STREAM.lineage, 'storage path dependencies', {
+        metadata: ['path -> dataset'],
+      }),
     ];
   }
 }
@@ -1877,13 +2218,29 @@ class CloudPlatformAdapter extends BaseConnectorAdapter {
   constructor(args) {
     super(args);
     this.requiredConfig = ['account'];
-    this.requiredCredentialModes = ['managed_identity', 'service_principal', 'iam_role', 'workload_identity', 'service_account'];
+    this.requiredCredentialModes = [
+      'managed_identity',
+      'service_principal',
+      'iam_role',
+      'workload_identity',
+      'service_account',
+    ];
     this.streams = [
-      stream('assets', STREAM.object, 'catalog/datamap assets', { metadata: ['registered assets'] }),
-      stream('schemas', STREAM.dataset, 'catalog schemas', { metadata: ['schemas', 'tables', 'columns'] }),
-      stream('classifications', STREAM.object, 'catalog classifications', { metadata: ['tags', 'sensitivity'] }),
-      stream('glossary', STREAM.object, 'catalog glossary', { metadata: ['terms', 'relationships'] }),
-      stream('lineage', STREAM.lineage, 'catalog lineage APIs', { metadata: ['upstream', 'downstream'] }),
+      stream('assets', STREAM.object, 'catalog/datamap assets', {
+        metadata: ['registered assets'],
+      }),
+      stream('schemas', STREAM.dataset, 'catalog schemas', {
+        metadata: ['schemas', 'tables', 'columns'],
+      }),
+      stream('classifications', STREAM.object, 'catalog classifications', {
+        metadata: ['tags', 'sensitivity'],
+      }),
+      stream('glossary', STREAM.object, 'catalog glossary', {
+        metadata: ['terms', 'relationships'],
+      }),
+      stream('lineage', STREAM.lineage, 'catalog lineage APIs', {
+        metadata: ['upstream', 'downstream'],
+      }),
     ];
   }
 }
@@ -1892,14 +2249,31 @@ class PipelineAdapter extends BaseConnectorAdapter {
   constructor(args) {
     super(args);
     this.requiredConfig = ['base_url'];
-    this.requiredCredentialModes = ['managed_identity', 'service_principal', 'basic_auth', 'bearer_token_reference', 'api_token_reference', 'repo_reference'];
+    this.requiredCredentialModes = [
+      'managed_identity',
+      'service_principal',
+      'basic_auth',
+      'bearer_token_reference',
+      'api_token_reference',
+      'repo_reference',
+    ];
     this.streams = [
-      stream('pipelines', STREAM.object, 'pipelines/dags/jobs endpoint', { metadata: ['pipelines', 'jobs', 'dags'] }),
-      stream('tasks', STREAM.object, 'tasks/activities endpoint', { metadata: ['tasks', 'activities', 'operators'] }),
+      stream('pipelines', STREAM.object, 'pipelines/dags/jobs endpoint', {
+        metadata: ['pipelines', 'jobs', 'dags'],
+      }),
+      stream('tasks', STREAM.object, 'tasks/activities endpoint', {
+        metadata: ['tasks', 'activities', 'operators'],
+      }),
       stream('datasets', STREAM.dataset, 'datasets endpoint', { metadata: ['pipeline datasets'] }),
-      stream('connections', STREAM.dataSource, 'connections/linked services endpoint', { metadata: ['source and target connections'] }),
-      stream('schedules', STREAM.object, 'triggers/schedules endpoint', { metadata: ['schedules', 'triggers'] }),
-      stream('lineage', STREAM.lineage, 'pipeline dependency graph', { metadata: ['task -> dataset', 'dataset -> task'] }),
+      stream('connections', STREAM.dataSource, 'connections/linked services endpoint', {
+        metadata: ['source and target connections'],
+      }),
+      stream('schedules', STREAM.object, 'triggers/schedules endpoint', {
+        metadata: ['schedules', 'triggers'],
+      }),
+      stream('lineage', STREAM.lineage, 'pipeline dependency graph', {
+        metadata: ['task -> dataset', 'dataset -> task'],
+      }),
     ];
   }
 }
@@ -1915,14 +2289,30 @@ class SsisLiveAdapter extends PipelineAdapter {
       existing_extractor: 'SsisMetadataExtractor',
     };
     this.streams = [
-      stream('catalog', STREAM.object, 'SsisMetadataExtractor.extractCatalogInventory', { metadata: ['folders', 'projects', 'packages'] }),
-      stream('packages', STREAM.object, 'SsisMetadataExtractor.extractPackageXmlMetadata', { metadata: ['packages', 'control flow', 'data flow'] }),
-      stream('tasks', STREAM.object, 'SsisMetadataExtractor XML task parsing', { metadata: ['executables', 'components', 'SQL tasks'] }),
-      stream('connections', STREAM.dataSource, 'SSIS connection managers', { metadata: ['connection managers', 'resolved dynamic connections'] }),
-      stream('parameters', STREAM.object, 'SsisMetadataExtractor.extractParameters', { metadata: ['project and package parameters'] }),
-      stream('environments', STREAM.object, 'SsisMetadataExtractor.extractEnvironments', { metadata: ['environment variables'] }),
-      stream('agent_jobs', STREAM.object, 'SsisMetadataExtractor.extractAgentJobs', { metadata: ['SQL Agent jobs', 'SSIS job steps'] }),
-      stream('lineage', STREAM.lineage, 'SsisMetadataExtractor.buildLineageEdges', { metadata: ['package calls', 'source-target edges', 'SQL task edges'] }),
+      stream('catalog', STREAM.object, 'SsisMetadataExtractor.extractCatalogInventory', {
+        metadata: ['folders', 'projects', 'packages'],
+      }),
+      stream('packages', STREAM.object, 'SsisMetadataExtractor.extractPackageXmlMetadata', {
+        metadata: ['packages', 'control flow', 'data flow'],
+      }),
+      stream('tasks', STREAM.object, 'SsisMetadataExtractor XML task parsing', {
+        metadata: ['executables', 'components', 'SQL tasks'],
+      }),
+      stream('connections', STREAM.dataSource, 'SSIS connection managers', {
+        metadata: ['connection managers', 'resolved dynamic connections'],
+      }),
+      stream('parameters', STREAM.object, 'SsisMetadataExtractor.extractParameters', {
+        metadata: ['project and package parameters'],
+      }),
+      stream('environments', STREAM.object, 'SsisMetadataExtractor.extractEnvironments', {
+        metadata: ['environment variables'],
+      }),
+      stream('agent_jobs', STREAM.object, 'SsisMetadataExtractor.extractAgentJobs', {
+        metadata: ['SQL Agent jobs', 'SSIS job steps'],
+      }),
+      stream('lineage', STREAM.lineage, 'SsisMetadataExtractor.buildLineageEdges', {
+        metadata: ['package calls', 'source-target edges', 'SQL task edges'],
+      }),
     ];
   }
 
@@ -1935,7 +2325,8 @@ class SsisLiveAdapter extends PipelineAdapter {
         status: this.config.mockConnectionCheck.status || 'ready',
         live_supported: true,
         live_connection_valid: this.config.mockConnectionCheck.live_connection_valid !== false,
-        metadata_discovery_valid: this.config.mockConnectionCheck.metadata_discovery_valid !== false,
+        metadata_discovery_valid:
+          this.config.mockConnectionCheck.metadata_discovery_valid !== false,
         warnings,
         details: this.config.mockConnectionCheck.details || {},
       };
@@ -1947,9 +2338,9 @@ class SsisLiveAdapter extends PipelineAdapter {
     const pool = new sqlDriver.ConnectionPool(connectionConfig);
     try {
       await pool.connect();
-      const presentResult = await pool.request().query(
-        "SELECT name FROM sys.databases WHERE name = 'SSISDB' AND state_desc = 'ONLINE';"
-      );
+      const presentResult = await pool
+        .request()
+        .query("SELECT name FROM sys.databases WHERE name = 'SSISDB' AND state_desc = 'ONLINE';");
       const ssisdbPresent = Boolean(presentResult.recordset?.[0]?.name);
       let metadataDiscoveryValid = false;
       if (ssisdbPresent) {
@@ -1971,7 +2362,8 @@ class SsisLiveAdapter extends PipelineAdapter {
           warningEvent({
             connector: this.connector,
             stream: 'connection',
-            message: 'Connected to SQL Server, but SSISDB is not online or not visible to this runtime.',
+            message:
+              'Connected to SQL Server, but SSISDB is not online or not visible to this runtime.',
             details: { phase: 'catalog_probe' },
           })
         );
@@ -2015,7 +2407,8 @@ class SsisLiveAdapter extends PipelineAdapter {
       await extractor.connect();
       try {
         const selectedStreamNames = this.selectedStreams(options).map((item) => item.name);
-        const catalogOnly = selectedStreamNames.every((name) => name === 'catalog') && options.extractXml === false;
+        const catalogOnly =
+          selectedStreamNames.every((name) => name === 'catalog') && options.extractXml === false;
         let metadata;
         if (catalogOnly) {
           const warnings = [];
@@ -2023,7 +2416,9 @@ class SsisLiveAdapter extends PipelineAdapter {
           metadata = {
             extractedAt: new Date().toISOString(),
             ssisdbPresent,
-            catalog: ssisdbPresent ? await extractor.extractCatalogInventory(warnings, options) : [],
+            catalog: ssisdbPresent
+              ? await extractor.extractCatalogInventory(warnings, options)
+              : [],
             parameters: [],
             executables: [],
             environments: { variables: [] },
@@ -2090,32 +2485,65 @@ class SsisLiveAdapter extends PipelineAdapter {
         type,
         connector: this.connector,
         stream: streamName,
-        external_id: item.id || item.packageId || item.packageName || item.project_id || item.project_name || objectName(item),
+        external_id:
+          item.id ||
+          item.packageId ||
+          item.packageName ||
+          item.project_id ||
+          item.project_name ||
+          objectName(item),
         name: objectName(item),
         object_type: objectType,
         attributes: { ...item, ...extra },
         confidence: item.confidence || 0.85,
       });
 
-    if (streamName === 'catalog') return (metadata.catalog || []).map((item) => event(item, STREAM.object, 'ssis_catalog_object'));
-    if (streamName === 'packages') return (metadata.xmlMetadata || []).map((item) => event(item, STREAM.object, 'ssis_package'));
+    if (streamName === 'catalog')
+      return (metadata.catalog || []).map((item) =>
+        event(item, STREAM.object, 'ssis_catalog_object')
+      );
+    if (streamName === 'packages')
+      return (metadata.xmlMetadata || []).map((item) => event(item, STREAM.object, 'ssis_package'));
     if (streamName === 'tasks') {
       return (metadata.xmlMetadata || []).flatMap((pkg) =>
         [
           ...(pkg.sqlTasks || []),
           ...(pkg.packageTasks || []),
           ...(pkg.dataFlowComponents || []),
-        ].map((task) => event({ ...task, id: `${pkg.packageId || pkg.packageName}/${task.taskName || task.componentName || objectName(task)}` }, STREAM.object, 'ssis_task', { package_id: pkg.packageId || pkg.packageName }))
+        ].map((task) =>
+          event(
+            {
+              ...task,
+              id: `${pkg.packageId || pkg.packageName}/${task.taskName || task.componentName || objectName(task)}`,
+            },
+            STREAM.object,
+            'ssis_task',
+            { package_id: pkg.packageId || pkg.packageName }
+          )
+        )
       );
     }
     if (streamName === 'connections') {
       return (metadata.xmlMetadata || []).flatMap((pkg) =>
-        (pkg.connectionManagers || []).map((connection) => event(connection, STREAM.dataSource, 'ssis_connection', { package_id: pkg.packageId || pkg.packageName }))
+        (pkg.connectionManagers || []).map((connection) =>
+          event(connection, STREAM.dataSource, 'ssis_connection', {
+            package_id: pkg.packageId || pkg.packageName,
+          })
+        )
       );
     }
-    if (streamName === 'parameters') return (metadata.parameters || []).map((item) => event(item, STREAM.object, 'ssis_parameter'));
-    if (streamName === 'environments') return (metadata.environments?.variables || []).map((item) => event(item, STREAM.object, 'ssis_environment_variable'));
-    if (streamName === 'agent_jobs') return [...(metadata.agentJobs?.jobs || []), ...(metadata.agentJobs?.ssisSteps || [])].map((item) => event(item, STREAM.object, 'sql_agent_job'));
+    if (streamName === 'parameters')
+      return (metadata.parameters || []).map((item) =>
+        event(item, STREAM.object, 'ssis_parameter')
+      );
+    if (streamName === 'environments')
+      return (metadata.environments?.variables || []).map((item) =>
+        event(item, STREAM.object, 'ssis_environment_variable')
+      );
+    if (streamName === 'agent_jobs')
+      return [...(metadata.agentJobs?.jobs || []), ...(metadata.agentJobs?.ssisSteps || [])].map(
+        (item) => event(item, STREAM.object, 'sql_agent_job')
+      );
     if (streamName === 'lineage') {
       return (metadata.lineageEdges || []).map((edge) =>
         canonicalEvent({
@@ -2141,12 +2569,22 @@ class RepositoryAdapter extends BaseConnectorAdapter {
     this.requiredConfig = ['repo_url'];
     this.requiredCredentialModes = ['oauth_app', 'pat_reference', 'ssh_key_reference'];
     this.streams = [
-      stream('repositories', STREAM.object, 'provider repository API', { metadata: ['repos', 'branches'] }),
-      stream('python_scripts', STREAM.object, 'repository tree *.py', { metadata: ['python ETL scripts', 'DAG files'] }),
-      stream('sql_files', STREAM.object, 'repository tree *.sql', { metadata: ['SQL transformations'] }),
-      stream('dbt_artifacts', STREAM.semanticModel, 'manifest.json/catalog.json/sources.json', { metadata: ['dbt models', 'sources', 'tests'] }),
+      stream('repositories', STREAM.object, 'provider repository API', {
+        metadata: ['repos', 'branches'],
+      }),
+      stream('python_scripts', STREAM.object, 'repository tree *.py', {
+        metadata: ['python ETL scripts', 'DAG files'],
+      }),
+      stream('sql_files', STREAM.object, 'repository tree *.sql', {
+        metadata: ['SQL transformations'],
+      }),
+      stream('dbt_artifacts', STREAM.semanticModel, 'manifest.json/catalog.json/sources.json', {
+        metadata: ['dbt models', 'sources', 'tests'],
+      }),
       stream('notebooks', STREAM.object, 'repository tree *.ipynb', { metadata: ['notebooks'] }),
-      stream('lineage', STREAM.lineage, 'parsed code dependencies', { metadata: ['code -> table', 'model -> source'] }),
+      stream('lineage', STREAM.lineage, 'parsed code dependencies', {
+        metadata: ['code -> table', 'model -> source'],
+      }),
     ];
   }
 }
@@ -2157,10 +2595,16 @@ class ApiAdapter extends BaseConnectorAdapter {
     this.requiredConfig = ['spec_url'];
     this.requiredCredentialModes = ['none', 'api_token_reference', 'oauth'];
     this.streams = [
-      stream('openapi_spec', STREAM.object, 'OpenAPI document', { metadata: ['paths', 'components', 'schemas'] }),
+      stream('openapi_spec', STREAM.object, 'OpenAPI document', {
+        metadata: ['paths', 'components', 'schemas'],
+      }),
       stream('endpoints', STREAM.object, 'OpenAPI paths', { metadata: ['operations', 'methods'] }),
-      stream('schemas', STREAM.dataset, 'OpenAPI components.schemas', { metadata: ['request and response schemas'] }),
-      stream('lineage', STREAM.lineage, 'API schema to data product links', { metadata: ['endpoint -> schema'] }),
+      stream('schemas', STREAM.dataset, 'OpenAPI components.schemas', {
+        metadata: ['request and response schemas'],
+      }),
+      stream('lineage', STREAM.lineage, 'API schema to data product links', {
+        metadata: ['endpoint -> schema'],
+      }),
     ];
   }
 }
@@ -2171,11 +2615,21 @@ class StreamingAdapter extends BaseConnectorAdapter {
     this.requiredConfig = ['cluster'];
     this.requiredCredentialModes = ['service_account', 'api_key_reference', 'secret_reference'];
     this.streams = [
-      stream('clusters', STREAM.object, 'cluster metadata endpoint', { metadata: ['clusters', 'brokers'] }),
-      stream('topics', STREAM.dataset, 'topic listing endpoint', { metadata: ['topics', 'partitions', 'retention'] }),
-      stream('schemas', STREAM.dataset, 'schema registry endpoint', { metadata: ['subjects', 'versions', 'fields'] }),
-      stream('consumers', STREAM.object, 'consumer groups endpoint', { metadata: ['consumer groups', 'offsets'] }),
-      stream('lineage', STREAM.lineage, 'producer and consumer topic relationships', { metadata: ['producer -> topic', 'topic -> consumer'] }),
+      stream('clusters', STREAM.object, 'cluster metadata endpoint', {
+        metadata: ['clusters', 'brokers'],
+      }),
+      stream('topics', STREAM.dataset, 'topic listing endpoint', {
+        metadata: ['topics', 'partitions', 'retention'],
+      }),
+      stream('schemas', STREAM.dataset, 'schema registry endpoint', {
+        metadata: ['subjects', 'versions', 'fields'],
+      }),
+      stream('consumers', STREAM.object, 'consumer groups endpoint', {
+        metadata: ['consumer groups', 'offsets'],
+      }),
+      stream('lineage', STREAM.lineage, 'producer and consumer topic relationships', {
+        metadata: ['producer -> topic', 'topic -> consumer'],
+      }),
     ];
   }
 }
@@ -2184,14 +2638,31 @@ class ErpCrmAdapter extends BaseConnectorAdapter {
   constructor(args) {
     super(args);
     this.requiredConfig = ['base_url'];
-    this.requiredCredentialModes = ['connected_app', 'oauth', 'service_account', 'secret_reference'];
+    this.requiredCredentialModes = [
+      'connected_app',
+      'oauth',
+      'service_account',
+      'secret_reference',
+    ];
     this.streams = [
-      stream('objects', STREAM.object, 'object metadata endpoint', { metadata: ['business objects', 'entities'] }),
-      stream('fields', STREAM.column, 'field metadata endpoint', { metadata: ['fields', 'types', 'relationships'] }),
-      stream('relationships', STREAM.lineage, 'relationship metadata endpoint', { metadata: ['parent-child relationships'] }),
-      stream('reports', STREAM.report, 'report metadata endpoint', { metadata: ['reports', 'folders'] }),
-      stream('dashboards', STREAM.dashboard, 'dashboard metadata endpoint', { metadata: ['dashboards', 'components'] }),
-      stream('lineage', STREAM.lineage, 'object/report dependency endpoint', { metadata: ['report -> object', 'object -> object'] }),
+      stream('objects', STREAM.object, 'object metadata endpoint', {
+        metadata: ['business objects', 'entities'],
+      }),
+      stream('fields', STREAM.column, 'field metadata endpoint', {
+        metadata: ['fields', 'types', 'relationships'],
+      }),
+      stream('relationships', STREAM.lineage, 'relationship metadata endpoint', {
+        metadata: ['parent-child relationships'],
+      }),
+      stream('reports', STREAM.report, 'report metadata endpoint', {
+        metadata: ['reports', 'folders'],
+      }),
+      stream('dashboards', STREAM.dashboard, 'dashboard metadata endpoint', {
+        metadata: ['dashboards', 'components'],
+      }),
+      stream('lineage', STREAM.lineage, 'object/report dependency endpoint', {
+        metadata: ['report -> object', 'object -> object'],
+      }),
     ];
   }
 }
@@ -2202,117 +2673,219 @@ class MlFeatureAdapter extends BaseConnectorAdapter {
     this.requiredConfig = ['workspace'];
     this.requiredCredentialModes = ['service_account', 'api_token_reference', 'oauth'];
     this.streams = [
-      stream('feature_sets', STREAM.dataset, 'feature registry endpoint', { metadata: ['feature sets', 'entities'] }),
-      stream('features', STREAM.column, 'feature metadata endpoint', { metadata: ['features', 'types', 'owners'] }),
-      stream('models', STREAM.object, 'model registry endpoint', { metadata: ['models', 'versions'] }),
-      stream('lineage', STREAM.lineage, 'feature/model lineage endpoint', { metadata: ['source -> feature', 'feature -> model'] }),
+      stream('feature_sets', STREAM.dataset, 'feature registry endpoint', {
+        metadata: ['feature sets', 'entities'],
+      }),
+      stream('features', STREAM.column, 'feature metadata endpoint', {
+        metadata: ['features', 'types', 'owners'],
+      }),
+      stream('models', STREAM.object, 'model registry endpoint', {
+        metadata: ['models', 'versions'],
+      }),
+      stream('lineage', STREAM.lineage, 'feature/model lineage endpoint', {
+        metadata: ['source -> feature', 'feature -> model'],
+      }),
     ];
   }
 }
 
-function documentedBridge({ requiredConfig, docs = [], kind = 'documented_metadata_bridge', streams = [] }) {
+function documentedBridge({
+  requiredConfig,
+  docs = [],
+  kind = 'documented_metadata_bridge',
+  streams = [],
+}) {
   return { requiredConfig, docs, kind, streams };
 }
 
 const DOCUMENTED_BRIDGES = {
   sql_server: documentedBridge({
     kind: 'existing_extractor_bridge',
-    docs: ['https://learn.microsoft.com/sql/relational-databases/system-information-schema-views/system-information-schema-views-transact-sql'],
+    docs: [
+      'https://learn.microsoft.com/sql/relational-databases/system-information-schema-views/system-information-schema-views-transact-sql',
+    ],
   }),
   ssis: documentedBridge({
     kind: 'existing_extractor_bridge',
-    docs: ['https://learn.microsoft.com/sql/integration-services/catalog/integration-services-ssis-catalog'],
+    docs: [
+      'https://learn.microsoft.com/sql/integration-services/catalog/integration-services-ssis-catalog',
+    ],
   }),
   postgresql: documentedBridge({
     requiredConfig: ['host', 'database'],
     docs: ['https://www.postgresql.org/docs/current/infoschema.html'],
     streams: [
       stream('schemas', STREAM.object, 'information_schema.schemata', { metadata: ['schemas'] }),
-      stream('tables', STREAM.object, 'information_schema.tables', { aliases: ['tables', 'views'], metadata: ['tables', 'views'] }),
-      stream('columns', STREAM.column, 'information_schema.columns', { aliases: ['columns', 'fields'], metadata: ['columns', 'data types'] }),
-      stream('constraints', STREAM.object, 'information_schema.table_constraints', { metadata: ['primary keys', 'foreign keys'] }),
-      stream('routines', STREAM.object, 'information_schema.routines', { metadata: ['functions', 'procedures'] }),
-      stream('lineage', STREAM.lineage, 'pg_depend / parsed SQL dependencies', { metadata: ['dependencies'] }),
+      stream('tables', STREAM.object, 'information_schema.tables', {
+        aliases: ['tables', 'views'],
+        metadata: ['tables', 'views'],
+      }),
+      stream('columns', STREAM.column, 'information_schema.columns', {
+        aliases: ['columns', 'fields'],
+        metadata: ['columns', 'data types'],
+      }),
+      stream('constraints', STREAM.object, 'information_schema.table_constraints', {
+        metadata: ['primary keys', 'foreign keys'],
+      }),
+      stream('routines', STREAM.object, 'information_schema.routines', {
+        metadata: ['functions', 'procedures'],
+      }),
+      stream('lineage', STREAM.lineage, 'pg_depend / parsed SQL dependencies', {
+        metadata: ['dependencies'],
+      }),
     ],
   }),
   snowflake: documentedBridge({
     requiredConfig: ['account', 'database'],
-    docs: ['https://docs.snowflake.com/en/sql-reference/info-schema', 'https://docs.snowflake.com/en/sql-reference/account-usage'],
+    docs: [
+      'https://docs.snowflake.com/en/sql-reference/info-schema',
+      'https://docs.snowflake.com/en/sql-reference/account-usage',
+    ],
     streams: [
-      stream('databases', STREAM.object, 'SHOW DATABASES / ACCOUNT_USAGE.DATABASES', { metadata: ['databases'] }),
+      stream('databases', STREAM.object, 'SHOW DATABASES / ACCOUNT_USAGE.DATABASES', {
+        metadata: ['databases'],
+      }),
       stream('schemas', STREAM.object, 'INFORMATION_SCHEMA.SCHEMATA', { metadata: ['schemas'] }),
-      stream('tables', STREAM.object, 'INFORMATION_SCHEMA.TABLES', { metadata: ['tables', 'views'] }),
-      stream('columns', STREAM.column, 'INFORMATION_SCHEMA.COLUMNS', { metadata: ['columns', 'data types'] }),
-      stream('tags', STREAM.object, 'ACCOUNT_USAGE.TAG_REFERENCES', { metadata: ['tags', 'classifications'] }),
+      stream('tables', STREAM.object, 'INFORMATION_SCHEMA.TABLES', {
+        metadata: ['tables', 'views'],
+      }),
+      stream('columns', STREAM.column, 'INFORMATION_SCHEMA.COLUMNS', {
+        metadata: ['columns', 'data types'],
+      }),
+      stream('tags', STREAM.object, 'ACCOUNT_USAGE.TAG_REFERENCES', {
+        metadata: ['tags', 'classifications'],
+      }),
       stream('usage', STREAM.usage, 'ACCOUNT_USAGE.QUERY_HISTORY', { metadata: ['query usage'] }),
-      stream('lineage', STREAM.lineage, 'ACCESS_HISTORY / OBJECT_DEPENDENCIES', { metadata: ['object dependencies'] }),
+      stream('lineage', STREAM.lineage, 'ACCESS_HISTORY / OBJECT_DEPENDENCIES', {
+        metadata: ['object dependencies'],
+      }),
     ],
   }),
   bigquery: documentedBridge({
     requiredConfig: ['project_id'],
     docs: ['https://cloud.google.com/bigquery/docs/information-schema-intro'],
     streams: [
-      stream('datasets', STREAM.object, 'BigQuery datasets.list / INFORMATION_SCHEMA.SCHEMATA', { metadata: ['datasets'] }),
-      stream('tables', STREAM.object, 'INFORMATION_SCHEMA.TABLES', { metadata: ['tables', 'views'] }),
-      stream('columns', STREAM.column, 'INFORMATION_SCHEMA.COLUMNS', { metadata: ['columns', 'policy tags'] }),
-      stream('jobs', STREAM.usage, 'INFORMATION_SCHEMA.JOBS_BY_PROJECT', { metadata: ['query jobs'] }),
-      stream('lineage', STREAM.lineage, 'Data Lineage API / parsed query jobs', { metadata: ['job lineage'] }),
+      stream('datasets', STREAM.object, 'BigQuery datasets.list / INFORMATION_SCHEMA.SCHEMATA', {
+        metadata: ['datasets'],
+      }),
+      stream('tables', STREAM.object, 'INFORMATION_SCHEMA.TABLES', {
+        metadata: ['tables', 'views'],
+      }),
+      stream('columns', STREAM.column, 'INFORMATION_SCHEMA.COLUMNS', {
+        metadata: ['columns', 'policy tags'],
+      }),
+      stream('jobs', STREAM.usage, 'INFORMATION_SCHEMA.JOBS_BY_PROJECT', {
+        metadata: ['query jobs'],
+      }),
+      stream('lineage', STREAM.lineage, 'Data Lineage API / parsed query jobs', {
+        metadata: ['job lineage'],
+      }),
     ],
   }),
   databricks: documentedBridge({
     requiredConfig: ['workspace_url'],
-    docs: ['https://docs.databricks.com/api/workspace/catalogs', 'https://docs.databricks.com/api/workspace/tables'],
+    docs: [
+      'https://docs.databricks.com/api/workspace/catalogs',
+      'https://docs.databricks.com/api/workspace/tables',
+    ],
     streams: [
-      stream('catalogs', STREAM.object, 'Unity Catalog GET /api/2.1/unity-catalog/catalogs', { metadata: ['catalogs'] }),
+      stream('catalogs', STREAM.object, 'Unity Catalog GET /api/2.1/unity-catalog/catalogs', {
+        metadata: ['catalogs'],
+      }),
       stream('schemas', STREAM.object, 'Unity Catalog schemas endpoint', { metadata: ['schemas'] }),
-      stream('tables', STREAM.object, 'Unity Catalog tables endpoint', { metadata: ['tables', 'views'] }),
+      stream('tables', STREAM.object, 'Unity Catalog tables endpoint', {
+        metadata: ['tables', 'views'],
+      }),
       stream('columns', STREAM.column, 'Unity Catalog table schema', { metadata: ['columns'] }),
       stream('jobs', STREAM.object, 'Jobs API list jobs', { metadata: ['jobs'] }),
-      stream('notebooks', STREAM.object, 'Workspace API list/export metadata', { metadata: ['notebooks'] }),
+      stream('notebooks', STREAM.object, 'Workspace API list/export metadata', {
+        metadata: ['notebooks'],
+      }),
       stream('lineage', STREAM.lineage, 'Unity Catalog lineage API', { metadata: ['lineage'] }),
     ],
   }),
   azure_purview: documentedBridge({
     requiredConfig: ['account'],
-    docs: ['https://learn.microsoft.com/purview/data-map-search-apis', 'https://learn.microsoft.com/purview/catalog-lineage-user-guide'],
+    docs: [
+      'https://learn.microsoft.com/purview/data-map-search-apis',
+      'https://learn.microsoft.com/purview/catalog-lineage-user-guide',
+    ],
     streams: [
-      stream('assets', STREAM.object, 'Purview Data Map search/query APIs', { metadata: ['assets'] }),
+      stream('assets', STREAM.object, 'Purview Data Map search/query APIs', {
+        metadata: ['assets'],
+      }),
       stream('schemas', STREAM.dataset, 'Purview entity relationships', { metadata: ['schemas'] }),
-      stream('classifications', STREAM.object, 'Purview classifications', { metadata: ['classifications'] }),
+      stream('classifications', STREAM.object, 'Purview classifications', {
+        metadata: ['classifications'],
+      }),
       stream('glossary', STREAM.object, 'Purview glossary APIs', { metadata: ['terms'] }),
       stream('lineage', STREAM.lineage, 'Purview lineage APIs', { metadata: ['process lineage'] }),
     ],
   }),
   azure_storage: documentedBridge({
     requiredConfig: ['account'],
-    docs: ['https://learn.microsoft.com/rest/api/storageservices/list-containers2', 'https://learn.microsoft.com/rest/api/storageservices/list-blobs'],
+    docs: [
+      'https://learn.microsoft.com/rest/api/storageservices/list-containers2',
+      'https://learn.microsoft.com/rest/api/storageservices/list-blobs',
+    ],
     streams: [
-      stream('containers', STREAM.object, 'Blob service List Containers', { metadata: ['containers'] }),
-      stream('objects', STREAM.object, 'Blob service List Blobs', { metadata: ['paths', 'last modified'] }),
-      stream('schemas', STREAM.dataset, 'safe file manifest/schema inference', { metadata: ['schemas'] }),
-      stream('classifications', STREAM.object, 'tags / index tags / policy labels', { metadata: ['classifications'] }),
-      stream('lineage', STREAM.lineage, 'path-to-dataset mappings', { metadata: ['storage lineage'] }),
+      stream('containers', STREAM.object, 'Blob service List Containers', {
+        metadata: ['containers'],
+      }),
+      stream('objects', STREAM.object, 'Blob service List Blobs', {
+        metadata: ['paths', 'last modified'],
+      }),
+      stream('schemas', STREAM.dataset, 'safe file manifest/schema inference', {
+        metadata: ['schemas'],
+      }),
+      stream('classifications', STREAM.object, 'tags / index tags / policy labels', {
+        metadata: ['classifications'],
+      }),
+      stream('lineage', STREAM.lineage, 'path-to-dataset mappings', {
+        metadata: ['storage lineage'],
+      }),
     ],
   }),
   azure_data_factory: documentedBridge({
     requiredConfig: ['subscription_id', 'resource_group', 'factory_name'],
-    docs: ['https://learn.microsoft.com/rest/api/datafactory/pipelines/list-by-factory', 'https://learn.microsoft.com/rest/api/datafactory/datasets/list-by-factory'],
+    docs: [
+      'https://learn.microsoft.com/rest/api/datafactory/pipelines/list-by-factory',
+      'https://learn.microsoft.com/rest/api/datafactory/datasets/list-by-factory',
+    ],
     streams: [
-      stream('pipelines', STREAM.object, 'ADF Pipelines_ListByFactory', { metadata: ['pipelines'] }),
-      stream('tasks', STREAM.object, 'ADF pipeline activities', { aliases: ['activities', 'tasks'], metadata: ['activities'] }),
+      stream('pipelines', STREAM.object, 'ADF Pipelines_ListByFactory', {
+        metadata: ['pipelines'],
+      }),
+      stream('tasks', STREAM.object, 'ADF pipeline activities', {
+        aliases: ['activities', 'tasks'],
+        metadata: ['activities'],
+      }),
       stream('datasets', STREAM.dataset, 'ADF Datasets_ListByFactory', { metadata: ['datasets'] }),
-      stream('connections', STREAM.dataSource, 'ADF LinkedServices_ListByFactory', { aliases: ['linked_services', 'connections'], metadata: ['linked services'] }),
-      stream('schedules', STREAM.object, 'ADF Triggers_ListByFactory', { aliases: ['triggers'], metadata: ['triggers'] }),
-      stream('lineage', STREAM.lineage, 'pipeline activity input/output dependencies', { metadata: ['pipeline lineage'] }),
+      stream('connections', STREAM.dataSource, 'ADF LinkedServices_ListByFactory', {
+        aliases: ['linked_services', 'connections'],
+        metadata: ['linked services'],
+      }),
+      stream('schedules', STREAM.object, 'ADF Triggers_ListByFactory', {
+        aliases: ['triggers'],
+        metadata: ['triggers'],
+      }),
+      stream('lineage', STREAM.lineage, 'pipeline activity input/output dependencies', {
+        metadata: ['pipeline lineage'],
+      }),
     ],
   }),
   aws_glue: documentedBridge({
     requiredConfig: ['region'],
-    docs: ['https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-databases.html', 'https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-tables.html'],
+    docs: [
+      'https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-databases.html',
+      'https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-tables.html',
+    ],
     streams: [
       stream('databases', STREAM.object, 'Glue GetDatabases', { metadata: ['databases'] }),
       stream('tables', STREAM.object, 'Glue GetTables', { metadata: ['tables'] }),
-      stream('columns', STREAM.column, 'Glue table StorageDescriptor.Columns', { metadata: ['columns'] }),
+      stream('columns', STREAM.column, 'Glue table StorageDescriptor.Columns', {
+        metadata: ['columns'],
+      }),
       stream('partitions', STREAM.object, 'Glue GetPartitions', { metadata: ['partitions'] }),
       stream('jobs', STREAM.object, 'Glue GetJobs', { metadata: ['jobs'] }),
       stream('lineage', STREAM.lineage, 'Glue job/catalog dependencies', { metadata: ['lineage'] }),
@@ -2320,12 +2893,17 @@ const DOCUMENTED_BRIDGES = {
   }),
   aws_s3: documentedBridge({
     requiredConfig: ['region'],
-    docs: ['https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html', 'https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html'],
+    docs: [
+      'https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html',
+      'https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html',
+    ],
     streams: [
       stream('buckets', STREAM.object, 'S3 ListBuckets', { metadata: ['buckets'] }),
       stream('objects', STREAM.object, 'S3 ListObjectsV2', { metadata: ['objects', 'prefixes'] }),
       stream('schemas', STREAM.dataset, 'manifest/schema inference', { metadata: ['schemas'] }),
-      stream('classifications', STREAM.object, 'object tags / Macie findings', { metadata: ['classifications'] }),
+      stream('classifications', STREAM.object, 'object tags / Macie findings', {
+        metadata: ['classifications'],
+      }),
       stream('lineage', STREAM.lineage, 'bucket/prefix dataset links', { metadata: ['lineage'] }),
     ],
   }),
@@ -2334,47 +2912,91 @@ const DOCUMENTED_BRIDGES = {
     docs: ['https://docs.aws.amazon.com/redshift/latest/dg/c_intro_catalog_views.html'],
     streams: [
       stream('schemas', STREAM.object, 'SVV_ALL_SCHEMAS', { metadata: ['schemas'] }),
-      stream('tables', STREAM.object, 'SVV_ALL_TABLES / SVV_VIEWS', { metadata: ['tables', 'views'] }),
+      stream('tables', STREAM.object, 'SVV_ALL_TABLES / SVV_VIEWS', {
+        metadata: ['tables', 'views'],
+      }),
       stream('columns', STREAM.column, 'SVV_ALL_COLUMNS', { metadata: ['columns'] }),
       stream('usage', STREAM.usage, 'SYS_QUERY_HISTORY', { metadata: ['query history'] }),
-      stream('lineage', STREAM.lineage, 'SVV_TABLE_INFO / parsed SQL dependencies', { metadata: ['dependencies'] }),
+      stream('lineage', STREAM.lineage, 'SVV_TABLE_INFO / parsed SQL dependencies', {
+        metadata: ['dependencies'],
+      }),
     ],
   }),
   gcp_dataplex: documentedBridge({
     requiredConfig: ['project_id'],
-    docs: ['https://cloud.google.com/dataplex/docs/reference/rest', 'https://cloud.google.com/data-catalog/docs/reference/rest'],
+    docs: [
+      'https://cloud.google.com/dataplex/docs/reference/rest',
+      'https://cloud.google.com/data-catalog/docs/reference/rest',
+    ],
     streams: [
-      stream('lakes', STREAM.object, 'Dataplex projects.locations.lakes.list', { metadata: ['lakes'] }),
+      stream('lakes', STREAM.object, 'Dataplex projects.locations.lakes.list', {
+        metadata: ['lakes'],
+      }),
       stream('zones', STREAM.object, 'Dataplex zones.list', { metadata: ['zones'] }),
-      stream('entries', STREAM.object, 'Data Catalog entries.search', { aliases: ['assets', 'entries'], metadata: ['entries'] }),
+      stream('entries', STREAM.object, 'Data Catalog entries.search', {
+        aliases: ['assets', 'entries'],
+        metadata: ['entries'],
+      }),
       stream('schemas', STREAM.dataset, 'Entry schema metadata', { metadata: ['schemas'] }),
-      stream('classifications', STREAM.object, 'policy tags / aspects', { metadata: ['policy tags'] }),
-      stream('lineage', STREAM.lineage, 'Data Lineage API processes/runs/events', { metadata: ['lineage'] }),
+      stream('classifications', STREAM.object, 'policy tags / aspects', {
+        metadata: ['policy tags'],
+      }),
+      stream('lineage', STREAM.lineage, 'Data Lineage API processes/runs/events', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   gcs: documentedBridge({
     requiredConfig: ['project_id'],
-    docs: ['https://cloud.google.com/storage/docs/json_api/v1/buckets/list', 'https://cloud.google.com/storage/docs/json_api/v1/objects/list'],
+    docs: [
+      'https://cloud.google.com/storage/docs/json_api/v1/buckets/list',
+      'https://cloud.google.com/storage/docs/json_api/v1/objects/list',
+    ],
     streams: [
       stream('buckets', STREAM.object, 'GCS buckets.list', { metadata: ['buckets'] }),
       stream('objects', STREAM.object, 'GCS objects.list', { metadata: ['objects'] }),
       stream('schemas', STREAM.dataset, 'manifest/schema inference', { metadata: ['schemas'] }),
-      stream('classifications', STREAM.object, 'object metadata / policy tags', { metadata: ['classifications'] }),
+      stream('classifications', STREAM.object, 'object metadata / policy tags', {
+        metadata: ['classifications'],
+      }),
       stream('lineage', STREAM.lineage, 'bucket/object dataset links', { metadata: ['lineage'] }),
     ],
   }),
   power_bi: documentedBridge({
     requiredConfig: ['tenant_id'],
-    docs: ['https://learn.microsoft.com/rest/api/power-bi/admin/workspace-info-post-workspace-info'],
+    docs: [
+      'https://learn.microsoft.com/rest/api/power-bi/admin/workspace-info-post-workspace-info',
+    ],
     streams: [
-      stream('workspaces', STREAM.object, 'GET /v1.0/myorg/admin/groups?$top=5000', { metadata: ['workspaces'] }),
-      stream('dashboards', STREAM.dashboard, 'GET /v1.0/myorg/admin/dashboards', { metadata: ['dashboards'] }),
+      stream('workspaces', STREAM.object, 'GET /v1.0/myorg/admin/groups?$top=5000', {
+        metadata: ['workspaces'],
+      }),
+      stream('dashboards', STREAM.dashboard, 'GET /v1.0/myorg/admin/dashboards', {
+        metadata: ['dashboards'],
+      }),
       stream('reports', STREAM.report, 'GET /v1.0/myorg/admin/reports', { metadata: ['reports'] }),
-      stream('datasets', STREAM.dataset, 'GET /v1.0/myorg/admin/datasets', { metadata: ['datasets'] }),
-      stream('scanner_metadata', STREAM.semanticModel, 'POST /v1.0/myorg/admin/workspaces/getInfo', { aliases: ['semantic_models', 'models'], method: 'POST', metadata: ['tables', 'columns', 'measures'] }),
-      stream('datasources', STREAM.dataSource, 'GET dataset datasources', { metadata: ['datasources'] }),
-      stream('activity_events', STREAM.usage, 'GET /v1.0/myorg/admin/activityevents', { metadata: ['activity events'] }),
-      stream('lineage', STREAM.lineage, 'Power BI artifact relationships', { metadata: ['dataset-report-dashboard lineage'] }),
+      stream('datasets', STREAM.dataset, 'GET /v1.0/myorg/admin/datasets', {
+        metadata: ['datasets'],
+      }),
+      stream(
+        'scanner_metadata',
+        STREAM.semanticModel,
+        'POST /v1.0/myorg/admin/workspaces/getInfo',
+        {
+          aliases: ['semantic_models', 'models'],
+          method: 'POST',
+          metadata: ['tables', 'columns', 'measures'],
+        }
+      ),
+      stream('datasources', STREAM.dataSource, 'GET dataset datasources', {
+        metadata: ['datasources'],
+      }),
+      stream('activity_events', STREAM.usage, 'GET /v1.0/myorg/admin/activityevents', {
+        metadata: ['activity events'],
+      }),
+      stream('lineage', STREAM.lineage, 'Power BI artifact relationships', {
+        metadata: ['dataset-report-dashboard lineage'],
+      }),
     ],
   }),
   microstrategy_cloud: documentedBridge({
@@ -2386,58 +3008,109 @@ const DOCUMENTED_BRIDGES = {
       stream('documents', STREAM.report, 'GET /api/documents', { metadata: ['documents'] }),
       stream('reports', STREAM.report, 'GET /api/v2/reports', { metadata: ['reports'] }),
       stream('cubes', STREAM.dataset, 'GET /api/cubes', { metadata: ['cubes'] }),
-      stream('schema_objects', STREAM.semanticModel, 'GET /api/model/schema/objects', { metadata: ['schema objects'] }),
-      stream('data_sources', STREAM.dataSource, 'GET /api/datasources', { metadata: ['data sources'] }),
-      stream('lineage', STREAM.lineage, 'object dependency metadata', { metadata: ['dependencies'] }),
+      stream('schema_objects', STREAM.semanticModel, 'GET /api/model/schema/objects', {
+        metadata: ['schema objects'],
+      }),
+      stream('data_sources', STREAM.dataSource, 'GET /api/datasources', {
+        metadata: ['data sources'],
+      }),
+      stream('lineage', STREAM.lineage, 'object dependency metadata', {
+        metadata: ['dependencies'],
+      }),
     ],
   }),
   ssas_on_prem: documentedBridge({
     requiredConfig: ['server'],
-    docs: ['https://learn.microsoft.com/analysis-services/xmla/xml-elements-methods-discover', 'https://learn.microsoft.com/analysis-services/instances/use-dynamic-management-views-dmvs-to-monitor-analysis-services'],
+    docs: [
+      'https://learn.microsoft.com/analysis-services/xmla/xml-elements-methods-discover',
+      'https://learn.microsoft.com/analysis-services/instances/use-dynamic-management-views-dmvs-to-monitor-analysis-services',
+    ],
     streams: [
-      stream('databases', STREAM.object, 'XMLA Discover DBSCHEMA_CATALOGS', { metadata: ['databases'] }),
-      stream('models', STREAM.semanticModel, 'XMLA Discover MDSCHEMA_CUBES / TMSCHEMA_MODEL', { metadata: ['models'] }),
-      stream('dimensions', STREAM.object, 'XMLA Discover MDSCHEMA_DIMENSIONS', { metadata: ['dimensions'] }),
-      stream('measures', STREAM.metric, 'XMLA Discover MDSCHEMA_MEASURES / TMSCHEMA_MEASURES', { metadata: ['measures'] }),
-      stream('partitions', STREAM.dataset, 'XMLA Discover TMSCHEMA_PARTITIONS', { metadata: ['partitions'] }),
-      stream('data_sources', STREAM.dataSource, 'XMLA Discover TMSCHEMA_DATA_SOURCES', { metadata: ['data sources'] }),
+      stream('databases', STREAM.object, 'XMLA Discover DBSCHEMA_CATALOGS', {
+        metadata: ['databases'],
+      }),
+      stream('models', STREAM.semanticModel, 'XMLA Discover MDSCHEMA_CUBES / TMSCHEMA_MODEL', {
+        metadata: ['models'],
+      }),
+      stream('dimensions', STREAM.object, 'XMLA Discover MDSCHEMA_DIMENSIONS', {
+        metadata: ['dimensions'],
+      }),
+      stream('measures', STREAM.metric, 'XMLA Discover MDSCHEMA_MEASURES / TMSCHEMA_MEASURES', {
+        metadata: ['measures'],
+      }),
+      stream('partitions', STREAM.dataset, 'XMLA Discover TMSCHEMA_PARTITIONS', {
+        metadata: ['partitions'],
+      }),
+      stream('data_sources', STREAM.dataSource, 'XMLA Discover TMSCHEMA_DATA_SOURCES', {
+        metadata: ['data sources'],
+      }),
       stream('roles', STREAM.object, 'XMLA Discover TMSCHEMA_ROLES', { metadata: ['roles'] }),
-      stream('lineage', STREAM.lineage, 'model datasource/partition dependencies', { metadata: ['lineage'] }),
+      stream('lineage', STREAM.lineage, 'model datasource/partition dependencies', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   power_bi_report_server: documentedBridge({
     requiredConfig: ['base_url'],
-    docs: ['https://learn.microsoft.com/sql/reporting-services/developer/rest-api/report-server-rest-api'],
+    docs: [
+      'https://learn.microsoft.com/sql/reporting-services/developer/rest-api/report-server-rest-api',
+    ],
     streams: [
       stream('folders', STREAM.object, 'GET /api/v2.0/Folders', { metadata: ['folders'] }),
-      stream('reports', STREAM.report, 'GET /api/v2.0/PowerBIReports / Reports', { metadata: ['reports'] }),
+      stream('reports', STREAM.report, 'GET /api/v2.0/PowerBIReports / Reports', {
+        metadata: ['reports'],
+      }),
       stream('datasets', STREAM.dataset, 'GET /api/v2.0/Datasets', { metadata: ['datasets'] }),
-      stream('data_sources', STREAM.dataSource, 'GET item data sources', { metadata: ['data sources'] }),
-      stream('subscriptions', STREAM.object, 'GET /api/v2.0/Subscriptions', { metadata: ['subscriptions'] }),
-      stream('lineage', STREAM.lineage, 'report-dataset-datasource links', { metadata: ['lineage'] }),
+      stream('data_sources', STREAM.dataSource, 'GET item data sources', {
+        metadata: ['data sources'],
+      }),
+      stream('subscriptions', STREAM.object, 'GET /api/v2.0/Subscriptions', {
+        metadata: ['subscriptions'],
+      }),
+      stream('lineage', STREAM.lineage, 'report-dataset-datasource links', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   ssrs: documentedBridge({
     requiredConfig: ['base_url'],
-    docs: ['https://learn.microsoft.com/sql/reporting-services/developer/rest-api/report-server-rest-api'],
+    docs: [
+      'https://learn.microsoft.com/sql/reporting-services/developer/rest-api/report-server-rest-api',
+    ],
     streams: [
       stream('folders', STREAM.object, 'GET /api/v2.0/Folders', { metadata: ['folders'] }),
       stream('reports', STREAM.report, 'GET /api/v2.0/Reports', { metadata: ['RDL reports'] }),
-      stream('datasets', STREAM.dataset, 'GET /api/v2.0/Datasets', { metadata: ['shared datasets'] }),
-      stream('data_sources', STREAM.dataSource, 'GET /api/v2.0/DataSources', { metadata: ['shared data sources'] }),
-      stream('subscriptions', STREAM.object, 'GET /api/v2.0/Subscriptions', { metadata: ['subscriptions'] }),
-      stream('lineage', STREAM.lineage, 'report-dataset-datasource links', { metadata: ['lineage'] }),
+      stream('datasets', STREAM.dataset, 'GET /api/v2.0/Datasets', {
+        metadata: ['shared datasets'],
+      }),
+      stream('data_sources', STREAM.dataSource, 'GET /api/v2.0/DataSources', {
+        metadata: ['shared data sources'],
+      }),
+      stream('subscriptions', STREAM.object, 'GET /api/v2.0/Subscriptions', {
+        metadata: ['subscriptions'],
+      }),
+      stream('lineage', STREAM.lineage, 'report-dataset-datasource links', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   tableau: documentedBridge({
     requiredConfig: ['base_url', 'site_id'],
-    docs: ['https://help.tableau.com/current/api/rest_api/en-us/REST/rest_api.htm', 'https://help.tableau.com/current/api/metadata_api/en-us/index.html'],
+    docs: [
+      'https://help.tableau.com/current/api/rest_api/en-us/REST/rest_api.htm',
+      'https://help.tableau.com/current/api/metadata_api/en-us/index.html',
+    ],
     streams: [
       stream('projects', STREAM.object, 'REST projects endpoint', { metadata: ['projects'] }),
       stream('workbooks', STREAM.dashboard, 'REST workbooks endpoint', { metadata: ['workbooks'] }),
       stream('views', STREAM.report, 'REST views endpoint', { metadata: ['views'] }),
-      stream('datasources', STREAM.dataSource, 'REST datasources endpoint', { metadata: ['datasources'] }),
-      stream('metadata_graphql', STREAM.lineage, 'Metadata API GraphQL', { aliases: ['lineage'], metadata: ['metadata graph'] }),
+      stream('datasources', STREAM.dataSource, 'REST datasources endpoint', {
+        metadata: ['datasources'],
+      }),
+      stream('metadata_graphql', STREAM.lineage, 'Metadata API GraphQL', {
+        aliases: ['lineage'],
+        metadata: ['metadata graph'],
+      }),
       stream('usage', STREAM.usage, 'REST usage/statistics metadata', { metadata: ['usage'] }),
     ],
   }),
@@ -2451,7 +3124,9 @@ const DOCUMENTED_BRIDGES = {
       stream('looks', STREAM.report, 'Looker API looks', { metadata: ['looks'] }),
       stream('fields', STREAM.column, 'Looker explore fields', { metadata: ['fields'] }),
       stream('metrics', STREAM.metric, 'LookML measures', { metadata: ['measures'] }),
-      stream('lineage', STREAM.lineage, 'model/explore/dashboard dependencies', { metadata: ['lineage'] }),
+      stream('lineage', STREAM.lineage, 'model/explore/dashboard dependencies', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   qlik_cloud: documentedBridge({
@@ -2461,7 +3136,9 @@ const DOCUMENTED_BRIDGES = {
       stream('spaces', STREAM.object, 'Qlik spaces API', { metadata: ['spaces'] }),
       stream('apps', STREAM.dashboard, 'Qlik items/apps APIs', { metadata: ['apps'] }),
       stream('sheets', STREAM.report, 'Qlik app object metadata', { metadata: ['sheets'] }),
-      stream('datasets', STREAM.dataset, 'Qlik data lineage/dataset metadata', { metadata: ['datasets'] }),
+      stream('datasets', STREAM.dataset, 'Qlik data lineage/dataset metadata', {
+        metadata: ['datasets'],
+      }),
       stream('fields', STREAM.column, 'Qlik app fields', { metadata: ['fields'] }),
       stream('metrics', STREAM.metric, 'Qlik measures', { metadata: ['measures'] }),
       stream('lineage', STREAM.lineage, 'Qlik lineage APIs', { metadata: ['lineage'] }),
@@ -2474,10 +3151,14 @@ const DOCUMENTED_BRIDGES = {
       stream('streams', STREAM.object, 'QRS streams endpoint', { metadata: ['streams'] }),
       stream('apps', STREAM.dashboard, 'QRS apps endpoint', { metadata: ['apps'] }),
       stream('sheets', STREAM.report, 'Engine app object metadata', { metadata: ['sheets'] }),
-      stream('connections', STREAM.dataSource, 'QRS data connections endpoint', { metadata: ['connections'] }),
+      stream('connections', STREAM.dataSource, 'QRS data connections endpoint', {
+        metadata: ['connections'],
+      }),
       stream('fields', STREAM.column, 'Engine field metadata', { metadata: ['fields'] }),
       stream('metrics', STREAM.metric, 'Engine measure metadata', { metadata: ['measures'] }),
-      stream('lineage', STREAM.lineage, 'reload script/data connection dependencies', { metadata: ['lineage'] }),
+      stream('lineage', STREAM.lineage, 'reload script/data connection dependencies', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   domo: documentedBridge({
@@ -2486,10 +3167,16 @@ const DOCUMENTED_BRIDGES = {
     streams: [
       stream('datasets', STREAM.dataset, 'Domo DataSet API', { metadata: ['datasets'] }),
       stream('cards', STREAM.report, 'Domo Cards API', { metadata: ['cards'] }),
-      stream('dashboards', STREAM.dashboard, 'Domo Pages/Dashboards APIs', { metadata: ['dashboards'] }),
+      stream('dashboards', STREAM.dashboard, 'Domo Pages/Dashboards APIs', {
+        metadata: ['dashboards'],
+      }),
       stream('dataflows', STREAM.object, 'Domo DataFlow API', { metadata: ['dataflows'] }),
-      stream('metrics', STREAM.metric, 'Beast Mode/calculation metadata', { metadata: ['calculations'] }),
-      stream('lineage', STREAM.lineage, 'dataset-card-dataflow dependencies', { metadata: ['lineage'] }),
+      stream('metrics', STREAM.metric, 'Beast Mode/calculation metadata', {
+        metadata: ['calculations'],
+      }),
+      stream('lineage', STREAM.lineage, 'dataset-card-dataflow dependencies', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   sigma: documentedBridge({
@@ -2500,9 +3187,13 @@ const DOCUMENTED_BRIDGES = {
       stream('pages', STREAM.report, 'Workbook pages', { metadata: ['pages'] }),
       stream('elements', STREAM.report, 'Workbook elements', { metadata: ['elements'] }),
       stream('datasets', STREAM.dataset, 'Sigma datasets API', { metadata: ['datasets'] }),
-      stream('connections', STREAM.dataSource, 'Sigma connections API', { metadata: ['connections'] }),
+      stream('connections', STREAM.dataSource, 'Sigma connections API', {
+        metadata: ['connections'],
+      }),
       stream('metrics', STREAM.metric, 'calculations/formulas', { metadata: ['calculations'] }),
-      stream('lineage', STREAM.lineage, 'workbook-dataset-connection dependencies', { metadata: ['lineage'] }),
+      stream('lineage', STREAM.lineage, 'workbook-dataset-connection dependencies', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   mode: documentedBridge({
@@ -2513,19 +3204,31 @@ const DOCUMENTED_BRIDGES = {
       stream('reports', STREAM.report, 'Mode reports API', { metadata: ['reports'] }),
       stream('queries', STREAM.dataset, 'Mode queries API', { metadata: ['queries'] }),
       stream('charts', STREAM.dashboard, 'Mode charts metadata', { metadata: ['charts'] }),
-      stream('lineage', STREAM.lineage, 'query-report-datasource dependencies', { metadata: ['lineage'] }),
+      stream('lineage', STREAM.lineage, 'query-report-datasource dependencies', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   metabase: documentedBridge({
     requiredConfig: ['base_url'],
     docs: ['https://www.metabase.com/docs/latest/api-documentation'],
     streams: [
-      stream('collections', STREAM.object, 'Metabase collections API', { metadata: ['collections'] }),
-      stream('dashboards', STREAM.dashboard, 'Metabase dashboards API', { metadata: ['dashboards'] }),
+      stream('collections', STREAM.object, 'Metabase collections API', {
+        metadata: ['collections'],
+      }),
+      stream('dashboards', STREAM.dashboard, 'Metabase dashboards API', {
+        metadata: ['dashboards'],
+      }),
       stream('cards', STREAM.report, 'Metabase cards/questions API', { metadata: ['cards'] }),
-      stream('datasets', STREAM.dataset, 'Metabase models/databases metadata', { metadata: ['models'] }),
-      stream('data_sources', STREAM.dataSource, 'Metabase database API', { metadata: ['databases'] }),
-      stream('lineage', STREAM.lineage, 'card-dashboard-database dependencies', { metadata: ['lineage'] }),
+      stream('datasets', STREAM.dataset, 'Metabase models/databases metadata', {
+        metadata: ['models'],
+      }),
+      stream('data_sources', STREAM.dataSource, 'Metabase database API', {
+        metadata: ['databases'],
+      }),
+      stream('lineage', STREAM.lineage, 'card-dashboard-database dependencies', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   superset: documentedBridge({
@@ -2535,21 +3238,33 @@ const DOCUMENTED_BRIDGES = {
       stream('databases', STREAM.dataSource, 'Superset databases API', { metadata: ['databases'] }),
       stream('datasets', STREAM.dataset, 'Superset datasets API', { metadata: ['datasets'] }),
       stream('charts', STREAM.report, 'Superset charts API', { metadata: ['charts'] }),
-      stream('dashboards', STREAM.dashboard, 'Superset dashboards API', { metadata: ['dashboards'] }),
-      stream('metrics', STREAM.metric, 'dataset metrics/calculated columns', { metadata: ['metrics'] }),
-      stream('lineage', STREAM.lineage, 'chart-dashboard-dataset dependencies', { metadata: ['lineage'] }),
+      stream('dashboards', STREAM.dashboard, 'Superset dashboards API', {
+        metadata: ['dashboards'],
+      }),
+      stream('metrics', STREAM.metric, 'dataset metrics/calculated columns', {
+        metadata: ['metrics'],
+      }),
+      stream('lineage', STREAM.lineage, 'chart-dashboard-dataset dependencies', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   redash: documentedBridge({
     requiredConfig: ['base_url'],
     docs: ['https://redash.io/help/user-guide/integrations-and-api/api/'],
     streams: [
-      stream('data_sources', STREAM.dataSource, 'Redash data sources API', { metadata: ['data sources'] }),
+      stream('data_sources', STREAM.dataSource, 'Redash data sources API', {
+        metadata: ['data sources'],
+      }),
       stream('queries', STREAM.dataset, 'Redash queries API', { metadata: ['queries'] }),
-      stream('visualizations', STREAM.report, 'Redash visualizations API', { metadata: ['visualizations'] }),
+      stream('visualizations', STREAM.report, 'Redash visualizations API', {
+        metadata: ['visualizations'],
+      }),
       stream('dashboards', STREAM.dashboard, 'Redash dashboards API', { metadata: ['dashboards'] }),
       stream('alerts', STREAM.object, 'Redash alerts API', { metadata: ['alerts'] }),
-      stream('lineage', STREAM.lineage, 'query-visualization-dashboard dependencies', { metadata: ['lineage'] }),
+      stream('lineage', STREAM.lineage, 'query-visualization-dashboard dependencies', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   quicksight: documentedBridge({
@@ -2557,11 +3272,19 @@ const DOCUMENTED_BRIDGES = {
     docs: ['https://docs.aws.amazon.com/quicksight/latest/APIReference/Welcome.html'],
     streams: [
       stream('analyses', STREAM.report, 'QuickSight ListAnalyses', { metadata: ['analyses'] }),
-      stream('dashboards', STREAM.dashboard, 'QuickSight ListDashboards', { metadata: ['dashboards'] }),
+      stream('dashboards', STREAM.dashboard, 'QuickSight ListDashboards', {
+        metadata: ['dashboards'],
+      }),
       stream('datasets', STREAM.dataset, 'QuickSight ListDataSets', { metadata: ['datasets'] }),
-      stream('data_sources', STREAM.dataSource, 'QuickSight ListDataSources', { metadata: ['data sources'] }),
-      stream('metrics', STREAM.metric, 'calculated fields in definitions', { metadata: ['calculated fields'] }),
-      stream('lineage', STREAM.lineage, 'analysis-dashboard-dataset-datasource dependencies', { metadata: ['lineage'] }),
+      stream('data_sources', STREAM.dataSource, 'QuickSight ListDataSources', {
+        metadata: ['data sources'],
+      }),
+      stream('metrics', STREAM.metric, 'calculated fields in definitions', {
+        metadata: ['calculated fields'],
+      }),
+      stream('lineage', STREAM.lineage, 'analysis-dashboard-dataset-datasource dependencies', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   grafana: documentedBridge({
@@ -2569,47 +3292,75 @@ const DOCUMENTED_BRIDGES = {
     docs: ['https://grafana.com/docs/grafana/latest/developers/http_api/'],
     streams: [
       stream('folders', STREAM.object, 'Grafana folders API', { metadata: ['folders'] }),
-      stream('dashboards', STREAM.dashboard, 'Grafana dashboards API', { metadata: ['dashboards'] }),
+      stream('dashboards', STREAM.dashboard, 'Grafana dashboards API', {
+        metadata: ['dashboards'],
+      }),
       stream('panels', STREAM.report, 'Dashboard panel JSON', { metadata: ['panels'] }),
-      stream('data_sources', STREAM.dataSource, 'Grafana data sources API', { metadata: ['data sources'] }),
+      stream('data_sources', STREAM.dataSource, 'Grafana data sources API', {
+        metadata: ['data sources'],
+      }),
       stream('alerts', STREAM.object, 'Grafana alerting API', { metadata: ['alerts'] }),
-      stream('lineage', STREAM.lineage, 'dashboard-panel-datasource dependencies', { metadata: ['lineage'] }),
+      stream('lineage', STREAM.lineage, 'dashboard-panel-datasource dependencies', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   cognos: documentedBridge({
     requiredConfig: ['base_url'],
     docs: ['https://www.ibm.com/docs/en/cognos-analytics'],
     streams: [
-      stream('packages', STREAM.semanticModel, 'Cognos content/package metadata', { metadata: ['packages'] }),
+      stream('packages', STREAM.semanticModel, 'Cognos content/package metadata', {
+        metadata: ['packages'],
+      }),
       stream('reports', STREAM.report, 'Cognos reports metadata', { metadata: ['reports'] }),
-      stream('dashboards', STREAM.dashboard, 'Cognos dashboards metadata', { metadata: ['dashboards'] }),
+      stream('dashboards', STREAM.dashboard, 'Cognos dashboards metadata', {
+        metadata: ['dashboards'],
+      }),
       stream('data_modules', STREAM.dataset, 'Cognos data modules', { metadata: ['data modules'] }),
       stream('metrics', STREAM.metric, 'dimensions/measures metadata', { metadata: ['measures'] }),
-      stream('lineage', STREAM.lineage, 'package-report-datasource dependencies', { metadata: ['lineage'] }),
+      stream('lineage', STREAM.lineage, 'package-report-datasource dependencies', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   sap_businessobjects: documentedBridge({
     requiredConfig: ['base_url'],
     docs: ['https://help.sap.com/docs/SAP_BUSINESSOBJECTS_BUSINESS_INTELLIGENCE_PLATFORM'],
     streams: [
-      stream('universes', STREAM.semanticModel, 'BI platform universes metadata', { metadata: ['universes'] }),
-      stream('reports', STREAM.report, 'Web Intelligence / Crystal reports metadata', { metadata: ['reports'] }),
+      stream('universes', STREAM.semanticModel, 'BI platform universes metadata', {
+        metadata: ['universes'],
+      }),
+      stream('reports', STREAM.report, 'Web Intelligence / Crystal reports metadata', {
+        metadata: ['reports'],
+      }),
       stream('folders', STREAM.object, 'BI platform folders metadata', { metadata: ['folders'] }),
-      stream('data_foundations', STREAM.dataset, 'universe data foundations', { metadata: ['data foundations'] }),
-      stream('data_sources', STREAM.dataSource, 'connections metadata', { metadata: ['connections'] }),
-      stream('lineage', STREAM.lineage, 'universe-report-connection dependencies', { metadata: ['lineage'] }),
+      stream('data_foundations', STREAM.dataset, 'universe data foundations', {
+        metadata: ['data foundations'],
+      }),
+      stream('data_sources', STREAM.dataSource, 'connections metadata', {
+        metadata: ['connections'],
+      }),
+      stream('lineage', STREAM.lineage, 'universe-report-connection dependencies', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   oracle_analytics: documentedBridge({
     requiredConfig: ['base_url'],
     docs: ['https://docs.oracle.com/en/cloud/paas/analytics-cloud/'],
     streams: [
-      stream('workbooks', STREAM.dashboard, 'Oracle Analytics workbook metadata', { metadata: ['workbooks'] }),
+      stream('workbooks', STREAM.dashboard, 'Oracle Analytics workbook metadata', {
+        metadata: ['workbooks'],
+      }),
       stream('analyses', STREAM.report, 'analyses metadata', { metadata: ['analyses'] }),
       stream('dashboards', STREAM.dashboard, 'dashboards metadata', { metadata: ['dashboards'] }),
       stream('datasets', STREAM.dataset, 'datasets metadata', { metadata: ['datasets'] }),
-      stream('semantic_models', STREAM.semanticModel, 'semantic model metadata', { metadata: ['semantic models'] }),
-      stream('lineage', STREAM.lineage, 'workbook-dataset-semantic model dependencies', { metadata: ['lineage'] }),
+      stream('semantic_models', STREAM.semanticModel, 'semantic model metadata', {
+        metadata: ['semantic models'],
+      }),
+      stream('lineage', STREAM.lineage, 'workbook-dataset-semantic model dependencies', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   thoughtspot: documentedBridge({
@@ -2617,43 +3368,68 @@ const DOCUMENTED_BRIDGES = {
     docs: ['https://developers.thoughtspot.com/docs/rest-apiv2-reference'],
     streams: [
       stream('answers', STREAM.report, 'ThoughtSpot answers metadata', { metadata: ['answers'] }),
-      stream('liveboards', STREAM.dashboard, 'ThoughtSpot liveboards metadata', { metadata: ['liveboards'] }),
-      stream('worksheets', STREAM.semanticModel, 'worksheets metadata', { metadata: ['worksheets'] }),
+      stream('liveboards', STREAM.dashboard, 'ThoughtSpot liveboards metadata', {
+        metadata: ['liveboards'],
+      }),
+      stream('worksheets', STREAM.semanticModel, 'worksheets metadata', {
+        metadata: ['worksheets'],
+      }),
       stream('tables', STREAM.dataset, 'tables metadata', { metadata: ['tables'] }),
       stream('columns', STREAM.column, 'columns metadata', { metadata: ['columns'] }),
       stream('metrics', STREAM.metric, 'formulas metadata', { metadata: ['formulas'] }),
-      stream('lineage', STREAM.lineage, 'answer-liveboard-worksheet dependencies', { metadata: ['lineage'] }),
+      stream('lineage', STREAM.lineage, 'answer-liveboard-worksheet dependencies', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   sisense: documentedBridge({
     requiredConfig: ['base_url'],
     docs: ['https://developer.sisense.com/'],
     streams: [
-      stream('dashboards', STREAM.dashboard, 'Sisense dashboards API', { metadata: ['dashboards'] }),
+      stream('dashboards', STREAM.dashboard, 'Sisense dashboards API', {
+        metadata: ['dashboards'],
+      }),
       stream('widgets', STREAM.report, 'dashboard widgets metadata', { metadata: ['widgets'] }),
-      stream('data_models', STREAM.semanticModel, 'data models / ElastiCubes', { metadata: ['data models'] }),
+      stream('data_models', STREAM.semanticModel, 'data models / ElastiCubes', {
+        metadata: ['data models'],
+      }),
       stream('datasets', STREAM.dataset, 'datasets metadata', { metadata: ['datasets'] }),
       stream('metrics', STREAM.metric, 'formulas metadata', { metadata: ['formulas'] }),
-      stream('lineage', STREAM.lineage, 'widget-dashboard-datamodel dependencies', { metadata: ['lineage'] }),
+      stream('lineage', STREAM.lineage, 'widget-dashboard-datamodel dependencies', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   airflow: documentedBridge({
     requiredConfig: ['base_url'],
     docs: ['https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html'],
     streams: [
-      stream('pipelines', STREAM.object, 'GET /api/v1/dags', { aliases: ['dags', 'pipelines'], metadata: ['DAGs'] }),
+      stream('pipelines', STREAM.object, 'GET /api/v1/dags', {
+        aliases: ['dags', 'pipelines'],
+        metadata: ['DAGs'],
+      }),
       stream('tasks', STREAM.object, 'GET /api/v1/dags/{dag_id}/tasks', { metadata: ['tasks'] }),
       stream('datasets', STREAM.dataset, 'GET /api/v1/datasets', { metadata: ['datasets'] }),
-      stream('connections', STREAM.dataSource, 'connections metadata endpoint', { metadata: ['connections'] }),
+      stream('connections', STREAM.dataSource, 'connections metadata endpoint', {
+        metadata: ['connections'],
+      }),
       stream('schedules', STREAM.object, 'DAG schedules/timetables', { metadata: ['schedules'] }),
-      stream('lineage', STREAM.lineage, 'DAG task inlets/outlets and dataset dependencies', { metadata: ['lineage'] }),
+      stream('lineage', STREAM.lineage, 'DAG task inlets/outlets and dataset dependencies', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   dbt: documentedBridge({
     requiredConfig: ['repo_url'],
-    docs: ['https://docs.getdbt.com/reference/artifacts/manifest-json', 'https://docs.getdbt.com/reference/artifacts/catalog-json'],
+    docs: [
+      'https://docs.getdbt.com/reference/artifacts/manifest-json',
+      'https://docs.getdbt.com/reference/artifacts/catalog-json',
+    ],
     streams: [
-      stream('models', STREAM.semanticModel, 'manifest.json nodes', { aliases: ['dbt_artifacts', 'models'], metadata: ['models'] }),
+      stream('models', STREAM.semanticModel, 'manifest.json nodes', {
+        aliases: ['dbt_artifacts', 'models'],
+        metadata: ['models'],
+      }),
       stream('sources', STREAM.dataSource, 'manifest.json sources', { metadata: ['sources'] }),
       stream('columns', STREAM.column, 'catalog.json columns', { metadata: ['columns'] }),
       stream('tests', STREAM.object, 'manifest.json tests', { metadata: ['tests'] }),
@@ -2673,48 +3449,83 @@ const DOCUMENTED_BRIDGES = {
   }),
   git_repository: documentedBridge({
     requiredConfig: ['repo_url'],
-    docs: ['https://docs.github.com/rest/repos/contents', 'https://learn.microsoft.com/rest/api/azure/devops/git/items/list'],
+    docs: [
+      'https://docs.github.com/rest/repos/contents',
+      'https://learn.microsoft.com/rest/api/azure/devops/git/items/list',
+    ],
     streams: [
-      stream('repositories', STREAM.object, 'repository provider API', { metadata: ['repositories'] }),
-      stream('python_scripts', STREAM.object, 'repository tree *.py', { metadata: ['python ETL scripts'] }),
+      stream('repositories', STREAM.object, 'repository provider API', {
+        metadata: ['repositories'],
+      }),
+      stream('python_scripts', STREAM.object, 'repository tree *.py', {
+        metadata: ['python ETL scripts'],
+      }),
       stream('sql_files', STREAM.object, 'repository tree *.sql', { metadata: ['SQL files'] }),
-      stream('dbt_artifacts', STREAM.semanticModel, 'dbt manifest/catalog/sources artifacts', { metadata: ['dbt artifacts'] }),
+      stream('dbt_artifacts', STREAM.semanticModel, 'dbt manifest/catalog/sources artifacts', {
+        metadata: ['dbt artifacts'],
+      }),
       stream('notebooks', STREAM.object, 'repository tree *.ipynb', { metadata: ['notebooks'] }),
       stream('lineage', STREAM.lineage, 'parsed code dependency facts', { metadata: ['lineage'] }),
     ],
   }),
   kafka: documentedBridge({
     requiredConfig: ['cluster'],
-    docs: ['https://docs.confluent.io/platform/current/kafka-rest/api.html', 'https://docs.confluent.io/platform/current/schema-registry/develop/api.html'],
+    docs: [
+      'https://docs.confluent.io/platform/current/kafka-rest/api.html',
+      'https://docs.confluent.io/platform/current/schema-registry/develop/api.html',
+    ],
     streams: [
       stream('clusters', STREAM.object, 'Kafka cluster metadata', { metadata: ['clusters'] }),
       stream('topics', STREAM.dataset, 'Kafka topics metadata', { metadata: ['topics'] }),
-      stream('schemas', STREAM.dataset, 'Schema Registry subjects/versions', { metadata: ['schemas'] }),
+      stream('schemas', STREAM.dataset, 'Schema Registry subjects/versions', {
+        metadata: ['schemas'],
+      }),
       stream('consumers', STREAM.object, 'consumer groups metadata', { metadata: ['consumers'] }),
-      stream('lineage', STREAM.lineage, 'producer-topic-consumer relationships', { metadata: ['lineage'] }),
+      stream('lineage', STREAM.lineage, 'producer-topic-consumer relationships', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   salesforce: documentedBridge({
     requiredConfig: ['base_url'],
-    docs: ['https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_sobject_describe.htm'],
+    docs: [
+      'https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_sobject_describe.htm',
+    ],
     streams: [
-      stream('objects', STREAM.object, 'Salesforce sObject describe/list', { metadata: ['objects'] }),
+      stream('objects', STREAM.object, 'Salesforce sObject describe/list', {
+        metadata: ['objects'],
+      }),
       stream('fields', STREAM.column, 'sObject fields describe', { metadata: ['fields'] }),
-      stream('relationships', STREAM.lineage, 'childRelationships / referenceTo', { metadata: ['relationships'] }),
+      stream('relationships', STREAM.lineage, 'childRelationships / referenceTo', {
+        metadata: ['relationships'],
+      }),
       stream('reports', STREAM.report, 'Analytics reports metadata', { metadata: ['reports'] }),
-      stream('dashboards', STREAM.dashboard, 'Analytics dashboards metadata', { metadata: ['dashboards'] }),
-      stream('lineage', STREAM.lineage, 'report-object dependency facts', { metadata: ['lineage'] }),
+      stream('dashboards', STREAM.dashboard, 'Analytics dashboards metadata', {
+        metadata: ['dashboards'],
+      }),
+      stream('lineage', STREAM.lineage, 'report-object dependency facts', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
   sap: documentedBridge({
     requiredConfig: ['base_url'],
     docs: ['https://help.sap.com/docs/ABAP_PLATFORM', 'https://help.sap.com/docs/SAP_NETWEAVER'],
     streams: [
-      stream('objects', STREAM.object, 'SAP business objects / OData services', { aliases: ['tables', 'objects'], metadata: ['objects'] }),
+      stream('objects', STREAM.object, 'SAP business objects / OData services', {
+        aliases: ['tables', 'objects'],
+        metadata: ['objects'],
+      }),
       stream('fields', STREAM.column, 'DDIC table/view fields', { metadata: ['fields'] }),
-      stream('relationships', STREAM.lineage, 'DDIC foreign keys / CDS associations', { metadata: ['relationships'] }),
-      stream('extractors', STREAM.object, 'BW extractors / ODP metadata', { metadata: ['extractors'] }),
-      stream('lineage', STREAM.lineage, 'table-view-CDS-extractor dependencies', { metadata: ['lineage'] }),
+      stream('relationships', STREAM.lineage, 'DDIC foreign keys / CDS associations', {
+        metadata: ['relationships'],
+      }),
+      stream('extractors', STREAM.object, 'BW extractors / ODP metadata', {
+        metadata: ['extractors'],
+      }),
+      stream('lineage', STREAM.lineage, 'table-view-CDS-extractor dependencies', {
+        metadata: ['lineage'],
+      }),
     ],
   }),
 };
@@ -2772,19 +3583,26 @@ export function createConnectorAdapter({ connector, definition }) {
   }
   const Adapter = TYPE_ADAPTERS[connector.type] || CATEGORY_ADAPTERS[definition?.category];
   if (!Adapter) {
-    throw new ConnectorConfigError(`No extraction adapter registered for connector type '${connector.type}'.`, {
-      connector_id: connector.id,
-      connector_type: connector.type,
-      details: { category: definition?.category || null },
-    });
+    throw new ConnectorConfigError(
+      `No extraction adapter registered for connector type '${connector.type}'.`,
+      {
+        connector_id: connector.id,
+        connector_type: connector.type,
+        details: { category: definition?.category || null },
+      }
+    );
   }
   const adapter = new Adapter({ connector, definition });
   const bridge = DOCUMENTED_BRIDGES[connector.type];
-  const usesLiveAdapterContract = Adapter === SqlServerLiveAdapter || Adapter === SsisLiveAdapter || Adapter === SsrsLiveAdapter;
+  const usesLiveAdapterContract =
+    Adapter === SqlServerLiveAdapter || Adapter === SsisLiveAdapter || Adapter === SsrsLiveAdapter;
   if (bridge && !usesLiveAdapterContract) {
     adapter.configureBridge({
       ...bridge,
-      requiredCredentialModes: bridge.requiredCredentialModes || definition?.credentialKinds || adapter.requiredCredentialModes,
+      requiredCredentialModes:
+        bridge.requiredCredentialModes ||
+        definition?.credentialKinds ||
+        adapter.requiredCredentialModes,
     });
   }
   return adapter;
@@ -2795,7 +3613,8 @@ export function adapterCoverageReport(definitions = []) {
     type: definition.type,
     label: definition.label,
     category: definition.category,
-    adapter: (TYPE_ADAPTERS[definition.type] || CATEGORY_ADAPTERS[definition.category])?.name || null,
+    adapter:
+      (TYPE_ADAPTERS[definition.type] || CATEGORY_ADAPTERS[definition.category])?.name || null,
     bridge: DOCUMENTED_BRIDGES[definition.type]?.kind || null,
     docs: DOCUMENTED_BRIDGES[definition.type]?.docs || [],
     plumbed: Boolean(TYPE_ADAPTERS[definition.type] || CATEGORY_ADAPTERS[definition.category]),

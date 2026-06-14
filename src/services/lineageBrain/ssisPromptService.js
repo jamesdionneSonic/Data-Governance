@@ -1,6 +1,12 @@
 import { readdirSync } from 'fs';
 import { basename, extname, join, relative } from 'path';
-import { DEFAULT_EDGE_HARD_THRESHOLD, DEFAULT_EDGE_OVERPOPULATED_THRESHOLD, DEFAULT_SNIPPET_LIMIT, SSIS_CURATED_ROOT, SSIS_HIGH_FANOUT_ALLOWLIST, SSIS_RAW_XML_ROOT } from './constants.js';
+import {
+  DEFAULT_EDGE_HARD_THRESHOLD,
+  DEFAULT_SNIPPET_LIMIT,
+  SSIS_CURATED_ROOT,
+  SSIS_HIGH_FANOUT_ALLOWLIST,
+  SSIS_RAW_XML_ROOT,
+} from './constants.js';
 import { readTextFile, writeTextFile } from './fileHelpers.js';
 import { getArray, getString, parseFrontmatter } from './markdownHelpers.js';
 import { compactPrompt, truncateText, wrapEvidence } from './promptHelpers.js';
@@ -20,8 +26,7 @@ function listMarkdownFiles(rootDir) {
         if (!['_drafts', '_runtime', '_rebuild_backups', '_prompt_queue'].includes(entry.name)) {
           stack.push(fullPath);
         }
-      }
-      else if (entry.isFile() && extname(entry.name) === '.md') files.push(fullPath);
+      } else if (entry.isFile() && extname(entry.name) === '.md') files.push(fullPath);
     }
   }
   return files.sort();
@@ -29,7 +34,9 @@ function listMarkdownFiles(rootDir) {
 
 function findRawXml(markdownPath) {
   const stem = basename(markdownPath, '.md');
-  const candidates = listMarkdownFiles(SSIS_RAW_XML_ROOT).filter((path) => basename(path).includes(stem));
+  const candidates = listMarkdownFiles(SSIS_RAW_XML_ROOT).filter((path) =>
+    basename(path).includes(stem)
+  );
   return candidates[0] || null;
 }
 
@@ -46,7 +53,9 @@ function buildSnippet(xmlText, packageName, hint) {
 export function generateSsisPrompts(outputFile = 'generated_llm_prompts.txt', options = {}) {
   const { writeCorrection = false, correctionOutputPath = null } = options;
   const hardThreshold = DEFAULT_EDGE_HARD_THRESHOLD;
-  const files = listMarkdownFiles(SSIS_CURATED_ROOT).filter((path) => path.includes('ssis_packages'));
+  const files = listMarkdownFiles(SSIS_CURATED_ROOT).filter((path) =>
+    path.includes('ssis_packages')
+  );
   const records = files.map((markdownPath) => {
     const content = readTextFile(markdownPath);
     const { metadata, body } = parseFrontmatter(content);
@@ -77,7 +86,9 @@ export function generateSsisPrompts(outputFile = 'generated_llm_prompts.txt', op
       !isExpectedHighFanoutSSIS(record, SSIS_HIGH_FANOUT_ALLOWLIST)
   );
   const baseline =
-    records.find((record) => record.packageName.toLowerCase().includes('dimvehicle_dim_dimvehicle')) ||
+    records.find((record) =>
+      record.packageName.toLowerCase().includes('dimvehicle_dim_dimvehicle')
+    ) ||
     records.find((record) => record.packageName.toLowerCase().includes('dimvehicle')) ||
     records[0];
   const anomaly = anomalies.sort((a, b) => b.edgeCount - a.edgeCount)[0] || records[0];

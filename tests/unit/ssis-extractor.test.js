@@ -8,7 +8,9 @@ describe('extractSsisMetadata', () => {
         constructor(config) {
           capturedConfigs.push(config);
         }
+
         async connect() {}
+
         request() {
           return {
             async query(sqlText) {
@@ -19,6 +21,7 @@ describe('extractSsisMetadata', () => {
             },
           };
         }
+
         async close() {}
       },
     };
@@ -58,6 +61,7 @@ describe('extractSsisMetadata', () => {
     const mockDriver = {
       ConnectionPool: class {
         async connect() {}
+
         request() {
           return {
             async query(sqlText) {
@@ -95,6 +99,7 @@ describe('extractSsisMetadata', () => {
             },
           };
         }
+
         async close() {}
       },
     };
@@ -122,7 +127,9 @@ describe('extractSsisMetadata', () => {
       edgeType: 'TRIGGERS',
       evidence_type: 'sql_agent_job_step',
     });
-    expect(metadata.lineageEdges[0].to).toContain('SSISDB.DimVehicle.DimVehicle.DimVehicle_DIM_DimVehicle.dtsx');
+    expect(metadata.lineageEdges[0].to).toContain(
+      'SSISDB.DimVehicle.DimVehicle.DimVehicle_DIM_DimVehicle.dtsx'
+    );
   });
 
   test('resolves OLE DB source SQL command variables into stored procedure call edges', () => {

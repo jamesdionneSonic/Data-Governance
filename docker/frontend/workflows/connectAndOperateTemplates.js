@@ -1,4 +1,4 @@
-﻿/* eslint-env browser */
+/* eslint-env browser */
 
 export const connectionsPageTemplate = `
             <div v-if="activeView === 'integrations'" class="grid integrations-secondary-grid">

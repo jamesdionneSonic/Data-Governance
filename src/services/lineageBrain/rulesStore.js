@@ -32,10 +32,6 @@ const TOKEN_STOPWORDS = new Set([
   'wrk',
 ]);
 
-function ensureArray(value) {
-  return Array.isArray(value) ? value.filter(Boolean).map(String) : [];
-}
-
 function unique(values) {
   const seen = new Set();
   const output = [];
@@ -108,11 +104,7 @@ function mergeRules(base, loaded) {
 export function ensureActiveRulesFile(rulesPath = ACTIVE_RULES_PATH) {
   if (existsSync(rulesPath)) return false;
   mkdirSync(dirname(rulesPath), { recursive: true });
-  writeFileSync(
-    rulesPath,
-    `${yaml.stringify(defaultLineageBrainRules())}`,
-    'utf8'
-  );
+  writeFileSync(rulesPath, `${yaml.stringify(defaultLineageBrainRules())}`, 'utf8');
   return true;
 }
 
@@ -147,13 +139,7 @@ function readJsonl(filePath) {
 
 function proposalTokens(record) {
   return unique(
-    [
-      record.objectName,
-      record.displayName,
-      record.objectType,
-      record.kind,
-      ...(record.tags || []),
-    ]
+    [record.objectName, record.displayName, record.objectType, record.kind, ...(record.tags || [])]
       .join(' ')
       .split(/[^A-Za-z0-9_]+/)
       .map((token) => token.toLowerCase())
@@ -161,7 +147,12 @@ function proposalTokens(record) {
   );
 }
 
-export function buildRuleProposals({ lane, records, rules, generatedAt = new Date().toISOString() }) {
+export function buildRuleProposals({
+  lane,
+  records,
+  rules,
+  generatedAt = new Date().toISOString(),
+}) {
   const learning = rules.rule_learning || {};
   if (learning.mode !== 'propose_for_review') return [];
 
@@ -206,10 +197,7 @@ export function buildRuleProposals({ lane, records, rules, generatedAt = new Dat
 
 export function appendRuleProposals(
   proposals,
-  {
-    proposedPath = PROPOSED_RULES_PATH,
-    rejectedPath = REJECTED_RULES_PATH,
-  } = {}
+  { proposedPath = PROPOSED_RULES_PATH, rejectedPath = REJECTED_RULES_PATH } = {}
 ) {
   const cleanProposals = Array.isArray(proposals) ? proposals : [];
   if (cleanProposals.length === 0) return { written: 0, skipped: 0, path: proposedPath };

@@ -1,3 +1,7 @@
+import { jest } from '@jest/globals';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from 'fs';
+import { tmpdir } from 'os';
+import path from 'path';
 import {
   canUseConnector,
   connectorRuntimeAuthRemediationPacket,
@@ -30,10 +34,6 @@ import {
   upsertConnectorProfileSchedule,
   upsertConnector,
 } from '../../src/services/connectorService.js';
-import { jest } from '@jest/globals';
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from 'fs';
-import { tmpdir } from 'os';
-import path from 'path';
 
 const admin = { id: 'admin-1', email: 'admin@example.com', roles: ['Admin'] };
 const analyst = { id: 'analyst-1', email: 'analyst@example.com', roles: ['Analyst'] };
@@ -177,7 +177,11 @@ describe('connectorService', () => {
             status: 'ready',
             live_connection_valid: true,
             metadata_discovery_valid: true,
-            details: { server_name: 'L1-5FSQL-01', database_name: 'Sonic_DW', credential_mode: 'service_account' },
+            details: {
+              server_name: 'L1-5FSQL-01',
+              database_name: 'Sonic_DW',
+              credential_mode: 'service_account',
+            },
           },
         },
         credential: {
@@ -214,7 +218,9 @@ describe('connectorService', () => {
       metadata_discovery_valid: true,
     });
     expect(run.extraction.events).toEqual(
-      expect.arrayContaining([expect.objectContaining({ type: 'metadata.object', stream: 'tables' })])
+      expect.arrayContaining([
+        expect.objectContaining({ type: 'metadata.object', stream: 'tables' }),
+      ])
     );
   });
 
@@ -303,7 +309,11 @@ describe('connectorService', () => {
             status: 'degraded',
             live_connection_valid: true,
             metadata_discovery_valid: false,
-            details: { server_name: 'V1-SSIS25-01', database_name: 'SSISDB', credential_mode: 'windows_integrated' },
+            details: {
+              server_name: 'V1-SSIS25-01',
+              database_name: 'SSISDB',
+              credential_mode: 'windows_integrated',
+            },
           },
         },
         credential: { mode: 'windows_integrated' },
@@ -498,7 +508,12 @@ describe('connectorService', () => {
         type: 'sql_server',
         label: 'Profile SQL',
         config: { server: 'sql.example.com', database: 'finance' },
-        credential: { mode: 'service_account', username: 'svc', password: 'profile-password', secret_ref: 'kv://sql' },
+        credential: {
+          mode: 'service_account',
+          username: 'svc',
+          password: 'profile-password',
+          secret_ref: 'kv://sql',
+        },
       },
       admin
     );
@@ -521,7 +536,11 @@ describe('connectorService', () => {
       },
     ];
 
-    const plan = await planConnectorProfiling('profile-sql', { assets, profile_mode: 'sample' }, analyst);
+    const plan = await planConnectorProfiling(
+      'profile-sql',
+      { assets, profile_mode: 'sample' },
+      analyst
+    );
     expect(plan.plan.actions[0].query.sql).toContain('COUNT_BIG(*)');
 
     const run = await runConnectorProfiling(
@@ -597,7 +616,11 @@ describe('connectorService', () => {
       runConnectorProfiling('profile-redshift', { assets, execution_mode: 'live' }, analyst)
     ).rejects.toThrow(/admin/i);
 
-    const run = await runConnectorProfiling('profile-redshift', { assets, execution_mode: 'live' }, admin);
+    const run = await runConnectorProfiling(
+      'profile-redshift',
+      { assets, execution_mode: 'live' },
+      admin
+    );
     expect(run.status).toBe('failed');
     expect(run.errors).toEqual(
       expect.arrayContaining([
@@ -630,7 +653,11 @@ describe('connectorService', () => {
       admin
     );
 
-    const plan = await planConnectorBiProfiling('powerbi-profile', { streams: ['reports', 'datasets'] }, analyst);
+    const plan = await planConnectorBiProfiling(
+      'powerbi-profile',
+      { streams: ['reports', 'datasets'] },
+      analyst
+    );
     expect(plan).toMatchObject({
       profile_type: 'bi_report_profile',
       captures_raw_report_data: false,
@@ -643,12 +670,29 @@ describe('connectorService', () => {
       {
         dry_run: false,
         include_events: false,
-        streams: ['reports', 'dashboards', 'datasets', 'scanner_metadata', 'datasources', 'activity_events', 'lineage'],
+        streams: [
+          'reports',
+          'dashboards',
+          'datasets',
+          'scanner_metadata',
+          'datasources',
+          'activity_events',
+          'lineage',
+        ],
         metadata_payload: {
-          reports: [{ id: 'report-1', name: 'Sales Executive Report', datasetId: 'dataset-1', owner: 'finance' }],
+          reports: [
+            {
+              id: 'report-1',
+              name: 'Sales Executive Report',
+              datasetId: 'dataset-1',
+              owner: 'finance',
+            },
+          ],
           dashboards: [{ id: 'dash-1', name: 'Sales Executive Dashboard' }],
           datasets: [{ id: 'dataset-1', name: 'Sales Model', workspaceId: 'workspace-1' }],
-          scanner_metadata: [{ id: 'model-1', name: 'Sales Semantic Model', object_type: 'semantic_model' }],
+          scanner_metadata: [
+            { id: 'model-1', name: 'Sales Semantic Model', object_type: 'semantic_model' },
+          ],
           datasources: [{ id: 'source-1', name: 'Sonic_DW', type: 'sql_server' }],
           activity_events: [{ id: 'usage-1', name: 'ViewReport', reportId: 'report-1' }],
           lineage: [{ id: 'edge-1', from: 'dataset-1', to: 'report-1', type: 'feeds' }],
@@ -759,7 +803,11 @@ describe('connectorService', () => {
       admin
     );
 
-    const plan = await planConnectorMetadataProfiling('salesforce-profile', { streams: ['objects', 'reports'] }, analyst);
+    const plan = await planConnectorMetadataProfiling(
+      'salesforce-profile',
+      { streams: ['objects', 'reports'] },
+      analyst
+    );
     expect(plan).toMatchObject({
       profile_type: 'connector_metadata_profile',
       connector_type: 'salesforce',
@@ -925,7 +973,9 @@ describe('connectorService', () => {
     );
     expect(JSON.stringify(schedule)).not.toContain('should_not_store');
     expect(listConnectorProfileSchedules({}, admin)).toHaveLength(1);
-    expect(getConnectorProfileSchedule(schedule.id, admin)).toEqual(expect.objectContaining({ id: schedule.id }));
+    expect(getConnectorProfileSchedule(schedule.id, admin)).toEqual(
+      expect.objectContaining({ id: schedule.id })
+    );
     expect(schedule.options.dry_run).toBe(false);
 
     const immediate = await runConnectorProfileSchedule(schedule.id, admin);
@@ -937,7 +987,10 @@ describe('connectorService', () => {
       })
     );
 
-    const due = await runDueConnectorProfileSchedules({ now: immediate.schedule.next_run_at }, admin);
+    const due = await runDueConnectorProfileSchedules(
+      { now: immediate.schedule.next_run_at },
+      admin
+    );
     expect(due.due_count).toBe(1);
     expect(due.results[0]).toEqual(expect.objectContaining({ status: 'succeeded' }));
 
@@ -966,7 +1019,9 @@ describe('connectorService', () => {
     const failedTick = await runDueConnectorProfileSchedules({ now: failing.next_run_at }, admin);
     const failedSchedule = getConnectorProfileSchedule(failing.id, admin);
     expect(failedTick.results).toEqual(
-      expect.arrayContaining([expect.objectContaining({ schedule_id: failing.id, status: 'failed' })])
+      expect.arrayContaining([
+        expect.objectContaining({ schedule_id: failing.id, status: 'failed' }),
+      ])
     );
     expect(failedSchedule).toEqual(
       expect.objectContaining({
@@ -1036,8 +1091,12 @@ describe('connectorService', () => {
       expect(artifactJson).not.toContain('kv://tableau/artifacts');
       expect(artifactJson).not.toContain('do-not-store');
 
-      const storeJson = JSON.parse(readFileSync(path.join(runtimeDir, 'profile-scheduler-store.json'), 'utf8'));
-      const persistedConnector = storeJson.connectors.find((item) => item.id === 'scheduled-tableau-artifacts');
+      const storeJson = JSON.parse(
+        readFileSync(path.join(runtimeDir, 'profile-scheduler-store.json'), 'utf8')
+      );
+      const persistedConnector = storeJson.connectors.find(
+        (item) => item.id === 'scheduled-tableau-artifacts'
+      );
       expect(persistedConnector.credential).toEqual({
         mode: 'pat',
         secret_ref: 'stored_reference',
@@ -1353,7 +1412,11 @@ describe('connectorService', () => {
         id: 'metabase-live',
         type: 'metabase',
         config: { base_url: 'https://metabase.example.com' },
-        credential: { mode: 'api_token_reference', token: 'test-token', secret_ref: 'kv://metabase' },
+        credential: {
+          mode: 'api_token_reference',
+          token: 'test-token',
+          secret_ref: 'kv://metabase',
+        },
         options: { dry_run: false, streams: ['dashboards'] },
       });
 
@@ -1394,7 +1457,10 @@ describe('connectorService', () => {
     expect(extraction.status).toBe('succeeded');
     expect(extraction.events).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ stream: 'python_scripts', external_id: 'pipelines/load_claims.py' }),
+        expect.objectContaining({
+          stream: 'python_scripts',
+          external_id: 'pipelines/load_claims.py',
+        }),
         expect.objectContaining({ stream: 'sql_files', external_id: 'sql/dim_vehicle.sql' }),
         expect.objectContaining({ stream: 'notebooks', external_id: 'notebooks/profiling.ipynb' }),
       ])
@@ -1564,7 +1630,15 @@ describe('connectorService', () => {
       options: {
         dry_run: false,
         include_metadata: true,
-        streams: ['reports', 'data_sources', 'datasets', 'usage', 'subscriptions', 'agent_jobs', 'lineage'],
+        streams: [
+          'reports',
+          'data_sources',
+          'datasets',
+          'usage',
+          'subscriptions',
+          'agent_jobs',
+          'lineage',
+        ],
         mockMetadata: {
           extractedAt: '2026-06-12T15:24:25.000Z',
           lookback_months: 6,
@@ -1675,7 +1749,13 @@ describe('connectorService', () => {
         expect.objectContaining({
           type: 'lineage.edge',
           stream: 'lineage',
-          lineage: [{ from: 'L1-5FSQL-01.Sonic_DW.dbo.DimVehicle', to: '/CMA/Activity Details Report', type: 'source_object_feeds_report' }],
+          lineage: [
+            {
+              from: 'L1-5FSQL-01.Sonic_DW.dbo.DimVehicle',
+              to: '/CMA/Activity Details Report',
+              type: 'source_object_feeds_report',
+            },
+          ],
         }),
       ])
     );

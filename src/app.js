@@ -176,9 +176,7 @@ export default function createApp() {
   app.use('/api/v1', apiRouter);
 
   // Frontend static assets and root page
-  app.get('/favicon.ico', (_req, res) => {
-    return res.status(204).end();
-  });
+  app.get('/favicon.ico', (_req, res) => res.status(204).end());
   app.use((req, res, next) => {
     if (req.path === '/' || req.path.endsWith('.js') || req.path.endsWith('.css')) {
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
