@@ -1,0 +1,110 @@
+ReportPath|ReportName|DataSourceName|SharedDataSourcePath|SharedDataSourceItemID
+----------|----------|--------------|--------------------|----------------------
+/AcctStd/Custno to Stockno|Custno to Stockno|DMS|/AcctStd/DataSource/DMS|547C5877-14BF-4D57-A908-55A0C557573A
+/AcctStd/ROnumber to Custno|ROnumber to Custno|DMS|/AcctStd/DataSource/DMS|547C5877-14BF-4D57-A908-55A0C557573A
+/AcctStd/Stockno to Custno|Stockno to Custno|DMS|/AcctStd/DataSource/DMS|547C5877-14BF-4D57-A908-55A0C557573A
+/AcctStd/Trade1Stockno to Custno|Trade1Stockno to Custno|DMS|/AcctStd/DataSource/DMS|547C5877-14BF-4D57-A908-55A0C557573A
+/BI - Controllers/GL - Open Stores|GL - Open Stores|DMS|/BI - Controllers/DataSource/DMS_DWA|7CF2D0EB-85F9-420B-8321-DA232FA1D76B
+/BI - Daily Status/DailyStatus|DailyStatus|DataSource1|/BI - Daily Status/DataSource/DMS|E72A05E0-FB1E-4DC9-8BC3-E0F98F0BF457
+/BI - Daily Status/DailyStatus|DailyStatus|RA_SIMS|/BI - Daily Status/DataSource/RA_SIMS|7AD90C61-F8E8-4889-BC3E-029450C06D15
+/BI - Data Analytics/EP Day 1|EP Day 1|EpProd|/BI - Data Analytics/DataSource/EpProd|3A465E20-952E-484B-9A73-2BC30D956214
+/BI - EchoPark/Replenishment|Replenishment|EchoPark|/BI - EchoPark/DataSource/EchoPark|27B116BA-A23B-455C-8F87-92C7DEE7A6C9
+/BI - Financial Reporting/VehGT100K|VehGT100K|DataSource1|/BI - Financial Reporting/DataSource/COR_SQL_02_DMS_DWA|711DBC69-119D-4F47-856D-8F9CBC3B65B6
+/BI - Financial Reporting/VehGT100K_old|VehGT100K_old|DataSource1|/BI - Financial Reporting/DataSource/COR_SQL_02_WebV|3C3AD386-39C3-40CF-A603-B1A3F51CE7CF
+/BI - FORCE/EP_ReconCost|EP_ReconCost|CORBISQL02|/BI - FORCE/DataSource/COR-BISQL-02|D6C5A9DD-AF65-4C9E-BBA0-4C42836E62FE
+/BI - FORCE/TIRE Report|TIRE Report|DMS|/BI - FORCE/DataSource/DMS_DWA|49D1015B-F3F0-4A2B-8D52-4E0FC08FF0AC
+/BI - FORCE/UpLoadOpCodes|UpLoadOpCodes|CorBISQL02|/BI - FORCE/DataSource/COR-BISQL-02|D6C5A9DD-AF65-4C9E-BBA0-4C42836E62FE
+/BI - FPnA/Copy of Retail Sales Report_CleanGross_Hal|Copy of Retail Sales Report_CleanGross_Hal|COR_BISQL_01|/BI - FPnA/DataSource/COR-BISQL-01|EBC149DD-7CCB-4AB9-8A4C-8E0323D6F423
+/BI - FPnA/Copy of Retail Sales Report_CleanGross_Hal_B1|Copy of Retail Sales Report_CleanGross_Hal_B1|COR_BISQL_01|/BI - FPnA/DataSource/COR-BISQL-01|EBC149DD-7CCB-4AB9-8A4C-8E0323D6F423
+/BI - FPnA/Retail Sales MTD vs Last Year|Retail Sales MTD vs Last Year|COR_BISQL_01|/BI - FPnA/DataSource/COR-BISQL-01|EBC149DD-7CCB-4AB9-8A4C-8E0323D6F423
+/BI - FPnA/Retail Sales Report|Retail Sales Report|COR_BISQL_01|/BI - FPnA/DataSource/COR-BISQL-01|EBC149DD-7CCB-4AB9-8A4C-8E0323D6F423
+/BI - FPnA/Retail Sales Report_CleanGross|Retail Sales Report_CleanGross|COR_BISQL_01|/BI - FPnA/DataSource/COR-BISQL-01|EBC149DD-7CCB-4AB9-8A4C-8E0323D6F423
+/BI - FPnA/Retail Sales Report_CleanGross_Hal|Retail Sales Report_CleanGross_Hal|COR_BISQL_01|/BI - FPnA/DataSource/COR-BISQL-01|EBC149DD-7CCB-4AB9-8A4C-8E0323D6F423
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1|Retail Sales Report_CleanGross_Hal_B1|COR_BISQL_01|/BI - FPnA/DataSource/COR-BISQL-01|EBC149DD-7CCB-4AB9-8A4C-8E0323D6F423
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1_Copy|Retail Sales Report_CleanGross_Hal_B1_Copy|COR_BISQL_01|/BI - FPnA/DataSource/COR-BISQL-01|EBC149DD-7CCB-4AB9-8A4C-8E0323D6F423
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1_OpenRange|Retail Sales Report_CleanGross_Hal_B1_OpenRange|COR_BISQL_01|/BI - FPnA/DataSource/COR-BISQL-01|EBC149DD-7CCB-4AB9-8A4C-8E0323D6F423
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1YDay|Retail Sales Report_CleanGross_Hal_B1YDay|COR_BISQL_01|/BI - FPnA/DataSource/COR-BISQL-01|EBC149DD-7CCB-4AB9-8A4C-8E0323D6F423
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_RP|Retail Sales Report_CleanGross_Hal_RP|COR_BISQL_01|/BI - FPnA/DataSource/COR-BISQL-01|EBC149DD-7CCB-4AB9-8A4C-8E0323D6F423
+/BI - New Vehicles/Archive/New Inventory - Playbook - All|New Inventory - Playbook - All|BI_WorkDB|/BI - New Vehicles/DataSource/L1-DWASQL-02_BIWDB|045A54AF-585D-436C-BA1E-A4DD685D2E71
+/BI - New Vehicles/Archive/New Inventory - Playbook - All_exp (1)|New Inventory - Playbook - All_exp (1)|BI_WorkDB|/BI - New Vehicles/DataSource/COR_SQL_02_BIWDB|9EAAE27C-FE5D-4B6E-9FA5-9A62D7E72197
+/BI - New Vehicles/Archive/New Inventory - Playbook - All_exp_Playbook|New Inventory - Playbook - All_exp_Playbook|BI_WorkDB|/BI - New Vehicles/DataSource/L1-DWASQL-02_BIWDB|045A54AF-585D-436C-BA1E-A4DD685D2E71
+/BI - New Vehicles/Archive/New Inventory - Playbook - All_exp_Playbook_strpd|New Inventory - Playbook - All_exp_Playbook_strpd|BI_WorkDB|/BI - New Vehicles/DataSource/L1-DWASQL-02_BIWDB|045A54AF-585D-436C-BA1E-A4DD685D2E71
+/BI - New Vehicles/Archive/New Inventory - Pricing - All_exp|New Inventory - Pricing - All_exp|BI_WorkDB|/BI - New Vehicles/DataSource/L1-DWASQL-02_BIWDB|045A54AF-585D-436C-BA1E-A4DD685D2E71
+/BI - New Vehicles/Archive/New Playbook - Pre Visit|New Playbook - Pre Visit|BI_Workdb|/BI - New Vehicles/DataSource/L1-DWASQL-02_BIWDB|045A54AF-585D-436C-BA1E-A4DD685D2E71
+/BI - New Vehicles/New Inventory - Count By Make|New Inventory - Count By Make|BI_WorkDB|/BI - New Vehicles/DataSource/L1-DWASQL-02_BIWDB|045A54AF-585D-436C-BA1E-A4DD685D2E71
+/BI - New Vehicles/New Inventory - Playbook - All_exp|New Inventory - Playbook - All_exp|BI_WorkDB|/BI - New Vehicles/DataSource/L1-DWASQL-02_BIWDB|045A54AF-585D-436C-BA1E-A4DD685D2E71
+/BI - New Vehicles/New Inventory - Playbook - SingleStore|New Inventory - Playbook - SingleStore|BI_WorkDB|/BI - New Vehicles/DataSource/L1-DWASQL-02_BIWDB|045A54AF-585D-436C-BA1E-A4DD685D2E71
+/BI - Payroll/PayrollEntry_CoID_UserID|PayrollEntry_CoID_UserID|DMS|/BI - Payroll/DataSource/DMS_DWA|A1F908D9-0464-44F2-9DAB-E472DBD44D57
+/BI - Payroll/PayrollEntrySummary|PayrollEntrySummary|DMS|/BI - Payroll/DataSource/DMS_DWA|A1F908D9-0464-44F2-9DAB-E472DBD44D57
+/BI - Retail Strategy/Copy of WeekendAppts|Copy of WeekendAppts|eLeads|/BI - Retail Strategy/DataSource/eLeadDW_DWA|9C7303B5-1713-4805-B0C4-607E8D1BD422
+/BI - Retail Strategy/EP Customers|EP Customers|DMS|/BI - Retail Strategy/DataSource/DMS_DWA|4CCA1754-DF18-4940-89ED-21B4C4772928
+/BI - Retail Strategy/EP Leads|EP Leads|Elead|/BI - Retail Strategy/DataSource/eLeadDW_DWA|9C7303B5-1713-4805-B0C4-607E8D1BD422
+/BI - Retail Strategy/LeadsBySource|LeadsBySource|DataSource1|/BI - Retail Strategy/DataSource/eLeadDW_DWA|9C7303B5-1713-4805-B0C4-607E8D1BD422
+/BI - Retail Strategy/Logged Vs OverDue|Logged Vs OverDue|eLeadDW|/BI - Retail Strategy/DataSource/eLeadDW_DWA|9C7303B5-1713-4805-B0C4-607E8D1BD422
+/BI - Retail Strategy/SCORES/CustomerByName|CustomerByName|DataSource1|NULL|NULL
+/BI - Retail Strategy/SCORES/OpportunityPkgs|OpportunityPkgs|DataSource1|NULL|NULL
+/BI - Retail Strategy/Sonic Quartile Report|Sonic Quartile Report|eLeadDW|/BI - Retail Strategy/DataSource/eLeadDW_DWA|9C7303B5-1713-4805-B0C4-607E8D1BD422
+/BI - Retail Strategy/WeekendAppts|WeekendAppts|eLeads|/BI - Retail Strategy/DataSource/eLeadDW_DWA|9C7303B5-1713-4805-B0C4-607E8D1BD422
+/BI - Retail Strategy/WeekendApptsOld|WeekendApptsOld|eLeads|/BI - Retail Strategy/DataSource/eLeadDW_DWA|9C7303B5-1713-4805-B0C4-607E8D1BD422
+/BI - Shared Services/FloorplanPayoff|FloorplanPayoff|DMS|/BI - Shared Services/DataSource/DMS_DWA|78C41B92-09F6-4853-9C81-A27243CC5D3D
+/BI - Shared Services/FloorplanPayoff_xrefSyncIssue|FloorplanPayoff_xrefSyncIssue|DMS|/BI - Shared Services/DataSource/DMS|35B7A001-81E5-4CB4-A8A0-F6BFB4B4EAD2
+/BI - Shared Services/Send Floorplan|Send Floorplan|SPSSRS|/BI - Shared Services/DataSource/d1-spssrs-01|EE8597DE-E595-4757-B097-B54A6CA1188E
+/CMA/Activity Details Report|Activity Details Report|CMS|/CMA/DataSource/CMA|2948D362-87FA-46AD-951C-821683E19F61
+/CMA/DailyActivitySummary|DailyActivitySummary|CMAG|/CMA/DataSource/CMA|2948D362-87FA-46AD-951C-821683E19F61
+/CMA/DailyCashSummary|DailyCashSummary|CMS_DimDate|/CMA/DataSource/CMA|2948D362-87FA-46AD-951C-821683E19F61
+/CMA/DailyCashSummary|DailyCashSummary|CMSDatasource1|/CMA/DataSource/CMA|2948D362-87FA-46AD-951C-821683E19F61
+/CMA/NegativeBalanceReportv3|NegativeBalanceReportv3|DataSource1|/CMA/DataSource/CMA|2948D362-87FA-46AD-951C-821683E19F61
+/Controllers/GL - Open Stores|GL - Open Stores|DMS|/Controllers/DataSource/DMS|586AAA36-DB57-4D0C-8707-3BB5ED357EAA
+/CRM/OldQuartileOpportunityReport|OldQuartileOpportunityReport|Sonic_DW|/CRM/Data Sources/Sonic_DW|A96EBF33-24D6-4845-A41D-7DC05ABFC04D
+/CRM/QuartileOpportunityReport|QuartileOpportunityReport|Sonic_DW|/CRM/Data Sources/Sonic_DW|A96EBF33-24D6-4845-A41D-7DC05ABFC04D
+/CRM/QuartileOpportunityReport_Bkp_20201102|QuartileOpportunityReport_Bkp_20201102|Sonic_DW|/CRM/Data Sources/Sonic_DW|A96EBF33-24D6-4845-A41D-7DC05ABFC04D
+/CRM/TrafficManagementReport|TrafficManagementReport|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkDashboard|EchoParkDashboard|DMS_DataSource|/Echo Park/Data Sources/COR-SQL-02.DMS|DD47FB3C-316F-4AF9-A75B-D6F6DDA928C3
+/Echo Park/CSI/EchoParkExceptionRpt|EchoParkExceptionRpt|DMS_DataSource|/Echo Park/Data Sources/COR-SQL-02.DMS|DD47FB3C-316F-4AF9-A75B-D6F6DDA928C3
+/Echo Park/CSI/EchoParkSalesCustomer|EchoParkSalesCustomer|DMS_DataSource|/Echo Park/Data Sources/COR-SQL-02.DMS|DD47FB3C-316F-4AF9-A75B-D6F6DDA928C3
+/Echo Park/CSI/EchoParkSalesDetailRpt|EchoParkSalesDetailRpt|DMS_DataSource|/Echo Park/Data Sources/COR-SQL-02.DMS|DD47FB3C-316F-4AF9-A75B-D6F6DDA928C3
+/Echo Park/CSI/EchoParkServiceCustomer|EchoParkServiceCustomer|DMS_DataSource|/Echo Park/Data Sources/COR-SQL-02.DMS|DD47FB3C-316F-4AF9-A75B-D6F6DDA928C3
+/Echo Park/CSI/HelpCustomerSales-ServiceReport|HelpCustomerSales-ServiceReport|NULL|NULL|NULL
+/Echo Park/Inventory/AutoMatch Day 1 Inventory|AutoMatch Day 1 Inventory|NULL|NULL|NULL
+/Echo Park/Inventory/EchoPark Day 1 Inventory|EchoPark Day 1 Inventory|NULL|NULL|NULL
+/Internal Audit/ChecksToUsers|ChecksToUsers|DMS|/Internal Audit/DataSource/DMS|8347776A-9D5C-40F5-A123-032D17CD5A83
+/JobStatusReports/SummaryReport|SummaryReport|AFScrape|/JobStatusReports/Data Sources/AFScrape|7632E19E-24AB-4037-8BF4-7685E0611806
+/JobStatusReports/SummaryReport|SummaryReport|D1SSIS01|/JobStatusReports/Data Sources/D1SSIS01|4D49470D-64B2-4164-91FF-6CCD6B0C2824
+/JobStatusReports/SummaryReport|SummaryReport|D1SSIS02|/JobStatusReports/Data Sources/D1SSIS02|AAB478A2-EA0D-4FB0-AFFB-DCB10348B88A
+/Legal/TrueCar Emails|TrueCar Emails|BI_Workdb|/Legal/DataSource/BI_Workdb|8CA993F4-FEC0-416A-B98F-CBCC612454E0
+/New Inventory - Count By Make Model Dealership|New Inventory - Count By Make Model Dealership|BI_WorkDB|/BI - New Vehicles/DataSource/L1-DWASQL-02_BIWDB|045A54AF-585D-436C-BA1E-A4DD685D2E71
+/New Vehicles/New Inventory - Playbook - All_exp|New Inventory - Playbook - All_exp|BI_WorkDB|/New Vehicles/DataSource/COR_SQL_02_BIWDB|574504BA-77DA-40EB-B9B8-26E854910124
+/New Vehicles/New Inventory - Pricing - All_exp|New Inventory - Pricing - All_exp|BI_WorkDB|/New Vehicles/DataSource/COR_SQL_02_BIWDB|574504BA-77DA-40EB-B9B8-26E854910124
+/NVIM/NVPDashboard|NVPDashboard|NULL|NULL|NULL
+/NVIM/NVPDashboardLandingPage|NVPDashboardLandingPage|NULL|NULL|NULL
+/ProfitAnalysis/ReportsLibrary/New Inventory Pricing Issues|New Inventory Pricing Issues|WebV|/ProfitAnalysis/Data Sources/WebVLive|D0AC22E0-A9F6-4A6B-87E1-A7105F307887
+/RouteOne/RouteOneDetails|RouteOneDetails|NULL|NULL|NULL
+/RouteOne/RouteOneRedFlagDetailData|RouteOneRedFlagDetailData|Sonic_DW_DataSource|/RouteOne/Data Sources/Speed_Db|10758B3E-4DF5-4528-A116-FB9F9F00A528
+/RouteOne/RouteOneRedFlagReport|RouteOneRedFlagReport|Sonic_DW_DataSource|/RouteOne/Data Sources/Speed_Db|10758B3E-4DF5-4528-A116-FB9F9F00A528
+/RouteOne/RouteOneSSNVarianceRpt|RouteOneSSNVarianceRpt|Sonic_DW_DataSource|/RouteOne/Data Sources/COR-BISQL-02_Sonic_DW|77B672BA-F850-4FCC-9DC7-51C94FAAF176
+/RouteOne/RouteOneSummaryRpt|RouteOneSummaryRpt|Sonic_DW_DataSource|/RouteOne/Data Sources/COR-BISQL-02_Sonic_DW|77B672BA-F850-4FCC-9DC7-51C94FAAF176
+/RptTest/CustInfo|CustInfo|CustInfo|NULL|NULL
+/RptTest/New Inventory - Playbook - All_exp|New Inventory - Playbook - All_exp|BI_WorkDB|/DataSource/COR_SQL_02_BIWDB|0CF71A75-AB60-4C4D-B487-677612ED4FEB
+/RTC/R1 - Finalized Deals|R1 - Finalized Deals|SIMS6200|/RTC/Data Sources/SIMS6200|19BF6FD8-C147-4FAF-9E76-61F90A8417CB
+/RTC/R2 - Wholesale Details|R2 - Wholesale Details|SIMS6200|/RTC/Data Sources/SIMS6200|19BF6FD8-C147-4FAF-9E76-61F90A8417CB
+/RTC/R2 - Wholesale Details_Parameters|R2 - Wholesale Details_Parameters|SIMS6200|/RTC/Data Sources/SIMS6200|19BF6FD8-C147-4FAF-9E76-61F90A8417CB
+/RTC/R2 - Wholesale Report|R2 - Wholesale Report|SIMS6200|/RTC/Data Sources/SIMS6200|19BF6FD8-C147-4FAF-9E76-61F90A8417CB
+/RTC/R3 - Corporate Sold Own Tracker|R3 - Corporate Sold Own Tracker|SIMS6200|/RTC/Data Sources/SIMS6200|19BF6FD8-C147-4FAF-9E76-61F90A8417CB
+/RTC/R4 - Inventory Count|R4 - Inventory Count|SIMS6200|/RTC/Data Sources/SIMS6200|19BF6FD8-C147-4FAF-9E76-61F90A8417CB
+/RTC/R4 - Inventory Count By Bucket|R4 - Inventory Count By Bucket|SIMS6200|/RTC/Data Sources/SIMS6200|19BF6FD8-C147-4FAF-9E76-61F90A8417CB
+/RTC/R5 - Inventory Count|R5 - Inventory Count|SIMS6200|/RTC/Data Sources/SIMS6200|19BF6FD8-C147-4FAF-9E76-61F90A8417CB
+/RTC/R5 - UV Performance Report - Total Sonic Red|R5 - UV Performance Report - Total Sonic Red|SIMS6200|/RTC/Data Sources/SIMS6200|19BF6FD8-C147-4FAF-9E76-61F90A8417CB
+/RTC/R6 - Inventory Level Query|R6 - Inventory Level Query|SIMS6200|/RTC/Data Sources/SIMS6200|19BF6FD8-C147-4FAF-9E76-61F90A8417CB
+/RTC/R7 - Inventory Count Less PW|R7 - Inventory Count Less PW|SIMS6200|/RTC/Data Sources/SIMS6200|19BF6FD8-C147-4FAF-9E76-61F90A8417CB
+/RTC/R8 - Sales Bucket Count|R8 - Sales Bucket Count|SIMS6200|/RTC/Data Sources/SIMS6200|19BF6FD8-C147-4FAF-9E76-61F90A8417CB
+/RTC/R9 - Age_Units|R9 - Age_Units|SIMS6200|/RTC/Data Sources/SIMS6200|19BF6FD8-C147-4FAF-9E76-61F90A8417CB
+/RTC/R9 - Inventory_Level|R9 - Inventory_Level|SIMS6200|/RTC/Data Sources/SIMS6200|19BF6FD8-C147-4FAF-9E76-61F90A8417CB
+/RTC/ZR - Apprsls_over_10mins|ZR - Apprsls_over_10mins|SIMS6200|/RTC/Data Sources/SIMS6200|19BF6FD8-C147-4FAF-9E76-61F90A8417CB
+/RTC/ZR - InValue_VS_TradeValue|ZR - InValue_VS_TradeValue|SIMS6200|/RTC/Data Sources/SIMS6200|19BF6FD8-C147-4FAF-9E76-61F90A8417CB
+/RTC/ZR - Price_Overrides_Updated_KLor|ZR - Price_Overrides_Updated_KLor|SIMS6200|/RTC/Data Sources/SIMS6200|19BF6FD8-C147-4FAF-9E76-61F90A8417CB
+/RTC/ZR - RTC_Times|ZR - RTC_Times|SIMS6200|/RTC/Data Sources/SIMS6200|19BF6FD8-C147-4FAF-9E76-61F90A8417CB
+/Test/DailyCashSummary_TEST|DailyCashSummary_TEST|CMS_DimDate|/Test/DataSource_TEST|7CA49DAF-FB9D-4C68-AC21-047FA77268B2
+/Test/DailyCashSummary_TEST|DailyCashSummary_TEST|CMSDatasource1|/Test/DataSource_TEST|7CA49DAF-FB9D-4C68-AC21-047FA77268B2
+/Test/NegativeBalanceReportv3_TEST|NegativeBalanceReportv3_TEST|DataSource1|/Test/DataSource_TEST|7CA49DAF-FB9D-4C68-AC21-047FA77268B2
+/Test/Test --2-New Inventory - Count By Make|Test --2-New Inventory - Count By Make|BI_WorkDB|/BI - New Vehicles/DataSource/L1-DWASQL-02_BIWDB|045A54AF-585D-436C-BA1E-A4DD685D2E71
+/Test/Test --New Inventory - Count By Make|Test --New Inventory - Count By Make|BI_WorkDB|/BI - New Vehicles/DataSource/L1-DWASQL-02_BIWDB|045A54AF-585D-436C-BA1E-A4DD685D2E71

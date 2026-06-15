@@ -261,18 +261,20 @@ export const businessGlossaryPageTemplate = `
 
 `;
 
-export const advancedGovernancePageTemplate = `
-            <div v-if="activeView === 'governance'" class="governance-page">
+const governanceAdvancedControlsLaneTemplate = `
+                  <details class="governance-support-lane governance-advanced-controls-lane">
+                    <summary>
+                      <span>Policy, Quality, And Classification Controls</span>
+                      <small>Advanced steward/admin controls after reviewing the work queue</small>
+                    </summary>
+                    <div class="governance-support-body">
               <v-row>
                 <v-col cols="12">
                   <v-card class="card review-work-warning-card" variant="outlined">
                     <div class="section-header" style="margin-bottom:12px;">
                       <div>
-                        <span class="section-title">Advanced Trust Controls</span>
-                        <p class="card-help">This drilldown preserves classification, masking, quality, and policy controls for stewards/admins. Primary trust review now starts in Governance Ops through confidence warnings and review queues.</p>
-                      </div>
-                      <div class="btn-row">
-                        <v-btn size="small" color="primary" @click="onViewChange('governanceOps')">Back to Review Work</v-btn>
+                        <span class="section-title">Advanced Control Settings</span>
+                        <p class="card-help">Classification, masking, quality, and policy controls stay behind Governance Ops so trust review starts with confidence warnings and steward work queues.</p>
                       </div>
                     </div>
                   </v-card>
@@ -633,7 +635,8 @@ export const advancedGovernancePageTemplate = `
                   </v-card>
                 </v-col>
               </v-row>
-            </div>
+                    </div>
+                  </details>
 
 
 `;
@@ -1059,6 +1062,10 @@ export const governanceOpsPageTemplate = `
                     </div>
                   </details>
                 </v-col>
+
+                <v-col cols="12">
+${governanceAdvancedControlsLaneTemplate}
+                </v-col>
               </v-row>
             </div>
 
@@ -1294,45 +1301,21 @@ export const metricIntelligencePageTemplate = `
 
                   <details class="metric-support-lane" style="margin-top:12px;">
                     <summary>
-                      <span>Advanced Profile Run</span>
-                      <small>Plan or run a table profile when evidence is missing</small>
+                      <span>Profiling Handoff</span>
+                      <small>Create or run profile work from the Profiling queue surface</small>
                     </summary>
                     <div class="metric-support-body">
                       <div class="section-header" style="margin-bottom:8px;">
-                        <span class="section-title">Technical Profile Run</span>
+                        <span class="section-title">Open Profiling Queue</span>
                         <div class="btn-row">
-                          <v-btn size="small" variant="outlined" :loading="metrics.profiling.loading" @click="planMetricTableProfile">Plan</v-btn>
-                          <v-btn size="small" color="primary" :loading="metrics.profiling.loading" @click="runMetricTableProfile">Run</v-btn>
+                          <v-btn size="small" color="primary" :disabled="!metrics.objectId" @click="openMetricProfilingHandoff">Open In Profiling</v-btn>
                         </div>
                       </div>
-                      <div class="form-row" style="grid-template-columns:1fr 1fr 1fr; margin-bottom:10px;">
-                        <v-select v-model="metrics.profiling.dialect" density="compact" variant="outlined" label="Dialect" :items="['sql_server','postgresql','snowflake','bigquery','databricks','redshift']" hide-details></v-select>
-                        <v-select v-model="metrics.profiling.mode" density="compact" variant="outlined" label="Profile mode" :items="['metadata_only','sample','full_scan']" hide-details></v-select>
-                        <v-select v-model="metrics.profiling.executionMode" density="compact" variant="outlined" label="Execution" :items="['dry_run','simulate','live']" hide-details></v-select>
+                      <p class="lineage-answer-text">Metric Intelligence keeps profile evidence read-only. New live runs, plans, schedules, publishing, and queue review belong in Profiling.</p>
+                      <div class="mini-stack" style="margin-top:10px;">
+                        <div class="mini-metric"><span>Selected Asset</span><strong>{{ metrics.objectId || '-' }}</strong></div>
+                        <div class="mini-metric"><span>Metric Column</span><strong>{{ metrics.selectedColumn || '-' }}</strong></div>
                       </div>
-                      <div class="form-row" style="grid-template-columns:repeat(4, 1fr); margin-bottom:10px;">
-                        <v-text-field v-model="metrics.profiling.maxColumns" density="compact" variant="outlined" label="Columns" type="number" hide-details></v-text-field>
-                        <v-text-field v-model="metrics.profiling.samplePercent" density="compact" variant="outlined" label="Sample %" type="number" hide-details></v-text-field>
-                        <v-text-field v-model="metrics.profiling.lockTimeoutMs" density="compact" variant="outlined" label="Lock ms" type="number" hide-details></v-text-field>
-                        <v-text-field v-model="metrics.profiling.queryTimeoutMs" density="compact" variant="outlined" label="Query ms" type="number" hide-details></v-text-field>
-                      </div>
-                      <p v-if="metrics.profiling.answer" class="lineage-answer-text">{{ metrics.profiling.answer.answer }}</p>
-                      <div v-if="metrics.profiling.plan || metrics.profiling.run" class="mini-stack" style="margin-top:10px;">
-                        <div class="mini-metric"><span>Plan Status</span><strong>{{ metrics.profiling.plan?.status || '-' }}</strong></div>
-                        <div class="mini-metric"><span>Planned Assets</span><strong>{{ metrics.profiling.plan?.summary?.planned_assets || 0 }}</strong></div>
-                        <div class="mini-metric"><span>Profiled Assets</span><strong>{{ metrics.profiling.run?.summary?.assets_profiled || 0 }}</strong></div>
-                        <div class="mini-metric"><span>Raw Values</span><strong>{{ metrics.profiling.run?.summary?.raw_values_retained ? 'retained' : 'not retained' }}</strong></div>
-                      </div>
-                      <div v-if="metrics.profiling.run?.errors?.length" class="lineage-caveat-list" style="margin-top:10px;">
-                        <div v-for="error in metrics.profiling.run.errors" :key="'profile-error-' + error.asset_id + error.message" class="lineage-caveat-item">
-                          {{ error.asset_id }}: {{ error.message }}
-                        </div>
-                      </div>
-                      <div v-if="metrics.profiling.confluence" class="lineage-help-panel" style="margin-top:10px;">
-                        <div class="lineage-help-title">Confluence Summary</div>
-                        <div class="lineage-help-copy">{{ confluenceSummaryPreview(metrics.profiling.confluence.content) }}</div>
-                      </div>
-                      <pre v-if="metrics.profiling.plan?.actions?.[0]?.query?.sql" class="profile-sql-preview">{{ metrics.profiling.plan.actions[0].query.sql }}</pre>
                     </div>
                   </details>
                 </v-col>

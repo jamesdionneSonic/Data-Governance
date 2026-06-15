@@ -29,6 +29,9 @@ playwright-report/
 test-results/
 test-results-*/
 test-results.txt
+/tmp/profiling-guardrails-results/
+/tmp/profiling-trace/
+/tmp/trace-profiling-page.mjs
 
 # Local audit archive for files intentionally removed from repo tracking
 Audit/

@@ -35,6 +35,10 @@ function getLegacyErrorLabel(status, err) {
   return 'Internal Server Error';
 }
 
+export function shouldLogApiError(status) {
+  return !(process.env.NODE_ENV === 'test' && status < 500);
+}
+
 export default function errorHandler(err, req, res, _next) {
   const status = normalizeStatus(err);
   const originalMessage = err.message || 'Internal Server Error';
@@ -47,10 +51,12 @@ export default function errorHandler(err, req, res, _next) {
   const safeDetails = isServerError && !isDevelopment ? null : err.details || null;
 
   const logMessage = `[${isServerError ? 'ERROR' : 'WARN'}] ${status} ${req.method} ${req.originalUrl} requestId=${requestId || 'n/a'}: ${originalMessage}`;
-  if (isServerError) {
-    console.error(logMessage, err);
-  } else {
-    console.warn(logMessage);
+  if (shouldLogApiError(status)) {
+    if (isServerError) {
+      console.error(logMessage, err);
+    } else {
+      console.warn(logMessage);
+    }
   }
 
   const payload = {

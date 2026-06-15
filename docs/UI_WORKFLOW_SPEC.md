@@ -10,28 +10,28 @@ The app is search-first and workflow-led. Users should not have to understand th
 
 ## Roles
 
-| Role | Default Needs |
-| --- | --- |
-| User | Search for assets, understand lineage, view business-friendly details, view glossary and metric context. |
-| Analyst | User capabilities plus technical details, profile schedules/runs, columns, SQL/report logic drilldowns. |
+| Role         | Default Needs                                                                                            |
+| ------------ | -------------------------------------------------------------------------------------------------------- |
+| User         | Search for assets, understand lineage, view business-friendly details, view glossary and metric context. |
+| Analyst      | User capabilities plus technical details, profile schedules/runs, columns, SQL/report logic drilldowns.  |
 | Data Steward | Review work queues, suggested metrics, suspicious lineage, failed profile/lineage issues, and approvals. |
-| Admin | Manage connections, permissions, lineage acquisition, platform settings, and advanced troubleshooting. |
+| Admin        | Manage connections, permissions, lineage acquisition, platform settings, and advanced troubleshooting.   |
 
 Normal users must not see raw extraction controls, package XML, parser logs, source credentials, or advanced operator actions.
 
 ## Navigation Model
 
-| Navigation Label | Audience | Job |
-| --- | --- | --- |
-| Home / Find Data | All | Search for data first, show ranked results in place, and open a selected asset detail. |
-| Asset Detail | Internal/deep link | Review a selected asset, then open lineage/impact or technical evidence. Not a primary navigation item. |
-| Search | Internal/advanced | Advanced catalog search, filtering, and database browsing. Not a primary navigation item. |
-| Glossary & Metrics | User, Steward, Analyst | Manage business terms, metric definitions, metric variants, and in-review suggestions. |
-| Review Work | Steward, Admin | Work failed profile, failed lineage, suspicious lineage, metric review, and approval queues. |
-| Profiling | Analyst, Admin | Configure, run, and monitor profile schedules and queues. |
-| Connections | Admin | Create, test, discover, and manage reusable source connections and usage access. |
-| Lineage Acquisition | Admin | Refresh lineage evidence for a domain and inspect extraction health. |
-| Platform Admin | Admin | Manage roles, settings, diagnostics, and advanced platform operations. |
+| Navigation Label    | Audience               | Job                                                                                                     |
+| ------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------- |
+| Home / Find Data    | All                    | Search for data first, show ranked results in place, and open a selected asset detail.                  |
+| Asset Detail        | Internal/deep link     | Review a selected asset, then open lineage/impact or technical evidence. Not a primary navigation item. |
+| Search              | Internal/advanced      | Advanced catalog search, filtering, and database browsing. Not a primary navigation item.               |
+| Glossary & Metrics  | User, Steward, Analyst | Manage business terms, metric definitions, metric variants, and in-review suggestions.                  |
+| Review Work         | Steward, Admin         | Work failed profile, failed lineage, suspicious lineage, metric review, and approval queues.            |
+| Profiling           | Analyst, Admin         | Configure, run, and monitor profile schedules and queues.                                               |
+| Connections         | Admin                  | Create, test, discover, and manage reusable source connections and usage access.                        |
+| Lineage Acquisition | Admin                  | Refresh lineage evidence for a domain and inspect extraction health.                                    |
+| Platform Admin      | Admin                  | Manage roles, settings, diagnostics, and advanced platform operations.                                  |
 
 Deprecated or renamed labels:
 
@@ -140,7 +140,9 @@ Connections must not show schedule configuration, queue progress, profile run hi
 
 Primary job: create, run, and monitor profile schedules and queues.
 
-Main page starts with a sorted schedule list:
+Main page starts with a simple queue-health hero and live queue list. The first viewport should answer whether profiling is healthy, blocked, running, or waiting; show one primary `New Schedule` action; show compact summary counts; and then show live profile queue rows. It must not start as an operator console or expose worker controls, raw run history, publishing tables, schedule settings, or queue internals before the user opens Advanced / Operator Tools or a selected Queue Detail.
+
+Live queue rows are sorted by action need:
 
 1. active and running
 2. active with failure
@@ -148,7 +150,7 @@ Main page starts with a sorted schedule list:
 4. deactivated
 5. drafts
 
-Main list fields:
+Live queue row fields:
 
 - schedule name
 - connection/source
@@ -157,6 +159,8 @@ Main list fields:
 - last run date/time
 - last result
 - details link for failure or active queue state
+
+When the current APIs cannot report exact queue counts, the UI must label counts as unknown rather than guessing. A persistent page-level blocker state must stay visible if schedules, scheduler status, or selected queue detail cannot load.
 
 Database schedules must cover exactly one database. Setup flow:
 

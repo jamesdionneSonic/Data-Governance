@@ -595,11 +595,11 @@ export const connectionsPageTemplate = `
                       <div class="btn-row mt-8">
                         <v-btn size="small" variant="outlined" @click="loadManagedConnectorSnapshot(selectedManagedConnector.id)">Refresh Discovery Detail</v-btn>
                         <v-btn size="small" variant="outlined" @click="integrations.connectorWorkflowTab = 'access'">Manage Access</v-btn>
-                        <v-btn size="small" variant="tonal" @click="onViewChange('scheduler')">Open Profiling</v-btn>
+                        <v-btn size="small" variant="tonal" @click="openRelatedProfilingQueueFromConnection">Open Related Profiling Queue</v-btn>
                       </div>
                       <div class="connector-guardrail mt-8">
                         <v-icon size="small">mdi-transit-connection-variant</v-icon>
-                        <span>Profile runs, queues, publishing, and schedule controls belong to Profiling. This Connections view only links to them during migration.</span>
+                        <span>Profile runs, publishing, and schedule controls belong to Profiling. Connections only shows whether this source is used by profile queues.</span>
                       </div>
                     </div>
                     <div v-else class="connector-empty-path">
@@ -608,14 +608,17 @@ export const connectionsPageTemplate = `
                     </div>
                     <details class="connections-support-lane compact mt-8">
                       <summary>
-                        <span>Related Workflow Links</span>
-                        <small>Profiling runs, publishing, and notifications live outside Connections</small>
+                        <span>Schedule Relationships</span>
+                        <small>{{ selectedConnectorSchedules.length }} profile queue{{ selectedConnectorSchedules.length === 1 ? '' : 's' }} use this connection</small>
                       </summary>
                       <div class="connections-support-body">
+                        <div class="mini-stack mb-8">
+                          <div class="mini-metric"><span>Used by schedules</span><strong>{{ selectedConnectorSchedules.length }}</strong></div>
+                          <div class="mini-metric"><span>Active queue</span><strong>{{ selectedConnectorActiveSchedule?.name || selectedConnectorActiveSchedule?.id || 'None' }}</strong></div>
+                        </div>
                         <div class="connector-action-strip">
-                          <v-btn size="small" variant="outlined" @click="integrations.schedulerOpsTab = 'runNow'; onViewChange('scheduler')">Open Run Now in Profiling</v-btn>
-                          <v-btn size="small" variant="outlined" @click="integrations.schedulerOpsTab = 'runs'; onViewChange('scheduler')">Open Runs in Profiling</v-btn>
-                          <v-btn size="small" variant="outlined" @click="integrations.schedulerOpsTab = 'publishing'; onViewChange('scheduler')">Open Publishing in Profiling</v-btn>
+                          <v-btn size="small" variant="outlined" @click="openRelatedProfilingQueueFromConnection">Open Related Profiling Queue</v-btn>
+                          <v-btn size="small" variant="outlined" @click="onViewChange('scheduler')">Open Profiling Queue Health</v-btn>
                           <v-btn size="small" variant="outlined" @click="integrations.connectorWorkflowTab = 'integrations'">Notifications Drilldown</v-btn>
                         </div>
                       </div>
@@ -645,24 +648,31 @@ export const connectionsPageTemplate = `
 export const profilingSchedulerPageTemplate = `
             <div v-if="activeView === 'scheduler'" class="workflow-page scheduler-page">
               <v-card class="card span-12 profile-scheduler-card" variant="outlined">
-                <div class="section-header">
-                  <span class="section-title">Profiling</span>
-                  <div class="btn-row">
-                    <v-btn size="small" variant="outlined" :loading="integrations.profileScheduleLoading" @click="loadProfileSchedules">Refresh</v-btn>
-                  </div>
-                </div>
-                <p class="card-help">Understand profile queue health first. Run-now, history, worker controls, publishing, and settings stay available after the queue-health answer.</p>
-
-                <div class="profile-queue-answer">
+                <div class="profile-queue-answer profile-clean-hero">
                   <div>
-                    <span class="panel-kicker">Queue Health</span>
-                    <h3>{{ profileQueueHeroAnswer }}</h3>
-                    <p class="card-help mb-0">Plain-English queue health uses the current schedule list, focused queue preview, scheduler status, and recent run summaries.</p>
+                    <span class="panel-kicker">Profiling</span>
+                    <h2>{{ profileQueueHeroAnswer }}</h2>
+                    <p class="card-help mb-0">Monitor profile schedules and open a queue only when something needs attention.</p>
                   </div>
-                  <workflow-status-chip
-                    :status="profileQueueHealthSummary.needsAttention ? 'Needs attention' : (profileQueueHealthSummary.running ? 'Running normally' : 'Waiting')"
-                    :color="profileQueueHealthSummary.needsAttention ? 'error' : (profileQueueHealthSummary.running ? 'info' : 'success')"
-                  ></workflow-status-chip>
+                  <div class="profile-clean-actions">
+                    <workflow-status-chip
+                      :status="profileQueueHealthSummary.needsAttention ? 'Needs attention' : (profileQueueHealthSummary.running ? 'Running normally' : 'Waiting')"
+                      :color="profileQueueHealthSummary.needsAttention ? 'error' : (profileQueueHealthSummary.running ? 'info' : 'success')"
+                    ></workflow-status-chip>
+                    <v-btn
+                      color="primary"
+                      size="small"
+                      @click="openProfileScheduleEditor(true)"
+                    >New Schedule</v-btn>
+                    <v-btn
+                      icon="mdi-refresh"
+                      size="small"
+                      variant="text"
+                      aria-label="Refresh profile queues"
+                      :loading="integrations.profileScheduleLoading"
+                      @click="loadProfileSchedules"
+                    ></v-btn>
+                  </div>
                 </div>
 
                 <div class="profile-scheduler-stats">
@@ -671,6 +681,31 @@ export const profilingSchedulerPageTemplate = `
                   <div class="scheduler-stat"><span>Finished</span><strong>{{ profileQueueHealthSummary.completed }}</strong></div>
                   <div class="scheduler-stat"><span>Needs Attention</span><strong>{{ profileQueueHealthSummary.needsAttention }}</strong></div>
                   <div class="scheduler-stat"><span>Next Run</span><strong>{{ formatTimestamp(profileQueueHealthSummary.nextRunAt) }}</strong></div>
+                </div>
+
+                <div
+                  v-if="integrations.profilePageIssues.length"
+                  class="profile-page-issues"
+                  role="status"
+                  aria-live="polite"
+                >
+                  <div class="section-header">
+                    <div>
+                      <span class="section-title">Profiling Needs Attention</span>
+                      <p class="card-help mb-0">Some profiling data did not load. The last known queue information stays visible while you retry.</p>
+                    </div>
+                    <v-btn
+                      size="small"
+                      variant="outlined"
+                      :loading="integrations.profileScheduleLoading || integrations.profileQueueLoading"
+                      @click="loadProfileSchedules"
+                    >Retry</v-btn>
+                  </div>
+                  <workflow-blocker-list
+                    title="Current loading issue"
+                    tone="error"
+                    :blockers="integrations.profilePageIssues.map((issue) => issue.message + (issue.details ? ' ' + issue.details : ''))"
+                  ></workflow-blocker-list>
                 </div>
 
                 <div v-if="integrations.schedulerOpsTab === 'runNow'" class="connector-workspace-grid mt-8">
@@ -758,9 +793,9 @@ export const profilingSchedulerPageTemplate = `
                               <span>next {{ formatTimestamp(row.nextRunAt) }}</span>
                             </div>
                             <div class="profile-schedule-health">
-                              <span>{{ profileCoverageModeLabel(scheduleQueueSummary(row.schedule).coverageMode) }}</span>
-                              <span>{{ profileLivePriorityLabel(scheduleQueueSummary(row.schedule).livePriority) }}</span>
-                              <span>Batch {{ scheduleQueueSummary(row.schedule).maxLiveTables }}</span>
+                              <span>{{ row.coverageModeLabel }}</span>
+                              <span>{{ row.livePriorityLabel }}</span>
+                              <span>Batch {{ row.maxLiveTables }}</span>
                               <span>timeouts {{ row.timeoutPenaltyLabel }}</span>
                             </div>
                             <workflow-blocker-list
@@ -779,16 +814,24 @@ export const profilingSchedulerPageTemplate = `
                   <div v-else class="empty-state scheduler-empty">
                     <div class="empty-state-icon"><v-icon>mdi-calendar-clock</v-icon></div>
                     <h4>No profile schedules yet</h4>
-                    <p>Open Advanced / Operator Tools to create a one-database schedule from an approved connection.</p>
+                    <p>Create a one-database schedule from an approved connection.</p>
                   </div>
                 </div>
 
-                <details class="profile-support-lane profile-operator-lane" :open="integrations.schedulerOpsTab !== 'overview'">
-                  <summary>
+                <details v-if="profileOperatorToolsOpen" class="profile-support-lane profile-operator-lane" :open="profileOperatorToolsOpen">
+                  <summary
+                    aria-controls="profile-operator-tools-body"
+                    :aria-expanded="profileOperatorToolsOpen ? 'true' : 'false'"
+                    @click.prevent="openProfileOperatorTools"
+                  >
                     <span>Advanced / Operator Tools</span>
-                    <small>Run now, queue detail, history, publishing, schedule settings, and worker controls</small>
+                    <small>Open operational tools after reviewing queue health</small>
                   </summary>
-                  <div class="profile-support-body">
+                  <div
+                    v-if="profileOperatorToolsOpen"
+                    id="profile-operator-tools-body"
+                    class="profile-support-body"
+                  >
                     <div class="btn-row mb-8">
                       <v-btn size="small" variant="outlined" :loading="integrations.profileScheduleLoading" @click="startProfileSchedulerWorker">Start Worker</v-btn>
                       <v-btn size="small" variant="outlined" :loading="integrations.profileScheduleLoading" @click="stopProfileSchedulerWorker">Stop Worker</v-btn>
@@ -1008,8 +1051,32 @@ export const profilingSchedulerPageTemplate = `
                   </details>
                 </div>
 
-                <div class="profile-scheduler-layout" v-if="['queues', 'settings'].includes(integrations.schedulerOpsTab)">
-                  <div class="managed-connector-panel scheduler-editor-panel" v-if="integrations.schedulerOpsTab === 'settings'">
+                <v-dialog
+                  v-model="integrations.profileScheduleEditorOpen"
+                  class="profile-schedule-dialog"
+                  max-width="1280"
+                  scrollable
+                >
+                  <v-card class="profile-schedule-dialog-card">
+                    <div class="profile-schedule-dialog-header">
+                      <div>
+                        <span class="panel-kicker">Profiling</span>
+                        <h3>{{ integrations.profileScheduleEditor.id ? 'Edit Queue Schedule' : 'New Queue Schedule' }}</h3>
+                        <p class="card-help mb-0">Create one live profiling queue for one approved database connection.</p>
+                      </div>
+                      <v-btn
+                        icon="mdi-close"
+                        variant="text"
+                        aria-label="Close schedule editor"
+                        @click="closeProfileScheduleEditor"
+                      ></v-btn>
+                    </div>
+                    <v-card-text>
+                      <div
+                        class="profile-scheduler-layout"
+                        :class="{ 'profile-scheduler-layout-single': !integrations.profileSchedules.length }"
+                      >
+                  <div class="managed-connector-panel scheduler-editor-panel">
                     <div class="panel-kicker">{{ integrations.profileScheduleEditor.id ? 'Edit Queue Settings' : 'New Queue Schedule' }}</div>
                     <div class="connector-next-summary mb-8">
                       <div><span>Scope rule</span><strong>One database per schedule</strong></div>
@@ -1049,24 +1116,24 @@ export const profilingSchedulerPageTemplate = `
                         <v-chip size="small" color="success" variant="tonal">Live only</v-chip>
                       </div>
                     </div>
-                    <div class="form-row mt-8" v-if="integrations.profileScheduleEditor.profileType === 'aggregate' || integrations.profileScheduleEditor.profileType === 'auto'">
-                      <div class="col-3"><v-label>Coverage Mode</v-label><v-select v-model="integrations.profileScheduleEditor.coverageMode" density="compact" variant="outlined" hide-details :items="profileCoverageModeOptions()"></v-select></div>
-                      <div class="col-3"><v-label>Live Queue Order</v-label><v-select v-model="integrations.profileScheduleEditor.livePriority" density="compact" variant="outlined" hide-details :items="profileLivePriorityOptions()"></v-select></div>
+                    <div class="form-row mt-8 profile-schedule-options-row" v-if="integrations.profileScheduleEditor.profileType === 'aggregate' || integrations.profileScheduleEditor.profileType === 'auto'">
+                      <div class="col-4"><v-label>Coverage Mode</v-label><v-select v-model="integrations.profileScheduleEditor.coverageMode" density="compact" variant="outlined" hide-details :items="profileCoverageModeOptions()"></v-select></div>
+                      <div class="col-4"><v-label>Live Queue Order</v-label><v-select v-model="integrations.profileScheduleEditor.livePriority" density="compact" variant="outlined" hide-details :items="profileLivePriorityOptions()"></v-select></div>
                       <div class="col-2"><v-label>Live Batch Size</v-label><v-text-field v-model.number="integrations.profileScheduleEditor.maxLiveTables" type="number" min="1" max="25" density="compact" variant="outlined" hide-details></v-text-field></div>
                       <div class="col-2 scheduler-switch-cell">
                         <v-switch v-model="integrations.profileScheduleEditor.includeViews" color="primary" density="compact" hide-details label="Include views"></v-switch>
                       </div>
-                      <div class="col-2">
-                        <div class="field-hint" style="padding-top: 28px;">Most-used-first with a moderate batch keeps the queue moving without hiding heavy tables.</div>
+                      <div class="col-12">
+                        <div class="field-hint">Most-used-first with a moderate batch keeps the queue moving without hiding heavy tables.</div>
                       </div>
                     </div>
-                    <div class="form-row mt-8" v-if="integrations.profileScheduleEditor.profileType === 'aggregate' || integrations.profileScheduleEditor.profileType === 'auto'">
+                    <div class="form-row mt-8 profile-schedule-options-row" v-if="integrations.profileScheduleEditor.profileType === 'aggregate' || integrations.profileScheduleEditor.profileType === 'auto'">
                       <div class="col-3 scheduler-switch-cell">
                         <v-switch v-model="integrations.profileScheduleEditor.autoPublish" color="primary" density="compact" hide-details label="Auto-publish"></v-switch>
                       </div>
-                      <div class="col-5"><v-label>Publish Targets</v-label><v-select v-model="integrations.profileScheduleEditor.publishTargets" density="compact" variant="outlined" hide-details :items="profilePublishTargetOptions()" multiple chips :disabled="!integrations.profileScheduleEditor.autoPublish"></v-select></div>
-                      <div class="col-4">
-                        <div class="field-hint" style="padding-top: 28px;">Auto-publish can push each successful live queue batch into DevOps without a manual publish step.</div>
+                      <div class="col-5"><v-label>Publish Targets</v-label><v-select v-model="integrations.profileScheduleEditor.publishTargets" density="compact" variant="outlined" hide-details :items="profilePublishTargetOptions" multiple chips :disabled="!integrations.profileScheduleEditor.autoPublish"></v-select></div>
+                      <div class="col-4 profile-schedule-inline-hint">
+                        <div class="field-hint">Auto-publish can push successful live queue batches into DevOps without a manual publish step.</div>
                       </div>
                     </div>
                     <div class="form-row mt-8">
@@ -1087,11 +1154,12 @@ export const profilingSchedulerPageTemplate = `
                     </div>
                     <div class="btn-row mt-8">
                       <v-btn color="primary" :loading="integrations.profileScheduleLoading" @click="saveProfileSchedule">{{ integrations.profileScheduleEditor.id ? 'Update Schedule' : 'Create Schedule' }}</v-btn>
+                      <v-btn variant="outlined" @click="closeProfileScheduleEditor">Cancel</v-btn>
                       <v-btn variant="tonal" @click="resetProfileScheduleEditor">Clear</v-btn>
                     </div>
                   </div>
 
-                  <div class="managed-connector-panel scheduler-list-panel">
+                  <div class="managed-connector-panel scheduler-list-panel" v-if="integrations.profileSchedules.length">
                     <div class="panel-kicker">Saved Queues</div>
                     <div class="profile-schedule-list">
                       <div v-for="schedule in integrations.profileSchedules" :key="'profile-schedule-' + schedule.id" class="profile-schedule-row">
@@ -1141,7 +1209,10 @@ export const profilingSchedulerPageTemplate = `
                       </div>
                     </div>
                   </div>
-                </div>
+                      </div>
+                    </v-card-text>
+                  </v-card>
+                </v-dialog>
 
                 <div v-if="integrations.profileScheduleResult && integrations.schedulerOpsTab === 'overview'" class="managed-connector-results">
                   <div class="section-header">

@@ -1,0 +1,196 @@
+ReportPath|ReportName|ParameterName|DataType|Prompt|AllowBlank|Nullable|MultiValue
+----------|----------|-------------|--------|------|----------|--------|----------
+/AcctStd/Custno to Stockno|Custno to Stockno|AcctgAcct|String|Acctg Acct|NULL|NULL|NULL
+/AcctStd/Custno to Stockno|Custno to Stockno|CustNos|String|Cust Nos|NULL|NULL|true
+/AcctStd/ROnumber to Custno|ROnumber to Custno|AcctgAcct|String|Acctg Acct|NULL|NULL|NULL
+/AcctStd/ROnumber to Custno|ROnumber to Custno|RONos|String|RO #s|NULL|NULL|true
+/AcctStd/Stockno to Custno|Stockno to Custno|AcctgAcct|String|Acctg Acct|NULL|NULL|NULL
+/AcctStd/Stockno to Custno|Stockno to Custno|StockNos|String|Stock Nos|NULL|NULL|true
+/AcctStd/Trade1Stockno to Custno|Trade1Stockno to Custno|AcctgAcct|String|Acctg Acct|NULL|NULL|NULL
+/AcctStd/Trade1Stockno to Custno|Trade1Stockno to Custno|Trade1Stocknos|String|Trade1 Stock #s|NULL|NULL|true
+/BI - Controllers/GL - Open Stores|GL - Open Stores|Month|DateTime|Month|NULL|NULL|NULL
+/BI - Financial Reporting/VehGT100K|VehGT100K|ReportDate|String|Report Date|NULL|NULL|NULL
+/BI - FORCE/EP_ReconCost|EP_ReconCost|enddate|DateTime|enddate|NULL|NULL|NULL
+/BI - FORCE/EP_ReconCost|EP_ReconCost|startdate|DateTime|startdate|NULL|NULL|NULL
+/BI - FORCE/TIRE Report|TIRE Report|EndDate|DateTime|End Date|NULL|NULL|NULL
+/BI - FORCE/TIRE Report|TIRE Report|StartDate|DateTime|Start Date|NULL|NULL|NULL
+/BI - FPnA/Copy of Retail Sales Report_CleanGross_Hal|Copy of Retail Sales Report_CleanGross_Hal|BegDate|DateTime|Beg Date|NULL|NULL|NULL
+/BI - FPnA/Copy of Retail Sales Report_CleanGross_Hal|Copy of Retail Sales Report_CleanGross_Hal|DealStatus|String|Deal Status|NULL|NULL|true
+/BI - FPnA/Copy of Retail Sales Report_CleanGross_Hal|Copy of Retail Sales Report_CleanGross_Hal|EndDate|DateTime|End Date|NULL|NULL|NULL
+/BI - FPnA/Copy of Retail Sales Report_CleanGross_Hal_B1|Copy of Retail Sales Report_CleanGross_Hal_B1|BegDate|DateTime|Beg Date|NULL|NULL|NULL
+/BI - FPnA/Copy of Retail Sales Report_CleanGross_Hal_B1|Copy of Retail Sales Report_CleanGross_Hal_B1|DealStatus|String|Deal Status|NULL|NULL|true
+/BI - FPnA/Copy of Retail Sales Report_CleanGross_Hal_B1|Copy of Retail Sales Report_CleanGross_Hal_B1|EndDate|DateTime|End Date|NULL|NULL|NULL
+/BI - FPnA/Retail Sales MTD vs Last Year|Retail Sales MTD vs Last Year|BegDate|DateTime|Beg Date|NULL|NULL|NULL
+/BI - FPnA/Retail Sales MTD vs Last Year|Retail Sales MTD vs Last Year|EndDate|DateTime|End Date|NULL|NULL|NULL
+/BI - FPnA/Retail Sales Report|Retail Sales Report|BegDate|DateTime|Beg Date|NULL|NULL|NULL
+/BI - FPnA/Retail Sales Report|Retail Sales Report|DealStatus|String|Deal Status|NULL|NULL|true
+/BI - FPnA/Retail Sales Report|Retail Sales Report|EndDate|DateTime|End Date|NULL|NULL|NULL
+/BI - FPnA/Retail Sales Report_CleanGross|Retail Sales Report_CleanGross|BegDate|DateTime|Beg Date|NULL|NULL|NULL
+/BI - FPnA/Retail Sales Report_CleanGross|Retail Sales Report_CleanGross|DealStatus|String|Deal Status|NULL|NULL|true
+/BI - FPnA/Retail Sales Report_CleanGross|Retail Sales Report_CleanGross|EndDate|DateTime|End Date|NULL|NULL|NULL
+/BI - FPnA/Retail Sales Report_CleanGross_Hal|Retail Sales Report_CleanGross_Hal|BegDate|DateTime|Beg Date|NULL|NULL|NULL
+/BI - FPnA/Retail Sales Report_CleanGross_Hal|Retail Sales Report_CleanGross_Hal|DealStatus|String|Deal Status|NULL|NULL|true
+/BI - FPnA/Retail Sales Report_CleanGross_Hal|Retail Sales Report_CleanGross_Hal|EndDate|DateTime|End Date|NULL|NULL|NULL
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1|Retail Sales Report_CleanGross_Hal_B1|BegDate|DateTime|Beg Date|NULL|NULL|NULL
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1|Retail Sales Report_CleanGross_Hal_B1|DealStatus|String|Deal Status|NULL|NULL|true
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1|Retail Sales Report_CleanGross_Hal_B1|EndDate|DateTime|End Date|NULL|NULL|NULL
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1_Copy|Retail Sales Report_CleanGross_Hal_B1_Copy|BegDate|DateTime|Beg Date|NULL|NULL|NULL
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1_Copy|Retail Sales Report_CleanGross_Hal_B1_Copy|DealStatus|String|Deal Status|NULL|NULL|true
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1_Copy|Retail Sales Report_CleanGross_Hal_B1_Copy|EndDate|DateTime|End Date|NULL|NULL|NULL
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1_OpenRange|Retail Sales Report_CleanGross_Hal_B1_OpenRange|BegDate|DateTime|Beg Date|NULL|NULL|NULL
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1_OpenRange|Retail Sales Report_CleanGross_Hal_B1_OpenRange|DealStatus|String|Deal Status|NULL|NULL|true
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1_OpenRange|Retail Sales Report_CleanGross_Hal_B1_OpenRange|EndDate|DateTime|End Date|NULL|NULL|NULL
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1YDay|Retail Sales Report_CleanGross_Hal_B1YDay|BegDate|DateTime|Beg Date|NULL|NULL|NULL
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1YDay|Retail Sales Report_CleanGross_Hal_B1YDay|DealStatus|String|Deal Status|NULL|NULL|true
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1YDay|Retail Sales Report_CleanGross_Hal_B1YDay|EndDate|DateTime|End Date|NULL|NULL|NULL
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_RP|Retail Sales Report_CleanGross_Hal_RP|BegDate|DateTime|Beg Date|NULL|NULL|NULL
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_RP|Retail Sales Report_CleanGross_Hal_RP|DealStatus|String|Deal Status|NULL|NULL|true
+/BI - FPnA/Retail Sales Report_CleanGross_Hal_RP|Retail Sales Report_CleanGross_Hal_RP|EndDate|DateTime|End Date|NULL|NULL|NULL
+/BI - New Vehicles/Archive/New Inventory - Playbook - All|New Inventory - Playbook - All|Regions|String|Regions|NULL|NULL|true
+/BI - New Vehicles/Archive/New Inventory - Playbook - All|New Inventory - Playbook - All|Stores|String|Stores|NULL|NULL|true
+/BI - New Vehicles/Archive/New Inventory - Playbook - All_exp (1)|New Inventory - Playbook - All_exp (1)|Regions|String|Regions|NULL|NULL|true
+/BI - New Vehicles/Archive/New Inventory - Playbook - All_exp (1)|New Inventory - Playbook - All_exp (1)|Stores|String|Stores|NULL|NULL|true
+/BI - New Vehicles/Archive/New Inventory - Playbook - All_exp_Playbook|New Inventory - Playbook - All_exp_Playbook|Regions|String|Regions|NULL|NULL|true
+/BI - New Vehicles/Archive/New Inventory - Playbook - All_exp_Playbook|New Inventory - Playbook - All_exp_Playbook|Stores|String|Stores|NULL|NULL|true
+/BI - New Vehicles/Archive/New Inventory - Playbook - All_exp_Playbook_strpd|New Inventory - Playbook - All_exp_Playbook_strpd|Regions|String|Regions|NULL|NULL|true
+/BI - New Vehicles/Archive/New Inventory - Playbook - All_exp_Playbook_strpd|New Inventory - Playbook - All_exp_Playbook_strpd|Stores|String|Stores|NULL|NULL|true
+/BI - New Vehicles/Archive/New Inventory - Pricing - All_exp|New Inventory - Pricing - All_exp|Regions|String|Regions|NULL|NULL|true
+/BI - New Vehicles/Archive/New Inventory - Pricing - All_exp|New Inventory - Pricing - All_exp|Stores|String|Stores|NULL|NULL|true
+/BI - New Vehicles/Archive/New Playbook - Pre Visit|New Playbook - Pre Visit|Dealership|String|Please select a dealership|NULL|NULL|NULL
+/BI - New Vehicles/New Inventory - Count By Make|New Inventory - Count By Make|Regions|String|Regions|NULL|NULL|true
+/BI - New Vehicles/New Inventory - Count By Make|New Inventory - Count By Make|Stores|String|Stores|NULL|NULL|true
+/BI - New Vehicles/New Inventory - Playbook - All_exp|New Inventory - Playbook - All_exp|Regions|String|Regions|NULL|NULL|true
+/BI - New Vehicles/New Inventory - Playbook - All_exp|New Inventory - Playbook - All_exp|Stores|String|Stores|NULL|NULL|true
+/BI - New Vehicles/New Inventory - Playbook - SingleStore|New Inventory - Playbook - SingleStore|Regions|String|Regions|NULL|NULL|true
+/BI - New Vehicles/New Inventory - Playbook - SingleStore|New Inventory - Playbook - SingleStore|Stores|String|Stores|NULL|NULL|true
+/BI - Payroll/PayrollEntry_CoID_UserID|PayrollEntry_CoID_UserID|Date|DateTime|Choose center of 30-day date range.|NULL|NULL|NULL
+/BI - Payroll/PayrollEntry_CoID_UserID|PayrollEntry_CoID_UserID|Refer|String|Refer|NULL|NULL|NULL
+/BI - Payroll/PayrollEntrySummary|PayrollEntrySummary|Date|DateTime|Choose center of 30-day date range.|NULL|NULL|NULL
+/BI - Payroll/PayrollEntrySummary|PayrollEntrySummary|Refer|String|Refer|NULL|NULL|NULL
+/BI - Retail Strategy/Copy of WeekendAppts|Copy of WeekendAppts|Region|String|Region|NULL|NULL|true
+/BI - Retail Strategy/EP Leads|EP Leads|BegDate|DateTime|Beg Date|NULL|NULL|NULL
+/BI - Retail Strategy/EP Leads|EP Leads|EndDate|DateTime|End Date|NULL|NULL|NULL
+/BI - Retail Strategy/LeadsBySource|LeadsBySource|Dealership|String|Dealership|NULL|NULL|true
+/BI - Retail Strategy/LeadsBySource|LeadsBySource|EndDate|DateTime|End Date|NULL|NULL|NULL
+/BI - Retail Strategy/LeadsBySource|LeadsBySource|PrefFranchise|String|Pref Franchise|NULL|NULL|true
+/BI - Retail Strategy/LeadsBySource|LeadsBySource|Source|String|Source|NULL|NULL|true
+/BI - Retail Strategy/LeadsBySource|LeadsBySource|StartDate|DateTime|Start Date|NULL|NULL|NULL
+/BI - Retail Strategy/LeadsBySource|LeadsBySource|Uptype|String|Uptype|NULL|NULL|true
+/BI - Retail Strategy/Logged Vs OverDue|Logged Vs OverDue|End|DateTime|End|NULL|NULL|NULL
+/BI - Retail Strategy/Logged Vs OverDue|Logged Vs OverDue|Start|DateTime|Start|NULL|NULL|NULL
+/BI - Retail Strategy/SCORES/CustomerByName|CustomerByName|firstname|String|First Name|NULL|NULL|NULL
+/BI - Retail Strategy/SCORES/CustomerByName|CustomerByName|lastname|String|Last Name|NULL|NULL|NULL
+/BI - Retail Strategy/SCORES/OpportunityPkgs|OpportunityPkgs|dm_code|String|dm code|NULL|NULL|NULL
+/BI - Retail Strategy/SCORES/OpportunityPkgs|OpportunityPkgs|gm_code|String|gm code|NULL|NULL|NULL
+/BI - Retail Strategy/Sonic Quartile Report|Sonic Quartile Report|end|DateTime|end|NULL|NULL|NULL
+/BI - Retail Strategy/Sonic Quartile Report|Sonic Quartile Report|start|DateTime|start|NULL|NULL|NULL
+/BI - Retail Strategy/WeekendAppts|WeekendAppts|Region|String|Region|NULL|NULL|true
+/BI - Retail Strategy/WeekendApptsOld|WeekendApptsOld|Region|String|Region|NULL|NULL|true
+/BI - Shared Services/Send Floorplan|Send Floorplan|EventData|String|Event Data|NULL|NULL|NULL
+/BI - Shared Services/Send Floorplan|Send Floorplan|EventType|String|Event Type|NULL|NULL|NULL
+/CMA/Activity Details Report|Activity Details Report|AcctNumber|String|Acct Number|NULL|NULL|true
+/CMA/Activity Details Report|Activity Details Report|Amount|Float|Amount Greater Than|NULL|true|NULL
+/CMA/Activity Details Report|Activity Details Report|Amount2|Float|Amount Less Than|NULL|true|NULL
+/CMA/Activity Details Report|Activity Details Report|CDString|String|Debit or Credit|NULL|NULL|true
+/CMA/Activity Details Report|Activity Details Report|CheckNumber|String|Check Number|NULL|true|NULL
+/CMA/Activity Details Report|Activity Details Report|DateEnd|DateTime|Date End|NULL|NULL|NULL
+/CMA/Activity Details Report|Activity Details Report|DateStart|DateTime|Date Start|NULL|NULL|NULL
+/CMA/Activity Details Report|Activity Details Report|Dealership|String|Dealership|NULL|NULL|NULL
+/CMA/Activity Details Report|Activity Details Report|Textstring|String|Description Text|NULL|true|NULL
+/CMA/DailyActivitySummary|DailyActivitySummary|ActivityDate|DateTime|Activity Date|NULL|NULL|NULL
+/CMA/DailyCashSummary|DailyCashSummary|Company|String|Company|NULL|NULL|NULL
+/CMA/DailyCashSummary|DailyCashSummary|YearMonth|String|Year Month|NULL|NULL|NULL
+/CMA/NegativeBalanceReportv3|NegativeBalanceReportv3|YearMonth|String|Enter Year  and Month as: YYYY-MM|NULL|NULL|NULL
+/Controllers/GL - Open Stores|GL - Open Stores|Month|DateTime|Month|NULL|NULL|NULL
+/CRM/OldQuartileOpportunityReport|OldQuartileOpportunityReport|Dealership_RP|String|Select Dealership|NULL|NULL|true
+/CRM/OldQuartileOpportunityReport|OldQuartileOpportunityReport|Year_RP|Integer|Select Year|NULL|NULL|true
+/CRM/OldQuartileOpportunityReport|OldQuartileOpportunityReport|YYYYMM_RP|String|Select Month|NULL|NULL|true
+/CRM/QuartileOpportunityReport|QuartileOpportunityReport|Dealership_RP|String|Select Dealership|NULL|NULL|true
+/CRM/QuartileOpportunityReport|QuartileOpportunityReport|ViewType_RP|Integer|Select View Type|NULL|NULL|NULL
+/CRM/QuartileOpportunityReport|QuartileOpportunityReport|Year_RP|Integer|Select Year|NULL|NULL|true
+/CRM/QuartileOpportunityReport|QuartileOpportunityReport|YYYYMM_RP|String|Select Month|NULL|NULL|true
+/CRM/QuartileOpportunityReport_Bkp_20201102|QuartileOpportunityReport_Bkp_20201102|Dealership_RP|String|Select Dealership|NULL|NULL|true
+/CRM/QuartileOpportunityReport_Bkp_20201102|QuartileOpportunityReport_Bkp_20201102|Year_RP|Integer|Select Year|NULL|NULL|true
+/CRM/QuartileOpportunityReport_Bkp_20201102|QuartileOpportunityReport_Bkp_20201102|YYYYMM_RP|String|Select Month|NULL|NULL|true
+/CRM/TrafficManagementReport|TrafficManagementReport|Dealership_RP|String|Select Dealership|NULL|NULL|true
+/CRM/TrafficManagementReport|TrafficManagementReport|L_Month_RP|DateTime|Select Left Month|NULL|NULL|NULL
+/CRM/TrafficManagementReport|TrafficManagementReport|L_Year_RP|String|Select Left Year|NULL|NULL|NULL
+/CRM/TrafficManagementReport|TrafficManagementReport|R_Month_RP|DateTime|Select Right Month|NULL|NULL|NULL
+/CRM/TrafficManagementReport|TrafficManagementReport|R_Year_RP|String|Select Right Year|NULL|NULL|NULL
+/CRM/TrafficManagementReport|TrafficManagementReport|Region_RP|String|Select Region|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkDashboard|EchoParkDashboard|CurrentMonthMM|Integer|CurrentMonthMM|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkDashboard|EchoParkDashboard|CurrentMonthStr|String|CurrentMonthStr|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkDashboard|EchoParkDashboard|CurrentMonthYearStr|String|CurrentMonthYearStr|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkDashboard|EchoParkDashboard|CurrentMonthYYYY|Integer|CurrentMonthYYYY|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkDashboard|EchoParkDashboard|IsAssociate|Integer|Select IsAssociate|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkDashboard|EchoParkDashboard|LastMonthMM|Integer|LastMonthMM|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkDashboard|EchoParkDashboard|LastMonthStr|String|LastMonthStr|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkDashboard|EchoParkDashboard|LastMonthYearStr|String|LastMonthYearStr|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkDashboard|EchoParkDashboard|LastMonthYYYY|Integer|LastMonthYYYY|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkDashboard|EchoParkDashboard|ReportType|Integer|Select Report Type|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkExceptionRpt|EchoParkExceptionRpt|Exceptions_RP|String|Select Exception|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkExceptionRpt|EchoParkExceptionRpt|IsAssociate|Integer|IsAssociate|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkExceptionRpt|EchoParkExceptionRpt|Month_RP|Integer|Select Month|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkExceptionRpt|EchoParkExceptionRpt|ReportType|Integer|Select Report Type|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkExceptionRpt|EchoParkExceptionRpt|ServiceAdvisor_RP|String|Select Service Advisor|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkExceptionRpt|EchoParkExceptionRpt|Year_RP|Integer|Select Year|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkSalesCustomer|EchoParkSalesCustomer|TranEndDate|DateTime|End Date|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkSalesCustomer|EchoParkSalesCustomer|TranStartDate|DateTime|Start Date|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkSalesDetailRpt|EchoParkSalesDetailRpt|Exceptions_RP|String|Select Exception|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkSalesDetailRpt|EchoParkSalesDetailRpt|IsAssociate|Integer|IsAssociate|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkSalesDetailRpt|EchoParkSalesDetailRpt|Month_RP|Integer|Select Month|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkSalesDetailRpt|EchoParkSalesDetailRpt|ReportType|Integer|Select Report Type|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkSalesDetailRpt|EchoParkSalesDetailRpt|SalesPerson_RP|String|Select Sales Person|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkSalesDetailRpt|EchoParkSalesDetailRpt|Year_RP|Integer|Select Year|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkServiceCustomer|EchoParkServiceCustomer|CloseEndDate|DateTime|End Date|NULL|NULL|NULL
+/Echo Park/CSI/EchoParkServiceCustomer|EchoParkServiceCustomer|CloseStartDate|DateTime|Start Date|NULL|NULL|NULL
+/Internal Audit/ChecksToUsers|ChecksToUsers|BegDate|DateTime|Beg Date|NULL|NULL|NULL
+/Internal Audit/ChecksToUsers|ChecksToUsers|Dealerships|String|Dealerships|NULL|NULL|true
+/Internal Audit/ChecksToUsers|ChecksToUsers|EndDate|DateTime|End Date|NULL|NULL|NULL
+/Internal Audit/ChecksToUsers|ChecksToUsers|UserLastName|String|User Last Name|NULL|NULL|true
+/JobStatusReports/SummaryReport|SummaryReport|date|DateTime|Select Report Date|NULL|NULL|NULL
+/New Inventory - Count By Make Model Dealership|New Inventory - Count By Make Model Dealership|Regions|String|Regions|NULL|NULL|true
+/New Inventory - Count By Make Model Dealership|New Inventory - Count By Make Model Dealership|Stores|String|Stores|NULL|NULL|true
+/New Vehicles/New Inventory - Playbook - All_exp|New Inventory - Playbook - All_exp|Regions|String|Regions|NULL|NULL|true
+/New Vehicles/New Inventory - Playbook - All_exp|New Inventory - Playbook - All_exp|Stores|String|Stores|NULL|NULL|true
+/New Vehicles/New Inventory - Pricing - All_exp|New Inventory - Pricing - All_exp|Regions|String|Regions|NULL|NULL|true
+/New Vehicles/New Inventory - Pricing - All_exp|New Inventory - Pricing - All_exp|Stores|String|Stores|NULL|NULL|true
+/NVIM/NVPDashboard|NVPDashboard|PostDate_Period_RP|DateTime|Select Period|NULL|NULL|NULL
+/NVIM/NVPDashboard|NVPDashboard|Store_ID_RP|String|Select Store|NULL|NULL|NULL
+/NVIM/NVPDashboardLandingPage|NVPDashboardLandingPage|PostDate_RP|DateTime|Select Period|NULL|NULL|NULL
+/NVIM/NVPDashboardLandingPage|NVPDashboardLandingPage|Store_ID_RP|String|Select Store|NULL|NULL|true
+/RouteOne/RouteOneDetails|RouteOneDetails|param_AppltAdd|String|Applicant Address|NULL|NULL|NULL
+/RouteOne/RouteOneDetails|RouteOneDetails|param_AppltName|String|Applicant Name|NULL|NULL|NULL
+/RouteOne/RouteOneRedFlagDetailData|RouteOneRedFlagDetailData|paramApplicantName|String|Applicant Name|NULL|NULL|NULL
+/RouteOne/RouteOneRedFlagDetailData|RouteOneRedFlagDetailData|paramDealerName|String|Dealer Name|NULL|NULL|NULL
+/RouteOne/RouteOneRedFlagDetailData|RouteOneRedFlagDetailData|paramPurchaseVehicleVIN|String|Purchase Vehicle VIN|true|true|NULL
+/RouteOne/RouteOneRedFlagReport|RouteOneRedFlagReport|paramFromAppCreationDate|DateTime|From AppCreationDate :|NULL|NULL|NULL
+/RouteOne/RouteOneRedFlagReport|RouteOneRedFlagReport|paramToAppCreationDate|DateTime|To AppCreationDate :|NULL|NULL|NULL
+/RouteOne/RouteOneSSNVarianceRpt|RouteOneSSNVarianceRpt|paramFromSubmissionDate|DateTime|From SubmissionDate :|NULL|NULL|NULL
+/RouteOne/RouteOneSSNVarianceRpt|RouteOneSSNVarianceRpt|paramToSubmissionDate|DateTime|To SubmissionDate :|NULL|NULL|NULL
+/RouteOne/RouteOneSummaryRpt|RouteOneSummaryRpt|paramFromSubmissionDate|DateTime|From SubmissionDate :|NULL|NULL|NULL
+/RouteOne/RouteOneSummaryRpt|RouteOneSummaryRpt|paramToSubmissionDate|DateTime|To SubmissionDate :|NULL|NULL|NULL
+/RptTest/CustInfo|CustInfo|firstname|String|firstname|NULL|NULL|NULL
+/RptTest/CustInfo|CustInfo|lastname|String|lastname|NULL|NULL|NULL
+/RptTest/CustInfo|CustInfo|SourceDealership|String|Source Dealership|NULL|NULL|NULL
+/RptTest/New Inventory - Playbook - All_exp|New Inventory - Playbook - All_exp|Regions|String|Regions|NULL|NULL|true
+/RptTest/New Inventory - Playbook - All_exp|New Inventory - Playbook - All_exp|Stores|String|Stores|NULL|NULL|true
+/RTC/R1 - Finalized Deals|R1 - Finalized Deals|f|DateTime|From|NULL|NULL|NULL
+/RTC/R1 - Finalized Deals|R1 - Finalized Deals|t|DateTime|To|NULL|NULL|NULL
+/RTC/R2 - Wholesale Details|R2 - Wholesale Details|Dealership|String|Dealership|true|NULL|NULL
+/RTC/R2 - Wholesale Details_Parameters|R2 - Wholesale Details_Parameters|Dealership|String|Dealership|true|NULL|NULL
+/RTC/R3 - Corporate Sold Own Tracker|R3 - Corporate Sold Own Tracker|f|DateTime|From|NULL|NULL|NULL
+/RTC/R3 - Corporate Sold Own Tracker|R3 - Corporate Sold Own Tracker|t|DateTime|To|NULL|NULL|NULL
+/RTC/R4 - Inventory Count By Bucket|R4 - Inventory Count By Bucket|f|String|f|NULL|NULL|NULL
+/RTC/R4 - Inventory Count By Bucket|R4 - Inventory Count By Bucket|t|String|t|NULL|NULL|NULL
+/RTC/R5 - UV Performance Report - Total Sonic Red|R5 - UV Performance Report - Total Sonic Red|f|String|f|NULL|NULL|NULL
+/RTC/R5 - UV Performance Report - Total Sonic Red|R5 - UV Performance Report - Total Sonic Red|t|String|t|NULL|NULL|NULL
+/RTC/R8 - Sales Bucket Count|R8 - Sales Bucket Count|f|String|f|NULL|NULL|NULL
+/RTC/R8 - Sales Bucket Count|R8 - Sales Bucket Count|t|String|t|NULL|NULL|NULL
+/Test/DailyCashSummary_TEST|DailyCashSummary_TEST|Company|String|Company|NULL|NULL|NULL
+/Test/DailyCashSummary_TEST|DailyCashSummary_TEST|YearMonth|String|Year Month|NULL|NULL|NULL
+/Test/NegativeBalanceReportv3_TEST|NegativeBalanceReportv3_TEST|YearMonth|String|Enter Year  and Month as: YYYY-MM|NULL|NULL|NULL
+/Test/Test --2-New Inventory - Count By Make|Test --2-New Inventory - Count By Make|Regions|String|Regions|NULL|NULL|true
+/Test/Test --2-New Inventory - Count By Make|Test --2-New Inventory - Count By Make|Stores|String|Stores|NULL|NULL|true
+/Test/Test --New Inventory - Count By Make|Test --New Inventory - Count By Make|Regions|String|Regions|NULL|NULL|true
+/Test/Test --New Inventory - Count By Make|Test --New Inventory - Count By Make|Stores|String|Stores|NULL|NULL|true

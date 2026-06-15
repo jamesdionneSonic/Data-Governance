@@ -4317,6 +4317,63 @@ button.graph-semantic-chip {
   min-height: 100vh;
 }
 
+.fatal-ui-fallback {
+  align-items: center;
+  background: #f8fafc;
+  color: #0f172a;
+  display: flex;
+  min-height: 100vh;
+  padding: 24px;
+  width: 100%;
+}
+
+.fatal-ui-fallback section {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+  margin: 0 auto;
+  max-width: 520px;
+  padding: 24px;
+}
+
+.fatal-ui-fallback span {
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.fatal-ui-fallback h1 {
+  font-size: 24px;
+  line-height: 1.2;
+  margin: 8px 0;
+}
+
+.fatal-ui-fallback p {
+  color: #475569;
+  line-height: 1.5;
+  margin: 0 0 12px;
+}
+
+.fatal-ui-fallback small {
+  color: #64748b;
+  display: block;
+  margin-bottom: 16px;
+  overflow-wrap: anywhere;
+}
+
+.fatal-ui-fallback button {
+  background: #2563eb;
+  border: 0;
+  border-radius: 6px;
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 9px 14px;
+}
+
 /* Vuetify overrides for responsive */
 .v-container--fluid {
   padding: 0;
@@ -5604,7 +5661,9 @@ img, video, iframe {
 }
 
 .profile-scheduler-card {
-  padding: 14px 16px;
+  display: block;
+  min-height: 320px;
+  padding: 16px;
 }
 
 .profile-queue-answer {
@@ -5619,10 +5678,31 @@ img, video, iframe {
   padding: 14px 16px;
 }
 
+.profile-clean-hero {
+  margin-top: 0;
+}
+
 .profile-queue-answer h3 {
   font-size: 18px;
   line-height: 1.25;
   margin: 2px 0 4px;
+}
+
+.profile-queue-answer h2 {
+  color: var(--text);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.15;
+  margin: 3px 0 5px;
+}
+
+.profile-clean-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
 }
 
 .profile-operator-lane {
@@ -5695,6 +5775,18 @@ img, video, iframe {
   margin: 12px 0;
 }
 
+.profile-page-issues {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  margin: 12px 0;
+  padding: 12px;
+}
+
+.profile-page-issues .workflow-blocker-list {
+  margin-top: 8px;
+}
+
 .scheduler-stat {
   background: #f8fafc;
   border: 1px solid var(--border);
@@ -5756,6 +5848,39 @@ img, video, iframe {
   grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
 }
 
+.profile-scheduler-layout-single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.profile-schedule-dialog .v-overlay__content {
+  max-height: calc(100vh - 48px);
+}
+
+.profile-schedule-dialog-card {
+  max-height: calc(100vh - 48px);
+}
+
+.profile-schedule-dialog-header {
+  align-items: start;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 18px 20px 14px;
+}
+
+.profile-schedule-dialog-header h3 {
+  color: #0f172a;
+  font-size: 20px;
+  line-height: 1.2;
+  margin: 2px 0 4px;
+}
+
+.profile-schedule-dialog .v-card-text {
+  background: #f8fafc;
+  padding: 16px;
+}
+
 .scheduler-editor-panel,
 .scheduler-list-panel {
   min-height: 100%;
@@ -5763,6 +5888,19 @@ img, video, iframe {
 
 .scheduler-editor-panel .form-row {
   gap: 14px;
+}
+
+.profile-schedule-options-row {
+  align-items: end;
+}
+
+.profile-schedule-options-row .field-hint {
+  padding-top: 0;
+}
+
+.profile-schedule-inline-hint {
+  align-self: end;
+  padding-bottom: 7px;
 }
 
 .profile-date-time-grid {
@@ -5775,6 +5913,11 @@ img, video, iframe {
   align-items: end;
   display: flex;
   min-height: 58px;
+}
+
+.scheduler-switch-cell .v-label,
+.scheduler-switch-cell .v-selection-control__input + .v-label {
+  white-space: nowrap;
 }
 
 .scheduler-guardrail {

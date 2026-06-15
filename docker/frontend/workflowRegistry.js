@@ -9,12 +9,13 @@ import { supportMeta, supportSection } from './workflows/support.js';
 export const navSections = [
   findAndUnderstandSection,
   governAndImproveSection,
-  packageAndReportSection,
   connectAndOperateSection,
   supportSection,
 ];
 
-export const navItems = navSections.flatMap((section) => section.items);
+export const internalSections = [packageAndReportSection];
+
+export const navItems = [...navSections, ...internalSections].flatMap((section) => section.items);
 
 export const pageWorkflowMeta = {
   ...findAndUnderstandMeta,
@@ -27,7 +28,6 @@ export const pageWorkflowMeta = {
 export const workflowModuleNames = [
   'findAndUnderstand',
   'governAndImprove',
-  'packageAndReport',
   'connectAndOperate',
   'support',
 ];

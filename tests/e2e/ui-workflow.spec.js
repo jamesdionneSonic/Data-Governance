@@ -70,10 +70,9 @@ const workflowSmokeCases = [
   {
     workflow: 'Profiling',
     currentNavLabel: 'Profiling',
-    expectedText:
-      /Queue Health|Live Profile Queues|Completed|Needs Attention|Next Run|Advanced \/ Operator Tools/i,
+    expectedText: /Queue Health|Live Profile Queues|Completed|Needs Attention|Next Run/i,
     migrationNote:
-      'Profiling opens on queue health first, with operator controls tucked into Advanced.',
+      'Profiling opens on queue health first, with operator controls kept out of the default page.',
     visualAnchor: '.profile-default-schedules',
     supportLaneSelector: 'details.profile-support-lane',
   },
@@ -105,14 +104,6 @@ const workflowSmokeCases = [
       'Platform Admin opens on safe operational overview with raw diagnostics collapsed.',
     visualAnchor: '.admin-overview-card',
     supportLaneSelector: 'details.admin-support-lane',
-  },
-  {
-    workflow: 'Data Products future-state',
-    currentNavLabel: 'Data Products',
-    expectedText:
-      /Data Products Future-State|Parked Until Product Definition Is Explicit|Find reports and assets|Understand impact|Compare metrics/i,
-    migrationNote: 'Data Products is parked until a concrete product definition exists.',
-    visualAnchor: '.data-products-future-card',
   },
 ];
 
@@ -149,15 +140,53 @@ test.describe('UI workflow architecture smoke coverage', () => {
       if (workflowCase.workflow === 'Connections') {
         await expect(page.locator('details.connector-builder-lane[open]')).toHaveCount(0);
         await expect(page.locator('.connector-detail-primary')).toBeVisible();
+        await expect(page.locator('.connector-detail-primary')).toContainText(
+          /Schedule Relationships|Used by schedules|Open Related Profiling Queue/i
+        );
+        await expect(page.locator('.connector-detail-primary')).not.toContainText(
+          /Open Run Now in Profiling|Open Runs in Profiling|Open Publishing in Profiling/i
+        );
+      }
+      if (workflowCase.workflow === 'Glossary & Metrics - Metrics') {
+        const profileEvidenceLane = page
+          .locator('details.metric-support-lane')
+          .filter({ hasText: 'Profile And Runtime Evidence' });
+        const profilingHandoffLane = page
+          .locator('details.metric-support-lane')
+          .filter({ hasText: 'Profiling Handoff' });
+        await expect(profileEvidenceLane).toContainText(/Profile And Runtime Evidence/i);
+        await expect(profilingHandoffLane).toContainText(/Profiling Handoff/i);
+        await expect(page.locator('body')).not.toContainText(
+          /Advanced Profile Run|Technical Profile Run/i
+        );
+        await expect(
+          page.locator('details.metric-support-lane').getByRole('button', { name: /^Plan$/i })
+        ).toHaveCount(0);
+        await expect(
+          page.locator('details.metric-support-lane').getByRole('button', { name: /^Run$/i })
+        ).toHaveCount(0);
       }
       if (workflowCase.workflow === 'Profiling') {
-        await expect(page.locator('details.profile-support-lane[open]')).toHaveCount(0);
+        await expect(page.locator('.page-intro')).toHaveCount(0);
+        await expect(page.locator('.telemetry-banner')).toHaveCount(0);
+        await expect(page.getByRole('heading', { name: 'Profiling' })).toHaveCount(1);
+        await expect(page.getByRole('button', { name: /New Schedule/i })).toBeVisible();
+        await expect(page.locator('details.profile-support-lane')).toHaveCount(0);
         await expect(page.locator('.profile-queue-answer')).toBeVisible();
         await expect(page.locator('.profile-default-schedules')).toBeVisible();
+        const profilingSurface = await page.locator('.profile-scheduler-card').boundingBox();
+        expect(profilingSurface?.width || 0).toBeGreaterThan(600);
+        expect(profilingSurface?.height || 0).toBeGreaterThan(300);
+        await expect(page.locator('.profile-scheduler-card')).toContainText(
+          /No profiling queues are configured yet|Profiling is|profiling queue/i
+        );
         await expect(
           page.locator('details.profile-support-lane:not([open]) .profile-support-body')
-        ).toBeHidden();
-        await expect(page.getByRole('button', { name: /Start Worker/i })).toBeHidden();
+        ).toHaveCount(0);
+        await expect(page.locator('body')).not.toContainText(
+          /Advanced \/ Operator Tools|Start Worker|Run History|Publish Readiness|Schedule Settings|New Queue Schedule/i
+        );
+        await expect(page.getByRole('button', { name: /Start Worker/i })).toHaveCount(0);
         await expect(page.getByRole('button', { name: /Publish Pending Profiles/i })).toHaveCount(
           0
         );
@@ -210,6 +239,149 @@ test.describe('UI workflow architecture smoke coverage', () => {
     await page.getByRole('button', { name: 'Show Graph & Evidence' }).click();
     await expect(page.locator('#lineage-graph-drilldowns')).toBeVisible({ timeout: 10000 });
   });
+
+  test('Profiling keeps a durable page issue visible when schedules fail to load', async ({
+    page,
+  }) => {
+    await page.route('**/api/v1/connectors/profile-schedules', async (route) => {
+      if (route.request().method() === 'GET') {
+        await route.fulfill({
+          status: 503,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            status: 'error',
+            message: 'Profile schedule service unavailable for test',
+            errorInfo: {
+              code: 'PROFILE_SCHEDULES_UNAVAILABLE',
+              message: 'Profile schedule service unavailable for test',
+            },
+          }),
+        });
+        return;
+      }
+      await route.fallback();
+    });
+
+    await openWorkflow(page, 'Profiling');
+
+    await expect(page.locator('.profile-queue-answer')).toBeVisible();
+    await expect(page.locator('.profile-page-issues')).toBeVisible();
+    await expect(page.locator('.profile-page-issues')).toContainText(
+      /Profile schedules could not be loaded|Profile schedule service unavailable/i
+    );
+    await expect(page.getByRole('button', { name: /Retry/i })).toBeVisible();
+  });
+
+  test('Profiling survives persisted advanced queue state and malformed schedule rows', async ({
+    page,
+  }) => {
+    await page.evaluate(() => {
+      localStorage.setItem('dg_profile_ops_tab', 'queues');
+      localStorage.setItem('dg_profile_queue_schedule_id', 'stale-missing-schedule');
+      localStorage.setItem('dg_profile_connector_id', 'legacy-connector');
+    });
+
+    await page.route('**/api/v1/connectors/profile-schedules', async (route) => {
+      if (route.request().method() === 'GET') {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            status: 'success',
+            schedules: [
+              null,
+              'legacy-corrupt-row',
+              {
+                id: 'persisted-good-schedule',
+                connector_id: 'legacy-connector',
+                name: 'Persisted Good Queue',
+                profile_type: 'aggregate',
+                status: 'ACTIVE',
+                last_status: 'succeeded',
+                run_count: 2,
+                next_run_at: '2026-06-15T12:00:00.000Z',
+                options: {
+                  coverage_mode: 'all_objects',
+                  live_priority: 'most_used_first',
+                  max_live_tables: 5,
+                },
+              },
+            ],
+          }),
+        });
+        return;
+      }
+      await route.fallback();
+    });
+    await page.route('**/api/v1/connectors/profile-schedules/status', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          status: 'success',
+          scheduler: {
+            running: true,
+            enabled: true,
+            persistence_enabled: true,
+            interval_ms: 60000,
+            history_count: 0,
+          },
+        }),
+      });
+    });
+    await page.route('**/api/v1/connectors/profile-schedules/*/queue?**', async (route) => {
+      await route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          status: 'error',
+          message: 'Profile schedule not found',
+          errorInfo: { code: 'NOT_FOUND', message: 'Profile schedule not found' },
+        }),
+      });
+    });
+
+    await page.reload({ waitUntil: 'networkidle' });
+    await openWorkflow(page, 'Profiling');
+
+    await expect(page.locator('.fatal-ui-fallback')).toHaveCount(0);
+    await expect(page.locator('.profile-queue-answer')).toBeVisible();
+    await expect(page.locator('.profile-default-schedules')).toContainText('Persisted Good Queue');
+    await expect(page.locator('.profile-queue-health-row')).toHaveCount(1);
+    await expect(page.locator('details.profile-support-lane')).toHaveCount(0);
+    await expect(page.locator('.profile-page-issues')).toHaveCount(0);
+    await expect
+      .poll(async () =>
+        page.evaluate(() => ({
+          appJsVersioned: Array.from(document.scripts).some((script) =>
+            script.src.includes('/app.js?v=')
+          ),
+          appCssVersioned: Array.from(document.querySelectorAll('link[rel="stylesheet"]')).some(
+            (link) => link.href.includes('/app.css?v=')
+          ),
+        }))
+      )
+      .toEqual({ appJsVersioned: true, appCssVersioned: true });
+  });
+
+  test('stale saved auth state recovers without blanking the app', async ({ page }) => {
+    await page.evaluate(() => {
+      localStorage.setItem('dg_token', 'stale.invalid.token');
+      localStorage.setItem('dg_refresh', 'stale.invalid.refresh');
+      localStorage.setItem(
+        'dg_user',
+        JSON.stringify({ id: 'stale-user', email: 'stale@example.local', roles: ['Admin'] })
+      );
+      localStorage.setItem('dg_demo_mode', 'off');
+    });
+
+    await page.reload({ waitUntil: 'networkidle' });
+
+    await expect(page.locator('.fatal-ui-fallback')).toHaveCount(0);
+    await expect(page.locator('.home-focus-panel')).toBeVisible();
+    await expect(page.locator('#app-root')).toContainText(/What data are you looking for\?/i);
+    await expectNavVisible(page, ['Home / Find Data']);
+  });
 });
 
 test.describe('Role-aware workflow navigation', () => {
@@ -234,9 +406,10 @@ test.describe('Role-aware workflow navigation', () => {
       'Profiling',
       'Platform Admin',
       'Data Products',
+      'Governance Insights',
+      'Package & Report',
       'Search',
       'Asset Detail',
-      'Lineage Assistant',
       'Lineage Explorer',
     ]);
   });
@@ -251,10 +424,11 @@ test.describe('Role-aware workflow navigation', () => {
       'Lineage Acquisition',
       'Platform Admin',
       'Governance Ops',
+      'Governance Insights',
+      'Package & Report',
       'Search',
       'Asset Detail',
       'Lineage Explorer',
-      'Lineage Assistant',
     ]);
   });
 
@@ -270,11 +444,12 @@ test.describe('Role-aware workflow navigation', () => {
       'Lineage Acquisition',
       'Platform Admin',
       'Profiling',
+      'Governance Insights',
+      'Package & Report',
       'Trust & Compliance',
       'Search',
       'Asset Detail',
       'Lineage Explorer',
-      'Lineage Assistant',
     ]);
   });
 
@@ -290,8 +465,32 @@ test.describe('Role-aware workflow navigation', () => {
       'Profiling',
       'Platform Admin',
     ]);
-    await expectNavHidden(page, ['Trust & Compliance', 'Lineage Explorer', 'Lineage Assistant']);
-    await expectNavHidden(page, ['Search', 'Asset Detail']);
+    await expectNavHidden(page, ['Trust & Compliance', 'Lineage Explorer', 'Package & Report']);
+    await expectNavHidden(page, ['Search', 'Asset Detail', 'Governance Insights', 'Data Products']);
+  });
+
+  test('Lineage Assistant deep link retires into the default Find Data surface', async ({
+    page,
+  }) => {
+    await page.goto('/?view=lineageAsk', { waitUntil: 'networkidle' });
+    await signInIfNeeded(page, 'admin@platform.local');
+
+    await expect(page.locator('body')).toContainText(
+      /What data are you looking for\?|Search or ask about data/i
+    );
+    await expect(page.locator('body')).not.toContainText('Sonic Lineage Assistant');
+    await expectNavHidden(page, ['Lineage Assistant']);
+  });
+
+  test('Advanced Trust Controls deep link retires into Governance Ops', async ({ page }) => {
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await signInIfNeeded(page, 'admin@platform.local');
+    await page.goto('/?view=governance', { waitUntil: 'networkidle' });
+
+    await expect(page.locator('body')).toContainText(/Governance Work Queue|Review Work/i);
+    await expect(page.locator('body')).not.toContainText('Advanced Trust Controls');
+    await expect(page.locator('details.governance-advanced-controls-lane[open]')).toHaveCount(0);
+    await expect(page.locator('details.governance-advanced-controls-lane')).toBeVisible();
   });
 });
 

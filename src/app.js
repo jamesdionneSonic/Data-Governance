@@ -88,7 +88,7 @@ export default function createApp() {
   app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
   // Logging
-  app.use(morgan('combined'));
+  app.use(morgan('combined', { skip: () => process.env.NODE_ENV === 'test' }));
   app.use((req, res, next) => {
     req.requestId = req.headers['x-request-id'] || randomUUID();
     res.setHeader('x-request-id', req.requestId);

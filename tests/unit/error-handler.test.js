@@ -1,7 +1,9 @@
+import { jest } from '@jest/globals';
 import errorHandler, {
   ApiError,
   buildErrorResponse,
   sendErrorResponse,
+  shouldLogApiError,
 } from '../../src/middleware/errorHandler.js';
 
 function createMockRes() {
@@ -35,6 +37,12 @@ describe('Error Handler Middleware', () => {
 
   afterEach(() => {
     process.env.NODE_ENV = originalNodeEnv;
+    jest.restoreAllMocks();
+  });
+
+  beforeEach(() => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
   });
 
   test('ERR-001: returns sanitized 500 message in production', () => {
@@ -147,5 +155,19 @@ describe('Error Handler Middleware', () => {
     const defaultOptionsError = new ApiError(404, 'No options object');
     expect(defaultOptionsError.code).toBeUndefined();
     expect(defaultOptionsError.details).toBeUndefined();
+  });
+
+  test('test-mode logging suppresses expected client errors but keeps server errors loud', () => {
+    process.env.NODE_ENV = 'test';
+
+    expect(shouldLogApiError(400)).toBe(false);
+    expect(shouldLogApiError(401)).toBe(false);
+    expect(shouldLogApiError(404)).toBe(false);
+    expect(shouldLogApiError(503)).toBe(true);
+
+    process.env.NODE_ENV = 'production';
+
+    expect(shouldLogApiError(401)).toBe(true);
+    expect(shouldLogApiError(503)).toBe(true);
   });
 });

@@ -9,10 +9,8 @@ import {
   catalogSearchPageTemplate,
   homeFindDataPageTemplate,
   lineageExplorerPageTemplate,
-  lineageAssistantPageTemplate,
 } from './workflows/findAndUnderstandTemplates.js';
 import {
-  advancedGovernancePageTemplate,
   businessGlossaryPageTemplate,
   governanceOpsPageTemplate,
   metricIntelligencePageTemplate,
@@ -348,21 +346,6 @@ const appConfig = {
         impactAnswer: null,
         profileAnswer: null,
         runtimePack: null,
-        profiling: {
-          loading: false,
-          dialect: 'sql_server',
-          mode: 'metadata_only',
-          executionMode: 'live',
-          maxTables: 1,
-          maxColumns: 40,
-          samplePercent: 1,
-          lockTimeoutMs: 5000,
-          queryTimeoutMs: 30000,
-          plan: null,
-          run: null,
-          answer: null,
-          confluence: null,
-        },
       },
       productsCatalog: {
         products: [],
@@ -394,7 +377,7 @@ const appConfig = {
         {
           id: 'welcome',
           role: 'assistant',
-          title: 'Sonic Lineage Assistant',
+          title: 'Lineage Answer',
           text: 'Ask me about lineage, catalog counts, SSIS load paths, or where an object is used. I will answer in plain English and show the technical objects behind the answer.',
           answer: null,
         },
@@ -461,7 +444,9 @@ const appConfig = {
         profileQueuePreview: null,
         profileQueueScheduleId: localStorage.getItem('dg_profile_queue_schedule_id') || '',
         profileQueueLoading: false,
+        profilePageIssues: [],
         schedulerOpsTab: localStorage.getItem('dg_profile_ops_tab') || 'overview',
+        profileScheduleEditorOpen: false,
         profileScheduleLoading: false,
         profileScheduleResult: null,
         profileScheduleEditor: {
@@ -757,6 +742,9 @@ const appConfig = {
         }
       );
     },
+    isSimpleWorkflowView() {
+      return ['overview', 'discovery', 'assetDetail', 'scheduler'].includes(this.activeView);
+    },
     pageQuickActions() {
       return (workflowQuickActions[this.activeView] || []).filter((action) =>
         this.canAccessView(action.view)
@@ -815,7 +803,9 @@ const appConfig = {
       ];
     },
     profileScheduleStats() {
-      const schedules = this.integrations.profileSchedules || [];
+      const schedules = (this.integrations.profileSchedules || []).filter(
+        (item) => item && typeof item === 'object'
+      );
       return {
         total: schedules.length,
         active: schedules.filter((item) => item.status === 'ACTIVE').length,
@@ -1015,52 +1005,57 @@ const appConfig = {
       const connectorId = this.selectedManagedConnector?.id;
       if (!connectorId) return [];
       return (this.integrations.profileSchedules || []).filter(
-        (schedule) => schedule.connector_id === connectorId
+        (schedule) =>
+          schedule && typeof schedule === 'object' && schedule.connector_id === connectorId
       );
     },
     operatorScheduleCandidates() {
       const selectedConnectorId = this.selectedManagedConnector?.id || '';
-      return [...(this.integrations.profileSchedules || [])].sort((left, right) => {
-        const leftSelected = left.connector_id === selectedConnectorId ? 1 : 0;
-        const rightSelected = right.connector_id === selectedConnectorId ? 1 : 0;
-        if (leftSelected !== rightSelected) return rightSelected - leftSelected;
-        const leftActive = left.status === 'ACTIVE' ? 1 : 0;
-        const rightActive = right.status === 'ACTIVE' ? 1 : 0;
-        if (leftActive !== rightActive) return rightActive - leftActive;
-        const leftLastRun = left.last_run_at ? new Date(left.last_run_at).getTime() : 0;
-        const rightLastRun = right.last_run_at ? new Date(right.last_run_at).getTime() : 0;
-        if (leftLastRun !== rightLastRun) return rightLastRun - leftLastRun;
-        const leftNextRun = left.next_run_at
-          ? new Date(left.next_run_at).getTime()
-          : Number.MAX_SAFE_INTEGER;
-        const rightNextRun = right.next_run_at
-          ? new Date(right.next_run_at).getTime()
-          : Number.MAX_SAFE_INTEGER;
-        if (leftNextRun !== rightNextRun) return leftNextRun - rightNextRun;
-        return String(left.name || left.id || '').localeCompare(
-          String(right.name || right.id || '')
-        );
-      });
+      return (this.integrations.profileSchedules || [])
+        .filter((schedule) => schedule && typeof schedule === 'object')
+        .sort((left, right) => {
+          const leftSelected = left.connector_id === selectedConnectorId ? 1 : 0;
+          const rightSelected = right.connector_id === selectedConnectorId ? 1 : 0;
+          if (leftSelected !== rightSelected) return rightSelected - leftSelected;
+          const leftActive = left.status === 'ACTIVE' ? 1 : 0;
+          const rightActive = right.status === 'ACTIVE' ? 1 : 0;
+          if (leftActive !== rightActive) return rightActive - leftActive;
+          const leftLastRun = left.last_run_at ? new Date(left.last_run_at).getTime() : 0;
+          const rightLastRun = right.last_run_at ? new Date(right.last_run_at).getTime() : 0;
+          if (leftLastRun !== rightLastRun) return rightLastRun - leftLastRun;
+          const leftNextRun = left.next_run_at
+            ? new Date(left.next_run_at).getTime()
+            : Number.MAX_SAFE_INTEGER;
+          const rightNextRun = right.next_run_at
+            ? new Date(right.next_run_at).getTime()
+            : Number.MAX_SAFE_INTEGER;
+          if (leftNextRun !== rightNextRun) return leftNextRun - rightNextRun;
+          return String(left.name || left.id || '').localeCompare(
+            String(right.name || right.id || '')
+          );
+        });
     },
     sortedProfileSchedules() {
-      return [...(this.integrations.profileSchedules || [])].sort((left, right) => {
-        const leftRank = this.profileScheduleStateMeta(left).rank;
-        const rightRank = this.profileScheduleStateMeta(right).rank;
-        if (leftRank !== rightRank) return leftRank - rightRank;
-        const leftNextRun = left.next_run_at
-          ? new Date(left.next_run_at).getTime()
-          : Number.MAX_SAFE_INTEGER;
-        const rightNextRun = right.next_run_at
-          ? new Date(right.next_run_at).getTime()
-          : Number.MAX_SAFE_INTEGER;
-        if (leftNextRun !== rightNextRun) return leftNextRun - rightNextRun;
-        const leftLastRun = left.last_run_at ? new Date(left.last_run_at).getTime() : 0;
-        const rightLastRun = right.last_run_at ? new Date(right.last_run_at).getTime() : 0;
-        if (leftLastRun !== rightLastRun) return rightLastRun - leftLastRun;
-        return String(left.name || left.id || '').localeCompare(
-          String(right.name || right.id || '')
-        );
-      });
+      return (this.integrations.profileSchedules || [])
+        .filter((schedule) => schedule && typeof schedule === 'object')
+        .sort((left, right) => {
+          const leftRank = this.profileScheduleStateMeta(left).rank;
+          const rightRank = this.profileScheduleStateMeta(right).rank;
+          if (leftRank !== rightRank) return leftRank - rightRank;
+          const leftNextRun = left.next_run_at
+            ? new Date(left.next_run_at).getTime()
+            : Number.MAX_SAFE_INTEGER;
+          const rightNextRun = right.next_run_at
+            ? new Date(right.next_run_at).getTime()
+            : Number.MAX_SAFE_INTEGER;
+          if (leftNextRun !== rightNextRun) return leftNextRun - rightNextRun;
+          const leftLastRun = left.last_run_at ? new Date(left.last_run_at).getTime() : 0;
+          const rightLastRun = right.last_run_at ? new Date(right.last_run_at).getTime() : 0;
+          if (leftLastRun !== rightLastRun) return rightLastRun - leftLastRun;
+          return String(left.name || left.id || '').localeCompare(
+            String(right.name || right.id || '')
+          );
+        });
     },
     profileScheduleSections() {
       const sections = [
@@ -1103,7 +1098,47 @@ const appConfig = {
       return sections;
     },
     profileQueueHealthRows() {
-      return this.sortedProfileSchedules.map((schedule) => this.profileQueueHealthRow(schedule));
+      return this.sortedProfileSchedules.map((schedule) => {
+        try {
+          return this.profileQueueHealthRow(schedule);
+        } catch (err) {
+          console.error('Unable to render profile queue health row', err);
+          return {
+            id: schedule?.id || schedule?.name || 'unknown-profile-queue',
+            schedule,
+            name: schedule?.name || schedule?.id || 'Profile queue needs review',
+            source: schedule?.connector_id || 'No connection selected',
+            typeLabel: 'Profile queue',
+            statusLabel: 'Needs attention',
+            statusColor: 'error',
+            healthKey: 'attention',
+            needsAttention: true,
+            nextRunAt: schedule?.next_run_at || null,
+            lastRunAt: schedule?.last_run_at || null,
+            lastResult: 'Queue status could not be summarized.',
+            completedLiveProfiles: null,
+            failedLiveProfiles: null,
+            pendingLiveQueue: null,
+            selectedThisRun: null,
+            freshSkippedCount: null,
+            timeoutPenaltyCount: null,
+            completedLabel: 'Unknown',
+            failedLabel: 'Unknown',
+            pendingLabel: 'Unknown',
+            selectedLabel: 'Unknown',
+            freshSkippedLabel: 'Unknown',
+            timeoutPenaltyLabel: 'Unknown',
+            coverageModeLabel: 'Default',
+            livePriorityLabel: 'Default',
+            maxLiveTables: '-',
+            blockers: [
+              'This queue has saved settings the UI could not summarize. Review the schedule settings before running it.',
+            ],
+            nextAction: 'Review queue settings before running.',
+            explanation: 'This queue has saved settings the UI could not summarize.',
+          };
+        }
+      });
     },
     profileQueueHealthSummary() {
       const rows = this.profileQueueHealthRows;
@@ -1147,6 +1182,9 @@ const appConfig = {
         return `Profiling is healthy. The next scheduled run starts ${this.formatTimestamp(summary.nextRunAt)}.`;
       }
       return 'Profiling is waiting for the next scheduled run.';
+    },
+    profileOperatorToolsOpen() {
+      return ['runNow', 'runs', 'publishing'].includes(this.integrations.schedulerOpsTab);
     },
     selectedConnectorActiveSchedule() {
       return (
@@ -1259,12 +1297,12 @@ const appConfig = {
       const hasSchedule = this.selectedConnectorSchedules.length > 0;
       return [
         { key: 'connection', label: '1. Save connection', done: hasConnector },
-        { key: 'run', label: '2. Run one-time profile', done: hasProfile },
-        { key: 'schedule', label: '3. Configure queue', done: hasSchedule },
+        { key: 'run', label: '2. Profile evidence exists', done: hasProfile },
+        { key: 'schedule', label: '3. Used by profile queue', done: hasSchedule },
         { key: 'access', label: '4. Grant access', done: hasConnector },
         {
           key: 'history',
-          label: '5. Review runs',
+          label: '5. Related run evidence',
           done: this.integrations.connectorRuns.length > 0,
         },
       ];
@@ -1729,8 +1767,8 @@ const appConfig = {
       const persona = this.resolvedPersona;
       if (persona === 'executive') {
         return [
-          { label: 'Open Governance Insights', view: 'reports' },
           { label: 'Review Governance Work', view: 'governanceOps' },
+          { label: 'Review Platform Health', view: 'admin' },
           { label: 'Run Next Workflow Step', action: 'workflow' },
         ];
       }
@@ -1744,7 +1782,7 @@ const appConfig = {
       if (persona === 'analyst') {
         return [
           { label: 'Search Catalog', view: 'browse' },
-          { label: 'Open Data Products', view: 'products' },
+          { label: 'Compare Metrics', view: 'metrics' },
           { label: 'Explore selected asset lineage', view: 'browse' },
         ];
       }
@@ -3046,62 +3084,24 @@ const appConfig = {
         this.showToast(`Metric profile failed: ${err.message}`);
       }
     },
-    profilingRequestPayload(overrides = {}) {
-      return {
-        asset_id: this.metrics.objectId,
-        dialect: this.metrics.profiling.dialect,
-        profile_mode: this.metrics.profiling.mode,
-        execution_mode: this.metrics.profiling.executionMode,
-        max_tables: Number(this.metrics.profiling.maxTables) || 1,
-        max_columns_per_table: Number(this.metrics.profiling.maxColumns) || 40,
-        sample_percent: Number(this.metrics.profiling.samplePercent) || 1,
-        lock_timeout_ms: Number(this.metrics.profiling.lockTimeoutMs) || 5000,
-        query_timeout_ms: Number(this.metrics.profiling.queryTimeoutMs) || 120000,
-        ...overrides,
-      };
-    },
-    async planMetricTableProfile() {
+    openMetricProfilingHandoff() {
       if (!this.metrics.objectId) {
         this.showToast('Choose a table object first.');
         return;
       }
-      try {
-        this.metrics.profiling.loading = true;
-        const payload = await this.api('/api/v1/profiling/plan', {
-          method: 'POST',
-          body: JSON.stringify(this.profilingRequestPayload()),
-        });
-        this.metrics.profiling.plan = payload.plan || null;
-        this.metrics.profiling.answer = null;
-        this.metrics.profiling.run = null;
-        this.showToast('Profiling plan generated.');
-      } catch (err) {
-        this.showToast(`Profiling plan failed: ${err.message}`);
-      } finally {
-        this.metrics.profiling.loading = false;
-      }
-    },
-    async runMetricTableProfile() {
-      if (!this.metrics.objectId) {
-        this.showToast('Choose a table object first.');
-        return;
-      }
-      try {
-        this.metrics.profiling.loading = true;
-        const payload = await this.api('/api/v1/profiling/run', {
-          method: 'POST',
-          body: JSON.stringify(this.profilingRequestPayload()),
-        });
-        this.metrics.profiling.plan = payload.data?.plan || null;
-        this.metrics.profiling.run = payload.data?.run || null;
-        this.metrics.profiling.answer = payload.data?.answer || null;
-        this.metrics.profiling.confluence = payload.data?.confluence || null;
-        this.showToast('Profiling framework run completed.');
-      } catch (err) {
-        this.showToast(`Profiling run failed: ${err.message}`);
-      } finally {
-        this.metrics.profiling.loading = false;
-      }
+      const assetId = this.metrics.objectId;
+      this.integrations.profileRunEditor.profileType = 'aggregate';
+      this.integrations.profileRunEditor.executionMode = 'live';
+      this.integrations.profileRunEditor.assetIds = assetId;
+      this.integrations.profileRunEditor.streams = '';
+      this.integrations.profileScheduleEditor.profileType = 'aggregate';
+      this.integrations.profileScheduleEditor.assetIds = assetId;
+      this.integrations.profileScheduleEditor.name = this.metrics.selectedColumn
+        ? `Profile ${this.metrics.selectedColumn}`
+        : `Profile ${assetId}`;
+      this.integrations.schedulerOpsTab = 'runNow';
+      this.onViewChange('scheduler');
+      this.showToast('Opened Profiling with the selected metric asset ready for queue review.');
     },
     async loadMetricRuntimePack() {
       try {
@@ -6067,7 +6067,7 @@ const appConfig = {
         {
           id: 'welcome',
           role: 'assistant',
-          title: 'Sonic Lineage Assistant',
+          title: 'Lineage Answer',
           text: 'Ask me about lineage, catalog counts, SSIS load paths, or where an object is used. I will answer in plain English and show the technical objects behind the answer.',
           answer: null,
         },
@@ -7896,16 +7896,44 @@ const appConfig = {
           : [];
       return payload;
     },
+    profilePageIssueMessage(err, fallback) {
+      return err?.remediation || err?.message || fallback || 'Profiling data is not available.';
+    },
+    upsertProfilePageIssue(key, message, details = '') {
+      const issue = {
+        key,
+        message,
+        details,
+        timestamp: new Date().toISOString(),
+      };
+      this.integrations.profilePageIssues = [
+        issue,
+        ...(this.integrations.profilePageIssues || []).filter((item) => item.key !== key),
+      ].slice(0, 5);
+    },
+    clearProfilePageIssue(key) {
+      this.integrations.profilePageIssues = (this.integrations.profilePageIssues || []).filter(
+        (item) => item.key !== key
+      );
+    },
+    clearProfilePageIssues() {
+      this.integrations.profilePageIssues = [];
+    },
     async loadProfileSchedules() {
       try {
         this.integrations.profileScheduleLoading = true;
         const payload = await this.api('/api/v1/connectors/profile-schedules');
-        this.integrations.profileSchedules = payload.schedules || [];
+        this.integrations.profileSchedules = (payload.schedules || []).filter(
+          (schedule) => schedule && typeof schedule === 'object'
+        );
+        this.clearProfilePageIssue('schedules');
         await this.loadProfileSchedulerStatus();
         const preferredScheduleId = this.preferredProfileScheduleId;
         if (preferredScheduleId) await this.loadProfileScheduleQueuePreview(preferredScheduleId);
       } catch (err) {
-        this.showToast(`Profile schedule load failed: ${err.message}`);
+        const message = this.profilePageIssueMessage(err, 'Profile schedule load failed.');
+        this.upsertProfilePageIssue('schedules', 'Profile schedules could not be loaded.', message);
+        this.showToast(`Profile schedule load failed: ${message}`);
       } finally {
         this.integrations.profileScheduleLoading = false;
       }
@@ -7914,11 +7942,18 @@ const appConfig = {
       try {
         const payload = await this.api('/api/v1/connectors/profile-schedules/status');
         this.integrations.profileSchedulerStatus = payload.scheduler || null;
+        this.clearProfilePageIssue('scheduler-status');
       } catch (err) {
+        const message = this.profilePageIssueMessage(err, 'Scheduler status is not available.');
+        this.upsertProfilePageIssue(
+          'scheduler-status',
+          'Profile scheduler status could not be checked.',
+          message
+        );
         this.integrations.profileSchedulerStatus = {
           running: false,
           enabled: false,
-          last_error: { message: err.message },
+          last_error: { message },
         };
       }
     },
@@ -7946,16 +7981,24 @@ const appConfig = {
         if (payload.preview?.schedule?.connector_id) {
           this.integrations.selectedConnectorId = payload.preview.schedule.connector_id;
         }
+        this.clearProfilePageIssue('queue-preview');
         this.persistProfileOpsFocus();
       } catch (err) {
         this.integrations.profileQueuePreview = null;
         if (/not found/i.test(String(err.message || ''))) {
           this.integrations.profileQueueScheduleId = '';
           this.integrations.profileQueuePreview = null;
+          this.clearProfilePageIssue('queue-preview');
           this.persistProfileOpsFocus();
           return;
         }
-        this.showToast(`Queue preview failed: ${err.message}`);
+        const message = this.profilePageIssueMessage(err, 'Queue preview is not available.');
+        this.upsertProfilePageIssue(
+          'queue-preview',
+          'Selected queue detail could not be loaded.',
+          message
+        );
+        this.showToast(`Queue preview failed: ${message}`);
       } finally {
         this.integrations.profileQueueLoading = false;
       }
@@ -7973,6 +8016,35 @@ const appConfig = {
       await this.loadProfileScheduleQueuePreview(scheduleId);
       await this.loadProfileScheduleRuns(scheduleId);
       if (scheduleConnectorId) await this.loadManagedConnectorRuns(scheduleConnectorId);
+    },
+    async openRelatedProfilingQueueFromConnection() {
+      const relatedSchedule =
+        this.selectedConnectorActiveSchedule || this.selectedConnectorSchedules[0];
+      this.integrations.schedulerOpsTab = relatedSchedule ? 'queues' : 'overview';
+      if (relatedSchedule) {
+        await this.focusProfileSchedule(relatedSchedule);
+      } else if (this.selectedManagedConnector?.id) {
+        this.integrations.selectedConnectorId = this.selectedManagedConnector.id;
+        this.persistProfileOpsFocus();
+      }
+      this.onViewChange('scheduler');
+    },
+    openProfileOperatorTools() {
+      if (this.profileOperatorToolsOpen) {
+        this.integrations.schedulerOpsTab = 'overview';
+        return;
+      }
+      this.integrations.schedulerOpsTab = this.focusedProfileSchedule ? 'queues' : 'runNow';
+    },
+    openProfileScheduleEditor(reset = false) {
+      if (reset) this.resetProfileScheduleEditor();
+      this.integrations.profileScheduleEditorOpen = true;
+    },
+    closeProfileScheduleEditor() {
+      this.integrations.profileScheduleEditorOpen = false;
+      if (this.integrations.schedulerOpsTab === 'settings') {
+        this.integrations.schedulerOpsTab = 'overview';
+      }
     },
     async startProfileSchedulerWorker() {
       try {
@@ -8046,6 +8118,7 @@ const appConfig = {
         await this.loadProfileSchedules();
         if (payload.schedule?.id) await this.loadProfileScheduleRuns(payload.schedule.id);
         if (payload.schedule?.id) await this.loadProfileScheduleQueuePreview(payload.schedule.id);
+        this.closeProfileScheduleEditor();
         this.showToast(editor.id ? 'Profile schedule updated.' : 'Profile schedule created.');
       } catch (err) {
         this.showToast(`Profile schedule save failed: ${err.remediation || err.message}`);
@@ -8081,6 +8154,7 @@ const appConfig = {
           ? schedule.options.auto_publish_targets
           : ['devops'];
       await this.focusProfileSchedule(schedule);
+      this.openProfileScheduleEditor(false);
       this.showToast(`Editing ${schedule.name || schedule.id}.`);
     },
     resetProfileScheduleEditor() {
@@ -8303,6 +8377,7 @@ const appConfig = {
       );
       const freshSkippedCount = this.profileQueueNumber(queueStatus.fresh_skipped_assets);
       const timeoutPenaltyCount = this.profileQueueNumber(queueStatus.timeout_penalty_assets);
+      const queueSummary = this.scheduleQueueSummary(schedule);
       const plainStatus = this.profileQueuePlainStatus(schedule, state, queueStatus);
       const needsAttention =
         state.section === 'failed' ||
@@ -8340,6 +8415,9 @@ const appConfig = {
         selectedLabel: this.profileQueueDisplayCount(selectedThisRun),
         freshSkippedLabel: this.profileQueueDisplayCount(freshSkippedCount),
         timeoutPenaltyLabel: this.profileQueueDisplayCount(timeoutPenaltyCount),
+        coverageModeLabel: this.profileCoverageModeLabel(queueSummary.coverageMode),
+        livePriorityLabel: this.profileLivePriorityLabel(queueSummary.livePriority),
+        maxLiveTables: queueSummary.maxLiveTables,
         blockers,
         nextAction: this.profileScheduleNextAction(schedule),
       };
@@ -8992,7 +9070,7 @@ const appConfig = {
         this.integrations.profileRunEditor.executionMode === 'live';
       this.integrations.profileScheduleEditor.publishTargets = ['devops'];
       this.initializeProfileScheduleEditor(true);
-      this.integrations.schedulerOpsTab = 'settings';
+      this.openProfileScheduleEditor(false);
       this.onViewChange('scheduler');
     },
     connectorCredentialModeOptions() {
@@ -10367,7 +10445,6 @@ const appConfig = {
       requestedView !== 'governance' &&
       [
         'discovery',
-        'lineageAsk',
         'browse',
         'assetDetail',
         'overview',
@@ -10481,7 +10558,7 @@ const appConfig = {
                   <v-icon>{{ sidebarCollapsed ? 'mdi-chevron-right' : 'mdi-chevron-left' }}</v-icon>
                 </v-btn>
               </div>
-              <div v-if="!['overview', 'discovery'].includes(activeView)" class="topbar-title-block">
+              <div v-if="!['overview', 'discovery', 'scheduler'].includes(activeView)" class="topbar-title-block">
                 <div class="topbar-kicker">{{ activeNavSection?.label || 'Workspace' }}</div>
                 <h4>{{ activePageMeta.title }}</h4>
                 <div class="user-meta">{{ currentUser?.email }} · {{ navigationRoleLabel }} navigation · {{ (currentUser?.roles || []).join(', ') }}</div>
@@ -10580,7 +10657,7 @@ const appConfig = {
           </v-app-bar>
 
           <v-container fluid :class="['content', 'workflow-surface', 'page-' + activeView]">
-            <section v-if="!['overview', 'discovery', 'assetDetail'].includes(activeView)" class="page-intro">
+            <section v-if="!isSimpleWorkflowView" class="page-intro">
               <div class="page-intro-main">
                 <span class="page-kicker">{{ activePageMeta.workflow }}</span>
                 <h1>{{ activePageMeta.title }}</h1>
@@ -10600,7 +10677,7 @@ const appConfig = {
               </div>
             </section>
 
-            <div v-if="!['overview', 'discovery', 'assetDetail'].includes(activeView)" class="telemetry-banner">
+            <div v-if="!isSimpleWorkflowView" class="telemetry-banner">
               <div class="telemetry-card">
                 <span>Ingestion Health</span>
                 <strong>{{ importer.status?.status || 'monitoring' }}</strong>
@@ -10621,9 +10698,7 @@ const appConfig = {
             ${businessGlossaryPageTemplate}
 ${dataProductsPageTemplate}
 
-            ${advancedGovernancePageTemplate}
             ${governanceOpsPageTemplate}
-            ${lineageAssistantPageTemplate}
             ${metricIntelligencePageTemplate}
             ${lineageExplorerPageTemplate}
             ${governanceInsightsPageTemplate}
@@ -10732,7 +10807,7 @@ ${helpCenterPageTemplate}
   `,
 };
 
-const appInstance = createApp(appConfig).use(vuetify).mount('#app-root');
+let appInstance = null;
 
 function createGlobalUiErrorEntry(message, details = null, code = 'UI_RUNTIME_ERROR') {
   return {
@@ -10748,6 +10823,51 @@ function createGlobalUiErrorEntry(message, details = null, code = 'UI_RUNTIME_ER
   };
 }
 
+function escapeUiFallbackText(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function renderFatalUiFallback(entry) {
+  const root = typeof document === 'undefined' ? null : document.getElementById('app-root');
+  if (!root) {
+    return;
+  }
+
+  const safeMessage = escapeUiFallbackText(
+    entry.message || 'A UI runtime error stopped the page from rendering.'
+  );
+  const safeCode = escapeUiFallbackText(entry.code || 'UI_RUNTIME_ERROR');
+  const safeTimestamp = escapeUiFallbackText(entry.timestamp || new Date().toISOString());
+
+  root.innerHTML = `
+    <main class="fatal-ui-fallback" role="alert">
+      <section>
+        <span>DataGov</span>
+        <h1>The app could not finish loading.</h1>
+        <p>${safeMessage}</p>
+        <small>Error code ${safeCode} · ${safeTimestamp}</small>
+        <button type="button" onclick="window.location.reload()">Reload</button>
+      </section>
+    </main>
+  `;
+}
+
+function routeUiRuntimeError(entry, toastPrefix = 'UI error') {
+  if (!appInstance) {
+    console.error(`${toastPrefix}: ${entry.message}`, entry);
+    renderFatalUiFallback(entry);
+    return;
+  }
+
+  appInstance.recordApiError?.(entry);
+  appInstance.showToast?.(`${toastPrefix}: ${entry.message}`);
+}
+
 function registerGlobalUiErrorHandlers() {
   if (typeof window === 'undefined') {
     return;
@@ -10761,8 +10881,7 @@ function registerGlobalUiErrorHandlers() {
       column: event?.colno || null,
       stack: event?.error?.stack || null,
     });
-    appInstance?.recordApiError?.(entry);
-    appInstance?.showToast?.(`UI error: ${errorMessage}`);
+    routeUiRuntimeError(entry, 'UI error');
   });
 
   window.addEventListener('unhandledrejection', (event) => {
@@ -10776,9 +10895,37 @@ function registerGlobalUiErrorHandlers() {
       },
       'UI_UNHANDLED_REJECTION'
     );
-    appInstance?.recordApiError?.(entry);
-    appInstance?.showToast?.(`Unhandled rejection: ${rejectionMessage}`);
+    routeUiRuntimeError(entry, 'Unhandled rejection');
   });
 }
 
 registerGlobalUiErrorHandlers();
+
+const vueApp = createApp(appConfig).use(vuetify);
+vueApp.config.errorHandler = (error, instance, info) => {
+  const errorMessage = error?.message || String(error || 'Vue render error');
+  const entry = createGlobalUiErrorEntry(
+    errorMessage,
+    {
+      info,
+      component: instance?.type?.name || instance?.$options?.name || null,
+      stack: error?.stack || null,
+    },
+    'UI_VUE_RUNTIME_ERROR'
+  );
+  routeUiRuntimeError(entry, 'UI render error');
+};
+
+try {
+  appInstance = vueApp.mount('#app-root');
+} catch (error) {
+  const entry = createGlobalUiErrorEntry(
+    error?.message || String(error || 'UI mount failed'),
+    {
+      phase: 'vue_mount',
+      stack: error?.stack || null,
+    },
+    'UI_MOUNT_FAILED'
+  );
+  routeUiRuntimeError(entry, 'UI mount failed');
+}

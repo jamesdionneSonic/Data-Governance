@@ -19,6 +19,7 @@ const PORT = Number(process.env.PORT || 3000);
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const MAX_PORT_ATTEMPTS = 10;
 const SHUTDOWN_TIMEOUT_MS = Number(process.env.SHUTDOWN_TIMEOUT_MS || 10000);
+const ALLOW_PORT_RETRY = process.env.ALLOW_PORT_RETRY === 'true';
 
 // Create and start Express app
 const app = createApp();
@@ -85,10 +86,20 @@ const startServer = (port, attemptsRemaining = MAX_PORT_ATTEMPTS) => {
   const server = http.createServer(app);
 
   server.on('error', (err) => {
-    if (err?.code === 'EADDRINUSE' && attemptsRemaining > 0) {
+    if (err?.code === 'EADDRINUSE' && ALLOW_PORT_RETRY && attemptsRemaining > 0) {
       const nextPort = port + 1;
-      console.warn(`Port ${port} is in use. Retrying on ${nextPort}...`);
+      console.warn(
+        `Port ${port} is in use. Retrying on ${nextPort} because ALLOW_PORT_RETRY=true.`
+      );
       startServer(nextPort, attemptsRemaining - 1);
+      return;
+    }
+
+    if (err?.code === 'EADDRINUSE') {
+      console.error(
+        `Port ${port} is already in use. Stop the existing process or start this app with a different PORT.`
+      );
+      shutdownWithTimeout('Port conflict', 1);
       return;
     }
 
@@ -99,13 +110,22 @@ const startServer = (port, attemptsRemaining = MAX_PORT_ATTEMPTS) => {
     activeServer = server;
     initializeMarkdownCacheInBackground();
     startProfileSchedulerWorker();
-    console.log(`✓ Data Governance Platform running on port ${port}`);
-    console.log(`✓ Environment: ${NODE_ENV}`);
-    console.log(`✓ Elasticsearch: ${process.env.ELASTICSEARCH_URL || 'https://localhost:9200'}`);
+    console.log(`Data Governance Platform running at http://localhost:${port}`);
+    console.log(`Environment: ${NODE_ENV}`);
+    console.log(`Elasticsearch: ${process.env.ELASTICSEARCH_URL || 'https://localhost:9200'}`);
+    if (ALLOW_PORT_RETRY && port !== PORT) {
+      console.warn(
+        `Requested PORT=${PORT}, but the server is running at http://localhost:${port}.`
+      );
+    }
   });
 
   server.on('clientError', (err, socket) => {
-    console.warn('Client connection error:', err.message);
+    const expectedTestDisconnect =
+      process.env.NODE_ENV === 'test' && ['ECONNRESET', 'HPE_INVALID_EOF_STATE'].includes(err.code);
+    if (!expectedTestDisconnect) {
+      console.warn('Client connection error:', err.message);
+    }
     if (socket.writable) {
       socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
     }

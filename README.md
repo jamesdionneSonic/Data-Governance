@@ -12,13 +12,14 @@ A modern, enterprise-grade platform for visualizing data lineage from markdown d
 - **Lightweight Stack**: File-based architecture with Meilisearch indexing; no heavy database scanning
 - **Admin Dashboard**: User management, permission matrix, audit logs, settings
 
-## Governance-First Navigation Model
+## Workflow-Led Navigation Model
 
-- **Workspace**: Command Center, Catalog Search, Lineage Explorer
-- **Govern**: Business Glossary, Trust & Compliance
-- **Deliver**: Data Products, Governance Insights
-- **Operate**: Connections, Metadata Ingestion, Administration
-- **Support**: Help Center
+- **Find & Understand**: Home / Find Data for search-first discovery. Search, Asset Detail, and Lineage Explorer are internal or deep-link surfaces used after a user selects an asset.
+- **Govern & Improve**: Business Glossary, Governance Ops, and Metric Intelligence.
+- **Connect & Operate**: Connections, Lineage Acquisition, Profiling, and Platform Admin.
+- **Support**: Help Center.
+
+Data Products and Governance Insights are parked as internal/future-state references until their workflow owners, user promises, lifecycle rules, access posture, and success metrics are explicitly defined.
 
 ## Getting Started
 

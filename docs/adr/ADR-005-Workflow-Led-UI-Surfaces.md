@@ -20,16 +20,16 @@ Primary UI surfaces must be workflow-led. A page must own one primary user job, 
 
 The platform adopts these primary workflow owners:
 
-| Workflow | Owner Surface | Primary Job |
-| --- | --- | --- |
-| Find data and ask questions | Home / Search | Search first, with business-friendly result cards and type disambiguation. |
-| Understand lineage and impact | Lineage Explorer | Answer table, column, report, and metric lineage questions in plain English before graph/evidence detail. |
-| Manage business terms and metrics | Glossary & Metrics | Maintain business definitions and metric variants with in-review suggestions. |
-| Review governance issues | Review Work / Governance Ops | Break failed profiles, failed lineage, suspicious lineage, metric review, and approvals into steward work queues. |
-| Manage reusable source access | Connections | Create draft connections, test login/discovery, and control who can use each connection. |
-| Profile source data | Profiling | Create, run, and monitor profile schedules and profile queues. |
-| Acquire lineage evidence | Lineage Acquisition | Refresh domain evidence across the configured lineage sources needed to build holistic lineage. |
-| Configure the platform | Platform Admin | Manage roles, settings, diagnostics, and advanced operations. |
+| Workflow                          | Owner Surface                | Primary Job                                                                                                       |
+| --------------------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Find data and ask questions       | Home / Search                | Search first, with business-friendly result cards and type disambiguation.                                        |
+| Understand lineage and impact     | Lineage Explorer             | Answer table, column, report, and metric lineage questions in plain English before graph/evidence detail.         |
+| Manage business terms and metrics | Glossary & Metrics           | Maintain business definitions and metric variants with in-review suggestions.                                     |
+| Review governance issues          | Review Work / Governance Ops | Break failed profiles, failed lineage, suspicious lineage, metric review, and approvals into steward work queues. |
+| Manage reusable source access     | Connections                  | Create draft connections, test login/discovery, and control who can use each connection.                          |
+| Profile source data               | Profiling                    | Create, run, and monitor profile schedules and profile queues.                                                    |
+| Acquire lineage evidence          | Lineage Acquisition          | Refresh domain evidence across the configured lineage sources needed to build holistic lineage.                   |
+| Configure the platform            | Platform Admin               | Manage roles, settings, diagnostics, and advanced operations.                                                     |
 
 ## Consequences
 
@@ -52,12 +52,13 @@ The platform adopts these primary workflow owners:
 - A lineage answer must be readable before it is inspectable: plain-English summary first, graph/evidence detail second.
 - Search results must disambiguate same-name objects with source, database, schema, object type, and match reason before asking the user to click.
 - Governance Ops may link into operational pages, but it must not duplicate their controls.
-- If a page cannot be described as "Use this page to ___" in one sentence, it is not ready for implementation.
+- If a page cannot be described as "Use this page to \_\_\_" in one sentence, it is not ready for implementation.
 
 ## Current Workflow Decisions
 
 - Database connections point to exactly one database.
 - Database profile schedules cover exactly one database.
+- Profiling starts with a simple queue-health hero, one primary `New Schedule` action, compact summary counts, and a live queue list sorted by action need. Schedule editors, worker/runtime controls, raw run history, publish readiness tables, and queue internals are drilldowns or Advanced / Operator Tools content.
 - Schedule scope starts at schema selection; table drilldown can be added later.
 - A schedule can be saved as draft when prerequisites are missing, but it cannot be active or run until blockers are resolved.
 - Profile queue status during partial table failure is `Running With Errors`; profile success with publish failure is `Publish Warning` with retry options.

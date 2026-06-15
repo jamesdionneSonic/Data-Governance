@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { authenticate, requireAdmin, requireDatabaseAccess } from '../../src/middleware/auth.js';
 import { generateToken } from '../../src/utils/tokenManager.js';
 
@@ -57,6 +58,7 @@ describe('middleware/auth', () => {
   });
 
   test('authenticate returns internal auth error on unexpected failure', () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
     const req = { headers: { authorization: { bad: true } } };
     const next = createNextSpy();
 
@@ -65,6 +67,7 @@ describe('middleware/auth', () => {
     const error = next.calls[0][0];
     expect(error.status).toBe(500);
     expect(error.code).toBe('AUTHENTICATION_ERROR');
+    console.error.mockRestore();
   });
 
   test('requireAdmin enforces authentication and admin role', () => {

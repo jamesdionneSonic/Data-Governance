@@ -3,11 +3,11 @@
 export const workflowQuickActions = {
   overview: [
     { label: 'Search Catalog', icon: 'mdi-magnify', view: 'browse' },
-    { label: 'Ask About Lineage', icon: 'mdi-message-question', view: 'lineageAsk' },
+    { label: 'Explore Lineage', icon: 'mdi-graphql', view: 'discovery' },
     { label: 'Review Work', icon: 'mdi-clipboard-check', view: 'governanceOps' },
   ],
   browse: [
-    { label: 'Ask About Lineage', icon: 'mdi-message-question', view: 'lineageAsk' },
+    { label: 'Explore Lineage', icon: 'mdi-graphql', view: 'discovery' },
     { label: 'Governance Ops', icon: 'mdi-clipboard-check', view: 'governanceOps' },
   ],
   integrations: [
@@ -18,14 +18,7 @@ export const workflowQuickActions = {
     { label: 'Connections', icon: 'mdi-connection', view: 'integrations' },
     { label: 'Governance Ops', icon: 'mdi-clipboard-check', view: 'governanceOps' },
   ],
-  governanceOps: [
-    { label: 'Advanced Trust Controls', icon: 'mdi-shield-check', view: 'governance' },
-    { label: 'Search Catalog', icon: 'mdi-magnify', view: 'browse' },
-  ],
-  governance: [
-    { label: 'Back to Review Work', icon: 'mdi-clipboard-check', view: 'governanceOps' },
-    { label: 'Search Catalog', icon: 'mdi-magnify', view: 'browse' },
-  ],
+  governanceOps: [{ label: 'Search Catalog', icon: 'mdi-magnify', view: 'browse' }],
   import: [
     { label: 'Connections', icon: 'mdi-connection', view: 'integrations' },
     { label: 'Search Assets', icon: 'mdi-magnify', view: 'browse' },

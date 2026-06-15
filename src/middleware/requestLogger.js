@@ -3,6 +3,11 @@
  * Logs incoming requests with timestamp and details
  */
 export default function requestLogger(req, res, next) {
+  if (process.env.NODE_ENV === 'test') {
+    next();
+    return;
+  }
+
   const start = Date.now();
 
   // Hook response finish

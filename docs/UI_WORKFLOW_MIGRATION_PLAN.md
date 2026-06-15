@@ -83,7 +83,7 @@ Goal: make Profiling the only surface for profile schedules, queues, run-now, an
 
 Deliverables:
 
-- sorted schedule list: running active, active failed, active successful, deactivated, drafts
+- simple queue-health hero with one primary `New Schedule` action, compact status summaries, and a live queue list sorted by action need: running active, active failed, active successful, deactivated, drafts
 - schedule builder with one-database scope, schema selection, blockers, activate, save draft, and run now
 - queue detail view with current table, completed, failed, remaining, last success, last error, estimated finish, and publish status
 - publish warning and retry path

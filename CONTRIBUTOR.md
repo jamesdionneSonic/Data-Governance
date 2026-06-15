@@ -287,7 +287,7 @@ import * as utils from '../utils.js';
 
 ### One Engine Rule
 
-Source connectivity must have one shared implementation per source family. Saved connectors, Ingestion Studio, connection tests, profile schedules, live profiling, lineage extraction, and ad-hoc admin tools must call the shared connector runtime instead of building separate driver/client logic.
+Source connectivity must have one shared implementation per source family. Saved connectors, Lineage Acquisition, connection tests, profile schedules, live profiling, lineage extraction, and ad-hoc admin tools must call the shared connector runtime instead of building separate driver/client logic.
 
 For SQL Server and SSIS, all connection behavior must flow through the shared connector runtime modules under `src/services/connectorRuntime/` or a successor module explicitly documented in an ADR. Do not create another `mssql` pool builder, named-instance resolver, Windows-auth wrapper, certificate/trust configuration, or SSIS catalog connection path in a route, UI handler, scheduler, or one-off service.
 
@@ -319,7 +319,7 @@ If live profile planning selects assets with missing column metadata, the schedu
 
 ### Drift Prevention Tests
 
-Any PR that touches connector testing, source connection config, SQL/SSIS extraction, Ingestion Studio, profile scheduling, or live profiling must include tests proving:
+Any PR that touches connector testing, source connection config, SQL/SSIS extraction, Lineage Acquisition, profile scheduling, or live profiling must include tests proving:
 
 - the UI/API path calls the shared runtime rather than a duplicate connector implementation
 - each saved connector row tests its own connector id
