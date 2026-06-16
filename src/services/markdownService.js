@@ -109,6 +109,12 @@ export function parseMarkdownContent(content, source = 'inline-content', options
     unresolved_ssis_column_mappings: Array.isArray(metadata.unresolved_ssis_column_mappings)
       ? metadata.unresolved_ssis_column_mappings
       : [],
+    ssis_edge_summary:
+      metadata.ssis_edge_summary &&
+      typeof metadata.ssis_edge_summary === 'object' &&
+      !Array.isArray(metadata.ssis_edge_summary)
+        ? metadata.ssis_edge_summary
+        : null,
     lineage_quality:
       metadata.lineage_quality &&
       typeof metadata.lineage_quality === 'object' &&
@@ -607,6 +613,12 @@ export function validateMetadata(metadata) {
     !Array.isArray(metadata.unresolved_ssis_column_mappings)
   ) {
     errors.push('unresolved_ssis_column_mappings must be an array');
+  }
+  if (
+    metadata.ssis_edge_summary &&
+    (typeof metadata.ssis_edge_summary !== 'object' || Array.isArray(metadata.ssis_edge_summary))
+  ) {
+    errors.push('ssis_edge_summary must be an object');
   }
   if (
     metadata.lineage_quality &&

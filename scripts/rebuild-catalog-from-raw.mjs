@@ -15,6 +15,10 @@ import {
   validateMetadata,
 } from '../src/services/markdownService.js';
 import { resolveColumnLineage } from '../src/services/columnLineageResolver.js';
+import {
+  classifyReadRole,
+  classifyWriteOperation,
+} from '../src/services/semanticLineageService.js';
 
 const ROOT = process.cwd();
 const RAW_SQL_ROOT = path.join(ROOT, 'data', 'analysis', 'raw', 'sqlserver', 'servers');
@@ -1163,10 +1167,57 @@ function indexedSsisXmlMetadata(indexes, keys) {
   return null;
 }
 
-function summarizeSsisPackageEdges(packageEdges, aliases, referenceIndex) {
+function parseSsisReferenceMetadata(reference = '') {
+  const normalized = String(reference || '').trim().replace(/\[|\]/g, '');
+  if (!normalized) return {};
+
+  const parts = normalized.split('.').filter(Boolean);
+  if (parts.length < 2) {
+    return {
+      name: normalized,
+      type: 'table',
+    };
+  }
+
+  return {
+    server: parts.length >= 4 ? parts.slice(0, -3).join('.') : '',
+    database: parts.length >= 3 ? parts[parts.length - 3] : '',
+    schema: parts.length >= 2 ? parts[parts.length - 2] : '',
+    name: parts[parts.length - 1] || normalized,
+    type: 'table',
+  };
+}
+
+function emptySsisEdgeSummary() {
+  return {
+    reads: {
+      direct_source_reads: [],
+      lookup_reads: [],
+      target_maintenance_reads: [],
+      business_consumer_reads: [],
+    },
+    writes: {
+      direct_writes: [],
+      insert_writes: [],
+      update_writes: [],
+      delete_writes: [],
+      upsert_writes: [],
+    },
+    calls: [],
+  };
+}
+
+function summarizeSsisPackageEdges(
+  packageEdges,
+  aliases,
+  referenceIndex,
+  packageMetadata = {},
+  packageXmlMetadata = {}
+) {
   const readsFrom = [];
   const writesTo = [];
   const calls = [];
+  const ssisEdgeSummary = emptySsisEdgeSummary();
   const lineageQuality = {
     validated_edges: 0,
     probable_edges: 0,
@@ -1186,15 +1237,73 @@ function summarizeSsisPackageEdges(packageEdges, aliases, referenceIndex) {
     const normalizedRef = normalizeSsisReference(edge.to, aliases, referenceIndex);
     if (!normalizedRef) continue;
 
-    if (SSIS_READ_EDGE_TYPES.has(edge.edgeType)) pushUniqueText(readsFrom, normalizedRef);
-    if (SSIS_WRITE_EDGE_TYPES.has(edge.edgeType)) pushUniqueText(writesTo, normalizedRef);
-    if (SSIS_CALL_EDGE_TYPES.has(edge.edgeType)) pushUniqueText(calls, normalizedRef);
+    if (SSIS_READ_EDGE_TYPES.has(edge.edgeType)) {
+      pushUniqueText(readsFrom, normalizedRef);
+    }
+    if (SSIS_WRITE_EDGE_TYPES.has(edge.edgeType)) {
+      pushUniqueText(writesTo, normalizedRef);
+    }
+    if (SSIS_CALL_EDGE_TYPES.has(edge.edgeType)) {
+      pushUniqueText(calls, normalizedRef);
+    }
   }
+
+  const consumerMetadata = {
+    ...packageMetadata,
+    ...packageXmlMetadata,
+    type: 'package',
+  };
+
+  for (const ref of readsFrom) {
+    const readRole = classifyReadRole(parseSsisReferenceMetadata(ref), consumerMetadata);
+    if (readRole === 'source_read') {
+      pushUniqueText(ssisEdgeSummary.reads.direct_source_reads, ref);
+    } else if (readRole === 'lookup_read') {
+      pushUniqueText(ssisEdgeSummary.reads.lookup_reads, ref);
+    } else if (readRole === 'business_consumer_read') {
+      pushUniqueText(ssisEdgeSummary.reads.business_consumer_reads, ref);
+    } else {
+      pushUniqueText(ssisEdgeSummary.reads.business_consumer_reads, ref);
+    }
+  }
+
+  const processMetadata = {
+    ...consumerMetadata,
+    reads_from: readsFrom,
+    writes_to: writesTo,
+    definition: (packageXmlMetadata.sqlTasks || [])
+      .map((task) => task.sqlText || task.sqlCommand || '')
+      .filter(Boolean)
+      .join('\n'),
+  };
+
+  const readSet = new Set(readsFrom.map((ref) => String(ref || '').toLowerCase()));
+  for (const ref of writesTo) {
+    const targetMetadata = parseSsisReferenceMetadata(ref);
+    const operation = classifyWriteOperation(processMetadata, ref, targetMetadata);
+    if (readSet.has(String(ref || '').toLowerCase())) {
+      pushUniqueText(ssisEdgeSummary.reads.target_maintenance_reads, ref);
+    }
+    if (operation === 'insert_write') {
+      pushUniqueText(ssisEdgeSummary.writes.insert_writes, ref);
+    } else if (operation === 'update_write') {
+      pushUniqueText(ssisEdgeSummary.writes.update_writes, ref);
+    } else if (operation === 'delete_write') {
+      pushUniqueText(ssisEdgeSummary.writes.delete_writes, ref);
+    } else if (operation === 'upsert_write') {
+      pushUniqueText(ssisEdgeSummary.writes.upsert_writes, ref);
+    } else {
+      pushUniqueText(ssisEdgeSummary.writes.direct_writes, ref);
+    }
+  }
+
+  ssisEdgeSummary.calls = calls;
 
   return {
     readsFrom,
     writesTo,
     calls,
+    ssisEdgeSummary,
     lineageQuality,
   };
 }
@@ -1232,10 +1341,19 @@ function buildSsisMarkdown(result, packageRow, server, aliases, referenceIndex, 
       ])
     );
 
-  const edgeSummary = summarizeSsisPackageEdges(packageEdges, aliases, referenceIndex);
-  const readsFrom = edgeSummary.readsFrom;
-  const writesTo = edgeSummary.writesTo;
-  const calls = edgeSummary.calls;
+  const edgeSummary = summarizeSsisPackageEdges(
+    packageEdges,
+    aliases,
+    referenceIndex,
+    {
+      name: `${folder}.${project}.${pkg}`,
+      folder_name: folder,
+      project_name: project,
+      package_name: pkg,
+    },
+    packageXmlMetadata
+  );
+  const { readsFrom, writesTo, calls } = edgeSummary;
   const ssisColumnMappings = Array.isArray(packageXmlMetadata?.ssisColumnMappings)
     ? packageXmlMetadata.ssisColumnMappings
     : [];
@@ -1356,6 +1474,7 @@ mapping into the parent package frontmatter.
     ssis_column_mapping_sidecars: sidecarRefs,
     ssis_column_mappings: embeddedSsisColumnMappings,
     unresolved_ssis_column_mappings: unresolvedSsisColumnMappings,
+    ssis_edge_summary: edgeSummary.ssisEdgeSummary,
     lineage_quality: edgeSummary.lineageQuality,
     description: `SSIS package metadata extracted from folder ${folder}, project ${project}, package ${pkg}.`,
   };
@@ -1376,6 +1495,18 @@ mapping into the parent package frontmatter.
 - SPs Called: ${calls.length}
 - Target entities: ${writesTo.length}
 - Last validation: ${packageRow.package_last_validation || 'n/a'}
+
+## Classified SSIS Edge Summary
+- Direct source reads: ${edgeSummary.ssisEdgeSummary.reads.direct_source_reads.length}
+- Lookup reads: ${edgeSummary.ssisEdgeSummary.reads.lookup_reads.length}
+- Target-maintenance reads: ${edgeSummary.ssisEdgeSummary.reads.target_maintenance_reads.length}
+- Business or contextual reads: ${edgeSummary.ssisEdgeSummary.reads.business_consumer_reads.length}
+- Direct writes: ${edgeSummary.ssisEdgeSummary.writes.direct_writes.length}
+- Insert writes: ${edgeSummary.ssisEdgeSummary.writes.insert_writes.length}
+- Update writes: ${edgeSummary.ssisEdgeSummary.writes.update_writes.length}
+- Delete writes: ${edgeSummary.ssisEdgeSummary.writes.delete_writes.length}
+- Upsert or maintenance writes: ${edgeSummary.ssisEdgeSummary.writes.upsert_writes.length}
+- Package or procedure calls: ${edgeSummary.ssisEdgeSummary.calls.length}
 
 ## Extraction Notes
 - Generated by scripts/rebuild-catalog-from-raw.mjs from raw SSIS XML.

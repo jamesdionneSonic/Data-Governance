@@ -269,6 +269,14 @@ export function buildSemanticLineageEdges(objects = new Map()) {
   return edges;
 }
 
+export function classifyReadRole(sourceMetadata = {}, consumerMetadata = {}) {
+  return inferReadRole(sourceMetadata, consumerMetadata);
+}
+
+export function classifyWriteOperation(processMetadata = {}, targetId = '', targetMetadata = {}) {
+  return inferWriteOperation(processMetadata, targetId, targetMetadata);
+}
+
 function collectConnected(edges = [], focusId = '', predicate = () => true) {
   return edges.filter(
     (edge) => predicate(edge) && (edge.source === focusId || edge.target === focusId)
@@ -442,6 +450,8 @@ export function buildSemanticLineageIndex(objects = new Map()) {
 }
 
 export default {
+  classifyReadRole,
+  classifyWriteOperation,
   buildSemanticLineageEdges,
   buildSemanticLineageIndex,
   buildSemanticLineagePack,

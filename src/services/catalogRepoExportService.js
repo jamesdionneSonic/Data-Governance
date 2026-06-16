@@ -513,6 +513,7 @@ async function buildContextPack({ row, object, id, graph, typedEdges, markdownRo
       downstream: downstream.slice(0, CONTEXT_NEIGHBOR_LIMIT),
       downstream_truncated: downstream.length > CONTEXT_NEIGHBOR_LIMIT,
       direct_edges: directEdges,
+      ssis_edge_summary: object.ssis_edge_summary || null,
     },
     columns: {
       count: row.column_count,
@@ -943,17 +944,18 @@ function renderSsisReadme(ssisRows) {
   return [
     '# SSIS Lineage',
     '',
-    'SSIS packages are grouped by inferred folder and project. Open a folder README, then a project README, to navigate packages.',
+    'SSIS navigation follows the native SSIS folder and project hierarchy. Open a folder README, then a project README, to reach executable package pages. Evidence sidecars stay secondary and do not change package counts.',
     '',
     markdownTable(
-      ['Folder', 'Packages', 'Supporting Context Records'],
+      ['Folder', 'Packages', 'Evidence Sidecars'],
       folderNames.map((folder) => {
         const rows = ssisRows.filter((row) => ssisFolderFromRow(row) === folder);
         const packageCount = rows.filter((row) => row.object_type === 'package').length;
+        const sidecarCount = rows.length - packageCount;
         return [
           `[${ssisFolderLabel(rows, folder)}](f/${folder}/README.md)`,
           packageCount,
-          rows.length - packageCount,
+          sidecarCount,
         ];
       })
     ),
@@ -968,17 +970,18 @@ function renderSsisFolderReadme(folder, rows) {
   return [
     `# ${folderLabel}`,
     '',
-    `SSIS folder project index. Path id: \`${folder}\`.`,
+    `Native SSIS folder project index. Path id: \`${folder}\`.`,
     '',
     markdownTable(
-      ['Project', 'Packages', 'Supporting Context Records'],
+      ['Project', 'Packages', 'Evidence Sidecars'],
       projectNames.map((project) => {
         const projectRows = rows.filter((row) => ssisProjectFromRow(row) === project);
         const packageCount = projectRows.filter((row) => row.object_type === 'package').length;
+        const sidecarCount = projectRows.length - packageCount;
         return [
           `[${ssisProjectLabel(projectRows, project)}](p/${project}/README.md)`,
           packageCount,
-          projectRows.length - packageCount,
+          sidecarCount,
         ];
       })
     ),
@@ -993,7 +996,7 @@ function renderSsisProjectReadme(project, rows) {
   return [
     `# ${projectLabel}`,
     '',
-    `SSIS project package index. Path id: \`${project}\`.`,
+    `Native SSIS project package index. Path id: \`${project}\`.`,
     '',
     '## Packages',
     '',
@@ -1010,7 +1013,7 @@ function renderSsisProjectReadme(project, rows) {
         ])
     ),
     '',
-    '## Supporting Context Records',
+    '## Evidence Sidecars',
     '',
     supportingRows.length
       ? markdownTable(
@@ -1025,7 +1028,7 @@ function renderSsisProjectReadme(project, rows) {
               `[context](pkg/${path.basename(row.context_pack_path)})`,
             ])
         )
-      : '- No supporting context records were generated for this project.',
+      : '- No evidence sidecars were generated for this project.',
     '',
   ].join('\n');
 }

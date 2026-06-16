@@ -159,6 +159,109 @@ function inferPurpose(report, datasets) {
   return `This report supports the ${folder} reporting area. Use the parameters and data logic below to confirm the exact business question before changing it.`;
 }
 
+function businessUse(report, datasets, parameters = []) {
+  const text = reportText(report, datasets);
+  const prompts = parameters.map((param) => param.Prompt || param.ParameterName).filter(Boolean);
+  const parameterContext = prompts.length
+    ? ` The report is filtered by ${prompts.slice(0, 5).join(', ')}.`
+    : '';
+
+  if (hasAny(text, ['custno to stockno'])) {
+    return `Use this when a support request starts with a customer number but the team needs the related vehicle stock number, accounting date, deal status, or deal number. Accounting and store support can use it to connect a customer record back to the vehicle sale.${parameterContext}`;
+  }
+  if (hasAny(text, ['ronumber to custno', 'ro #'])) {
+    return `Use this when a service question starts with a repair order number and the team needs to identify the customer tied to the closed RO. This is useful for Service, Accounting, BI, or Data follow-up where the RO is known but the customer number is needed.${parameterContext}`;
+  }
+  if (hasAny(text, ['stockno to custno'])) {
+    return `Use this when a vehicle stock number is known and the team needs to identify the customer and deal connected to that stock number. It supports vehicle sale research, accounting questions, and store support follow-up.${parameterContext}`;
+  }
+  if (hasAny(text, ['trade1stockno', 'trade1stock'])) {
+    return `Use this when a trade-in stock number is known and the team needs the related customer, sold vehicle stock number, accounting date, deal status, or deal number. It helps connect trade activity back to the sale record.${parameterContext}`;
+  }
+  if (hasAny(text, ['gl - open stores', 'open stores', 'glcalendar', 'dm_cora_account'])) {
+    return `Use this for controller or accounting review of stores that are open for the selected accounting month. It helps identify store/accounting combinations that may still need reconciliation, period-close review, or operational follow-up before month-end work is considered complete.${parameterContext}`;
+  }
+  if (hasAny(text, ['dailycashsummary', 'daily cash summary'])) {
+    return `Use this for daily or month-to-date Cash Management review when the team needs a store-level summary of cash balances and activity. It helps accounting users verify whether cash movement looks complete and whether a dealership needs follow-up.${parameterContext}`;
+  }
+  if (hasAny(text, ['dailyactivitysummary', 'daily activity summary'])) {
+    return `Use this when Cash Management needs a summarized view of daily activity volume before researching individual transactions. It is useful for spotting whether expected activity posted for a company, store, or period.${parameterContext}`;
+  }
+  if (hasAny(text, ['activity details', 'activitydetails'])) {
+    return `Use this when Cash Management needs transaction-level detail to research a specific cash activity question, reconcile a store, or explain why a daily summary balance changed.${parameterContext}`;
+  }
+  if (hasAny(text, ['negativebalance'])) {
+    return `Use this to find accounts or stores with negative cash balances that may require accounting review, correction, or business follow-up. It is a review report for exceptions rather than a general activity summary.${parameterContext}`;
+  }
+  if (hasAny(text, ['floorplan'])) {
+    return `Use this when Shared Services or Accounting needs to review floorplan payoff activity, validate payoff records, or investigate synchronization issues between floorplan data and vehicle/accounting records.${parameterContext}`;
+  }
+  if (hasAny(text, ['payroll'])) {
+    return `Use this when Payroll or support teams need to review payroll entry activity by company, user, or summary level. It helps validate who entered payroll data and what payroll activity was recorded for the selected scope.${parameterContext}`;
+  }
+  if (hasAny(text, ['retail sales'])) {
+    return `Use this for FP&A or retail leadership review of sales performance for a selected period. The report helps compare retail sales activity, clean gross, or related sales measures across stores or reporting windows.${parameterContext}`;
+  }
+  if (hasAny(text, ['inventory count by make model dealership'])) {
+    return `Use this to review inventory counts grouped by make, model, and dealership. It helps inventory and operations teams understand where vehicles are available and where inventory mix may need attention.${parameterContext}`;
+  }
+  if (hasAny(text, ['new inventory - playbook'])) {
+    return `Use this for new-vehicle inventory playbook review. It supports operational decisions about inventory availability, pricing, aging, and store-level follow-up for new vehicles.${parameterContext}`;
+  }
+  if (hasAny(text, ['new inventory - pricing', 'pricing issues'])) {
+    return `Use this to identify new-vehicle pricing issues that need review or correction. It helps inventory, pricing, and operations teams find records where pricing data may be missing, stale, or outside the expected business rules.${parameterContext}`;
+  }
+  if (hasAny(text, ['inventory', 'stock'])) {
+    return `Use this when the business needs a vehicle inventory view for operational follow-up. It helps teams review stock counts, availability, aging, or inventory-level exceptions depending on the selected filters.${parameterContext}`;
+  }
+  if (hasAny(text, ['quartile', 'opportunity'])) {
+    return `Use this for CRM or retail performance review where opportunity activity is being grouped, ranked, or compared. It helps sales and CRM teams understand which opportunities may need attention.${parameterContext}`;
+  }
+  if (hasAny(text, ['trafficmanagement'])) {
+    return `Use this to review CRM or showroom traffic activity. It helps retail teams understand customer traffic patterns and follow-up activity for the selected reporting scope.${parameterContext}`;
+  }
+  if (hasAny(text, ['lead'])) {
+    return `Use this to review lead activity, lead sources, or lead follow-up performance. It helps CRM and retail strategy teams understand where leads are coming from and whether follow-up is happening as expected.${parameterContext}`;
+  }
+  if (hasAny(text, ['weekendappt', 'appt'])) {
+    return `Use this to review weekend appointment activity and understand whether stores have upcoming or completed appointments that need retail follow-up.${parameterContext}`;
+  }
+  if (hasAny(text, ['routeone', 'redflag', 'ssn'])) {
+    return `Use this for RouteOne finance or compliance review. Depending on the report, it helps investigate deal detail, red-flag results, SSN variance, or summary activity that may require finance-office follow-up.${parameterContext}`;
+  }
+  if (hasAny(text, ['truecar', 'email'])) {
+    return `Use this when Legal or Compliance needs to review TrueCar-related email records. It helps locate communication records that may be needed for research, audit, or response work.${parameterContext}`;
+  }
+  if (hasAny(text, ['checks'])) {
+    return `Use this when Internal Audit needs to review check activity by user or related control attributes. It helps identify records that may require audit follow-up or exception review.${parameterContext}`;
+  }
+  if (hasAny(text, ['jobstatus', 'job status', 'summaryreport'])) {
+    return `Use this to monitor scheduled job or batch-processing status. It helps support teams see whether expected processing completed, failed, or needs investigation.${parameterContext}`;
+  }
+  if (hasAny(text, ['tire report'])) {
+    return `Use this to review tire-related operational records for the selected reporting scope. It helps the business research activity or exceptions tied to tire reporting.${parameterContext}`;
+  }
+  if (hasAny(text, ['uploadopcodes'])) {
+    return `Use this to review uploaded operation codes and confirm whether service or operational code data was loaded as expected. It is useful when troubleshooting missing or incorrect operation-code data.${parameterContext}`;
+  }
+  if (hasAny(text, ['reconcost'])) {
+    return `Use this to review reconditioning cost information and investigate whether cost records line up with the expected vehicle or store activity.${parameterContext}`;
+  }
+  if (hasAny(text, ['vehgt100k'])) {
+    return `Use this to review vehicles over the configured high-mileage threshold. It supports financial or operational review of vehicles that may need special handling because mileage is greater than 100,000.${parameterContext}`;
+  }
+  if (hasAny(text, ['echopark', 'autoMatch day 1'.toLowerCase()])) {
+    return `Use this for EchoPark operational review, typically around customer, sales, service, CSI, or day-one inventory activity. It helps EchoPark teams find records that need follow-up or exception review.${parameterContext}`;
+  }
+
+  const folder = report.Path.split('/').filter(Boolean).slice(0, -1).join(' / ') || 'root';
+  const hints = objectHints(datasets);
+  const dependencyContext = hints.length
+    ? ` It reads or calls ${hints.slice(0, 4).join(', ')}, so support should validate those sources when results look wrong.`
+    : '';
+  return `Use this report for ${folder} business review when users need the report output for operational follow-up, reconciliation, audit, or performance review.${parameterContext}${dependencyContext}`;
+}
+
 function folderPurpose(folderPath) {
   const text = folderPath.toLowerCase();
   if (text === 'acctstd') return 'Accounting support lookup reports that translate customer, stock, repair order, and trade stock identifiers.';
@@ -220,13 +323,14 @@ function reportBody(title, reports, datasetsByPath, parametersByPath) {
   );
   const hints = objectHints(allDatasets);
   const purpose = inferPurpose(primary, allDatasets);
+  const useText = businessUse(primary, allDatasets, uniqueParams);
   const paths = reports.map((report) => report.Path);
 
   return `<h1>${esc(title)}</h1>
 <p><strong>Purpose:</strong> ${esc(purpose)}</p>
 <p><strong>Status signal:</strong> ${esc(statusSignal(reports))}.</p>
 <h2>Business Use</h2>
-<p>Use this page to understand what the report is for, who it likely supports, how recently it has been used, and what data it reads before making support, retirement, or modernization decisions.</p>
+<p>${esc(useText)}</p>
 <h2>SSRS Location</h2>
 <table><thead><tr><th>SSRS path</th><th>Executions last 6 months</th><th>Last used</th><th>Users</th><th>Subscriptions</th></tr></thead><tbody>${reports
     .map(

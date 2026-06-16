@@ -106,6 +106,94 @@ describe('Catalog Repo Export Service', () => {
     return markdownRoot;
   }
 
+  async function seedSsisCatalog() {
+    const markdownRoot = join(tempRoot, 'markdown');
+    const ssisDir = join(
+      markdownRoot,
+      'servers',
+      'SSIS01',
+      'ssis_packages',
+      'FOCUS',
+      'MainProject'
+    );
+    await mkdir(ssisDir, { recursive: true });
+
+    await writeFile(
+      join(ssisDir, 'MainPackage.dtsx.md'),
+      [
+        '---',
+        'id: SSIS01.SSISDB.FOCUS.MainProject.MainPackage.dtsx',
+        'name: FOCUS.MainProject.MainPackage.dtsx',
+        'server: SSIS01',
+        'database: ssisdb',
+        'folder_name: FOCUS',
+        'project_name: MainProject',
+        'package_name: MainPackage.dtsx',
+        'package_path: FOCUS.MainProject.MainPackage.dtsx',
+        'type: package',
+        'owner: ssis-platform',
+        'reads_from:',
+        '  - SQL01.StagingDB.dbo.SourceLead',
+        'writes_to:',
+        '  - SQL02.Sonic_DW.dbo.FactLead',
+        'ssis_edge_summary:',
+        '  reads:',
+        '    direct_source_reads:',
+        '      - SQL01.StagingDB.dbo.SourceLead',
+        '    lookup_reads: []',
+        '    target_maintenance_reads: []',
+        '    business_consumer_reads: []',
+        '  writes:',
+        '    direct_writes: []',
+        '    insert_writes: []',
+        '    update_writes: []',
+        '    delete_writes: []',
+        '    upsert_writes:',
+        '      - SQL02.Sonic_DW.dbo.FactLead',
+        '  calls: []',
+        'catalog_confidence:',
+        '  overall_score: 0.94',
+        '  edge_correctness_score: 0.99',
+        '  column_lineage_score: 0.72',
+        '  confidence_label: high',
+        '---',
+        '',
+        'Main package.',
+      ].join('\n'),
+      'utf8'
+    );
+
+    await writeFile(
+      join(ssisDir, 'MainPackage.dtsx.column_mappings.chunk_001.md'),
+      [
+        '---',
+        'id: SSIS01.SSISDB.FOCUS.MainProject.MainPackage.dtsx.ssis_column_mappings.chunk_001',
+        'name: FOCUS.MainProject.MainPackage.dtsx.column_mappings.chunk_001',
+        'server: SSIS01',
+        'database: ssisdb',
+        'folder_name: FOCUS',
+        'project_name: MainProject',
+        'package_name: MainPackage.dtsx',
+        'package_path: FOCUS.MainProject.MainPackage.dtsx',
+        'type: dataset',
+        'owner: ssis-platform',
+        'depends_on:',
+        '  - SSIS01.SSISDB.FOCUS.MainProject.MainPackage.dtsx',
+        'catalog_confidence:',
+        '  overall_score: 0.9',
+        '  edge_correctness_score: 0.95',
+        '  column_lineage_score: 0.8',
+        '  confidence_label: high',
+        '---',
+        '',
+        'Column mapping sidecar.',
+      ].join('\n'),
+      'utf8'
+    );
+
+    return markdownRoot;
+  }
+
   async function findFile(root, pattern) {
     const entries = await readdir(root, { withFileTypes: true });
     for (const entry of entries) {
@@ -163,5 +251,46 @@ describe('Catalog Repo Export Service', () => {
     const manifest = JSON.parse(await readFile(join(targetRoot, 'catalog-manifest.json'), 'utf8'));
     expect(manifest.files.raw_markdown_root).toBe('servers/');
     expect(manifest.raw_source_markdown_count).toBeGreaterThan(0);
+  });
+
+  test('exports SSIS navigation with native hierarchy wording and separate evidence sidecars', async () => {
+    const markdownRoot = await seedSsisCatalog();
+    await buildRuntimeCatalogIndexes(markdownRoot, {});
+    const targetRoot = join(tempRoot, 'repo');
+
+    await exportCatalogRepo({
+      markdownRoot,
+      targetRoot,
+    });
+
+    const ssisRootReadme = await readFile(join(targetRoot, 'ssis', 'README.md'), 'utf8');
+    expect(ssisRootReadme).toContain('native SSIS folder and project hierarchy');
+    expect(ssisRootReadme).toContain('| Folder | Packages | Evidence Sidecars |');
+    expect(ssisRootReadme).toContain('| [FOCUS](f/');
+    expect(ssisRootReadme).toContain('| 1 | 1 |');
+
+    const folderDirs = await readdir(join(targetRoot, 'ssis', 'f'));
+    expect(folderDirs.length).toBeGreaterThan(0);
+    const folderReadmePath = join(targetRoot, 'ssis', 'f', folderDirs[0], 'README.md');
+    const folderReadme = await readFile(folderReadmePath, 'utf8');
+    expect(folderReadme).toContain('Native SSIS folder project index');
+    expect(folderReadme).toContain('| Project | Packages | Evidence Sidecars |');
+
+    const projectDirs = await readdir(join(targetRoot, 'ssis', 'f', folderDirs[0], 'p'));
+    expect(projectDirs.length).toBeGreaterThan(0);
+    const projectReadmePath = join(
+      targetRoot,
+      'ssis',
+      'f',
+      folderDirs[0],
+      'p',
+      projectDirs[0],
+      'README.md'
+    );
+    const projectReadme = await readFile(projectReadmePath, 'utf8');
+    expect(projectReadme).toContain('## Packages');
+    expect(projectReadme).toContain('## Evidence Sidecars');
+    expect(projectReadme).toContain('MainPackage.dtsx');
+    expect(projectReadme).toContain('column_mappings.chunk_001');
   });
 });

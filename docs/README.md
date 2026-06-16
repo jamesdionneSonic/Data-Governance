@@ -9,6 +9,7 @@ This is the master index for platform documentation.
 - **Operate**: Profiling, Connections, Lineage Acquisition, Platform Admin
 
 Deprecated primary labels: `Command Center`, `Profile Operations`, `Ingestion Studio`, `Trust & Compliance`, and `Data Products` until each has a clear workflow owner or explicit product definition.
+
 - **Support**: Help Center
 
 ## In-App User Help (Surfaced in UI)
@@ -68,6 +69,8 @@ Deprecated primary labels: `Command Center`, `Profile Operations`, `Ingestion St
 
 - [Lineage Detection Research](LINEAGE_DETECTION_RESEARCH.md)
 - [Lineage Engine Tuning Backlog](LINEAGE_ENGINE_TUNING_BACKLOG.md)
+- [Team Codex Lineage Enablement Backlog](TEAM_CODEX_LINEAGE_ENABLEMENT_BACKLOG.md)
+- [Sonic Lineage Runtime Consumer Contract](SONIC_LINEAGE_RUNTIME_CONSUMER_CONTRACT.md)
 - [Lineage Implementation Guide](LINEAGE_IMPLEMENTATION_GUIDE.md)
 - [Lineage Object Investigation Queue](LINEAGE_OBJECT_INVESTIGATION_QUEUE.md)
 - [Lineage Suspicious Objects Process](LINEAGE_SUSPICIOUS_OBJECTS_PROCESS.md)
@@ -84,6 +87,8 @@ Deprecated primary labels: `Command Center`, `Profile Operations`, `Ingestion St
 - [ADR-003: Codex Skills Use The DevOps Profile Index First](adr/ADR-003-Codex-Skills-Use-DevOps-Profile-Index-First.md)
 - [ADR-004: Use One Shared Connector Runtime](adr/ADR-004-Single-Shared-Connector-Runtime.md)
 - [ADR-005: Use Workflow-Led UI Surfaces](adr/ADR-005-Workflow-Led-UI-Surfaces.md)
+- [ADR-006: Use Native SSIS Hierarchy And Classified Lineage Summaries](adr/ADR-006-SSIS-Native-Hierarchy-And-Classified-Lineage.md)
+- [ADR-007: Use A Versioned Lineage Runtime Package And Team Codex Plugin Before Azure Platform Expansion](adr/ADR-007-Team-Codex-Lineage-Runtime-Enablement.md)
 - [Release Notes v0.6.0](RELEASE_NOTES_v0.6.0.md)
 - [Release Notes v1.0.0](RELEASE_NOTES_v1.0.0.md)
 - [Vuetify Final Audit 2026-05-10](VUETIFY_FINAL_AUDIT_2026-05-10.md)
