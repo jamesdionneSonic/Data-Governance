@@ -238,6 +238,14 @@ function buildRuntimeSummary(metadata, dataPath, filePath) {
     unresolved_column_lineage_count: countArray(metadata.unresolved_column_lineage),
     ssis_column_mapping_count: countArray(metadata.ssis_column_mappings),
     unresolved_ssis_column_mapping_count: countArray(metadata.unresolved_ssis_column_mappings),
+    ssis_file_reference_count: countArray(metadata.ssis_file_references),
+    ssis_file_references: Array.isArray(metadata.ssis_file_references)
+      ? metadata.ssis_file_references.slice(0, 25)
+      : [],
+    ssis_connection_manager_count: countArray(metadata.ssis_connection_managers),
+    ssis_connection_managers: Array.isArray(metadata.ssis_connection_managers)
+      ? metadata.ssis_connection_managers.slice(0, 25)
+      : [],
     ssis_column_mapping_summary: metadata.ssis_column_mapping_summary || null,
     ssis_edge_summary: metadata.ssis_edge_summary || null,
     lineage_quality: metadata.lineage_quality || null,

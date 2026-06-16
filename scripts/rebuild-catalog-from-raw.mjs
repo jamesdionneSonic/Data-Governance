@@ -23,6 +23,7 @@ import {
 const ROOT = process.cwd();
 const RAW_SQL_ROOT = path.join(ROOT, 'data', 'analysis', 'raw', 'sqlserver', 'servers');
 const RAW_SSIS_XML_ROOT = path.join(ROOT, 'data', 'analysis', 'raw', 'ssis', 'xml');
+const RAW_SSIS_METADATA_PATH = path.join(ROOT, 'data', 'analysis', 'raw', 'ssis', 'ssis-metadata.json');
 const OUTPUT_ROOT = path.join(ROOT, 'data', 'markdown');
 const OUTPUT_SERVERS_ROOT = path.join(OUTPUT_ROOT, 'servers');
 const CATALOG_MANIFEST_PATH = path.join(OUTPUT_ROOT, 'catalog-manifest.json');
@@ -41,6 +42,8 @@ const SSIS_CALL_EDGE_TYPES = new Set(['CALLS']);
 const DEBUG_REBUILD = process.env.REBUILD_DEBUG === '1';
 const ENFORCE_REBUILD_GATES = process.argv.includes('--enforce-gates');
 const DRY_RUN_REBUILD = process.argv.includes('--dry-run');
+const USE_LIVE_SSIS_METADATA =
+  process.argv.includes('--use-live-ssis-metadata') || process.env.USE_LIVE_SSIS_METADATA === '1';
 const SSIS_REBUILD_LIMIT = readPositiveIntegerOption('--ssis-limit', 'REBUILD_SSIS_LIMIT');
 const DEFAULT_REBUILD_GATES = {
   maxInvalidObjects: 0,
@@ -1446,6 +1449,20 @@ mapping into the parent package frontmatter.
   )
     ? packageXmlMetadata.unresolvedSsisColumnMappings
     : [];
+  const ssisFileReferences = Array.isArray(packageXmlMetadata?.ssisFileReferences)
+    ? packageXmlMetadata.ssisFileReferences
+    : [];
+  const ssisConnectionManagers = Array.isArray(packageXmlMetadata?.connectionManagers)
+    ? packageXmlMetadata.connectionManagers.map((cm) => ({
+        connection_name: cm.connName || '',
+        connection_type: cm.connType || '',
+        server_name: cm.serverName || '',
+        database_name: cm.databaseName || '',
+        file_path: cm.filePath || '',
+        dynamic_resolved: cm.dynamicResolved === true,
+        dynamic_variables: Array.isArray(cm.dynamicVariables) ? cm.dynamicVariables : [],
+      }))
+    : [];
 
   const frontmatter = {
     id,
@@ -1474,6 +1491,8 @@ mapping into the parent package frontmatter.
     ssis_column_mapping_sidecars: sidecarRefs,
     ssis_column_mappings: embeddedSsisColumnMappings,
     unresolved_ssis_column_mappings: unresolvedSsisColumnMappings,
+    ssis_file_references: ssisFileReferences,
+    ssis_connection_managers: ssisConnectionManagers,
     ssis_edge_summary: edgeSummary.ssisEdgeSummary,
     lineage_quality: edgeSummary.lineageQuality,
     description: `SSIS package metadata extracted from folder ${folder}, project ${project}, package ${pkg}.`,
@@ -1491,6 +1510,7 @@ mapping into the parent package frontmatter.
 - Detected lineage edges: ${packageEdges.length}
 - SSIS column mappings: ${embeddedSsisColumnMappings.length} embedded; ${sortedSsisColumnMappings.length} preserved in ${sidecars.length} sidecar chunk(s)
 - Unresolved SSIS column mappings: ${unresolvedSsisColumnMappings.length}
+- File/config references: ${ssisFileReferences.length}
 - Upstream entities: ${readsFrom.length}
 - SPs Called: ${calls.length}
 - Target entities: ${writesTo.length}
@@ -2232,49 +2252,82 @@ function applyExactSsisPackageTableEdges(records, packageUpdates = []) {
 }
 
 async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog, options = {}) {
-  const xmlFiles = await listFiles(
-    RAW_SSIS_XML_ROOT,
-    (filePath) => filePath.toLowerCase().endsWith('.dtsx.xml')
-  );
   const server = 'V1-SSIS25-01, 11040';
-  const catalog = [];
-  const xmlMetadata = [];
+  const liveSsisMetadata = USE_LIVE_SSIS_METADATA
+    ? await readJsonIfExists(RAW_SSIS_METADATA_PATH, null)
+    : null;
+  let catalog = [];
+  let xmlMetadata = [];
+  let sourceMode = 'raw_xml';
   let skipped = 0;
   let processedXmlFiles = 0;
+  let discoveredXmlFiles = 0;
   const ssisLimit = Math.max(0, Number(options.ssisLimit || 0));
 
-  for (const filePath of xmlFiles) {
-    if (ssisLimit > 0 && processedXmlFiles >= ssisLimit) break;
-    processedXmlFiles += 1;
-    try {
-      const xmlText = await fs.readFile(filePath, 'utf8');
-      const { folder, project, packageName } = inferSsisFileParts(
-        filePath,
-        xmlText,
-        existingSsisCatalog
+  if (
+    liveSsisMetadata &&
+    Array.isArray(liveSsisMetadata.catalog) &&
+    Array.isArray(liveSsisMetadata.xmlMetadata)
+  ) {
+    sourceMode = 'live_ssis_metadata';
+    catalog = liveSsisMetadata.catalog.slice(0, ssisLimit || undefined);
+    discoveredXmlFiles = liveSsisMetadata.xmlMetadata.length;
+    processedXmlFiles = catalog.length;
+    const allowedPackages = new Set(
+      catalog.map((row) =>
+        `${cleanSegment(row.folder_name)}.${cleanSegment(row.project_name)}.${cleanSegment(
+          row.package_name
+        )}`.toLowerCase()
+      )
+    );
+    xmlMetadata = liveSsisMetadata.xmlMetadata.filter((metadata) => {
+      if (ssisLimit <= 0) return true;
+      return allowedPackages.has(
+        `${cleanSegment(metadata.folderName)}.${cleanSegment(metadata.projectName)}.${cleanSegment(
+          metadata.packageName || metadata.objectName
+        )}`.toLowerCase()
       );
-      const row = {
-        folder_name: folder,
-        project_name: project,
-        package_name: packageName,
-        entry_point: /master/i.test(packageName),
-        package_last_validation: null,
-      };
-      catalog.push(row);
-      const parsed = parseSsisPackageXmlForLineage(xmlText, {
-        objectName: packageName,
-        packageName,
-        projectName: project,
-        folderName: folder,
-        serverName: server,
-        packageId: packageId(server, folder, project, packageName),
-        parameterOverrides: aliases.ssisProjectParameterOverrides || {},
-        connectionOverrides: aliases.ssisProjectConnectionOverrides || {},
-      });
-      if (parsed) xmlMetadata.push(parsed);
-    } catch (err) {
-      skipped += 1;
-      console.warn(`[raw-ssis] skipped ${filePath}: ${err.message}`);
+    });
+  } else {
+    const xmlFiles = await listFiles(
+      RAW_SSIS_XML_ROOT,
+      (filePath) => filePath.toLowerCase().endsWith('.dtsx.xml')
+    );
+    discoveredXmlFiles = xmlFiles.length;
+
+    for (const filePath of xmlFiles) {
+      if (ssisLimit > 0 && processedXmlFiles >= ssisLimit) break;
+      processedXmlFiles += 1;
+      try {
+        const xmlText = await fs.readFile(filePath, 'utf8');
+        const { folder, project, packageName } = inferSsisFileParts(
+          filePath,
+          xmlText,
+          existingSsisCatalog
+        );
+        const row = {
+          folder_name: folder,
+          project_name: project,
+          package_name: packageName,
+          entry_point: /master/i.test(packageName),
+          package_last_validation: null,
+        };
+        catalog.push(row);
+        const parsed = parseSsisPackageXmlForLineage(xmlText, {
+          objectName: packageName,
+          packageName,
+          projectName: project,
+          folderName: folder,
+          serverName: server,
+          packageId: packageId(server, folder, project, packageName),
+          parameterOverrides: aliases.ssisProjectParameterOverrides || {},
+          connectionOverrides: aliases.ssisProjectConnectionOverrides || {},
+        });
+        if (parsed) xmlMetadata.push(parsed);
+      } catch (err) {
+        skipped += 1;
+        console.warn(`[raw-ssis] skipped ${filePath}: ${err.message}`);
+      }
     }
   }
 
@@ -2288,10 +2341,19 @@ async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog
     ssisdbPresent: true,
     catalog,
     xmlMetadata,
-    agentJobs: { jobs: [], ssisSteps: [] },
-    warnings: [],
+    parameters: liveSsisMetadata?.parameters || [],
+    environments: liveSsisMetadata?.environments || {},
+    agentJobs: liveSsisMetadata?.agentJobs || { jobs: [], ssisSteps: [] },
+    warnings: liveSsisMetadata?.warnings || [],
+    ssis_source_mode: sourceMode,
   };
-  result.lineageEdges = extractor.buildLineageEdges(catalog, xmlMetadata, result.agentJobs, [], {});
+  result.lineageEdges = extractor.buildLineageEdges(
+    catalog,
+    xmlMetadata,
+    result.agentJobs,
+    result.parameters,
+    result.environments
+  );
   const markdownIndexes = buildSsisMarkdownIndexes(result.lineageEdges, result.xmlMetadata);
   const pendingPackageTargetUpdates = [];
 
@@ -2358,9 +2420,9 @@ async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog
     result,
     packageCount: catalog.length,
     edgeCount: result.lineageEdges.length,
-    discoveredXmlFiles: xmlFiles.length,
+    discoveredXmlFiles,
     processedXmlFiles,
-    limited: ssisLimit > 0 && processedXmlFiles < xmlFiles.length,
+    limited: ssisLimit > 0 && processedXmlFiles < discoveredXmlFiles,
     ssisSqlEndpointRecords,
     exactSsisPackageTableEdges,
     skipped,

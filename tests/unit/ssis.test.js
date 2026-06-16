@@ -855,6 +855,95 @@ describe('SSIS-007: package XML column mappings', () => {
     expect(parsed.unresolvedSsisColumnMappings).toEqual([]);
   });
 
+  test('captures resolved flat-file connection evidence from project parameters', () => {
+    const xml = `
+      <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts">
+        <DTS:ConnectionManagers>
+          <DTS:ConnectionManager
+            DTS:ObjectName="MerakiDeviceInventoryFile"
+            DTS:CreationName="FLATFILE"
+            DTS:refId="Package.ConnectionManagers[MerakiDeviceInventoryFile]">
+            <DTS:ObjectData>
+              <DTS:ConnectionManager>
+                <DTS:PropertyExpression DTS:Name="ConnectionString">@[$Project::MerakiDeviceInventoryPath]</DTS:PropertyExpression>
+              </DTS:ConnectionManager>
+            </DTS:ObjectData>
+          </DTS:ConnectionManager>
+        </DTS:ConnectionManagers>
+        <pipeline>
+          <components>
+            <component componentClassID="Microsoft.FlatFileSource" name="Flat File Source 1">
+              <connections>
+                <connection connectionManagerID="Package.ConnectionManagers[MerakiDeviceInventoryFile]" />
+              </connections>
+            </component>
+          </components>
+        </pipeline>
+      </DTS:Executable>
+    `;
+
+    const parsed = parseSsisPackageXmlForLineage(xml, {
+      serverName: 'SSIS01',
+      folderName: 'Meraki',
+      projectName: 'Meraki',
+      packageName: 'MerakiDataLoad.dtsx',
+      parameters: [
+        {
+          folder_name: 'Meraki',
+          project_name: 'Meraki',
+          parameter_name: 'MerakiDeviceInventoryPath',
+          design_default_value: '\\\\sftpdrop\\meraki\\DeviceInventory.xlsx',
+        },
+      ],
+    });
+
+    expect(parsed.ssisFileReferences).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          connection_name: 'MerakiDeviceInventoryFile',
+          file_path: '\\\\sftpdrop\\meraki\\DeviceInventory.xlsx',
+          file_name: 'DeviceInventory.xlsx',
+          resolution_status: 'resolved',
+          evidence_source: 'connection_manager_expression_resolved',
+        }),
+      ])
+    );
+  });
+
+  test('does not classify OLE DB connection strings as SSIS file references', () => {
+    const xml = `
+      <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts">
+        <DTS:ConnectionManagers>
+          <DTS:ConnectionManager
+            DTS:ObjectName="OLEDB_BIxPRESS_1"
+            DTS:CreationName="OLEDB"
+            DTS:refId="Package.ConnectionManagers[OLEDB_BIxPRESS_1]">
+            <DTS:ObjectData>
+              <DTS:ConnectionManager DTS:ConnectionString="Data Source=D1-SSIS-04,11010;Initial Catalog=BIxPRESS;Provider=SQLNCLI11.1;Integrated Security=SSPI;" />
+            </DTS:ObjectData>
+          </DTS:ConnectionManager>
+        </DTS:ConnectionManagers>
+      </DTS:Executable>
+    `;
+
+    const parsed = parseSsisPackageXmlForLineage(xml, {
+      serverName: 'SSIS01',
+      folderName: 'Meraki',
+      projectName: 'Meraki',
+      packageName: 'MerakiMaster.dtsx',
+    });
+
+    expect(parsed.connectionManagers).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          connName: 'OLEDB_BIxPRESS_1',
+          databaseName: 'BIxPRESS',
+        }),
+      ])
+    );
+    expect(parsed.ssisFileReferences).toEqual([]);
+  });
+
   test('creates validated lineage edges for external SSIS source components', () => {
     const extractor = new SsisMetadataExtractor({ server: 'SSIS01' });
     const edges = extractor.buildLineageEdges(

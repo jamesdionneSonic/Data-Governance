@@ -530,6 +530,12 @@ async function buildContextPack({ row, object, id, graph, typedEdges, markdownRo
       lineage_count: object.column_lineage_count || 0,
       risk_flag_count: object.column_risk_flag_count || 0,
     },
+    ssis: {
+      file_reference_count: object.ssis_file_reference_count || 0,
+      file_references: ensureArray(object.ssis_file_references).slice(0, 25),
+      connection_manager_count: object.ssis_connection_manager_count || 0,
+      connection_managers: ensureArray(object.ssis_connection_managers).slice(0, 25),
+    },
     evidence: {
       source_markdown_path: row.source_markdown_path,
       source_markdown_available: Boolean(sourceMarkdownText),
@@ -554,6 +560,12 @@ function renderContextPackMarkdown(pack) {
     column.name,
     column.data_type,
     column.nullable === null ? '' : column.nullable,
+  ]);
+  const ssisFileRows = ensureArray(pack.ssis?.file_references).map((reference) => [
+    reference.connection_name || '',
+    reference.file_path || reference.raw_connection_string || '',
+    reference.resolution_status || '',
+    ensureArray(reference.dynamic_variables).join(', '),
   ]);
 
   return [
@@ -615,6 +627,12 @@ function renderContextPackMarkdown(pack) {
       : '- No columns recorded.',
     pack.columns.preview_truncated ? '- Column preview is truncated in this context pack.' : '',
     '',
+    ssisFileRows.length ? '## SSIS File References' : '',
+    ssisFileRows.length ? '' : '',
+    ssisFileRows.length
+      ? markdownTable(['Connection', 'Configured Value', 'Resolution', 'Variables'], ssisFileRows)
+      : '',
+    ssisFileRows.length ? '' : '',
     pack.logic_summary ? '## Logic Summary' : '',
     pack.logic_summary ? '' : '',
     pack.logic_summary ? pack.logic_summary : '',

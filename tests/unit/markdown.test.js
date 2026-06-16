@@ -343,6 +343,17 @@ describe('Markdown Service', () => {
           '  - component_name: DynamicConn',
           '    reason: dynamic_connection_manager',
           '    validation_status: unresolved',
+          'ssis_file_references:',
+          '  - connection_name: MerakiDeviceInventoryFile',
+          '    connection_type: FLATFILE',
+          '    file_path: "\\\\\\\\sftpdrop\\\\meraki\\\\DeviceInventory.xlsx"',
+          '    file_name: DeviceInventory.xlsx',
+          '    resolution_status: resolved',
+          'ssis_connection_managers:',
+          '  - connection_name: MerakiDeviceInventoryFile',
+          '    connection_type: FLATFILE',
+          '    file_path: "\\\\\\\\sftpdrop\\\\meraki\\\\DeviceInventory.xlsx"',
+          '    dynamic_resolved: true',
           'ssis_edge_summary:',
           '  reads:',
           '    direct_source_reads:',
@@ -407,6 +418,19 @@ describe('Markdown Service', () => {
         expect.objectContaining({
           component_name: 'DynamicConn',
           reason: 'dynamic_connection_manager',
+        }),
+      ]);
+      expect(metadata.ssis_file_references).toEqual([
+        expect.objectContaining({
+          connection_name: 'MerakiDeviceInventoryFile',
+          file_name: 'DeviceInventory.xlsx',
+          resolution_status: 'resolved',
+        }),
+      ]);
+      expect(metadata.ssis_connection_managers).toEqual([
+        expect.objectContaining({
+          connection_name: 'MerakiDeviceInventoryFile',
+          dynamic_resolved: true,
         }),
       ]);
       expect(metadata.ssis_edge_summary).toEqual({

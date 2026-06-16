@@ -109,6 +109,12 @@ export function parseMarkdownContent(content, source = 'inline-content', options
     unresolved_ssis_column_mappings: Array.isArray(metadata.unresolved_ssis_column_mappings)
       ? metadata.unresolved_ssis_column_mappings
       : [],
+    ssis_file_references: Array.isArray(metadata.ssis_file_references)
+      ? metadata.ssis_file_references
+      : [],
+    ssis_connection_managers: Array.isArray(metadata.ssis_connection_managers)
+      ? metadata.ssis_connection_managers
+      : [],
     ssis_edge_summary:
       metadata.ssis_edge_summary &&
       typeof metadata.ssis_edge_summary === 'object' &&

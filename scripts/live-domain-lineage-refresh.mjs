@@ -8,7 +8,14 @@ import { buildSqlServerApiConnectionContext } from '../src/services/connectorRun
 
 const DEFAULT_OUTPUT_PATH = './data/markdown';
 const RAW_SQL_PATH = './data/analysis/raw/sqlserver';
+const RAW_SSIS_PATH = './data/analysis/raw/ssis';
+const SSIS_METADATA_PATH = './data/analysis/raw/ssis/ssis-metadata.json';
 const SUMMARY_PATH = './data/analysis/raw/live-domain-refresh-summary.json';
+const SSIS_ONLY = process.argv.includes('--ssis-only');
+const SQL_ONLY = process.argv.includes('--sql-only');
+const SSIS_FOLDER = valueAfter('--folder');
+const SSIS_PROJECT = valueAfter('--project');
+const SSIS_PACKAGE = valueAfter('--package');
 
 const SQL_TARGETS = [
   {
@@ -41,6 +48,14 @@ const SSIS_TARGET = {
   port: 11040,
   database: 'SSISDB',
 };
+
+function valueAfter(flag) {
+  const equalsPrefix = `${flag}=`;
+  const equalsArg = process.argv.find((arg) => arg.startsWith(equalsPrefix));
+  if (equalsArg) return equalsArg.slice(equalsPrefix.length);
+  const index = process.argv.indexOf(flag);
+  return index >= 0 ? process.argv[index + 1] || '' : '';
+}
 
 function sanitizePathSegment(value) {
   const input = String(value || '');
@@ -148,6 +163,31 @@ function summarizeSsisResult(result) {
   };
 }
 
+function redactSensitiveMetadata(value) {
+  if (Array.isArray(value)) return value.map((item) => redactSensitiveMetadata(item));
+  if (!value || typeof value !== 'object') return value;
+
+  const redacted = {};
+  for (const [key, childValue] of Object.entries(value)) {
+    if (/password|passwd|pwd|secret|token|credential/i.test(key)) {
+      redacted[key] = '***REDACTED***';
+      continue;
+    }
+    if (
+      typeof childValue === 'string' &&
+      /(password|passwd|pwd)\s*=/i.test(childValue)
+    ) {
+      redacted[key] = childValue.replace(
+        /(password|passwd|pwd)\s*=\s*[^;]+/gi,
+        '$1=***REDACTED***'
+      );
+      continue;
+    }
+    redacted[key] = redactSensitiveMetadata(childValue);
+  }
+  return redacted;
+}
+
 async function refreshSqlTarget(target) {
   console.log(`[live-refresh] SQL ${target.id}: connecting to ${target.server}/${target.database}`);
   const { connConfig, sqlDriver } = await buildConnection(target);
@@ -178,10 +218,24 @@ async function refreshSsisTarget(target) {
     requireDatabase: false,
     pool: { max: 5, min: 0, idleTimeoutMillis: 30000 },
   });
-  const extractor = new SsisMetadataExtractor(connConfig, sqlDriver);
+  const extractor = new SsisMetadataExtractor(
+    {
+      ...connConfig,
+      folderName: SSIS_FOLDER || undefined,
+      projectName: SSIS_PROJECT || undefined,
+      packageName: SSIS_PACKAGE || undefined,
+    },
+    sqlDriver
+  );
   await extractor.connect();
   try {
     const result = await extractor.extractAll({ extractXml: true });
+    await mkdir(resolve(process.cwd(), RAW_SSIS_PATH), { recursive: true });
+    await writeFile(
+      resolve(process.cwd(), SSIS_METADATA_PATH),
+      `${JSON.stringify(redactSensitiveMetadata(result), null, 2)}\n`,
+      'utf-8'
+    );
     const summary = summarizeSsisResult(result);
     console.log(
       `[live-refresh] SSIS ${target.id}: ${summary.counts.packages} packages, ${summary.counts.lineageEdges} edges`
@@ -203,11 +257,19 @@ async function main() {
   const startedAt = new Date().toISOString();
   const results = [];
 
-  for (const target of SQL_TARGETS) {
-    results.push(await refreshSqlTarget(target));
+  if (SSIS_ONLY && SQL_ONLY) {
+    throw new Error('Use either --ssis-only or --sql-only, not both.');
   }
 
-  results.push(await refreshSsisTarget(SSIS_TARGET));
+  if (!SSIS_ONLY) {
+    for (const target of SQL_TARGETS) {
+      results.push(await refreshSqlTarget(target));
+    }
+  }
+
+  if (!SQL_ONLY) {
+    results.push(await refreshSsisTarget(SSIS_TARGET));
+  }
 
   const summary = {
     startedAt,

@@ -74,6 +74,50 @@ function list(text, key) {
     .filter(Boolean);
 }
 
+function unquoteFrontmatterValue(value) {
+  const text = String(value || '').trim();
+  if (text === '[]') return '';
+  if (!text) return '';
+  try {
+    if (/^".*"$/.test(text)) return JSON.parse(text);
+  } catch {
+    // fall through to light cleanup
+  }
+  return text.replace(/^"|"$/g, '').trim();
+}
+
+function objectArray(text, key) {
+  const lines = String(text || '').split(/\r?\n/);
+  const start = lines.findIndex((line) => line === `${key}:`);
+  if (start < 0) return [];
+  const block = [];
+  for (const line of lines.slice(start + 1)) {
+    if (line && !/^\s/.test(line)) break;
+    block.push(line);
+  }
+  const rows = [];
+  let current = null;
+  for (const line of block) {
+    if (/^  -\s*$/.test(line)) {
+      if (current && Object.keys(current).length) rows.push(current);
+      current = {};
+      continue;
+    }
+    const inlineItem = line.match(/^  -\s+(.+?):\s*(.*)$/);
+    if (inlineItem) {
+      if (current && Object.keys(current).length) rows.push(current);
+      current = { [inlineItem[1]]: unquoteFrontmatterValue(inlineItem[2]) };
+      continue;
+    }
+    const child = line.match(/^    ([A-Za-z0-9_]+):\s*(.*)$/);
+    if (child && current) {
+      current[child[1]] = unquoteFrontmatterValue(child[2]);
+    }
+  }
+  if (current && Object.keys(current).length) rows.push(current);
+  return rows;
+}
+
 function runtime(text, label) {
   const body = text.split('---').slice(2).join('---');
   const match = body.match(new RegExp(`- ${label}:\\s*([^\\n]+)`));
@@ -127,7 +171,9 @@ function fileLikeValues(text) {
 }
 
 async function fileConfigEvidence(pkg, packageText) {
+  const structuredReferences = objectArray(packageText, 'ssis_file_references');
   const componentNames = [
+    ...structuredReferences.map((item) => item.connection_name),
     ...pkg.reads
       .filter((item) => /external_sources|flat_file|flat file|excel/i.test(item))
       .map(objectName)
@@ -140,8 +186,16 @@ async function fileConfigEvidence(pkg, packageText) {
       mapping.sourceObject,
       mapping.destinationObject,
     ]),
-  ].filter(Boolean);
-  const fileNames = new Set(fileLikeValues(packageText));
+    ].filter(Boolean);
+  const fileNames = new Set([
+    ...structuredReferences.flatMap((item) => [
+      item.file_path,
+      item.file_name,
+      item.raw_connection_string,
+      item.resolved_connection_string,
+    ]),
+    ...fileLikeValues(packageText),
+  ].filter(Boolean));
   const externalRoot = path.join(
     lineageRoot,
     'servers/V1-SSIS25-01,_11040/ssis_external_sources',
@@ -163,6 +217,7 @@ async function fileConfigEvidence(pkg, packageText) {
   return {
     components: topValues(componentNames.map(displayName), 8),
     fileNames: [...fileNames].slice(0, 10),
+    references: structuredReferences.slice(0, 10),
   };
 }
 
@@ -398,6 +453,20 @@ function mappingTable(samples) {
 function fileEvidenceBlock(pkg) {
   const files = pkg.fileEvidence?.fileNames || [];
   const components = pkg.fileEvidence?.components || [];
+  const references = pkg.fileEvidence?.references || [];
+  const referenceRows = references.length
+    ? references
+        .map(
+          (reference) =>
+            `<tr><td><code>${esc(reference.connection_name || '')}</code></td><td><code>${esc(
+              reference.file_path ||
+                reference.resolved_connection_string ||
+                reference.raw_connection_string ||
+                ''
+            )}</code></td><td>${esc(reference.resolution_status || '')}</td></tr>`
+        )
+        .join('')
+    : '';
   const fileRows = files.length
     ? `<tr><td>Configured file/path values found</td><td>${files
         .map((file) => `<code>${esc(file)}</code>`)
@@ -408,7 +477,10 @@ function fileEvidenceBlock(pkg) {
         .map((component) => `<code>${esc(component)}</code>`)
         .join('<br>')}</td></tr>`
     : '<tr><td>File/Excel components found</td><td>None surfaced.</td></tr>';
-  return `<table><tbody><tr><th>Signal</th><th>Value</th></tr>${fileRows}${componentRows}<tr><td>Support note</td><td>If the configured file name is not shown here, check SSIS package/project parameters, environment variables, connection-manager expressions, or <code>SSIS.Config.SSIS_Configurations</code> for this package.</td></tr></tbody></table>`;
+  const structuredTable = referenceRows
+    ? `<h4>Structured file/config references</h4><table><tbody><tr><th>Connection</th><th>Configured value</th><th>Status</th></tr>${referenceRows}</tbody></table>`
+    : '';
+  return `${structuredTable}<table><tbody><tr><th>Signal</th><th>Value</th></tr>${fileRows}${componentRows}<tr><td>Support note</td><td>If the configured file name is not shown here, check SSIS package/project parameters, environment variables, connection-manager expressions, or <code>SSIS.Config.SSIS_Configurations</code> for this package.</td></tr></tbody></table>`;
 }
 
 function callRows(pkg) {

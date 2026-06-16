@@ -918,6 +918,105 @@ function resolveSsisExpressionValue(expression, valueMap) {
   return output.trim();
 }
 
+function looksLikeFileOrExternalConnection(cm = {}) {
+  const connType = cleanSsisSegment(cm.connType || '');
+  const isExplicitFileConnection =
+    /(flat\s*file|flatfile|excel|file|raw|xml|ftp|sftp|sharepoint|access)/i.test(connType);
+  const valueText = [
+    cm.rawConnectionString,
+    cm.resolvedConnectionString,
+    cm.filePath,
+    cm.expressionConnectionString,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  if (
+    !isExplicitFileConnection &&
+    /(?:^|;)\s*(?:Data Source|Server|Initial Catalog|Database)\s*=/i.test(valueText)
+  ) {
+    return false;
+  }
+
+  const typeAndName = [cm.connName, connType].filter(Boolean).join(' ');
+  if (
+    isExplicitFileConnection ||
+    /(flat\s*file|flatfile|excel|raw|xml|ftp|sftp|sharepoint|access)/i.test(typeAndName)
+  ) {
+    return true;
+  }
+
+  const dynamicExpressions = cm.dynamicExpressions || {};
+  if (
+    Object.keys(dynamicExpressions).some((key) =>
+      /filename|file(name|path)?|excel(filepath)?|directory|folder|path|ftp|sftp/i.test(key)
+    )
+  ) {
+    return true;
+  }
+
+  if (parseConnectionStringServer(valueText) || parseConnectionStringDatabase(valueText)) {
+    return false;
+  }
+
+  return /(?:[A-Za-z]:\\|\\\\|\/|sftp:\/\/|ftp:\/\/).+\.(?:csv|txt|xlsx|xls|dat|json|xml|pgp|zip)|\.(?:csv|txt|xlsx|xls|dat|json|xml|pgp|zip)\b/i.test(
+    valueText
+  );
+}
+
+function fileNameFromPath(value = '') {
+  const text = cleanSsisSegment(value);
+  if (!text) return '';
+  const parts = text.split(/[\\/]/).filter(Boolean);
+  return parts.at(-1) || text;
+}
+
+function buildSsisFileReferences(connectionManagers = [], context = {}) {
+  return (connectionManagers || [])
+    .filter((cm) => looksLikeFileOrExternalConnection(cm))
+    .map((cm) => {
+      const configuredValue =
+        cm.filePath ||
+        cm.resolvedConnectionString ||
+        cm.rawConnectionString ||
+        cm.expressionConnectionString ||
+        '';
+      const dynamicExpressions = cm.dynamicExpressions || {};
+      const expressionText =
+        dynamicExpressions.ConnectionString ||
+        dynamicExpressions.FileName ||
+        dynamicExpressions.FilePath ||
+        dynamicExpressions.ExcelFilePath ||
+        cm.expressionConnectionString ||
+        '';
+      const resolved = Boolean(
+        configuredValue &&
+        (!cm.hasDynamicExpression || cm.dynamicResolved || configuredValue !== expressionText)
+      );
+
+      return compactSsisRecord({
+        connection_name: cm.connName || '',
+        connection_type: cm.connType || '',
+        file_path: configuredValue,
+        file_name: fileNameFromPath(configuredValue),
+        raw_connection_string: cm.rawConnectionString || '',
+        resolved_connection_string: cm.resolvedConnectionString || '',
+        expression: expressionText,
+        dynamic_variables: cm.dynamicVariables || [],
+        dynamic_resolved: cm.dynamicResolved === true,
+        resolution_status: resolved ? 'resolved' : 'unresolved',
+        evidence_source: cm.dynamicResolved
+          ? 'connection_manager_expression_resolved'
+          : cm.rawConnectionString || cm.filePath
+            ? 'connection_manager'
+            : 'connection_manager_expression',
+        folder_name: context.folderName || '',
+        project_name: context.projectName || '',
+        package_name: context.packageName || '',
+      });
+    });
+}
+
 function resolveConnectionManagers(connectionManagers = [], context = {}) {
   const valueMap = buildSsisValueMap(context);
   return connectionManagers.map((cm) => {
@@ -1971,6 +2070,11 @@ class SsisMetadataExtractor {
                 extractSsisColumnMappingsFromComponents(dataFlowComponents, {
                   packageId: livePackageId,
                 }) || {};
+              const ssisFileReferences = buildSsisFileReferences(resolvedConnectionManagers, {
+                folderName: proj.folder_name,
+                projectName: proj.project_name,
+                packageName: zipEntry.entryName,
+              });
 
               // --- ADVANCED STRUCTURAL ANALYSIS FALLBACK LAYER ---
               // If we have data flow components that maps to an unknown connection object name,
@@ -2005,6 +2109,7 @@ class SsisMetadataExtractor {
                 projectName: proj.project_name,
                 packageVariables,
                 connectionManagers: resolvedConnectionManagers,
+                ssisFileReferences,
                 dataFlowComponents,
                 ssisColumnMappings: columnMappingResult.ssisColumnMappings || [],
                 unresolvedSsisColumnMappings: [
@@ -2707,6 +2812,11 @@ export function parseSsisPackageXmlForLineage(xmlText, options = {}) {
   const columnMappingResult = extractSsisColumnMappingsFromComponents(dataFlowComponents, {
     packageId,
   });
+  const ssisFileReferences = buildSsisFileReferences(connectionManagers, {
+    folderName: options.folderName || '',
+    projectName: options.projectName || '',
+    packageName: options.packageName || options.objectName || '',
+  });
 
   return {
     objectName: options.objectName || options.packageName || 'unknown_package.dtsx',
@@ -2715,6 +2825,7 @@ export function parseSsisPackageXmlForLineage(xmlText, options = {}) {
     projectName: options.projectName || 'unknown_project',
     packageVariables,
     connectionManagers,
+    ssisFileReferences,
     dataFlowComponents,
     ssisColumnMappings: columnMappingResult.ssisColumnMappings || [],
     unresolvedSsisColumnMappings: [
