@@ -33,16 +33,16 @@ That means each implementation packet must include:
 
 Objective: make future AI runs safe before any teammate enablement or cloud work starts.
 
-| ID      | Item                                                                 | Status   | Owner               | Acceptance Criteria                                                                                                   |
-| ------- | -------------------------------------------------------------------- | -------- | ------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| TCE-000 | Approve ADR-007 for package-first team enablement                    | Proposed | Data/platform owner | ADR accepted or revised; decision recorded before plugin/cloud work                                                   |
-| TCE-001 | Publish this consumer contract as required AI context                | Proposed | Data/platform owner | `docs/SONIC_LINEAGE_RUNTIME_CONSUMER_CONTRACT.md` is linked from docs index and referenced by skill/plugin docs       |
-| TCE-002 | Update Sonic lineage skill instructions to use the consumer contract | Planned  | Skill owner         | Skill reads approved runtime package first, cites artifacts, and refuses ingestion-engine edits in teammate workflows |
-| TCE-003 | Add a medium-model execution packet template                         | Planned  | Data/platform owner | Template includes files to read, commands, acceptance checks, and prohibited areas                                    |
-| TCE-004 | Add AI safety note to contributor docs                               | Planned  | Repo maintainer     | `CONTRIBUTOR.md` says teammate evidence workflows may create recommendations, not ingestion changes                   |
-| TCE-005 | Add package/version disclosure rule                                  | Planned  | Skill owner         | Codex answers include package version/hash when used for decisions                                                    |
-| TCE-006 | Add "no path guessing" instruction to AI docs                        | Planned  | Skill owner         | Skill follows `indexes/path-contract.json` and `indexes/artifact-manifest.json`                                       |
-| TCE-007 | Add hard-stop instruction before Azure Phase 5                       | Proposed | Data/platform owner | AI docs include required STOP prompt before Azure platform work                                                       |
+| ID      | Item                                                                 | Status | Owner               | Acceptance Criteria                                                                                                                                   |
+| ------- | -------------------------------------------------------------------- | ------ | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TCE-000 | Approve ADR-007 for package-first team enablement                    | Done   | Data/platform owner | ADR accepted and decision recorded before plugin/cloud work                                                                                           |
+| TCE-001 | Publish this consumer contract as required AI context                | Done   | Data/platform owner | `docs/SONIC_LINEAGE_RUNTIME_CONSUMER_CONTRACT.md` is linked from docs index, contributor rules, and skill docs                                        |
+| TCE-002 | Update Sonic lineage skill instructions to use the consumer contract | Done   | Skill owner         | Skill now defines approved-package mode, cites version/hash expectations, and refuses ingestion-engine edits in teammate workflows                    |
+| TCE-003 | Add a medium-model execution packet template                         | Done   | Data/platform owner | `docs/CODEX_LINEAGE_EXECUTION_PACKET_TEMPLATE.md` includes files to read, commands, acceptance checks, and prohibited areas                           |
+| TCE-004 | Add AI safety note to contributor docs                               | Done   | Repo maintainer     | `CONTRIBUTOR.md` says teammate evidence workflows may submit recommendations, not update ingestion/parser/extractor/generator/rebuild code            |
+| TCE-005 | Add package/version disclosure rule                                  | Done   | Skill owner         | Skill requires package version/hash in evidence lines for decision-grade approved-package answers                                                     |
+| TCE-006 | Add "no path guessing" instruction to AI docs                        | Done   | Skill owner         | Skill and execution packet require advertised paths from entrypoints, path contract, artifact manifest, registry rows, answer cards, or context packs |
+| TCE-007 | Add hard-stop instruction before Azure Phase 5                       | Done   | Data/platform owner | Skill, contributor rules, contract, execution packet, and backlog include required STOP prompt before Azure platform work                             |
 
 Exit criteria:
 
@@ -58,7 +58,7 @@ Objective: make the package the stable product boundary.
 | ------- | --------------------------------------------------------------- | ------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | TCE-101 | Reconcile existing runtime backlog with current manifest counts | Planned | Package owner | `LINEAGE_RUNTIME_PACKAGE_BACKLOG.md` reflects current package version, object count, file count, and hash                           |
 | TCE-102 | Define approved package manifest fields                         | Planned | Package owner | Manifest includes package name, version, generated time, source repo, object count, database count, content hash, validation status |
-| TCE-103 | Define published package readback contract                      | Planned | Package owner | Clean consumer can resolve object, open answer card, open context pack, open SSIS context, and report package version               |
+| TCE-103 | Define published package readback contract                      | Done    | Package owner | `docs/LINEAGE_RUNTIME_READBACK_PROCESS.md` defines clean-consumer readback, baseline checks, and package version/hash reporting     |
 | TCE-104 | Add package compatibility matrix                                | Planned | Package owner | Matrix states which skill/plugin version supports which package schema version                                                      |
 | TCE-105 | Add package approval checklist                                  | Planned | Package owner | Checklist includes runtime check, answer quality, profile-index safety, publish dry-run, live publish, readback                     |
 | TCE-106 | Add stale-package warning behavior                              | Planned | Skill owner   | Skill warns when local cache version is older than approved latest                                                                  |
@@ -76,15 +76,15 @@ Objective: give teammates a consistent Codex entry point without embedding the d
 
 Recommendation: use a plugin for team distribution once stable. Use a repo-scoped skill during iteration.
 
-| ID      | Item                                                    | Status  | Owner               | Acceptance Criteria                                                                                                        |
-| ------- | ------------------------------------------------------- | ------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| TCE-201 | Decide plugin vs repo-scoped skill for first team pilot | Planned | Data/platform owner | Decision records pilot scope, install path, update process, and owner                                                      |
-| TCE-202 | Build `sonic-lineage-consumer` skill                    | Planned | Skill owner         | Skill explains retrieval order, citation rules, raw evidence rules, and recommendation workflow                            |
-| TCE-203 | Add SSIS documentation subworkflow                      | Planned | Skill owner         | Skill can produce support docs from package and raw evidence without editing generators                                    |
-| TCE-204 | Add rule recommendation subworkflow                     | Planned | Skill owner         | Skill outputs structured recommendation, not code changes                                                                  |
-| TCE-205 | Add install/readme docs for teammates                   | Planned | Skill owner         | Teammate can install plugin/skill and point it to approved package                                                         |
-| TCE-206 | Add smoke prompt suite                                  | Planned | Skill owner         | Prompts cover "what feeds this," "what uses this," "trace SSIS package," "recommend rule change," and "explain confidence" |
-| TCE-207 | Add package cache location convention                   | Planned | Skill owner         | Plugin/skill has deterministic cache path and does not scan arbitrary local copies first                                   |
+| ID      | Item                                                    | Status  | Owner               | Acceptance Criteria                                                                                                                        |
+| ------- | ------------------------------------------------------- | ------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| TCE-201 | Decide plugin vs repo-scoped skill for first team pilot | Done    | Data/platform owner | Pilot uses repo-scoped `.agents/skills/sonic-lineage-consumer`; graduate to workspace plugin after pilot                                   |
+| TCE-202 | Build `sonic-lineage-consumer` skill                    | Done    | Skill owner         | `.agents/skills/sonic-lineage-consumer/SKILL.md` explains retrieval order, citation rules, raw evidence rules, and recommendation workflow |
+| TCE-203 | Add SSIS documentation subworkflow                      | Planned | Skill owner         | Skill can produce support docs from package and raw evidence without editing generators                                                    |
+| TCE-204 | Add rule recommendation subworkflow                     | Planned | Skill owner         | Skill outputs structured recommendation, not code changes                                                                                  |
+| TCE-205 | Add install/readme docs for teammates                   | Done    | Skill owner         | `.agents/README.md` and `docs/TEAM_CODEX_LINEAGE_TRAINING_GUIDE.md` explain repo skill setup and approved package usage                    |
+| TCE-206 | Add smoke prompt suite                                  | Planned | Skill owner         | Prompts cover "what feeds this," "what uses this," "trace SSIS package," "recommend rule change," and "explain confidence"                 |
+| TCE-207 | Add package cache location convention                   | Planned | Skill owner         | Plugin/skill has deterministic cache path and does not scan arbitrary local copies first                                                   |
 
 Exit criteria:
 
@@ -98,16 +98,16 @@ Objective: let teammates trace evidence and submit useful recommendations withou
 
 Decision: yes, make raw evidence available, but only as a read-only evidence bundle with strict boundaries.
 
-| ID      | Item                                        | Status  | Owner               | Acceptance Criteria                                                                                                      |
-| ------- | ------------------------------------------- | ------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| TCE-301 | Define raw evidence bundle contents         | Planned | Data/platform owner | Bundle includes only approved SSIS/XML/parser/source evidence needed for traceability                                    |
-| TCE-302 | Exclude unsafe raw data                     | Planned | Data/platform owner | No raw row values, sample values, report result rows, credentials, tokens, connection strings, or unrestricted payloads  |
-| TCE-303 | Separate evidence access from engine access | Planned | Repo/security owner | Teammates can read evidence but cannot write `src/services`, `scripts/rebuild*`, extractor, parser, or generator code    |
-| TCE-304 | Create rule recommendation schema           | Planned | Rule owner          | Recommendation includes package version, object, current behavior, expected behavior, evidence paths, impact, confidence |
-| TCE-305 | Create recommendation queue                 | Planned | Rule owner          | Recommendations are stored in a reviewable folder/system separate from engine code                                       |
-| TCE-306 | Add reviewer workflow                       | Planned | Rule owner          | Maintainer can accept, reject, request evidence, or convert recommendation into implementation work                      |
-| TCE-307 | Add tests for accepted rule recommendations | Planned | Rule owner          | Accepted recommendation creates failing test first, then engine change by maintainer only                                |
-| TCE-308 | Add raw evidence citation requirement       | Planned | Skill owner         | Codex cites exact evidence files used for recommendation                                                                 |
+| ID      | Item                                        | Status  | Owner               | Acceptance Criteria                                                                                                         |
+| ------- | ------------------------------------------- | ------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| TCE-301 | Define raw evidence bundle contents         | Done    | Data/platform owner | `docs/RAW_EVIDENCE_ACCESS_CONTROL.md` defines approved SSIS/XML/parser/source evidence needed for traceability              |
+| TCE-302 | Exclude unsafe raw data                     | Done    | Data/platform owner | `docs/RAW_EVIDENCE_ACCESS_CONTROL.md` excludes raw values, sample values, report rows, credentials, tokens, secrets, PII    |
+| TCE-303 | Separate evidence access from engine access | Done    | Repo/security owner | Raw evidence access doc and skill forbid teammate writes to ingestion/parser/extractor/generator/rebuild code               |
+| TCE-304 | Create rule recommendation schema           | Done    | Rule owner          | `recommendations/templates/rule-recommendation.md` captures package version, object, behavior, evidence, impact, confidence |
+| TCE-305 | Create recommendation queue                 | Done    | Rule owner          | `recommendations/intake/` and `recommendations/reviewed/` provide controlled review folders separate from engine code       |
+| TCE-306 | Add reviewer workflow                       | Planned | Rule owner          | Maintainer can accept, reject, request evidence, or convert recommendation into implementation work                         |
+| TCE-307 | Add tests for accepted rule recommendations | Planned | Rule owner          | Accepted recommendation creates failing test first, then engine change by maintainer only                                   |
+| TCE-308 | Add raw evidence citation requirement       | Planned | Skill owner         | Codex cites exact evidence files used for recommendation                                                                    |
 
 Exit criteria:
 
@@ -119,16 +119,16 @@ Exit criteria:
 
 Objective: prove the workflow with real Sonic problems before platform expansion.
 
-| ID      | Item                              | Status  | Owner               | Acceptance Criteria                                                                                       |
-| ------- | --------------------------------- | ------- | ------------------- | --------------------------------------------------------------------------------------------------------- |
-| TCE-401 | Select 2-3 pilot teammates        | Planned | Data/platform owner | Pilot users represent data engineering, BI/support, and governance or operations                          |
-| TCE-402 | Select pilot use cases            | Planned | Data/platform owner | Use cases include SSIS documentation, lineage validation, and impact/rule recommendation                  |
-| TCE-403 | Run baseline prompt parity test   | Planned | Skill owner         | All pilot users get same answer/version/citations for baseline prompts                                    |
-| TCE-404 | Run SSIS documentation pilot      | Planned | SSIS owner          | Pilot produces one reviewed SSIS support document with citations                                          |
-| TCE-405 | Run rule recommendation pilot     | Planned | Rule owner          | Pilot submits at least three recommendations, with accepted/rejected outcomes recorded                    |
-| TCE-406 | Add training guide                | Planned | Data/platform owner | Guide explains approved package, raw evidence boundaries, and how to submit recommendations               |
-| TCE-407 | Measure pilot friction            | Planned | Data/platform owner | Track stale package issues, missing evidence, confusing answers, bad recommendations, and access problems |
-| TCE-408 | Update backlog from pilot results | Planned | Data/platform owner | Issues are converted into package, skill, contract, or platform backlog items                             |
+| ID      | Item                              | Status  | Owner               | Acceptance Criteria                                                                                                       |
+| ------- | --------------------------------- | ------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| TCE-401 | Select 2-3 pilot teammates        | Planned | Data/platform owner | Pilot users represent data engineering, BI/support, and governance or operations                                          |
+| TCE-402 | Select pilot use cases            | Planned | Data/platform owner | Use cases include SSIS documentation, lineage validation, and impact/rule recommendation                                  |
+| TCE-403 | Run baseline prompt parity test   | Planned | Skill owner         | All pilot users get same answer/version/citations for baseline prompts                                                    |
+| TCE-404 | Run SSIS documentation pilot      | Planned | SSIS owner          | Pilot produces one reviewed SSIS support document with citations                                                          |
+| TCE-405 | Run rule recommendation pilot     | Planned | Rule owner          | Pilot submits at least three recommendations, with accepted/rejected outcomes recorded                                    |
+| TCE-406 | Add training guide                | Done    | Data/platform owner | `docs/TEAM_CODEX_LINEAGE_TRAINING_GUIDE.md` explains approved package, raw evidence boundaries, and recommendation intake |
+| TCE-407 | Measure pilot friction            | Planned | Data/platform owner | Track stale package issues, missing evidence, confusing answers, bad recommendations, and access problems                 |
+| TCE-408 | Update backlog from pilot results | Planned | Data/platform owner | Issues are converted into package, skill, contract, or platform backlog items                                             |
 
 Exit criteria:
 
@@ -169,15 +169,15 @@ Objective: move the proven operating model to a governed platform.
 
 ## Required ADRs And Contracts
 
-| Artifact                     | Purpose                                                                               | Status                         |
-| ---------------------------- | ------------------------------------------------------------------------------------- | ------------------------------ |
-| ADR-007                      | Package-first team Codex enablement, raw evidence boundaries, Azure hard stop         | Proposed                       |
-| Runtime consumer contract    | Defines package, raw evidence, recommendation, and skill/plugin rules                 | Proposed                       |
-| Package manifest contract    | Defines required package fields and compatibility                                     | Needed                         |
-| Raw evidence access contract | Defines what raw evidence can be shared and what is prohibited                        | Needed, partially covered here |
-| Rule recommendation contract | Defines teammate recommendation format and review workflow                            | Needed                         |
-| Plugin/skill contract        | Defines retrieval order, citation rules, refusal behavior, and cache/version behavior | Needed                         |
-| Azure phase entry contract   | Defines stop gate and minimum criteria before cloud work                              | Needed, partially covered here |
+| Artifact                     | Purpose                                                                               | Status                                                                        |
+| ---------------------------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| ADR-007                      | Package-first team Codex enablement, raw evidence boundaries, Azure hard stop         | Accepted                                                                      |
+| Runtime consumer contract    | Defines package, raw evidence, recommendation, and skill/plugin rules                 | Published as required context                                                 |
+| Package manifest contract    | Defines required package fields and compatibility                                     | Needed                                                                        |
+| Raw evidence access contract | Defines what raw evidence can be shared and what is prohibited                        | Published in `docs/RAW_EVIDENCE_ACCESS_CONTROL.md`                            |
+| Rule recommendation contract | Defines teammate recommendation format and review workflow                            | Published in `recommendations/templates/rule-recommendation.md`               |
+| Plugin/skill contract        | Defines retrieval order, citation rules, refusal behavior, and cache/version behavior | Repo-scoped pilot skill published in `.agents/skills/sonic-lineage-consumer/` |
+| Azure phase entry contract   | Defines stop gate and minimum criteria before cloud work                              | Needed, partially covered here                                                |
 
 ## Raw Data Recommendation
 

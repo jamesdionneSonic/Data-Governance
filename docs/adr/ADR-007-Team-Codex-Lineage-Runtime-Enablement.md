@@ -2,11 +2,18 @@
 
 ## Status
 
-Proposed
+Accepted
 
 ## Date
 
 2026-06-16
+
+## Decision Record
+
+Accepted by the data/platform owner on 2026-06-16 as the controlling decision
+for team Codex lineage enablement. Azure platform expansion remains blocked
+until the Phase 5 hard stop in `docs/TEAM_CODEX_LINEAGE_ENABLEMENT_BACKLOG.md`
+is explicitly approved.
 
 ## Context
 

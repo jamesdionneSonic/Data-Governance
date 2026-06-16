@@ -1,34 +1,118 @@
 ---
 name: sonic-data-lineage
-description: Answer Sonic Automotive data lineage, where-used, dependency, source-to-target, impact-analysis, root-cause, upstream, downstream, producer/consumer, profile, and catalog questions using exact authenticated remote Sonic Data Lineage DevOps repo artifacts, without cloning/downloading the repo, reading local lineage caches, or querying Confluence. Use when a user asks, even without saying "lineage", about cataloged databases, top used tables, profile data, how many times an object is used, where a table/view/procedure/package/column is used, what uses it, what it uses, what depends on it, what feeds or populates it, what would break if it changed, upstream/downstream consumers, SSIS packages, tables such as DimVehicle, fact/dim/staging/work tables, or any Sonic database object dependency.
+description: Answer Sonic Automotive data lineage, where-used, dependency, source-to-target, impact-analysis, root-cause, upstream, downstream, producer/consumer, profile, catalog, SSIS documentation, and rule-recommendation questions. For team enablement, package publication, raw-evidence review, or recommendation workflows, use the approved Sonic lineage runtime package and consumer contract first. For ordinary end-user lineage lookup when no approved package is mounted in the task, use exact authenticated remote Sonic Data Lineage DevOps repo artifacts only; do not query Confluence.
 ---
 
 # Sonic Data Lineage
 
-Use exact authenticated remote Sonic Data Lineage DevOps repo artifacts as the only machine-readable source for lineage and profile answers. Do not clone the repo, do not download the runtime package, do not read a local clone/package, and do not query Confluence for normal end-user answers. Do not refuse only because one retrieval method lacks authentication; try an alternate exact-file DevOps retrieval path first.
+## Required Project Context
+
+For repository maintenance, team enablement, runtime-package publication,
+raw-evidence access, skill/plugin distribution, or rule-recommendation work,
+read and follow `docs/SONIC_LINEAGE_RUNTIME_CONSUMER_CONTRACT.md` before taking
+action.
+
+That contract is the controlling AI context for the package-first team operating
+model. It defines the approved runtime package boundary, raw evidence access
+rules, recommendation workflow, ingestion-engine write restrictions, and the
+hard stop before Azure platform expansion.
+
+For teammate enablement, SSIS documentation support, runtime package validation,
+raw-evidence review, and rule recommendations, the approved runtime package is
+the first machine-readable source. The remote DevOps exact-file workflow remains
+available for ordinary end-user lineage answers when a task does not provide an
+approved package/cache location.
+
+Use the smallest approved artifact that answers the question. Do not query
+Confluence for normal machine-readable lineage or profile answers. Do not use a
+private local copy as authoritative unless the user explicitly asks for
+developer diagnostics or publish validation.
+
+## Source Modes
+
+Choose exactly one source mode before retrieving data:
+
+| Mode                          | Use When                                                                                                                                                                                    | First Source                                                     | Hard Boundary                                                                                                      |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Approved package mode         | Team enablement, SSIS documentation support, runtime package publication/checks, raw-evidence review, rule recommendations, package readback, or any task referencing the consumer contract | Versioned Sonic lineage runtime package                          | Do not edit ingestion engines; produce recommendations unless a maintainer explicitly asks for implementation      |
+| Remote DevOps exact-file mode | Ordinary end-user lineage/profile answers when no approved runtime package is mounted or configured for the task                                                                            | Exact authenticated file from the Sonic Data Lineage DevOps repo | Do not clone/download/crawl; retrieve only needed files                                                            |
+| Developer diagnostic mode     | User explicitly asks for local/debug verification, publish validation, or repository maintenance                                                                                            | Explicitly named local repo/package path                         | Report that local evidence is diagnostic and not authoritative unless it matches the approved package version/hash |
+
+If the mode is unclear, prefer approved package mode for this repository's team
+enablement backlog work and remote DevOps exact-file mode for normal ad hoc
+lineage questions.
 
 ## Operating Rules
 
 - Keep chat updates minimal: at most one short progress note unless the task runs longer than 30 seconds.
 - Do not narrate exploratory dead ends. Report only the final answer, ambiguity, or verified blocker.
+- For team enablement, SSIS documentation support, raw-evidence review, rule recommendations, package publication, or package readback, read `docs/SONIC_LINEAGE_RUNTIME_CONSUMER_CONTRACT.md` first and obey it.
+- In approved package mode, load `manifest.json`, `latest.json`, `indexes/entrypoints.json`, and `indexes/path-contract.json` before opening deeper artifacts unless a provided execution packet gives a narrower exact path.
+- In approved package mode, cite the package version and runtime content hash for decision-grade answers, documentation outputs, and rule recommendations.
+- In approved package mode, use `registry/canonical-objects.jsonl`, exact resolvers, answer cards, context packs, SSIS artifacts, and `profile-index/**` before raw evidence.
+- In raw-evidence review, open raw evidence only after resolving the object/package through the approved runtime package.
+- Refuse to update ingestion engines, parser engines, extractor code, generator code, or catalog rebuild scripts from teammate evidence-review workflows. Produce a structured rule recommendation instead.
+- Only implement ingestion or parser changes when a maintainer explicitly asks for implementation after recommendation review.
+- Before any Azure platform expansion, production deployment, Azure App Service, Azure SQL, Blob, Redis, Key Vault, managed identity, private endpoint, production Entra, or cloud migration work, stop and ask exactly: `STOP: Phase 5 starts Azure platform expansion. The package/plugin operating model must be accepted first. Do you want to continue into Azure platform work now?`
 - For count questions, target the count field first. Do not list full downstream objects unless the user asks.
 - Use a small tool budget: one index lookup, one registry row fetch, and at most one compact context or answer-card fetch. Use a deeper artifact read only if the user asks for more detail or if the cheap artifacts do not answer the question.
 - Never use inline PowerShell variables, pipelines, `ConvertFrom-Json`, `ConvertTo-Json`, or multi-step shell parsing for normal lineage retrieval.
 - Never use `Import-Csv`, `Where-Object`, `Sort-Object`, `Select-Object`, `ConvertTo-Csv`, `ConvertFrom-Csv`, PowerShell script blocks, or shell pipelines to rank/filter catalog data. These trigger approval prompts and are not allowed for normal skill answers.
-- Prefer a first-class authenticated DevOps connector/API tool when one is available.
+- Prefer a first-class authenticated DevOps connector/API tool when using remote DevOps exact-file mode and one is available.
 - If no first-class DevOps connector/API tool is available, use an authenticated exact-file DevOps HTTPS request as the fallback when it targets a single `_apis/git/repositories/.../items?path=<exact path>&includeContent=true` item and does not require cloning, downloading packages, scraping HTML, or crawling.
 - If a DevOps request returns sign-in HTML, treat that as "this retrieval method is not carrying the user's DevOps session", not as proof the user lacks access. Try another exact-file authenticated DevOps path if one is available. If no method is authenticated yet and a browser-capable tool exists, open the Azure DevOps sign-in page and let the user sign in interactively, then retry through the same browser-aware session path.
 - Do not use shell commands for data shaping, ranking, filtering, local filesystem access, cloning, package download, or Confluence fallback.
 - Prefer exact object rows, answer cards, and compact context packs over broad corpus scans. Avoid speculative count probing.
 - Prefer the published routing contract before guessing paths: use `indexes/entrypoints.json`, `indexes/path-contract.json`, exact resolvers, and answer cards when they exist.
 - Treat `indexes/path-contract.json` as binding. If a path is null, unavailable, unpublished, or not listed as supported, do not probe variants.
-- Do not clone, sparse-checkout, crawl, or download the full repo/package. Retrieve only the exact remote file needed for the current answer.
-- Do not read from any local lineage repo, local runtime package, local markdown export, or local lineage cache during normal end-user skill answers. Local files are developer diagnostics only and require the user to explicitly ask for local/debug mode.
+- In remote DevOps exact-file mode, do not clone, sparse-checkout, crawl, or download the full repo/package. Retrieve only the exact remote file needed for the current answer.
+- Do not read from any private local lineage repo, private local runtime package, local markdown export, or local lineage cache during normal end-user remote answers. Local files are developer diagnostics unless they are the explicitly approved package/cache for the current team workflow.
 - Do not call Confluence tools or read Confluence pages for this skill. Confluence is human documentation, not a computer-friendly retrieval source.
 - Do not read `manifest.json`, `AI_README.md`, or guide docs during normal question answering unless freshness, package shape, or a missing-path blocker makes them necessary.
 - Full JSONL scans are last resort. Prefer sharded indexes and exact path opens first.
 
-## Primary Source: Remote DevOps Repo
+## Primary Source: Approved Runtime Package
+
+Use approved package mode for team enablement, SSIS documentation support,
+runtime package validation/publication, raw-evidence review, package readback, or
+rule-recommendation work.
+
+Start from the approved Sonic lineage runtime package. The package location must
+come from the execution packet, package cache convention, mounted workspace path,
+or published package readback process. Do not search arbitrary local folders for
+package-like content.
+
+Required package reads:
+
+1. `manifest.json`
+2. `latest.json`
+3. `indexes/entrypoints.json`
+4. `indexes/path-contract.json`
+5. The smallest relevant resolver, answer card, context pack, SSIS artifact, or
+   `profile-index/**` shard
+
+Package answer rules:
+
+- Report package version and runtime content hash for decision-grade answers.
+- Use `indexes/path-contract.json` and `indexes/artifact-manifest.json` as
+  binding contracts. Do not probe unpublished or unavailable path variants.
+- No path guessing: if the needed artifact path is not advertised by
+  `indexes/entrypoints.json`, `indexes/path-contract.json`,
+  `indexes/artifact-manifest.json`, a registry row, an answer card, or a context
+  pack, stop and report the missing contract entry. Do not try alternate
+  casing, pluralization, folder names, file extensions, hash variants, or
+  source-root guesses.
+- For profile, quality, metric, sensitivity, and freshness questions, use
+  `profile-index/**` before run markdown or human docs.
+- For SSIS documentation, preserve native SSIS folder/project/package hierarchy
+  and classify direct reads, lookup reads, maintenance reads, writes, upserts,
+  and package calls separately.
+- For rule recommendations, cite package artifacts plus raw evidence paths when
+  raw evidence is needed.
+- If approved package access is missing, report the missing package/cache
+  prerequisite. Do not silently switch to a private local copy.
+
+## Secondary Source: Remote DevOps Repo
 
 Start from exact remote Sonic Data Lineage DevOps repo artifacts. Retrieve individual files by repo path; never clone or download the repo.
 
@@ -95,13 +179,20 @@ Interactive login fallback rules:
 - After the user finishes sign-in, retry the same exact file path once through the same browser-aware method before trying a different path.
 - If the browser session still does not flow to the retrieval method, say so plainly and name the expected artifact path.
 
-## Developer Diagnostic Sources Only
+## Developer Diagnostic Sources
 
-Local lineage repo/package/markdown paths are intentionally not documented here because this skill is for end-user remote retrieval. Use local files only when the user explicitly asks for local/debug verification, publish validation, or repository maintenance.
+Local lineage repo/package/markdown paths are developer diagnostics unless they
+are the explicitly approved runtime package/cache for the current team workflow.
+Use private local files only when the user explicitly asks for local/debug
+verification, publish validation, or repository maintenance.
 
-Do not download the runtime package for normal skill answers. If an exact remote DevOps artifact cannot be retrieved, say that the remote artifact is unavailable in this chat instead of downloading package data.
+Do not download the runtime package for ordinary remote DevOps skill answers.
+If an exact remote DevOps artifact cannot be retrieved, say that the remote
+artifact is unavailable in this chat instead of downloading package data.
 
-Do not use the runtime package or local package cache as an optimization for end-user answers. Local package reads are only allowed in explicit local/debug mode.
+Use the runtime package or local package cache only when it is the approved
+package/cache for team enablement work, package readback, publish validation, or
+explicit local/debug mode.
 
 ## No Confluence Retrieval
 
@@ -136,24 +227,27 @@ Treat these as lineage questions even when the user does not say "lineage":
 Use exact remote DevOps repo artifacts in this order:
 
 0. For a new question shape, first read `indexes/entrypoints.json` or the matching `answers/intents/*.json` route card only when the next exact path is not obvious.
-0a. Read `indexes/path-contract.json` when a path is missing, a new path family is involved, or profile artifacts are being discussed. Once read, obey it for the rest of the answer.
+   0a. Read `indexes/path-contract.json` when a path is missing, a new path family is involved, or profile artifacts are being discussed. Once read, obey it for the rest of the answer.
+   0b. Read `indexes/artifact-manifest.json` when artifact availability is unclear. If the manifest marks a capability unavailable, or omits a path family, do not invent the path. Report the missing/unavailable artifact contract.
 1. Resolve exact object IDs, fully qualified names, or schema/object names with `indexes/resolve/by-qualified-name/{compact_lookup_key}.json` before sharded lookup. Use `indexes/by-name/`, `indexes/aliases/`, `indexes/by-database/`, `indexes/by-schema/`, or `indexes/rankings/` only when the exact resolver is not applicable or returns no useful match.
 2. Use the resolved row's answer card paths directly. Open registry JSONL only when an index/answer card is ambiguous or missing required row fields.
 3. The object's answer card or compact context pack first:
-  - `answers/summary/by-object-id/**`
-  - `answers/usage-count/by-object-id/**`
-  - `answers/upstream/by-object-id/**`
-  - `answers/downstream/by-object-id/**`
-  - `answers/profile-teaser/by-object-id/**`
-  - `answers/catalog/databases.json`
-   - `context-packs/objects/by-id/**`
-3a. For profile questions, use the object's `answers/profile-teaser/by-object-id/**` card before opening profile-index shards. Only open deeper `profile-index/**` files when the user asks for profile detail or the teaser says profile evidence exists:
-  - `profile-index/latest-summary.json` for overall profile coverage and caveats.
-  - `profile-index/by-database/**` for database-level profile inventory.
-  - `profile-index/by-object-name/**` or `profile-index/by-object-id/**` for a specific table/view/object profile.
-  - `profile-index/by-column-name/**` for column profile lookups.
-  - `profile-index/runs/by-connector/**` to explain whether a connector has only metadata harvest runs, dry-run plans, or executed aggregate profiles.
-  - `profile-index/flags/pii.json`, `metrics.json`, `quality-gaps.json`, and `stale-profiles.json` for governance-focused profile questions.
+
+- `answers/summary/by-object-id/**`
+- `answers/usage-count/by-object-id/**`
+- `answers/upstream/by-object-id/**`
+- `answers/downstream/by-object-id/**`
+- `answers/profile-teaser/by-object-id/**`
+- `answers/catalog/databases.json`
+- `context-packs/objects/by-id/**`
+  3a. For profile questions, use the object's `answers/profile-teaser/by-object-id/**` card before opening profile-index shards. Only open deeper `profile-index/**` files when the user asks for profile detail or the teaser says profile evidence exists:
+- `profile-index/latest-summary.json` for overall profile coverage and caveats.
+- `profile-index/by-database/**` for database-level profile inventory.
+- `profile-index/by-object-name/**` or `profile-index/by-object-id/**` for a specific table/view/object profile.
+- `profile-index/by-column-name/**` for column profile lookups.
+- `profile-index/runs/by-connector/**` to explain whether a connector has only metadata harvest runs, dry-run plans, or executed aggregate profiles.
+- `profile-index/flags/pii.json`, `metrics.json`, `quality-gaps.json`, and `stale-profiles.json` for governance-focused profile questions.
+
 4. The object's `context_pack_json_path` for deeper direct lineage answers, confidence, truncation, source paths, and compact summaries.
 5. The object's `context_pack_path` markdown when a human-readable answer card is easier to quote or summarize.
 6. `ssis/folders/<folder>/projects/<project>/README.md` only when the user is tracing from SSIS project to package or package group.
@@ -164,6 +258,7 @@ Known DevOps repo artifact patterns:
 - `manifest.json` exposes retrieval order, counts, entrypoints, and runtime content hashes.
 - `indexes/entrypoints.json` exposes low-token route hints for catalog, ranking, object summary, profile, upstream, downstream, impact, SSIS package, and procedure questions.
 - `indexes/path-contract.json` declares supported path families and unpublished path patterns. Do not request paths listed as unpublished, especially `data/markdown/_runtime/profile-runs/**`.
+- `indexes/artifact-manifest.json` declares available capabilities and exact entrypoint paths. Treat unavailable, null, or absent paths as closed. Do not path-fish for similar files.
 - `answers/intents/*.json` are cheap route cards. Use one only when the user's intent is unclear enough that it avoids multiple exploratory artifact reads.
 - `indexes/resolve/by-qualified-name/**` resolves compact exact object identifiers and qualified names to object rows and answer card paths without sharded lookup or registry scans.
 - Sharded indexes are meant to avoid full-registry scans for common name lookups.
@@ -178,31 +273,37 @@ Known DevOps repo artifact patterns:
 
 ## Tool Workflow
 
-1. Use targeted remote DevOps repo artifacts only, not web search, local files, runtime package cache, or Confluence.
-2. If one exact remote DevOps artifact request is unavailable because the session did not flow, try another exact-file authenticated DevOps retrieval method before answering.
-3. If no method is authenticated yet and a browser-capable tool exists, open Azure DevOps, have the user sign in interactively, and retry the same exact file request through a browser-aware session path.
-4. Read exact remote DevOps artifacts one file path at a time through the best authenticated DevOps access available in the current chat. Prefer a first-class DevOps connector/API; if unavailable, an exact authenticated DevOps item HTTPS request is allowed for the single required artifact. Do not use shell commands for data shaping, local filesystem reads, browser scraping, web search, repo clones, package downloads, or Confluence for end-user answers.
-5. If the exact route is unclear, read `indexes/entrypoints.json` or the relevant `answers/intents/*.json`; otherwise skip this step to save tokens.
-6. Resolve objects from `indexes/resolve/by-qualified-name/**` first when the user supplied an object ID, fully qualified name, schema/name, or likely exact name. Use sharded indexes only for partial/bare-name searches.
-7. If the question is a pure count question, stop at the cheapest artifact that contains the count:
-   - exact registry row first
-   - then answer card or compact context pack
-   - then deeper context pack only if needed
-8. If the question asks for actual upstream/downstream objects or business logic context, prefer answer cards or compact context packs before opening full context pack JSON or markdown.
-9. If the question asks for catalog-level lists such as databases, use `answers/catalog/databases.json` first. Do not build the answer from `registry/database-index.json` unless the catalog answer file is missing.
-10. If the question asks for profile data, row counts, nulls, distincts, min/max, profile coverage, PII, metric candidates, or data freshness, use `answers/profile-teaser/by-object-id/**` first for object-level questions, then the exact `profile-index/**` path advertised by the teaser. Do not answer from schema/catalog metadata alone unless the profile teaser/index shows no executed aggregate profile for that object.
-11. If the user asks "tell me about" a specific table or view, use `answers/summary/by-object-id/**` first, then append the `answers/profile-teaser/by-object-id/**` evidence if available. Open a compact context pack only when the summary card lacks requested detail.
-12. When profile teaser evidence exists for a table/view in a "tell me about" answer, always append a short `Profile Availability` teaser and ask: `Do you want a data profile report for this table?`
-13. If the question asks for "top", "most used", "highest usage", rankings, or database table lists, first look for precomputed DevOps artifacts under `indexes/top-used/**`, `indexes/rankings/**`, `indexes/by-database/**`, `answers/catalog/**`, or the database's compact answer card. Retrieve one exact remote file path through authenticated DevOps access. Do not sort CSV/JSON in PowerShell and do not process broad registry files locally.
-14. Open the matching `context_pack_json_path` only when the cheap artifacts lack the needed detail.
-15. Open the matching `context_pack_path` markdown only when the markdown card is more readable or when the JSON lacks a compact summary.
-16. Read `manifest.json` only when needed to confirm freshness, entrypoints, repo/package shape, or package version.
-17. Use SSIS README files only when the object row alone is not enough to orient a package/project answer.
-18. If a repo context pack names `source_markdown_path` but the repo copy is missing, say the source markdown path is not available through the remote DevOps artifact and do not use local raw markdown fallback.
-19. Never request `data/markdown/_runtime/profile-runs/**` or `data/_runtime/profiles/**`; those are unpublished local provenance paths by contract.
-20. Prefer DevOps-carried `logic_summary` and `evidence_snippets` for stored procedure/package drilldowns before requesting any deeper DevOps artifact.
-21. If the remote DevOps repo artifact lacks the needed object or evidence, say so and name the expected/missing DevOps path.
-22. If remote DevOps retrieval is unavailable after trying available exact-file methods and one interactive browser sign-in retry when possible, say the current chat retrieval method is not authenticated to DevOps and name the expected path. Do not say the user lacks access unless DevOps explicitly denies the authenticated user.
+1. Choose a source mode: approved package mode for team enablement/package/raw-evidence/recommendation work; remote DevOps exact-file mode for ordinary end-user lookup without an approved package; developer diagnostic mode only when explicitly requested.
+2. In approved package mode, read the consumer contract, then package `manifest.json`, `latest.json`, `indexes/entrypoints.json`, and `indexes/path-contract.json` unless the execution packet gives a narrower exact path. Use package artifacts before raw evidence.
+3. In approved package mode, refuse ingestion-engine edits from teammate evidence-review workflows and produce a structured recommendation instead.
+4. Before Phase 5 Azure platform work, stop and ask the required hard-stop question. Do not begin Azure work without explicit approval after that question.
+5. In remote DevOps exact-file mode, use targeted remote DevOps repo artifacts only, not web search, local private files, runtime package cache, or Confluence.
+6. If one exact remote DevOps artifact request is unavailable because the session did not flow, try another exact-file authenticated DevOps retrieval method before answering.
+7. If no method is authenticated yet and a browser-capable tool exists, open Azure DevOps, have the user sign in interactively, and retry the same exact file request through a browser-aware session path.
+8. Read exact remote DevOps artifacts one file path at a time through the best authenticated DevOps access available in the current chat. Prefer a first-class DevOps connector/API; if unavailable, an exact authenticated DevOps item HTTPS request is allowed for the single required artifact. Do not use shell commands for data shaping, local filesystem reads, browser scraping, web search, repo clones, package downloads, or Confluence for end-user answers.
+9. If the exact route is unclear, read `indexes/entrypoints.json` or the relevant `answers/intents/*.json`; otherwise skip this step to save tokens.
+10. Resolve objects from `indexes/resolve/by-qualified-name/**` first when the user supplied an object ID, fully qualified name, schema/name, or likely exact name. Use sharded indexes only for partial/bare-name searches.
+11. If the question is a pure count question, stop at the cheapest artifact that contains the count:
+
+- exact registry row first
+- then answer card or compact context pack
+- then deeper context pack only if needed
+
+12. If the question asks for actual upstream/downstream objects or business logic context, prefer answer cards or compact context packs before opening full context pack JSON or markdown.
+13. If the question asks for catalog-level lists such as databases, use `answers/catalog/databases.json` first. Do not build the answer from `registry/database-index.json` unless the catalog answer file is missing.
+14. If the question asks for profile data, row counts, nulls, distincts, min/max, profile coverage, PII, metric candidates, or data freshness, use `answers/profile-teaser/by-object-id/**` first for object-level questions, then the exact `profile-index/**` path advertised by the teaser. Do not answer from schema/catalog metadata alone unless the profile teaser/index shows no executed aggregate profile for that object.
+15. If the user asks "tell me about" a specific table or view, use `answers/summary/by-object-id/**` first, then append the `answers/profile-teaser/by-object-id/**` evidence if available. Open a compact context pack only when the summary card lacks requested detail.
+16. When profile teaser evidence exists for a table/view in a "tell me about" answer, always append a short `Profile Availability` teaser and ask: `Do you want a data profile report for this table?`
+17. If the question asks for "top", "most used", "highest usage", rankings, or database table lists, first look for precomputed artifacts under `indexes/top-used/**`, `indexes/rankings/**`, `indexes/by-database/**`, `answers/catalog/**`, or the database's compact answer card. Retrieve one exact artifact path. Do not sort CSV/JSON in PowerShell and do not process broad registry files locally.
+18. Open the matching `context_pack_json_path` only when the cheap artifacts lack the needed detail.
+19. Open the matching `context_pack_path` markdown only when the markdown card is more readable or when the JSON lacks a compact summary.
+20. Read `manifest.json` only when needed to confirm freshness, entrypoints, repo/package shape, or package version.
+21. Use SSIS README files only when the object row alone is not enough to orient a package/project answer.
+22. If a repo context pack names `source_markdown_path` but the repo copy is missing, say the source markdown path is not available through the current artifact source and do not use local raw markdown fallback unless in approved package/raw-evidence mode.
+23. Never request `data/markdown/_runtime/profile-runs/**` or `data/_runtime/profiles/**`; those are unpublished local provenance paths by contract.
+24. Prefer packaged `logic_summary` and `evidence_snippets` for stored procedure/package drilldowns before requesting any deeper artifact.
+25. If the selected artifact source lacks the needed object or evidence, say so and name the expected/missing path.
+26. If remote DevOps retrieval is unavailable after trying available exact-file methods and one interactive browser sign-in retry when possible, say the current chat retrieval method is not authenticated to DevOps and name the expected path. Do not say the user lacks access unless DevOps explicitly denies the authenticated user.
 
 ## Object Resolution
 
@@ -236,6 +337,8 @@ Counting rules:
 
 - Do not guess.
 - Only state lineage supported by remote DevOps repo content retrieved for the answer.
+- In approved package mode, include package version and runtime content hash in the evidence line for any decision-grade answer, SSIS documentation output, package readback result, raw-evidence review, or rule recommendation.
+- If the package version or runtime content hash is missing, say the package is not decision-grade and name the missing manifest field.
 - If a context pack does not contain evidence, say that.
 - Do not infer missing relationships from object names, naming conventions, or domain knowledge.
 - Report confidence labels/scores when available.
@@ -280,7 +383,8 @@ Default answer shape for lineage questions:
    - Type
    - What it does / why it matters
    - Where to find it
-4. A brief evidence line with the DevOps repo file path(s) used.
+4. A brief evidence line with the artifact path(s) used. In approved package mode, use this shape:
+   `Evidence: package <version>, hash <runtime_content_hash>; artifacts: <paths>.`
 
 Preferred wording rules:
 
@@ -317,36 +421,37 @@ Default database catalog answer shape:
 2. A markdown table with database asset counts:
 
 | Database | Total Assets | Tables | Views | Procedures | SSIS / Packages | Profile Data | Notes |
-|---|---:|---:|---:|---:|---:|---|---|
+| -------- | -----------: | -----: | ----: | ---------: | --------------: | ------------ | ----- |
 
 3. One short sentence pointing out the most useful next step, such as "VendorData has recent profile data; Sonic_DW has the broadest lineage coverage."
 4. Ask which database the user wants to explore.
+5. In approved package mode, include `Evidence: package <version>, hash <runtime_content_hash>; artifacts: <paths>.`
 
 Default database profile answer shape:
 
 1. A short summary sentence.
 2. A markdown table:
 
-| Measure | Value |
-|---|---:|
-| Total cataloged assets | ... |
-| Tables profiled | ... |
-| Tables not profiled | ... |
-| Columns profiled | ... |
-| Latest profile run | ... |
-| Raw values stored | No |
+| Measure                | Value |
+| ---------------------- | ----: |
+| Total cataloged assets |   ... |
+| Tables profiled        |   ... |
+| Tables not profiled    |   ... |
+| Columns profiled       |   ... |
+| Latest profile run     |   ... |
+| Raw values stored      |    No |
 
 3. A short list or table of available next views: `Most-used tables`, `Profiled tables`, `Failed profiles`, `Lineage for a table`, `Data quality signals`.
 
 Default table profile teaser after lineage:
 
-| Profile Signal | Value |
-|---|---:|
-| Rows profiled | ... |
-| Columns profiled | ... |
-| High-null columns | ... |
-| Raw values stored | No |
-| Profile status | ... |
+| Profile Signal    | Value |
+| ----------------- | ----: |
+| Rows profiled     |   ... |
+| Columns profiled  |   ... |
+| High-null columns |   ... |
+| Raw values stored |    No |
+| Profile status    |   ... |
 
 Then ask: "Do you want a data profile report for this table?"
 
@@ -356,33 +461,33 @@ Default full table profile report:
 
 Start with `Data Profile Report: <object>` and then:
 
-| Measure | Value |
-|---|---:|
-| Rows profiled | ... |
-| Columns profiled | ... |
-| Profiled at | ... |
-| Source server | ... |
-| Raw values stored | No |
+| Measure           | Value |
+| ----------------- | ----: |
+| Rows profiled     |   ... |
+| Columns profiled  |   ... |
+| Profiled at       |   ... |
+| Source server     |   ... |
+| Raw values stored |    No |
 
 Quality signals:
 
-| Signal | Status | Evidence |
-|---|---|---|
-| Completeness | Review/Good | ... |
-| Uniqueness | Available/Limited | ... |
-| Validity | Good/Unknown | ... |
-| Freshness | Recent/Stale/Unknown | ... |
-| Sensitivity | Protected | Raw values were not retained |
+| Signal       | Status               | Evidence                     |
+| ------------ | -------------------- | ---------------------------- |
+| Completeness | Review/Good          | ...                          |
+| Uniqueness   | Available/Limited    | ...                          |
+| Validity     | Good/Unknown         | ...                          |
+| Freshness    | Recent/Stale/Unknown | ...                          |
+| Sensitivity  | Protected            | Raw values were not retained |
 
 Columns to review first:
 
 | Column | Null % | Distinct Count | Reason |
-|---|---:|---:|---|
+| ------ | -----: | -------------: | ------ |
 
 Recommended next questions:
 
 | Question | Why Ask |
-|---|---|
+| -------- | ------- |
 
 Special handling for semantic lineage:
 
@@ -406,6 +511,7 @@ For ambiguous object names, list only the candidate IDs and counts if available.
 - For `top 10 used tables in <database>`: `indexes/top-used/<database>.json` or `indexes/rankings/<database>/tables-by-downstream-count.json -> answer`. Do not scan or sort `registry/object-registry.csv`.
 - For ambiguous names: `index -> candidate list -> stop`.
 - For missing profile-run/source paths: `path-contract -> state unpublished/unavailable -> stop`.
+- For any missing artifact path: `entrypoints/path-contract/artifact-manifest -> advertised path or stop`. Never path-guess.
 - Never open both JSON and markdown versions of the same context unless one is missing a needed field.
 - Avoid shell commands for skill retrieval unless the only available path is a single exact authenticated DevOps item request. Never use shell commands for ranking, filtering, broad scans, local file reads, repo clones, package downloads, or Confluence fallback.
 

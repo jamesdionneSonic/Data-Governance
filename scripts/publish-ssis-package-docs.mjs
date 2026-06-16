@@ -119,6 +119,53 @@ async function mappingSamples(file, max = 5) {
   return samples;
 }
 
+function fileLikeValues(text) {
+  const matches = String(text || '').match(
+    /(?:[A-Za-z]:\\[^"'\r\n]+?\.(?:csv|txt|xlsx|xls|pgp|zip|dat|xml|json)|\\\\[^"'\r\n]+?\.(?:csv|txt|xlsx|xls|pgp|zip|dat|xml|json)|[A-Za-z0-9_. -]+\.(?:csv|txt|xlsx|xls|pgp|zip|dat|xml|json))/gi
+  );
+  return [...new Set((matches || []).filter((value) => !/\.dtsx\b/i.test(value)))].slice(0, 10);
+}
+
+async function fileConfigEvidence(pkg, packageText) {
+  const componentNames = [
+    ...pkg.reads
+      .filter((item) => /external_sources|flat_file|flat file|excel/i.test(item))
+      .map(objectName)
+      .map(displayName),
+    ...pkg.writes
+      .filter((item) => /external_sources|flat_file|flat file|excel/i.test(item))
+      .map(objectName)
+      .map(displayName),
+    ...pkg.mappingSamples.flatMap((mapping) => [
+      mapping.sourceObject,
+      mapping.destinationObject,
+    ]),
+  ].filter(Boolean);
+  const fileNames = new Set(fileLikeValues(packageText));
+  const externalRoot = path.join(
+    lineageRoot,
+    'servers/V1-SSIS25-01,_11040/ssis_external_sources',
+    pkg.folder,
+    pkg.project.replace(/[<>:"/\\|?*]+/g, '_'),
+    pkg.package
+  );
+
+  try {
+    const entries = await fs.readdir(externalRoot, { withFileTypes: true });
+    for (const entry of entries.filter((item) => item.isFile() && item.name.endsWith('.md'))) {
+      const externalText = await fs.readFile(path.join(externalRoot, entry.name), 'utf8');
+      for (const value of fileLikeValues(externalText)) fileNames.add(value);
+    }
+  } catch {
+    // External source detail is optional; package markdown may still have useful evidence.
+  }
+
+  return {
+    components: topValues(componentNames.map(displayName), 8),
+    fileNames: [...fileNames].slice(0, 10),
+  };
+}
+
 function codeList(items, max = 10, label = 'item') {
   if (!items.length) return '<p>None found in extracted package evidence.</p>';
   const shown = items.slice(0, max).map((item) => `<li><code>${esc(item)}</code></li>`).join('');
@@ -348,6 +395,22 @@ function mappingTable(samples) {
   return `<table><tbody><tr><th>Source object</th><th>Destination object</th><th>Input column</th><th>Output column</th><th>Transform</th><th>Status</th></tr>${rows}</tbody></table>`;
 }
 
+function fileEvidenceBlock(pkg) {
+  const files = pkg.fileEvidence?.fileNames || [];
+  const components = pkg.fileEvidence?.components || [];
+  const fileRows = files.length
+    ? `<tr><td>Configured file/path values found</td><td>${files
+        .map((file) => `<code>${esc(file)}</code>`)
+        .join('<br>')}</td></tr>`
+    : '<tr><td>Configured file/path values found</td><td>None captured in the extracted package/configuration metadata.</td></tr>';
+  const componentRows = components.length
+    ? `<tr><td>File/Excel components found</td><td>${components
+        .map((component) => `<code>${esc(component)}</code>`)
+        .join('<br>')}</td></tr>`
+    : '<tr><td>File/Excel components found</td><td>None surfaced.</td></tr>';
+  return `<table><tbody><tr><th>Signal</th><th>Value</th></tr>${fileRows}${componentRows}<tr><td>Support note</td><td>If the configured file name is not shown here, check SSIS package/project parameters, environment variables, connection-manager expressions, or <code>SSIS.Config.SSIS_Configurations</code> for this package.</td></tr></tbody></table>`;
+}
+
 function callRows(pkg) {
   if (!pkg.calls.length) return '<p>None found in extracted package evidence.</p>';
   const rows = pkg.calls
@@ -396,12 +459,14 @@ function packageBody(pkg) {
 <tr><td>Target objects</td><td>${pkg.writes.length}</td></tr>
 <tr><td>Stored procedure/package calls</td><td>${pkg.calls.length}</td></tr>
 <tr><td>Column mapping summary</td><td>${esc(pkg.mappings || '0')}</td></tr>
+<tr><td>File/config values found</td><td>${pkg.fileEvidence?.fileNames?.length || 0}</td></tr>
 </tbody></table>
 <h2>Business Logic Notes</h2>
 <p>${esc(businessLogicNotes(pkg))}</p>
 <details><summary>Source Objects</summary>${sourceText}</details>
 <details><summary>Target Objects</summary>${targetText}</details>
 <details><summary>Called Packages / Procedures</summary>${callRows(pkg)}</details>
+<details><summary>File / Configuration Evidence</summary>${fileEvidenceBlock(pkg)}</details>
 <details><summary>Representative Column Mappings</summary>${mappingTable(pkg.mappingSamples)}</details>
 <h2>Support Checks</h2>
 <ul>
@@ -527,6 +592,7 @@ async function packageRecord(file) {
     mappingSamples: await mappingSamples(file),
     resolvedPackageCalls: [],
   };
+  pkg.fileEvidence = await fileConfigEvidence(pkg, text);
   return {
     title: `SSIS Package Detail - ${pkg.packagePath}`,
     folderTitle: `SSIS Folder - ${pkg.folder}`,
@@ -761,6 +827,11 @@ if (!publish) {
         sampleSummaries: publishPages.slice(0, 5).map((page) => ({
           title: page.title,
           summary: page.summary,
+        })),
+        sampleFileEvidence: publishPages.slice(0, 5).map((page) => ({
+          title: page.title,
+          fileNames: page.pkg.fileEvidence?.fileNames || [],
+          components: page.pkg.fileEvidence?.components || [],
         })),
       },
       null,

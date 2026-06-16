@@ -925,9 +925,12 @@ Never persist:
 
 ### Skill And DevOps Rules
 
+- Sonic lineage runtime, team Codex enablement, raw-evidence access, and rule-recommendation workflows must follow [docs/SONIC_LINEAGE_RUNTIME_CONSUMER_CONTRACT.md](docs/SONIC_LINEAGE_RUNTIME_CONSUMER_CONTRACT.md).
 - Codex skills must use the DevOps/Azure profile index as the primary source for profile, quality, metric, sensitivity, and freshness questions.
 - Run markdown may be used as citation or human-readable explanation, not as the primary large-scale index.
 - Confluence is a human navigation and explanation layer. It is not the primary machine-readable profile-answer source.
+- Teammate evidence-review workflows may submit recommendations, but they must not update ingestion engines, parser engines, extractor code, generator code, or catalog rebuild scripts.
+- Azure platform expansion must stop at the Phase 5 gate and ask the required approval question before any Azure App Service, Azure SQL, Blob, Redis, Key Vault, managed identity, private endpoint, production Entra, or cloud migration work starts.
 
 ---
 
