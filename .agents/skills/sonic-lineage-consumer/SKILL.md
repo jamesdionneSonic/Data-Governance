@@ -1,6 +1,6 @@
 ---
 name: sonic-lineage-consumer
-description: Use the approved Sonic lineage runtime package to answer lineage, SSIS documentation, raw-evidence review, and rule-recommendation questions for the team pilot. Use this repo-scoped skill when working from the Data Governance repository or when a teammate asks to use the shared Sonic lineage package. Do not edit ingestion engines from evidence-review workflows.
+description: Use the approved Sonic lineage runtime package to answer lineage, SSIS documentation, raw-evidence review, and rule-recommendation questions for the team pilot. Use this repo-scoped skill when working from the Sonic lineage consumer-kit repository or when a teammate asks to use the shared Sonic lineage package. Do not edit ingestion engines from evidence-review workflows.
 ---
 
 # Sonic Lineage Consumer

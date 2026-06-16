@@ -16,10 +16,13 @@ Read these in order:
 
 ## Codex Setup
 
-Open Codex from the repository root so the repo-scoped skill is available:
+Clone the consumer-kit repository and open Codex from that repository root so
+the repo-scoped skill is available:
 
 ```powershell
-cd "C:\projects\Data Governence"
+git clone https://dev.azure.com/sonicapplicationdevelopment/Data%20Warehouse/_git/Sonic-lineage-consumer-kit
+cd Sonic-lineage-consumer-kit
+codex
 ```
 
 Use the repo-scoped skill:
