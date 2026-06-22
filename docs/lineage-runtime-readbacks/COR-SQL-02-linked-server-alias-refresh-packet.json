@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-22T10:37:07.847Z",
+  "scope": "COR-SQL-02 linked-server alias lineage repair only",
+  "alias": {
+    "stale_server": "COR-SQL-02",
+    "canonical_server": "L1-DWASQL-02,12010",
+    "databases": ["eLeadDW", "DMS", "Speed", "WebV", "Sonic_XREF", "BI_WorkDB"],
+    "referencing_databases": ["ETL_Staging", "Sonic_DW"]
+  },
+  "allowed_targets": [
+    "local markdown",
+    "runtime package",
+    "DevOps generated lineage repo",
+    "Confluence AI retrieval and affected human catalog pages after targeted review"
+  ],
+  "forbidden_scope": [
+    "full catalog redesign",
+    "broad Confluence tree regeneration",
+    "unbounded dry-run matrix",
+    "parser or scoring redesign",
+    "raw row extraction",
+    "secrets or connection-string publication"
+  ],
+  "workflow": [
+    {
+      "step": 1,
+      "name": "Build packet",
+      "command": "npm run lineage:cor-sql:packet",
+      "output": "docs/lineage-runtime-readbacks/COR-SQL-02-linked-server-alias-refresh-packet.md"
+    },
+    {
+      "step": 2,
+      "name": "Targeted live SQL metadata refresh",
+      "command": "npm run lineage:cor-sql:refresh",
+      "output": "data/analysis/raw/live-domain-refresh-summary.json"
+    },
+    {
+      "step": 3,
+      "name": "Targeted catalog rebuild from refreshed markdown",
+      "command": "npm run catalog:rebuild",
+      "output": "data/markdown/catalog-manifest.json"
+    },
+    {
+      "step": 4,
+      "name": "Runtime package rebuild and checks",
+      "command": "npm run lineage:runtime:package && npm run lineage:runtime:check && npm run lineage:answers:check && npm run lineage:runtime:readback",
+      "output": "data/lineage-runtime-package/sonic-data-lineage-runtime/manifest.json"
+    },
+    {
+      "step": 5,
+      "name": "DevOps repo sync",
+      "command": "npm run lineage:runtime:sync",
+      "output": "../Sonic-data-lineage/reports/runtime-sync-summary.json"
+    },
+    {
+      "step": 6,
+      "name": "Confluence targeted review/publish",
+      "command": "npm run confluence:rovo:validate && npm run confluence:rovo:publish-packet && node scripts/publish-human-confluence-catalog-pilot.mjs --output-root data/confluence/rovo-ai-retrieval-dry-run --packet docs/confluence-full-database-catalog-deployment/FDP-06-rovo-ai-retrieval-publish-packet.json --publish",
+      "output": "data/confluence/rovo-ai-retrieval-dry-run",
+      "approval_required": true
+    }
+  ]
+}

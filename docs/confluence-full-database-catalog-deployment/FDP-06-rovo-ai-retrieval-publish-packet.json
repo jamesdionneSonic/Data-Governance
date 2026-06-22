@@ -1,0 +1,132 @@
+{
+  "generated_at": "2026-06-22T12:40:55.117Z",
+  "scope": {
+    "root_path": "Sonic Data Lineage / AI Retrieval Artifacts",
+    "deployment_tier": "FDP-06 Rovo AI retrieval artifacts",
+    "publish_mode": "reviewed publish packet; no live publish performed by builder",
+    "cleanup_mode": "none; cleanup remains separate"
+  },
+  "required_labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact"],
+  "validation": {
+    "status": "passed",
+    "failures": []
+  },
+  "summary": {
+    "navigation_pages": 1,
+    "artifact_pages": 8,
+    "total_planned_pages": 9
+  },
+  "planned_pages": [
+    {
+      "kind": "navigation",
+      "title": "AI Retrieval Artifacts",
+      "treePath": ["Sonic Data Lineage", "AI Retrieval Artifacts"],
+      "page_type": "navigation",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact"],
+      "snippets": ["Reviewed Catalog Children", "Rovo Start Here"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Start Here",
+      "treePath": ["Sonic Data Lineage", "AI Retrieval Artifacts", "Rovo Start Here"],
+      "page_type": "rovo-start-here",
+      "evidence_hash": "sha256:F7B5EED28C290979312B5C567AFD8AB8B8F159256E69B79D620402F99474A4A1",
+      "evidence_file": "rovo-start-here.evidence.json",
+      "markdown_file": "rovo-start-here.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact"],
+      "snippets": ["Lookup Order", "Safety Rules"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Object Locator 001",
+      "treePath": ["Sonic Data Lineage", "AI Retrieval Artifacts", "Rovo Object Locator 001"],
+      "page_type": "rovo-object-locator",
+      "evidence_hash": "sha256:80D114E91DADAEB441456B59CDBA877DDFDDB2A9E486446516E3FDA0A0A17C43",
+      "evidence_file": "rovo-object-locator-001.evidence.json",
+      "markdown_file": "rovo-object-locator-001.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact"],
+      "snippets": ["canonical_id", "quick_context_page", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Database Context 001",
+      "treePath": ["Sonic Data Lineage", "AI Retrieval Artifacts", "Rovo Database Context 001"],
+      "page_type": "rovo-database-context",
+      "evidence_hash": "sha256:542A5B6706BCD08DA4165A69A462119EE4118360CAEFCD811008EA7A5BC8515F",
+      "evidence_file": "rovo-database-context-001.evidence.json",
+      "markdown_file": "rovo-database-context-001.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact"],
+      "snippets": ["VendorData", "Known Gaps", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Object Summary Context 001",
+      "treePath": [
+        "Sonic Data Lineage",
+        "AI Retrieval Artifacts",
+        "Rovo Object Summary Context 001"
+      ],
+      "page_type": "rovo-object-summary-context",
+      "evidence_hash": "sha256:F70CA4916A3F37CE9E970477A00BBE3221217466EEA44719617BC768452A5493",
+      "evidence_file": "rovo-object-summary-context-001.evidence.json",
+      "markdown_file": "rovo-object-summary-context-001.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact"],
+      "snippets": ["DimVehicle", "FactOpportunity", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Upstream Context 001",
+      "treePath": ["Sonic Data Lineage", "AI Retrieval Artifacts", "Rovo Upstream Context 001"],
+      "page_type": "rovo-upstream-context",
+      "evidence_hash": "sha256:31B5D9BE7B3526DA1B8CCE97CE94CE9E59808025E2BB4CC960ACDA3A7E4D5781",
+      "evidence_file": "rovo-upstream-context-001.evidence.json",
+      "markdown_file": "rovo-upstream-context-001.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact"],
+      "snippets": ["Upstream Sources", "FactOpportunity", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Downstream Context 001",
+      "treePath": ["Sonic Data Lineage", "AI Retrieval Artifacts", "Rovo Downstream Context 001"],
+      "page_type": "rovo-downstream-context",
+      "evidence_hash": "sha256:E2592316EA7970B2937428896A4FDFF09FC928A006E6A09F156CBFA50AA12A2F",
+      "evidence_file": "rovo-downstream-context-001.evidence.json",
+      "markdown_file": "rovo-downstream-context-001.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact"],
+      "snippets": ["Downstream Consumers", "FactOpportunity", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Ambiguity Context 001",
+      "treePath": ["Sonic Data Lineage", "AI Retrieval Artifacts", "Rovo Ambiguity Context 001"],
+      "page_type": "rovo-ambiguity-context",
+      "evidence_hash": "sha256:AFB7C46E908D79C451EA7BE11130C4536B752F33927801621EBF438510081985",
+      "evidence_file": "rovo-ambiguity-context-001.evidence.json",
+      "markdown_file": "rovo-ambiguity-context-001.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact"],
+      "snippets": ["dimvehicle", "factopportunity", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Evaluation Prompts",
+      "treePath": ["Sonic Data Lineage", "AI Retrieval Artifacts", "Rovo Evaluation Prompts"],
+      "page_type": "rovo-evaluation-prompts",
+      "evidence_hash": "sha256:DDA8392A435A13FDB78A1C384C481948D39B65898FDA2D935618482D7FDE9B7A",
+      "evidence_file": "rovo-evaluation-prompts.evidence.json",
+      "markdown_file": "rovo-evaluation-prompts.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact"],
+      "snippets": ["Forbidden Invented Facts", "VendorData", "Technical Evidence"]
+    }
+  ],
+  "source_artifacts": {
+    "rovo_dry_run_manifest": "data/confluence/rovo-ai-retrieval-dry-run/manifest.json",
+    "rovo_dry_run_output": "data/confluence/rovo-ai-retrieval-dry-run"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/FDP-06-rovo-ai-retrieval-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/FDP-06-rovo-ai-retrieval-publish-packet.md"
+  }
+}

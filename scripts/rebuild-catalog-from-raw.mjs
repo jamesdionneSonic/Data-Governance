@@ -207,6 +207,13 @@ function canonicalServer(value, database = '', aliases = {}) {
     .trim();
   if (!cleaned) return 'unknown';
 
+  const linkedServerAliases = aliases.linkedServerAliases || {};
+  for (const [alias, canonical] of Object.entries(linkedServerAliases)) {
+    if (cleaned.toLowerCase() === cleanSegment(alias).toLowerCase()) {
+      return canonical;
+    }
+  }
+
   const dbKey = canonicalDatabase(database).toLowerCase();
   const dbAliases = aliases.sqlServerAliasesByDatabase?.[dbKey] || {};
   for (const [alias, canonical] of Object.entries(dbAliases)) {
@@ -1113,9 +1120,31 @@ function setLowerLookupValue(map, rawKey, value) {
   map.set(key, value);
 }
 
-function buildSsisMarkdownIndexes(lineageEdges = [], xmlMetadata = []) {
+function buildSsisMarkdownIndexes(
+  lineageEdges = [],
+  xmlMetadata = [],
+  runtimeSupport = [],
+  catalog = []
+) {
   const edgesByKey = new Map();
   const xmlMetadataByKey = new Map();
+  const runtimeSupportByKey = new Map();
+  const topMostPackageKeys = new Set();
+  const packageLookupToKey = new Map();
+  const packageKey = (folder, project, packageName) =>
+    `${cleanSegment(folder)}.${cleanSegment(project)}.${cleanSegment(packageName)}`.toLowerCase();
+  const addPackageLookup = (rawKey, key) => {
+    const normalized = lowerSsisLookupKey(rawKey);
+    if (normalized && key) packageLookupToKey.set(normalized, key);
+  };
+
+  for (const row of catalog || []) {
+    const key = packageKey(row.folder_name, row.project_name, row.package_name);
+    addPackageLookup(row.package_name, key);
+    addPackageLookup(`${row.project_name}.${row.package_name}`, key);
+    addPackageLookup(`${row.folder_name}.${row.project_name}.${row.package_name}`, key);
+    addPackageLookup(packageId('V1-SSIS25-01, 11040', row.folder_name, row.project_name, row.package_name), key);
+  }
 
   for (const edge of lineageEdges) {
     pushLowerLookupValue(edgesByKey, edge.packageName, edge);
@@ -1123,6 +1152,15 @@ function buildSsisMarkdownIndexes(lineageEdges = [], xmlMetadata = []) {
     pushLowerLookupValue(edgesByKey, edge.packageId, edge);
     pushLowerLookupValue(edgesByKey, edge.packagePath, edge);
     pushLowerLookupValue(edgesByKey, edge.objectName, edge);
+  }
+
+  const incomingPackageCalls = new Set();
+  const triggeredPackages = new Set();
+  for (const edge of lineageEdges || []) {
+    const targetKey = packageLookupToKey.get(lowerSsisLookupKey(edge.to));
+    if (!targetKey) continue;
+    if (edge.edgeType === 'CALLS') incomingPackageCalls.add(targetKey);
+    if (edge.edgeType === 'TRIGGERS') triggeredPackages.add(targetKey);
   }
 
   for (const metadata of xmlMetadata) {
@@ -1142,7 +1180,18 @@ function buildSsisMarkdownIndexes(lineageEdges = [], xmlMetadata = []) {
     }
   }
 
-  return { edgesByKey, xmlMetadataByKey };
+  for (const row of runtimeSupport || []) {
+    runtimeSupportByKey.set(packageKey(row.folder_name, row.project_name, row.package_name), row);
+  }
+
+  for (const row of catalog || []) {
+    const key = packageKey(row.folder_name, row.project_name, row.package_name);
+    if (triggeredPackages.has(key) || !incomingPackageCalls.has(key)) {
+      topMostPackageKeys.add(key);
+    }
+  }
+
+  return { edgesByKey, xmlMetadataByKey, runtimeSupportByKey, topMostPackageKeys };
 }
 
 function indexedSsisEdges(indexes, keys) {
@@ -1210,6 +1259,20 @@ function emptySsisEdgeSummary() {
   };
 }
 
+function deriveSsisMappingReference(reference, packageMetadata, aliases, referenceIndex) {
+  if (splitDotSegments(reference).length < 2 || !isDirectSqlReference(reference)) return '';
+  return qualifyReference(
+    reference,
+    {
+      server: packageMetadata.server || 'V1-SSIS25-01, 11040',
+      database: packageMetadata.database || 'Sonic_DW',
+      schema: 'dbo',
+    },
+    aliases,
+    referenceIndex
+  );
+}
+
 function summarizeSsisPackageEdges(
   packageEdges,
   aliases,
@@ -1248,6 +1311,32 @@ function summarizeSsisPackageEdges(
     }
     if (SSIS_CALL_EDGE_TYPES.has(edge.edgeType)) {
       pushUniqueText(calls, normalizedRef);
+    }
+  }
+
+  for (const mapping of packageXmlMetadata.ssisColumnMappings || []) {
+    if (mapping.validation_status && mapping.validation_status !== 'validated') continue;
+
+    const sourceRef = deriveSsisMappingReference(
+      mapping.source_object || mapping.sourceObject || '',
+      packageMetadata,
+      aliases,
+      referenceIndex
+    );
+    if (sourceRef) {
+      pushUniqueText(readsFrom, sourceRef);
+      lineageQuality.validated_edges += 1;
+    }
+
+    const targetRef = deriveSsisMappingReference(
+      mapping.destination_object || mapping.target_object || mapping.targetObject || '',
+      packageMetadata,
+      aliases,
+      referenceIndex
+    );
+    if (targetRef) {
+      pushUniqueText(writesTo, targetRef);
+      lineageQuality.validated_edges += 1;
     }
   }
 
@@ -1316,6 +1405,11 @@ function buildSsisMarkdown(result, packageRow, server, aliases, referenceIndex, 
   const project = packageRow.project_name || 'unknown_project';
   const pkg = packageRow.package_name || 'unknown_package.dtsx';
   const id = packageId(server, folder, project, pkg);
+  const runtimeKey = `${cleanSegment(folder)}.${cleanSegment(project)}.${cleanSegment(pkg)}`.toLowerCase();
+  const isTopMostWorkflow = indexes.topMostPackageKeys?.has(runtimeKey) === true;
+  const ssisRuntimeBaseline = isTopMostWorkflow
+    ? indexes.runtimeSupportByKey?.get(runtimeKey) || null
+    : null;
   const keys = lowerSsisLookupKeySet([
     pkg,
     id,
@@ -1349,6 +1443,8 @@ function buildSsisMarkdown(result, packageRow, server, aliases, referenceIndex, 
     aliases,
     referenceIndex,
     {
+      server,
+      database: 'Sonic_DW',
       name: `${folder}.${project}.${pkg}`,
       folder_name: folder,
       project_name: project,
@@ -1493,10 +1589,27 @@ mapping into the parent package frontmatter.
     unresolved_ssis_column_mappings: unresolvedSsisColumnMappings,
     ssis_file_references: ssisFileReferences,
     ssis_connection_managers: ssisConnectionManagers,
+    ssis_top_most_workflow: isTopMostWorkflow,
+    ssis_runtime_baseline: ssisRuntimeBaseline || null,
     ssis_edge_summary: edgeSummary.ssisEdgeSummary,
     lineage_quality: edgeSummary.lineageQuality,
     description: `SSIS package metadata extracted from folder ${folder}, project ${project}, package ${pkg}.`,
   };
+
+  const runtimeBaselineBody = ssisRuntimeBaseline
+    ? `
+
+## Runtime Baseline
+- As of: ${ssisRuntimeBaseline.as_of || 'n/a'}
+- Lookback days: ${ssisRuntimeBaseline.lookback_days || 'n/a'}
+- Last successful run: ${ssisRuntimeBaseline.last_success_time || 'n/a'}
+- Last failed run: ${ssisRuntimeBaseline.last_failure_time || 'n/a'}
+- Typical successful runtime seconds: ${ssisRuntimeBaseline.typical_success_runtime_seconds ?? 'n/a'}
+- P90 successful runtime seconds: ${ssisRuntimeBaseline.p90_success_runtime_seconds ?? 'n/a'}
+- Recent failure count: ${ssisRuntimeBaseline.failure_count ?? '0'}
+- Runtime caveat: Support baseline from SSISDB history, not a service-level guarantee.
+`
+    : '';
 
   const body = `# SSIS Package ${folder}.${project}.${pkg}
 
@@ -1515,6 +1628,7 @@ mapping into the parent package frontmatter.
 - SPs Called: ${calls.length}
 - Target entities: ${writesTo.length}
 - Last validation: ${packageRow.package_last_validation || 'n/a'}
+${runtimeBaselineBody}
 
 ## Classified SSIS Edge Summary
 - Direct source reads: ${edgeSummary.ssisEdgeSummary.reads.direct_source_reads.length}
@@ -2263,71 +2377,94 @@ async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog
   let processedXmlFiles = 0;
   let discoveredXmlFiles = 0;
   const ssisLimit = Math.max(0, Number(options.ssisLimit || 0));
+  const packageKey = (folder, project, packageName) =>
+    `${cleanSegment(folder)}.${cleanSegment(project)}.${cleanSegment(packageName)}`.toLowerCase();
+  const liveCatalogByKey = new Map();
+  const liveXmlByKey = new Map();
 
   if (
     liveSsisMetadata &&
     Array.isArray(liveSsisMetadata.catalog) &&
     Array.isArray(liveSsisMetadata.xmlMetadata)
   ) {
-    sourceMode = 'live_ssis_metadata';
-    catalog = liveSsisMetadata.catalog.slice(0, ssisLimit || undefined);
-    discoveredXmlFiles = liveSsisMetadata.xmlMetadata.length;
-    processedXmlFiles = catalog.length;
-    const allowedPackages = new Set(
-      catalog.map((row) =>
-        `${cleanSegment(row.folder_name)}.${cleanSegment(row.project_name)}.${cleanSegment(
-          row.package_name
-        )}`.toLowerCase()
-      )
-    );
-    xmlMetadata = liveSsisMetadata.xmlMetadata.filter((metadata) => {
-      if (ssisLimit <= 0) return true;
-      return allowedPackages.has(
-        `${cleanSegment(metadata.folderName)}.${cleanSegment(metadata.projectName)}.${cleanSegment(
-          metadata.packageName || metadata.objectName
-        )}`.toLowerCase()
+    sourceMode = 'raw_xml_with_live_ssisdb_metadata';
+    for (const row of liveSsisMetadata.catalog) {
+      liveCatalogByKey.set(
+        packageKey(row.folder_name, row.project_name, row.package_name),
+        row
       );
-    });
-  } else {
-    const xmlFiles = await listFiles(
-      RAW_SSIS_XML_ROOT,
-      (filePath) => filePath.toLowerCase().endsWith('.dtsx.xml')
-    );
-    discoveredXmlFiles = xmlFiles.length;
+    }
+    for (const metadata of liveSsisMetadata.xmlMetadata) {
+      liveXmlByKey.set(
+        packageKey(metadata.folderName, metadata.projectName, metadata.packageName || metadata.objectName),
+        metadata
+      );
+    }
+  }
 
-    for (const filePath of xmlFiles) {
-      if (ssisLimit > 0 && processedXmlFiles >= ssisLimit) break;
-      processedXmlFiles += 1;
-      try {
-        const xmlText = await fs.readFile(filePath, 'utf8');
-        const { folder, project, packageName } = inferSsisFileParts(
-          filePath,
-          xmlText,
-          existingSsisCatalog
-        );
-        const row = {
-          folder_name: folder,
-          project_name: project,
-          package_name: packageName,
-          entry_point: /master/i.test(packageName),
-          package_last_validation: null,
-        };
-        catalog.push(row);
-        const parsed = parseSsisPackageXmlForLineage(xmlText, {
-          objectName: packageName,
-          packageName,
-          projectName: project,
-          folderName: folder,
-          serverName: server,
-          packageId: packageId(server, folder, project, packageName),
-          parameterOverrides: aliases.ssisProjectParameterOverrides || {},
-          connectionOverrides: aliases.ssisProjectConnectionOverrides || {},
+  const xmlFiles = await listFiles(
+    RAW_SSIS_XML_ROOT,
+    (filePath) => filePath.toLowerCase().endsWith('.dtsx.xml')
+  );
+  discoveredXmlFiles = xmlFiles.length;
+
+  for (const filePath of xmlFiles) {
+    if (ssisLimit > 0 && processedXmlFiles >= ssisLimit) break;
+    processedXmlFiles += 1;
+    try {
+      const xmlText = await fs.readFile(filePath, 'utf8');
+      const { folder, project, packageName } = inferSsisFileParts(
+        filePath,
+        xmlText,
+        existingSsisCatalog
+      );
+      const key = packageKey(folder, project, packageName);
+      const liveRow = liveCatalogByKey.get(key);
+      const row = {
+        folder_name: folder,
+        project_name: project,
+        package_name: packageName,
+        entry_point: liveRow?.entry_point ?? /master/i.test(packageName),
+        package_last_validation: liveRow?.package_last_validation || null,
+      };
+      catalog.push(row);
+      const parsed = parseSsisPackageXmlForLineage(xmlText, {
+        objectName: packageName,
+        packageName,
+        projectName: project,
+        folderName: folder,
+        serverName: server,
+        packageId: packageId(server, folder, project, packageName),
+        parameterOverrides: aliases.ssisProjectParameterOverrides || {},
+        connectionOverrides: aliases.ssisProjectConnectionOverrides || {},
+      });
+      const liveParsed = liveXmlByKey.get(key);
+      if (parsed && liveParsed) {
+        xmlMetadata.push({
+          ...parsed,
+          connectionManagers: liveParsed.connectionManagers || parsed.connectionManagers,
+          ssisFileReferences: liveParsed.ssisFileReferences || parsed.ssisFileReferences,
+          warnings: [
+            ...(Array.isArray(parsed.warnings) ? parsed.warnings : []),
+            ...(Array.isArray(liveParsed.warnings) ? liveParsed.warnings : []),
+          ],
         });
-        if (parsed) xmlMetadata.push(parsed);
-      } catch (err) {
-        skipped += 1;
-        console.warn(`[raw-ssis] skipped ${filePath}: ${err.message}`);
+      } else if (parsed) {
+        xmlMetadata.push(parsed);
       }
+    } catch (err) {
+      skipped += 1;
+      console.warn(`[raw-ssis] skipped ${filePath}: ${err.message}`);
+    }
+  }
+
+  const knownCatalogKeys = new Set(catalog.map((row) => packageKey(row.folder_name, row.project_name, row.package_name)));
+  if (ssisLimit <= 0 && liveCatalogByKey.size > 0) {
+    for (const [key, liveRow] of liveCatalogByKey.entries()) {
+      if (knownCatalogKeys.has(key)) continue;
+      catalog.push(liveRow);
+      const liveParsed = liveXmlByKey.get(key);
+      if (liveParsed) xmlMetadata.push(liveParsed);
     }
   }
 
@@ -2343,6 +2480,7 @@ async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog
     xmlMetadata,
     parameters: liveSsisMetadata?.parameters || [],
     environments: liveSsisMetadata?.environments || {},
+    runtimeSupport: liveSsisMetadata?.runtimeSupport || [],
     agentJobs: liveSsisMetadata?.agentJobs || { jobs: [], ssisSteps: [] },
     warnings: liveSsisMetadata?.warnings || [],
     ssis_source_mode: sourceMode,
@@ -2354,7 +2492,12 @@ async function rebuildSsis(aliases, referenceIndex, records, existingSsisCatalog
     result.parameters,
     result.environments
   );
-  const markdownIndexes = buildSsisMarkdownIndexes(result.lineageEdges, result.xmlMetadata);
+  const markdownIndexes = buildSsisMarkdownIndexes(
+    result.lineageEdges,
+    result.xmlMetadata,
+    result.runtimeSupport,
+    catalog
+  );
   const pendingPackageTargetUpdates = [];
 
   for (const row of catalog) {
@@ -4193,6 +4336,7 @@ export {
   evaluateRebuildGates,
   renderRebuildReportMarkdown,
   sqlRawQuarantineReason,
+  summarizeSsisPackageEdges,
   summarizeConfidence,
   summarizeSources,
 };

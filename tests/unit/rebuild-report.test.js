@@ -2,10 +2,48 @@ import {
   buildRebuildReport,
   buildSsisSqlEndpointRecords,
   evaluateRebuildGates,
+  summarizeSsisPackageEdges,
 } from '../../scripts/rebuild-catalog-from-raw.mjs';
 import { resolveColumnLineage } from '../../src/services/columnLineageResolver.js';
 
 describe('Rebuild confidence report and SSIS endpoint gates', () => {
+  test('derives package reads and writes from validated SSIS column mappings', () => {
+    const summary = summarizeSsisPackageEdges(
+      [],
+      {},
+      new Map(),
+      {
+        server: 'V1-SSIS25-01, 11040',
+        database: 'Sonic_DW',
+        name: 'eLeadDiffToFull.StagingSonicSSIS.COPY_v3.dtsx',
+      },
+      {
+        ssisColumnMappings: [
+          {
+            source_object: 'dbo.dwFullGoldDiggerROI',
+            destination_object: 'dbo.dwCompanyLeadRate',
+            input_column: 'lCompanyId',
+            output_column: 'lCompanyId',
+            external_metadata_column: 'lCompanyId',
+            validation_status: 'validated',
+            evidence_type: 'ssis_dataflow_column_mapping',
+          },
+          {
+            source_object: 'Derived Column',
+            destination_object: 'dbo.dwCompanyLeadRate',
+            input_column: 'szSourceCodeNew',
+            output_column: 'szSourceCode',
+            validation_status: 'validated',
+          },
+        ],
+      }
+    );
+
+    expect(summary.readsFrom).toEqual(['V1-SSIS25-01, 11040.Sonic_DW.dbo.dwFullGoldDiggerROI']);
+    expect(summary.writesTo).toEqual(['V1-SSIS25-01, 11040.Sonic_DW.dbo.dwCompanyLeadRate']);
+    expect(summary.lineageQuality.validated_edges).toBe(3);
+  });
+
   test('creates SSIS-observed SQL endpoint records that promote column lineage', () => {
     const sourceId = 'cor-sql-02.eLeadDW.dbo.SourceClaims';
     const targetId = 'L1-5FSQL-01.ETL_Staging.dbo.TargetClaims';

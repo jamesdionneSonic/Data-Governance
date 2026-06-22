@@ -25,6 +25,17 @@ describe('SQL Server Metadata Extractor', () => {
     ).toBe('L1-DWASQL-02,12010');
   });
 
+  test('canonicalizes configured linked server aliases before generating object IDs', () => {
+    expect(
+      SqlServerMetadataExtractor.extractServerNameFromConfig({
+        server: 'COR-SQL-02',
+        linkedServerAliases: {
+          'cor-sql-02': 'L1-DWASQL-02,12010',
+        },
+      })
+    ).toBe('L1-DWASQL-02,12010');
+  });
+
   test('extracts MERGE targets from procedure SQL without matching comments as tables', () => {
     const relationships = SqlServerMetadataExtractor.detectProcedureLoadRelationships([
       {

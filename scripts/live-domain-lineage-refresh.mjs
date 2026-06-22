@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { mkdir, writeFile } from 'fs/promises';
+import { mkdir, readFile, writeFile } from 'fs/promises';
 import { join, resolve } from 'path';
 import MarkdownGenerator from '../src/services/markdownFromSqlServer.js';
 import SqlServerMetadataExtractor from '../src/services/sqlServerExtractor.js';
@@ -11,11 +11,15 @@ const RAW_SQL_PATH = './data/analysis/raw/sqlserver';
 const RAW_SSIS_PATH = './data/analysis/raw/ssis';
 const SSIS_METADATA_PATH = './data/analysis/raw/ssis/ssis-metadata.json';
 const SUMMARY_PATH = './data/analysis/raw/live-domain-refresh-summary.json';
+const ALIAS_CONFIG_PATH = './config/lineage-aliases.json';
 const SSIS_ONLY = process.argv.includes('--ssis-only');
 const SQL_ONLY = process.argv.includes('--sql-only');
 const SSIS_FOLDER = valueAfter('--folder');
 const SSIS_PROJECT = valueAfter('--project');
 const SSIS_PACKAGE = valueAfter('--package');
+const SQL_TARGET_FILTERS = valuesFor('--target')
+  .concat(valuesFor('--sql-target'))
+  .map((value) => value.toLowerCase());
 
 const SQL_TARGETS = [
   {
@@ -40,6 +44,42 @@ const SQL_TARGETS = [
     server: 'L1-5FSQL-01\\INST1',
     database: 'ETL_Staging',
   },
+  {
+    id: 'eLeadDW',
+    server: 'L1-DWASQL-02',
+    port: 12010,
+    database: 'eLeadDW',
+  },
+  {
+    id: 'DMS',
+    server: 'L1-DWASQL-02',
+    port: 12010,
+    database: 'DMS',
+  },
+  {
+    id: 'Speed',
+    server: 'L1-DWASQL-02',
+    port: 12010,
+    database: 'Speed',
+  },
+  {
+    id: 'WebV',
+    server: 'L1-DWASQL-02',
+    port: 12010,
+    database: 'WebV',
+  },
+  {
+    id: 'Sonic_XREF',
+    server: 'L1-DWASQL-02',
+    port: 12010,
+    database: 'Sonic_XREF',
+  },
+  {
+    id: 'BI_WorkDB',
+    server: 'L1-DWASQL-02',
+    port: 12010,
+    database: 'BI_WorkDB',
+  },
 ];
 
 const SSIS_TARGET = {
@@ -55,6 +95,45 @@ function valueAfter(flag) {
   if (equalsArg) return equalsArg.slice(equalsPrefix.length);
   const index = process.argv.indexOf(flag);
   return index >= 0 ? process.argv[index + 1] || '' : '';
+}
+
+function valuesFor(flag) {
+  const args = process.argv.slice(2);
+  const equalsPrefix = `${flag}=`;
+  const values = [];
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index];
+    if (arg.startsWith(equalsPrefix)) {
+      values.push(arg.slice(equalsPrefix.length));
+    } else if (arg === flag && args[index + 1]) {
+      values.push(args[index + 1]);
+      index += 1;
+    }
+  }
+  return values.filter(Boolean);
+}
+
+async function loadAliasConfig() {
+  try {
+    return JSON.parse(await readFile(resolve(process.cwd(), ALIAS_CONFIG_PATH), 'utf8'));
+  } catch (error) {
+    console.warn(`[live-refresh] Alias config unavailable: ${error.message}`);
+    return {};
+  }
+}
+
+function sqlTargetsForRun() {
+  if (SQL_TARGET_FILTERS.length === 0) return SQL_TARGETS;
+  const selected = SQL_TARGETS.filter((target) =>
+    SQL_TARGET_FILTERS.includes(String(target.id || '').toLowerCase())
+  );
+  const missing = SQL_TARGET_FILTERS.filter(
+    (filter) => !SQL_TARGETS.some((target) => String(target.id || '').toLowerCase() === filter)
+  );
+  if (missing.length > 0) {
+    throw new Error(`Unknown SQL target(s): ${missing.join(', ')}`);
+  }
+  return selected;
 }
 
 function sanitizePathSegment(value) {
@@ -156,6 +235,7 @@ function summarizeSsisResult(result) {
       xmlPackagesParsed: result.xmlMetadata?.length || 0,
       agentJobs: result.agentJobs?.jobs?.length || 0,
       ssisAgentSteps: result.agentJobs?.ssisSteps?.length || 0,
+      runtimeSupport: result.runtimeSupport?.length || 0,
       lineageEdges: result.lineageEdges?.length || 0,
       warnings: result.warnings?.length || 0,
     },
@@ -165,6 +245,7 @@ function summarizeSsisResult(result) {
 
 function redactSensitiveMetadata(value) {
   if (Array.isArray(value)) return value.map((item) => redactSensitiveMetadata(item));
+  if (value instanceof Date) return value.toISOString();
   if (!value || typeof value !== 'object') return value;
 
   const redacted = {};
@@ -188,10 +269,10 @@ function redactSensitiveMetadata(value) {
   return redacted;
 }
 
-async function refreshSqlTarget(target) {
+async function refreshSqlTarget(target, aliasConfig = {}) {
   console.log(`[live-refresh] SQL ${target.id}: connecting to ${target.server}/${target.database}`);
   const { connConfig, sqlDriver } = await buildConnection(target);
-  const extractor = new SqlServerMetadataExtractor(connConfig, sqlDriver);
+  const extractor = new SqlServerMetadataExtractor({ ...connConfig, ...aliasConfig }, sqlDriver);
   await extractor.connect();
   try {
     const metadata = await extractor.extractAllMetadata(target.database);
@@ -256,14 +337,15 @@ async function refreshSsisTarget(target) {
 async function main() {
   const startedAt = new Date().toISOString();
   const results = [];
+  const aliasConfig = await loadAliasConfig();
 
   if (SSIS_ONLY && SQL_ONLY) {
     throw new Error('Use either --ssis-only or --sql-only, not both.');
   }
 
   if (!SSIS_ONLY) {
-    for (const target of SQL_TARGETS) {
-      results.push(await refreshSqlTarget(target));
+    for (const target of sqlTargetsForRun()) {
+      results.push(await refreshSqlTarget(target, aliasConfig));
     }
   }
 

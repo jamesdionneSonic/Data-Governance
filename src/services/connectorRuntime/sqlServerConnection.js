@@ -151,7 +151,7 @@ export function buildSqlServerConnectionConfig(connector = {}, timeoutMs) {
       timeoutMs || connector.config?.requestTimeout || connector.config?.query_timeout_ms,
     connectionTimeout:
       connector.config?.connectionTimeout || timeoutMs || connector.config?.query_timeout_ms,
-    pool: { max: 1, min: 0, idleTimeoutMillis: 5000 },
+    pool: connector.config?.pool || { max: 1, min: 0, idleTimeoutMillis: 5000 },
   };
 
   let config = baseConfig;
@@ -516,7 +516,8 @@ export async function buildSqlServerApiConnectionContext(
     trustServerCertificate = defaultTrustServerCertificate,
   } = payload;
   const hasExplicitPort = rawPort !== undefined && rawPort !== null && rawPort !== '';
-  const port = hasExplicitPort ? rawPort : defaultPort;
+  const usesNamedInstanceWithoutPort = /\\/.test(String(server || '')) && !hasExplicitPort;
+  const port = hasExplicitPort ? rawPort : usesNamedInstanceWithoutPort ? undefined : defaultPort;
 
   if (!server || (requireDatabase && !database)) {
     return {

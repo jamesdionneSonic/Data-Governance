@@ -45,6 +45,52 @@
     "vendordata": {
       "V1-SQL-03\\INST1": "L1-DWASQL-02,12010",
       "V1-SQL-03\\INST1,11041": "L1-DWASQL-02,12010"
+    },
+    "eleaddw": {
+      "V1-SQL-03": "L1-DWASQL-02,12010",
+      "V1-SQL-03\\INST1": "L1-DWASQL-02,12010",
+      "V1-SQL-03\\INST1,11041": "L1-DWASQL-02,12010",
+      "cor-sql-02": "L1-DWASQL-02,12010",
+      "COR-SQL-02": "L1-DWASQL-02,12010"
+    },
+    "dms": {
+      "V1-SQL-03": "L1-DWASQL-02,12010",
+      "V1-SQL-03\\INST1": "L1-DWASQL-02,12010",
+      "V1-SQL-03\\INST1,11041": "L1-DWASQL-02,12010",
+      "cor-sql-02": "L1-DWASQL-02,12010",
+      "COR-SQL-02": "L1-DWASQL-02,12010"
+    },
+    "speed": {
+      "V1-SQL-03": "L1-DWASQL-02,12010",
+      "V1-SQL-03\\INST1": "L1-DWASQL-02,12010",
+      "V1-SQL-03\\INST1,11041": "L1-DWASQL-02,12010",
+      "cor-sql-02": "L1-DWASQL-02,12010",
+      "COR-SQL-02": "L1-DWASQL-02,12010"
+    },
+    "webv": {
+      "V1-SQL-03": "L1-DWASQL-02,12010",
+      "V1-SQL-03\\INST1": "L1-DWASQL-02,12010",
+      "V1-SQL-03\\INST1,11041": "L1-DWASQL-02,12010",
+      "cor-sql-02": "L1-DWASQL-02,12010",
+      "COR-SQL-02": "L1-DWASQL-02,12010"
+    },
+    "sonic_xref": {
+      "V1-SQL-03": "L1-DWASQL-02,12010",
+      "V1-SQL-03\\INST1": "L1-DWASQL-02,12010",
+      "V1-SQL-03\\INST1,11041": "L1-DWASQL-02,12010",
+      "cor-sql-02": "L1-DWASQL-02,12010",
+      "COR-SQL-02": "L1-DWASQL-02,12010"
+    },
+    "bi_workdb": {
+      "V1-SQL-03": "L1-DWASQL-02,12010",
+      "V1-SQL-03\\INST1": "L1-DWASQL-02,12010",
+      "V1-SQL-03\\INST1,11041": "L1-DWASQL-02,12010",
+      "cor-sql-02": "L1-DWASQL-02,12010",
+      "COR-SQL-02": "L1-DWASQL-02,12010"
     }
+  },
+  "linkedServerAliases": {
+    "cor-sql-02": "L1-DWASQL-02,12010",
+    "COR-SQL-02": "L1-DWASQL-02,12010"
   }
 }

@@ -98,6 +98,11 @@ describe('SQL Server connector connection config', () => {
     expect(built.credentialMode).toBe('windows_integrated');
     expect(built.connConfig.connectionString).toContain('Trusted_Connection=Yes');
     expect(built.connConfig.driver).toBe('msnodesqlv8');
+    expect(built.connConfig.pool).toMatchObject({
+      max: 20,
+      min: 0,
+      idleTimeoutMillis: 30000,
+    });
     expect(built.diagnostics).toMatchObject({
       authentication: 'windows',
       connection_variant: 'windows_integrated_shared',
@@ -105,6 +110,33 @@ describe('SQL Server connector connection config', () => {
         server: 'L1-DWASQL-02',
         port: 12010,
       }),
+    });
+  });
+
+  test('does not default named-instance API connections to port 1433', async () => {
+    const built = await buildSqlServerApiConnectionContext(
+      {
+        server: 'L1-5FSQL-01\\INST1',
+        database: 'Sonic_DW',
+        authentication: 'windows',
+        encrypt: true,
+        trustServerCertificate: true,
+      },
+      {
+        requireDatabase: true,
+        windowsDriverMessage: 'driver message',
+        windowsDriverInstallMessage: 'install message',
+      }
+    );
+
+    expect(built.error).toBeUndefined();
+    expect(built.connConfig.connectionString).toContain('Server=L1-5FSQL-01\\INST1');
+    expect(built.connConfig.connectionString).not.toContain('Server=L1-5FSQL-01,1433');
+    expect(built.diagnostics.endpoint).toMatchObject({
+      server: 'L1-5FSQL-01',
+      instance: 'INST1',
+      port: undefined,
+      uses_named_instance: true,
     });
   });
 

@@ -4064,7 +4064,7 @@ This capability turns column metadata, column lineage, transformation evidence, 
 **Story**: Generate Confluence-ready lineage documentation organized in an industry-standard structure that is easy for business, data, engineering, and governance users to browse.  
 **Points**: 5  
 **Priority**: HIGH  
-**Status**: In Progress
+**Status**: Done
 
 **Acceptance Criteria**:
 
@@ -4072,18 +4072,24 @@ This capability turns column metadata, column lineage, transformation evidence, 
 - [x] Export creates a full catalog bundle attachment
 - [x] Export writes a manifest with hashes and publish flags
 - [x] Export avoids one page per object by default
-- [ ] Confluence pages are reorganized into a clear hierarchy, such as overview, source systems, databases, domains, high-value assets, confidence/known gaps, and operating guides
-- [ ] Generated page titles, labels, breadcrumbs, and summaries follow consistent governance/catalog conventions
-- [ ] Pages support common user journeys: "find a database," "find an object," "understand lineage confidence," "review unresolved facts," and "open the machine-readable data pack"
-- [ ] Confluence content links to the DevOps/Azure data pack where appropriate instead of duplicating large machine-readable payloads in page bodies
-- [ ] Dry-run output shows the proposed page tree before publishing
+- [x] Confluence pages are reorganized into a clear hierarchy, such as overview, source systems, databases, domains, high-value assets, confidence/known gaps, and operating guides
+- [x] Generated page titles, labels, breadcrumbs, and summaries follow consistent governance/catalog conventions
+- [x] Pages support common user journeys: "find a database," "find an object," "understand lineage confidence," "review unresolved facts," and "open the machine-readable data pack"
+- [x] Confluence content links to the DevOps/Azure data pack where appropriate instead of duplicating large machine-readable payloads in page bodies
+- [x] Dry-run output shows the proposed page tree before publishing
+
+**Completion Notes**:
+
+- Human catalog dry run generated 215 reviewed pages with separate `Data Product Catalog`, `Database Catalog`, and `High-Value Assets` branches.
+- `npm run confluence:human:check`, `npm run confluence:human:published:check`, and `npm run confluence:generated:check` passed after the reviewed publish.
+- The human catalog suppresses user/account schemas on the do-not-publish list, including `StagingDB.SONIC\bheemappa`.
 
 #### PHASE7S-002: Confluence Dry-Run And Live Sync
 
 **Story**: Publish the organized Confluence documentation package to the Sonic Data Lineage root page using safe dry-run and live-publish modes.  
 **Points**: 5  
 **Priority**: HIGH  
-**Status**: In Progress
+**Status**: Done
 
 **Acceptance Criteria**:
 
@@ -4091,46 +4097,226 @@ This capability turns column metadata, column lineage, transformation evidence, 
 - [x] Live mode requires Confluence URL, space key, parent page ID, email, and API token
 - [x] Generated pages use `[AUTO]` titles and generated labels
 - [x] Attachments include the object index and zipped markdown catalog as backup/export artifacts
-- [ ] Publish mode preserves the industry-standard page hierarchy and updates existing generated pages without breaking stable links
-- [ ] Publish mode clearly separates human-readable Confluence pages from machine-readable DevOps/Azure data pack artifacts
-- [ ] Live publish validated against the Sonic Data Lineage page
+- [x] Publish mode preserves the industry-standard page hierarchy and updates existing generated pages without breaking stable links
+- [x] Publish mode clearly separates human-readable Confluence pages from machine-readable DevOps/Azure data pack artifacts
+- [x] Live publish validated against the Sonic Data Lineage page
+
+**Completion Notes**:
+
+- `npm run confluence:human:publish` completed successfully against root page id `2221670415`.
+- `npm run confluence:human:published:check` passed with 218 checked pages after the StagingDB `bheemappa` cleanup.
+- `npm run confluence:generated:check` passed with `AI Retrieval Artifacts` present and 292 generated children.
 
 #### PHASE7S-003: DevOps Azure Data Pack Publish
 
 **Story**: Publish a versioned Azure data pack to DevOps as the primary machine-readable lineage runtime for Codex skills and automated consumers.  
 **Points**: 5  
 **Priority**: HIGH  
-**Status**: In Progress
+**Status**: Done - published package readback passed; current local hash requires a new version before upload
 
 **Acceptance Criteria**:
 
-- [ ] Data pack includes compact object context, registry/index files, answer cards, confidence metadata, unresolved-risk metadata, and source evidence paths
-- [ ] Data pack is versioned, checksummed, and published to the agreed DevOps location
-- [ ] Publish manifest records package version, build time, source hashes, object counts, and artifact paths
-- [ ] Package shape supports fast lookups by object name, object ID, database, schema, source system, and common aliases
-- [ ] DevOps publish can run in dry-run and live modes without committing secrets
-- [ ] Validation confirms the Codex skill can read the published DevOps package without relying on Confluence page-body search
-- [ ] Data pack includes sanitized `profile-index/` shards for database profiles, BI profiles, connector metadata profiles, metric candidates, sensitivity flags, quality gaps, and stale-profile warnings
-- [ ] Profile index export follows `docs/PROFILE_INDEX_SPEC.md` and fails validation if raw values, sample values, report result rows, source payloads, credentials, tokens, vault references, or connection strings are present
-- [ ] Profile index manifest records source run ids, source artifact paths, object/column counts, checksums, safety validation status, and build timestamp
+- [x] Data pack includes compact object context, registry/index files, answer cards, confidence metadata, unresolved-risk metadata, and source evidence paths
+- [x] Data pack is versioned, checksummed, and published to the agreed DevOps location
+- [x] Publish manifest records package version, build time, source hashes, object counts, and artifact paths
+- [x] Package shape supports fast lookups by object name, object ID, database, schema, source system, and common aliases
+- [x] DevOps publish can run in dry-run and live modes without committing secrets
+- [x] Validation confirms the Codex skill/readback contract can read the published DevOps package without relying on Confluence page-body search
+- [x] Data pack includes sanitized `profile-index/` shards for database profiles, BI profiles, connector metadata profiles, metric candidates, sensitivity flags, quality gaps, and stale-profile warnings
+- [x] Profile index export follows `docs/PROFILE_INDEX_SPEC.md` and fails validation if raw values, sample values, report result rows, source payloads, credentials, tokens, vault references, or connection strings are present
+- [x] Profile index manifest records source run ids, source artifact paths, object/column counts, checksums, safety validation status, and build timestamp
+
+**Completion Notes**:
+
+- Published package `sonic-data-lineage-runtime` version `2026.6.13-1` already exists in Azure Artifacts and passed clean package readback on 2026-06-18.
+- Published package readback hash: `ab840383d8e4f9b1e1036523965536b03d23f2270959025d63a658f4daeece6e`.
+- Current local package hash: `514712d9e99a5e3c8e35dcb5f8fb3f74c44e98babcab3585f8a3e1957250aaff`.
+- Because the hashes differ, the current local package should be published with a new package version rather than marking the local hash as published under `2026.6.13-1`.
 
 #### PHASE7S-004: Codex Skill Answer Experience
 
 **Story**: Enhance the Codex lineage skill and computer-readable payloads so users get strong plain-English answers from the DevOps/Azure data pack.  
 **Points**: 5  
 **Priority**: HIGH  
+**Status**: Done
+
+**Acceptance Criteria**:
+
+- [x] Skill answers use the DevOps/Azure data pack as the primary source and cite package artifacts used for evidence
+- [x] Skill reads `profile-index/` before run markdown or Confluence for profile, quality, metric, sensitivity, and freshness questions
+- [x] Skill distinguishes business consumers, maintenance/load-path reads, loaders, upstream sources, downstream impacts, and unresolved risks
+- [x] Skill supports common prompts: "what uses this?", "what feeds this?", "what breaks if this changes?", "how many times is this used?", "show column impact," and "explain the confidence"
+- [x] Computer-readable answer cards include enough semantic grouping for clear plain-English summaries without opening full object context every time
+- [x] Confidence, truncation, ambiguity, stale-source, and unresolved-parser warnings are surfaced in user-friendly language
+- [x] Prompt validation suite covers table lineage, column impact, database summaries, top-used objects, confidence explanations, and unresolved facts
+- [x] Confluence remains a secondary human documentation layer, not a required runtime dependency for Codex answers
+
+**Completion Notes**:
+
+- `npm run lineage:runtime:skill-check` passed against published package `sonic-data-lineage-runtime` version `2026.6.13-1`.
+- Runtime content hash: `ab840383d8e4f9b1e1036523965536b03d23f2270959025d63a658f4daeece6e`.
+- The suite validates ten prompt patterns using only package artifacts and emits decision-grade evidence lines with package version, hash, and paths.
+- Column impact is currently answered from table-level compact context, downstream/upstream cards, and SSIS mapping artifact references. A dedicated column-impact answer card remains a future enhancement if users need exact column-level blast radius from compact cards.
+
+#### PHASE7S-005: Human Confluence Page Contract
+
+**Story**: Define the reusable human-facing Confluence page contract for product, database, schema, and object lineage pages before changing broad publishing behavior.
+**Points**: 2
+**Priority**: HIGH
+**Status**: Done
+
+**Acceptance Criteria**:
+
+- [x] Contract defines required sections for product, database, schema, and object pages
+- [x] Contract defines the bounded evidence packet used for plain-English summaries
+- [x] Contract separates evidence-backed prose from missing or weak metadata
+- [x] Contract lists validation checks that reject vague or unsupported summaries
+- [x] Contract confirms Confluence is human-facing and not the Sonic lineage skill source of truth
+
+#### PHASE7S-006: Product Catalog Pilot
+
+**Story**: Generate a dry-run product catalog pilot for one key product, starting with FIRE, using evidence-backed plain-English business summaries and links to key objects/jobs/reports.
+**Points**: 3
+**Priority**: HIGH
+**Status**: Done
+
+**Acceptance Criteria**:
+
+- [x] Dry run creates a product page under `Data Product Catalog`
+- [x] Page explains business purpose, final targets, impact, and first support checks
+- [x] Page lists key tables/views/procedures/SSIS jobs with evidence-backed links
+- [x] Page labels cross-subject evidence and weak metadata
+- [x] No live publish occurs until the dry-run page is reviewed
+
+#### PHASE7S-007: Database And Schema Catalog Pilot
+
+**Story**: Generate dry-run database and schema browse pages for one high-value slice, starting with `Sonic_DW.dbo`.
+**Points**: 3
+**Priority**: HIGH
+**Status**: Done
+
+**Acceptance Criteria**:
+
+- [x] Dry run creates database and schema pages under `Database Catalog`
+- [x] Pages show inventory counts by object type
+- [x] Pages highlight high-usage or high-impact objects when metadata supports it
+- [x] Pages show profile coverage and known gaps when available
+- [x] Pages link to object pages or AI retrieval artifacts without duplicating shards
+
+#### PHASE7S-008: High-Value Object Page Pilot
+
+**Story**: Generate a small set of human-facing object pages for high-value tables/views/procedures before considering full-catalog expansion.
+**Points**: 5
+**Priority**: HIGH
+**Status**: Done
+
+**Acceptance Criteria**:
+
+- [x] Pilot includes at least one table, one view, and one procedure when available
+- [x] Each page starts with plain-English purpose, business impact, lineage summary, and support checks
+- [x] Each page includes upstream loaders, downstream consumers, confidence, and caveats
+- [x] Profile and column-usage signals are surfaced when available
+- [x] Technical evidence is placed in expandable/detail sections
+
+**Completion Notes**:
+
+- Expanded `High-Value Assets` from the FIRE pilot page to 25 bounded object pages selected from runtime registry evidence across high-downstream tables, views, and procedures.
+- Published the reviewed slice to Confluence and verified 215 pages with `npm run confluence:human:published:check`.
+
+#### PHASE7S-009: Human Catalog Dry-Run Renderer
+
+**Story**: Add a dry-run renderer that outputs the proposed human Confluence page tree and page bodies without publishing.
+**Points**: 5
+**Priority**: HIGH
+**Status**: Done
+
+**Acceptance Criteria**:
+
+- [x] Renderer outputs proposed page tree before any live publish
+- [x] Renderer supports product, database, schema, and object page types
+- [x] Renderer places AI retrieval artifacts under a separated section
+- [x] Renderer records source evidence paths and summary evidence hashes
+- [x] Renderer can be run for one product or database/schema slice
+
+#### PHASE7S-010: Human Summary Quality Gate
+
+**Story**: Validate human-facing summaries so unsupported, generic, or hallucinated descriptions are blocked before Confluence publish.
+**Points**: 3
+**Priority**: HIGH
+**Status**: Done
+
+**Acceptance Criteria**:
+
+- [x] Quality gate rejects summaries with no named source, target, or business/support impact when evidence exists
+- [x] Quality gate requires `not surfaced in metadata` wording for missing facts
+- [x] Quality gate records evidence inputs or evidence hash for generated prose
+- [x] Quality gate includes smoke checks for one strong-evidence object and one weak-evidence object
+- [x] Quality gate can run without live Confluence credentials
+
+#### PHASE7S-011: Reviewed Human Catalog Publish
+
+**Story**: Publish the reviewed human catalog pilot to Confluence after dry-run approval and page-quality validation.
+**Points**: 3
+**Priority**: MEDIUM
+**Status**: Done
+
+**Acceptance Criteria**:
+
+- [x] Publish updates only the reviewed pilot page tree
+- [x] Publish preserves stable page links and labels
+- [x] Publish does not move or remove existing AI retrieval artifacts without approval
+- [x] Publish result is spot-checked in Confluence by product, database/schema, and object navigation paths
+- [x] Rollback/no-change plan is documented before publish
+
+#### PHASE7S-012: Human Catalog Do-Not-Publish Cleanup
+
+**Story**: Remove already-published human catalog pages that are now on the do-not-publish list after the replacement catalog publish has been validated.
+**Points**: 2
+**Priority**: HIGH
+**Status**: Done
+
+**Acceptance Criteria**:
+
+- [x] Human catalog renderer suppresses blocked user/account schemas from future database summaries and schema page generation
+- [x] Dry-run and published checks pass without the blocked schema pages in the expected page tree
+- [x] Delete the already-published Confluence pages for `Schema - Sonic_DW.SONIC\bheemappa`, `Schema - Sonic_DW.SONIC\Murali`, `Schema - Sonic_DW.SONIC\rajakumar`, and `Schema - StagingDB.SONIC\bheemappa`
+- [x] Confirm the deleted pages no longer appear under `Sonic Data Lineage > Database Catalog > Sonic_DW`
+- [x] Do not delete machine-readable AI retrieval artifacts or source runtime package evidence for these schemas unless separately approved
+
+**Completion Notes**:
+
+- Deleted Confluence page ids `2284192160`, `2281439399`, and `2284388436`.
+- Post-delete dry-run lookup returned `not-found` for all three blocked page titles.
+- `npm run confluence:human:published:check` passed after deletion.
+- Added `Schema - StagingDB.SONIC\bheemappa` to the do-not-publish list after it surfaced outside the original `Sonic_DW` screenshot scope.
+- Deleted Confluence page id `2281275740` for `Schema - StagingDB.SONIC\bheemappa`; post-delete dry-run lookup returned `not-found`.
+
+#### PHASE7S-013: Linked-Server Alias Lineage Refresh
+
+**Story**: Refresh only lineage affected by stale linked-server aliases such as
+`COR-SQL-02`, without running the full catalog dry-run chain.
+**Points**: 3
+**Priority**: HIGH
 **Status**: In Progress
 
 **Acceptance Criteria**:
 
-- [ ] Skill answers use the DevOps/Azure data pack as the primary source and cite package artifacts used for evidence
-- [ ] Skill reads `profile-index/` before run markdown or Confluence for profile, quality, metric, sensitivity, and freshness questions
-- [ ] Skill distinguishes business consumers, maintenance/load-path reads, loaders, upstream sources, downstream impacts, and unresolved risks
-- [ ] Skill supports common prompts: "what uses this?", "what feeds this?", "what breaks if this changes?", "how many times is this used?", "show column impact," and "explain the confidence"
-- [ ] Computer-readable answer cards include enough semantic grouping for clear plain-English summaries without opening full object context every time
-- [ ] Confidence, truncation, ambiguity, stale-source, and unresolved-parser warnings are surfaced in user-friendly language
-- [ ] Prompt validation suite covers table lineage, column impact, database summaries, top-used objects, confidence explanations, and unresolved facts
-- [ ] Confluence remains a secondary human documentation layer, not a required runtime dependency for Codex answers
+- [x] Accepted ADR for linked-server alias lineage repair
+- [x] Low-intelligence execution packet exists
+- [x] Targeted refresh command exists for the affected SQL databases
+- [x] `COR-SQL-02` maps to `L1-DWASQL-02,12010`
+- [ ] Targeted refresh updates local markdown and raw SQL metadata
+- [ ] Runtime package rebuild/readback passes
+- [ ] Generated DevOps repo artifacts sync from the corrected runtime package
+- [ ] New Azure Artifacts runtime package version is published after packet review
+- [ ] Targeted Confluence/Rovo pages are updated after packet review
+
+**Related Docs**:
+
+- `docs/adr/ADR-019-Linked-Server-Alias-Lineage-Refresh.md`
+- `docs/CODEX_COR_SQL_LINKED_SERVER_ALIAS_REFRESH_PACKET.md`
+- `docs/LINKED_SERVER_ALIAS_LINEAGE_REFRESH_PROCESS.md`
+- `docs/LINKED_SERVER_ALIAS_LINEAGE_BACKLOG.md`
 
 ---
 

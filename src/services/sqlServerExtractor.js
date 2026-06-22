@@ -408,10 +408,10 @@ class SqlServerMetadataExtractor {
       config.connectionString?.match(/(?:Data Source|Server)\s*=\s*([^;]+)/i)?.[1] ||
       '';
 
-    return SqlServerMetadataExtractor.canonicalizeServerName(serverName);
+    return SqlServerMetadataExtractor.canonicalizeServerName(serverName, config);
   }
 
-  static canonicalizeServerName(value) {
+  static canonicalizeServerName(value, aliases = {}) {
     const text = SqlServerMetadataExtractor.normalizeSqlReference(value)
       .replace(/^tcp:/i, '')
       .replace(/^np:/i, '')
@@ -419,6 +419,15 @@ class SqlServerMetadataExtractor {
       .trim();
 
     if (!text) return '';
+
+    const linkedServerAliases = aliases.linkedServerAliases || aliases.serverAliases || {};
+    for (const [alias, canonical] of Object.entries(linkedServerAliases)) {
+      if (
+        text.toLowerCase() === SqlServerMetadataExtractor.normalizeSqlReference(alias).toLowerCase()
+      ) {
+        return canonical;
+      }
+    }
 
     const [hostName] = text.split('\\');
     return String(hostName || text).trim();
@@ -1426,9 +1435,14 @@ class SqlServerMetadataExtractor {
         if (!depsByObject.has(objKey)) {
           depsByObject.set(objKey, []);
         }
+        const referencedServer = row.referenced_server_name
+          ? SqlServerMetadataExtractor.canonicalizeServerName(
+              row.referenced_server_name,
+              this.config
+            )
+          : SqlServerMetadataExtractor.extractServerNameFromConfig(this.config);
         const referencedObject = SqlServerMetadataExtractor.qualifySqlObjectId(
-          row.referenced_server_name ||
-            SqlServerMetadataExtractor.extractServerNameFromConfig(this.config),
+          referencedServer,
           row.referenced_database_name || this.metadata.database || this.config?.database || '',
           row.referenced_schema || row.referenced_schema_name || 'dbo',
           row.referenced_object || row.referenced_entity_name
@@ -1437,7 +1451,8 @@ class SqlServerMetadataExtractor {
           referencedSchema: row.referenced_schema,
           referencedObject,
           referencedType: row.referenced_type,
-          referencedServer: row.referenced_server_name || null,
+          referencedServer: referencedServer || null,
+          rawReferencedServer: row.referenced_server_name || null,
           referencedDatabase: row.referenced_database_name || null,
           referencedEntity: row.referenced_entity_name || null,
         });
