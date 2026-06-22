@@ -1,0 +1,54 @@
+{
+  "object_id": "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceAgg",
+  "identity": {
+    "database": "eLeadDW",
+    "schema": "dbo",
+    "object_name": "usp_StageTrafficSummaryDailySubsourceAgg",
+    "full_name": "eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceAgg",
+    "type": "stored_procedure"
+  },
+  "columns": {
+    "count": 0,
+    "source": "canonical-object-list-dbo"
+  },
+  "lineage": {
+    "upstream_count": 0,
+    "downstream_count": 1,
+    "upstream": [],
+    "downstream": [
+      {
+        "edge_id": "sql_server:dbo.usp_stagetrafficsummarydailysubsourceagg->l1-dwasql-02,12010.etl_staging.dbo.stagetrafficdailysourcesubsourceagg:loads",
+        "source": "dbo.usp_StageTrafficSummaryDailySubsourceAgg",
+        "target": "L1-DWASQL-02,12010.ETL_Staging.dbo.StageTrafficDailySourceSubSourceAgg",
+        "source_object": "dbo.usp_StageTrafficSummaryDailySubsourceAgg",
+        "target_object": "L1-DWASQL-02,12010.ETL_Staging.dbo.StageTrafficDailySourceSubSourceAgg",
+        "edge_type": "loads",
+        "class": "writes_to",
+        "score": 0.95,
+        "label": "positive",
+        "evidence": "Procedure dbo.usp_StageTrafficSummaryDailySubsourceAgg writes to L1-DWASQL-02,12010.ETL_Staging.dbo.StageTrafficDailySourceSubSourceAgg via INSERT/MERGE",
+        "source_stream": "relationships",
+        "extracted_at": "2026-06-20T13:15:45.013Z",
+        "matched_domains": ["ETL_Staging"]
+      }
+    ],
+    "review_needed_edge_count": 0
+  },
+  "confidence": {
+    "identity": "high",
+    "metadata": "high",
+    "lineage": "mixed"
+  },
+  "missing_facts": [
+    "owner",
+    "data steward",
+    "lifecycle/status",
+    "SLA",
+    "live freshness",
+    "certification"
+  ],
+  "safety": {
+    "raw_data_captured": false,
+    "secret_exposed": false
+  }
+}

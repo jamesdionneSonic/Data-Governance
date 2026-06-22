@@ -3,16 +3,25 @@ import 'dotenv/config';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import axios from 'axios';
+import yaml from 'yaml';
+
+import {
+  CONFLUENCE_GENERATED_ROOT_PAGE_IDS,
+  CONFLUENCE_SPACE,
+} from '../src/config/confluencePageMap.js';
 
 const lineageRoot = process.env.SSIS_LINEAGE_ROOT || 'C:/projects/Sonic-data-lineage';
 const packageRoot = path.join(
   lineageRoot,
   'servers/V1-SSIS25-01,_11040/ssis_packages'
 );
-const catalogPageId = String(process.env.SSIS_CONFLUENCE_CATALOG_PAGE_ID || '2269610019');
-const spaceKey = process.env.CONFLUENCE_SPACE_KEY || 'TDE';
+const catalogPageId = String(
+  process.env.SSIS_CONFLUENCE_CATALOG_PAGE_ID ||
+    CONFLUENCE_GENERATED_ROOT_PAGE_IDS.ssisFolderCatalog
+);
+const spaceKey = process.env.CONFLUENCE_SPACE_KEY || CONFLUENCE_SPACE.spaceKey;
 const baseUrl = String(
-  process.env.CONFLUENCE_BASE_URL || 'https://sonicautomotive.atlassian.net/wiki'
+  process.env.CONFLUENCE_BASE_URL || CONFLUENCE_SPACE.baseUrl
 ).replace(/\/+$/, '');
 const email = process.env.CONFLUENCE_EMAIL || '';
 const apiToken = process.env.CONFLUENCE_API_TOKEN || '';
@@ -124,6 +133,16 @@ function runtime(text, label) {
   return match ? match[1].trim() : '';
 }
 
+function frontmatter(text) {
+  const match = String(text || '').match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  if (!match) return {};
+  try {
+    return yaml.parse(match[1]) || {};
+  } catch {
+    return {};
+  }
+}
+
 async function walk(dir, out = []) {
   const entries = await fs.readdir(dir, { withFileTypes: true });
   for (const entry of entries) {
@@ -132,6 +151,96 @@ async function walk(dir, out = []) {
     if (entry.isFile() && entry.name.endsWith('.dtsx.md')) out.push(full);
   }
   return out;
+}
+
+async function walkProcedureFiles(root) {
+  const serversRoot = path.join(root, 'servers');
+  const files = [];
+  let servers = [];
+  try {
+    servers = await fs.readdir(serversRoot, { withFileTypes: true });
+  } catch {
+    return files;
+  }
+
+  for (const server of servers.filter((entry) => entry.isDirectory())) {
+    const databasesRoot = path.join(serversRoot, server.name, 'databases');
+    let databases = [];
+    try {
+      databases = await fs.readdir(databasesRoot, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+
+    for (const database of databases.filter((entry) => entry.isDirectory())) {
+      const proceduresRoot = path.join(databasesRoot, database.name, 'stored_procedures');
+      let procedures = [];
+      try {
+        procedures = await fs.readdir(proceduresRoot, { withFileTypes: true });
+      } catch {
+        continue;
+      }
+
+      for (const procedure of procedures.filter(
+        (entry) => entry.isFile() && entry.name.endsWith('.md')
+      )) {
+        files.push(path.join(proceduresRoot, procedure.name));
+      }
+    }
+  }
+
+  return files;
+}
+
+function normalizeObjectKey(value) {
+  return String(value || '')
+    .replace(/^"|"$/g, '')
+    .replace(/\[|\]/g, '')
+    .replace(/\s+/g, ' ')
+    .toLowerCase()
+    .trim();
+}
+
+function procedureAliases(metadata) {
+  const aliases = new Set();
+  const id = metadata.id || '';
+  const name = metadata.name || '';
+  const server = metadata.server || '';
+  const database = metadata.database || '';
+  const schema = metadata.schema || '';
+  for (const alias of [
+    id,
+    name,
+    `${schema}.${name}`,
+    `${database}.${schema}.${name}`,
+    `${server}.${database}.${schema}.${name}`,
+  ]) {
+    const normalized = normalizeObjectKey(alias);
+    if (normalized) aliases.add(normalized);
+  }
+  return aliases;
+}
+
+async function procedureWriteIndex(root) {
+  const index = new Map();
+  const files = await walkProcedureFiles(root);
+  for (const file of files) {
+    const text = await fs.readFile(file, 'utf8');
+    const metadata = frontmatter(text);
+    const writes = Array.isArray(metadata.writes_to)
+      ? metadata.writes_to.filter((target) => target && !isControlObject(target))
+      : [];
+    if (!writes.length) continue;
+    for (const alias of procedureAliases(metadata)) {
+      index.set(alias, {
+        id: metadata.id || alias,
+        name: metadata.name || objectName(alias),
+        writes,
+        file,
+      });
+    }
+  }
+  return index;
 }
 
 async function mappingSamples(file, max = 5) {
@@ -277,6 +386,89 @@ function topValues(values, max = 3) {
     .map(([value]) => value);
 }
 
+const FOLDER_SUBJECT_RULES = {
+  FIRE: {
+    subject: 'retail sales and finance',
+    businessValue:
+      'Its final targets support retail sales, booked deal, gross, FI, dealership/entity, and FIRE summary reporting.',
+    include:
+      /\b(fire|vsc|fisummary|salestrans|callidus|booking|dealdata|stglender|lender|dms|sap|fi individual|dim date|dim dms|factfire|firesummary)\b/i,
+    exclude: /\b(dowc|jma|mci)\b/i,
+    impact:
+      'retail sales, gross, booked deal, FI, lender, and FIRE summary reporting can be stale or incomplete',
+  },
+};
+
+function subjectRuleForFolder(folder) {
+  return FOLDER_SUBJECT_RULES[String(folder || '').toUpperCase()] || null;
+}
+
+function pageEvidenceText(page) {
+  return [
+    page.folder,
+    page.project,
+    page.package,
+    page.packagePath,
+    ...(page.pkg?.reads || []),
+    ...(page.pkg?.writes || []),
+    ...(page.pkg?.calls || []),
+    ...(page.pkg?.mappingSamples || []).flatMap((mapping) => [
+      mapping.sourceObject,
+      mapping.destinationObject,
+      mapping.sourceComponent,
+      mapping.destinationComponent,
+    ]),
+  ]
+    .filter(Boolean)
+    .join(' ');
+}
+
+function isPrimaryFolderSubjectPage(folder, page) {
+  const rule = subjectRuleForFolder(folder);
+  if (!rule) return true;
+  const evidence = pageEvidenceText(page);
+  if (rule.exclude.test(evidence)) return false;
+  return rule.include.test(evidence);
+}
+
+function primaryFolderPages(folder, folderPages) {
+  const primary = folderPages.filter((page) => isPrimaryFolderSubjectPage(folder, page));
+  return primary.length ? primary : folderPages;
+}
+
+function crossSubjectProjects(folder, folderPages) {
+  const rule = subjectRuleForFolder(folder);
+  if (!rule) return [];
+  return topValues(
+    folderPages
+      .filter((page) => !isPrimaryFolderSubjectPage(folder, page))
+      .map((page) => page.project),
+    8
+  );
+}
+
+function subjectFolderSummary({ folder, rule, sourceNames, sources, targetNames, crossProjects }) {
+  if (String(folder).toUpperCase() === 'FIRE') {
+    const crossNote = crossProjects.length
+      ? ` ${humanJoin(
+          crossProjects
+        )} is present under the same SSIS folder but is treated as cross-subject evidence and is not used to define the FIRE business impact.`
+      : '';
+    return `The FIRE SSIS folder builds and refreshes the retail sales and finance reporting layer. It stages DMS/VSC deal, FI product, lender, SAP/Callidus, and SIMS deal data, then loads FIRE warehouse/reporting targets such as ${humanJoin(
+      targetNames,
+      'factFIRE, FactFireSummary, FIREDealData, FIREDealDataSummary, stgLender, and supporting dimensions'
+    )}. Those targets provide the sales, gross, booked-deal, FI, lender, and dealership/entity data used by FIRE reports and downstream feeds. If these jobs fail, ${rule.impact}.${crossNote}`;
+  }
+
+  return `The ${folder} SSIS folder supports ${rule.subject} data movement. It moves ${humanJoin(
+    sourceNames,
+    folder
+  )} data from ${humanJoin(sources, 'its source files/tables')} into ${humanJoin(
+    targetNames,
+    'the listed target objects'
+  )}. ${rule.businessValue} If these jobs fail, ${rule.impact}.`;
+}
+
 function humanJoin(values, fallback = 'the extracted evidence') {
   const clean = [...new Set(values.filter(Boolean))];
   if (!clean.length) return fallback;
@@ -300,8 +492,16 @@ function isControlObject(value) {
   );
 }
 
+function isPackageCallLike(value) {
+  return /\.dtsx(?:$|[\s"'])/i.test(String(value || ''));
+}
+
 function mappingTargets(pkg) {
   return pkg.mappingSamples.map((mapping) => mapping.destinationObject).filter(Boolean);
+}
+
+function procedureDerivedTargets(pkg) {
+  return (pkg.procedureTargets || []).flatMap((procedure) => procedure.writes || []);
 }
 
 function mappingSources(pkg) {
@@ -319,6 +519,7 @@ function targetAreas(pkg) {
   return topValues(
     [
       ...pkg.writes.filter((target) => !isControlObject(target)).map(objectArea),
+      ...procedureDerivedTargets(pkg).filter((target) => !isControlObject(target)).map(objectArea),
       ...mappingTargets(pkg)
         .filter((target) => !isControlObject(target) && !/external|flat file/i.test(target))
         .map(objectArea),
@@ -330,13 +531,14 @@ function importantTargets(pkg, max = 3) {
   return topValues(
     [
       ...pkg.writes.filter((target) => !isControlObject(target)).map(objectName),
+      ...procedureDerivedTargets(pkg).filter((target) => !isControlObject(target)).map(objectName),
       ...mappingTargets(pkg)
         .filter((target) => !isControlObject(target) && !/external|flat file/i.test(target))
         .map(objectName),
       ...pkg.calls
         .filter(
           (call) =>
-            /(load|merge|fact|dim|stg|stage|contract|claim)/i.test(call) &&
+            /(load|merge|fact|dim|stg|stage)/i.test(call) &&
             !/\.dtsx$/i.test(call) &&
             !isControlObject(call)
         )
@@ -365,15 +567,16 @@ function plainSummary(pkg) {
   const childPackages = pkg.resolvedPackageCalls.filter((call) => call.sameFolder);
   const crossFolderPackages = pkg.resolvedPackageCalls.filter((call) => !call.sameFolder);
   const procedures = pkg.calls.filter(
-    (call) => !pkg.resolvedPackageCalls.some((resolved) => resolved.call === call)
+    (call) => !isPackageCallLike(call) && !pkg.resolvedPackageCalls.some((resolved) => resolved.call === call)
   );
-  const targetKind = targetRole([...pkg.writes, ...mappingTargets(pkg)]);
+  const targetKind = targetRole([...pkg.writes, ...procedureDerivedTargets(pkg), ...mappingTargets(pkg)]);
   const subjectText = humanJoin(targetNames, stripPackageName(subject) || pkg.project);
 
   const hasDataMovement =
     pkg.reads.length > 0 ||
     pkg.mappingSamples.length > 0 ||
-    pkg.writes.some((target) => !isControlObject(target));
+    pkg.writes.some((target) => !isControlObject(target)) ||
+    procedureDerivedTargets(pkg).length > 0;
 
   if (childPackages.length && !hasDataMovement) {
     const childNames = childPackages
@@ -483,6 +686,77 @@ function fileEvidenceBlock(pkg) {
   return `${structuredTable}<table><tbody><tr><th>Signal</th><th>Value</th></tr>${fileRows}${componentRows}<tr><td>Support note</td><td>If the configured file name is not shown here, check SSIS package/project parameters, environment variables, connection-manager expressions, or <code>SSIS.Config.SSIS_Configurations</code> for this package.</td></tr></tbody></table>`;
 }
 
+function secondsText(value) {
+  const seconds = Number(value);
+  if (!Number.isFinite(seconds)) return 'n/a';
+  if (seconds < 60) return `${Math.round(seconds)} sec`;
+  return `${Math.round(seconds / 60)} min ${Math.round(seconds % 60)} sec`;
+}
+
+function runtimeBaselineBlock(pkg) {
+  const baseline = pkg.runtimeBaseline;
+  if (!baseline || typeof baseline !== 'object') return '';
+  const messageRows = Array.isArray(baseline.recent_messages)
+    ? baseline.recent_messages.slice(0, 5)
+    : [];
+  const executableRows = Array.isArray(baseline.slow_or_failed_executables)
+    ? baseline.slow_or_failed_executables.slice(0, 5)
+    : [];
+  const rowCountSamples = Array.isArray(baseline.row_count_samples)
+    ? baseline.row_count_samples.slice(0, 5)
+    : [];
+  const messageTable = messageRows.length
+    ? `<h4>Recent meaningful errors/warnings</h4><table><tbody><tr><th>Time</th><th>Package</th><th>Source</th><th>Message</th></tr>${messageRows
+        .map(
+          (row) =>
+            `<tr><td>${esc(row.message_time || '')}</td><td><code>${esc(
+              row.package_name || ''
+            )}</code></td><td>${esc(row.source_name || row.event_name || '')}</td><td>${esc(
+              row.message || ''
+            )}</td></tr>`
+        )
+        .join('')}</tbody></table>`
+    : '<p>No recent error or warning samples were captured for this workflow.</p>';
+  const executableTable = executableRows.length
+    ? `<h4>Slow or failed executable samples</h4><table><tbody><tr><th>Start</th><th>Duration</th><th>Result</th><th>Execution path</th></tr>${executableRows
+        .map(
+          (row) =>
+            `<tr><td>${esc(row.start_time || '')}</td><td>${esc(
+              secondsText(row.duration_seconds)
+            )}</td><td>${esc(row.execution_result || '')}</td><td><code>${esc(
+              row.execution_path || ''
+            )}</code></td></tr>`
+        )
+        .join('')}</tbody></table>`
+    : '<p>No slow or failed executable samples were captured for this workflow.</p>';
+  const rowCountTable = rowCountSamples.length
+    ? `<h4>Observed row-count samples</h4><table><tbody><tr><th>Time</th><th>Package</th><th>Task</th><th>Path</th><th>Rows sent</th></tr>${rowCountSamples
+        .map(
+          (row) =>
+            `<tr><td>${esc(row.created_time || '')}</td><td><code>${esc(
+              row.package_name || ''
+            )}</code></td><td>${esc(row.task_name || '')}</td><td>${esc(
+              [row.source_component_name, row.destination_component_name].filter(Boolean).join(' -> ')
+            )}</td><td>${esc(row.rows_sent ?? '')}</td></tr>`
+        )
+        .join('')}</tbody></table><p>Row counts are observed SSISDB data-flow movement, not official source or target table counts.</p>`
+    : '<p>No SSISDB row-count samples were captured. This often depends on package logging level.</p>';
+
+  return `<h2>Runtime Baseline</h2>
+<table><tbody>
+<tr><th>Signal</th><th>Value</th></tr>
+<tr><td>As of</td><td>${esc(baseline.as_of || '')}</td></tr>
+<tr><td>Lookback</td><td>${esc(baseline.lookback_days || '')} days</td></tr>
+<tr><td>Last successful run</td><td>${esc(baseline.last_success_time || 'n/a')}</td></tr>
+<tr><td>Last failed run</td><td>${esc(baseline.last_failure_time || 'n/a')}</td></tr>
+<tr><td>Typical successful runtime</td><td>${esc(secondsText(baseline.typical_success_runtime_seconds))}</td></tr>
+<tr><td>P90 successful runtime</td><td>${esc(secondsText(baseline.p90_success_runtime_seconds))}</td></tr>
+<tr><td>Recent failure count</td><td>${esc(baseline.failure_count ?? '0')}</td></tr>
+</tbody></table>
+<p>This is a support baseline from SSISDB history, not a service-level guarantee. It is shown only for top-most workflow packages.</p>
+<details><summary>Runtime Detail</summary>${messageTable}${executableTable}${rowCountTable}</details>`;
+}
+
 function callRows(pkg) {
   if (!pkg.calls.length) return '<p>None found in extracted package evidence.</p>';
   const rows = pkg.calls
@@ -498,7 +772,9 @@ function callRows(pkg) {
         ? child.sameFolder
           ? 'Nested under this page in the Confluence tree.'
           : `Documented under SSIS Folder - ${esc(child.folder)}.`
-        : 'Kept as technical evidence; not modeled as a package page.';
+        : pkg.procedureTargets?.find((procedure) => procedure.call === call)
+          ? 'Procedure target tables are surfaced below as procedure-derived impact.'
+          : 'Kept as technical evidence; not modeled as a package page.';
       return `<tr><td><code>${esc(call)}</code></td><td>${role}</td><td>${note}</td></tr>`;
     })
     .join('');
@@ -507,6 +783,26 @@ function callRows(pkg) {
       ? `<p>${pkg.calls.length - 15} additional call(s) are captured in the source artifact.</p>`
       : '';
   return `<table><tbody><tr><th>Called object</th><th>Resolved role</th><th>Documentation note</th></tr>${rows}</tbody></table>${more}`;
+}
+
+function procedureTargetTable(pkg) {
+  const rows = (pkg.procedureTargets || [])
+    .flatMap((procedure) =>
+      (procedure.writes || []).map((target) => ({
+        call: procedure.call,
+        target,
+      }))
+    )
+    .slice(0, 25)
+    .map(
+      (row) =>
+        `<tr><td><code>${esc(row.call)}</code></td><td><code>${esc(
+          row.target
+        )}</code></td><td>Target comes from database procedure metadata, not a direct SSIS destination component.</td></tr>`
+    )
+    .join('');
+  if (!rows) return '<p>No called-procedure target tables were resolved from database metadata.</p>';
+  return `<table><tbody><tr><th>Called procedure</th><th>Procedure write target</th><th>Evidence note</th></tr>${rows}</tbody></table>`;
 }
 
 function packageBody(pkg) {
@@ -529,14 +825,17 @@ function packageBody(pkg) {
 <tr><td>Lineage edges</td><td>${esc(pkg.edges || '0')}</td></tr>
 <tr><td>Source objects</td><td>${pkg.reads.length}</td></tr>
 <tr><td>Target objects</td><td>${pkg.writes.length}</td></tr>
+<tr><td>Procedure-derived target objects</td><td>${procedureDerivedTargets(pkg).length}</td></tr>
 <tr><td>Stored procedure/package calls</td><td>${pkg.calls.length}</td></tr>
 <tr><td>Column mapping summary</td><td>${esc(pkg.mappings || '0')}</td></tr>
 <tr><td>File/config values found</td><td>${pkg.fileEvidence?.fileNames?.length || 0}</td></tr>
 </tbody></table>
+${runtimeBaselineBlock(pkg)}
 <h2>Business Logic Notes</h2>
 <p>${esc(businessLogicNotes(pkg))}</p>
 <details><summary>Source Objects</summary>${sourceText}</details>
 <details><summary>Target Objects</summary>${targetText}</details>
+<details><summary>Procedure-Derived Targets</summary>${procedureTargetTable(pkg)}</details>
 <details><summary>Called Packages / Procedures</summary>${callRows(pkg)}</details>
 <details><summary>File / Configuration Evidence</summary>${fileEvidenceBlock(pkg)}</details>
 <details><summary>Representative Column Mappings</summary>${mappingTable(pkg.mappingSamples)}</details>
@@ -553,14 +852,19 @@ function packageBody(pkg) {
 
 function folderBody(folder, folderPages) {
   const projects = [...new Set(folderPages.map((page) => page.project).filter(Boolean))];
-  const reads = folderPages.flatMap((page) => page.pkg.reads);
-  const writes = folderPages.flatMap((page) => page.pkg.writes);
-  const mappingDests = folderPages.flatMap((page) => mappingTargets(page.pkg));
-  const mappingSrcs = folderPages.flatMap((page) => mappingSources(page.pkg));
+  const rule = subjectRuleForFolder(folder);
+  const summaryPages = primaryFolderPages(folder, folderPages);
+  const crossProjects = crossSubjectProjects(folder, folderPages);
+  const reads = summaryPages.flatMap((page) => page.pkg.reads);
+  const writes = summaryPages.flatMap((page) => page.pkg.writes);
+  const procedureWrites = summaryPages.flatMap((page) => procedureDerivedTargets(page.pkg));
+  const mappingDests = summaryPages.flatMap((page) => mappingTargets(page.pkg));
+  const mappingSrcs = summaryPages.flatMap((page) => mappingSources(page.pkg));
   const sources = topValues([...reads.map(objectArea), ...mappingSrcs.map(objectArea)], 5);
   const targets = topValues(
     [
       ...writes.filter((target) => !isControlObject(target)).map(objectArea),
+      ...procedureWrites.filter((target) => !isControlObject(target)).map(objectArea),
       ...mappingDests
         .filter((target) => !isControlObject(target) && !/external|flat file/i.test(target))
         .map(objectArea),
@@ -570,14 +874,15 @@ function folderBody(folder, folderPages) {
   const targetNames = topValues(
     [
       ...writes.filter((target) => !isControlObject(target)).map(objectName),
+      ...procedureWrites.filter((target) => !isControlObject(target)).map(objectName),
       ...mappingDests
         .filter((target) => !isControlObject(target) && !/external|flat file/i.test(target))
         .map(objectName),
-      ...folderPages.flatMap((page) =>
+      ...summaryPages.flatMap((page) =>
         page.pkg.calls
           .filter(
             (call) =>
-              /(load|merge|fact|dim|stg|stage|contract|claim)/i.test(call) &&
+              /(load|merge|fact|dim|stg|stage)/i.test(call) &&
               !/\.dtsx$/i.test(call) &&
               !isControlObject(call)
           )
@@ -595,13 +900,24 @@ function folderBody(folder, folderPages) {
   const mappingPackages = folderPages.filter((page) => page.pkg.mappingSamples.length);
   const summary =
     sources.length || targets.length
-      ? `The ${esc(folder)} SSIS folder moves ${esc(
-          humanJoin(sourceNames, folder)
-        )} data from ${esc(humanJoin(sources, 'its source files/tables'))} into ${esc(
-          humanJoin(targets, 'its target tables')
-        )}. The main visible targets include ${esc(
-          humanJoin(targetNames, 'the listed staging/warehouse objects')
-        )}; if these jobs fail, those downstream DOWC/JMA loads or reports may be missing current rows.`
+      ? rule
+        ? esc(
+            subjectFolderSummary({
+              folder,
+              rule,
+              sourceNames,
+              sources,
+              targetNames,
+              crossProjects,
+            })
+          )
+        : `The ${esc(folder)} SSIS folder moves ${esc(
+            humanJoin(sourceNames, folder)
+          )} data from ${esc(humanJoin(sources, 'its source files/tables'))} into ${esc(
+            humanJoin(targets, 'its target tables')
+          )}. The main visible targets include ${esc(
+            humanJoin(targetNames, 'the listed staging/warehouse objects')
+          )}; if these jobs fail, those targets or dependent reports may be missing current rows.`
       : `The ${esc(folder)} SSIS folder contains package execution evidence, but the extracted source/target detail is limited. Use the package pages below to review calls, mappings, and execution checks.`;
 
   const packageRows = folderPages
@@ -611,7 +927,11 @@ function folderBody(folder, folderPages) {
         `<tr><td><code>${esc(page.package)}</code></td><td>${esc(
           page.pkg.resolvedPackageCalls.some((call) => call.sameFolder)
             ? 'Master/orchestration package'
-            : targetRole([...page.pkg.writes, ...mappingTargets(page.pkg)])
+            : targetRole([
+                ...page.pkg.writes,
+                ...procedureDerivedTargets(page.pkg),
+                ...mappingTargets(page.pkg),
+              ])
         )}</td><td>${esc(humanJoin(importantTargets(page.pkg, 3), 'No target surfaced'))}</td></tr>`
     )
     .join('');
@@ -630,6 +950,10 @@ function folderBody(folder, folderPages) {
 <tr><td>Projects</td><td>${projects.length}</td></tr>
 <tr><td>Master/orchestration packages</td><td>${masterPages.length}</td></tr>
 <tr><td>Packages with column mappings</td><td>${mappingPackages.length}</td></tr>
+<tr><td>Business-summary packages</td><td>${summaryPages.length}</td></tr>
+<tr><td>Cross-subject projects excluded from summary</td><td>${esc(
+    humanJoin(crossProjects, 'None detected')
+  )}</td></tr>
 <tr><td>Main source areas</td><td>${esc(humanJoin(sources, 'Not surfaced'))}</td></tr>
 <tr><td>Main target areas</td><td>${esc(humanJoin(targets, 'Not surfaced'))}</td></tr>
 <tr><td>Visible final / important targets</td><td>${esc(humanJoin(targetNames, 'Not surfaced'))}</td></tr>
@@ -648,6 +972,7 @@ ${packageMore}
 
 async function packageRecord(file) {
   const text = await fs.readFile(file, 'utf8');
+  const metadata = frontmatter(text);
   const evidencePath = file.replaceAll('\\', '/').split('/Sonic-data-lineage/')[1];
   const pkg = {
     file,
@@ -662,7 +987,12 @@ async function packageRecord(file) {
     mappings: runtime(text, 'SSIS column mappings'),
     evidencePath,
     mappingSamples: await mappingSamples(file),
+    runtimeBaseline:
+      metadata.ssis_top_most_workflow && metadata.ssis_runtime_baseline
+        ? metadata.ssis_runtime_baseline
+        : null,
     resolvedPackageCalls: [],
+    procedureTargets: [],
   };
   pkg.fileEvidence = await fileConfigEvidence(pkg, text);
   return {
@@ -700,6 +1030,26 @@ function resolvePackageCalls(pages) {
       });
     }
     page.pkg.resolvedPackageCalls = resolved;
+    page.body = packageBody(page.pkg);
+    page.summary = plainSummary(page.pkg);
+  }
+}
+
+function attachProcedureTargets(pages, index) {
+  for (const page of pages) {
+    const packageCallSet = new Set(page.pkg.resolvedPackageCalls.map((call) => call.call));
+    const procedureTargets = [];
+    for (const call of page.calls) {
+      if (isPackageCallLike(call) || packageCallSet.has(call) || isControlObject(call)) continue;
+      const resolved = index.get(normalizeObjectKey(call));
+      if (!resolved?.writes?.length) continue;
+      procedureTargets.push({
+        call,
+        procedure: resolved.id,
+        writes: resolved.writes,
+      });
+    }
+    page.pkg.procedureTargets = procedureTargets;
     page.body = packageBody(page.pkg);
     page.summary = plainSummary(page.pkg);
   }
@@ -808,38 +1158,25 @@ async function findPageByTitle(title) {
   return (data.results || []).find((page) => page.title === title) || null;
 }
 
-async function upsertPage(page, parentId) {
-  const existing = (await findChildPage(parentId, page.title)) || (await findPageByTitle(page.title));
-  if (existing) {
-    await putJson(`/rest/api/content/${existing.id}`, {
-      id: existing.id,
-      type: 'page',
-      title: page.title,
-      ancestors: [{ id: parentId }],
-      version: {
-        number: Number(existing.version?.number || 1) + 1,
-        message: `Automated SSIS documentation sync ${new Date().toISOString()}`,
-      },
-      body: {
-        storage: {
-          value: page.body,
-          representation: 'storage',
-        },
-      },
-    });
-    return { action: 'updated', id: existing.id, title: page.title, parentId };
-  }
+async function findPageByContentTitle(title) {
+  const data = await getJson('/rest/api/content', {
+    spaceKey,
+    title,
+    expand: 'version',
+    limit: 10,
+  });
+  return (data.results || []).find((page) => page.title === title) || null;
+}
 
-  const created = await postJson('/rest/api/content', {
+async function updateExistingPage(existing, page, parentId) {
+  await putJson(`/rest/api/content/${existing.id}`, {
+    id: existing.id,
     type: 'page',
     title: page.title,
     ancestors: [{ id: parentId }],
-    space: { key: spaceKey },
-    metadata: {
-      labels: [
-        { prefix: 'global', name: 'generated' },
-        { prefix: 'global', name: 'ssis-documentation' },
-      ],
+    version: {
+      number: Number(existing.version?.number || 1) + 1,
+      message: `Automated SSIS documentation sync ${new Date().toISOString()}`,
     },
     body: {
       storage: {
@@ -848,7 +1185,45 @@ async function upsertPage(page, parentId) {
       },
     },
   });
-  return { action: 'created', id: created.id, title: page.title, parentId };
+  return { action: 'updated', id: existing.id, title: page.title, parentId };
+}
+
+async function upsertPage(page, parentId) {
+  const existing =
+    (await findChildPage(parentId, page.title)) ||
+    (await findPageByTitle(page.title)) ||
+    (await findPageByContentTitle(page.title));
+  if (existing) {
+    return updateExistingPage(existing, page, parentId);
+  }
+
+  try {
+    const created = await postJson('/rest/api/content', {
+      type: 'page',
+      title: page.title,
+      ancestors: [{ id: parentId }],
+      space: { key: spaceKey },
+      metadata: {
+        labels: [
+          { prefix: 'global', name: 'ssis-documentation' },
+        ],
+      },
+      body: {
+        storage: {
+          value: page.body,
+          representation: 'storage',
+        },
+      },
+    });
+    return { action: 'created', id: created.id, title: page.title, parentId };
+  } catch (err) {
+    const duplicateTitle =
+      err?.response?.status === 400 && /same TITLE|title already exists/i.test(err.response?.data?.message || '');
+    if (!duplicateTitle) throw err;
+    const duplicate = (await findPageByTitle(page.title)) || (await findPageByContentTitle(page.title));
+    if (!duplicate) throw err;
+    return updateExistingPage(duplicate, page, parentId);
+  }
 }
 
 async function updateFolderPage(folderPage, body) {
@@ -882,11 +1257,23 @@ for (const file of selectedFiles) {
   pages.push(await packageRecord(file));
 }
 resolvePackageCalls(pages);
+const procWriteIndex = await procedureWriteIndex(lineageRoot);
+attachProcedureTargets(pages, procWriteIndex);
 const packageParents = parentTitleMap(pages);
 const publishPages = sortPagesByHierarchy(pages, packageParents);
 
 if (!publish) {
   const folders = new Set(pages.map((page) => page.folder));
+  const folderSummaries = [...folders].sort().map((folder) => {
+    const folderPackagePages = pages.filter((page) => page.folder === folder);
+    const body = folderBody(folder, folderPackagePages);
+    const match = body.match(/<h2>Plain-English Summary<\/h2>\s*<p>([\s\S]*?)<\/p>/);
+    return {
+      folder,
+      summary: match ? match[1].replace(/&amp;/g, '&') : '',
+      crossSubjectProjects: crossSubjectProjects(folder, folderPackagePages),
+    };
+  });
   console.log(
     JSON.stringify(
       {
@@ -896,6 +1283,7 @@ if (!publish) {
         folders: folders.size,
         nestedPackagePages: packageParents.size,
         sampleTitles: publishPages.slice(0, 10).map((page) => page.title),
+        sampleFolderSummaries: folderSummaries.slice(0, 10),
         sampleSummaries: publishPages.slice(0, 5).map((page) => ({
           title: page.title,
           summary: page.summary,
@@ -914,13 +1302,6 @@ if (!publish) {
 }
 
 const folderPages = await listFolderPages();
-const missingFolderPages = Array.from(new Set(pages.map((page) => page.folderTitle))).filter(
-  (title) => !folderPages.has(title)
-);
-if (missingFolderPages.length) {
-  throw new Error(`Missing SSIS folder page(s): ${missingFolderPages.slice(0, 10).join(', ')}`);
-}
-
 const results = [];
 const pageIds = new Map();
 const pagesByFolder = new Map();
@@ -929,9 +1310,14 @@ for (const page of publishPages) {
   pagesByFolder.get(page.folder).push(page);
 }
 for (const [folder, folderPackagePages] of pagesByFolder.entries()) {
-  const folderPage = folderPages.get(`SSIS Folder - ${folder}`);
+  const folderTitle = `SSIS Folder - ${folder}`;
   // eslint-disable-next-line no-await-in-loop
-  results.push(await updateFolderPage(folderPage, folderBody(folder, folderPackagePages)));
+  const result = await upsertPage(
+    { title: folderTitle, body: folderBody(folder, folderPackagePages) },
+    catalogPageId
+  );
+  folderPages.set(folderTitle, { id: result.id, title: folderTitle });
+  results.push({ ...result, action: `${result.action}-folder` });
 }
 for (const page of publishPages) {
   const parentPackageTitle = packageParents.get(page.title);

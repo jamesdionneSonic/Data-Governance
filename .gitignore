@@ -25,6 +25,7 @@ build/
 .env.local
 *.log
 logs/
+.lineage-runtime-cache/
 playwright-report/
 test-results/
 test-results-*/
@@ -48,6 +49,9 @@ repomix-*.xml
 !/data/classification/
 /data/classification/*
 !/data/classification/taxonomy.yml
+!/data/products/
+/data/products/*
+!/data/products/*.md
 !/data/markdown/
 /data/markdown/*
 !/data/markdown/_runtime/

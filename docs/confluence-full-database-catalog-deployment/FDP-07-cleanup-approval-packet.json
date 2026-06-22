@@ -1,0 +1,99 @@
+{
+  "packet": "FDP-07",
+  "title": "Cleanup Approval Packet And Final Readback",
+  "generated_date": "2026-06-19",
+  "scope": {
+    "catalog_scope": "all included databases",
+    "deployment_tier": "Tier 4 cleanup report",
+    "publish_mode": "dry-run/readiness only",
+    "cleanup_mode": "report-only; no cleanup authorized",
+    "rovo_mode": "dry-run/check only"
+  },
+  "source_reports": {
+    "cleanup_report_json": "data/confluence/human-catalog-dry-run/superseded-pages-report.json",
+    "cleanup_report_markdown": "data/confluence/human-catalog-dry-run/superseded-pages-report.md",
+    "inventory_json": "data/confluence/full-database-catalog-deployment/inventory.json",
+    "inventory_markdown": "data/confluence/full-database-catalog-deployment/inventory.md",
+    "human_manifest": "data/confluence/human-catalog-dry-run/manifest.json",
+    "rovo_manifest": "data/confluence/rovo-ai-retrieval-dry-run/manifest.json"
+  },
+  "catalog_summary": {
+    "included_databases": 32,
+    "included_schemas": 145,
+    "included_objects": 5134,
+    "blocked_schemas": 4,
+    "blocked_objects": 6,
+    "excluded_ssis_package_catalog_artifacts": 2051,
+    "human_dry_run_pages_checked": 213,
+    "rovo_pages_checked": 8
+  },
+  "cleanup_summary": {
+    "cleanup_allowed": false,
+    "requires_explicit_cleanup_approval": true,
+    "total_candidates": 170,
+    "schema_title_candidates": 145,
+    "high_value_object_candidates": 25,
+    "live_page_ids_surfaced": false,
+    "comments_attachments_manual_edit_risk_surfaced": false,
+    "recommended_action": "review candidates, verify canonical replacements in live Confluence, then approve explicit archive/delete/move actions in a separate cleanup run"
+  },
+  "cleanup_candidate_samples": [
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.Dim_Vehicle",
+      "canonical_replacement_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / Dim_Vehicle",
+      "recommended_action": "archive candidate after the canonical object page is reviewed and linked correctly"
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.FactOpportunity",
+      "canonical_replacement_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / FactOpportunity",
+      "recommended_action": "archive candidate after the canonical object page is reviewed and linked correctly"
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / BI_WorkDB / Schema - BI_WorkDB.dbo",
+      "canonical_replacement_path": "Sonic Data Lineage / Database Catalog / BI_WorkDB / dbo",
+      "recommended_action": "archive candidate after the canonical schema page is reviewed and linked correctly"
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.clean",
+      "canonical_replacement_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / clean",
+      "recommended_action": "archive candidate after the canonical schema page is reviewed and linked correctly"
+    }
+  ],
+  "readiness_checks": [
+    {
+      "command": "npm run confluence:human:check",
+      "status": "passed"
+    },
+    {
+      "command": "npm run confluence:full:inventory",
+      "status": "passed"
+    },
+    {
+      "command": "npm run confluence:rovo:check",
+      "status": "passed"
+    },
+    {
+      "command": "node scripts/publish-human-confluence-catalog-pilot.mjs --packet docs/confluence-full-database-catalog-deployment/FDP-03-tier1-publish-packet.json",
+      "status": "dry-run passed"
+    },
+    {
+      "command": "node scripts/publish-human-confluence-catalog-pilot.mjs --packet docs/confluence-full-database-catalog-deployment/FDP-04-tier2-thin-object-batch-01-publish-packet.json",
+      "status": "dry-run passed"
+    },
+    {
+      "command": "node scripts/publish-human-confluence-catalog-pilot.mjs --packet docs/confluence-full-database-catalog-deployment/FDP-05-tier3-rich-object-batch-01-publish-packet.json",
+      "status": "dry-run passed"
+    }
+  ],
+  "approval_gates": {
+    "live_catalog_publish_required": true,
+    "live_rovo_publish_required": true,
+    "separate_cleanup_approval_required": true,
+    "cleanup_execution_status": "not executed",
+    "post_cleanup_check_status": "not run because cleanup was not approved or executed"
+  }
+}

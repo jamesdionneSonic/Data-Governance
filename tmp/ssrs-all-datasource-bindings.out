@@ -1,4 +1,4 @@
-ReportPath|ReportName|DataSourceName|SharedDataSourcePath|SharedDataSourceItemID
+﻿ReportPath|ReportName|DataSourceName|SharedDataSourcePath|SharedDataSourceItemID
 ----------|----------|--------------|--------------------|----------------------
 /AcctStd/Custno to Stockno|Custno to Stockno|DMS|/AcctStd/DataSource/DMS|547C5877-14BF-4D57-A908-55A0C557573A
 /AcctStd/ROnumber to Custno|ROnumber to Custno|DMS|/AcctStd/DataSource/DMS|547C5877-14BF-4D57-A908-55A0C557573A

@@ -1,0 +1,121 @@
+{
+  "evaluation_set": "wp-06-rovo-retrieval-evaluation",
+  "generated_for": "Sonic Data Lineage / AI Retrieval Artifacts",
+  "max_prompts": 50,
+  "prompts": [
+    {
+      "id": "rovo-db-vendordata-summary",
+      "category": "database summary",
+      "prompt": "Tell me about the database VendorData.",
+      "expected_canonical_id": "database:VendorData",
+      "expected_retrieval_page": "Rovo Database Context 001",
+      "expected_behavior": "Answer from the VendorData database context and link to the canonical human database page.",
+      "forbidden_invented_facts": [
+        "owner",
+        "SLA",
+        "lifecycle/status",
+        "live freshness",
+        "certification"
+      ]
+    },
+    {
+      "id": "rovo-db-vendordata-owner",
+      "category": "unsupported governance fact",
+      "prompt": "Who owns VendorData and what is its SLA?",
+      "expected_canonical_id": "database:VendorData",
+      "expected_retrieval_page": "Rovo Database Context 001",
+      "expected_behavior": "State that owner and SLA are not surfaced in metadata.",
+      "forbidden_invented_facts": ["owner", "SLA"]
+    },
+    {
+      "id": "rovo-object-dimvehicle-summary",
+      "category": "object summary",
+      "prompt": "Tell me about the DimVehicle table.",
+      "expected_canonical_id": "ambiguous:dimvehicle",
+      "expected_retrieval_page": "Rovo Ambiguity Context 001",
+      "expected_behavior": "Show the DimVehicle ambiguity group and ask the user to choose because several normalized matches exist.",
+      "forbidden_invented_facts": ["owner", "SLA", "certification"]
+    },
+    {
+      "id": "rovo-object-dim-vehicle-canonical",
+      "category": "object summary",
+      "prompt": "Tell me about Sonic_DW.dbo.Dim_Vehicle.",
+      "expected_canonical_id": "object:L1-5FSQL-01.Sonic_DW.dbo.Dim_Vehicle",
+      "expected_retrieval_page": "Rovo Object Summary Context 001",
+      "expected_behavior": "Answer with the canonical object identity, aliases, columns, upstream/downstream summary, profile status, confidence, and human page link.",
+      "forbidden_invented_facts": ["business definition", "owner", "lifecycle/status"]
+    },
+    {
+      "id": "rovo-object-factopportunity-lineage",
+      "category": "lineage",
+      "prompt": "Show me the lineage of the FactOpportunity table.",
+      "expected_canonical_id": "ambiguous:factopportunity",
+      "expected_retrieval_page": "Rovo Ambiguity Context 001",
+      "expected_behavior": "Mention that FactOpportunity is ambiguous and include the Sonic_DW.dbo.FactOpportunity option with upstream/downstream context pages.",
+      "forbidden_invented_facts": ["owner", "SLA", "live freshness"]
+    },
+    {
+      "id": "rovo-object-factopportunity-canonical-lineage",
+      "category": "lineage",
+      "prompt": "Show me the lineage of Sonic_DW.dbo.FactOpportunity.",
+      "expected_canonical_id": "object:L1-5FSQL-01.Sonic_DW.dbo.FactOpportunity",
+      "expected_retrieval_page": "Rovo Upstream Context 001; Rovo Downstream Context 001",
+      "expected_behavior": "Answer from upstream and downstream lineage context, grouping loaders/orchestrators and downstream consumers.",
+      "forbidden_invented_facts": ["owner", "certification", "live freshness"]
+    },
+    {
+      "id": "rovo-alias-dimvehicle-nospace",
+      "category": "alias lookup",
+      "prompt": "Find dimvehicle.",
+      "expected_canonical_id": "ambiguous:dimvehicle",
+      "expected_retrieval_page": "Rovo Object Locator 001; Rovo Ambiguity Context 001",
+      "expected_behavior": "Resolve the normalized alias and present the ambiguity group instead of choosing one object silently.",
+      "forbidden_invented_facts": ["business meaning", "owner"]
+    },
+    {
+      "id": "rovo-alias-fact-opportunity-underscore",
+      "category": "alias lookup",
+      "prompt": "Find fact_opportunity.",
+      "expected_canonical_id": "ambiguous:factopportunity",
+      "expected_retrieval_page": "Rovo Object Locator 001; Rovo Ambiguity Context 001",
+      "expected_behavior": "Resolve underscore/casing variants and show matching canonical ids.",
+      "forbidden_invented_facts": ["owner", "SLA"]
+    },
+    {
+      "id": "rovo-column-dim-vehicle",
+      "category": "column question",
+      "prompt": "What columns are surfaced for Sonic_DW.dbo.Dim_Vehicle?",
+      "expected_canonical_id": "object:L1-5FSQL-01.Sonic_DW.dbo.Dim_Vehicle",
+      "expected_retrieval_page": "Rovo Object Summary Context 001",
+      "expected_behavior": "Use key columns and column count from the object summary context. Do not provide sample data values.",
+      "forbidden_invented_facts": ["sample values", "raw rows"]
+    },
+    {
+      "id": "rovo-freshness-vendordata",
+      "category": "unsupported governance fact",
+      "prompt": "Is VendorData fresh and certified?",
+      "expected_canonical_id": "database:VendorData",
+      "expected_retrieval_page": "Rovo Database Context 001",
+      "expected_behavior": "State that live freshness and certification are not surfaced in metadata.",
+      "forbidden_invented_facts": ["live freshness", "certification"]
+    },
+    {
+      "id": "rovo-status-factopportunity",
+      "category": "unsupported governance fact",
+      "prompt": "Is Sonic_DW.dbo.FactOpportunity active or deprecated?",
+      "expected_canonical_id": "object:L1-5FSQL-01.Sonic_DW.dbo.FactOpportunity",
+      "expected_retrieval_page": "Rovo Object Summary Context 001",
+      "expected_behavior": "State that lifecycle/status is not surfaced in metadata.",
+      "forbidden_invented_facts": ["active", "deprecated", "do-not-use"]
+    },
+    {
+      "id": "rovo-ambiguous-factopportunity",
+      "category": "ambiguity",
+      "prompt": "Which FactOpportunity table should I use?",
+      "expected_canonical_id": "ambiguous:factopportunity",
+      "expected_retrieval_page": "Rovo Ambiguity Context 001",
+      "expected_behavior": "List the matching canonical ids and ask the user to choose the database/schema/object.",
+      "forbidden_invented_facts": ["recommended table without evidence"]
+    }
+  ]
+}

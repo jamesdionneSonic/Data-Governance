@@ -1,5 +1,9 @@
 import { createHash, createHmac } from 'crypto';
+import { execFile } from 'child_process';
+import { promisify } from 'util';
 import { ConnectorRuntimeError } from './connectorErrors.js';
+
+const execFileAsync = promisify(execFile);
 
 const DEFAULT_API_VERSION = {
   salesforce: 'v61.0',
@@ -13,14 +17,21 @@ const SOURCE_PATHS = {
     datasets: () => '/api/v1/datasets',
   },
   azure_data_factory: {
-    pipelines: ({ config }) =>
-      `/subscriptions/${config.subscription_id}/resourceGroups/${config.resource_group}/providers/Microsoft.DataFactory/factories/${config.factory_name}/pipelines?api-version=2018-06-01`,
-    datasets: ({ config }) =>
-      `/subscriptions/${config.subscription_id}/resourceGroups/${config.resource_group}/providers/Microsoft.DataFactory/factories/${config.factory_name}/datasets?api-version=2018-06-01`,
-    connections: ({ config }) =>
-      `/subscriptions/${config.subscription_id}/resourceGroups/${config.resource_group}/providers/Microsoft.DataFactory/factories/${config.factory_name}/linkedservices?api-version=2018-06-01`,
-    schedules: ({ config }) =>
-      `/subscriptions/${config.subscription_id}/resourceGroups/${config.resource_group}/providers/Microsoft.DataFactory/factories/${config.factory_name}/triggers?api-version=2018-06-01`,
+    factory: ({ config }) => `${adfFactoryPath(config)}?api-version=2018-06-01`,
+    pipelines: ({ config }) => `${adfFactoryPath(config)}/pipelines?api-version=2018-06-01`,
+    tasks: ({ config }) => `${adfFactoryPath(config)}/pipelines?api-version=2018-06-01`,
+    datasets: ({ config }) => `${adfFactoryPath(config)}/datasets?api-version=2018-06-01`,
+    connections: ({ config }) => `${adfFactoryPath(config)}/linkedservices?api-version=2018-06-01`,
+    schedules: ({ config }) => `${adfFactoryPath(config)}/triggers?api-version=2018-06-01`,
+    dataflows: ({ config }) => `${adfFactoryPath(config)}/dataflows?api-version=2018-06-01`,
+    integration_runtimes: ({ config }) =>
+      `${adfFactoryPath(config)}/integrationRuntimes?api-version=2018-06-01`,
+    managed_virtual_networks: ({ config }) =>
+      `${adfFactoryPath(config)}/managedVirtualNetworks?api-version=2018-06-01`,
+    pipeline_runs: ({ config }) =>
+      `${adfFactoryPath(config)}/queryPipelineRuns?api-version=2018-06-01`,
+    trigger_runs: ({ config }) =>
+      `${adfFactoryPath(config)}/queryTriggerRuns?api-version=2018-06-01`,
   },
   azure_purview: {
     assets: () => '/catalog/api/search/query?api-version=2023-09-01',
@@ -285,6 +296,10 @@ const SOURCE_PATHS = {
   },
 };
 
+function adfFactoryPath(config = {}) {
+  return `/subscriptions/${config.subscription_id}/resourceGroups/${config.resource_group}/providers/Microsoft.DataFactory/factories/${config.factory_name}`;
+}
+
 const SOURCE_BASE_URL = {
   azure_data_factory: () => 'https://management.azure.com',
   bigquery: () => 'https://bigquery.googleapis.com',
@@ -318,6 +333,18 @@ export async function fetchSourceMetadata({
 
   if (['postgresql', 'snowflake', 'ssas_on_prem'].includes(connector.type)) {
     return fetchNativeMetadata({ connector, stream, bridge });
+  }
+
+  if (connector.type === 'azure_data_factory') {
+    if (streamName === 'managed_private_endpoints') {
+      return fetchAdfManagedPrivateEndpoints({ connector, stream, headers, options });
+    }
+    if (streamName === 'activity_runs') {
+      return fetchAdfActivityRuns({ connector, stream, headers, options });
+    }
+    if (streamName === 'lineage') {
+      return fetchAdfLineageMetadata({ connector, stream, headers, options });
+    }
   }
 
   const endpointOverride = endpointOverrideForStream(config, streamName);
@@ -375,9 +402,12 @@ async function fetchJson({ connector, stream, url, headers, options }) {
     throw sourceClientMissingError(connector, stream);
   }
   const requestHeaders = await sourceHeaders({ connector, stream, url, headers });
+  const method = String(options.method || stream.method || 'GET').toUpperCase();
+  const body = requestBodyForStream(connector, stream, options);
   const response = await fetch(url, {
-    method: options.method || stream.method || 'GET',
-    headers: requestHeaders,
+    method,
+    headers: body ? { ...requestHeaders, 'Content-Type': 'application/json' } : requestHeaders,
+    body: body ? JSON.stringify(body) : undefined,
   });
   if (!response.ok) {
     throw new ConnectorRuntimeError(
@@ -393,7 +423,22 @@ async function fetchJson({ connector, stream, url, headers, options }) {
     );
   }
   try {
-    return response.json();
+    const json = await response.json();
+    if (method === 'GET') {
+      return fetchPagedGetJson({ connector, stream, headers, firstPage: json });
+    }
+    if (connector.type === 'azure_data_factory' && json?.continuationToken) {
+      return fetchAdfQueryContinuationJson({
+        connector,
+        stream,
+        url,
+        headers,
+        options,
+        firstPage: json,
+        firstBody: body,
+      });
+    }
+    return json;
   } catch (err) {
     throw new ConnectorRuntimeError(
       `${connector.type} source API did not return JSON for stream '${stream.name}'.`,
@@ -409,15 +454,220 @@ async function fetchJson({ connector, stream, url, headers, options }) {
   }
 }
 
+async function fetchPagedGetJson({ connector, stream, headers, firstPage }) {
+  if (!firstPage?.nextLink) return firstPage;
+  const pages = [firstPage];
+  let { nextLink } = firstPage;
+  let pageCount = 1;
+  while (nextLink && pageCount < Number(connector.config?.max_metadata_pages || 100)) {
+    const requestHeaders = await sourceHeaders({ connector, stream, url: nextLink, headers });
+    const response = await fetch(nextLink, { method: 'GET', headers: requestHeaders });
+    if (!response.ok) {
+      throw new ConnectorRuntimeError(
+        `${connector.type} source API returned HTTP ${response.status} while paging stream '${stream.name}'.`,
+        {
+          connector_id: connector.id,
+          connector_type: connector.type,
+          stream: stream.name,
+          remediation:
+            'Check source permissions and retry. The connector successfully read the first page but could not read a continuation page.',
+          details: { status: response.status, endpoint: safeUrl(nextLink) },
+        }
+      );
+    }
+    const page = await response.json();
+    pages.push(page);
+    nextLink = page.nextLink;
+    pageCount += 1;
+  }
+  return mergeJsonPages(pages);
+}
+
+async function fetchAdfQueryContinuationJson({
+  connector,
+  stream,
+  url,
+  headers,
+  options: _options,
+  firstPage,
+  firstBody,
+}) {
+  const pages = [firstPage];
+  let { continuationToken } = firstPage;
+  let pageCount = 1;
+  while (continuationToken && pageCount < Number(connector.config?.max_metadata_pages || 100)) {
+    const requestHeaders = await sourceHeaders({ connector, stream, url, headers });
+    const body = { ...(firstBody || {}), continuationToken };
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { ...requestHeaders, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!response.ok) {
+      throw new ConnectorRuntimeError(
+        `${connector.type} source API returned HTTP ${response.status} while paging stream '${stream.name}'.`,
+        {
+          connector_id: connector.id,
+          connector_type: connector.type,
+          stream: stream.name,
+          remediation:
+            'Check source permissions and retry. The connector successfully read the first query page but could not read a continuation page.',
+          details: { status: response.status, endpoint: safeUrl(url) },
+        }
+      );
+    }
+    const page = await response.json();
+    pages.push(page);
+    continuationToken = page.continuationToken;
+    pageCount += 1;
+  }
+  return mergeJsonPages(pages);
+}
+
+function mergeJsonPages(pages = []) {
+  const first = pages[0] || {};
+  return {
+    ...first,
+    value: pages.flatMap((page) => (Array.isArray(page?.value) ? page.value : [])),
+    nextLink: null,
+    continuationToken: null,
+  };
+}
+
+function requestBodyForStream(connector, stream, options = {}) {
+  if (options.body || options.request_body || options.requestBody) {
+    return options.body || options.request_body || options.requestBody;
+  }
+  if (stream.body || stream.request_body || stream.requestBody) {
+    return stream.body || stream.request_body || stream.requestBody;
+  }
+  if (connector.type === 'azure_data_factory') {
+    return adfQueryBody(connector, stream, options);
+  }
+  return null;
+}
+
+function adfQueryBody(connector, stream, options = {}) {
+  if (!['pipeline_runs', 'trigger_runs', 'activity_runs'].includes(stream?.name)) return null;
+  const config = connector.config || {};
+  const end = new Date(options.last_updated_before || options.lastUpdatedBefore || Date.now());
+  const start =
+    options.last_updated_after ||
+    options.lastUpdatedAfter ||
+    new Date(
+      end.getTime() -
+        Math.max(1, Number(options.lookback_days || config.run_history_lookback_days || 30)) *
+          86400000
+    ).toISOString();
+  return {
+    lastUpdatedAfter: typeof start === 'string' ? start : new Date(start).toISOString(),
+    lastUpdatedBefore: end.toISOString(),
+  };
+}
+
 async function sourceHeaders({ connector, stream, url, headers }) {
   const baseHeaders = {
     Accept: 'application/json',
     ...headers,
   };
+  if (connector.type.startsWith('azure_')) {
+    return azureHeaders({ connector, stream, headers: baseHeaders });
+  }
   if (connector.type.startsWith('aws_') || connector.type === 'quicksight') {
     return signAwsHeaders({ connector, stream, url, headers: baseHeaders });
   }
   return baseHeaders;
+}
+
+async function azureHeaders({ connector, stream, headers }) {
+  const config = connector.config || {};
+  const credential = connector.credential || {};
+  const token =
+    credential.access_token ||
+    credential.token ||
+    credential.bearer_token ||
+    config.access_token ||
+    config.token ||
+    null;
+  if (token) return { ...headers, Authorization: `Bearer ${token}` };
+
+  const mode = String(credential.mode || credential.kind || '').toLowerCase();
+  if (['azure_cli', 'delegated_oauth'].includes(mode) || config.use_azure_cli === true) {
+    const accessToken = await getAzureCliAccessToken({ connector, stream });
+    return { ...headers, Authorization: `Bearer ${accessToken}` };
+  }
+
+  if (mode === 'managed_identity' || mode === 'service_principal') {
+    throw new ConnectorRuntimeError(
+      `${connector.type} live extraction needs Azure credential resolution for stream '${stream?.name}'.`,
+      {
+        connector_id: connector.id,
+        connector_type: connector.type,
+        stream: stream?.name,
+        remediation:
+          'Use credential.mode=azure_cli for local delegated access, provide a bearer token for one-time testing, or add managed identity/service principal token resolution before live extraction.',
+        details: {
+          accepted_local_mode: 'azure_cli',
+          credential_mode: mode,
+          azure_resource: 'https://management.azure.com/',
+        },
+      }
+    );
+  }
+
+  return headers;
+}
+
+async function getAzureCliAccessToken({ connector, stream }) {
+  try {
+    const args = [
+      'account',
+      'get-access-token',
+      '--resource',
+      'https://management.azure.com/',
+      '--output',
+      'json',
+    ];
+    if (connector.config?.tenant_id) args.push('--tenant', connector.config.tenant_id);
+    const azExecutable = connector.config?.azure_cli_path || 'az';
+    const commandArgs =
+      process.platform === 'win32' && !connector.config?.azure_cli_path
+        ? ['/d', '/s', '/c', ['az', ...args.map(cmdQuote)].join(' ')]
+        : args;
+    const executable =
+      process.platform === 'win32' && !connector.config?.azure_cli_path ? 'cmd.exe' : azExecutable;
+    const { stdout } = await execFileAsync(executable, commandArgs, {
+      windowsHide: true,
+      timeout: Number(connector.config?.azure_cli_timeout_ms || 30000),
+      maxBuffer: 1024 * 1024,
+    });
+    const payload = JSON.parse(stdout);
+    if (!payload.accessToken) throw new Error('Azure CLI response did not include accessToken.');
+    return payload.accessToken;
+  } catch (err) {
+    throw new ConnectorRuntimeError(
+      `${connector.type} could not get an Azure CLI access token for stream '${stream?.name}'.`,
+      {
+        connector_id: connector.id,
+        connector_type: connector.type,
+        stream: stream?.name,
+        remediation:
+          'Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run.',
+        details: {
+          credential_mode: connector.credential?.mode || null,
+          tenant_id: connector.config?.tenant_id || null,
+          subscription_id: connector.config?.subscription_id || null,
+          error: err.message,
+        },
+      }
+    );
+  }
+}
+
+function cmdQuote(value) {
+  const text = String(value);
+  if (/^[A-Za-z0-9_:./=-]+$/.test(text)) return text;
+  return `"${text.replace(/"/g, '\\"')}"`;
 }
 
 function normalizeSourceResponse({ connector, stream, json }) {
@@ -425,12 +675,302 @@ function normalizeSourceResponse({ connector, stream, json }) {
   if (connector.type === 'salesforce') return normalizeSalesforce(stream, json);
   if (connector.type === 'git_repository') return normalizeGitRepository(connector, stream, json);
   if (connector.type === 'dbt') return normalizeDbt(connector, stream, json);
+  if (connector.type === 'azure_data_factory') return normalizeAzureDataFactory(stream, json);
 
   return {
     extracted_at: new Date().toISOString(),
     source: 'source_api_client',
     [stream.name]: extractArray(json),
   };
+}
+
+async function fetchAdfManagedPrivateEndpoints({ connector, stream, headers, options }) {
+  const config = connector.config || {};
+  const baseUrl = resolveBaseUrl(connector);
+  const vnetUrl = absoluteUrl(
+    SOURCE_PATHS.azure_data_factory.managed_virtual_networks({ config }),
+    baseUrl
+  );
+  const vnetJson = await fetchJson({
+    connector,
+    stream: { ...stream, name: 'managed_virtual_networks', method: 'GET' },
+    url: vnetUrl,
+    headers,
+    options,
+  });
+  const vnets = extractArray(vnetJson);
+  const endpoints = [];
+  for (const vnet of vnets) {
+    const vnetName = vnet.name || vnet.id?.split('/').pop();
+    if (!vnetName) continue;
+    const endpointPath = `${adfFactoryPath(config)}/managedVirtualNetworks/${encodeURIComponent(vnetName)}/managedPrivateEndpoints?api-version=2018-06-01`;
+    const endpointJson = await fetchJson({
+      connector,
+      stream: { ...stream, name: 'managed_private_endpoints', method: 'GET' },
+      url: absoluteUrl(endpointPath, baseUrl),
+      headers,
+      options,
+    });
+    endpoints.push(
+      ...extractArray(endpointJson).map((endpoint) => ({
+        ...endpoint,
+        managed_virtual_network: vnetName,
+      }))
+    );
+  }
+  return {
+    extracted_at: new Date().toISOString(),
+    source: 'source_api_client',
+    managed_private_endpoints: endpoints,
+  };
+}
+
+async function fetchAdfLineageMetadata({ connector, stream, headers, options }) {
+  const config = connector.config || {};
+  const baseUrl = resolveBaseUrl(connector);
+  const pipelinesJson = await fetchJson({
+    connector,
+    stream: { ...stream, name: 'pipelines', method: 'GET' },
+    url: absoluteUrl(SOURCE_PATHS.azure_data_factory.pipelines({ config }), baseUrl),
+    headers,
+    options,
+  });
+  const dataflowsJson = await fetchJson({
+    connector,
+    stream: { ...stream, name: 'dataflows', method: 'GET' },
+    url: absoluteUrl(SOURCE_PATHS.azure_data_factory.dataflows({ config }), baseUrl),
+    headers,
+    options,
+  }).catch(() => ({ value: [] }));
+  const datasetsJson = await fetchJson({
+    connector,
+    stream: { ...stream, name: 'datasets', method: 'GET' },
+    url: absoluteUrl(SOURCE_PATHS.azure_data_factory.datasets({ config }), baseUrl),
+    headers,
+    options,
+  }).catch(() => ({ value: [] }));
+  return {
+    extracted_at: new Date().toISOString(),
+    source: 'source_api_client',
+    lineage: extractAdfLineage({
+      pipelines: extractArray(pipelinesJson),
+      dataflows: extractArray(dataflowsJson),
+      datasets: extractArray(datasetsJson),
+    }),
+  };
+}
+
+async function fetchAdfActivityRuns({ connector, stream, headers, options }) {
+  const config = connector.config || {};
+  const baseUrl = resolveBaseUrl(connector);
+  const pipelineRunsJson = await fetchJson({
+    connector,
+    stream: { ...stream, name: 'pipeline_runs', method: 'POST' },
+    url: absoluteUrl(SOURCE_PATHS.azure_data_factory.pipeline_runs({ config }), baseUrl),
+    headers,
+    options,
+  });
+  const pipelineRuns = extractArray(pipelineRunsJson).slice(
+    0,
+    Math.max(
+      1,
+      Number(options.activity_run_pipeline_limit || config.activity_run_pipeline_limit || 50)
+    )
+  );
+  const activityRuns = [];
+  for (const pipelineRun of pipelineRuns) {
+    const runId = pipelineRun.runId || pipelineRun.pipelineRunId || pipelineRun.id;
+    if (!runId) continue;
+    const activityRunPath = `${adfFactoryPath(config)}/pipelineruns/${encodeURIComponent(runId)}/queryActivityruns?api-version=2018-06-01`;
+    const activityRunJson = await fetchJson({
+      connector,
+      stream: { ...stream, name: 'activity_runs', method: 'POST' },
+      url: absoluteUrl(activityRunPath, baseUrl),
+      headers,
+      options,
+    });
+    activityRuns.push(
+      ...extractArray(activityRunJson).map((activityRun) => ({
+        ...activityRun,
+        pipeline_run_id: runId,
+        pipeline_name: activityRun.pipelineName || pipelineRun.pipelineName || null,
+      }))
+    );
+  }
+  return {
+    extracted_at: new Date().toISOString(),
+    source: 'source_api_client',
+    activity_runs: activityRuns,
+  };
+}
+
+function normalizeAzureDataFactory(stream, json = {}) {
+  if (stream.name === 'factory') {
+    return {
+      extracted_at: new Date().toISOString(),
+      source: 'source_api_client',
+      factory: extractArray(json).map((factory) => ({
+        ...factory,
+        object_type: 'data_factory',
+      })),
+    };
+  }
+  if (stream.name === 'tasks') {
+    return {
+      extracted_at: new Date().toISOString(),
+      source: 'source_api_client',
+      tasks: extractAdfActivities(extractArray(json)),
+    };
+  }
+  if (stream.name === 'lineage') {
+    return {
+      extracted_at: new Date().toISOString(),
+      source: 'source_api_client',
+      lineage: extractAdfLineage({ pipelines: extractArray(json) }),
+    };
+  }
+  const objectTypeByStream = {
+    pipelines: 'adf_pipeline',
+    datasets: 'adf_dataset',
+    connections: 'adf_linked_service',
+    schedules: 'adf_trigger',
+    dataflows: 'adf_dataflow',
+    integration_runtimes: 'adf_integration_runtime',
+    managed_virtual_networks: 'adf_managed_virtual_network',
+    managed_private_endpoints: 'adf_managed_private_endpoint',
+    pipeline_runs: 'adf_pipeline_run',
+    trigger_runs: 'adf_trigger_run',
+    activity_runs: 'adf_activity_run',
+  };
+  return {
+    extracted_at: new Date().toISOString(),
+    source: 'source_api_client',
+    [stream.name]: extractArray(json).map((item) => ({
+      ...item,
+      object_type: objectTypeByStream[stream.name] || stream.name,
+    })),
+  };
+}
+
+function extractAdfActivities(pipelines = []) {
+  return pipelines.flatMap((pipeline) => {
+    const pipelineName = pipeline.name || pipeline.id?.split('/').pop() || 'pipeline';
+    return walkAdfActivities(pipeline.properties?.activities || [], {
+      pipeline_id: pipeline.id || pipelineName,
+      pipeline_name: pipelineName,
+      parent_activity: null,
+    });
+  });
+}
+
+function walkAdfActivities(activities = [], context = {}) {
+  return toArray(activities).flatMap((activity) => {
+    const activityName = activity.name || activity.type || 'activity';
+    const id = `${context.pipeline_id}/activities/${activityName}`;
+    const nestedActivities = [
+      ...toArray(activity.typeProperties?.activities),
+      ...toArray(activity.typeProperties?.ifTrueActivities),
+      ...toArray(activity.typeProperties?.ifFalseActivities),
+      ...toArray(activity.typeProperties?.cases).flatMap((caseItem) =>
+        toArray(caseItem.activities)
+      ),
+      ...toArray(activity.typeProperties?.defaultActivities),
+    ];
+    return [
+      {
+        ...activity,
+        id,
+        name: activityName,
+        object_type: 'adf_activity',
+        activity_type: activity.type || null,
+        pipeline_id: context.pipeline_id,
+        pipeline_name: context.pipeline_name,
+        parent_id: context.parent_activity || context.pipeline_id,
+        parent_activity: context.parent_activity,
+      },
+      ...walkAdfActivities(nestedActivities, {
+        ...context,
+        parent_activity: id,
+      }),
+    ];
+  });
+}
+
+function extractAdfLineage({ pipelines = [], dataflows = [], datasets = [] } = {}) {
+  const edges = [];
+  for (const dataset of datasets) {
+    const datasetName = dataset.name || dataset.id?.split('/').pop();
+    const linkedService =
+      dataset.properties?.linkedServiceName?.referenceName ||
+      dataset.properties?.linked_service_name?.referenceName;
+    if (datasetName && linkedService) {
+      edges.push(
+        adfEdge(`linkedService:${linkedService}`, `dataset:${datasetName}`, 'connects_to')
+      );
+    }
+  }
+  for (const pipeline of pipelines) {
+    const pipelineName = pipeline.name || pipeline.id?.split('/').pop() || 'pipeline';
+    for (const activity of extractAdfActivities([pipeline])) {
+      const activityId = `activity:${pipelineName}/${activity.name}`;
+      edges.push(adfEdge(`pipeline:${pipelineName}`, activityId, 'contains_activity'));
+      for (const input of toArray(activity.inputs)) {
+        const referenceName = input.referenceName || input.name;
+        if (referenceName) edges.push(adfEdge(`dataset:${referenceName}`, activityId, 'input_to'));
+      }
+      for (const output of toArray(activity.outputs)) {
+        const referenceName = output.referenceName || output.name;
+        if (referenceName)
+          edges.push(adfEdge(activityId, `dataset:${referenceName}`, 'outputs_to'));
+      }
+      for (const dependency of toArray(activity.dependsOn)) {
+        const dependencyName = dependency.activity || dependency.activityName || dependency.name;
+        if (dependencyName) {
+          edges.push(
+            adfEdge(`activity:${pipelineName}/${dependencyName}`, activityId, 'depends_on')
+          );
+        }
+      }
+      const dataflowReference = activity.typeProperties?.dataflow?.referenceName;
+      if (dataflowReference) {
+        edges.push(adfEdge(activityId, `dataflow:${dataflowReference}`, 'runs_dataflow'));
+      }
+    }
+  }
+  for (const dataflow of dataflows) {
+    const dataflowName = dataflow.name || dataflow.id?.split('/').pop();
+    if (!dataflowName) continue;
+    const properties = dataflow.properties?.typeProperties || dataflow.properties || {};
+    for (const source of toArray(properties.sources)) {
+      const referenceName = source.dataset?.referenceName || source.datasetReference?.referenceName;
+      if (referenceName)
+        edges.push(
+          adfEdge(`dataset:${referenceName}`, `dataflow:${dataflowName}`, 'dataflow_source')
+        );
+    }
+    for (const sink of toArray(properties.sinks)) {
+      const referenceName = sink.dataset?.referenceName || sink.datasetReference?.referenceName;
+      if (referenceName)
+        edges.push(
+          adfEdge(`dataflow:${dataflowName}`, `dataset:${referenceName}`, 'dataflow_sink')
+        );
+    }
+  }
+  return dedupeAdfEdges(edges);
+}
+
+function adfEdge(from, to, relationship) {
+  return {
+    id: `${from}->${to}:${relationship}`,
+    from,
+    to,
+    relationship,
+    object_type: 'lineage_edge',
+  };
+}
+
+function dedupeAdfEdges(edges = []) {
+  return [...new Map(edges.map((edge) => [edge.id, edge])).values()];
 }
 
 async function fetchNativeMetadata({ connector, stream, bridge }) {
@@ -778,6 +1318,12 @@ function extractArray(json) {
   }
   if (json && typeof json === 'object') return [json];
   return [];
+}
+
+function toArray(value) {
+  if (Array.isArray(value)) return value.filter(Boolean);
+  if (value === undefined || value === null) return [];
+  return [value];
 }
 
 function sourceClientMissingError(connector, stream, bridge) {

@@ -1,0 +1,2850 @@
+{
+  "activitymigrationcolist": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ActivityMigrationCoList"],
+  "eleaddw.dbo.activitymigrationcolist": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ActivityMigrationCoList"
+  ],
+  "dbo.activitymigrationcolist": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ActivityMigrationCoList"
+  ],
+  "all_stores_dmssold_apr": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.All_Stores_DMSSold_Apr"],
+  "eleaddw.dbo.all_stores_dmssold_apr": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.All_Stores_DMSSold_Apr"
+  ],
+  "dbo.all_stores_dmssold_apr": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.All_Stores_DMSSold_Apr"
+  ],
+  "all_stores_dmssold_feb": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.All_Stores_DMSSold_feb"],
+  "eleaddw.dbo.all_stores_dmssold_feb": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.All_Stores_DMSSold_feb"
+  ],
+  "dbo.all_stores_dmssold_feb": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.All_Stores_DMSSold_feb"
+  ],
+  "all_stores_dmssold_jan": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.All_Stores_DMSSold_jan"],
+  "eleaddw.dbo.all_stores_dmssold_jan": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.All_Stores_DMSSold_jan"
+  ],
+  "dbo.all_stores_dmssold_jan": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.All_Stores_DMSSold_jan"
+  ],
+  "all_stores_dmssold_mar": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.All_Stores_DMSSold_Mar"],
+  "eleaddw.dbo.all_stores_dmssold_mar": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.All_Stores_DMSSold_Mar"
+  ],
+  "dbo.all_stores_dmssold_mar": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.All_Stores_DMSSold_Mar"
+  ],
+  "all_stores_dmssold_may": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.All_Stores_DMSSold_May"],
+  "eleaddw.dbo.all_stores_dmssold_may": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.All_Stores_DMSSold_May"
+  ],
+  "dbo.all_stores_dmssold_may": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.All_Stores_DMSSold_May"
+  ],
+  "commentsdata": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.commentsdata"],
+  "eleaddw.dbo.commentsdata": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.commentsdata"],
+  "dbo.commentsdata": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.commentsdata"],
+  "companiestmp": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.CompaniesTmp"],
+  "eleaddw.dbo.companiestmp": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.CompaniesTmp"],
+  "dbo.companiestmp": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.CompaniesTmp"],
+  "company": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.company"],
+  "eleaddw.dbo.company": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.company"],
+  "dbo.company": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.company"],
+  "custdupeslpersonid": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.custdupeslpersonid"],
+  "eleaddw.dbo.custdupeslpersonid": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.custdupeslpersonid"
+  ],
+  "dbo.custdupeslpersonid": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.custdupeslpersonid"],
+  "customerexclusionlookup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.CustomerExclusionLookup"],
+  "eleaddw.dbo.customerexclusionlookup": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.CustomerExclusionLookup"
+  ],
+  "dbo.customerexclusionlookup": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.CustomerExclusionLookup"
+  ],
+  "customermatchlookup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.CustomerMatchLookup"],
+  "eleaddw.dbo.customermatchlookup": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.CustomerMatchLookup"
+  ],
+  "dbo.customermatchlookup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.CustomerMatchLookup"],
+  "dateonly": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DateOnly"],
+  "eleaddw.dbo.dateonly": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DateOnly"],
+  "dbo.dateonly": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DateOnly"],
+  "datetime": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DateTime"],
+  "eleaddw.dbo.datetime": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DateTime"],
+  "dbo.datetime": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DateTime"],
+  "dealguids": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DealGuids"],
+  "eleaddw.dbo.dealguids": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DealGuids"],
+  "dbo.dealguids": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DealGuids"],
+  "deleteddeals": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DeletedDeals"],
+  "eleaddw.dbo.deleteddeals": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DeletedDeals"],
+  "dbo.deleteddeals": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DeletedDeals"],
+  "diffcounts": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DiffCounts"],
+  "eleaddw.dbo.diffcounts": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DiffCounts"],
+  "dbo.diffcounts": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DiffCounts"],
+  "displaydate": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DisplayDate"],
+  "eleaddw.dbo.displaydate": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DisplayDate"],
+  "dbo.displaydate": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DisplayDate"],
+  "dwdealmerge": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDealMerge"],
+  "eleaddw.dbo.dwdealmerge": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDealMerge"],
+  "dbo.dwdealmerge": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDealMerge"],
+  "dwdiffactivity": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity"],
+  "eleaddw.dbo.dwdiffactivity": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity"],
+  "dbo.dwdiffactivity": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity"],
+  "dwdiffactivity_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity_D"],
+  "eleaddw.dbo.dwdiffactivity_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity_D"],
+  "dbo.dwdiffactivity_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity_D"],
+  "dwdiffactivity_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity_I"],
+  "eleaddw.dbo.dwdiffactivity_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity_I"],
+  "dbo.dwdiffactivity_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity_I"],
+  "dwdiffactivity_i_bak": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity_i_bak"],
+  "eleaddw.dbo.dwdiffactivity_i_bak": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity_i_bak"
+  ],
+  "dbo.dwdiffactivity_i_bak": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity_i_bak"],
+  "dwdiffactivity_i_bak_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity_I_bak_i"],
+  "eleaddw.dbo.dwdiffactivity_i_bak_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity_I_bak_i"
+  ],
+  "dbo.dwdiffactivity_i_bak_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity_I_bak_i"
+  ],
+  "dwdiffactivity_i_bak_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity_I_bak_u"],
+  "eleaddw.dbo.dwdiffactivity_i_bak_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity_I_bak_u"
+  ],
+  "dbo.dwdiffactivity_i_bak_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity_I_bak_u"
+  ],
+  "dwdiffactivity_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity_U"],
+  "eleaddw.dbo.dwdiffactivity_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity_U"],
+  "dbo.dwdiffactivity_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffActivity_U"],
+  "dwdiffaudit_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffAudit_I"],
+  "eleaddw.dbo.dwdiffaudit_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffAudit_I"],
+  "dbo.dwdiffaudit_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffAudit_I"],
+  "dwdiffcompanychildcompanymap_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyChildCompanyMap_D"
+  ],
+  "eleaddw.dbo.dwdiffcompanychildcompanymap_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyChildCompanyMap_D"
+  ],
+  "dbo.dwdiffcompanychildcompanymap_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyChildCompanyMap_D"
+  ],
+  "dwdiffcompanychildcompanymap_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyChildCompanyMap_I"
+  ],
+  "eleaddw.dbo.dwdiffcompanychildcompanymap_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyChildCompanyMap_I"
+  ],
+  "dbo.dwdiffcompanychildcompanymap_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyChildCompanyMap_I"
+  ],
+  "dwdiffcompanychildcompanymap_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyChildCompanyMap_U"
+  ],
+  "eleaddw.dbo.dwdiffcompanychildcompanymap_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyChildCompanyMap_U"
+  ],
+  "dbo.dwdiffcompanychildcompanymap_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyChildCompanyMap_U"
+  ],
+  "dwdiffcompanyhierarchy_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyHierarchy_D"
+  ],
+  "eleaddw.dbo.dwdiffcompanyhierarchy_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyHierarchy_D"
+  ],
+  "dbo.dwdiffcompanyhierarchy_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyHierarchy_D"
+  ],
+  "dwdiffcompanyhierarchy_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyHierarchy_I"
+  ],
+  "eleaddw.dbo.dwdiffcompanyhierarchy_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyHierarchy_I"
+  ],
+  "dbo.dwdiffcompanyhierarchy_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyHierarchy_I"
+  ],
+  "dwdiffcompanyhierarchy_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyHierarchy_U"
+  ],
+  "eleaddw.dbo.dwdiffcompanyhierarchy_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyHierarchy_U"
+  ],
+  "dbo.dwdiffcompanyhierarchy_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyHierarchy_U"
+  ],
+  "dwdiffcompanyoption_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyOption_D"],
+  "eleaddw.dbo.dwdiffcompanyoption_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyOption_D"
+  ],
+  "dbo.dwdiffcompanyoption_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyOption_D"],
+  "dwdiffcompanyoption_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyOption_I"],
+  "eleaddw.dbo.dwdiffcompanyoption_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyOption_I"
+  ],
+  "dbo.dwdiffcompanyoption_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyOption_I"],
+  "dwdiffcompanyoption_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyOption_U"],
+  "eleaddw.dbo.dwdiffcompanyoption_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyOption_U"
+  ],
+  "dbo.dwdiffcompanyoption_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanyOption_U"],
+  "dwdiffcompanysource_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanySource_D"],
+  "eleaddw.dbo.dwdiffcompanysource_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanySource_D"
+  ],
+  "dbo.dwdiffcompanysource_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanySource_D"],
+  "dwdiffcompanysource_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanySource_I"],
+  "eleaddw.dbo.dwdiffcompanysource_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanySource_I"
+  ],
+  "dbo.dwdiffcompanysource_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanySource_I"],
+  "dwdiffcompanysource_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanySource_U"],
+  "eleaddw.dbo.dwdiffcompanysource_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanySource_U"
+  ],
+  "dbo.dwdiffcompanysource_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCompanySource_U"],
+  "dwdiffcreatetask_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCreateTask_D"],
+  "eleaddw.dbo.dwdiffcreatetask_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCreateTask_D"
+  ],
+  "dbo.dwdiffcreatetask_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCreateTask_D"],
+  "dwdiffcreatetask_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCreateTask_I"],
+  "eleaddw.dbo.dwdiffcreatetask_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCreateTask_I"
+  ],
+  "dbo.dwdiffcreatetask_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCreateTask_I"],
+  "dwdiffcustomer": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCustomer"],
+  "eleaddw.dbo.dwdiffcustomer": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCustomer"],
+  "dbo.dwdiffcustomer": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCustomer"],
+  "dwdiffcustomer_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCustomer_D"],
+  "eleaddw.dbo.dwdiffcustomer_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCustomer_D"],
+  "dbo.dwdiffcustomer_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCustomer_D"],
+  "dwdiffcustomer_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCustomer_I"],
+  "eleaddw.dbo.dwdiffcustomer_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCustomer_I"],
+  "dbo.dwdiffcustomer_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCustomer_I"],
+  "dwdiffcustomer_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCustomer_U"],
+  "eleaddw.dbo.dwdiffcustomer_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCustomer_U"],
+  "dbo.dwdiffcustomer_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffCustomer_U"],
+  "dwdiffdaylightsavingtime_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDaylightSavingTime_D"
+  ],
+  "eleaddw.dbo.dwdiffdaylightsavingtime_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDaylightSavingTime_D"
+  ],
+  "dbo.dwdiffdaylightsavingtime_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDaylightSavingTime_D"
+  ],
+  "dwdiffdaylightsavingtime_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDaylightSavingTime_I"
+  ],
+  "eleaddw.dbo.dwdiffdaylightsavingtime_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDaylightSavingTime_I"
+  ],
+  "dbo.dwdiffdaylightsavingtime_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDaylightSavingTime_I"
+  ],
+  "dwdiffdaylightsavingtime_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDaylightSavingTime_U"
+  ],
+  "eleaddw.dbo.dwdiffdaylightsavingtime_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDaylightSavingTime_U"
+  ],
+  "dbo.dwdiffdaylightsavingtime_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDaylightSavingTime_U"
+  ],
+  "dwdiffdealerprogram_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealerProgram_D"],
+  "eleaddw.dbo.dwdiffdealerprogram_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealerProgram_D"
+  ],
+  "dbo.dwdiffdealerprogram_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealerProgram_D"],
+  "dwdiffdealerprogram_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealerProgram_I"],
+  "eleaddw.dbo.dwdiffdealerprogram_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealerProgram_I"
+  ],
+  "dbo.dwdiffdealerprogram_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealerProgram_I"],
+  "dwdiffdealerprogram_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealerProgram_U"],
+  "eleaddw.dbo.dwdiffdealerprogram_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealerProgram_U"
+  ],
+  "dbo.dwdiffdealerprogram_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealerProgram_U"],
+  "dwdiffdealsalespersonmap_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealSalespersonMap_D"
+  ],
+  "eleaddw.dbo.dwdiffdealsalespersonmap_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealSalespersonMap_D"
+  ],
+  "dbo.dwdiffdealsalespersonmap_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealSalespersonMap_D"
+  ],
+  "dwdiffdealsalespersonmap_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealSalespersonMap_I"
+  ],
+  "eleaddw.dbo.dwdiffdealsalespersonmap_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealSalespersonMap_I"
+  ],
+  "dbo.dwdiffdealsalespersonmap_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealSalespersonMap_I"
+  ],
+  "dwdiffdealsalespersonmap_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealSalespersonMap_U"
+  ],
+  "eleaddw.dbo.dwdiffdealsalespersonmap_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealSalespersonMap_U"
+  ],
+  "dbo.dwdiffdealsalespersonmap_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealSalespersonMap_U"
+  ],
+  "dwdiffdealsalespersonmap_z": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealSalespersonMap_Z"
+  ],
+  "eleaddw.dbo.dwdiffdealsalespersonmap_z": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealSalespersonMap_Z"
+  ],
+  "dbo.dwdiffdealsalespersonmap_z": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDealSalespersonMap_Z"
+  ],
+  "dwdiffdesklogvisit_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDesklogVisit_D"],
+  "eleaddw.dbo.dwdiffdesklogvisit_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDesklogVisit_D"
+  ],
+  "dbo.dwdiffdesklogvisit_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDesklogVisit_D"],
+  "dwdiffdesklogvisit_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDesklogVisit_I"],
+  "eleaddw.dbo.dwdiffdesklogvisit_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDesklogVisit_I"
+  ],
+  "dbo.dwdiffdesklogvisit_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDesklogVisit_I"],
+  "dwdiffdesklogvisit_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDesklogVisit_U"],
+  "eleaddw.dbo.dwdiffdesklogvisit_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDesklogVisit_U"
+  ],
+  "dbo.dwdiffdesklogvisit_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffDesklogVisit_U"],
+  "dwdiffemail_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffEmail_D"],
+  "eleaddw.dbo.dwdiffemail_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffEmail_D"],
+  "dbo.dwdiffemail_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffEmail_D"],
+  "dwdiffemail_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffEmail_I"],
+  "eleaddw.dbo.dwdiffemail_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffEmail_I"],
+  "dbo.dwdiffemail_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffEmail_I"],
+  "dwdiffemail_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffEmail_U"],
+  "eleaddw.dbo.dwdiffemail_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffEmail_U"],
+  "dbo.dwdiffemail_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffEmail_U"],
+  "dwdiffemailoptout_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffEmailOptOut_D"],
+  "eleaddw.dbo.dwdiffemailoptout_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffEmailOptOut_D"
+  ],
+  "dbo.dwdiffemailoptout_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffEmailOptOut_D"],
+  "dwdiffemailoptout_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffEmailOptOut_I"],
+  "eleaddw.dbo.dwdiffemailoptout_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffEmailOptOut_I"
+  ],
+  "dbo.dwdiffemailoptout_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffEmailOptOut_I"],
+  "dwdiffemailoptout_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffEmailOptOut_U"],
+  "eleaddw.dbo.dwdiffemailoptout_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffEmailOptOut_U"
+  ],
+  "dbo.dwdiffemailoptout_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffEmailOptOut_U"],
+  "dwdiffholiday_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffHoliday_D"],
+  "eleaddw.dbo.dwdiffholiday_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffHoliday_D"],
+  "dbo.dwdiffholiday_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffHoliday_D"],
+  "dwdiffholiday_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffHoliday_I"],
+  "eleaddw.dbo.dwdiffholiday_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffHoliday_I"],
+  "dbo.dwdiffholiday_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffHoliday_I"],
+  "dwdiffholiday_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffHoliday_U"],
+  "eleaddw.dbo.dwdiffholiday_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffHoliday_U"],
+  "dbo.dwdiffholiday_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffHoliday_U"],
+  "dwdiffleadproviderinactivereasonmap_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLeadProviderInactiveReasonMap_D"
+  ],
+  "eleaddw.dbo.dwdiffleadproviderinactivereasonmap_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLeadProviderInactiveReasonMap_D"
+  ],
+  "dbo.dwdiffleadproviderinactivereasonmap_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLeadProviderInactiveReasonMap_D"
+  ],
+  "dwdiffleadproviderinactivereasonmap_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLeadProviderInactiveReasonMap_I"
+  ],
+  "eleaddw.dbo.dwdiffleadproviderinactivereasonmap_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLeadProviderInactiveReasonMap_I"
+  ],
+  "dbo.dwdiffleadproviderinactivereasonmap_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLeadProviderInactiveReasonMap_I"
+  ],
+  "dwdiffleadproviderinactivereasonmap_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLeadProviderInactiveReasonMap_U"
+  ],
+  "eleaddw.dbo.dwdiffleadproviderinactivereasonmap_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLeadProviderInactiveReasonMap_U"
+  ],
+  "dbo.dwdiffleadproviderinactivereasonmap_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLeadProviderInactiveReasonMap_U"
+  ],
+  "dwdifflegacycustomerid_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLegacyCustomerID_D"
+  ],
+  "eleaddw.dbo.dwdifflegacycustomerid_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLegacyCustomerID_D"
+  ],
+  "dbo.dwdifflegacycustomerid_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLegacyCustomerID_D"
+  ],
+  "dwdifflegacycustomerid_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLegacyCustomerID_I"
+  ],
+  "eleaddw.dbo.dwdifflegacycustomerid_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLegacyCustomerID_I"
+  ],
+  "dbo.dwdifflegacycustomerid_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLegacyCustomerID_I"
+  ],
+  "dwdifflegacycustomerid_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLegacyCustomerID_U"
+  ],
+  "eleaddw.dbo.dwdifflegacycustomerid_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLegacyCustomerID_U"
+  ],
+  "dbo.dwdifflegacycustomerid_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLegacyCustomerID_U"
+  ],
+  "dwdifflegacyemployeeid_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLegacyEmployeeID_D"
+  ],
+  "eleaddw.dbo.dwdifflegacyemployeeid_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLegacyEmployeeID_D"
+  ],
+  "dbo.dwdifflegacyemployeeid_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLegacyEmployeeID_D"
+  ],
+  "dwdifflegacyemployeeid_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLegacyEmployeeID_I"
+  ],
+  "eleaddw.dbo.dwdifflegacyemployeeid_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLegacyEmployeeID_I"
+  ],
+  "dbo.dwdifflegacyemployeeid_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLegacyEmployeeID_I"
+  ],
+  "dwdifflegacyemployeeid_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLegacyEmployeeID_U"
+  ],
+  "eleaddw.dbo.dwdifflegacyemployeeid_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLegacyEmployeeID_U"
+  ],
+  "dbo.dwdifflegacyemployeeid_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffLegacyEmployeeID_U"
+  ],
+  "dwdiffmessages_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffMessages_I"],
+  "eleaddw.dbo.dwdiffmessages_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffMessages_I"],
+  "dbo.dwdiffmessages_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffMessages_I"],
+  "dwdiffopportunity_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffOpportunity_D"],
+  "eleaddw.dbo.dwdiffopportunity_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffOpportunity_D"
+  ],
+  "dbo.dwdiffopportunity_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffOpportunity_D"],
+  "dwdiffopportunity_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffOpportunity_I"],
+  "eleaddw.dbo.dwdiffopportunity_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffOpportunity_I"
+  ],
+  "dbo.dwdiffopportunity_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffOpportunity_I"],
+  "dwdiffopportunity_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffOpportunity_U"],
+  "eleaddw.dbo.dwdiffopportunity_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffOpportunity_U"
+  ],
+  "dbo.dwdiffopportunity_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffOpportunity_U"],
+  "dwdiffphone_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffPhone_D"],
+  "eleaddw.dbo.dwdiffphone_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffPhone_D"],
+  "dbo.dwdiffphone_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffPhone_D"],
+  "dwdiffphone_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffPhone_I"],
+  "eleaddw.dbo.dwdiffphone_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffPhone_I"],
+  "dbo.dwdiffphone_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffPhone_I"],
+  "dwdiffphone_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffPhone_U"],
+  "eleaddw.dbo.dwdiffphone_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffPhone_U"],
+  "dbo.dwdiffphone_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffPhone_U"],
+  "dwdiffproductorservice_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffProductOrService_D"
+  ],
+  "eleaddw.dbo.dwdiffproductorservice_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffProductOrService_D"
+  ],
+  "dbo.dwdiffproductorservice_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffProductOrService_D"
+  ],
+  "dwdiffproductorservice_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffProductOrService_I"
+  ],
+  "eleaddw.dbo.dwdiffproductorservice_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffProductOrService_I"
+  ],
+  "dbo.dwdiffproductorservice_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffProductOrService_I"
+  ],
+  "dwdiffproductorservice_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffProductOrService_U"
+  ],
+  "eleaddw.dbo.dwdiffproductorservice_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffProductOrService_U"
+  ],
+  "dbo.dwdiffproductorservice_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffProductOrService_U"
+  ],
+  "dwdiffreportcreditconfiguration_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffReportCreditConfiguration_D"
+  ],
+  "eleaddw.dbo.dwdiffreportcreditconfiguration_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffReportCreditConfiguration_D"
+  ],
+  "dbo.dwdiffreportcreditconfiguration_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffReportCreditConfiguration_D"
+  ],
+  "dwdiffreportcreditconfiguration_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffReportCreditConfiguration_I"
+  ],
+  "eleaddw.dbo.dwdiffreportcreditconfiguration_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffReportCreditConfiguration_I"
+  ],
+  "dbo.dwdiffreportcreditconfiguration_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffReportCreditConfiguration_I"
+  ],
+  "dwdiffreportcreditconfiguration_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffReportCreditConfiguration_U"
+  ],
+  "eleaddw.dbo.dwdiffreportcreditconfiguration_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffReportCreditConfiguration_U"
+  ],
+  "dbo.dwdiffreportcreditconfiguration_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffReportCreditConfiguration_U"
+  ],
+  "dwdiffrunstatus_sf": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffRunStatus_SF"],
+  "eleaddw.dbo.dwdiffrunstatus_sf": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffRunStatus_SF"
+  ],
+  "dbo.dwdiffrunstatus_sf": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffRunStatus_SF"],
+  "dwdiffschedule_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffSchedule_D"],
+  "eleaddw.dbo.dwdiffschedule_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffSchedule_D"],
+  "dbo.dwdiffschedule_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffSchedule_D"],
+  "dwdiffschedule_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffSchedule_I"],
+  "eleaddw.dbo.dwdiffschedule_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffSchedule_I"],
+  "dbo.dwdiffschedule_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffSchedule_I"],
+  "dwdiffschedule_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffSchedule_U"],
+  "eleaddw.dbo.dwdiffschedule_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffSchedule_U"],
+  "dbo.dwdiffschedule_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffSchedule_U"],
+  "dwdiffsource_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffSource_D"],
+  "eleaddw.dbo.dwdiffsource_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffSource_D"],
+  "dbo.dwdiffsource_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffSource_D"],
+  "dwdiffsource_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffSource_I"],
+  "eleaddw.dbo.dwdiffsource_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffSource_I"],
+  "dbo.dwdiffsource_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffSource_I"],
+  "dwdiffsource_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffSource_U"],
+  "eleaddw.dbo.dwdiffsource_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffSource_U"],
+  "dbo.dwdiffsource_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffSource_U"],
+  "dwdifftaskcomments_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskComments_D"],
+  "eleaddw.dbo.dwdifftaskcomments_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskComments_D"
+  ],
+  "dbo.dwdifftaskcomments_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskComments_D"],
+  "dwdifftaskcomments_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskComments_I"],
+  "eleaddw.dbo.dwdifftaskcomments_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskComments_I"
+  ],
+  "dbo.dwdifftaskcomments_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskComments_I"],
+  "dwdifftaskcomments_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskComments_U"],
+  "eleaddw.dbo.dwdifftaskcomments_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskComments_U"
+  ],
+  "dbo.dwdifftaskcomments_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskComments_U"],
+  "dwdifftaskduedatechange_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskDueDateChange_D"
+  ],
+  "eleaddw.dbo.dwdifftaskduedatechange_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskDueDateChange_D"
+  ],
+  "dbo.dwdifftaskduedatechange_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskDueDateChange_D"
+  ],
+  "dwdifftaskduedatechange_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskDueDateChange_I"
+  ],
+  "eleaddw.dbo.dwdifftaskduedatechange_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskDueDateChange_I"
+  ],
+  "dbo.dwdifftaskduedatechange_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskDueDateChange_I"
+  ],
+  "dwdifftaskitem_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskItem_I"],
+  "eleaddw.dbo.dwdifftaskitem_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskItem_I"],
+  "dbo.dwdifftaskitem_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskItem_I"],
+  "dwdifftaskreminder_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskReminder_D"],
+  "eleaddw.dbo.dwdifftaskreminder_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskReminder_D"
+  ],
+  "dbo.dwdifftaskreminder_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskReminder_D"],
+  "dwdifftaskreminder_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskReminder_I"],
+  "eleaddw.dbo.dwdifftaskreminder_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskReminder_I"
+  ],
+  "dbo.dwdifftaskreminder_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskReminder_I"],
+  "dwdifftaskreminder_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskReminder_U"],
+  "eleaddw.dbo.dwdifftaskreminder_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskReminder_U"
+  ],
+  "dbo.dwdifftaskreminder_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTaskReminder_U"],
+  "dwdifftextconversation_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversation_D"
+  ],
+  "eleaddw.dbo.dwdifftextconversation_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversation_D"
+  ],
+  "dbo.dwdifftextconversation_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversation_D"
+  ],
+  "dwdifftextconversation_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversation_I"
+  ],
+  "eleaddw.dbo.dwdifftextconversation_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversation_I"
+  ],
+  "dbo.dwdifftextconversation_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversation_I"
+  ],
+  "dwdifftextconversation_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversation_U"
+  ],
+  "eleaddw.dbo.dwdifftextconversation_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversation_U"
+  ],
+  "dbo.dwdifftextconversation_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversation_U"
+  ],
+  "dwdifftextconversationelement_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversationElement_D"
+  ],
+  "eleaddw.dbo.dwdifftextconversationelement_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversationElement_D"
+  ],
+  "dbo.dwdifftextconversationelement_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversationElement_D"
+  ],
+  "dwdifftextconversationelement_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversationElement_I"
+  ],
+  "eleaddw.dbo.dwdifftextconversationelement_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversationElement_I"
+  ],
+  "dbo.dwdifftextconversationelement_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversationElement_I"
+  ],
+  "dwdifftextconversationelement_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversationElement_U"
+  ],
+  "eleaddw.dbo.dwdifftextconversationelement_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversationElement_U"
+  ],
+  "dbo.dwdifftextconversationelement_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversationElement_U"
+  ],
+  "dwdifftextconversationmessage_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversationMessage_D"
+  ],
+  "eleaddw.dbo.dwdifftextconversationmessage_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversationMessage_D"
+  ],
+  "dbo.dwdifftextconversationmessage_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversationMessage_D"
+  ],
+  "dwdifftextconversationmessage_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversationMessage_I"
+  ],
+  "eleaddw.dbo.dwdifftextconversationmessage_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversationMessage_I"
+  ],
+  "dbo.dwdifftextconversationmessage_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversationMessage_I"
+  ],
+  "dwdifftextconversationmessage_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversationMessage_U"
+  ],
+  "eleaddw.dbo.dwdifftextconversationmessage_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversationMessage_U"
+  ],
+  "dbo.dwdifftextconversationmessage_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextConversationMessage_U"
+  ],
+  "dwdifftextcustomernumber_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextCustomerNumber_D"
+  ],
+  "eleaddw.dbo.dwdifftextcustomernumber_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextCustomerNumber_D"
+  ],
+  "dbo.dwdifftextcustomernumber_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextCustomerNumber_D"
+  ],
+  "dwdifftextcustomernumber_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextCustomerNumber_I"
+  ],
+  "eleaddw.dbo.dwdifftextcustomernumber_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextCustomerNumber_I"
+  ],
+  "dbo.dwdifftextcustomernumber_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextCustomerNumber_I"
+  ],
+  "dwdifftextcustomernumber_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextCustomerNumber_U"
+  ],
+  "eleaddw.dbo.dwdifftextcustomernumber_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextCustomerNumber_U"
+  ],
+  "dbo.dwdifftextcustomernumber_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextCustomerNumber_U"
+  ],
+  "dwdifftextoptinstatus_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextOptInStatus_D"],
+  "eleaddw.dbo.dwdifftextoptinstatus_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextOptInStatus_D"
+  ],
+  "dbo.dwdifftextoptinstatus_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextOptInStatus_D"
+  ],
+  "dwdifftextoptinstatus_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextOptInStatus_I"],
+  "eleaddw.dbo.dwdifftextoptinstatus_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextOptInStatus_I"
+  ],
+  "dbo.dwdifftextoptinstatus_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextOptInStatus_I"
+  ],
+  "dwdifftextoptinstatus_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextOptInStatus_U"],
+  "eleaddw.dbo.dwdifftextoptinstatus_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextOptInStatus_U"
+  ],
+  "dbo.dwdifftextoptinstatus_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffTextOptInStatus_U"
+  ],
+  "dwdiffvehicle_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffVehicle_D"],
+  "eleaddw.dbo.dwdiffvehicle_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffVehicle_D"],
+  "dbo.dwdiffvehicle_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffVehicle_D"],
+  "dwdiffvehicle_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffVehicle_I"],
+  "eleaddw.dbo.dwdiffvehicle_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffVehicle_I"],
+  "dbo.dwdiffvehicle_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffVehicle_I"],
+  "dwdiffvehicle_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffVehicle_U"],
+  "eleaddw.dbo.dwdiffvehicle_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffVehicle_U"],
+  "dbo.dwdiffvehicle_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffVehicle_U"],
+  "dwdiffvehiclesought_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffVehicleSought_D"],
+  "eleaddw.dbo.dwdiffvehiclesought_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffVehicleSought_D"
+  ],
+  "dbo.dwdiffvehiclesought_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffVehicleSought_D"],
+  "dwdiffvehiclesought_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffVehicleSought_I"],
+  "eleaddw.dbo.dwdiffvehiclesought_i": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffVehicleSought_I"
+  ],
+  "dbo.dwdiffvehiclesought_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffVehicleSought_I"],
+  "dwdiffvehiclesought_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffVehicleSought_U"],
+  "eleaddw.dbo.dwdiffvehiclesought_u": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffVehicleSought_U"
+  ],
+  "dbo.dwdiffvehiclesought_u": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffVehicleSought_U"],
+  "dwdiffwarranty_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffWarranty_D"],
+  "eleaddw.dbo.dwdiffwarranty_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffWarranty_D"],
+  "dbo.dwdiffwarranty_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffWarranty_D"],
+  "dwdiffwarranty_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffWarranty_I"],
+  "eleaddw.dbo.dwdiffwarranty_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffWarranty_I"],
+  "dbo.dwdiffwarranty_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffWarranty_I"],
+  "dwdiffworkflow_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffWorkflow_D"],
+  "eleaddw.dbo.dwdiffworkflow_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffWorkflow_D"],
+  "dbo.dwdiffworkflow_d": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffWorkflow_D"],
+  "dwdiffworkflow_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffWorkflow_I"],
+  "eleaddw.dbo.dwdiffworkflow_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffWorkflow_I"],
+  "dbo.dwdiffworkflow_i": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwDiffWorkflow_I"],
+  "dwfullactivity": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullActivity"],
+  "eleaddw.dbo.dwfullactivity": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullActivity"],
+  "dbo.dwfullactivity": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullActivity"],
+  "dwfullaudit": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullAudit"],
+  "eleaddw.dbo.dwfullaudit": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullAudit"],
+  "dbo.dwfullaudit": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullAudit"],
+  "dwfullcompany": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompany"],
+  "eleaddw.dbo.dwfullcompany": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompany"],
+  "dbo.dwfullcompany": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompany"],
+  "dwfullcompany_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompany_P"],
+  "eleaddw.dbo.dwfullcompany_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompany_P"],
+  "dbo.dwfullcompany_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompany_P"],
+  "dwfullcompanychildcompanymap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyChildCompanyMap"
+  ],
+  "eleaddw.dbo.dwfullcompanychildcompanymap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyChildCompanyMap"
+  ],
+  "dbo.dwfullcompanychildcompanymap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyChildCompanyMap"
+  ],
+  "dwfullcompanychildcompanymap_bk_26oct2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyChildCompanyMap_BK_26OCT2025"
+  ],
+  "eleaddw.dbo.dwfullcompanychildcompanymap_bk_26oct2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyChildCompanyMap_BK_26OCT2025"
+  ],
+  "dbo.dwfullcompanychildcompanymap_bk_26oct2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyChildCompanyMap_BK_26OCT2025"
+  ],
+  "dwfullcompanyhierarchy": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyHierarchy"],
+  "eleaddw.dbo.dwfullcompanyhierarchy": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyHierarchy"
+  ],
+  "dbo.dwfullcompanyhierarchy": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyHierarchy"
+  ],
+  "dwfullcompanyhierarchy_bk_26oct2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyHierarchy_BK_26OCT2025"
+  ],
+  "eleaddw.dbo.dwfullcompanyhierarchy_bk_26oct2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyHierarchy_BK_26OCT2025"
+  ],
+  "dbo.dwfullcompanyhierarchy_bk_26oct2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyHierarchy_BK_26OCT2025"
+  ],
+  "dwfullcompanyoption": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyOption"],
+  "eleaddw.dbo.dwfullcompanyoption": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyOption"
+  ],
+  "dbo.dwfullcompanyoption": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyOption"],
+  "dwfullcompanyoption_bk_26oct2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyOption_BK_26OCT2025"
+  ],
+  "eleaddw.dbo.dwfullcompanyoption_bk_26oct2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyOption_BK_26OCT2025"
+  ],
+  "dbo.dwfullcompanyoption_bk_26oct2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyOption_BK_26OCT2025"
+  ],
+  "dwfullcompanysource": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanySource"],
+  "eleaddw.dbo.dwfullcompanysource": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanySource"
+  ],
+  "dbo.dwfullcompanysource": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanySource"],
+  "dwfullcreatetask": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCreateTask"],
+  "eleaddw.dbo.dwfullcreatetask": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCreateTask"],
+  "dbo.dwfullcreatetask": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCreateTask"],
+  "dwfullcreatetask_bk_26oct2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCreateTask_BK_26OCT2025"
+  ],
+  "eleaddw.dbo.dwfullcreatetask_bk_26oct2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCreateTask_BK_26OCT2025"
+  ],
+  "dbo.dwfullcreatetask_bk_26oct2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCreateTask_BK_26OCT2025"
+  ],
+  "dwfullcustomer": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCustomer"],
+  "eleaddw.dbo.dwfullcustomer": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCustomer"],
+  "dbo.dwfullcustomer": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCustomer"],
+  "dwfulldaylightsavingtime": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDaylightSavingTime"
+  ],
+  "eleaddw.dbo.dwfulldaylightsavingtime": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDaylightSavingTime"
+  ],
+  "dbo.dwfulldaylightsavingtime": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDaylightSavingTime"
+  ],
+  "dwfulldeal": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDeal"],
+  "eleaddw.dbo.dwfulldeal": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDeal"],
+  "dbo.dwfulldeal": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDeal"],
+  "dwfulldealerprogram": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDealerProgram"],
+  "eleaddw.dbo.dwfulldealerprogram": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDealerProgram"
+  ],
+  "dbo.dwfulldealerprogram": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDealerProgram"],
+  "dwfulldealsalespersonmap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDealSalespersonMap"
+  ],
+  "eleaddw.dbo.dwfulldealsalespersonmap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDealSalespersonMap"
+  ],
+  "dbo.dwfulldealsalespersonmap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDealSalespersonMap"
+  ],
+  "dwfulldepartment": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDepartment"],
+  "eleaddw.dbo.dwfulldepartment": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDepartment"],
+  "dbo.dwfulldepartment": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDepartment"],
+  "dwfulldepartment_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDepartment_P"],
+  "eleaddw.dbo.dwfulldepartment_p": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDepartment_P"
+  ],
+  "dbo.dwfulldepartment_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDepartment_P"],
+  "dwfulldesklogvisit": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDesklogVisit"],
+  "eleaddw.dbo.dwfulldesklogvisit": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDesklogVisit"
+  ],
+  "dbo.dwfulldesklogvisit": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullDesklogVisit"],
+  "dwfullemail": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullEmail"],
+  "eleaddw.dbo.dwfullemail": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullEmail"],
+  "dbo.dwfullemail": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullEmail"],
+  "dwfullemail_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullEmail_P"],
+  "eleaddw.dbo.dwfullemail_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullEmail_P"],
+  "dbo.dwfullemail_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullEmail_P"],
+  "dwfullemailoptout": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullEmailOptOut"],
+  "eleaddw.dbo.dwfullemailoptout": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullEmailOptOut"],
+  "dbo.dwfullemailoptout": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullEmailOptOut"],
+  "dwfullemailoptout_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullEmailOptOut_P"],
+  "eleaddw.dbo.dwfullemailoptout_p": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullEmailOptOut_P"
+  ],
+  "dbo.dwfullemailoptout_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullEmailOptOut_P"],
+  "dwfullholiday": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullHoliday"],
+  "eleaddw.dbo.dwfullholiday": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullHoliday"],
+  "dbo.dwfullholiday": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullHoliday"],
+  "dwfullleadproviderinactivereasonmap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullLeadProviderInactiveReasonMap"
+  ],
+  "eleaddw.dbo.dwfullleadproviderinactivereasonmap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullLeadProviderInactiveReasonMap"
+  ],
+  "dbo.dwfullleadproviderinactivereasonmap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullLeadProviderInactiveReasonMap"
+  ],
+  "dwfulllegacycustomerid": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullLegacyCustomerID"],
+  "eleaddw.dbo.dwfulllegacycustomerid": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullLegacyCustomerID"
+  ],
+  "dbo.dwfulllegacycustomerid": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullLegacyCustomerID"
+  ],
+  "dwfulllegacyemployeeid": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullLegacyEmployeeID"],
+  "eleaddw.dbo.dwfulllegacyemployeeid": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullLegacyEmployeeID"
+  ],
+  "dbo.dwfulllegacyemployeeid": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullLegacyEmployeeID"
+  ],
+  "dwfullmessages": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullMessages"],
+  "eleaddw.dbo.dwfullmessages": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullMessages"],
+  "dbo.dwfullmessages": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullMessages"],
+  "dwfullopportunity": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullOpportunity"],
+  "eleaddw.dbo.dwfullopportunity": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullOpportunity"],
+  "dbo.dwfullopportunity": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullOpportunity"],
+  "dwfullphone": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullPhone"],
+  "eleaddw.dbo.dwfullphone": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullPhone"],
+  "dbo.dwfullphone": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullPhone"],
+  "dwfullposition": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullPosition"],
+  "eleaddw.dbo.dwfullposition": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullPosition"],
+  "dbo.dwfullposition": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullPosition"],
+  "dwfullposition_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullPosition_P"],
+  "eleaddw.dbo.dwfullposition_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullPosition_P"],
+  "dbo.dwfullposition_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullPosition_P"],
+  "dwfullproductorservice": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullProductOrService"],
+  "eleaddw.dbo.dwfullproductorservice": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullProductOrService"
+  ],
+  "dbo.dwfullproductorservice": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullProductOrService"
+  ],
+  "dwfullpurchasedetails": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullPurchaseDetails"],
+  "eleaddw.dbo.dwfullpurchasedetails": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullPurchaseDetails"
+  ],
+  "dbo.dwfullpurchasedetails": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullPurchaseDetails"],
+  "dwfullrelationship": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullRelationship"],
+  "eleaddw.dbo.dwfullrelationship": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullRelationship"
+  ],
+  "dbo.dwfullrelationship": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullRelationship"],
+  "dwfullrelationship_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullRelationship_P"],
+  "eleaddw.dbo.dwfullrelationship_p": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullRelationship_P"
+  ],
+  "dbo.dwfullrelationship_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullRelationship_P"],
+  "dwfullreportcreditconfiguration": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullReportCreditConfiguration"
+  ],
+  "eleaddw.dbo.dwfullreportcreditconfiguration": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullReportCreditConfiguration"
+  ],
+  "dbo.dwfullreportcreditconfiguration": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullReportCreditConfiguration"
+  ],
+  "dwfullschedule": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullSchedule"],
+  "eleaddw.dbo.dwfullschedule": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullSchedule"],
+  "dbo.dwfullschedule": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullSchedule"],
+  "dwfullsource": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullSource"],
+  "eleaddw.dbo.dwfullsource": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullSource"],
+  "dbo.dwfullsource": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullSource"],
+  "dwfullsource_bk": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullSource_BK"],
+  "eleaddw.dbo.dwfullsource_bk": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullSource_BK"],
+  "dbo.dwfullsource_bk": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullSource_BK"],
+  "dwfulltaskcomments": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTaskComments"],
+  "eleaddw.dbo.dwfulltaskcomments": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTaskComments"
+  ],
+  "dbo.dwfulltaskcomments": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTaskComments"],
+  "dwfulltaskduedatechange": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTaskDueDateChange"],
+  "eleaddw.dbo.dwfulltaskduedatechange": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTaskDueDateChange"
+  ],
+  "dbo.dwfulltaskduedatechange": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTaskDueDateChange"
+  ],
+  "dwfulltaskitem": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTaskItem"],
+  "eleaddw.dbo.dwfulltaskitem": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTaskItem"],
+  "dbo.dwfulltaskitem": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTaskItem"],
+  "dwfulltaskitem_archive": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTaskItem_Archive"],
+  "eleaddw.dbo.dwfulltaskitem_archive": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTaskItem_Archive"
+  ],
+  "dbo.dwfulltaskitem_archive": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTaskItem_Archive"
+  ],
+  "dwfulltaskreminder": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTaskReminder"],
+  "eleaddw.dbo.dwfulltaskreminder": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTaskReminder"
+  ],
+  "dbo.dwfulltaskreminder": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTaskReminder"],
+  "dwfulltextconversation": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversation"],
+  "eleaddw.dbo.dwfulltextconversation": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversation"
+  ],
+  "dbo.dwfulltextconversation": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversation"
+  ],
+  "dwfulltextconversation_bk": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversation_BK"
+  ],
+  "eleaddw.dbo.dwfulltextconversation_bk": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversation_BK"
+  ],
+  "dbo.dwfulltextconversation_bk": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversation_BK"
+  ],
+  "dwfulltextconversationelement": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversationElement"
+  ],
+  "eleaddw.dbo.dwfulltextconversationelement": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversationElement"
+  ],
+  "dbo.dwfulltextconversationelement": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversationElement"
+  ],
+  "dwfulltextconversationelement_bk": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversationElement_BK"
+  ],
+  "eleaddw.dbo.dwfulltextconversationelement_bk": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversationElement_BK"
+  ],
+  "dbo.dwfulltextconversationelement_bk": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversationElement_BK"
+  ],
+  "dwfulltextconversationmessage": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversationMessage"
+  ],
+  "eleaddw.dbo.dwfulltextconversationmessage": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversationMessage"
+  ],
+  "dbo.dwfulltextconversationmessage": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversationMessage"
+  ],
+  "dwfulltextconversationmessage_bk": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversationMessage_BK"
+  ],
+  "eleaddw.dbo.dwfulltextconversationmessage_bk": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversationMessage_BK"
+  ],
+  "dbo.dwfulltextconversationmessage_bk": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversationMessage_BK"
+  ],
+  "dwfulltextconversationnumber": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversationNumber"
+  ],
+  "eleaddw.dbo.dwfulltextconversationnumber": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversationNumber"
+  ],
+  "dbo.dwfulltextconversationnumber": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextConversationNumber"
+  ],
+  "dwfulltextcustomernumber": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextCustomerNumber"
+  ],
+  "eleaddw.dbo.dwfulltextcustomernumber": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextCustomerNumber"
+  ],
+  "dbo.dwfulltextcustomernumber": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextCustomerNumber"
+  ],
+  "dwfulltextcustomernumber_bk": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextCustomerNumber_BK"
+  ],
+  "eleaddw.dbo.dwfulltextcustomernumber_bk": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextCustomerNumber_BK"
+  ],
+  "dbo.dwfulltextcustomernumber_bk": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextCustomerNumber_BK"
+  ],
+  "dwfulltextoptinstatus": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextOptInStatus"],
+  "eleaddw.dbo.dwfulltextoptinstatus": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextOptInStatus"
+  ],
+  "dbo.dwfulltextoptinstatus": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextOptInStatus"],
+  "dwfulltextoptinstatus_bk": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextOptInStatus_BK"
+  ],
+  "eleaddw.dbo.dwfulltextoptinstatus_bk": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextOptInStatus_BK"
+  ],
+  "dbo.dwfulltextoptinstatus_bk": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullTextOptInStatus_BK"
+  ],
+  "dwfulluser": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUser"],
+  "eleaddw.dbo.dwfulluser": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUser"],
+  "dbo.dwfulluser": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUser"],
+  "dwfulluser_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUser_P"],
+  "eleaddw.dbo.dwfulluser_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUser_P"],
+  "dbo.dwfulluser_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUser_P"],
+  "dwfulluserchildcompanymap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserChildCompanyMap"
+  ],
+  "eleaddw.dbo.dwfulluserchildcompanymap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserChildCompanyMap"
+  ],
+  "dbo.dwfulluserchildcompanymap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserChildCompanyMap"
+  ],
+  "dwfulluserchildcompanymap_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserChildCompanyMap_D"
+  ],
+  "eleaddw.dbo.dwfulluserchildcompanymap_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserChildCompanyMap_D"
+  ],
+  "dbo.dwfulluserchildcompanymap_d": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserChildCompanyMap_D"
+  ],
+  "dwfulluserchildcompanymap_p": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserChildCompanyMap_P"
+  ],
+  "eleaddw.dbo.dwfulluserchildcompanymap_p": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserChildCompanyMap_P"
+  ],
+  "dbo.dwfulluserchildcompanymap_p": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserChildCompanyMap_P"
+  ],
+  "dwfulluserdepartmentmap": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserDepartmentMap"],
+  "eleaddw.dbo.dwfulluserdepartmentmap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserDepartmentMap"
+  ],
+  "dbo.dwfulluserdepartmentmap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserDepartmentMap"
+  ],
+  "dwfulluserdepartmentmap_p": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserDepartmentMap_P"
+  ],
+  "eleaddw.dbo.dwfulluserdepartmentmap_p": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserDepartmentMap_P"
+  ],
+  "dbo.dwfulluserdepartmentmap_p": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserDepartmentMap_P"
+  ],
+  "dwfulluserpositionmap": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserPositionMap"],
+  "eleaddw.dbo.dwfulluserpositionmap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserPositionMap"
+  ],
+  "dbo.dwfulluserpositionmap": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserPositionMap"],
+  "dwfulluserpositionmap_p": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserPositionMap_P"],
+  "eleaddw.dbo.dwfulluserpositionmap_p": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserPositionMap_P"
+  ],
+  "dbo.dwfulluserpositionmap_p": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullUserPositionMap_P"
+  ],
+  "dwfullvehicle": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullVehicle"],
+  "eleaddw.dbo.dwfullvehicle": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullVehicle"],
+  "dbo.dwfullvehicle": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullVehicle"],
+  "dwfullvehiclesought": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullVehicleSought"],
+  "eleaddw.dbo.dwfullvehiclesought": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullVehicleSought"
+  ],
+  "dbo.dwfullvehiclesought": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullVehicleSought"],
+  "dwfullwarranty": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullWarranty"],
+  "eleaddw.dbo.dwfullwarranty": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullWarranty"],
+  "dbo.dwfullwarranty": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullWarranty"],
+  "dwfullworkflow": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullWorkflow"],
+  "eleaddw.dbo.dwfullworkflow": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullWorkflow"],
+  "dbo.dwfullworkflow": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullWorkflow"],
+  "eleaddupe_sodb_citymatch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_CityMatch"
+  ],
+  "eleaddw.dbo.eleaddupe_sodb_citymatch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_CityMatch"
+  ],
+  "dbo.eleaddupe_sodb_citymatch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_CityMatch"
+  ],
+  "eleaddupe_sodb_firstnamematch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_FirstNameMatch"
+  ],
+  "eleaddw.dbo.eleaddupe_sodb_firstnamematch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_FirstNameMatch"
+  ],
+  "dbo.eleaddupe_sodb_firstnamematch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_FirstNameMatch"
+  ],
+  "eleaddupe_sodb_statematch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_StateMatch"
+  ],
+  "eleaddw.dbo.eleaddupe_sodb_statematch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_StateMatch"
+  ],
+  "dbo.eleaddupe_sodb_statematch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_StateMatch"
+  ],
+  "eleaddupe_sodb_voimakematch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_VOIMakeMatch"
+  ],
+  "eleaddw.dbo.eleaddupe_sodb_voimakematch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_VOIMakeMatch"
+  ],
+  "dbo.eleaddupe_sodb_voimakematch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_VOIMakeMatch"
+  ],
+  "eleaddupe_sodb_voimodelmatch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_VOIModelMatch"
+  ],
+  "eleaddw.dbo.eleaddupe_sodb_voimodelmatch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_VOIModelMatch"
+  ],
+  "dbo.eleaddupe_sodb_voimodelmatch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_VOIModelMatch"
+  ],
+  "eleaddupe_sodb_voistocknumbermatch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_VOIStockNumberMatch"
+  ],
+  "eleaddw.dbo.eleaddupe_sodb_voistocknumbermatch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_VOIStockNumberMatch"
+  ],
+  "dbo.eleaddupe_sodb_voistocknumbermatch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_VOIStockNumberMatch"
+  ],
+  "eleaddupe_sodb_voivinmatch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_VOIVINMatch"
+  ],
+  "eleaddw.dbo.eleaddupe_sodb_voivinmatch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_VOIVINMatch"
+  ],
+  "dbo.eleaddupe_sodb_voivinmatch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_VOIVINMatch"
+  ],
+  "eleaddupe_sodb_zipmatch": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_ZipMatch"],
+  "eleaddw.dbo.eleaddupe_sodb_zipmatch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_ZipMatch"
+  ],
+  "dbo.eleaddupe_sodb_zipmatch": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadDupe_SODB_ZipMatch"
+  ],
+  "eleads_load_udi_status": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeads_Load_UDI_status"],
+  "eleaddw.dbo.eleads_load_udi_status": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeads_Load_UDI_status"
+  ],
+  "dbo.eleads_load_udi_status": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeads_Load_UDI_status"
+  ],
+  "eleadsopportunitydiffkeys": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadsOpportunityDiffKeys"
+  ],
+  "eleaddw.dbo.eleadsopportunitydiffkeys": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadsOpportunityDiffKeys"
+  ],
+  "dbo.eleadsopportunitydiffkeys": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.eLeadsOpportunityDiffKeys"
+  ],
+  "ep_nashville": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.EP_Nashville"],
+  "eleaddw.dbo.ep_nashville": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.EP_Nashville"],
+  "dbo.ep_nashville": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.EP_Nashville"],
+  "ep_nashville1": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.EP_Nashville1"],
+  "eleaddw.dbo.ep_nashville1": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.EP_Nashville1"],
+  "dbo.ep_nashville1": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.EP_Nashville1"],
+  "fn_clearnonnumericcharacters": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.fn_ClearNonNumericCharacters"
+  ],
+  "eleaddw.dbo.fn_clearnonnumericcharacters": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.fn_ClearNonNumericCharacters"
+  ],
+  "dbo.fn_clearnonnumericcharacters": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.fn_ClearNonNumericCharacters"
+  ],
+  "fn_clearnumericcharacters": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.fn_ClearNumericCharacters"
+  ],
+  "eleaddw.dbo.fn_clearnumericcharacters": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.fn_ClearNumericCharacters"
+  ],
+  "dbo.fn_clearnumericcharacters": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.fn_ClearNumericCharacters"
+  ],
+  "fn_getservertime": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.fn_GetServerTime"],
+  "eleaddw.dbo.fn_getservertime": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.fn_GetServerTime"],
+  "dbo.fn_getservertime": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.fn_GetServerTime"],
+  "fn_getservertime_rev": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.fn_GetServerTime_Rev"],
+  "eleaddw.dbo.fn_getservertime_rev": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.fn_GetServerTime_Rev"
+  ],
+  "dbo.fn_getservertime_rev": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.fn_GetServerTime_Rev"],
+  "lpersonid_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.lpersonid_dup"],
+  "eleaddw.dbo.lpersonid_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.lpersonid_dup"],
+  "dbo.lpersonid_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.lpersonid_dup"],
+  "ltaskid_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ltaskid_dup"],
+  "eleaddw.dbo.ltaskid_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ltaskid_dup"],
+  "dbo.ltaskid_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ltaskid_dup"],
+  "matchresultactiveoppperson": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultActiveOppPerson"
+  ],
+  "eleaddw.dbo.matchresultactiveoppperson": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultActiveOppPerson"
+  ],
+  "dbo.matchresultactiveoppperson": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultActiveOppPerson"
+  ],
+  "matchresultaddress": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultAddress"],
+  "eleaddw.dbo.matchresultaddress": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultAddress"
+  ],
+  "dbo.matchresultaddress": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultAddress"],
+  "matchresultaddress_fzyparsedindex": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultAddress_FZYParsedIndex"
+  ],
+  "eleaddw.dbo.matchresultaddress_fzyparsedindex": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultAddress_FZYParsedIndex"
+  ],
+  "dbo.matchresultaddress_fzyparsedindex": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultAddress_FZYParsedIndex"
+  ],
+  "matchresultaddress_fzyresults": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultAddress_FZYResults"
+  ],
+  "eleaddw.dbo.matchresultaddress_fzyresults": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultAddress_FZYResults"
+  ],
+  "dbo.matchresultaddress_fzyresults": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultAddress_FZYResults"
+  ],
+  "matchresultaddress_sourceref": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultAddress_SourceRef"
+  ],
+  "eleaddw.dbo.matchresultaddress_sourceref": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultAddress_SourceRef"
+  ],
+  "dbo.matchresultaddress_sourceref": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultAddress_SourceRef"
+  ],
+  "matchresultcity": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultCity"],
+  "eleaddw.dbo.matchresultcity": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultCity"],
+  "dbo.matchresultcity": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultCity"],
+  "matchresultemail": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultEmail"],
+  "eleaddw.dbo.matchresultemail": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultEmail"],
+  "dbo.matchresultemail": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultEmail"],
+  "matchresultfirstname": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultFirstName"],
+  "eleaddw.dbo.matchresultfirstname": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultFirstName"
+  ],
+  "dbo.matchresultfirstname": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultFirstName"],
+  "matchresultlastname": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultLastName"],
+  "eleaddw.dbo.matchresultlastname": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultLastName"
+  ],
+  "dbo.matchresultlastname": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultLastName"],
+  "matchresultlivedealers": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultLiveDealers"],
+  "eleaddw.dbo.matchresultlivedealers": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultLiveDealers"
+  ],
+  "dbo.matchresultlivedealers": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultLiveDealers"
+  ],
+  "matchresultphone": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultPhone"],
+  "eleaddw.dbo.matchresultphone": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultPhone"],
+  "dbo.matchresultphone": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultPhone"],
+  "matchresultsourceperson": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultSourcePerson"],
+  "eleaddw.dbo.matchresultsourceperson": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultSourcePerson"
+  ],
+  "dbo.matchresultsourceperson": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultSourcePerson"
+  ],
+  "matchresultstate": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultState"],
+  "eleaddw.dbo.matchresultstate": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultState"],
+  "dbo.matchresultstate": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultState"],
+  "matchresulttradevin": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultTradeVIN"],
+  "eleaddw.dbo.matchresulttradevin": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultTradeVIN"
+  ],
+  "dbo.matchresulttradevin": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultTradeVIN"],
+  "matchresultvoimake": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultVOIMake"],
+  "eleaddw.dbo.matchresultvoimake": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultVOIMake"
+  ],
+  "dbo.matchresultvoimake": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultVOIMake"],
+  "matchresultvoimodel": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultVOIModel"],
+  "eleaddw.dbo.matchresultvoimodel": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultVOIModel"
+  ],
+  "dbo.matchresultvoimodel": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultVOIModel"],
+  "matchresultvoistocknumber": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultVOIStockNumber"
+  ],
+  "eleaddw.dbo.matchresultvoistocknumber": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultVOIStockNumber"
+  ],
+  "dbo.matchresultvoistocknumber": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultVOIStockNumber"
+  ],
+  "matchresultvoivin": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultVOIVIN"],
+  "eleaddw.dbo.matchresultvoivin": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultVOIVIN"],
+  "dbo.matchresultvoivin": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultVOIVIN"],
+  "matchresultzip": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultZip"],
+  "eleaddw.dbo.matchresultzip": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultZip"],
+  "dbo.matchresultzip": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultZip"],
+  "msctaskresults": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MSCTaskResults"],
+  "eleaddw.dbo.msctaskresults": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MSCTaskResults"],
+  "dbo.msctaskresults": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MSCTaskResults"],
+  "msctaskresults_department": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MSCTaskResults_Department"
+  ],
+  "eleaddw.dbo.msctaskresults_department": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MSCTaskResults_Department"
+  ],
+  "dbo.msctaskresults_department": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MSCTaskResults_Department"
+  ],
+  "msctasks": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MSCTasks"],
+  "eleaddw.dbo.msctasks": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MSCTasks"],
+  "dbo.msctasks": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MSCTasks"],
+  "pcnopportunity": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.PCNOpportunity"],
+  "eleaddw.dbo.pcnopportunity": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.PCNOpportunity"],
+  "dbo.pcnopportunity": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.PCNOpportunity"],
+  "pcnopportunityep": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.PCNOpportunityEP"],
+  "eleaddw.dbo.pcnopportunityep": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.PCNOpportunityEP"],
+  "dbo.pcnopportunityep": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.PCNOpportunityEP"],
+  "pcnvalidemailaddress": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.PCNValidEmailAddress"],
+  "eleaddw.dbo.pcnvalidemailaddress": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.PCNValidEmailAddress"
+  ],
+  "dbo.pcnvalidemailaddress": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.PCNValidEmailAddress"],
+  "ploaddailydiff": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.pLoadDailyDiff"],
+  "eleaddw.dbo.ploaddailydiff": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.pLoadDailyDiff"],
+  "dbo.ploaddailydiff": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.pLoadDailyDiff"],
+  "ploaddeletes_sonic": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.pLoadDeletes_sonic"],
+  "eleaddw.dbo.ploaddeletes_sonic": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.pLoadDeletes_sonic"
+  ],
+  "dbo.ploaddeletes_sonic": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.pLoadDeletes_sonic"],
+  "proccrmsoldlu": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcCRMSoldLU"],
+  "eleaddw.dbo.proccrmsoldlu": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcCRMSoldLU"],
+  "dbo.proccrmsoldlu": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcCRMSoldLU"],
+  "procoutput_sonic": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic"],
+  "eleaddw.dbo.procoutput_sonic": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic"],
+  "dbo.procoutput_sonic": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic"],
+  "procoutput_sonic_0729": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_0729"],
+  "eleaddw.dbo.procoutput_sonic_0729": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_0729"
+  ],
+  "dbo.procoutput_sonic_0729": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_0729"],
+  "procoutput_sonic_all": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_All"],
+  "eleaddw.dbo.procoutput_sonic_all": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_All"
+  ],
+  "dbo.procoutput_sonic_all": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_All"],
+  "procoutput_sonic_department": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_Department"
+  ],
+  "eleaddw.dbo.procoutput_sonic_department": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_Department"
+  ],
+  "dbo.procoutput_sonic_department": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_Department"
+  ],
+  "procoutput_sonic_msctasks": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_MSCTasks"
+  ],
+  "eleaddw.dbo.procoutput_sonic_msctasks": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_MSCTasks"
+  ],
+  "dbo.procoutput_sonic_msctasks": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_MSCTasks"
+  ],
+  "procoutput_sonic_msctasks_department": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_MSCTasks_Department"
+  ],
+  "eleaddw.dbo.procoutput_sonic_msctasks_department": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_MSCTasks_Department"
+  ],
+  "dbo.procoutput_sonic_msctasks_department": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_MSCTasks_Department"
+  ],
+  "procoutput_sonic_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_QA"],
+  "eleaddw.dbo.procoutput_sonic_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_QA"
+  ],
+  "dbo.procoutput_sonic_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_QA"],
+  "procoutput_sonic_qa2": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_QA2"],
+  "eleaddw.dbo.procoutput_sonic_qa2": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_QA2"
+  ],
+  "dbo.procoutput_sonic_qa2": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_QA2"],
+  "procoutput_sonic_qa2_results": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_QA2_Results"
+  ],
+  "eleaddw.dbo.procoutput_sonic_qa2_results": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_QA2_Results"
+  ],
+  "dbo.procoutput_sonic_qa2_results": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_QA2_Results"
+  ],
+  "procoutput_sonic_qa3": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_QA3"],
+  "eleaddw.dbo.procoutput_sonic_qa3": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_QA3"
+  ],
+  "dbo.procoutput_sonic_qa3": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_QA3"],
+  "procoutput_sonic_textperformance": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_TextPerformance"
+  ],
+  "eleaddw.dbo.procoutput_sonic_textperformance": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_TextPerformance"
+  ],
+  "dbo.procoutput_sonic_textperformance": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_TextPerformance"
+  ],
+  "procoutput_sonic_textperformance_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_TextPerformance_QA"
+  ],
+  "eleaddw.dbo.procoutput_sonic_textperformance_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_TextPerformance_QA"
+  ],
+  "dbo.procoutput_sonic_textperformance_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_TextPerformance_QA"
+  ],
+  "procoutput_sonic_textperformance_testdev": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_TextPerformance_TestDev"
+  ],
+  "eleaddw.dbo.procoutput_sonic_textperformance_testdev": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_TextPerformance_TestDev"
+  ],
+  "dbo.procoutput_sonic_textperformance_testdev": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_Sonic_TextPerformance_TestDev"
+  ],
+  "procoutput_tasksofinterest": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_TasksOfInterest"
+  ],
+  "eleaddw.dbo.procoutput_tasksofinterest": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_TasksOfInterest"
+  ],
+  "dbo.procoutput_tasksofinterest": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput_TasksOfInterest"
+  ],
+  "procoutput582sonic": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput582Sonic"],
+  "eleaddw.dbo.procoutput582sonic": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput582Sonic"
+  ],
+  "dbo.procoutput582sonic": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutput582Sonic"],
+  "procoutputbaseline": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutputBaseline"],
+  "eleaddw.dbo.procoutputbaseline": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutputBaseline"
+  ],
+  "dbo.procoutputbaseline": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.ProcOutputBaseline"],
+  "rfjcustinserts": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.RFJCustInserts"],
+  "eleaddw.dbo.rfjcustinserts": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.RFJCustInserts"],
+  "dbo.rfjcustinserts": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.RFJCustInserts"],
+  "scores_dealershipload": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.SCORES_DealershipLoad"],
+  "eleaddw.dbo.scores_dealershipload": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.SCORES_DealershipLoad"
+  ],
+  "dbo.scores_dealershipload": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.SCORES_DealershipLoad"],
+  "sonic_tmr_export": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.Sonic_TMR_Export"],
+  "eleaddw.dbo.sonic_tmr_export": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.Sonic_TMR_Export"],
+  "dbo.sonic_tmr_export": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.Sonic_TMR_Export"],
+  "sonic_tmr_export_jan": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.Sonic_TMR_Export_Jan"],
+  "eleaddw.dbo.sonic_tmr_export_jan": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.Sonic_TMR_Export_Jan"
+  ],
+  "dbo.sonic_tmr_export_jan": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.Sonic_TMR_Export_Jan"],
+  "sploadaddressfzyparsedindex": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.spLoadAddressFZYParsedIndex"
+  ],
+  "eleaddw.dbo.sploadaddressfzyparsedindex": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.spLoadAddressFZYParsedIndex"
+  ],
+  "dbo.sploadaddressfzyparsedindex": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.spLoadAddressFZYParsedIndex"
+  ],
+  "stagesamedayappt": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageSameDayAppt"],
+  "eleaddw.dbo.stagesamedayappt": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageSameDayAppt"],
+  "dbo.stagesamedayappt": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageSameDayAppt"],
+  "stagetrafficdaily": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDaily"],
+  "eleaddw.dbo.stagetrafficdaily": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDaily"],
+  "dbo.stagetrafficdaily": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDaily"],
+  "stagetrafficdaily_mtd_runs": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDaily_MTD_Runs"
+  ],
+  "eleaddw.dbo.stagetrafficdaily_mtd_runs": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDaily_MTD_Runs"
+  ],
+  "dbo.stagetrafficdaily_mtd_runs": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDaily_MTD_Runs"
+  ],
+  "stagetrafficdaily_runs": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDaily_Runs"],
+  "eleaddw.dbo.stagetrafficdaily_runs": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDaily_Runs"
+  ],
+  "dbo.stagetrafficdaily_runs": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDaily_Runs"
+  ],
+  "stagetrafficdailydepartment": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDailyDepartment"
+  ],
+  "eleaddw.dbo.stagetrafficdailydepartment": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDailyDepartment"
+  ],
+  "dbo.stagetrafficdailydepartment": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDailyDepartment"
+  ],
+  "stagetrafficdailysourcesubsource": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDailySourceSubSource"
+  ],
+  "eleaddw.dbo.stagetrafficdailysourcesubsource": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDailySourceSubSource"
+  ],
+  "dbo.stagetrafficdailysourcesubsource": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDailySourceSubSource"
+  ],
+  "stagetrafficdailysourcesubsource_mtd_runs": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDailySourceSubSource_MTD_Runs"
+  ],
+  "eleaddw.dbo.stagetrafficdailysourcesubsource_mtd_runs": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDailySourceSubSource_MTD_Runs"
+  ],
+  "dbo.stagetrafficdailysourcesubsource_mtd_runs": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDailySourceSubSource_MTD_Runs"
+  ],
+  "stagetrafficdailysourcesubsource_runs": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDailySourceSubSource_Runs"
+  ],
+  "eleaddw.dbo.stagetrafficdailysourcesubsource_runs": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDailySourceSubSource_Runs"
+  ],
+  "dbo.stagetrafficdailysourcesubsource_runs": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDailySourceSubSource_Runs"
+  ],
+  "stagetrafficdailysourcesubsourceagg": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDailySourceSubSourceAgg"
+  ],
+  "eleaddw.dbo.stagetrafficdailysourcesubsourceagg": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDailySourceSubSourceAgg"
+  ],
+  "dbo.stagetrafficdailysourcesubsourceagg": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDailySourceSubSourceAgg"
+  ],
+  "stagetrafficdetail": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDetail"],
+  "eleaddw.dbo.stagetrafficdetail": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDetail"
+  ],
+  "dbo.stagetrafficdetail": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficDetail"],
+  "stagetrafficlivedealers": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficLiveDealers"],
+  "eleaddw.dbo.stagetrafficlivedealers": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficLiveDealers"
+  ],
+  "dbo.stagetrafficlivedealers": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficLiveDealers"
+  ],
+  "stagetrafficsummary": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary"],
+  "eleaddw.dbo.stagetrafficsummary": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary"
+  ],
+  "dbo.stagetrafficsummary": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary"],
+  "stagetrafficsummary_mtd_runs": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary_MTD_Runs"
+  ],
+  "eleaddw.dbo.stagetrafficsummary_mtd_runs": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary_MTD_Runs"
+  ],
+  "dbo.stagetrafficsummary_mtd_runs": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary_MTD_Runs"
+  ],
+  "stagetrafficsummary_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary_QA"],
+  "eleaddw.dbo.stagetrafficsummary_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary_QA"
+  ],
+  "dbo.stagetrafficsummary_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary_QA"
+  ],
+  "stagetrafficsummary_qa_dealership": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary_QA_Dealership"
+  ],
+  "eleaddw.dbo.stagetrafficsummary_qa_dealership": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary_QA_Dealership"
+  ],
+  "dbo.stagetrafficsummary_qa_dealership": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary_QA_Dealership"
+  ],
+  "stagetrafficsummary_qa2": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary_QA2"],
+  "eleaddw.dbo.stagetrafficsummary_qa2": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary_QA2"
+  ],
+  "dbo.stagetrafficsummary_qa2": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary_QA2"
+  ],
+  "stagetrafficsummary_qa3": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary_QA3"],
+  "eleaddw.dbo.stagetrafficsummary_qa3": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary_QA3"
+  ],
+  "dbo.stagetrafficsummary_qa3": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary_QA3"
+  ],
+  "stagetrafficsummary_runs": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary_Runs"
+  ],
+  "eleaddw.dbo.stagetrafficsummary_runs": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary_Runs"
+  ],
+  "dbo.stagetrafficsummary_runs": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummary_Runs"
+  ],
+  "stagetrafficsummarysubsource": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummarySubSource"
+  ],
+  "eleaddw.dbo.stagetrafficsummarysubsource": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummarySubSource"
+  ],
+  "dbo.stagetrafficsummarysubsource": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficSummarySubSource"
+  ],
+  "stagetraffictextperformance": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficTextPerformance"
+  ],
+  "eleaddw.dbo.stagetraffictextperformance": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficTextPerformance"
+  ],
+  "dbo.stagetraffictextperformance": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficTextPerformance"
+  ],
+  "stagetraffictextperformance_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficTextPerformance_QA"
+  ],
+  "eleaddw.dbo.stagetraffictextperformance_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficTextPerformance_QA"
+  ],
+  "dbo.stagetraffictextperformance_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficTextPerformance_QA"
+  ],
+  "stagetraffictextperformance_testdev": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficTextPerformance_TestDev"
+  ],
+  "eleaddw.dbo.stagetraffictextperformance_testdev": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficTextPerformance_TestDev"
+  ],
+  "dbo.stagetraffictextperformance_testdev": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StageTrafficTextPerformance_TestDev"
+  ],
+  "stagingevo2_corereport_v3_tbi": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v3_tbi": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI"
+  ],
+  "dbo.stagingevo2_corereport_v3_tbi": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI"
+  ],
+  "stagingevo2_corereport_v3_tbi_102020": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_102020"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v3_tbi_102020": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_102020"
+  ],
+  "dbo.stagingevo2_corereport_v3_tbi_102020": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_102020"
+  ],
+  "stagingevo2_corereport_v3_tbi_sonic_v2": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v3_tbi_sonic_v2": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2"
+  ],
+  "dbo.stagingevo2_corereport_v3_tbi_sonic_v2": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2"
+  ],
+  "stagingevo2_corereport_v3_tbi_sonic_v2_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_QA"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v3_tbi_sonic_v2_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_QA"
+  ],
+  "dbo.stagingevo2_corereport_v3_tbi_sonic_v2_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_QA"
+  ],
+  "stagingevo2_corereport_v3_tbi_sonic_v2_qa_test": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_QA_TEST"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v3_tbi_sonic_v2_qa_test": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_QA_TEST"
+  ],
+  "dbo.stagingevo2_corereport_v3_tbi_sonic_v2_qa_test": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_QA_TEST"
+  ],
+  "stagingevo2_corereport_v3_tbi_sonic_v2_qa_withdaily_v3": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_QA_WithDaily_V3"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v3_tbi_sonic_v2_qa_withdaily_v3": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_QA_WithDaily_V3"
+  ],
+  "dbo.stagingevo2_corereport_v3_tbi_sonic_v2_qa_withdaily_v3": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_QA_WithDaily_V3"
+  ],
+  "stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput"
+  ],
+  "dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput"
+  ],
+  "stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_102020": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_102020"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_102020": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_102020"
+  ],
+  "dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_102020": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_102020"
+  ],
+  "stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_10302020": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_10302020"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_10302020": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_10302020"
+  ],
+  "dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_10302020": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_10302020"
+  ],
+  "stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_20230811": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_20230811"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_20230811": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_20230811"
+  ],
+  "dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_20230811": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_20230811"
+  ],
+  "stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_2142025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_2142025"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_2142025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_2142025"
+  ],
+  "dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_2142025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_2142025"
+  ],
+  "stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_QA"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_QA"
+  ],
+  "dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_QA"
+  ],
+  "stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_qa_test": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_QA_Test"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_qa_test": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_QA_Test"
+  ],
+  "dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_qa_test": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_QA_Test"
+  ],
+  "stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_qa2": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_QA2"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_qa2": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_QA2"
+  ],
+  "dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_qa2": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_QA2"
+  ],
+  "stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_qa3": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_QA3"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_qa3": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_QA3"
+  ],
+  "dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_qa3": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_QA3"
+  ],
+  "stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_qa4": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_QA4"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_qa4": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_QA4"
+  ],
+  "dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_qa4": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_QA4"
+  ],
+  "stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_qa5": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_QA5"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_qa5": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_QA5"
+  ],
+  "dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_qa5": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_QA5"
+  ],
+  "stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_sourcesubsource": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_SourceSubSource"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_sourcesubsource": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_SourceSubSource"
+  ],
+  "dbo.stagingevo2_corereport_v3_tbi_sonic_v2_withdailyprocoutput_sourcesubsource": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2_WithDailyProcOutput_SourceSubSource"
+  ],
+  "stagingevo2_corereport_v4_tbi": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V4_TBI"
+  ],
+  "eleaddw.dbo.stagingevo2_corereport_v4_tbi": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V4_TBI"
+  ],
+  "dbo.stagingevo2_corereport_v4_tbi": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V4_TBI"
+  ],
+  "storelist": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StoreList"],
+  "eleaddw.dbo.storelist": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StoreList"],
+  "dbo.storelist": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.StoreList"],
+  "tblgolddiggerroi": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tblGoldDiggerROI"],
+  "eleaddw.dbo.tblgolddiggerroi": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tblGoldDiggerROI"],
+  "dbo.tblgolddiggerroi": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tblGoldDiggerROI"],
+  "tblquartile": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tblQuartile"],
+  "eleaddw.dbo.tblquartile": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tblQuartile"],
+  "dbo.tblquartile": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tblQuartile"],
+  "temp_opp": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.temp_opp"],
+  "eleaddw.dbo.temp_opp": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.temp_opp"],
+  "dbo.temp_opp": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.temp_opp"],
+  "tempcustomer": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tempcustomer"],
+  "eleaddw.dbo.tempcustomer": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tempcustomer"],
+  "dbo.tempcustomer": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tempcustomer"],
+  "tempdealsofinterest": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TempDealsOfInterest"],
+  "eleaddw.dbo.tempdealsofinterest": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TempDealsOfInterest"
+  ],
+  "dbo.tempdealsofinterest": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TempDealsOfInterest"],
+  "temphistoricalstorelist": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TempHistoricalStoreList"],
+  "eleaddw.dbo.temphistoricalstorelist": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TempHistoricalStoreList"
+  ],
+  "dbo.temphistoricalstorelist": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TempHistoricalStoreList"
+  ],
+  "testprocop": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TestProcop"],
+  "eleaddw.dbo.testprocop": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TestProcop"],
+  "dbo.testprocop": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TestProcop"],
+  "textdataactivity": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataActivity"],
+  "eleaddw.dbo.textdataactivity": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataActivity"],
+  "dbo.textdataactivity": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataActivity"],
+  "textdataactivityleadlist": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataActivityLeadList"
+  ],
+  "eleaddw.dbo.textdataactivityleadlist": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataActivityLeadList"
+  ],
+  "dbo.textdataactivityleadlist": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataActivityLeadList"
+  ],
+  "textdatafinal": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataFinal"],
+  "eleaddw.dbo.textdatafinal": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataFinal"],
+  "dbo.textdatafinal": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataFinal"],
+  "textdatafinal_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataFinal_QA"],
+  "eleaddw.dbo.textdatafinal_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataFinal_QA"],
+  "dbo.textdatafinal_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataFinal_QA"],
+  "textdataleads": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataLeads"],
+  "eleaddw.dbo.textdataleads": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataLeads"],
+  "dbo.textdataleads": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataLeads"],
+  "textdatametrics": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataMetrics"],
+  "eleaddw.dbo.textdatametrics": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataMetrics"],
+  "dbo.textdatametrics": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataMetrics"],
+  "tmpconversationid": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpConversationId"],
+  "eleaddw.dbo.tmpconversationid": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpConversationId"],
+  "dbo.tmpconversationid": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpConversationId"],
+  "tmpconversationid_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpConversationId_QA"],
+  "eleaddw.dbo.tmpconversationid_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpConversationId_QA"
+  ],
+  "dbo.tmpconversationid_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpConversationId_QA"],
+  "tmpnotintxt": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpNotInTXT"],
+  "eleaddw.dbo.tmpnotintxt": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpNotInTXT"],
+  "dbo.tmpnotintxt": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpNotInTXT"],
+  "tmpnotintxt_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpNotInTXT_QA"],
+  "eleaddw.dbo.tmpnotintxt_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpNotInTXT_QA"],
+  "dbo.tmpnotintxt_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpNotInTXT_QA"],
+  "tmpopttextmessage": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpOptTextMessage"],
+  "eleaddw.dbo.tmpopttextmessage": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpOptTextMessage"],
+  "dbo.tmpopttextmessage": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpOptTextMessage"],
+  "tmpopttextmessage_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpOptTextMessage_QA"],
+  "eleaddw.dbo.tmpopttextmessage_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpOptTextMessage_QA"
+  ],
+  "dbo.tmpopttextmessage_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpOptTextMessage_QA"],
+  "tmpphonenumber": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tmpPhoneNumber"],
+  "eleaddw.dbo.tmpphonenumber": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tmpPhoneNumber"],
+  "dbo.tmpphonenumber": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tmpPhoneNumber"],
+  "tmpphonenumber_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tmpPhoneNumber_QA"],
+  "eleaddw.dbo.tmpphonenumber_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tmpPhoneNumber_QA"],
+  "dbo.tmpphonenumber_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tmpPhoneNumber_QA"],
+  "tmptextmessage": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tmpTextMessage"],
+  "eleaddw.dbo.tmptextmessage": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tmpTextMessage"],
+  "dbo.tmptextmessage": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tmpTextMessage"],
+  "tmptextmessage_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tmpTextMessage_QA"],
+  "eleaddw.dbo.tmptextmessage_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tmpTextMessage_QA"],
+  "dbo.tmptextmessage_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tmpTextMessage_QA"],
+  "tmptexts": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpTexts"],
+  "eleaddw.dbo.tmptexts": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpTexts"],
+  "dbo.tmptexts": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpTexts"],
+  "tmptexts_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpTexts_QA"],
+  "eleaddw.dbo.tmptexts_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpTexts_QA"],
+  "dbo.tmptexts_qa": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TmpTexts_QA"],
+  "tmptextsmsctasks": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tmpTextsMSCTasks"],
+  "eleaddw.dbo.tmptextsmsctasks": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tmpTextsMSCTasks"],
+  "dbo.tmptextsmsctasks": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tmpTextsMSCTasks"],
+  "tmpusersmsctasks": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tmpUsersMSCTasks"],
+  "eleaddw.dbo.tmpusersmsctasks": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tmpUsersMSCTasks"],
+  "dbo.tmpusersmsctasks": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.tmpUsersMSCTasks"],
+  "turbodateloops": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TURBODateLoops"],
+  "eleaddw.dbo.turbodateloops": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TURBODateLoops"],
+  "dbo.turbodateloops": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TURBODateLoops"],
+  "txtmsctask": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.txtMSCTask"],
+  "eleaddw.dbo.txtmsctask": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.txtMSCTask"],
+  "dbo.txtmsctask": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.txtMSCTask"],
+  "txtmsctaskdeal": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.txtMSCTaskDeal"],
+  "eleaddw.dbo.txtmsctaskdeal": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.txtMSCTaskDeal"],
+  "dbo.txtmsctaskdeal": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.txtMSCTaskDeal"],
+  "undeletedeals": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.UndeleteDeals"],
+  "eleaddw.dbo.undeletedeals": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.UndeleteDeals"],
+  "dbo.undeletedeals": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.UndeleteDeals"],
+  "usp_deleteoldstatstics": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_DeleteOldStatstics"],
+  "eleaddw.dbo.usp_deleteoldstatstics": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_DeleteOldStatstics"
+  ],
+  "dbo.usp_deleteoldstatstics": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_DeleteOldStatstics"
+  ],
+  "usp_eleaddedupe_extractinitialmatchemail": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_eLeadDedupe_ExtractInitialMatchEmail"
+  ],
+  "eleaddw.dbo.usp_eleaddedupe_extractinitialmatchemail": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_eLeadDedupe_ExtractInitialMatchEmail"
+  ],
+  "dbo.usp_eleaddedupe_extractinitialmatchemail": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_eLeadDedupe_ExtractInitialMatchEmail"
+  ],
+  "usp_eleaddedupe_extractinitialmatchphone": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_eLeadDedupe_ExtractInitialMatchPhone"
+  ],
+  "eleaddw.dbo.usp_eleaddedupe_extractinitialmatchphone": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_eLeadDedupe_ExtractInitialMatchPhone"
+  ],
+  "dbo.usp_eleaddedupe_extractinitialmatchphone": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_eLeadDedupe_ExtractInitialMatchPhone"
+  ],
+  "usp_eleaddedupe_extractinitialmatchtradevin": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_eLeadDedupe_ExtractInitialMatchTradeVIN"
+  ],
+  "eleaddw.dbo.usp_eleaddedupe_extractinitialmatchtradevin": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_eLeadDedupe_ExtractInitialMatchTradeVIN"
+  ],
+  "dbo.usp_eleaddedupe_extractinitialmatchtradevin": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_eLeadDedupe_ExtractInitialMatchTradeVIN"
+  ],
+  "usp_facebook_unsold_showroom": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_Facebook_Unsold_Showroom"
+  ],
+  "eleaddw.dbo.usp_facebook_unsold_showroom": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_Facebook_Unsold_Showroom"
+  ],
+  "dbo.usp_facebook_unsold_showroom": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_Facebook_Unsold_Showroom"
+  ],
+  "usp_loaddwfullcompanychildcompanymap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullCompanyChildCompanyMap"
+  ],
+  "eleaddw.dbo.usp_loaddwfullcompanychildcompanymap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullCompanyChildCompanyMap"
+  ],
+  "dbo.usp_loaddwfullcompanychildcompanymap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullCompanyChildCompanyMap"
+  ],
+  "usp_loaddwfullcompanyhierarchy": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullCompanyHierarchy"
+  ],
+  "eleaddw.dbo.usp_loaddwfullcompanyhierarchy": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullCompanyHierarchy"
+  ],
+  "dbo.usp_loaddwfullcompanyhierarchy": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullCompanyHierarchy"
+  ],
+  "usp_loaddwfullcompanyoption": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullCompanyOption"
+  ],
+  "eleaddw.dbo.usp_loaddwfullcompanyoption": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullCompanyOption"
+  ],
+  "dbo.usp_loaddwfullcompanyoption": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullCompanyOption"
+  ],
+  "usp_loaddwfullcompanysource": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullCompanySource"
+  ],
+  "eleaddw.dbo.usp_loaddwfullcompanysource": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullCompanySource"
+  ],
+  "dbo.usp_loaddwfullcompanysource": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullCompanySource"
+  ],
+  "usp_loaddwfulldaylightsavingtime": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullDaylightSavingTime"
+  ],
+  "eleaddw.dbo.usp_loaddwfulldaylightsavingtime": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullDaylightSavingTime"
+  ],
+  "dbo.usp_loaddwfulldaylightsavingtime": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullDaylightSavingTime"
+  ],
+  "usp_loaddwfulldealerprogram": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullDealerProgram"
+  ],
+  "eleaddw.dbo.usp_loaddwfulldealerprogram": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullDealerProgram"
+  ],
+  "dbo.usp_loaddwfulldealerprogram": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullDealerProgram"
+  ],
+  "usp_loaddwfulldesklogvisit": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullDesklogVisit"
+  ],
+  "eleaddw.dbo.usp_loaddwfulldesklogvisit": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullDesklogVisit"
+  ],
+  "dbo.usp_loaddwfulldesklogvisit": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullDesklogVisit"
+  ],
+  "usp_loaddwfullholiday": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullHoliday"],
+  "eleaddw.dbo.usp_loaddwfullholiday": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullHoliday"
+  ],
+  "dbo.usp_loaddwfullholiday": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullHoliday"],
+  "usp_loaddwfullleadproviderinactivereasonmap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullLeadProviderInactiveReasonMap"
+  ],
+  "eleaddw.dbo.usp_loaddwfullleadproviderinactivereasonmap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullLeadProviderInactiveReasonMap"
+  ],
+  "dbo.usp_loaddwfullleadproviderinactivereasonmap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullLeadProviderInactiveReasonMap"
+  ],
+  "usp_loaddwfullproductorservice": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullProductOrService"
+  ],
+  "eleaddw.dbo.usp_loaddwfullproductorservice": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullProductOrService"
+  ],
+  "dbo.usp_loaddwfullproductorservice": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullProductOrService"
+  ],
+  "usp_loaddwfullreportcreditconfiguration": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullReportCreditConfiguration"
+  ],
+  "eleaddw.dbo.usp_loaddwfullreportcreditconfiguration": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullReportCreditConfiguration"
+  ],
+  "dbo.usp_loaddwfullreportcreditconfiguration": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullReportCreditConfiguration"
+  ],
+  "usp_loaddwfullschedule": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullSchedule"],
+  "eleaddw.dbo.usp_loaddwfullschedule": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullSchedule"
+  ],
+  "dbo.usp_loaddwfullschedule": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullSchedule"
+  ],
+  "usp_loaddwfullsource": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullSource"],
+  "eleaddw.dbo.usp_loaddwfullsource": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullSource"
+  ],
+  "dbo.usp_loaddwfullsource": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullSource"],
+  "usp_loaddwfulltaskcomments": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullTaskComments"
+  ],
+  "eleaddw.dbo.usp_loaddwfulltaskcomments": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullTaskComments"
+  ],
+  "dbo.usp_loaddwfulltaskcomments": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullTaskComments"
+  ],
+  "usp_loaddwfulltaskreminder": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullTaskReminder"
+  ],
+  "eleaddw.dbo.usp_loaddwfulltaskreminder": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullTaskReminder"
+  ],
+  "dbo.usp_loaddwfulltaskreminder": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullTaskReminder"
+  ],
+  "usp_loaddwfulluserchildcompanymap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoaddwFullUserChildCompanyMap"
+  ],
+  "eleaddw.dbo.usp_loaddwfulluserchildcompanymap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoaddwFullUserChildCompanyMap"
+  ],
+  "dbo.usp_loaddwfulluserchildcompanymap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoaddwFullUserChildCompanyMap"
+  ],
+  "usp_loaddwuserchildconpanymap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoaddwUserChildConpanyMap"
+  ],
+  "eleaddw.dbo.usp_loaddwuserchildconpanymap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoaddwUserChildConpanyMap"
+  ],
+  "dbo.usp_loaddwuserchildconpanymap": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoaddwUserChildConpanyMap"
+  ],
+  "usp_loadsamedayappts": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadSameDayAppts"],
+  "eleaddw.dbo.usp_loadsamedayappts": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadSameDayAppts"
+  ],
+  "dbo.usp_loadsamedayappts": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadSameDayAppts"],
+  "usp_loadstagetrafficdailyemptyrecords": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadStageTrafficDailyEmptyRecords"
+  ],
+  "eleaddw.dbo.usp_loadstagetrafficdailyemptyrecords": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadStageTrafficDailyEmptyRecords"
+  ],
+  "dbo.usp_loadstagetrafficdailyemptyrecords": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadStageTrafficDailyEmptyRecords"
+  ],
+  "usp_loadtextperformancedata": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTextPerformanceData"
+  ],
+  "eleaddw.dbo.usp_loadtextperformancedata": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTextPerformanceData"
+  ],
+  "dbo.usp_loadtextperformancedata": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTextPerformanceData"
+  ],
+  "usp_loadtextperformancedata_09sep2024": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTextPerformanceData_09Sep2024"
+  ],
+  "eleaddw.dbo.usp_loadtextperformancedata_09sep2024": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTextPerformanceData_09Sep2024"
+  ],
+  "dbo.usp_loadtextperformancedata_09sep2024": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTextPerformanceData_09Sep2024"
+  ],
+  "usp_loadtextperformancedata_alldealerships": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTextPerformanceData_AllDealerships"
+  ],
+  "eleaddw.dbo.usp_loadtextperformancedata_alldealerships": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTextPerformanceData_AllDealerships"
+  ],
+  "dbo.usp_loadtextperformancedata_alldealerships": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTextPerformanceData_AllDealerships"
+  ],
+  "usp_loadtextperformancedata_alldealerships_bk_dmd": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTextPerformanceData_AllDealerships_BK_DMD"
+  ],
+  "eleaddw.dbo.usp_loadtextperformancedata_alldealerships_bk_dmd": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTextPerformanceData_AllDealerships_BK_DMD"
+  ],
+  "dbo.usp_loadtextperformancedata_alldealerships_bk_dmd": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTextPerformanceData_AllDealerships_BK_DMD"
+  ],
+  "usp_loadtextperformancedata_alldealerships_qa1": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTextPerformanceData_AllDealerships_QA1"
+  ],
+  "eleaddw.dbo.usp_loadtextperformancedata_alldealerships_qa1": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTextPerformanceData_AllDealerships_QA1"
+  ],
+  "dbo.usp_loadtextperformancedata_alldealerships_qa1": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTextPerformanceData_AllDealerships_QA1"
+  ],
+  "usp_loadtextperformancedata_hist": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTextPerformanceData_Hist"
+  ],
+  "eleaddw.dbo.usp_loadtextperformancedata_hist": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTextPerformanceData_Hist"
+  ],
+  "dbo.usp_loadtextperformancedata_hist": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTextPerformanceData_Hist"
+  ],
+  "usp_loadtrafficsummarydepartmentrecords": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTrafficSummaryDepartmentRecords"
+  ],
+  "eleaddw.dbo.usp_loadtrafficsummarydepartmentrecords": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTrafficSummaryDepartmentRecords"
+  ],
+  "dbo.usp_loadtrafficsummarydepartmentrecords": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadTrafficSummaryDepartmentRecords"
+  ],
+  "usp_manualscheduledcompletedtasks_alldealerships": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_ManualScheduledCompletedTasks_AllDealerships"
+  ],
+  "eleaddw.dbo.usp_manualscheduledcompletedtasks_alldealerships": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_ManualScheduledCompletedTasks_AllDealerships"
+  ],
+  "dbo.usp_manualscheduledcompletedtasks_alldealerships": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_ManualScheduledCompletedTasks_AllDealerships"
+  ],
+  "usp_manualscheduledcompletedtasks_alldealerships_9jan2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_ManualScheduledCompletedTasks_AllDealerships_9Jan2025"
+  ],
+  "eleaddw.dbo.usp_manualscheduledcompletedtasks_alldealerships_9jan2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_ManualScheduledCompletedTasks_AllDealerships_9Jan2025"
+  ],
+  "dbo.usp_manualscheduledcompletedtasks_alldealerships_9jan2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_ManualScheduledCompletedTasks_AllDealerships_9Jan2025"
+  ],
+  "usp_manualscheduledcompletedtasks_alldealerships_bk_dmd": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_ManualScheduledCompletedTasks_AllDealerships_BK_DMD"
+  ],
+  "eleaddw.dbo.usp_manualscheduledcompletedtasks_alldealerships_bk_dmd": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_ManualScheduledCompletedTasks_AllDealerships_BK_DMD"
+  ],
+  "dbo.usp_manualscheduledcompletedtasks_alldealerships_bk_dmd": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_ManualScheduledCompletedTasks_AllDealerships_BK_DMD"
+  ],
+  "usp_manualscheduledcompletedtasks_alldealerships_dept": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_ManualScheduledCompletedTasks_AllDealerships_Dept"
+  ],
+  "eleaddw.dbo.usp_manualscheduledcompletedtasks_alldealerships_dept": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_ManualScheduledCompletedTasks_AllDealerships_Dept"
+  ],
+  "dbo.usp_manualscheduledcompletedtasks_alldealerships_dept": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_ManualScheduledCompletedTasks_AllDealerships_Dept"
+  ],
+  "usp_manualscheduledcompletedtasks_dept_hist": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_ManualScheduledCompletedTasks_Dept_Hist"
+  ],
+  "eleaddw.dbo.usp_manualscheduledcompletedtasks_dept_hist": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_ManualScheduledCompletedTasks_Dept_Hist"
+  ],
+  "dbo.usp_manualscheduledcompletedtasks_dept_hist": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_ManualScheduledCompletedTasks_Dept_Hist"
+  ],
+  "usp_manualscheduledcompletedtasks_hist": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_ManualScheduledCompletedTasks_Hist"
+  ],
+  "eleaddw.dbo.usp_manualscheduledcompletedtasks_hist": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_ManualScheduledCompletedTasks_Hist"
+  ],
+  "dbo.usp_manualscheduledcompletedtasks_hist": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_ManualScheduledCompletedTasks_Hist"
+  ],
+  "usp_pricefx_elead_appointment_activities": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_pricefx_elead_appointment_activities"
+  ],
+  "eleaddw.dbo.usp_pricefx_elead_appointment_activities": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_pricefx_elead_appointment_activities"
+  ],
+  "dbo.usp_pricefx_elead_appointment_activities": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_pricefx_elead_appointment_activities"
+  ],
+  "usp_pricefx_elead_opportunity": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_pricefx_elead_opportunity"
+  ],
+  "eleaddw.dbo.usp_pricefx_elead_opportunity": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_pricefx_elead_opportunity"
+  ],
+  "dbo.usp_pricefx_elead_opportunity": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_pricefx_elead_opportunity"
+  ],
+  "usp_pricefx_elead_vehicle": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_pricefx_elead_vehicle"
+  ],
+  "eleaddw.dbo.usp_pricefx_elead_vehicle": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_pricefx_elead_vehicle"
+  ],
+  "dbo.usp_pricefx_elead_vehicle": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_pricefx_elead_vehicle"
+  ],
+  "usp_stagetrafficsummarydailysubsource": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsource"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsource": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsource"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsource": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsource"
+  ],
+  "usp_stagetrafficsummarydailysubsourceacquired": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceAcquired"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceacquired": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceAcquired"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceacquired": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceAcquired"
+  ],
+  "usp_stagetrafficsummarydailysubsourceagg": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceAgg"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceagg": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceAgg"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceagg": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceAgg"
+  ],
+  "usp_stagetrafficsummarydailysubsourceappraisal": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceAppraisal"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceappraisal": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceAppraisal"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceappraisal": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceAppraisal"
+  ],
+  "usp_stagetrafficsummarydailysubsourceapprapptacq": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApprApptAcq"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceapprapptacq": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApprApptAcq"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceapprapptacq": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApprApptAcq"
+  ],
+  "usp_stagetrafficsummarydailysubsourceapprapptconf": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApprApptConf"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceapprapptconf": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApprApptConf"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceapprapptconf": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApprApptConf"
+  ],
+  "usp_stagetrafficsummarydailysubsourceapprapptcr": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApprApptCr"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceapprapptcr": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApprApptCr"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceapprapptcr": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApprApptCr"
+  ],
+  "usp_stagetrafficsummarydailysubsourceapprapptdue": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApprApptDue"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceapprapptdue": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApprApptDue"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceapprapptdue": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApprApptDue"
+  ],
+  "usp_stagetrafficsummarydailysubsourceapprapptshow": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApprApptShow"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceapprapptshow": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApprApptShow"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceapprapptshow": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApprApptShow"
+  ],
+  "usp_stagetrafficsummarydailysubsourceapptattconf": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptAttConf"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceapptattconf": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptAttConf"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceapptattconf": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptAttConf"
+  ],
+  "usp_stagetrafficsummarydailysubsourceapptattconf_bk28may2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptAttConf_BK28May2025"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceapptattconf_bk28may2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptAttConf_BK28May2025"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceapptattconf_bk28may2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptAttConf_BK28May2025"
+  ],
+  "usp_stagetrafficsummarydailysubsourceapptattconf_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptAttConf_QA"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceapptattconf_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptAttConf_QA"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceapptattconf_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptAttConf_QA"
+  ],
+  "usp_stagetrafficsummarydailysubsourceapptconf": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptConf"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceapptconf": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptConf"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceapptconf": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptConf"
+  ],
+  "usp_stagetrafficsummarydailysubsourceapptcrt": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptCrt"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceapptcrt": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptCrt"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceapptcrt": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptCrt"
+  ],
+  "usp_stagetrafficsummarydailysubsourceapptdue": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptDue"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceapptdue": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptDue"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceapptdue": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptDue"
+  ],
+  "usp_stagetrafficsummarydailysubsourceapptshow": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptShow"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceapptshow": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptShow"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceapptshow": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptShow"
+  ],
+  "usp_stagetrafficsummarydailysubsourceapptsold": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptSold"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceapptsold": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptSold"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceapptsold": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceApptSold"
+  ],
+  "usp_stagetrafficsummarydailysubsourcebadlead": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceBadLead"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourcebadlead": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceBadLead"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourcebadlead": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceBadLead"
+  ],
+  "usp_stagetrafficsummarydailysubsourcebeback": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceBeback"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourcebeback": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceBeback"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourcebeback": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceBeback"
+  ],
+  "usp_stagetrafficsummarydailysubsourceboughtelswr": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceBoughtElswr"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceboughtelswr": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceBoughtElswr"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceboughtelswr": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceBoughtElswr"
+  ],
+  "usp_stagetrafficsummarydailysubsourcedemo": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceDemo"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourcedemo": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceDemo"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourcedemo": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceDemo"
+  ],
+  "usp_stagetrafficsummarydailysubsourcedwt": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceDWT"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourcedwt": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceDWT"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourcedwt": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceDWT"
+  ],
+  "usp_stagetrafficsummarydailysubsourceleads": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceLeads"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceleads": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceLeads"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceleads": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceLeads"
+  ],
+  "usp_stagetrafficsummarydailysubsourceleads_bk": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceLeads_BK"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourceleads_bk": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceLeads_BK"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourceleads_bk": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceLeads_BK"
+  ],
+  "usp_stagetrafficsummarydailysubsourcelost": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceLost"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourcelost": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceLost"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourcelost": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceLost"
+  ],
+  "usp_stagetrafficsummarydailysubsourcereassgnd": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceReassgnd"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourcereassgnd": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceReassgnd"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourcereassgnd": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceReassgnd"
+  ],
+  "usp_stagetrafficsummarydailysubsourcesold": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceSold"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourcesold": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceSold"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourcesold": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceSold"
+  ],
+  "usp_stagetrafficsummarydailysubsourcevisits": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceVisits"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourcevisits": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceVisits"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourcevisits": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceVisits"
+  ],
+  "usp_stagetrafficsummarydailysubsourcevisits_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceVisits_QA"
+  ],
+  "eleaddw.dbo.usp_stagetrafficsummarydailysubsourcevisits_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceVisits_QA"
+  ],
+  "dbo.usp_stagetrafficsummarydailysubsourcevisits_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceVisits_QA"
+  ],
+  "usp_trafficsummarydailyupdateleadcounts": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryDailyUpdateLeadCounts"
+  ],
+  "eleaddw.dbo.usp_trafficsummarydailyupdateleadcounts": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryDailyUpdateLeadCounts"
+  ],
+  "dbo.usp_trafficsummarydailyupdateleadcounts": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryDailyUpdateLeadCounts"
+  ],
+  "usp_trafficsummarydailyupdateshowroomvisits": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryDailyUpdateShowroomVisits"
+  ],
+  "eleaddw.dbo.usp_trafficsummarydailyupdateshowroomvisits": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryDailyUpdateShowroomVisits"
+  ],
+  "dbo.usp_trafficsummarydailyupdateshowroomvisits": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryDailyUpdateShowroomVisits"
+  ],
+  "usp_trafficsummarydailyupdateshowroomvisits_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryDailyUpdateShowroomVisits_QA"
+  ],
+  "eleaddw.dbo.usp_trafficsummarydailyupdateshowroomvisits_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryDailyUpdateShowroomVisits_QA"
+  ],
+  "dbo.usp_trafficsummarydailyupdateshowroomvisits_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryDailyUpdateShowroomVisits_QA"
+  ],
+  "usp_trafficsummaryupdateacquiredleads": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateAcquiredLeads"
+  ],
+  "eleaddw.dbo.usp_trafficsummaryupdateacquiredleads": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateAcquiredLeads"
+  ],
+  "dbo.usp_trafficsummaryupdateacquiredleads": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateAcquiredLeads"
+  ],
+  "usp_trafficsummaryupdateapprapptconfirmations": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApprApptConfirmations"
+  ],
+  "eleaddw.dbo.usp_trafficsummaryupdateapprapptconfirmations": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApprApptConfirmations"
+  ],
+  "dbo.usp_trafficsummaryupdateapprapptconfirmations": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApprApptConfirmations"
+  ],
+  "usp_trafficsummaryupdateapprapptsacquired": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApprApptsAcquired"
+  ],
+  "eleaddw.dbo.usp_trafficsummaryupdateapprapptsacquired": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApprApptsAcquired"
+  ],
+  "dbo.usp_trafficsummaryupdateapprapptsacquired": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApprApptsAcquired"
+  ],
+  "usp_trafficsummaryupdateapprapptscreated": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApprApptsCreated"
+  ],
+  "eleaddw.dbo.usp_trafficsummaryupdateapprapptscreated": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApprApptsCreated"
+  ],
+  "dbo.usp_trafficsummaryupdateapprapptscreated": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApprApptsCreated"
+  ],
+  "usp_trafficsummaryupdateapprapptsdue": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApprApptsDue"
+  ],
+  "eleaddw.dbo.usp_trafficsummaryupdateapprapptsdue": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApprApptsDue"
+  ],
+  "dbo.usp_trafficsummaryupdateapprapptsdue": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApprApptsDue"
+  ],
+  "usp_trafficsummaryupdateapprapptsshown": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApprApptsShown"
+  ],
+  "eleaddw.dbo.usp_trafficsummaryupdateapprapptsshown": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApprApptsShown"
+  ],
+  "dbo.usp_trafficsummaryupdateapprapptsshown": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApprApptsShown"
+  ],
+  "usp_trafficsummaryupdateapptattemptedconfirmed": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptAttemptedConfirmed"
+  ],
+  "eleaddw.dbo.usp_trafficsummaryupdateapptattemptedconfirmed": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptAttemptedConfirmed"
+  ],
+  "dbo.usp_trafficsummaryupdateapptattemptedconfirmed": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptAttemptedConfirmed"
+  ],
+  "usp_trafficsummaryupdateapptattemptedconfirmed_bk28may2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptAttemptedConfirmed_BK28May2025"
+  ],
+  "eleaddw.dbo.usp_trafficsummaryupdateapptattemptedconfirmed_bk28may2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptAttemptedConfirmed_BK28May2025"
+  ],
+  "dbo.usp_trafficsummaryupdateapptattemptedconfirmed_bk28may2025": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptAttemptedConfirmed_BK28May2025"
+  ],
+  "usp_trafficsummaryupdateapptattemptedconfirmed_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptAttemptedConfirmed_QA"
+  ],
+  "eleaddw.dbo.usp_trafficsummaryupdateapptattemptedconfirmed_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptAttemptedConfirmed_QA"
+  ],
+  "dbo.usp_trafficsummaryupdateapptattemptedconfirmed_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptAttemptedConfirmed_QA"
+  ],
+  "usp_trafficsummaryupdateapptconfirmations": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptConfirmations"
+  ],
+  "eleaddw.dbo.usp_trafficsummaryupdateapptconfirmations": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptConfirmations"
+  ],
+  "dbo.usp_trafficsummaryupdateapptconfirmations": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptConfirmations"
+  ],
+  "usp_trafficsummaryupdateapptscreated": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptsCreated"
+  ],
+  "eleaddw.dbo.usp_trafficsummaryupdateapptscreated": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptsCreated"
+  ],
+  "dbo.usp_trafficsummaryupdateapptscreated": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptsCreated"
+  ],
+  "usp_trafficsummaryupdateapptsdue": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptsDue"
+  ],
+  "eleaddw.dbo.usp_trafficsummaryupdateapptsdue": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptsDue"
+  ],
+  "dbo.usp_trafficsummaryupdateapptsdue": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptsDue"
+  ],
+  "usp_trafficsummaryupdateapptsdue_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptsDue_QA"
+  ],
+  "eleaddw.dbo.usp_trafficsummaryupdateapptsdue_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptsDue_QA"
+  ],
+  "dbo.usp_trafficsummaryupdateapptsdue_qa": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptsDue_QA"
+  ],
+  "usp_trafficsummaryupdateapptsshown": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptsShown"
+  ],
+  "eleaddw.dbo.usp_trafficsummaryupdateapptsshown": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptsShown"
+  ],
+  "dbo.usp_trafficsummaryupdateapptsshown": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptsShown"
+  ],
+  "usp_trafficsummaryupdateapptssold": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptsSold"
+  ],
+  "eleaddw.dbo.usp_trafficsummaryupdateapptssold": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptsSold"
+  ],
+  "dbo.usp_trafficsummaryupdateapptssold": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateApptsSold"
+  ],
+  "usp_trafficsummaryupdatebadleads": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateBadLeads"
+  ],
+  "eleaddw.dbo.usp_trafficsummaryupdatebadleads": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateBadLeads"
+  ],
+  "dbo.usp_trafficsummaryupdatebadleads": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateBadLeads"
+  ],
+  "usp_trafficsummaryupdatesoldleads": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateSoldLeads"
+  ],
+  "eleaddw.dbo.usp_trafficsummaryupdatesoldleads": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateSoldLeads"
+  ],
+  "dbo.usp_trafficsummaryupdatesoldleads": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_TrafficSummaryUpdateSoldLeads"
+  ],
+  "vwpcnvalidemailaddress": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.vwPCNValidEmailAddress"],
+  "eleaddw.dbo.vwpcnvalidemailaddress": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.vwPCNValidEmailAddress"
+  ],
+  "dbo.vwpcnvalidemailaddress": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.vwPCNValidEmailAddress"
+  ],
+  "wrk_activity_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_Activity_Dup"],
+  "eleaddw.dbo.wrk_activity_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_Activity_Dup"],
+  "dbo.wrk_activity_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_Activity_Dup"],
+  "wrk_customer_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_customer_dup"],
+  "eleaddw.dbo.wrk_customer_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_customer_dup"],
+  "dbo.wrk_customer_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_customer_dup"],
+  "wrk_dealsalesperson_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_dealsalesperson_dup"],
+  "eleaddw.dbo.wrk_dealsalesperson_dup": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_dealsalesperson_dup"
+  ],
+  "dbo.wrk_dealsalesperson_dup": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_dealsalesperson_dup"
+  ],
+  "wrk_email_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_email_dup"],
+  "eleaddw.dbo.wrk_email_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_email_dup"],
+  "dbo.wrk_email_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_email_dup"],
+  "wrk_fixdwactivezero": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_fixdwactivezero"],
+  "eleaddw.dbo.wrk_fixdwactivezero": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_fixdwactivezero"
+  ],
+  "dbo.wrk_fixdwactivezero": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_fixdwactivezero"],
+  "wrk_phone_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_phone_dup"],
+  "eleaddw.dbo.wrk_phone_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_phone_dup"],
+  "dbo.wrk_phone_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_phone_dup"],
+  "wrk_taskcomments_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_taskcomments_dup"],
+  "eleaddw.dbo.wrk_taskcomments_dup": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_taskcomments_dup"
+  ],
+  "dbo.wrk_taskcomments_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_taskcomments_dup"],
+  "wrk_vehicle_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_vehicle_dup"],
+  "eleaddw.dbo.wrk_vehicle_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_vehicle_dup"],
+  "dbo.wrk_vehicle_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_vehicle_dup"],
+  "wrk_vehiclesought_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_vehiclesought_dup"],
+  "eleaddw.dbo.wrk_vehiclesought_dup": [
+    "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_vehiclesought_dup"
+  ],
+  "dbo.wrk_vehiclesought_dup": ["sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.wrk_vehiclesought_dup"]
+}

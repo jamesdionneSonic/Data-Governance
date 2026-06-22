@@ -517,6 +517,12 @@ function compactEvidence(value, maxLength = 300) {
   return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 }
 
+function redactRuntimeEvidence(value) {
+  return compactEvidence(value, 500)
+    .replace(/(password|passwd|pwd|secret|token|credential)\s*=\s*[^;\s]+/gi, '$1=***REDACTED***')
+    .replace(/:\/\/([^:\s/@]+):([^@\s]+)@/g, '://$1:***REDACTED***@');
+}
+
 function compactSsisRecord(record) {
   const compact = {};
   for (const [key, value] of Object.entries(record || {})) {
@@ -1798,6 +1804,236 @@ class SsisMetadataExtractor {
     return { variables: varRows, references: refRows };
   }
 
+  async extractRuntimeSupport(warnings, options = {}) {
+    const lookbackDays = Math.max(1, Math.min(Number(options.lookbackDays || 90), 365));
+    const { rows: executionRows, error: executionError } = await safeQuery(
+      this.pool,
+      `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      USE SSISDB;
+      SELECT
+        execution_id,
+        folder_name,
+        project_name,
+        package_name,
+        status,
+        start_time,
+        end_time,
+        DATEDIFF(second, start_time, end_time) AS duration_seconds,
+        executed_as_name,
+        environment_folder_name,
+        environment_name
+      FROM catalog.executions
+      WHERE created_time >= DATEADD(day, -${lookbackDays}, SYSUTCDATETIME())
+         OR start_time >= DATEADD(day, -${lookbackDays}, SYSUTCDATETIME())`
+    );
+    if (executionError) warnings.push(`runtime_executions: ${executionError}`);
+
+    const { rows: messageRows, error: messageError } = await safeQuery(
+      this.pool,
+      `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      USE SSISDB;
+      WITH recent AS (
+        SELECT execution_id, folder_name, project_name, package_name
+        FROM catalog.executions
+        WHERE created_time >= DATEADD(day, -${lookbackDays}, SYSUTCDATETIME())
+           OR start_time >= DATEADD(day, -${lookbackDays}, SYSUTCDATETIME())
+      )
+      SELECT TOP (2000)
+        r.folder_name,
+        r.project_name,
+        r.package_name AS root_package_name,
+        em.operation_id,
+        em.package_name,
+        em.message_type,
+        em.event_name,
+        em.message_source_name,
+        em.subcomponent_name,
+        em.message,
+        em.message_time
+      FROM catalog.event_messages em
+      JOIN recent r ON em.operation_id = r.execution_id
+      WHERE em.message_type IN (120, 130, 110)
+      ORDER BY em.message_time DESC`
+    );
+    if (messageError) warnings.push(`runtime_event_messages: ${messageError}`);
+
+    const { rows: executableRows, error: executableError } = await safeQuery(
+      this.pool,
+      `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      USE SSISDB;
+      WITH recent AS (
+        SELECT execution_id, folder_name, project_name, package_name
+        FROM catalog.executions
+        WHERE created_time >= DATEADD(day, -${lookbackDays}, SYSUTCDATETIME())
+           OR start_time >= DATEADD(day, -${lookbackDays}, SYSUTCDATETIME())
+      )
+      SELECT TOP (2000)
+        r.folder_name,
+        r.project_name,
+        r.package_name AS root_package_name,
+        es.execution_id,
+        es.execution_path,
+        es.execution_duration,
+        es.execution_result,
+        es.start_time,
+        es.end_time
+      FROM catalog.executable_statistics es
+      JOIN recent r ON es.execution_id = r.execution_id
+      WHERE es.execution_result <> 0 OR es.execution_duration >= 300000
+      ORDER BY es.start_time DESC`
+    );
+    if (executableError) warnings.push(`runtime_executable_statistics: ${executableError}`);
+
+    const { rows: dataRows, error: dataError } = await safeQuery(
+      this.pool,
+      `SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+      USE SSISDB;
+      WITH recent AS (
+        SELECT execution_id, folder_name, project_name, package_name
+        FROM catalog.executions
+        WHERE created_time >= DATEADD(day, -${lookbackDays}, SYSUTCDATETIME())
+           OR start_time >= DATEADD(day, -${lookbackDays}, SYSUTCDATETIME())
+      )
+      SELECT TOP (500)
+        r.folder_name,
+        r.project_name,
+        r.package_name AS root_package_name,
+        ds.execution_id,
+        ds.package_name,
+        ds.task_name,
+        ds.source_component_name,
+        ds.destination_component_name,
+        ds.rows_sent,
+        ds.created_time
+      FROM catalog.execution_data_statistics ds
+      JOIN recent r ON ds.execution_id = r.execution_id
+      ORDER BY ds.created_time DESC`
+    );
+    if (dataError) warnings.push(`runtime_data_statistics: ${dataError}`);
+
+    const byKey = new Map();
+    const keyFor = (row) =>
+      `${cleanSsisSegment(row.folder_name)}.${cleanSsisSegment(row.project_name)}.${cleanSsisSegment(
+        row.package_name || row.root_package_name
+      )}`.toLowerCase();
+    const ensure = (row) => {
+      const key = keyFor(row);
+      if (!byKey.has(key)) {
+        byKey.set(key, {
+          folder_name: cleanSsisSegment(row.folder_name),
+          project_name: cleanSsisSegment(row.project_name),
+          package_name: cleanSsisSegment(row.package_name || row.root_package_name),
+          lookback_days: lookbackDays,
+          as_of: new Date().toISOString(),
+          execution_count: 0,
+          success_count: 0,
+          failure_count: 0,
+          last_success_time: '',
+          last_failure_time: '',
+          last_run_time: '',
+          successful_durations_seconds: [],
+          recent_messages: [],
+          slow_or_failed_executables: [],
+          row_count_samples: [],
+        });
+      }
+      return byKey.get(key);
+    };
+
+    for (const row of executionRows || []) {
+      const record = ensure(row);
+      record.execution_count += 1;
+      record.last_run_time =
+        [record.last_run_time, row.start_time].filter(Boolean).sort().at(-1) || '';
+      if (Number(row.status) === 7) {
+        record.success_count += 1;
+        record.last_success_time =
+          [record.last_success_time, row.start_time].filter(Boolean).sort().at(-1) || '';
+        if (Number.isFinite(Number(row.duration_seconds))) {
+          record.successful_durations_seconds.push(Number(row.duration_seconds));
+        }
+      } else if ([3, 4, 6].includes(Number(row.status))) {
+        record.failure_count += 1;
+        record.last_failure_time =
+          [record.last_failure_time, row.start_time].filter(Boolean).sort().at(-1) || '';
+      }
+    }
+
+    for (const row of messageRows || []) {
+      const record = ensure({
+        ...row,
+        package_name: row.root_package_name,
+      });
+      if (record.recent_messages.length >= 5) continue;
+      record.recent_messages.push(
+        compactSsisRecord({
+          message_time: row.message_time,
+          package_name: row.package_name,
+          message_type: row.message_type,
+          event_name: row.event_name,
+          source_name: row.message_source_name,
+          subcomponent_name: row.subcomponent_name,
+          message: redactRuntimeEvidence(row.message),
+        })
+      );
+    }
+
+    for (const row of executableRows || []) {
+      const record = ensure({
+        ...row,
+        package_name: row.root_package_name,
+      });
+      if (record.slow_or_failed_executables.length >= 5) continue;
+      record.slow_or_failed_executables.push(
+        compactSsisRecord({
+          execution_id: row.execution_id,
+          execution_path: row.execution_path,
+          duration_seconds: Number.isFinite(Number(row.execution_duration))
+            ? Math.round(Number(row.execution_duration) / 1000)
+            : null,
+          execution_result: row.execution_result,
+          start_time: row.start_time,
+        })
+      );
+    }
+
+    for (const row of dataRows || []) {
+      const record = ensure({
+        ...row,
+        package_name: row.root_package_name,
+      });
+      if (record.row_count_samples.length >= 5) continue;
+      record.row_count_samples.push(
+        compactSsisRecord({
+          package_name: row.package_name,
+          task_name: row.task_name,
+          source_component_name: row.source_component_name,
+          destination_component_name: row.destination_component_name,
+          rows_sent: row.rows_sent,
+          created_time: row.created_time,
+        })
+      );
+    }
+
+    const percentile = (values, p) => {
+      const sorted = values.filter((value) => Number.isFinite(value)).sort((a, b) => a - b);
+      if (!sorted.length) return null;
+      return sorted[Math.min(sorted.length - 1, Math.floor((sorted.length - 1) * p))];
+    };
+
+    return [...byKey.values()].map((record) => {
+      const durations = record.successful_durations_seconds;
+      return compactSsisRecord({
+        ...record,
+        typical_success_runtime_seconds: percentile(durations, 0.5),
+        p90_success_runtime_seconds: percentile(durations, 0.9),
+        min_success_runtime_seconds: durations.length ? Math.min(...durations) : null,
+        max_success_runtime_seconds: durations.length ? Math.max(...durations) : null,
+        successful_durations_seconds: undefined,
+      });
+    });
+  }
+
   async extractPackageXmlMetadata(warnings, parameters = [], environments = {}) {
     const xmlResults = [];
     const dumpRawXml = true;
@@ -2712,6 +2948,7 @@ class SsisMetadataExtractor {
       dataStatistics: [],
       executionParameterValues: [],
       eventMessages: [],
+      runtimeSupport: [],
       validations: [],
       xmlMetadata: [],
       scaleOut: { workers: [], tasks: [] },
@@ -2732,6 +2969,7 @@ class SsisMetadataExtractor {
         result.catalog = await this.extractCatalogInventory(warnings, opts);
         result.parameters = await this.extractParameters(warnings);
         result.environments = await this.extractEnvironments(warnings);
+        result.runtimeSupport = await this.extractRuntimeSupport(warnings, opts);
         if (opts.extractXml !== false) {
           result.xmlMetadata = await this.extractPackageXmlMetadata(
             warnings,

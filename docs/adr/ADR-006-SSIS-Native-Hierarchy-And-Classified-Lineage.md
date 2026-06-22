@@ -51,6 +51,33 @@ SSIS lineage summaries must classify read and write activity instead of collapsi
 
 Raw SSIS XML remains the source of truth for package extraction. Generated markdown, runtime context packs, and exported repo artifacts must be rebuilt from raw XML and shared semantic rules rather than edited by hand.
 
+SSISDB runtime history may be used as support context, but it must not turn
+static documentation into a full SSIS reporting clone. Runtime evidence is
+approved only as a compact baseline on top-most workflow pages: SQL Agent entry
+packages, master/orchestration packages with no package parent, or standalone
+packages that are not called by another package. Child and grandchild package
+pages should not receive routine runtime sections unless they are the top-most
+workflow for that execution chain or a specific support exception is approved.
+
+The runtime baseline must be framed as stale-able support evidence captured as
+of the generation timestamp. It should prefer operational signals that help a
+support analyst decide where to start:
+
+- last successful run
+- last failed run
+- typical successful runtime, preferably median/p90 or a range rather than only
+  arithmetic average
+- recent failure count over a bounded lookback window
+- latest meaningful redacted error or warning
+- child package or task that appears to be the failure point when visible
+- row-count evidence only when SSISDB captured it and it is tied to a meaningful
+  source-to-target data-flow step
+
+Do not publish broad averages, every task duration, or every row-count path by
+default. These values become misleading when logging levels change, files are
+empty by design, backfills run, deployments change behavior, or the catalog is
+not refreshed regularly.
+
 ## Consequences
 
 - SSIS folder and project pages become easier to trust because they match what exists in SSISDB.
@@ -74,6 +101,17 @@ Raw SSIS XML remains the source of truth for package extraction. Generated markd
   3. rebuild runtime-package artifacts that depend on the exported repo
   4. sync the generated artifacts into the DevOps catalog repo
 - Manual edits to generated SSIS markdown or exported repo pages are temporary only and must be replaced by generator changes.
+- SSISDB runtime extraction must be bounded by a lookback window, defaulting to
+  90 days unless the work packet says otherwise.
+- Runtime values must be redacted before being written to raw JSON, markdown,
+  exported repo artifacts, runtime packages, or Confluence.
+- Runtime baseline sections belong near the top of top-most workflow pages and
+  may have an expandable detail block. They must not be added to every child
+  package page by default.
+- Runtime sections must include an `as of` timestamp and a short caveat that the
+  values are support baselines, not service-level guarantees.
+- Row-count evidence must be labeled as observed SSISDB data-flow movement, not
+  an official source or target table count.
 
 ## Process
 
@@ -83,6 +121,29 @@ Raw SSIS XML remains the source of truth for package extraction. Generated markd
 4. Export the catalog repo with native SSIS navigation pages and separate evidence-sidecar counts.
 5. Rebuild runtime-package and downstream AI navigation artifacts from the exported repo.
 6. Sync the generated outputs into the DevOps catalog repo.
+
+## Medium-Intelligence Work Packet: Top-Most Runtime Baselines
+
+This enhancement is intentionally scoped so a balanced Codex model at normal
+speed with medium thinking can implement it safely.
+
+1. Identify top-most workflow pages from the package call graph and SQL Agent
+   SSIS job steps.
+2. Extract bounded runtime support data from `SSISDB.catalog.executions`,
+   `catalog.event_messages`, `catalog.executable_statistics`, and, only when
+   populated, `catalog.execution_data_statistics`.
+3. Summarize by package key: last success, last failure, successful runtime
+   median/p90 or range, failure count, latest redacted meaningful error, and
+   meaningful row-count samples when present.
+4. Add a compact `Runtime Baseline` section only to top-most workflow package
+   pages, with optional expandable detail.
+5. Rebuild local markdown, exported catalog repo artifacts, and Confluence SSIS
+   pages after spot-checking at least one master package with children and one
+   standalone package.
+
+Do not broaden this work to historical dashboards, all child package pages,
+unbounded event-message extraction, or raw message dumps without a separate ADR
+or explicit user approval.
 
 ## Related Documents
 

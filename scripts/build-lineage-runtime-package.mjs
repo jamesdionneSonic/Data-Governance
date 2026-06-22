@@ -1863,6 +1863,10 @@ function profileRunProfiles(run = {}) {
   return run.profile?.run?.profiles || run.profile?.profiles || {};
 }
 
+function profileRunEvents(run = {}) {
+  return run.extraction?.events || run.profile?.extraction?.events || [];
+}
+
 function profileConnectorConfig(run = {}, connectorById = new Map()) {
   const connector = connectorById.get(run.connector_id) || {};
   return connector.config || {};
@@ -1946,9 +1950,11 @@ function profileCoverageSummary(entries = []) {
   const runs = entries.filter((entry) => entry.run_id && !entry.object_id);
   const executedAggregateRuns = runs.filter(isExecutedAggregateProfileRun);
   const plannedAggregateRuns = runs.filter(isPlannedAggregateProfileRun);
-  const metadataHarvestRuns = runs.filter((run) => run.run_kind === 'metadata_harvest');
+  const metadataHarvestRuns = runs.filter((run) => run.run_kind === 'metadata_harvest' || run.run_kind === 'metadata_profile');
   const objectProfiles = entries.filter((entry) => entry.object_id && entry.run_kind === 'aggregate_profile');
-  const metadataObjects = entries.filter((entry) => entry.object_id && entry.run_kind === 'metadata_harvest');
+  const metadataObjects = entries.filter((entry) =>
+    entry.object_id && (entry.run_kind === 'metadata_harvest' || entry.run_kind === 'metadata_profile')
+  );
   const status = executedAggregateRuns.length
     ? 'live_aggregate_profile_available'
     : plannedAggregateRuns.length
@@ -2208,7 +2214,7 @@ async function buildProfileIndex(packageRoot, options = {}) {
       objectShards.push(objectShard);
     }
 
-    for (const event of run.extraction?.events || []) {
+    for (const event of profileRunEvents(run)) {
       if (!event?.id || (event.type !== 'metadata.object' && event.type !== 'metadata.column')) continue;
       const objectShard = eventObjectShard(run, event, connectorById, sourceArtifactPath);
       assertProfileIndexSafe(objectShard, `event:${event.id}`);
@@ -2350,7 +2356,9 @@ async function buildProfileIndex(packageRoot, options = {}) {
       metadata_profile_run_count: runs.filter(({ run }) => profileRunKind(run) === 'metadata_profile').length,
       object_profile_count: latestByObject.size,
       aggregate_profile_object_count: [...latestByObject.values()].filter((shard) => shard.run_kind === 'aggregate_profile').length,
-      metadata_inventory_object_count: [...latestByObject.values()].filter((shard) => shard.run_kind === 'metadata_harvest').length,
+      metadata_inventory_object_count: [...latestByObject.values()].filter((shard) =>
+        shard.run_kind === 'metadata_harvest' || shard.run_kind === 'metadata_profile'
+      ).length,
       object_name_index_count: objectNameMap.size,
       column_name_index_count: columnNameMap.size,
       database_index_count: databaseMap.size,

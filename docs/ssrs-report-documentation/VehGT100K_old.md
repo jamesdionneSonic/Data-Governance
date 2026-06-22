@@ -1,26 +1,44 @@
 # VehGT100K_old
 
-Generated: 2026-06-15  
-SSRS path: `/BI - Financial Reporting/VehGT100K_old`  
+Generated: 2026-06-19T08:45:51.070Z
+SSRS path: `/BI - Financial Reporting/VehGT100K_old`
 SSRS catalog source: `ReportServer` on `D1-SQL-01B\INST1`
 
-## Purpose
+## Plain-English Summary
 
-This report supports inventory review by showing vehicle inventory, pricing, or stock-level information used to monitor availability, pricing issues, and operational follow-up.
+This report supports inventory review by showing vehicle inventory, pricing, or stock-level information used to monitor availability, pricing issues, and operational follow-up. If this report is wrong, stale, or unavailable, users may make decisions from incomplete reporting output or lose a support lookup path. Start troubleshooting by confirming the SSRS path, selected parameters, shared datasource, and backend dataset commands.
 
-## Executive Summary
+## At a Glance
 
-| Field               | Value                                            |
-| ------------------- | ------------------------------------------------ |
-| Report name         | `VehGT100K_old`                                  |
-| SSRS path           | `/BI - Financial Reporting/VehGT100K_old`        |
-| Status signal       | Review candidate: no executions in last 6 months |
-| Created             | 2017-12-13 08:36:14                              |
-| Modified            | 2017-12-13 08:36:14                              |
-| Modified by         | SONIC\Mark.Starnes                               |
-| Last 6 months usage | 0 executions by 0 users                          |
-| Last execution      | NULL                                             |
-| Subscriptions       | 0                                                |
+| Field                 | Value                                                                                                                                         |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Platform              | SSRS                                                                                                                                          |
+| Asset type            | Report                                                                                                                                        |
+| Native path           | `/BI - Financial Reporting/VehGT100K_old`                                                                                                     |
+| Support role          | Review candidate report                                                                                                                       |
+| Business process      | Use this when the business needs a vehicle inventory or pricing view for operational follow-up, exception review, or availability monitoring. |
+| Primary source        | /BI - Financial Reporting/DataSource/COR_SQL_02_WebV                                                                                          |
+| Primary target/output | SSRS report output                                                                                                                            |
+| Schedule or trigger   | No subscriptions surfaced                                                                                                                     |
+| Runtime/usage signal  | 0 executions by 0 users; last used Not used in last 6 months                                                                                  |
+| Status signal         | Review candidate: no executions in last 6 months                                                                                              |
+| Evidence              | `tmp/ssrs-all-report-discovery.out`, `tmp/ssrs-all-datasets.out`                                                                              |
+| Report name           | `VehGT100K_old`                                                                                                                               |
+| Created               | 2017-12-13 08:36:14                                                                                                                           |
+| Modified              | 2017-12-13 08:36:14                                                                                                                           |
+| Modified by           | SONIC\Mark.Starnes                                                                                                                            |
+
+## Business Use
+
+Use this when the business needs a vehicle inventory or pricing view for operational follow-up, exception review, or availability monitoring.
+
+## Support Checks
+
+1. Confirm the user is running the correct SSRS path: `/BI - Financial Reporting/VehGT100K_old`.
+2. Confirm the selected report parameters match the intended business scenario.
+3. Confirm the shared datasource is enabled and points to the expected backend connection.
+4. If the report returns no data, review the dataset commands and backend objects listed below.
+5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
 
 ## Shared Data Sources
 
@@ -34,22 +52,11 @@ No user-facing report parameters were found in the RDL definition.
 
 ## Data Logic
 
-1. Dataset `DataSet1` (Text): USE WebV SELECT distinct locations.location_name, veh_inventory.vin2, veh_inventory.stock_dt, veh_inventory.stk_nbr, veh_inventory.mod_yr2, veh_inventory.make_desc2, veh_inventory.mod_desc2, veh_inventory.acctg_cost_amt, NewUsed = case veh_inventory.new_veh_flg when 1 then 'New' when 0 then 'Used' else null end, veh_in...
+1. Dataset `DataSet1` (Text): USE WebV SELECT distinct locations.location_name, veh_inventory.vin2, veh_inventory.stock_dt, veh_inventory.stk_nbr, veh_inventory.mod_yr2, veh_inventory.make_desc2, veh_inventory.mod_desc2, veh_inventory.acctg_cost_amt,
 
 ## Backend Dependencies
 
-| Object or command hint | Notes                                     |
-| ---------------------- | ----------------------------------------- |
-| `veh_inventory`        | Referenced by one or more report datasets |
-| `locations`            | Referenced by one or more report datasets |
-
-## Support Troubleshooting Guide
-
-1. Confirm the user is running the correct SSRS path: `/BI - Financial Reporting/VehGT100K_old`.
-2. Confirm the selected report parameters match the intended business scenario.
-3. Confirm the shared datasource is enabled and points to the expected backend connection.
-4. If the report returns no data, review the dataset commands and backend objects listed above.
-5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
+No backend object hints were extracted from the report datasets.
 
 ## Reports or Objects Needing Review
 
@@ -64,5 +71,5 @@ No user-facing report parameters were found in the RDL definition.
 Type: `Text`
 
 ```sql
-USE WebV SELECT     distinct locations.location_name, veh_inventory.vin2, veh_inventory.stock_dt, veh_inventory.stk_nbr, veh_inventory.mod_yr2, veh_inventory.make_desc2, veh_inventory.mod_desc2,                        veh_inventory.acctg_cost_amt,                                               NewUsed = case veh_inventory.new_veh_flg                        when  1 then 'New'                       when  0 then 'Used'                       else null                       end,                                              veh_inventory.ctgy_cd2, veh_inventory.elt_inv_co, veh_inventory.loc_id, veh_inventory.elt_inv_acct                        FROM         veh_inventory LEFT OUTER JOIN                       locations ON veh_inventory.loc_id = locations.location_id  WHERE (veh_inventory.inv_stat_cd = 'INS') -- in stock AND veh_inventory.acctg_cost_amt > 100000  and locations.del_flag <> 1 and elt_inv_co not in ('455','111','170','421','151','157') --lou ehlers, gwinnett volvo, northpoint, poway toyota, tom williams cadillac  order by elt_inv_co
+USE WebV SELECT     distinct locations.location_name, veh_inventory.vin2, veh_inventory.stock_dt, veh_inventory.stk_nbr, veh_inventory.mod_yr2, veh_inventory.make_desc2, veh_inventory.mod_desc2,                        veh_inventory.acctg_cost_amt,
 ```

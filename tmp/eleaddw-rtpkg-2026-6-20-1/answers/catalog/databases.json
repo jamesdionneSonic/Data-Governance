@@ -1,0 +1,13 @@
+{
+  "generated_at": "2026-06-20T13:36:09.690Z",
+  "databases": [
+    {
+      "database": "eLeadDW",
+      "server": "L1-DWASQL-02,12010",
+      "summary": "eLeadDW metadata is present in the dry-run runtime package. Business meaning and governance facts are not surfaced in metadata.",
+      "object_count": 440,
+      "schema_count": 3,
+      "canonical_human_page": "not published"
+    }
+  ]
+}

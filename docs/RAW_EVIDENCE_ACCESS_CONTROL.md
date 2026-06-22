@@ -36,10 +36,24 @@ Raw evidence helps teammates trace lineage and recommend rule improvements. It m
 
 1. Resolve the object/package from the approved runtime package.
 2. Record package version and runtime content hash.
-3. Open only advertised evidence paths.
-4. If deeper raw evidence is needed, document why.
+3. Open only advertised package artifact paths.
+4. If deeper raw evidence is needed, open only exact read-only evidence files
+   and document why package artifacts were not enough.
 5. Submit findings as a recommendation in `recommendations/intake/`.
 6. Maintainer reviews and decides whether to reject, request more evidence, document an exception, or create implementation work.
+
+## Citation Requirement
+
+Any answer, SSIS support draft, or recommendation that uses raw evidence must
+include both:
+
+- the package evidence line:
+  `Evidence: package <version>, hash <runtime_content_hash>; artifacts: <paths>.`
+- the raw evidence line:
+  `Raw evidence: <exact file paths>; reason: <why package artifacts were not enough>.`
+
+Do not cite folders, screenshots, Confluence pages, search terms, or private
+local working copies as raw evidence. Cite exact approved file paths only.
 
 ## Forbidden Workflow
 
@@ -63,6 +77,7 @@ Every recommendation must include:
 - observed current behavior
 - expected behavior
 - artifact paths
-- raw evidence paths when used
+- exact raw evidence file paths when used
+- why raw evidence was needed
 - impact
 - confidence

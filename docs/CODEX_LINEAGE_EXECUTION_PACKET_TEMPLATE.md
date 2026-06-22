@@ -23,6 +23,30 @@ Read these when SSIS documentation or SSIS lineage behavior is involved:
 1. `docs/adr/ADR-006-SSIS-Native-Hierarchy-And-Classified-Lineage.md`
 2. `docs/LINEAGE_RUNTIME_PACKAGE_BACKLOG.md`
 
+Read these when Confluence lineage documentation, human catalog pages, product
+pages, database/schema pages, object pages, or plain-English generated
+descriptions are involved:
+
+1. `docs/adr/ADR-009-Human-Centered-Confluence-Lineage-Catalog.md`
+2. `docs/CONFLUENCE_LINEAGE_REPOSITORY.md`
+3. `docs/CONFLUENCE_HUMAN_LINEAGE_PAGE_CONTRACT.md`
+4. `docs/CONFLUENCE_SPACE_MAP.md`
+
+For SSIS runtime-baseline support documentation, keep the task medium-safe by
+using the ADR-006 "Top-Most Runtime Baselines" scope:
+
+1. Add runtime support evidence only to top-most workflow package pages: SQL
+   Agent entry packages, master/orchestration packages with no package parent,
+   or standalone packages not called by another package.
+2. Use a bounded lookback window, default `90` days.
+3. Summarize only support-useful signals: last success, last failure, typical
+   successful runtime range or median/p90, recent failure count, latest
+   meaningful redacted error, and meaningful row-count samples when available.
+4. Label row-count evidence as observed SSISDB data-flow movement, not official
+   source or target table counts.
+5. Include an `as of` timestamp and stale-data caveat.
+6. Do not add full runtime sections to every child or grandchild package page.
+
 ## Upgrade And Stop Triggers
 
 Stop and ask for stronger intelligence before implementation when the task includes any of these:
@@ -30,6 +54,10 @@ Stop and ask for stronger intelligence before implementation when the task inclu
 - changing ingestion engines, parser engines, extractor code, generator code, or catalog rebuild scripts
 - changing semantic lineage scoring, edge promotion, confidence rules, or SSIS classification rules
 - publishing to Azure Artifacts, pushing generated catalog repo changes, or syncing Confluence live
+- broad Confluence information-architecture changes, full-catalog page
+  generation, or live publish without a reviewed dry run
+- using an LLM to summarize unrestricted raw markdown instead of bounded
+  evidence packets
 - changing auth, secrets, permissions, package feed configuration, or production deployment behavior
 - touching more than five production files
 - implementing more than one backlog story in one pass
@@ -83,6 +111,19 @@ Reason:
   answer cards, or context packs for exact artifact paths.
 - Do not bypass package validation gates.
 - Do not start Azure platform work unless the Phase 5 hard stop is explicitly approved.
+- For human-facing Confluence lineage documentation, do not use Confluence as
+  the machine-readable source for Sonic lineage skill answers. DevOps artifacts
+  and runtime packages remain authoritative for machine retrieval.
+- For human-facing Confluence summaries, do not allow an LLM to invent business
+  meaning. Build a structured evidence packet first, then generate prose only
+  from that evidence. Missing facts must be labeled as not surfaced in metadata.
+- Do not create one page per object across the full catalog in the first pass.
+  Start with product pages, database/schema browse pages, or a small set of
+  high-value object pages.
+- For SSIS runtime-baseline work, do not extract unbounded SSISDB message
+  history, publish raw event-message dumps, expose credentials or sensitive
+  runtime parameter values, or convert static SSIS support pages into a runtime
+  dashboard.
 
 ### Code Edits Allowed
 
@@ -124,6 +165,34 @@ List exact commands. Mark any command that publishes, pushes, syncs, or writes o
 
 -
 
+For human-centered Confluence lineage catalog work, include:
+
+- The page type is explicitly named: product, database, schema, object, operating
+  guide, confidence/gaps, or AI retrieval artifact.
+- The page starts with plain-English purpose and business/support impact before
+  raw lineage fields.
+- The page names upstream loaders/sources and downstream consumers/targets when
+  surfaced by metadata.
+- The page has concrete support checks.
+- The page includes confidence, caveats, unresolved facts, or `not surfaced in
+metadata` wording where evidence is weak.
+- Any LLM-generated prose is based on a bounded evidence packet, not raw
+  unrestricted markdown.
+- AI retrieval artifacts remain separated from the primary human navigation
+  tree.
+- A dry run is reviewed before any live Confluence publish.
+
+For SSIS top-most runtime-baseline work, include:
+
+- Top-most workflow detection is documented and tested against at least one
+  master package with child packages.
+- Runtime extraction uses a bounded lookback window.
+- Runtime values are redacted before markdown/export/Confluence output.
+- Child/grandchild pages do not receive routine runtime sections.
+- At least one top-most package page shows a compact `Runtime Baseline` section.
+- The page states that runtime values are support baselines as of the generated
+  timestamp, not service-level guarantees.
+
 ### Validation
 
 Minimum validation:
@@ -134,6 +203,7 @@ Add relevant checks:
 
 - package validation:
 - answer-quality validation:
+- human Confluence page review:
 - profile-index safety validation:
 - unit tests:
 - smoke prompts:

@@ -1,0 +1,7 @@
+{
+  "object_id": "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_StageTrafficSummaryDailySubsourceAcquired",
+  "upstream_count": 0,
+  "upstream": [],
+  "caveat": "No upstream lineage surfaced in this dry run.",
+  "source_context_pack": "context-packs/objects/by-id/sql-server-l1-dwasql-02-12010-eleaddw-dbo-usp-stagetrafficsummarydailysubsourceacquired.json"
+}

@@ -127,3 +127,9 @@ The scheduler has an in-process worker plus a local runtime store for environmen
 ## Architecture Rule
 
 Do not build separate profiling engines for storage, catalog, pipeline, repository, and Salesforce connectors. Tool-specific API details belong in connector adapters and source clients. Metadata profile interpretation belongs in `src/services/connectorMetadataProfileService.js`, which consumes canonical events from the shared extraction runtime.
+
+For Azure Data Factory, metadata profiles may include factory, pipeline,
+activity, dataset, linked-service, trigger, integration-runtime, managed-network,
+lineage, and bounded run-history metadata. Manual pipeline starts are not
+metadata profiles; use `docs/adr/ADR-010-ADF-Operations-Through-Saved-Connector.md`
+and `docs/ADF_PIPELINE_OPERATIONS.md` for ADF trigger operations.

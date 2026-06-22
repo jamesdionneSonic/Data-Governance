@@ -1,10 +1,10 @@
-ItemID|Path|Name|Created|Modified|ModifiedBy|ExecutionsLast6Months|LastExecution|DistinctUsersLast6Months|SubscriptionCount
+﻿ItemID|Path|Name|Created|Modified|ModifiedBy|ExecutionsLast6Months|LastExecution|DistinctUsersLast6Months|SubscriptionCount
 ------|----|----|-------|--------|----------|---------------------|-------------|------------------------|-----------------
 37C1685A-B2A9-4C57-B920-6185D0B09298|/AcctStd/Custno to Stockno|Custno to Stockno|2014-09-11 17:15:47|2014-09-11 17:15:47|SONIC\Mark.Starnes|0|NULL|0|0
 C518FA89-7C07-4956-A0B7-A4B0EADE4E5F|/AcctStd/ROnumber to Custno|ROnumber to Custno|2014-09-11 17:15:51|2014-09-11 17:15:51|SONIC\Mark.Starnes|0|NULL|0|0
 0FBE343F-EEA8-4113-B95B-98749B9793BF|/AcctStd/Stockno to Custno|Stockno to Custno|2014-09-11 17:15:51|2014-09-11 17:15:51|SONIC\Mark.Starnes|0|NULL|0|0
 26027469-FEC6-43CF-9018-BD5C061F8535|/AcctStd/Trade1Stockno to Custno|Trade1Stockno to Custno|2014-09-11 17:15:52|2014-09-11 17:15:52|SONIC\Mark.Starnes|0|NULL|0|0
-EF9F94B4-37F1-4148-8B91-32C49E660979|/BI - Controllers/GL - Open Stores|GL - Open Stores|2014-08-04 17:04:20|2014-08-04 17:04:20|SONIC\Mark.Starnes|70|2026-03-19 08:00:15|3|1
+EF9F94B4-37F1-4148-8B91-32C49E660979|/BI - Controllers/GL - Open Stores|GL - Open Stores|2014-08-04 17:04:20|2014-08-04 17:04:20|SONIC\Mark.Starnes|67|2026-03-19 08:00:15|3|1
 FD471958-7266-418C-9B1F-D968A38FE5B3|/BI - Daily Status/DailyStatus|DailyStatus|2014-08-04 17:53:14|2014-08-04 17:53:14|SONIC\Mark.Starnes|9|2026-04-10 10:41:36|6|1
 7E546BEC-D805-4664-BFDD-679550DCE7B4|/BI - Data Analytics/EP Day 1|EP Day 1|2017-02-17 15:23:10|2017-02-17 15:23:10|SONIC\Mark.Starnes|1|2026-01-23 13:07:07|1|0
 FE1B3D4E-239F-4F3C-8EBA-EBFCF2BF0400|/BI - EchoPark/Replenishment|Replenishment|2016-08-08 18:16:31|2016-08-08 18:24:47|SONIC\Mark.Starnes|0|NULL|0|1
@@ -12,27 +12,27 @@ F214DDC4-A26E-41E9-95B8-256B91FEEEC9|/BI - Financial Reporting/VehGT100K|VehGT10
 2237D4A2-F3FC-4871-AC1A-6BBEF82DA276|/BI - Financial Reporting/VehGT100K_old|VehGT100K_old|2017-12-13 08:36:14|2017-12-13 08:36:14|SONIC\Mark.Starnes|0|NULL|0|0
 FC0006B2-1B5B-4AC3-AB90-DA815FFCF71A|/BI - FORCE/EP_ReconCost|EP_ReconCost|2018-02-13 15:39:20|2018-02-13 15:39:20|SONIC\Mark.Starnes|0|NULL|0|0
 52606D32-BFA9-42A0-BD24-548E1AF9CAD8|/BI - FORCE/TIRE Report|TIRE Report|2014-09-26 14:58:36|2018-02-13 15:39:23|SONIC\Mark.Starnes|1|2026-06-10 14:16:22|1|0
-E3763F8A-F74D-410B-8B19-D63333106A41|/BI - FORCE/UpLoadOpCodes|UpLoadOpCodes|2015-10-15 09:23:19|2018-02-13 15:39:25|SONIC\Mark.Starnes|82|2026-06-15 12:00:03|1|1
+E3763F8A-F74D-410B-8B19-D63333106A41|/BI - FORCE/UpLoadOpCodes|UpLoadOpCodes|2015-10-15 09:23:19|2018-02-13 15:39:25|SONIC\Mark.Starnes|82|2026-06-18 12:00:02|1|1
 57D75FCC-5EA9-4DAD-8AB3-364C58550D87|/BI - FPnA/Copy of Retail Sales Report_CleanGross_Hal|Copy of Retail Sales Report_CleanGross_Hal|2017-12-13 17:58:58|2017-12-13 17:58:58|SONIC\Mark.Starnes|0|NULL|0|0
 9C6FAF4C-8663-432C-897F-99013C00B8B9|/BI - FPnA/Copy of Retail Sales Report_CleanGross_Hal_B1|Copy of Retail Sales Report_CleanGross_Hal_B1|2017-12-13 17:59:02|2017-12-13 17:59:02|SONIC\Mark.Starnes|0|NULL|0|0
 DDBB58E3-966F-4231-A765-190372C4B6FB|/BI - FPnA/Retail Sales MTD vs Last Year|Retail Sales MTD vs Last Year|2017-12-13 17:59:03|2017-12-13 17:59:03|SONIC\Mark.Starnes|0|NULL|0|0
 A0FFD07E-C607-4468-B997-4FDEFD452887|/BI - FPnA/Retail Sales Report|Retail Sales Report|2014-08-15 13:39:31|2017-12-13 17:59:04|SONIC\Mark.Starnes|0|NULL|0|3
 5D8C32A6-7F66-4AA5-8891-7BE508CB3D56|/BI - FPnA/Retail Sales Report_CleanGross|Retail Sales Report_CleanGross|2014-08-15 13:39:34|2017-12-13 17:59:05|SONIC\Mark.Starnes|0|NULL|0|0
 E1A6B551-013E-4EFB-842C-5C20F4CF6B70|/BI - FPnA/Retail Sales Report_CleanGross_Hal|Retail Sales Report_CleanGross_Hal|2014-12-30 11:59:12|2017-12-13 17:59:06|SONIC\Mark.Starnes|0|NULL|0|1
-E67EBA99-D583-4203-A2C0-4A7D9E85B77B|/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1|Retail Sales Report_CleanGross_Hal_B1|2015-01-07 17:44:10|2017-12-13 17:59:07|SONIC\Mark.Starnes|128|2026-06-15 10:00:12|1|2
+E67EBA99-D583-4203-A2C0-4A7D9E85B77B|/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1|Retail Sales Report_CleanGross_Hal_B1|2015-01-07 17:44:10|2017-12-13 17:59:07|SONIC\Mark.Starnes|128|2026-06-18 10:00:10|1|2
 3EDB6916-BA28-4BF3-91A2-9965DB842CDA|/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1_Copy|Retail Sales Report_CleanGross_Hal_B1_Copy|2017-12-13 17:59:08|2017-12-13 17:59:08|SONIC\Mark.Starnes|0|NULL|0|0
 E92D4C34-65E4-4A1A-997D-6F4076F72C6A|/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1_OpenRange|Retail Sales Report_CleanGross_Hal_B1_OpenRange|2015-11-20 11:29:55|2017-12-13 17:59:09|SONIC\Mark.Starnes|0|NULL|0|0
-640EEEAB-EA26-4663-BC98-65F2628BC351|/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1YDay|Retail Sales Report_CleanGross_Hal_B1YDay|2015-01-16 13:54:03|2017-12-13 17:59:11|SONIC\Mark.Starnes|112|2026-06-15 10:15:06|1|1
-9E831220-4A22-490A-9AD5-45A050B4A436|/BI - FPnA/Retail Sales Report_CleanGross_Hal_RP|Retail Sales Report_CleanGross_Hal_RP|2016-11-30 15:46:31|2017-12-13 17:59:12|SONIC\Mark.Starnes|82|2026-06-15 10:00:12|1|1
+640EEEAB-EA26-4663-BC98-65F2628BC351|/BI - FPnA/Retail Sales Report_CleanGross_Hal_B1YDay|Retail Sales Report_CleanGross_Hal_B1YDay|2015-01-16 13:54:03|2017-12-13 17:59:11|SONIC\Mark.Starnes|112|2026-06-18 10:15:06|1|1
+9E831220-4A22-490A-9AD5-45A050B4A436|/BI - FPnA/Retail Sales Report_CleanGross_Hal_RP|Retail Sales Report_CleanGross_Hal_RP|2016-11-30 15:46:31|2017-12-13 17:59:12|SONIC\Mark.Starnes|82|2026-06-18 10:00:20|1|1
 C181E1C3-CF57-4E39-A470-1A8A51D2226F|/BI - New Vehicles/Archive/New Inventory - Playbook - All|New Inventory - Playbook - All|2014-08-01 14:49:50|2025-12-20 11:01:42|Jonathan.Henin|0|NULL|0|0
 672565D9-9AB9-4BFB-99A0-4678EBF3F8A3|/BI - New Vehicles/Archive/New Inventory - Playbook - All_exp (1)|New Inventory - Playbook - All_exp (1)|2018-12-14 14:14:28|2025-12-20 10:58:31|Jonathan.Henin|0|NULL|0|0
 59AF0A82-4EB9-4D57-B2F9-6B76E284293F|/BI - New Vehicles/Archive/New Inventory - Playbook - All_exp_Playbook|New Inventory - Playbook - All_exp_Playbook|2017-03-22 15:39:07|2025-12-20 10:57:23|Jonathan.Henin|0|NULL|0|2
 F0B7AAF6-63BA-4936-9196-F2960C5C2AEA|/BI - New Vehicles/Archive/New Inventory - Playbook - All_exp_Playbook_strpd|New Inventory - Playbook - All_exp_Playbook_strpd|2019-03-11 13:32:27|2025-12-20 10:58:17|Jonathan.Henin|0|NULL|0|1
 78257EE2-7F66-48F4-8B37-08AAC81E18F5|/BI - New Vehicles/Archive/New Inventory - Pricing - All_exp|New Inventory - Pricing - All_exp|2014-08-01 14:49:41|2025-12-20 11:01:02|Jonathan.Henin|0|NULL|0|0
 90282BE4-825F-459B-BDE1-A67B74B1C41C|/BI - New Vehicles/Archive/New Playbook - Pre Visit|New Playbook - Pre Visit|2014-08-01 14:49:26|2025-12-20 11:01:24|Jonathan.Henin|0|NULL|0|0
-45234A88-6384-487F-B19D-BC7E91B90490|/BI - New Vehicles/New Inventory - Count By Make|New Inventory - Count By Make|2016-03-24 14:54:04|2025-02-04 20:13:08|Jonathan.Henin|360|2026-06-15 08:00:01|2|2
-1B45FDA5-5265-453D-A6E8-05B8791546FE|/BI - New Vehicles/New Inventory - Playbook - All_exp|New Inventory - Playbook - All_exp|2014-08-01 14:48:15|2025-04-08 13:20:53|Jonathan.Henin|16512|2026-06-15 05:03:24|2|7
-43D10499-ED9E-49A6-9E84-DC3715D66440|/BI - New Vehicles/New Inventory - Playbook - SingleStore|New Inventory - Playbook - SingleStore|2016-03-28 11:28:52|2025-02-04 20:22:32|Jonathan.Henin|1327|2026-06-15 10:05:32|1|12
+45234A88-6384-487F-B19D-BC7E91B90490|/BI - New Vehicles/New Inventory - Count By Make|New Inventory - Count By Make|2016-03-24 14:54:04|2025-02-04 20:13:08|Jonathan.Henin|360|2026-06-18 08:00:15|2|2
+1B45FDA5-5265-453D-A6E8-05B8791546FE|/BI - New Vehicles/New Inventory - Playbook - All_exp|New Inventory - Playbook - All_exp|2014-08-01 14:48:15|2025-04-08 13:20:53|Jonathan.Henin|16512|2026-06-18 05:03:26|2|7
+43D10499-ED9E-49A6-9E84-DC3715D66440|/BI - New Vehicles/New Inventory - Playbook - SingleStore|New Inventory - Playbook - SingleStore|2016-03-28 11:28:52|2025-02-04 20:22:32|Jonathan.Henin|1330|2026-06-18 10:05:29|1|12
 52444DFB-44B4-45AA-B741-B5E2F09DEC8A|/BI - Payroll/PayrollEntry_CoID_UserID|PayrollEntry_CoID_UserID|2014-09-25 15:39:27|2014-09-25 15:39:27|SONIC\Mark.Starnes|0|NULL|0|0
 50A63BAF-8B6A-4124-A0BC-A1A5C5E0396A|/BI - Payroll/PayrollEntrySummary|PayrollEntrySummary|2014-09-23 17:07:59|2014-09-25 15:41:31|SONIC\Mark.Starnes|0|NULL|0|0
 C19961C2-4A3D-46C9-AFFD-C00BB5176DA2|/BI - Retail Strategy/Copy of WeekendAppts|Copy of WeekendAppts|2016-05-04 10:42:25|2018-07-20 16:42:33|SONIC\Mark.Starnes|0|NULL|0|0
@@ -48,9 +48,9 @@ B0A55ABB-8A73-47EC-93F0-C8EAB0991F66|/BI - Retail Strategy/WeekendAppts|WeekendA
 3048D38F-81A9-4138-954A-8AEFE99735BD|/BI - Shared Services/FloorplanPayoff|FloorplanPayoff|2016-04-22 16:25:18|2019-01-02 10:27:52|SONIC\Mark.Starnes|0|NULL|0|1
 07EEBD52-D595-4199-8A18-9A832773D92C|/BI - Shared Services/FloorplanPayoff_xrefSyncIssue|FloorplanPayoff_xrefSyncIssue|2017-06-09 14:31:33|2019-01-02 10:27:55|SONIC\Mark.Starnes|0|NULL|0|1
 8F110C45-1430-4E25-A01D-506151C2E05A|/BI - Shared Services/Send Floorplan|Send Floorplan|2017-04-18 09:34:57|2019-01-02 10:27:55|SONIC\Mark.Starnes|0|NULL|0|0
-E0E1E1A3-0DEA-436C-9F41-A9AC1AFE8DCE|/CMA/Activity Details Report|Activity Details Report|2014-08-15 10:37:07|2014-08-20 10:51:34|SONIC\Doug.Morgan|37919|2026-06-12 13:33:29|228|0
-22C75C00-ED14-4FE8-82A0-87BCDABF39EF|/CMA/DailyActivitySummary|DailyActivitySummary|2014-08-15 10:38:10|2021-11-15 20:37:05|SONIC\Doug.Morgan|2317|2026-06-08 12:11:14|144|0
-D00C9D27-AB09-417D-A639-E0E31673F989|/CMA/DailyCashSummary|DailyCashSummary|2014-08-05 09:53:45|2014-08-05 09:53:45|SONIC\Mark.Starnes|885|2026-04-10 10:38:18|68|0
+E0E1E1A3-0DEA-436C-9F41-A9AC1AFE8DCE|/CMA/Activity Details Report|Activity Details Report|2014-08-15 10:37:07|2014-08-20 10:51:34|SONIC\Doug.Morgan|36517|2026-06-12 13:33:29|228|0
+22C75C00-ED14-4FE8-82A0-87BCDABF39EF|/CMA/DailyActivitySummary|DailyActivitySummary|2014-08-15 10:38:10|2021-11-15 20:37:05|SONIC\Doug.Morgan|2291|2026-06-08 12:11:14|144|0
+D00C9D27-AB09-417D-A639-E0E31673F989|/CMA/DailyCashSummary|DailyCashSummary|2014-08-05 09:53:45|2014-08-05 09:53:45|SONIC\Mark.Starnes|856|2026-04-10 10:38:18|68|0
 18571223-B250-4D57-A034-3931113EDA51|/CMA/NegativeBalanceReportv3|NegativeBalanceReportv3|2014-08-15 10:38:00|2014-08-15 10:38:00|SONIC\Mark.Starnes|0|NULL|0|0
 1346A0E8-023E-4473-9181-B1CCEB68D77C|/Controllers/GL - Open Stores|GL - Open Stores|2014-08-04 17:00:39|2014-08-04 17:00:39|SONIC\Mark.Starnes|0|NULL|0|0
 527D4E32-2D7F-499A-A7C3-4E7AF76B39B5|/CRM/OldQuartileOpportunityReport|OldQuartileOpportunityReport|2015-09-15 14:01:46|2020-04-15 12:42:16|bedanta.bordoloi|0|NULL|0|0
@@ -73,7 +73,7 @@ C75E69A7-F263-4D04-969A-4B2F8C3B0003|/New Inventory - Count By Make Model Dealer
 32DC4B6B-D2D3-4FEC-89CF-69DADFE4D4C7|/New Vehicles/New Inventory - Pricing - All_exp|New Inventory - Pricing - All_exp|2015-04-23 16:37:23|2015-04-23 16:37:23|SONIC\Mark.Starnes|0|NULL|0|0
 6947375D-EEF9-4FAB-923E-D2D08C704EB3|/NVIM/NVPDashboard|NVPDashboard|2015-10-16 13:08:19|2015-10-16 13:08:19|bedanta.bordoloi|0|NULL|0|0
 E7E1A7C6-DC52-42B4-AD93-EC1F878A7194|/NVIM/NVPDashboardLandingPage|NVPDashboardLandingPage|2015-10-16 13:09:35|2015-10-16 13:09:35|bedanta.bordoloi|0|NULL|0|0
-E4B26B21-1E39-448E-B3B5-6CD64C5AC6ED|/ProfitAnalysis/ReportsLibrary/New Inventory Pricing Issues|New Inventory Pricing Issues|2014-11-05 10:15:35|2019-11-13 09:23:39|SONIC\Mark.Starnes|427|2026-06-15 07:46:33|3|1
+E4B26B21-1E39-448E-B3B5-6CD64C5AC6ED|/ProfitAnalysis/ReportsLibrary/New Inventory Pricing Issues|New Inventory Pricing Issues|2014-11-05 10:15:35|2019-11-13 09:23:39|SONIC\Mark.Starnes|428|2026-06-18 07:46:33|2|1
 6C156B23-7CE9-4982-A82F-489F508AFBE5|/RouteOne/RouteOneDetails|RouteOneDetails|2015-09-14 14:37:34|2017-03-14 11:14:18|bedanta.bordoloi|0|NULL|0|0
 FA05C756-8FAF-40BF-BF42-59D0A24F233D|/RouteOne/RouteOneRedFlagDetailData|RouteOneRedFlagDetailData|2018-04-27 10:11:21|2018-04-27 10:11:21|SONIC\Val.Marz|0|NULL|0|0
 24255C04-121A-4AC2-A392-2987FAD8069E|/RouteOne/RouteOneRedFlagReport|RouteOneRedFlagReport|2018-04-27 10:11:35|2018-04-27 10:11:35|SONIC\Val.Marz|0|NULL|0|0

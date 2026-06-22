@@ -1,0 +1,64 @@
+{
+  "object_id": "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataActivityLeadList",
+  "upstream_count": 4,
+  "upstream": [
+    {
+      "edge_id": "sql_server:dbo.activitymigrationcolist.lchildcompanyid->dbo.textdataactivityleadlist.lchildcompanyid",
+      "source": "dbo.ActivityMigrationCoList.lchildcompanyid",
+      "target": "dbo.TextDataActivityLeadList.lChildCompanyID",
+      "source_object": "dbo.ActivityMigrationCoList",
+      "target_object": "dbo.TextDataActivityLeadList",
+      "edge_type": "column_match",
+      "class": "maps_column",
+      "score": 0.8,
+      "label": "review",
+      "evidence": "Exact column name match: \"lchildcompanyid\" in both tables",
+      "source_stream": "relationships",
+      "extracted_at": "2026-06-20T13:15:44.975Z"
+    },
+    {
+      "edge_id": "sql_server:dbo.companiestmp.lchildcompanyid->dbo.textdataactivityleadlist.lchildcompanyid",
+      "source": "dbo.CompaniesTmp.lChildCompanyID",
+      "target": "dbo.TextDataActivityLeadList.lChildCompanyID",
+      "source_object": "dbo.CompaniesTmp",
+      "target_object": "dbo.TextDataActivityLeadList",
+      "edge_type": "column_match",
+      "class": "maps_column",
+      "score": 0.8,
+      "label": "review",
+      "evidence": "Exact column name match: \"lchildcompanyid\" in both tables",
+      "source_stream": "relationships",
+      "extracted_at": "2026-06-20T13:15:44.975Z"
+    },
+    {
+      "edge_id": "sql_server:dbo.deleteddeals.lchildcompanyid->dbo.textdataactivityleadlist.lchildcompanyid",
+      "source": "dbo.DeletedDeals.lChildCompanyID",
+      "target": "dbo.TextDataActivityLeadList.lChildCompanyID",
+      "source_object": "dbo.DeletedDeals",
+      "target_object": "dbo.TextDataActivityLeadList",
+      "edge_type": "column_match",
+      "class": "maps_column",
+      "score": 0.8,
+      "label": "review",
+      "evidence": "Exact column name match: \"lchildcompanyid\" in both tables",
+      "source_stream": "relationships",
+      "extracted_at": "2026-06-20T13:15:44.975Z"
+    },
+    {
+      "edge_id": "sql_server:dbo.dwdiffcompanychildcompanymap_i.lchildcompanyid->dbo.textdataactivityleadlist.lchildcompanyid",
+      "source": "dbo.dwDiffCompanyChildCompanyMap_I.lChildCompanyID",
+      "target": "dbo.TextDataActivityLeadList.lChildCompanyID",
+      "source_object": "dbo.dwDiffCompanyChildCompanyMap_I",
+      "target_object": "dbo.TextDataActivityLeadList",
+      "edge_type": "column_match",
+      "class": "maps_column",
+      "score": 0.8,
+      "label": "review",
+      "evidence": "Exact column name match: \"lchildcompanyid\" in both tables",
+      "source_stream": "relationships",
+      "extracted_at": "2026-06-20T13:15:44.975Z"
+    }
+  ],
+  "caveat": "Use edge labels and scores; review-needed edges are not high-confidence lineage.",
+  "source_context_pack": "context-packs/objects/by-id/sql-server-l1-dwasql-02-12010-eleaddw-dbo-textdataactivityleadlist.json"
+}

@@ -1,0 +1,8 @@
+{
+  "object_id": "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullCompanyHierarchy_BK_26OCT2025",
+  "question": "Tell me about eLeadDW.dbo.dwFullCompanyHierarchy_BK_26OCT2025.",
+  "answer": "eLeadDW.dbo.dwFullCompanyHierarchy_BK_26OCT2025 is a table in eLeadDW.dbo. Business meaning, owner, SLA, freshness, and certification are not surfaced in metadata.",
+  "source_context_pack": "context-packs/objects/by-id/sql-server-l1-dwasql-02-12010-eleaddw-dbo-dwfullcompanyhierarchy-bk-26oct2025.json",
+  "raw_data_captured": false,
+  "secret_exposed": false
+}

@@ -30,9 +30,62 @@ Consumers must not guess path variants when `indexes/path-contract.json` or `ind
 ## Version And Hash Rules
 
 - Every approved package must have a package version, generated timestamp, runtime content hash, object count, database count, and validation status.
+- Required package manifest fields are defined in `docs/LINEAGE_RUNTIME_PACKAGE_MANIFEST_CONTRACT.md`.
+- Package/consumer compatibility is defined in `docs/LINEAGE_RUNTIME_PACKAGE_COMPATIBILITY_MATRIX.md`.
 - Codex answers must report the package version when the user is making a decision from the data.
 - Teammates must not mix files from different package versions in one investigation.
 - Package readback validation must prove that a clean consumer can open the published package and answer baseline questions without local-only files.
+
+## Package Cache Location
+
+Use one deterministic package cache location for teammate workflows:
+
+```text
+./.lineage-runtime-cache/sonic-data-lineage-runtime/<version>/sonic-data-lineage-runtime/
+```
+
+If a readback packet or maintainer explicitly sets `LINEAGE_RUNTIME_PACKAGE_ROOT`,
+use that exact path. Otherwise, use the repo-local cache path above.
+
+Consumers must not scan arbitrary local folders, sibling repositories, old
+downloads, Confluence exports, generated catalog repositories, or private Data
+Governance app checkouts to find a package. Missing cache paths are setup
+problems, not permission to guess.
+
+## Approved Latest Package
+
+As of 2026-06-18, the approved published package baseline is:
+
+| Field                         | Value                                                              |
+| ----------------------------- | ------------------------------------------------------------------ |
+| Package name                  | `sonic-data-lineage-runtime`                                       |
+| Approved version              | `2026.6.13-1`                                                      |
+| Approved runtime content hash | `ab840383d8e4f9b1e1036523965536b03d23f2270959025d63a658f4daeece6e` |
+| Manifest schema               | `1`                                                                |
+
+## Stale Package Warning Rules
+
+After opening `manifest.json` and `latest.json`, the skill must compare the
+package being used to the approved latest package above.
+
+Warn the user before giving a decision-grade answer when:
+
+- the local package version is older than the approved version
+- the local package has the same version but a different runtime content hash
+- `latest.json` is missing `version` or `runtime_content_hash`
+- `manifest.json` and `latest.json` disagree on package name or version
+- the skill cannot find the approved latest package baseline in this contract
+
+Use this warning format:
+
+```text
+Package currency warning: this answer is using package <version>, hash <hash>.
+Approved latest is <approved_version>, hash <approved_hash>. Results may be stale
+or inconsistent with the team-approved package.
+```
+
+Do not block low-risk orientation answers solely because the package is stale,
+but do not present stale-package output as decision-grade evidence.
 
 ## Raw Evidence Access Policy
 
@@ -63,6 +116,8 @@ Teammates may submit rule recommendations. A recommendation must include:
 - observed current behavior
 - expected behavior
 - evidence artifact paths
+- raw evidence file paths when raw evidence was used
+- reason raw evidence was needed when package artifacts were not enough
 - impact if accepted
 - confidence level
 - reviewer/owner
@@ -75,6 +130,8 @@ The team Codex plugin or skill must:
 
 - read the approved package before scanning raw evidence
 - cite package artifacts used as evidence
+- cite exact raw evidence file paths and the reason raw evidence was needed
+  whenever raw evidence is used
 - use `profile-index/` first for profile, quality, metric, sensitivity, and freshness questions
 - distinguish direct lineage from lookup, maintenance, contextual, inferred, and unresolved evidence
 - refuse to update ingestion engines from teammate evidence-review workflows
@@ -92,6 +149,18 @@ Minimum gates before a package is approved:
 - readback from the published location succeeds
 - skill/plugin smoke prompts pass
 - recommendation workflow stores proposals without touching ingestion code
+
+Current package smoke command:
+
+```powershell
+npm run lineage:runtime:skill-check
+```
+
+For published-package validation, set `LINEAGE_RUNTIME_PACKAGE_ROOT` to the
+downloaded package cache before running the command.
+
+Use `docs/LINEAGE_RUNTIME_PACKAGE_APPROVAL_CHECKLIST.md` as the package approval
+record for each package version before calling it approved for teammate use.
 
 ## Hard Stop Before Azure Platform Phase
 

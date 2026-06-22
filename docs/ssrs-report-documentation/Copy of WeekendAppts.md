@@ -1,26 +1,44 @@
 # Copy of WeekendAppts
 
-Generated: 2026-06-15  
-SSRS path: `/BI - Retail Strategy/Copy of WeekendAppts`  
+Generated: 2026-06-19T08:45:51.070Z
+SSRS path: `/BI - Retail Strategy/Copy of WeekendAppts`
 SSRS catalog source: `ReportServer` on `D1-SQL-01B\INST1`
 
-## Purpose
+## Plain-English Summary
 
-This report supports the BI - Retail Strategy reporting area. It retrieves data through embedded report dataset queries and presents the result as the Copy of WeekendAppts report. Use the dataset commands and parameters below to confirm the exact business question before changing it.
+This report supports the BI - Retail Strategy reporting area. It retrieves data through embedded report dataset queries and presents the result as the Copy of WeekendAppts report. Use the dataset commands and parameters below to confirm the exact business question before changing it. If this report is wrong, stale, or unavailable, users may make decisions from incomplete reporting output or lose a support lookup path. Start troubleshooting by confirming the SSRS path, selected parameters, shared datasource, and backend dataset commands.
 
-## Executive Summary
+## At a Glance
 
-| Field               | Value                                            |
-| ------------------- | ------------------------------------------------ |
-| Report name         | `Copy of WeekendAppts`                           |
-| SSRS path           | `/BI - Retail Strategy/Copy of WeekendAppts`     |
-| Status signal       | Review candidate: no executions in last 6 months |
-| Created             | 2016-05-04 10:42:25                              |
-| Modified            | 2018-07-20 16:42:33                              |
-| Modified by         | SONIC\Mark.Starnes                               |
-| Last 6 months usage | 0 executions by 0 users                          |
-| Last execution      | NULL                                             |
-| Subscriptions       | 0                                                |
+| Field                 | Value                                                                                                                                                                                                                                                                                                                        |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Platform              | SSRS                                                                                                                                                                                                                                                                                                                         |
+| Asset type            | Report                                                                                                                                                                                                                                                                                                                       |
+| Native path           | `/BI - Retail Strategy/Copy of WeekendAppts`                                                                                                                                                                                                                                                                                 |
+| Support role          | Review candidate report                                                                                                                                                                                                                                                                                                      |
+| Business process      | Use this report for BI - Retail Strategy business review when users need report output for operational follow-up, reconciliation, audit, or performance review. The report is filtered by Region. It reads or calls cho-lab-01a, vw_WeeklyAppointments_de, so support should validate those sources when results look wrong. |
+| Primary source        | /BI - Retail Strategy/DataSource/eLeadDW_DWA                                                                                                                                                                                                                                                                                 |
+| Primary target/output | SSRS report output                                                                                                                                                                                                                                                                                                           |
+| Schedule or trigger   | No subscriptions surfaced                                                                                                                                                                                                                                                                                                    |
+| Runtime/usage signal  | 0 executions by 0 users; last used Not used in last 6 months                                                                                                                                                                                                                                                                 |
+| Status signal         | Review candidate: no executions in last 6 months                                                                                                                                                                                                                                                                             |
+| Evidence              | `tmp/ssrs-all-report-discovery.out`, `tmp/ssrs-all-datasets.out`                                                                                                                                                                                                                                                             |
+| Report name           | `Copy of WeekendAppts`                                                                                                                                                                                                                                                                                                       |
+| Created               | 2016-05-04 10:42:25                                                                                                                                                                                                                                                                                                          |
+| Modified              | 2018-07-20 16:42:33                                                                                                                                                                                                                                                                                                          |
+| Modified by           | SONIC\Mark.Starnes                                                                                                                                                                                                                                                                                                           |
+
+## Business Use
+
+Use this report for BI - Retail Strategy business review when users need report output for operational follow-up, reconciliation, audit, or performance review. The report is filtered by Region. It reads or calls cho-lab-01a, vw_WeeklyAppointments_de, so support should validate those sources when results look wrong.
+
+## Support Checks
+
+1. Confirm the user is running the correct SSRS path: `/BI - Retail Strategy/Copy of WeekendAppts`.
+2. Confirm the selected report parameters match the intended business scenario.
+3. Confirm the shared datasource is enabled and points to the expected backend connection.
+4. If the report returns no data, review the dataset commands and backend objects listed below.
+5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
 
 ## Shared Data Sources
 
@@ -45,14 +63,6 @@ This report supports the BI - Retail Strategy reporting area. It retrieves data 
 | -------------------------- | ----------------------------------------- |
 | `cho-lab-01a`              | Referenced by one or more report datasets |
 | `vw_WeeklyAppointments_de` | Referenced by one or more report datasets |
-
-## Support Troubleshooting Guide
-
-1. Confirm the user is running the correct SSRS path: `/BI - Retail Strategy/Copy of WeekendAppts`.
-2. Confirm the selected report parameters match the intended business scenario.
-3. Confirm the shared datasource is enabled and points to the expected backend connection.
-4. If the report returns no data, review the dataset commands and backend objects listed above.
-5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
 
 ## Reports or Objects Needing Review
 

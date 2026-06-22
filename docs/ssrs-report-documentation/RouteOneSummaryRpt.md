@@ -1,26 +1,44 @@
 # RouteOneSummaryRpt
 
-Generated: 2026-06-15  
-SSRS path: `/RouteOne/RouteOneSummaryRpt`  
+Generated: 2026-06-19T08:45:51.070Z
+SSRS path: `/RouteOne/RouteOneSummaryRpt`
 SSRS catalog source: `ReportServer` on `D1-SQL-01B\INST1`
 
-## Purpose
+## Plain-English Summary
 
-This report supports the RouteOne reporting area. It retrieves data through embedded report dataset queries and presents the result as the RouteOneSummaryRpt report. Use the dataset commands and parameters below to confirm the exact business question before changing it.
+This report supports the RouteOne reporting area. It retrieves data through embedded report dataset queries and presents the result as the RouteOneSummaryRpt report. Use the dataset commands and parameters below to confirm the exact business question before changing it. If this report is wrong, stale, or unavailable, users may make decisions from incomplete reporting output or lose a support lookup path. Start troubleshooting by confirming the SSRS path, selected parameters, shared datasource, and backend dataset commands.
 
-## Executive Summary
+## At a Glance
 
-| Field               | Value                                            |
-| ------------------- | ------------------------------------------------ |
-| Report name         | `RouteOneSummaryRpt`                             |
-| SSRS path           | `/RouteOne/RouteOneSummaryRpt`                   |
-| Status signal       | Review candidate: no executions in last 6 months |
-| Created             | 2015-09-14 14:37:34                              |
-| Modified            | 2017-05-15 14:46:03                              |
-| Modified by         | bedanta.bordoloi                                 |
-| Last 6 months usage | 0 executions by 0 users                          |
-| Last execution      | NULL                                             |
-| Subscriptions       | 0                                                |
+| Field                 | Value                                                                                                                                                                                                          |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Platform              | SSRS                                                                                                                                                                                                           |
+| Asset type            | Report                                                                                                                                                                                                         |
+| Native path           | `/RouteOne/RouteOneSummaryRpt`                                                                                                                                                                                 |
+| Support role          | Review candidate report                                                                                                                                                                                        |
+| Business process      | Use this for RouteOne finance or compliance review where deal detail, red-flag, SSN variance, or summary activity may require follow-up. The report is filtered by From SubmissionDate :, To SubmissionDate :. |
+| Primary source        | /RouteOne/Data Sources/COR-BISQL-02_Sonic_DW                                                                                                                                                                   |
+| Primary target/output | SSRS report output                                                                                                                                                                                             |
+| Schedule or trigger   | No subscriptions surfaced                                                                                                                                                                                      |
+| Runtime/usage signal  | 0 executions by 0 users; last used Not used in last 6 months                                                                                                                                                   |
+| Status signal         | Review candidate: no executions in last 6 months                                                                                                                                                               |
+| Evidence              | `tmp/ssrs-all-report-discovery.out`, `tmp/ssrs-all-datasets.out`                                                                                                                                               |
+| Report name           | `RouteOneSummaryRpt`                                                                                                                                                                                           |
+| Created               | 2015-09-14 14:37:34                                                                                                                                                                                            |
+| Modified              | 2017-05-15 14:46:03                                                                                                                                                                                            |
+| Modified by           | bedanta.bordoloi                                                                                                                                                                                               |
+
+## Business Use
+
+Use this for RouteOne finance or compliance review where deal detail, red-flag, SSN variance, or summary activity may require follow-up. The report is filtered by From SubmissionDate :, To SubmissionDate :.
+
+## Support Checks
+
+1. Confirm the user is running the correct SSRS path: `/RouteOne/RouteOneSummaryRpt`.
+2. Confirm the selected report parameters match the intended business scenario.
+3. Confirm the shared datasource is enabled and points to the expected backend connection.
+4. If the report returns no data, review the dataset commands and backend objects listed below.
+5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
 
 ## Shared Data Sources
 
@@ -37,22 +55,12 @@ This report supports the RouteOne reporting area. It retrieves data through embe
 
 ## Data Logic
 
-1. Dataset `IncomeVarianceChart_DS` (Text): USE Sonic_DW SELECT CASE WHEN MinCoApplicantAlimonyIncome <> MaxCoApplicantAlimonyIncome THEN 'CoApplicant Alimony Income' WHEN MinCoApplicantOtherIncome <> MaxCoApplicantOtherIncome THEN 'CoApplicant Other Income' WHEN MinCoApplicantIncome <> MaxCoApplicantIncome THEN 'CoApplicant Income' WHEN MinApplicantOtherIncome ...
+1. Dataset `IncomeVarianceChart_DS` (Text): USE Sonic_DW SELECT CASE WHEN MinCoApplicantAlimonyIncome <> MaxCoApplicantAlimonyIncome THEN 'CoApplicant Alimony Income' WHEN MinCoApplicantOtherIncome <> MaxCoApplicantOtherIncome THEN 'CoApplicant Other Income' WHEN MinCoApplicantIncome <
 2. Dataset `RouteOneSummary_DS` (Text): NULL
 
 ## Backend Dependencies
 
-| Object or command hint | Notes                                     |
-| ---------------------- | ----------------------------------------- |
-| `RouteOne_Daily_Mart`  | Referenced by one or more report datasets |
-
-## Support Troubleshooting Guide
-
-1. Confirm the user is running the correct SSRS path: `/RouteOne/RouteOneSummaryRpt`.
-2. Confirm the selected report parameters match the intended business scenario.
-3. Confirm the shared datasource is enabled and points to the expected backend connection.
-4. If the report returns no data, review the dataset commands and backend objects listed above.
-5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
+No backend object hints were extracted from the report datasets.
 
 ## Reports or Objects Needing Review
 
@@ -67,7 +75,7 @@ This report supports the RouteOne reporting area. It retrieves data through embe
 Type: `Text`
 
 ```sql
-USE Sonic_DW  SELECT CASE    WHEN MinCoApplicantAlimonyIncome <> MaxCoApplicantAlimonyIncome    THEN 'CoApplicant Alimony Income'   WHEN MinCoApplicantOtherIncome <> MaxCoApplicantOtherIncome    THEN 'CoApplicant Other Income'   WHEN MinCoApplicantIncome <> MaxCoApplicantIncome    THEN 'CoApplicant Income'   WHEN MinApplicantOtherIncome <> MaxApplicantOtherIncome    THEN 'Applicant Other Income'   WHEN MinApplicantIncome <> MaxApplicantIncome    THEN 'Applicant Income'   END AS 'Variance'  --,Dealership  ,COUNT(*) Counts FROM (  SELECT *  FROM RouteOne_Daily_Mart  WHERE MinApplicantIncome IS NOT NULL   AND MinSubmissionDate >= @paramFromSubmissionDate    AND MinSubmissionDate <= @paramToSubmissionDate  ) T GROUP BY CASE    WHEN MinCoApplicantAlimonyIncome <> MaxCoApplicantAlimonyIncome    THEN 'CoApplicant Alimony Income'   WHEN MinCoApplicantOtherIncome <> MaxCoApplicantOtherIncome    THEN 'CoApplicant Other Income'   WHEN MinCoApplicantIncome <> MaxCoApplicantIncome    THEN 'CoApplicant Income'   WHEN MinApplicantOtherIncome <> MaxApplicantOtherIncome    THEN 'Applicant Other Income'   WHEN MinApplicantIncome <> MaxApplicantIncome    THEN 'Applicant Income'   END --,Dealership ORDER BY Counts DESC  --ORDER BY MaxSubmissionDate DESC
+USE Sonic_DW  SELECT CASE    WHEN MinCoApplicantAlimonyIncome <> MaxCoApplicantAlimonyIncome    THEN 'CoApplicant Alimony Income'   WHEN MinCoApplicantOtherIncome <> MaxCoApplicantOtherIncome    THEN 'CoApplicant Other Income'   WHEN MinCoApplicantIncome <
 ```
 
 #### RouteOneSummary_DS

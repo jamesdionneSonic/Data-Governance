@@ -1,26 +1,44 @@
 # Activity Details Report
 
-Generated: 2026-06-15  
-SSRS path: `/CMA/Activity Details Report`  
+Generated: 2026-06-19T08:45:51.070Z
+SSRS path: `/CMA/Activity Details Report`
 SSRS catalog source: `ReportServer` on `D1-SQL-01B\INST1`
 
-## Purpose
+## Plain-English Summary
 
-This report provides transaction-level Cash Management activity details for researching individual cash activity, reconciling questions, and supporting follow-up on specific stores or dates.
+This report provides transaction-level Cash Management activity details for researching individual cash activity, reconciling questions, and supporting follow-up on specific stores or dates. If this report is wrong, stale, or unavailable, users may make decisions from incomplete reporting output or lose a support lookup path. Start troubleshooting by confirming the SSRS path, selected parameters, shared datasource, and backend dataset commands.
 
-## Executive Summary
+## At a Glance
 
-| Field               | Value                          |
-| ------------------- | ------------------------------ |
-| Report name         | `Activity Details Report`      |
-| SSRS path           | `/CMA/Activity Details Report` |
-| Status signal       | Active, high usage             |
-| Created             | 2014-08-15 10:37:07            |
-| Modified            | 2014-08-20 10:51:34            |
-| Modified by         | SONIC\Doug.Morgan              |
-| Last 6 months usage | 37919 executions by 228 users  |
-| Last execution      | 2026-06-12 13:33:29            |
-| Subscriptions       | 0                              |
+| Field                 | Value                                                                                                                                                                                                                                                 |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Platform              | SSRS                                                                                                                                                                                                                                                  |
+| Asset type            | Report                                                                                                                                                                                                                                                |
+| Native path           | `/CMA/Activity Details Report`                                                                                                                                                                                                                        |
+| Support role          | User-facing report                                                                                                                                                                                                                                    |
+| Business process      | Use this for Cash Management review when accounting users need transaction detail, daily activity, cash summary, or exception follow-up. The report is filtered by Acct Number, Amount Greater Than, Amount Less Than, Debit or Credit, Check Number. |
+| Primary source        | /CMA/DataSource/CMA                                                                                                                                                                                                                                   |
+| Primary target/output | SSRS report output                                                                                                                                                                                                                                    |
+| Schedule or trigger   | No subscriptions surfaced                                                                                                                                                                                                                             |
+| Runtime/usage signal  | 36517 executions by 228 users; last used 2026-06-12 13:33:29                                                                                                                                                                                          |
+| Status signal         | Active, high usage                                                                                                                                                                                                                                    |
+| Evidence              | `tmp/ssrs-all-report-discovery.out`, `tmp/ssrs-all-datasets.out`                                                                                                                                                                                      |
+| Report name           | `Activity Details Report`                                                                                                                                                                                                                             |
+| Created               | 2014-08-15 10:37:07                                                                                                                                                                                                                                   |
+| Modified              | 2014-08-20 10:51:34                                                                                                                                                                                                                                   |
+| Modified by           | SONIC\Doug.Morgan                                                                                                                                                                                                                                     |
+
+## Business Use
+
+Use this for Cash Management review when accounting users need transaction detail, daily activity, cash summary, or exception follow-up. The report is filtered by Acct Number, Amount Greater Than, Amount Less Than, Debit or Credit, Check Number.
+
+## Support Checks
+
+1. Confirm the user is running the correct SSRS path: `/CMA/Activity Details Report`.
+2. Confirm the selected report parameters match the intended business scenario.
+3. Confirm the shared datasource is enabled and points to the expected backend connection.
+4. If the report returns no data, review the dataset commands and backend objects listed below.
+5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
 
 ## Shared Data Sources
 
@@ -44,7 +62,7 @@ This report provides transaction-level Cash Management activity details for rese
 
 ## Data Logic
 
-1. Dataset `DataSet1` (Text): select d.\*, a.Dlr_dealership, a.VE_Desc from cmag.tblDetails (nolock) as d join cmag.vw_DealerAcctType (nolock) as a on a.dlracct_acct_num = d.Det_acctnum where Dlr_Dealership = (@Dealership) and D.Det_AcctNum in (@AcctNumber) and D.Det_TxnType in (@CDString) and Det_Text like isnull('%'+@Textstring+'%',Det_Text) and D...
+1. Dataset `DataSet1` (Text): select d.\*, a.Dlr_dealership, a.VE_Desc from cmag.tblDetails (nolock) as d join cmag.vw_DealerAcctType (nolock) as a on a.dlracct_acct_num = d.Det_acctnum where Dlr_Dealership = (@Dealership) and D.Det_AcctNum in (@AcctNumber) and D.Det_TxnType
 2. Dataset `DataSet2` (Text): select distinct dlr_dealership from vw_DealerAcctType order by dlr_dealership
 3. Dataset `DataSet3` (Text): select \* from vw_DealerAcctType where Dlr_dealership = @Dealership union all select NULL,'All Dealerships',NULL,NULL,'All Account Types',NULL order by dlracct_acct_num
 4. Dataset `DataSet4` (StoredProcedure): Calls stored procedure `cmag.usp_dearlerinfo`.
@@ -57,14 +75,6 @@ This report provides transaction-level Cash Management activity details for rese
 | `cmag.vw_DealerAcctType` | Referenced by one or more report datasets |
 | `vw_DealerAcctType`      | Referenced by one or more report datasets |
 | `cmag.usp_dearlerinfo`   | Referenced by one or more report datasets |
-
-## Support Troubleshooting Guide
-
-1. Confirm the user is running the correct SSRS path: `/CMA/Activity Details Report`.
-2. Confirm the selected report parameters match the intended business scenario.
-3. Confirm the shared datasource is enabled and points to the expected backend connection.
-4. If the report returns no data, review the dataset commands and backend objects listed above.
-5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
 
 ## Reports or Objects Needing Review
 
@@ -79,7 +89,7 @@ This report provides transaction-level Cash Management activity details for rese
 Type: `Text`
 
 ```sql
-select d.*, a.Dlr_dealership, a.VE_Desc from  cmag.tblDetails (nolock) as d  join cmag.vw_DealerAcctType (nolock) as a  on a.dlracct_acct_num = d.Det_acctnum     where   Dlr_Dealership = (@Dealership)  and D.Det_AcctNum in (@AcctNumber)  and D.Det_TxnType in (@CDString)  and Det_Text like isnull('%'+@Textstring+'%',Det_Text)  and Det_TxnDate between @DateStart and @DateEnd  and (Det_Amount >= ISNULL(@Amount,Det_Amount)  and Det_Amount <= ISNULL(@Amount2,Det_Amount))         and Det_CustRef = ISNULL(@CheckNumber,Det_CustRef)
+select d.*, a.Dlr_dealership, a.VE_Desc from  cmag.tblDetails (nolock) as d  join cmag.vw_DealerAcctType (nolock) as a  on a.dlracct_acct_num = d.Det_acctnum     where   Dlr_Dealership = (@Dealership)  and D.Det_AcctNum in (@AcctNumber)  and D.Det_TxnType
 ```
 
 #### DataSet2

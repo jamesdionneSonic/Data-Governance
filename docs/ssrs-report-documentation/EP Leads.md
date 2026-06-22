@@ -1,26 +1,44 @@
 # EP Leads
 
-Generated: 2026-06-15  
-SSRS path: `/BI - Retail Strategy/EP Leads`  
+Generated: 2026-06-19T08:45:51.070Z
+SSRS path: `/BI - Retail Strategy/EP Leads`
 SSRS catalog source: `ReportServer` on `D1-SQL-01B\INST1`
 
-## Purpose
+## Plain-English Summary
 
-This report supports legal or compliance follow-up by listing relevant TrueCar email activity or records for review.
+This report supports the BI - Retail Strategy reporting area. It retrieves data through embedded report dataset queries and presents the result as the EP Leads report. Use the dataset commands and parameters below to confirm the exact business question before changing it. If this report is wrong, stale, or unavailable, users may make decisions from incomplete reporting output or lose a support lookup path. Start troubleshooting by confirming the SSRS path, selected parameters, shared datasource, and backend dataset commands.
 
-## Executive Summary
+## At a Glance
 
-| Field               | Value                                            |
-| ------------------- | ------------------------------------------------ |
-| Report name         | `EP Leads`                                       |
-| SSRS path           | `/BI - Retail Strategy/EP Leads`                 |
-| Status signal       | Review candidate: no executions in last 6 months |
-| Created             | 2018-07-20 16:42:41                              |
-| Modified            | 2018-07-20 16:42:41                              |
-| Modified by         | SONIC\Mark.Starnes                               |
-| Last 6 months usage | 0 executions by 0 users                          |
-| Last execution      | NULL                                             |
-| Subscriptions       | 0                                                |
+| Field                 | Value                                                                                                                                                                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Platform              | SSRS                                                                                                                                                                                                          |
+| Asset type            | Report                                                                                                                                                                                                        |
+| Native path           | `/BI - Retail Strategy/EP Leads`                                                                                                                                                                              |
+| Support role          | Review candidate report                                                                                                                                                                                       |
+| Business process      | Use this report for BI - Retail Strategy business review when users need report output for operational follow-up, reconciliation, audit, or performance review. The report is filtered by Beg Date, End Date. |
+| Primary source        | /BI - Retail Strategy/DataSource/eLeadDW_DWA                                                                                                                                                                  |
+| Primary target/output | SSRS report output                                                                                                                                                                                            |
+| Schedule or trigger   | No subscriptions surfaced                                                                                                                                                                                     |
+| Runtime/usage signal  | 0 executions by 0 users; last used Not used in last 6 months                                                                                                                                                  |
+| Status signal         | Review candidate: no executions in last 6 months                                                                                                                                                              |
+| Evidence              | `tmp/ssrs-all-report-discovery.out`, `tmp/ssrs-all-datasets.out`                                                                                                                                              |
+| Report name           | `EP Leads`                                                                                                                                                                                                    |
+| Created               | 2018-07-20 16:42:41                                                                                                                                                                                           |
+| Modified              | 2018-07-20 16:42:41                                                                                                                                                                                           |
+| Modified by           | SONIC\Mark.Starnes                                                                                                                                                                                            |
+
+## Business Use
+
+Use this report for BI - Retail Strategy business review when users need report output for operational follow-up, reconciliation, audit, or performance review. The report is filtered by Beg Date, End Date.
+
+## Support Checks
+
+1. Confirm the user is running the correct SSRS path: `/BI - Retail Strategy/EP Leads`.
+2. Confirm the selected report parameters match the intended business scenario.
+3. Confirm the shared datasource is enabled and points to the expected backend connection.
+4. If the report returns no data, review the dataset commands and backend objects listed below.
+5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
 
 ## Shared Data Sources
 
@@ -37,26 +55,11 @@ This report supports legal or compliance follow-up by listing relevant TrueCar e
 
 ## Data Logic
 
-1. Dataset `DataSet1` (Text): WITH EleadToCarsCom AS (SELECT DISTINCT EntName, EntCora_Account_ID, EntADPCompanyID, EntAccountingPrefix, EntEleadID, EntEleadDefault, EntCarsID, EntDealerLvl1, EntAddressZipCode FROM [L1-5FSQL-01,12013].sonic_dw.dbo.Dim_Entity AS Dim_Entity_1 WHERE (EntEleadDefault = 1)) SELECT DISTINCT fo.lDealID, fc.szCompany, fcc....
+1. Dataset `DataSet1` (Text): WITH EleadToCarsCom AS (SELECT DISTINCT EntName, EntCora_Account_ID, EntADPCompanyID, EntAccountingPrefix, EntEleadID, EntEleadDefault, EntCarsID, EntDealerLvl1, EntAddressZipCode FROM
 
 ## Backend Dependencies
 
-| Object or command hint | Notes                                     |
-| ---------------------- | ----------------------------------------- |
-| `L1-5FSQL-01`          | Referenced by one or more report datasets |
-| `dwFullOpportunity`    | Referenced by one or more report datasets |
-| `dwFullCompany`        | Referenced by one or more report datasets |
-| `dwFullVehicleSought`  | Referenced by one or more report datasets |
-| `dwFullEmail`          | Referenced by one or more report datasets |
-| `EleadToCarsCom`       | Referenced by one or more report datasets |
-
-## Support Troubleshooting Guide
-
-1. Confirm the user is running the correct SSRS path: `/BI - Retail Strategy/EP Leads`.
-2. Confirm the selected report parameters match the intended business scenario.
-3. Confirm the shared datasource is enabled and points to the expected backend connection.
-4. If the report returns no data, review the dataset commands and backend objects listed above.
-5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
+No backend object hints were extracted from the report datasets.
 
 ## Reports or Objects Needing Review
 
@@ -71,5 +74,5 @@ This report supports legal or compliance follow-up by listing relevant TrueCar e
 Type: `Text`
 
 ```sql
-WITH EleadToCarsCom AS (SELECT DISTINCT EntName, EntCora_Account_ID, EntADPCompanyID, EntAccountingPrefix, EntEleadID, EntEleadDefault, EntCarsID, EntDealerLvl1, EntAddressZipCode                                                             FROM            [L1-5FSQL-01,12013].sonic_dw.dbo.Dim_Entity AS Dim_Entity_1                                                             WHERE        (EntEleadDefault = 1))     SELECT DISTINCT fo.lDealID, fc.szCompany, fcc.szCompany AS Expr1, fe.szAddress, fo.dtProspectIn, fo.szUpSource, fo.szSubSource, fo.szSourceDetails, fo.szStatus, fo.szDealSubStatus, vs.szSoughtVIN, fo.dtSold, fo.dtClosed      FROM            dwFullOpportunity AS fo INNER JOIN                               dwFullCompany AS fc ON fo.lCompanyID = fc.lCompanyID INNER JOIN                               dwFullCompany AS fcc ON fo.lChildCompanyID = fcc.lCompanyID LEFT OUTER JOIN                               dwFullVehicleSought AS vs ON fo.lDealID = vs.lDealID LEFT OUTER JOIN                               dwFullEmail AS fe ON fo.lPersonID = fe.lPersonID LEFT OUTER JOIN                               EleadToCarsCom AS etcc ON fo.lCompanyID = etcc.EntEleadID      WHERE        (fo.dtProspectIn BETWEEN @BegDate AND @EndDate) AND (fc.szCompany LIKE '%echo%')      ORDER BY fc.szCompany, Expr1, fo.lDealID
+WITH EleadToCarsCom AS (SELECT DISTINCT EntName, EntCora_Account_ID, EntADPCompanyID, EntAccountingPrefix, EntEleadID, EntEleadDefault, EntCarsID, EntDealerLvl1, EntAddressZipCode                                                             FROM
 ```

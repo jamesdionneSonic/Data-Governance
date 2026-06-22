@@ -2849,16 +2849,29 @@ const DOCUMENTED_BRIDGES = {
   azure_data_factory: documentedBridge({
     requiredConfig: ['subscription_id', 'resource_group', 'factory_name'],
     docs: [
+      'https://learn.microsoft.com/rest/api/datafactory/factories/get',
       'https://learn.microsoft.com/rest/api/datafactory/pipelines/list-by-factory',
       'https://learn.microsoft.com/rest/api/datafactory/datasets/list-by-factory',
+      'https://learn.microsoft.com/rest/api/datafactory/linked-services/list-by-factory',
+      'https://learn.microsoft.com/rest/api/datafactory/triggers/list-by-factory',
+      'https://learn.microsoft.com/rest/api/datafactory/data-flows/list-by-factory',
+      'https://learn.microsoft.com/rest/api/datafactory/integration-runtimes/list-by-factory',
+      'https://learn.microsoft.com/rest/api/datafactory/managed-virtual-networks/list-by-factory',
+      'https://learn.microsoft.com/rest/api/datafactory/managed-private-endpoints/list-by-factory',
+      'https://learn.microsoft.com/rest/api/datafactory/pipeline-runs/query-by-factory',
+      'https://learn.microsoft.com/rest/api/datafactory/trigger-runs/query-by-factory',
+      'https://learn.microsoft.com/rest/api/datafactory/activity-runs/query-by-pipeline-run',
     ],
     streams: [
+      stream('factory', STREAM.object, 'ADF Factories_Get', {
+        metadata: ['factory identity', 'location', 'tags', 'repo configuration'],
+      }),
       stream('pipelines', STREAM.object, 'ADF Pipelines_ListByFactory', {
-        metadata: ['pipelines'],
+        metadata: ['pipelines', 'parameters', 'activities'],
       }),
       stream('tasks', STREAM.object, 'ADF pipeline activities', {
         aliases: ['activities', 'tasks'],
-        metadata: ['activities'],
+        metadata: ['activities', 'dependencies', 'input/output dataset references'],
       }),
       stream('datasets', STREAM.dataset, 'ADF Datasets_ListByFactory', { metadata: ['datasets'] }),
       stream('connections', STREAM.dataSource, 'ADF LinkedServices_ListByFactory', {
@@ -2869,8 +2882,43 @@ const DOCUMENTED_BRIDGES = {
         aliases: ['triggers'],
         metadata: ['triggers'],
       }),
+      stream('dataflows', STREAM.object, 'ADF DataFlows_ListByFactory', {
+        metadata: ['mapping data flows', 'sources', 'sinks', 'script'],
+      }),
+      stream('integration_runtimes', STREAM.object, 'ADF IntegrationRuntimes_ListByFactory', {
+        metadata: ['integration runtimes', 'compute/connectivity runtime'],
+      }),
+      stream(
+        'managed_virtual_networks',
+        STREAM.object,
+        'ADF ManagedVirtualNetworks_ListByFactory',
+        {
+          metadata: ['managed virtual networks'],
+        }
+      ),
+      stream(
+        'managed_private_endpoints',
+        STREAM.dataSource,
+        'ADF ManagedPrivateEndpoints_ListByFactory',
+        { metadata: ['private endpoints', 'private link targets', 'connection state'] }
+      ),
+      stream('pipeline_runs', STREAM.usage, 'ADF PipelineRuns_QueryByFactory', {
+        method: 'POST',
+        cursor: 'lastUpdated',
+        metadata: ['bounded run history', 'status', 'duration', 'run group'],
+      }),
+      stream('trigger_runs', STREAM.usage, 'ADF TriggerRuns_QueryByFactory', {
+        method: 'POST',
+        cursor: 'triggerRunTimestamp',
+        metadata: ['bounded trigger run history', 'status'],
+      }),
+      stream('activity_runs', STREAM.usage, 'ADF ActivityRuns_QueryByPipelineRun', {
+        method: 'POST',
+        cursor: 'activityRunStart',
+        metadata: ['bounded activity run history', 'status', 'duration', 'error/output summary'],
+      }),
       stream('lineage', STREAM.lineage, 'pipeline activity input/output dependencies', {
-        metadata: ['pipeline lineage'],
+        metadata: ['pipeline lineage', 'activity dependencies', 'dataset links', 'dataflow links'],
       }),
     ],
   }),

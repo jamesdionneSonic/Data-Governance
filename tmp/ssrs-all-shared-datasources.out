@@ -1,2 +1,2 @@
-Msg 421, Level 16, State 1, Server D1-SQL-01B\INST1, Line 3
+﻿Msg 421, Level 16, State 1, Server D1-SQL-01B\INST1, Line 3
 The xml data type cannot be selected as DISTINCT because it is not comparable.

@@ -1,0 +1,95 @@
+{
+  "object_id": "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.MatchResultActiveOppPerson",
+  "identity": {
+    "database": "eLeadDW",
+    "schema": "dbo",
+    "object_name": "MatchResultActiveOppPerson",
+    "full_name": "eLeadDW.dbo.MatchResultActiveOppPerson",
+    "type": "table"
+  },
+  "columns": {
+    "count": 3,
+    "source": "canonical-object-list-dbo"
+  },
+  "lineage": {
+    "upstream_count": 4,
+    "downstream_count": 0,
+    "upstream": [
+      {
+        "edge_id": "sql_server:dbo.activitymigrationcolist.lchildcompanyid->dbo.matchresultactiveoppperson.lchildcompanyid",
+        "source": "dbo.ActivityMigrationCoList.lchildcompanyid",
+        "target": "dbo.MatchResultActiveOppPerson.lChildCompanyID",
+        "source_object": "dbo.ActivityMigrationCoList",
+        "target_object": "dbo.MatchResultActiveOppPerson",
+        "edge_type": "column_match",
+        "class": "maps_column",
+        "score": 0.8,
+        "label": "review",
+        "evidence": "Exact column name match: \"lchildcompanyid\" in both tables",
+        "source_stream": "relationships",
+        "extracted_at": "2026-06-20T13:15:44.975Z"
+      },
+      {
+        "edge_id": "sql_server:dbo.companiestmp.lchildcompanyid->dbo.matchresultactiveoppperson.lchildcompanyid",
+        "source": "dbo.CompaniesTmp.lChildCompanyID",
+        "target": "dbo.MatchResultActiveOppPerson.lChildCompanyID",
+        "source_object": "dbo.CompaniesTmp",
+        "target_object": "dbo.MatchResultActiveOppPerson",
+        "edge_type": "column_match",
+        "class": "maps_column",
+        "score": 0.8,
+        "label": "review",
+        "evidence": "Exact column name match: \"lchildcompanyid\" in both tables",
+        "source_stream": "relationships",
+        "extracted_at": "2026-06-20T13:15:44.975Z"
+      },
+      {
+        "edge_id": "sql_server:dbo.deleteddeals.lchildcompanyid->dbo.matchresultactiveoppperson.lchildcompanyid",
+        "source": "dbo.DeletedDeals.lChildCompanyID",
+        "target": "dbo.MatchResultActiveOppPerson.lChildCompanyID",
+        "source_object": "dbo.DeletedDeals",
+        "target_object": "dbo.MatchResultActiveOppPerson",
+        "edge_type": "column_match",
+        "class": "maps_column",
+        "score": 0.8,
+        "label": "review",
+        "evidence": "Exact column name match: \"lchildcompanyid\" in both tables",
+        "source_stream": "relationships",
+        "extracted_at": "2026-06-20T13:15:44.975Z"
+      },
+      {
+        "edge_id": "sql_server:dbo.dwdiffcompanychildcompanymap_i.lchildcompanyid->dbo.matchresultactiveoppperson.lchildcompanyid",
+        "source": "dbo.dwDiffCompanyChildCompanyMap_I.lChildCompanyID",
+        "target": "dbo.MatchResultActiveOppPerson.lChildCompanyID",
+        "source_object": "dbo.dwDiffCompanyChildCompanyMap_I",
+        "target_object": "dbo.MatchResultActiveOppPerson",
+        "edge_type": "column_match",
+        "class": "maps_column",
+        "score": 0.8,
+        "label": "review",
+        "evidence": "Exact column name match: \"lchildcompanyid\" in both tables",
+        "source_stream": "relationships",
+        "extracted_at": "2026-06-20T13:15:44.975Z"
+      }
+    ],
+    "downstream": [],
+    "review_needed_edge_count": 4
+  },
+  "confidence": {
+    "identity": "high",
+    "metadata": "high",
+    "lineage": "mixed"
+  },
+  "missing_facts": [
+    "owner",
+    "data steward",
+    "lifecycle/status",
+    "SLA",
+    "live freshness",
+    "certification"
+  ],
+  "safety": {
+    "raw_data_captured": false,
+    "secret_exposed": false
+  }
+}

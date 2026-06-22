@@ -1,0 +1,3077 @@
+{
+  "status": "dry-run",
+  "generated_at": "2026-06-19T17:33:34.445Z",
+  "rootPageId": "2221670415",
+  "cleanup_mode": "dry-run only",
+  "summary": {
+    "candidates_reviewed": 170,
+    "eligible_for_archive": 1,
+    "archived": 0,
+    "skipped": 169,
+    "old_pages_not_found": 169,
+    "canonical_replacements_not_found": 0,
+    "skipped_for_live_risk": 0
+  },
+  "candidates": [
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.Dim_Account",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / Dim_Account",
+      "canonical_page_id": "2287305009",
+      "canonical_page_title": "Sonic_DW.dbo.Dim_Account",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.Dim_AccountMgmt",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / Dim_AccountMgmt",
+      "canonical_page_id": "2287305033",
+      "canonical_page_title": "Sonic_DW.dbo.Dim_AccountMgmt",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.Dim_Date",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / Dim_Date",
+      "canonical_page_id": "2286518544",
+      "canonical_page_title": "Sonic_DW.dbo.Dim_Date",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.dim_DealType",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / dim_DealType",
+      "canonical_page_id": "2287894743",
+      "canonical_page_title": "Sonic_DW.dbo.dim_DealType",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.Dim_DMSCustomer",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / Dim_DMSCustomer",
+      "canonical_page_id": "2287698105",
+      "canonical_page_title": "Sonic_DW.dbo.Dim_DMSCustomer",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.Dim_DMSEmployee",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / Dim_DMSEmployee",
+      "canonical_page_id": "2287993038",
+      "canonical_page_title": "Sonic_DW.dbo.Dim_DMSEmployee",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.Dim_Entity",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / Dim_Entity",
+      "canonical_page_id": "2286682225",
+      "canonical_page_title": "Sonic_DW.dbo.Dim_Entity",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.dim_FIGLAccounts",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / dim_FIGLAccounts",
+      "canonical_page_id": "2287599814",
+      "canonical_page_title": "Sonic_DW.dbo.dim_FIGLAccounts",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.dim_Time",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / dim_Time",
+      "canonical_page_id": "2287894767",
+      "canonical_page_title": "Sonic_DW.dbo.dim_Time",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.Dim_Vehicle",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / Dim_Vehicle",
+      "canonical_page_id": "2285764917",
+      "canonical_page_title": "Sonic_DW.dbo.Dim_Vehicle",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.DimActivityType",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / DimActivityType",
+      "canonical_page_id": "2287305057",
+      "canonical_page_title": "Sonic_DW.dbo.DimActivityType",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.DimAssociate",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / DimAssociate",
+      "canonical_page_id": "2286518568",
+      "canonical_page_title": "Sonic_DW.dbo.DimAssociate",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.DimEntityRelationship",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / DimEntityRelationship",
+      "canonical_page_id": "2285764941",
+      "canonical_page_title": "Sonic_DW.dbo.DimEntityRelationship",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.DimEntityRelationshipType",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / DimEntityRelationshipType",
+      "canonical_page_id": "2286715653",
+      "canonical_page_title": "Sonic_DW.dbo.DimEntityRelationshipType",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.DimLeadStatus",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / DimLeadStatus",
+      "canonical_page_id": "2287599838",
+      "canonical_page_title": "Sonic_DW.dbo.DimLeadStatus",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.DimOpportunitySource",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / DimOpportunitySource",
+      "canonical_page_id": "2288255159",
+      "canonical_page_title": "Sonic_DW.dbo.DimOpportunitySource",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.DimUpType",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / DimUpType",
+      "canonical_page_id": "2288091423",
+      "canonical_page_title": "Sonic_DW.dbo.DimUpType",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.dwDiffActivity_I",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / dwDiffActivity_I",
+      "canonical_page_id": "2288025848",
+      "canonical_page_title": "Sonic_DW.dbo.dwDiffActivity_I",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.Fact_Service",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / Fact_Service",
+      "canonical_page_id": "2286223517",
+      "canonical_page_title": "Sonic_DW.dbo.Fact_Service",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.FactActivity",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / FactActivity",
+      "canonical_page_id": "2287993062",
+      "canonical_page_title": "Sonic_DW.dbo.FactActivity",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.factFIRE",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / factFIRE",
+      "canonical_page_id": "2286223541",
+      "canonical_page_title": "Sonic_DW.dbo.factFIRE",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.factFIRE_A",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / factFIRE_A",
+      "canonical_page_id": "2287305081",
+      "canonical_page_title": "Sonic_DW.dbo.factFIRE_A",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.FactOpportunity",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / FactOpportunity",
+      "canonical_page_id": "2287927574",
+      "canonical_page_title": "Sonic_DW.dbo.FactOpportunity",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.FBCustomAudience",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / FBCustomAudience",
+      "canonical_page_id": "2287599862",
+      "canonical_page_title": "Sonic_DW.dbo.FBCustomAudience",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "high-value-object",
+      "old_path": "Sonic Data Lineage / High-Value Assets / High-Value Object - Sonic_DW.dbo.vw_GPA_RateCap_SRC",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / vw_GPA_RateCap_SRC",
+      "canonical_page_id": "2286223565",
+      "canonical_page_title": "Sonic_DW.dbo.vw_GPA_RateCap_SRC",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / BI_WorkDB / Schema - BI_WorkDB.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / BI_WorkDB / dbo",
+      "canonical_page_id": "2287665187",
+      "canonical_page_title": "BI_WorkDB.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / CBS / Schema - CBS.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / CBS / dbo",
+      "canonical_page_id": "2286944357",
+      "canonical_page_title": "CBS.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / CBS / Schema - CBS.wrk",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / CBS / wrk",
+      "canonical_page_id": "2287927389",
+      "canonical_page_title": "CBS.wrk",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ContentManagement / Schema - ContentManagement.wrk",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ContentManagement / wrk",
+      "canonical_page_id": "2285764710",
+      "canonical_page_title": "ContentManagement.wrk",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / DA_SIMS_EP / Schema - DA_SIMS_EP.BlackBook",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / DA_SIMS_EP / BlackBook",
+      "canonical_page_id": "2287796278",
+      "canonical_page_title": "DA_SIMS_EP.BlackBook",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / DA_SIMS_EP / Schema - DA_SIMS_EP.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / DA_SIMS_EP / dbo",
+      "canonical_page_id": "2287894582",
+      "canonical_page_title": "DA_SIMS_EP.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / DA_SIMS_EP / Schema - DA_SIMS_EP.Stage",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / DA_SIMS_EP / Stage",
+      "canonical_page_id": "2287468630",
+      "canonical_page_title": "DA_SIMS_EP.Stage",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / DASimsRetail / Schema - DASimsRetail.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / DASimsRetail / dbo",
+      "canonical_page_id": "2288025684",
+      "canonical_page_title": "DASimsRetail.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / DMS / Schema - DMS.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / DMS / dbo",
+      "canonical_page_id": "2286223424",
+      "canonical_page_title": "DMS.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / echoparkwebv_veh / Schema - echoparkwebv_veh.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / echoparkwebv_veh / dbo",
+      "canonical_page_id": "2287796301",
+      "canonical_page_title": "echoparkwebv_veh.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / eLeadDW / Schema - eLeadDW.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / eLeadDW / dbo",
+      "canonical_page_id": "2287992921",
+      "canonical_page_title": "eLeadDW.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / eLeadDW_SF / Schema - eLeadDW_SF.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / eLeadDW_SF / dbo",
+      "canonical_page_id": "2288025707",
+      "canonical_page_title": "eLeadDW_SF.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / eRIMS / Schema - eRIMS.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / eRIMS / dbo",
+      "canonical_page_id": "2287665210",
+      "canonical_page_title": "eRIMS.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.callrevu",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / callrevu",
+      "canonical_page_id": "2287698036",
+      "canonical_page_title": "ETL_Staging.callrevu",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.Cars",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Cars",
+      "canonical_page_id": "2287599721",
+      "canonical_page_title": "ETL_Staging.Cars",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.clean",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / clean",
+      "canonical_page_id": "2287534188",
+      "canonical_page_title": "ETL_Staging.clean",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.conform",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / conform",
+      "canonical_page_id": "2286944380",
+      "canonical_page_title": "ETL_Staging.conform",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / dbo",
+      "canonical_page_id": "2287927412",
+      "canonical_page_title": "ETL_Staging.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.dms",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / dms",
+      "canonical_page_id": "2287665233",
+      "canonical_page_title": "ETL_Staging.dms",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.eleadDW",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / eleadDW",
+      "canonical_page_id": "2288255020",
+      "canonical_page_title": "ETL_Staging.eleadDW",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.etl",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / etl",
+      "canonical_page_id": "2287599744",
+      "canonical_page_title": "ETL_Staging.etl",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.extract",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / extract",
+      "canonical_page_id": "2287796328",
+      "canonical_page_title": "ETL_Staging.extract",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.hfm",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / hfm",
+      "canonical_page_id": "2287894605",
+      "canonical_page_title": "ETL_Staging.hfm",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.HMN",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / HMN",
+      "canonical_page_id": "2287501464",
+      "canonical_page_title": "ETL_Staging.HMN",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.JMA",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / JMA",
+      "canonical_page_id": "2287304798",
+      "canonical_page_title": "ETL_Staging.JMA",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.load",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / load",
+      "canonical_page_id": "2287927435",
+      "canonical_page_title": "ETL_Staging.load",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.mdm",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / mdm",
+      "canonical_page_id": "2287599767",
+      "canonical_page_title": "ETL_Staging.mdm",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.Meta",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Meta",
+      "canonical_page_id": "2287894628",
+      "canonical_page_title": "ETL_Staging.Meta",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.perm",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / perm",
+      "canonical_page_id": "2287501487",
+      "canonical_page_title": "ETL_Staging.perm",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.permsup",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / permsup",
+      "canonical_page_id": "2287304821",
+      "canonical_page_title": "ETL_Staging.permsup",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.pgc",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / pgc",
+      "canonical_page_id": "2286715422",
+      "canonical_page_title": "ETL_Staging.pgc",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.Security",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Security",
+      "canonical_page_id": "2287665256",
+      "canonical_page_title": "ETL_Staging.Security",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.shr",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / shr",
+      "canonical_page_id": "2287698059",
+      "canonical_page_title": "ETL_Staging.shr",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.SIMS",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / SIMS",
+      "canonical_page_id": "2285764733",
+      "canonical_page_title": "ETL_Staging.SIMS",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.stage",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / stage",
+      "canonical_page_id": "2288091235",
+      "canonical_page_title": "ETL_Staging.stage",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / Schema - ETL_Staging.wrk",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ETL_Staging / wrk",
+      "canonical_page_id": "2287796352",
+      "canonical_page_title": "ETL_Staging.wrk",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / Google / Schema - Google.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Google / dbo",
+      "canonical_page_id": "2287665279",
+      "canonical_page_title": "Google.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / GPA / Schema - GPA.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / GPA / dbo",
+      "canonical_page_id": "2288058460",
+      "canonical_page_title": "GPA.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / HRData / Schema - HRData.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / HRData / dbo",
+      "canonical_page_id": "2287698082",
+      "canonical_page_title": "HRData.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / NVPImport / Schema - NVPImport.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / NVPImport / dbo",
+      "canonical_page_id": "2288058483",
+      "canonical_page_title": "NVPImport.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / ProcessManagement / Schema - ProcessManagement.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / ProcessManagement / dbo",
+      "canonical_page_id": "2288255043",
+      "canonical_page_title": "ProcessManagement.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / SIMS6200_EP / Schema - SIMS6200_EP.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / SIMS6200_EP / dbo",
+      "canonical_page_id": "2287501510",
+      "canonical_page_title": "SIMS6200_EP.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / SIMS6200Retail / Schema - SIMS6200Retail.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / SIMS6200Retail / dbo",
+      "canonical_page_id": "2288025730",
+      "canonical_page_title": "SIMS6200Retail.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / SIMS6200Retail / Schema - SIMS6200Retail.SIMS",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / SIMS6200Retail / SIMS",
+      "canonical_page_id": "2286223447",
+      "canonical_page_title": "SIMS6200Retail.SIMS",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / SIMSEP / Schema - SIMSEP.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / SIMSEP / dbo",
+      "canonical_page_id": "2285764756",
+      "canonical_page_title": "SIMSEP.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / SIMSRT / Schema - SIMSRT.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / SIMSRT / dbo",
+      "canonical_page_id": "2285764779",
+      "canonical_page_title": "SIMSRT.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / Schema - Sonic_DW.darpts",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / darpts",
+      "canonical_page_id": "2288058506",
+      "canonical_page_title": "Sonic_DW.darpts",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / Schema - Sonic_DW.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo",
+      "canonical_page_id": "2286518360",
+      "canonical_page_title": "Sonic_DW.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / Schema - Sonic_DW.dq",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dq",
+      "canonical_page_id": "2287992946",
+      "canonical_page_title": "Sonic_DW.dq",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / Schema - Sonic_DW.err",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / err",
+      "canonical_page_id": "2288025753",
+      "canonical_page_title": "Sonic_DW.err",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / Schema - Sonic_DW.kpi",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / kpi",
+      "canonical_page_id": "2287665302",
+      "canonical_page_title": "Sonic_DW.kpi",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / Schema - Sonic_DW.mdm",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / mdm",
+      "canonical_page_id": "2287599790",
+      "canonical_page_title": "Sonic_DW.mdm",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / Schema - Sonic_DW.Metric",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / Metric",
+      "canonical_page_id": "2287894651",
+      "canonical_page_title": "Sonic_DW.Metric",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / Schema - Sonic_DW.MS",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / MS",
+      "canonical_page_id": "2287468653",
+      "canonical_page_title": "Sonic_DW.MS",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / Schema - Sonic_DW.mstrtemp",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / mstrtemp",
+      "canonical_page_id": "2287304844",
+      "canonical_page_title": "Sonic_DW.mstrtemp",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / Schema - Sonic_DW.razzle",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / razzle",
+      "canonical_page_id": "2287534211",
+      "canonical_page_title": "Sonic_DW.razzle",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / Schema - Sonic_DW.stg",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / stg",
+      "canonical_page_id": "2287435839",
+      "canonical_page_title": "Sonic_DW.stg",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / Schema - Sonic_DW.wrk",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / wrk",
+      "canonical_page_id": "2288091258",
+      "canonical_page_title": "Sonic_DW.wrk",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_Xref / Schema - Sonic_Xref.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Sonic_Xref / dbo",
+      "canonical_page_id": "2288255066",
+      "canonical_page_title": "Sonic_Xref.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / SONICWEBV_VEH / Schema - SONICWEBV_VEH.dbo",
+      "old_page_id": "2284421174",
+      "old_page_title": "Schema - SONICWEBV_VEH.dbo",
+      "canonical_path": "Sonic Data Lineage / Database Catalog / SONICWEBV_VEH / dbo",
+      "canonical_page_id": "2287992969",
+      "canonical_page_title": "SONICWEBV_VEH.dbo",
+      "risk": {
+        "childPages": 0,
+        "attachments": 0,
+        "comments": 0
+      },
+      "eligible_for_archive": true,
+      "action": "would-archive",
+      "skip_reasons": [],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / Speed / Schema - Speed.Auto",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Speed / Auto",
+      "canonical_page_id": "2286518383",
+      "canonical_page_title": "Speed.Auto",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / Speed / Schema - Speed.Cbrt",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Speed / Cbrt",
+      "canonical_page_id": "2287468676",
+      "canonical_page_title": "Speed.Cbrt",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / Speed / Schema - Speed.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Speed / dbo",
+      "canonical_page_id": "2286944403",
+      "canonical_page_title": "Speed.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / Speed / Schema - Speed.DDC",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / Speed / DDC",
+      "canonical_page_id": "2286944426",
+      "canonical_page_title": "Speed.DDC",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / SSIS / Schema - SSIS.Meta",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / SSIS / Meta",
+      "canonical_page_id": "2287665325",
+      "canonical_page_title": "SSIS.Meta",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.acertus",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / acertus",
+      "canonical_page_id": "2287435862",
+      "canonical_page_title": "StagingDB.acertus",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.Adv",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / Adv",
+      "canonical_page_id": "2286518406",
+      "canonical_page_title": "StagingDB.Adv",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.Audit",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / Audit",
+      "canonical_page_id": "2287992992",
+      "canonical_page_title": "StagingDB.Audit",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.Auto",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / Auto",
+      "canonical_page_id": "2287927459",
+      "canonical_page_title": "StagingDB.Auto",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.Black",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / Black",
+      "canonical_page_id": "2288025776",
+      "canonical_page_title": "StagingDB.Black",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.callrevu",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / callrevu",
+      "canonical_page_id": "2287501533",
+      "canonical_page_title": "StagingDB.callrevu",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.carnow",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / carnow",
+      "canonical_page_id": "2288091281",
+      "canonical_page_title": "StagingDB.carnow",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.cars",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / cars",
+      "canonical_page_id": "2286715445",
+      "canonical_page_title": "StagingDB.cars",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.cba",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / cba",
+      "canonical_page_id": "2286518429",
+      "canonical_page_title": "StagingDB.cba",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.cbrt",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / cbrt",
+      "canonical_page_id": "2287435885",
+      "canonical_page_title": "StagingDB.cbrt",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.dabe",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / dabe",
+      "canonical_page_id": "2288058529",
+      "canonical_page_title": "StagingDB.dabe",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / dbo",
+      "canonical_page_id": "2287468699",
+      "canonical_page_title": "StagingDB.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.ddc",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / ddc",
+      "canonical_page_id": "2288058552",
+      "canonical_page_title": "StagingDB.ddc",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.easy",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / easy",
+      "canonical_page_id": "2287927482",
+      "canonical_page_title": "StagingDB.easy",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.Elead",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / Elead",
+      "canonical_page_id": "2288025799",
+      "canonical_page_title": "StagingDB.Elead",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.etl",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / etl",
+      "canonical_page_id": "2288091304",
+      "canonical_page_title": "StagingDB.etl",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.Facebook",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / Facebook",
+      "canonical_page_id": "2287665348",
+      "canonical_page_title": "StagingDB.Facebook",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.ga",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / ga",
+      "canonical_page_id": "2286715468",
+      "canonical_page_title": "StagingDB.ga",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.gad",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / gad",
+      "canonical_page_id": "2287894674",
+      "canonical_page_title": "StagingDB.gad",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.gl",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / gl",
+      "canonical_page_id": "2287894697",
+      "canonical_page_title": "StagingDB.gl",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.gmb",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / gmb",
+      "canonical_page_id": "2288091327",
+      "canonical_page_title": "StagingDB.gmb",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.Gold",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / Gold",
+      "canonical_page_id": "2286715491",
+      "canonical_page_title": "StagingDB.Gold",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.Google",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / Google",
+      "canonical_page_id": "2286518452",
+      "canonical_page_title": "StagingDB.Google",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.happyfox",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / happyfox",
+      "canonical_page_id": "2287435908",
+      "canonical_page_title": "StagingDB.happyfox",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.HFM",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / HFM",
+      "canonical_page_id": "2285764802",
+      "canonical_page_title": "StagingDB.HFM",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.ibex",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / ibex",
+      "canonical_page_id": "2288025822",
+      "canonical_page_title": "StagingDB.ibex",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.JMA",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / JMA",
+      "canonical_page_id": "2285764825",
+      "canonical_page_title": "StagingDB.JMA",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.jump",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / jump",
+      "canonical_page_id": "2288091350",
+      "canonical_page_title": "StagingDB.jump",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.mdp",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / mdp",
+      "canonical_page_id": "2287304867",
+      "canonical_page_title": "StagingDB.mdp",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.pgc",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / pgc",
+      "canonical_page_id": "2287304890",
+      "canonical_page_title": "StagingDB.pgc",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.pgw",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / pgw",
+      "canonical_page_id": "2287304913",
+      "canonical_page_title": "StagingDB.pgw",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.Polk",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / Polk",
+      "canonical_page_id": "2286223470",
+      "canonical_page_title": "StagingDB.Polk",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.RepMgmt",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / RepMgmt",
+      "canonical_page_id": "2287304936",
+      "canonical_page_title": "StagingDB.RepMgmt",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.RtlU",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / RtlU",
+      "canonical_page_id": "2285764848",
+      "canonical_page_title": "StagingDB.RtlU",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.Security",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / Security",
+      "canonical_page_id": "2287665371",
+      "canonical_page_title": "StagingDB.Security",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.stage",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / stage",
+      "canonical_page_id": "2286223493",
+      "canonical_page_title": "StagingDB.stage",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.tsd",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / tsd",
+      "canonical_page_id": "2287534234",
+      "canonical_page_title": "StagingDB.tsd",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.uccx",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / uccx",
+      "canonical_page_id": "2287304959",
+      "canonical_page_title": "StagingDB.uccx",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.Verint",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / Verint",
+      "canonical_page_id": "2287993015",
+      "canonical_page_title": "StagingDB.Verint",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.wrk",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / wrk",
+      "canonical_page_id": "2288058575",
+      "canonical_page_title": "StagingDB.wrk",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / StagingDB / Schema - StagingDB.XTime",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / StagingDB / XTime",
+      "canonical_page_id": "2286518475",
+      "canonical_page_title": "StagingDB.XTime",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / TitleTracking / Schema - TitleTracking.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / TitleTracking / dbo",
+      "canonical_page_id": "2286682156",
+      "canonical_page_title": "TitleTracking.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VehicleMart / Schema - VehicleMart.BlackBook",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VehicleMart / BlackBook",
+      "canonical_page_id": "2287501556",
+      "canonical_page_title": "VehicleMart.BlackBook",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VehicleMart / Schema - VehicleMart.Chrome",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VehicleMart / Chrome",
+      "canonical_page_id": "2287534257",
+      "canonical_page_title": "VehicleMart.Chrome",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VehicleMart / Schema - VehicleMart.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VehicleMart / dbo",
+      "canonical_page_id": "2285764871",
+      "canonical_page_title": "VehicleMart.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VehicleMart / Schema - VehicleMart.Final",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VehicleMart / Final",
+      "canonical_page_id": "2288255089",
+      "canonical_page_title": "VehicleMart.Final",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VehicleMart / Schema - VehicleMart.Stage",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VehicleMart / Stage",
+      "canonical_page_id": "2285764894",
+      "canonical_page_title": "VehicleMart.Stage",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VehicleMartETLWeekly / Schema - VehicleMartETLWeekly.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VehicleMartETLWeekly / dbo",
+      "canonical_page_id": "2287665394",
+      "canonical_page_title": "VehicleMartETLWeekly.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.acertus",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / acertus",
+      "canonical_page_id": "2287894720",
+      "canonical_page_title": "VendorData.acertus",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.buyer",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / buyer",
+      "canonical_page_id": "2286715514",
+      "canonical_page_title": "VendorData.buyer",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.callrevu",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / callrevu",
+      "canonical_page_id": "2286682179",
+      "canonical_page_title": "VendorData.callrevu",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.carnow",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / carnow",
+      "canonical_page_id": "2287665417",
+      "canonical_page_title": "VendorData.carnow",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.cba",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / cba",
+      "canonical_page_id": "2288091373",
+      "canonical_page_title": "VendorData.cba",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.cri",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / cri",
+      "canonical_page_id": "2287501579",
+      "canonical_page_title": "VendorData.cri",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.dagrp",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / dagrp",
+      "canonical_page_id": "2287468722",
+      "canonical_page_title": "VendorData.dagrp",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / dbo",
+      "canonical_page_id": "2286944449",
+      "canonical_page_title": "VendorData.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.ecommerce",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / ecommerce",
+      "canonical_page_id": "2287304982",
+      "canonical_page_title": "VendorData.ecommerce",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.Elead",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / Elead",
+      "canonical_page_id": "2287534280",
+      "canonical_page_title": "VendorData.Elead",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.Facebook",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / Facebook",
+      "canonical_page_id": "2287927505",
+      "canonical_page_title": "VendorData.Facebook",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.ga",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / ga",
+      "canonical_page_id": "2286715537",
+      "canonical_page_title": "VendorData.ga",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.gad",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / gad",
+      "canonical_page_id": "2287796375",
+      "canonical_page_title": "VendorData.gad",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.gmb",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / gmb",
+      "canonical_page_id": "2287468745",
+      "canonical_page_title": "VendorData.gmb",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.Google",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / Google",
+      "canonical_page_id": "2287665440",
+      "canonical_page_title": "VendorData.Google",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.happyfox",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / happyfox",
+      "canonical_page_id": "2287435931",
+      "canonical_page_title": "VendorData.happyfox",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.ibex",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / ibex",
+      "canonical_page_id": "2288058598",
+      "canonical_page_title": "VendorData.ibex",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.JMA",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / JMA",
+      "canonical_page_id": "2286715560",
+      "canonical_page_title": "VendorData.JMA",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.mkt",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / mkt",
+      "canonical_page_id": "2286715583",
+      "canonical_page_title": "VendorData.mkt",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.recon",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / recon",
+      "canonical_page_id": "2286944472",
+      "canonical_page_title": "VendorData.recon",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.RepMgmt",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / RepMgmt",
+      "canonical_page_id": "2286715606",
+      "canonical_page_title": "VendorData.RepMgmt",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.rpt",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / rpt",
+      "canonical_page_id": "2286715629",
+      "canonical_page_title": "VendorData.rpt",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.sonicdw",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / sonicdw",
+      "canonical_page_id": "2286518498",
+      "canonical_page_title": "VendorData.sonicdw",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.src",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / src",
+      "canonical_page_id": "2288255112",
+      "canonical_page_title": "VendorData.src",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.street",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / street",
+      "canonical_page_id": "2286518521",
+      "canonical_page_title": "VendorData.street",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.tsd",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / tsd",
+      "canonical_page_id": "2287927528",
+      "canonical_page_title": "VendorData.tsd",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.uccx",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / uccx",
+      "canonical_page_id": "2288091400",
+      "canonical_page_title": "VendorData.uccx",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.uipath",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / uipath",
+      "canonical_page_id": "2288255135",
+      "canonical_page_title": "VendorData.uipath",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.Verint",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / Verint",
+      "canonical_page_id": "2287927551",
+      "canonical_page_title": "VendorData.Verint",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / VendorData / Schema - VendorData.xTime",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / VendorData / xTime",
+      "canonical_page_id": "2286682202",
+      "canonical_page_title": "VendorData.xTime",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / WebV / Schema - WebV.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / WebV / dbo",
+      "canonical_page_id": "2287796399",
+      "canonical_page_title": "WebV.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    },
+    {
+      "candidate_type": "schema-title",
+      "old_path": "Sonic Data Lineage / Database Catalog / webvEP / Schema - webvEP.dbo",
+      "old_page_id": null,
+      "old_page_title": null,
+      "canonical_path": "Sonic Data Lineage / Database Catalog / webvEP / dbo",
+      "canonical_page_id": "2287665463",
+      "canonical_page_title": "webvEP.dbo",
+      "risk": {
+        "childPages": null,
+        "attachments": null,
+        "comments": null
+      },
+      "eligible_for_archive": false,
+      "action": "skipped",
+      "skip_reasons": ["old page not found"],
+      "archive_response": null
+    }
+  ]
+}

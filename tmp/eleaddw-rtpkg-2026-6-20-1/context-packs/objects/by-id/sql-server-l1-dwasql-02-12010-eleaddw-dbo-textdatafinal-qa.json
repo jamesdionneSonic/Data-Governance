@@ -1,0 +1,95 @@
+{
+  "object_id": "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.TextDataFinal_QA",
+  "identity": {
+    "database": "eLeadDW",
+    "schema": "dbo",
+    "object_name": "TextDataFinal_QA",
+    "full_name": "eLeadDW.dbo.TextDataFinal_QA",
+    "type": "table"
+  },
+  "columns": {
+    "count": 31,
+    "source": "canonical-object-list-dbo"
+  },
+  "lineage": {
+    "upstream_count": 4,
+    "downstream_count": 0,
+    "upstream": [
+      {
+        "edge_id": "sql_server:dbo.activitymigrationcolist.lchildcompanyid->dbo.textdatafinal_qa.lchildcompanyid",
+        "source": "dbo.ActivityMigrationCoList.lchildcompanyid",
+        "target": "dbo.TextDataFinal_QA.lChildCompanyID",
+        "source_object": "dbo.ActivityMigrationCoList",
+        "target_object": "dbo.TextDataFinal_QA",
+        "edge_type": "column_match",
+        "class": "maps_column",
+        "score": 0.8,
+        "label": "review",
+        "evidence": "Exact column name match: \"lchildcompanyid\" in both tables",
+        "source_stream": "relationships",
+        "extracted_at": "2026-06-20T13:15:44.975Z"
+      },
+      {
+        "edge_id": "sql_server:dbo.companiestmp.lchildcompanyid->dbo.textdatafinal_qa.lchildcompanyid",
+        "source": "dbo.CompaniesTmp.lChildCompanyID",
+        "target": "dbo.TextDataFinal_QA.lChildCompanyID",
+        "source_object": "dbo.CompaniesTmp",
+        "target_object": "dbo.TextDataFinal_QA",
+        "edge_type": "column_match",
+        "class": "maps_column",
+        "score": 0.8,
+        "label": "review",
+        "evidence": "Exact column name match: \"lchildcompanyid\" in both tables",
+        "source_stream": "relationships",
+        "extracted_at": "2026-06-20T13:15:44.975Z"
+      },
+      {
+        "edge_id": "sql_server:dbo.deleteddeals.lchildcompanyid->dbo.textdatafinal_qa.lchildcompanyid",
+        "source": "dbo.DeletedDeals.lChildCompanyID",
+        "target": "dbo.TextDataFinal_QA.lChildCompanyID",
+        "source_object": "dbo.DeletedDeals",
+        "target_object": "dbo.TextDataFinal_QA",
+        "edge_type": "column_match",
+        "class": "maps_column",
+        "score": 0.8,
+        "label": "review",
+        "evidence": "Exact column name match: \"lchildcompanyid\" in both tables",
+        "source_stream": "relationships",
+        "extracted_at": "2026-06-20T13:15:44.975Z"
+      },
+      {
+        "edge_id": "sql_server:dbo.dwdiffcompanychildcompanymap_i.lchildcompanyid->dbo.textdatafinal_qa.lchildcompanyid",
+        "source": "dbo.dwDiffCompanyChildCompanyMap_I.lChildCompanyID",
+        "target": "dbo.TextDataFinal_QA.lChildCompanyID",
+        "source_object": "dbo.dwDiffCompanyChildCompanyMap_I",
+        "target_object": "dbo.TextDataFinal_QA",
+        "edge_type": "column_match",
+        "class": "maps_column",
+        "score": 0.8,
+        "label": "review",
+        "evidence": "Exact column name match: \"lchildcompanyid\" in both tables",
+        "source_stream": "relationships",
+        "extracted_at": "2026-06-20T13:15:44.975Z"
+      }
+    ],
+    "downstream": [],
+    "review_needed_edge_count": 4
+  },
+  "confidence": {
+    "identity": "high",
+    "metadata": "high",
+    "lineage": "mixed"
+  },
+  "missing_facts": [
+    "owner",
+    "data steward",
+    "lifecycle/status",
+    "SLA",
+    "live freshness",
+    "certification"
+  ],
+  "safety": {
+    "raw_data_captured": false,
+    "secret_exposed": false
+  }
+}

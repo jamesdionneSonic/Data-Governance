@@ -1,26 +1,44 @@
 # RouteOneRedFlagDetailData
 
-Generated: 2026-06-15  
-SSRS path: `/RouteOne/RouteOneRedFlagDetailData`  
+Generated: 2026-06-19T08:45:51.070Z
+SSRS path: `/RouteOne/RouteOneRedFlagDetailData`
 SSRS catalog source: `ReportServer` on `D1-SQL-01B\INST1`
 
-## Purpose
+## Plain-English Summary
 
-This report supports the RouteOne reporting area. It retrieves data through embedded report dataset queries and presents the result as the RouteOneRedFlagDetailData report. Use the dataset commands and parameters below to confirm the exact business question before changing it.
+This report supports the RouteOne reporting area. It retrieves data through embedded report dataset queries and presents the result as the RouteOneRedFlagDetailData report. Use the dataset commands and parameters below to confirm the exact business question before changing it. If this report is wrong, stale, or unavailable, users may make decisions from incomplete reporting output or lose a support lookup path. Start troubleshooting by confirming the SSRS path, selected parameters, shared datasource, and backend dataset commands.
 
-## Executive Summary
+## At a Glance
 
-| Field               | Value                                            |
-| ------------------- | ------------------------------------------------ |
-| Report name         | `RouteOneRedFlagDetailData`                      |
-| SSRS path           | `/RouteOne/RouteOneRedFlagDetailData`            |
-| Status signal       | Review candidate: no executions in last 6 months |
-| Created             | 2018-04-27 10:11:21                              |
-| Modified            | 2018-04-27 10:11:21                              |
-| Modified by         | SONIC\Val.Marz                                   |
-| Last 6 months usage | 0 executions by 0 users                          |
-| Last execution      | NULL                                             |
-| Subscriptions       | 0                                                |
+| Field                 | Value                                                                                                                                                                                                                 |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Platform              | SSRS                                                                                                                                                                                                                  |
+| Asset type            | Report                                                                                                                                                                                                                |
+| Native path           | `/RouteOne/RouteOneRedFlagDetailData`                                                                                                                                                                                 |
+| Support role          | Review candidate report                                                                                                                                                                                               |
+| Business process      | Use this for RouteOne finance or compliance review where deal detail, red-flag, SSN variance, or summary activity may require follow-up. The report is filtered by Applicant Name, Dealer Name, Purchase Vehicle VIN. |
+| Primary source        | /RouteOne/Data Sources/Speed_Db                                                                                                                                                                                       |
+| Primary target/output | SSRS report output                                                                                                                                                                                                    |
+| Schedule or trigger   | No subscriptions surfaced                                                                                                                                                                                             |
+| Runtime/usage signal  | 0 executions by 0 users; last used Not used in last 6 months                                                                                                                                                          |
+| Status signal         | Review candidate: no executions in last 6 months                                                                                                                                                                      |
+| Evidence              | `tmp/ssrs-all-report-discovery.out`, `tmp/ssrs-all-datasets.out`                                                                                                                                                      |
+| Report name           | `RouteOneRedFlagDetailData`                                                                                                                                                                                           |
+| Created               | 2018-04-27 10:11:21                                                                                                                                                                                                   |
+| Modified              | 2018-04-27 10:11:21                                                                                                                                                                                                   |
+| Modified by           | SONIC\Val.Marz                                                                                                                                                                                                        |
+
+## Business Use
+
+Use this for RouteOne finance or compliance review where deal detail, red-flag, SSN variance, or summary activity may require follow-up. The report is filtered by Applicant Name, Dealer Name, Purchase Vehicle VIN.
+
+## Support Checks
+
+1. Confirm the user is running the correct SSRS path: `/RouteOne/RouteOneRedFlagDetailData`.
+2. Confirm the selected report parameters match the intended business scenario.
+3. Confirm the shared datasource is enabled and points to the expected backend connection.
+4. If the report returns no data, review the dataset commands and backend objects listed below.
+5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
 
 ## Shared Data Sources
 
@@ -43,14 +61,6 @@ This report supports the RouteOne reporting area. It retrieves data through embe
 ## Backend Dependencies
 
 No backend object hints were extracted from the report datasets.
-
-## Support Troubleshooting Guide
-
-1. Confirm the user is running the correct SSRS path: `/RouteOne/RouteOneRedFlagDetailData`.
-2. Confirm the selected report parameters match the intended business scenario.
-3. Confirm the shared datasource is enabled and points to the expected backend connection.
-4. If the report returns no data, review the dataset commands and backend objects listed above.
-5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
 
 ## Reports or Objects Needing Review
 

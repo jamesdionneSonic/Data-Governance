@@ -5,6 +5,7 @@ const root = process.cwd();
 const tmp = path.join(root, 'tmp');
 const docsRoot = path.join(root, 'docs', 'ssrs-report-documentation');
 const htmlRoot = path.join(tmp, 'ssrs-confluence-html');
+const generatedAt = new Date().toISOString();
 
 fs.mkdirSync(docsRoot, { recursive: true });
 fs.mkdirSync(htmlRoot, { recursive: true });
@@ -149,6 +150,44 @@ function purposeText(report, datasets) {
   return `This report supports the ${folder} reporting area. It retrieves data through embedded report dataset queries and presents the result as the ${name} report. Use the dataset commands and parameters below to confirm the exact business question before changing it.`;
 }
 
+function businessUseText(report, datasets, parameters = []) {
+  const text = combinedReportText(report, datasets);
+  const prompts = parameters.map((param) => param.Prompt || param.ParameterName).filter(Boolean);
+  const parameterContext = prompts.length
+    ? ` The report is filtered by ${prompts.slice(0, 5).join(', ')}.`
+    : '';
+  if (hasAny(text, ['ronumber to custno', 'ro #'])) {
+    return `Use this when a service question starts with a repair order number and the team needs the customer tied to the closed RO.${parameterContext}`;
+  }
+  if (hasAny(text, ['custno to stockno', 'stockno to custno', 'trade1stockno', 'trade1stock'])) {
+    return `Use this when support needs to connect customer, stock, trade, accounting date, or deal identifiers across vehicle sale records.${parameterContext}`;
+  }
+  if (hasAny(text, ['dailycashsummary', 'daily cash summary', 'dailyactivitysummary', 'activity details', 'negativebalance'])) {
+    return `Use this for Cash Management review when accounting users need transaction detail, daily activity, cash summary, or exception follow-up.${parameterContext}`;
+  }
+  if (hasAny(text, ['floorplan'])) {
+    return `Use this when Shared Services or Accounting needs to review floorplan payoff activity, validate payoff records, or investigate synchronization issues.${parameterContext}`;
+  }
+  if (hasAny(text, ['payroll'])) {
+    return `Use this when Payroll or support teams need to review payroll entry activity by company, user, or summary level.${parameterContext}`;
+  }
+  if (hasAny(text, ['inventory', 'pricing', 'stock', 'playbook'])) {
+    return `Use this when the business needs a vehicle inventory or pricing view for operational follow-up, exception review, or availability monitoring.${parameterContext}`;
+  }
+  if (hasAny(text, ['routeone', 'redflag', 'ssn'])) {
+    return `Use this for RouteOne finance or compliance review where deal detail, red-flag, SSN variance, or summary activity may require follow-up.${parameterContext}`;
+  }
+  if (hasAny(text, ['jobstatus', 'job status'])) {
+    return `Use this to monitor scheduled job or batch-processing status so support can identify failed, delayed, or missing processing.${parameterContext}`;
+  }
+  const hints = extractObjectHints(datasets);
+  const folder = folderLabel(report);
+  const dependencyContext = hints.length
+    ? ` It reads or calls ${hints.slice(0, 4).join(', ')}, so support should validate those sources when results look wrong.`
+    : '';
+  return `Use this report for ${folder} business review when users need report output for operational follow-up, reconciliation, audit, or performance review.${parameterContext}${dependencyContext}`;
+}
+
 function commandSummary(row) {
   const text = row.CommandText || '';
   if (!text) return 'No command text found in the RDL dataset definition.';
@@ -179,29 +218,53 @@ function markdownFor(report, bindings, sources, datasets, parameters) {
     source: sources.find((s) => s.Path === binding.SharedDataSourcePath),
   }));
   const objectHints = extractObjectHints(datasets);
+  const purpose = purposeText(report, datasets);
+  const businessUse = businessUseText(report, datasets, parameters);
+  const primarySource = sourceRows.map((row) => row.SharedDataSourcePath || row.source?.ConnectString).filter(Boolean)[0] || '';
+  const lastUsed = report.LastExecution && report.LastExecution !== 'NULL'
+    ? report.LastExecution
+    : 'Not used in last 6 months';
   return `# ${title}
 
-Generated: 2026-06-15  
-SSRS path: \`${report.Path}\`  
+Generated: ${generatedAt}
+SSRS path: \`${report.Path}\`
 SSRS catalog source: \`ReportServer\` on \`D1-SQL-01B\\INST1\`
 
-## Purpose
+## Plain-English Summary
 
-${purposeText(report, datasets)}
+${purpose} If this report is wrong, stale, or unavailable, users may make decisions from incomplete reporting output or lose a support lookup path. Start troubleshooting by confirming the SSRS path, selected parameters, shared datasource, and backend dataset commands.
 
-## Executive Summary
+## At a Glance
 
 | Field | Value |
 | --- | --- |
-| Report name | \`${md(report.Name)}\` |
-| SSRS path | \`${md(report.Path)}\` |
+| Platform | SSRS |
+| Asset type | Report |
+| Native path | \`${md(report.Path)}\` |
+| Support role | ${Number(report.ExecutionsLast6Months || 0) === 0 ? 'Review candidate report' : 'User-facing report'} |
+| Business process | ${md(businessUse)} |
+| Primary source | ${md(primarySource || 'not surfaced in metadata')} |
+| Primary target/output | SSRS report output |
+| Schedule or trigger | ${Number(report.SubscriptionCount || 0) ? `${md(report.SubscriptionCount)} subscription(s)` : 'No subscriptions surfaced'} |
+| Runtime/usage signal | ${md(report.ExecutionsLast6Months)} executions by ${md(report.DistinctUsersLast6Months)} users; last used ${md(lastUsed)} |
 | Status signal | ${md(signal)} |
+| Evidence | \`tmp/ssrs-all-report-discovery.out\`, \`tmp/ssrs-all-datasets.out\` |
+| Report name | \`${md(report.Name)}\` |
 | Created | ${md(report.Created)} |
 | Modified | ${md(report.Modified)} |
 | Modified by | ${md(report.ModifiedBy)} |
-| Last 6 months usage | ${md(report.ExecutionsLast6Months)} executions by ${md(report.DistinctUsersLast6Months)} users |
-| Last execution | ${md(report.LastExecution)} |
-| Subscriptions | ${md(report.SubscriptionCount)} |
+
+## Business Use
+
+${businessUse}
+
+## Support Checks
+
+1. Confirm the user is running the correct SSRS path: \`${report.Path}\`.
+2. Confirm the selected report parameters match the intended business scenario.
+3. Confirm the shared datasource is enabled and points to the expected backend connection.
+4. If the report returns no data, review the dataset commands and backend objects listed below.
+5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
 
 ## Shared Data Sources
 
@@ -224,14 +287,6 @@ ${datasets.length ? datasets.map((d, idx) => `${idx + 1}. Dataset \`${d.DatasetN
 ${objectHints.length ? `| Object or command hint | Notes |
 | --- | --- |
 ${objectHints.map((h) => `| \`${md(h)}\` | Referenced by one or more report datasets |`).join('\n')}` : 'No backend object hints were extracted from the report datasets.'}
-
-## Support Troubleshooting Guide
-
-1. Confirm the user is running the correct SSRS path: \`${report.Path}\`.
-2. Confirm the selected report parameters match the intended business scenario.
-3. Confirm the shared datasource is enabled and points to the expected backend connection.
-4. If the report returns no data, review the dataset commands and backend objects listed above.
-5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
 
 ## Reports or Objects Needing Review
 
@@ -354,8 +409,8 @@ for (const report of reports) {
   const markdown = markdownFor(report, bindings, sources, datasets, parameters);
   const html = htmlFor(markdown);
   const fileBase = slug(report.Name);
-  fs.writeFileSync(path.join(docsRoot, `${fileBase}.md`), markdown);
-  fs.writeFileSync(path.join(htmlRoot, `${fileBase}.html`), html);
+  fs.writeFileSync(path.join(docsRoot, `${fileBase}.md`), `${markdown.trimEnd()}\n`);
+  fs.writeFileSync(path.join(htmlRoot, `${fileBase}.html`), `${html.trimEnd()}\n`);
   manifest.push({
     title: report.Name,
     path: report.Path,

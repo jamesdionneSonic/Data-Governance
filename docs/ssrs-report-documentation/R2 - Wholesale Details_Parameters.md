@@ -1,26 +1,44 @@
 # R2 - Wholesale Details_Parameters
 
-Generated: 2026-06-15  
-SSRS path: `/RTC/R2 - Wholesale Details_Parameters`  
+Generated: 2026-06-19T08:45:51.070Z
+SSRS path: `/RTC/R2 - Wholesale Details_Parameters`
 SSRS catalog source: `ReportServer` on `D1-SQL-01B\INST1`
 
-## Purpose
+## Plain-English Summary
 
-This report supports inventory review by showing vehicle inventory, pricing, or stock-level information used to monitor availability, pricing issues, and operational follow-up.
+This report supports inventory review by showing vehicle inventory, pricing, or stock-level information used to monitor availability, pricing issues, and operational follow-up. If this report is wrong, stale, or unavailable, users may make decisions from incomplete reporting output or lose a support lookup path. Start troubleshooting by confirming the SSRS path, selected parameters, shared datasource, and backend dataset commands.
 
-## Executive Summary
+## At a Glance
 
-| Field               | Value                                            |
-| ------------------- | ------------------------------------------------ |
-| Report name         | `R2 - Wholesale Details_Parameters`              |
-| SSRS path           | `/RTC/R2 - Wholesale Details_Parameters`         |
-| Status signal       | Review candidate: no executions in last 6 months |
-| Created             | 2014-10-21 10:50:42                              |
-| Modified            | 2017-12-13 10:15:17                              |
-| Modified by         | SONIC\Mark.Starnes                               |
-| Last 6 months usage | 0 executions by 0 users                          |
-| Last execution      | NULL                                             |
-| Subscriptions       | 0                                                |
+| Field                 | Value                                                                                                                                                                               |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Platform              | SSRS                                                                                                                                                                                |
+| Asset type            | Report                                                                                                                                                                              |
+| Native path           | `/RTC/R2 - Wholesale Details_Parameters`                                                                                                                                            |
+| Support role          | Review candidate report                                                                                                                                                             |
+| Business process      | Use this when the business needs a vehicle inventory or pricing view for operational follow-up, exception review, or availability monitoring. The report is filtered by Dealership. |
+| Primary source        | /RTC/Data Sources/SIMS6200                                                                                                                                                          |
+| Primary target/output | SSRS report output                                                                                                                                                                  |
+| Schedule or trigger   | No subscriptions surfaced                                                                                                                                                           |
+| Runtime/usage signal  | 0 executions by 0 users; last used Not used in last 6 months                                                                                                                        |
+| Status signal         | Review candidate: no executions in last 6 months                                                                                                                                    |
+| Evidence              | `tmp/ssrs-all-report-discovery.out`, `tmp/ssrs-all-datasets.out`                                                                                                                    |
+| Report name           | `R2 - Wholesale Details_Parameters`                                                                                                                                                 |
+| Created               | 2014-10-21 10:50:42                                                                                                                                                                 |
+| Modified              | 2017-12-13 10:15:17                                                                                                                                                                 |
+| Modified by           | SONIC\Mark.Starnes                                                                                                                                                                  |
+
+## Business Use
+
+Use this when the business needs a vehicle inventory or pricing view for operational follow-up, exception review, or availability monitoring. The report is filtered by Dealership.
+
+## Support Checks
+
+1. Confirm the user is running the correct SSRS path: `/RTC/R2 - Wholesale Details_Parameters`.
+2. Confirm the selected report parameters match the intended business scenario.
+3. Confirm the shared datasource is enabled and points to the expected backend connection.
+4. If the report returns no data, review the dataset commands and backend objects listed below.
+5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
 
 ## Shared Data Sources
 
@@ -36,9 +54,9 @@ This report supports inventory review by showing vehicle inventory, pricing, or 
 
 ## Data Logic
 
-1. Dataset `DataSet1` (Text): SELECT o.Name AS 'Dealership', vi.Stock_No, v.VIN, v.Year, v.Make, v.Model, vi.Mileage, vi.Age FROM SIMS6200.dbo.Vehicle_Inventory AS vi --JOIN FOR VIN,YEAR,MAKE,MODEL JOIN SIMS6200.dbo.VEHICLE AS v ON v.Vehicle_ID = vi.Vehicle_ID --JOIN FOR DEALERSHIPS JOIN SIMS6200.dbo.Organization as o --UPDATED 8.12.13 on o.Org_ID ...
+1. Dataset `DataSet1` (Text): SELECT o.Name AS 'Dealership', vi.Stock_No, v.VIN, v.Year, v.Make, v.Model, vi.Mileage, vi.Age FROM SIMS6200.dbo.Vehicle_Inventory AS vi --JOIN FOR VIN,YEAR,MAKE,MODEL JOIN SIMS6200.dbo.VEHICLE AS v ON v.Vehicle_ID = vi.Vehicle_ID --JOIN FOR DEALERSHIP
 2. Dataset `DataSet2` (Text): SELECT distinct o.Name AS 'Dealership' FROM SIMS6200.dbo.Organization as o --UPDATED 8.12.13
-3. Dataset `DataSet3` (Text): SELECT o.Name as 'Dealership', COUNT(CASE WHEN vi.curr_status_id = 204 THEN vi.Curr_Status_ID END) AS 'OGT', COUNT(CASE WHEN vi.curr_status_id = 201 THEN vi.Curr_Status_ID END) AS 'PA', COUNT(CASE WHEN vi.curr_status_id = 203 THEN vi.Curr_Status_ID END) AS 'INS', COUNT(CASE WHEN vi.curr_status_id = 205 THEN vi.Curr_Sta...
+3. Dataset `DataSet3` (Text): SELECT o.Name as 'Dealership', COUNT(CASE WHEN vi.curr_status_id = 204 THEN vi.Curr_Status_ID END) AS 'OGT', COUNT(CASE WHEN vi.curr_status_id = 201 THEN vi.Curr_Status_ID END) AS 'PA', COUNT(CASE
 
 ## Backend Dependencies
 
@@ -48,14 +66,6 @@ This report supports inventory review by showing vehicle inventory, pricing, or 
 | `FOR`                            | Referenced by one or more report datasets |
 | `SIMS6200.dbo.VEHICLE`           | Referenced by one or more report datasets |
 | `SIMS6200.dbo.Organization`      | Referenced by one or more report datasets |
-
-## Support Troubleshooting Guide
-
-1. Confirm the user is running the correct SSRS path: `/RTC/R2 - Wholesale Details_Parameters`.
-2. Confirm the selected report parameters match the intended business scenario.
-3. Confirm the shared datasource is enabled and points to the expected backend connection.
-4. If the report returns no data, review the dataset commands and backend objects listed above.
-5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
 
 ## Reports or Objects Needing Review
 
@@ -70,7 +80,7 @@ This report supports inventory review by showing vehicle inventory, pricing, or 
 Type: `Text`
 
 ```sql
-SELECT o.Name AS 'Dealership', vi.Stock_No, v.VIN, v.Year, v.Make, v.Model, vi.Mileage, vi.Age  FROM SIMS6200.dbo.Vehicle_Inventory AS vi  --JOIN FOR VIN,YEAR,MAKE,MODEL JOIN SIMS6200.dbo.VEHICLE AS v  ON v.Vehicle_ID = vi.Vehicle_ID  --JOIN FOR DEALERSHIPS JOIN SIMS6200.dbo.Organization as o --UPDATED 8.12.13 on o.Org_ID = vi.Store_ID  WHERE o.Is_Act = 1 --ACTIVE STORES --AND o.Org_Type = 20  AND vi.Curr_Status_ID IN (205) --PW units AND vi.Invtr_Type = 10 --USED VEHICLES AND vi.Store_ID not in (0,138,177,229,231,235,109,175)  --SONIC TEST STORE  and o.Name in (@Dealership) ORDER BY DEALERSHIP, vi.Curr_Status_ID
+SELECT o.Name AS 'Dealership', vi.Stock_No, v.VIN, v.Year, v.Make, v.Model, vi.Mileage, vi.Age  FROM SIMS6200.dbo.Vehicle_Inventory AS vi  --JOIN FOR VIN,YEAR,MAKE,MODEL JOIN SIMS6200.dbo.VEHICLE AS v  ON v.Vehicle_ID = vi.Vehicle_ID  --JOIN FOR DEALERSHIP
 ```
 
 #### DataSet2
@@ -86,5 +96,5 @@ SELECT distinct o.Name AS 'Dealership'  FROM SIMS6200.dbo.Organization as o --UP
 Type: `Text`
 
 ```sql
-SELECT       o.Name as 'Dealership',       COUNT(CASE       WHEN vi.curr_status_id = 204       THEN vi.Curr_Status_ID END) AS 'OGT',       COUNT(CASE       WHEN vi.curr_status_id = 201       THEN vi.Curr_Status_ID END) AS 'PA',       COUNT(CASE       WHEN vi.curr_status_id = 203       THEN vi.Curr_Status_ID END) AS 'INS',       COUNT(CASE       WHEN vi.curr_status_id = 205       THEN vi.Curr_Status_ID END) AS 'PW',       COUNT(CASE       WHEN vi.curr_status_id IN ('201','203','204','205')       THEN vi.Curr_Status_ID END) AS 'Total Inventory'       FROM       [SIMS6200].[dbo].[Vehicle_Inventory] AS vi        --JOIN FOR DEALERSHIPS       join SIMS6200.dbo.Organization as o --UPDATED 8.12.13       on o.Org_ID = vi.Store_ID        WHERE       o.Is_Act = 1 --ACTIVE STORES       --AND o.Org_Type = 20       AND vi.Invtr_Type = 10 --USED VEHICLES       AND vi.Store_ID not in (0,138,177,229,231,235,109,175)  --SONIC TEST STORE  and o.Name in (@Dealership)       GROUP BY o.Name        ORDER BY       o.Name
+SELECT       o.Name as 'Dealership',       COUNT(CASE       WHEN vi.curr_status_id = 204       THEN vi.Curr_Status_ID END) AS 'OGT',       COUNT(CASE       WHEN vi.curr_status_id = 201       THEN vi.Curr_Status_ID END) AS 'PA',       COUNT(CASE
 ```

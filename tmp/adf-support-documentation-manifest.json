@@ -1,0 +1,103 @@
+{
+  "generatedAt": "2026-06-19T08:45:26.997Z",
+  "connectorId": "azure-data-factory-adf-dw-marketing-prod",
+  "sourceArtifact": "data/markdown/_runtime/profile-runs/azure-data-factory-adf-dw-marketing-prod/2026-06-18T19-30-26-484Z-c5fd7f11-4eb8-4b3f-82e8-047dd0dead46.json",
+  "pageCount": 19,
+  "pages": [
+    {
+      "title": "adf-dw-marketing-prod",
+      "markdownFile": "docs/adf-support-documentation/adf-dw-marketing-prod.md",
+      "htmlFile": "tmp/adf-confluence-html/adf-dw-marketing-prod.html"
+    },
+    {
+      "title": "trigger_dailyload",
+      "markdownFile": "docs/adf-support-documentation/trigger_dailyload.md",
+      "htmlFile": "tmp/adf-confluence-html/trigger_dailyload.html"
+    },
+    {
+      "title": "trigger_sunday",
+      "markdownFile": "docs/adf-support-documentation/trigger_sunday.md",
+      "htmlFile": "tmp/adf-confluence-html/trigger_sunday.html"
+    },
+    {
+      "title": "pl_DMS_Org_Mappings",
+      "markdownFile": "docs/adf-support-documentation/pl_DMS_Org_Mappings.md",
+      "htmlFile": "tmp/adf-confluence-html/pl_DMS_Org_Mappings.html"
+    },
+    {
+      "title": "pl_DMS_Org_Mappings_history",
+      "markdownFile": "docs/adf-support-documentation/pl_DMS_Org_Mappings_history.md",
+      "htmlFile": "tmp/adf-confluence-html/pl_DMS_Org_Mappings_history.html"
+    },
+    {
+      "title": "pl_eLead_Org_Mappings",
+      "markdownFile": "docs/adf-support-documentation/pl_eLead_Org_Mappings.md",
+      "htmlFile": "tmp/adf-confluence-html/pl_eLead_Org_Mappings.html"
+    },
+    {
+      "title": "pl_eLead_Org_Mappings_history",
+      "markdownFile": "docs/adf-support-documentation/pl_eLead_Org_Mappings_history.md",
+      "htmlFile": "tmp/adf-confluence-html/pl_eLead_Org_Mappings_history.html"
+    },
+    {
+      "title": "pl_Marketing_AWS_Export",
+      "markdownFile": "docs/adf-support-documentation/pl_Marketing_AWS_Export.md",
+      "htmlFile": "tmp/adf-confluence-html/pl_Marketing_AWS_Export.html"
+    },
+    {
+      "title": "pl_Marketing_AWS_Export_history",
+      "markdownFile": "docs/adf-support-documentation/pl_Marketing_AWS_Export_history.md",
+      "htmlFile": "tmp/adf-confluence-html/pl_Marketing_AWS_Export_history.html"
+    },
+    {
+      "title": "pl_mdp_dms_individual",
+      "markdownFile": "docs/adf-support-documentation/pl_mdp_dms_individual.md",
+      "htmlFile": "tmp/adf-confluence-html/pl_mdp_dms_individual.html"
+    },
+    {
+      "title": "pl_mdp_dms_individual_history",
+      "markdownFile": "docs/adf-support-documentation/pl_mdp_dms_individual_history.md",
+      "htmlFile": "tmp/adf-confluence-html/pl_mdp_dms_individual_history.html"
+    },
+    {
+      "title": "pl_mdp_dms_purchaseinfo",
+      "markdownFile": "docs/adf-support-documentation/pl_mdp_dms_purchaseinfo.md",
+      "htmlFile": "tmp/adf-confluence-html/pl_mdp_dms_purchaseinfo.html"
+    },
+    {
+      "title": "pl_mdp_dms_purchaseinfo_history",
+      "markdownFile": "docs/adf-support-documentation/pl_mdp_dms_purchaseinfo_history.md",
+      "htmlFile": "tmp/adf-confluence-html/pl_mdp_dms_purchaseinfo_history.html"
+    },
+    {
+      "title": "pl_mdp_eLead_activity",
+      "markdownFile": "docs/adf-support-documentation/pl_mdp_eLead_activity.md",
+      "htmlFile": "tmp/adf-confluence-html/pl_mdp_eLead_activity.html"
+    },
+    {
+      "title": "pl_mdp_eLead_activity_history",
+      "markdownFile": "docs/adf-support-documentation/pl_mdp_eLead_activity_history.md",
+      "htmlFile": "tmp/adf-confluence-html/pl_mdp_eLead_activity_history.html"
+    },
+    {
+      "title": "pl_mdp_elead_individual",
+      "markdownFile": "docs/adf-support-documentation/pl_mdp_elead_individual.md",
+      "htmlFile": "tmp/adf-confluence-html/pl_mdp_elead_individual.html"
+    },
+    {
+      "title": "pl_mdp_elead_individual_history",
+      "markdownFile": "docs/adf-support-documentation/pl_mdp_elead_individual_history.md",
+      "htmlFile": "tmp/adf-confluence-html/pl_mdp_elead_individual_history.html"
+    },
+    {
+      "title": "pl_mdp_elead_vehicleinterest",
+      "markdownFile": "docs/adf-support-documentation/pl_mdp_elead_vehicleinterest.md",
+      "htmlFile": "tmp/adf-confluence-html/pl_mdp_elead_vehicleinterest.html"
+    },
+    {
+      "title": "pl_mdp_elead_vehicleinterest_history",
+      "markdownFile": "docs/adf-support-documentation/pl_mdp_elead_vehicleinterest_history.md",
+      "htmlFile": "tmp/adf-confluence-html/pl_mdp_elead_vehicleinterest_history.html"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "object_id": "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2",
+  "downstream_count": 1,
+  "downstream": [
+    {
+      "edge_id": "sql_server:dbo.stagingevo2_corereport_v3_tbi_sonic_v2->l1-dwasql-02,12010.stagingdb.dbo.stagetrafficsummary:loads",
+      "source": "dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2",
+      "target": "L1-DWASQL-02,12010.StagingDB.dbo.StageTrafficSummary",
+      "source_object": "dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2",
+      "target_object": "L1-DWASQL-02,12010.StagingDB.dbo.StageTrafficSummary",
+      "edge_type": "loads",
+      "class": "writes_to",
+      "score": 0.95,
+      "label": "positive",
+      "evidence": "Procedure dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2 writes to L1-DWASQL-02,12010.StagingDB.dbo.StageTrafficSummary via INSERT/MERGE",
+      "source_stream": "relationships",
+      "extracted_at": "2026-06-20T13:15:45.012Z",
+      "matched_domains": ["StagingDB"]
+    }
+  ],
+  "caveat": "Use edge labels and scores; review-needed edges are not high-confidence lineage.",
+  "source_context_pack": "context-packs/objects/by-id/sql-server-l1-dwasql-02-12010-eleaddw-dbo-stagingevo2-corereport-v3-tbi-sonic-v2.json"
+}

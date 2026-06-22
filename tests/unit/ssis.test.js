@@ -463,6 +463,99 @@ describe('SSIS-005: Sensitive value masking', () => {
   });
 });
 
+describe('SSIS-008: runtime support baseline extraction', () => {
+  test('summarizes bounded runtime support evidence and redacts sensitive messages', async () => {
+    const pool = buildMockPool({
+      'FROM catalog.event_messages em': [
+        {
+          folder_name: 'Meraki',
+          project_name: 'Meraki',
+          root_package_name: 'MerakiMaster.dtsx',
+          operation_id: 11,
+          package_name: 'MerakiDataLoad.dtsx',
+          message_type: 120,
+          event_name: 'OnError',
+          message_source_name: 'EXEC Upload',
+          message: 'Failed with password=supersecret; directory missing',
+          message_time: '2026-06-17T05:00:03-04:00',
+        },
+      ],
+      'FROM catalog.executable_statistics es': [
+        {
+          folder_name: 'Meraki',
+          project_name: 'Meraki',
+          root_package_name: 'MerakiMaster.dtsx',
+          execution_id: 11,
+          execution_path: '\\Package\\MerakiDataLoad',
+          execution_duration: 4000,
+          execution_result: 1,
+          start_time: '2026-06-17T05:00:00-04:00',
+        },
+      ],
+      'FROM catalog.execution_data_statistics ds': [
+        {
+          folder_name: 'Meraki',
+          project_name: 'Meraki',
+          root_package_name: 'MerakiMaster.dtsx',
+          execution_id: 10,
+          package_name: 'MerakiDataLoad.dtsx',
+          task_name: 'Data Flow Task',
+          source_component_name: 'Flat File Source 1',
+          destination_component_name: 'Excel Destination',
+          rows_sent: 267,
+          created_time: '2026-06-17T04:02:00-04:00',
+        },
+      ],
+      'FROM catalog.executions': [
+        {
+          execution_id: 10,
+          folder_name: 'Meraki',
+          project_name: 'Meraki',
+          package_name: 'MerakiMaster.dtsx',
+          status: 7,
+          start_time: '2026-06-17T04:00:00-04:00',
+          end_time: '2026-06-17T04:03:00-04:00',
+          duration_seconds: 180,
+        },
+        {
+          execution_id: 11,
+          folder_name: 'Meraki',
+          project_name: 'Meraki',
+          package_name: 'MerakiMaster.dtsx',
+          status: 4,
+          start_time: '2026-06-17T05:00:00-04:00',
+          end_time: '2026-06-17T05:00:04-04:00',
+          duration_seconds: 4,
+        },
+      ],
+    });
+    const ex = new SsisMetadataExtractor({}, buildMockSqlDriver(pool));
+    ex.pool = pool;
+
+    const warnings = [];
+    const runtimeSupport = await ex.extractRuntimeSupport(warnings, { lookbackDays: 90 });
+    const meraki = runtimeSupport.find((row) => row.package_name === 'MerakiMaster.dtsx');
+
+    expect(warnings).toEqual([]);
+    expect(meraki).toEqual(
+      expect.objectContaining({
+        execution_count: 2,
+        success_count: 1,
+        failure_count: 1,
+        typical_success_runtime_seconds: 180,
+        p90_success_runtime_seconds: 180,
+      })
+    );
+    expect(meraki.recent_messages[0].message).toContain('password=***REDACTED***');
+    expect(meraki.row_count_samples[0]).toEqual(
+      expect.objectContaining({
+        rows_sent: 267,
+        source_component_name: 'Flat File Source 1',
+      })
+    );
+  });
+});
+
 describe('SSIS-007: package XML column mappings', () => {
   test('extracts direct destination mappings and derived column expressions', () => {
     const sourceLineage =
@@ -1018,6 +1111,7 @@ describe('SSIS-006: extractAll result shape', () => {
       'dataStatistics',
       'executionParameterValues',
       'eventMessages',
+      'runtimeSupport',
       'validations',
       'xmlMetadata',
       'scaleOut',

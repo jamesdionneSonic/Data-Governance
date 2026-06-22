@@ -5,12 +5,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 
+import {
+  CONFLUENCE_GENERATED_ROOT_PAGE_IDS,
+  CONFLUENCE_SPACE,
+} from '../src/config/confluencePageMap.js';
+
 const root = process.cwd();
 const tmp = path.join(root, 'tmp');
-const parentPageId = String(process.env.SSRS_CONFLUENCE_PARENT_PAGE_ID || '2267643963');
-const spaceKey = process.env.CONFLUENCE_SPACE_KEY || 'TDE';
+const parentPageId = String(
+  process.env.SSRS_CONFLUENCE_PARENT_PAGE_ID ||
+    CONFLUENCE_GENERATED_ROOT_PAGE_IDS.ssrsDocumentation
+);
+const spaceKey = process.env.CONFLUENCE_SPACE_KEY || CONFLUENCE_SPACE.spaceKey;
 const baseUrl = String(
-  process.env.CONFLUENCE_BASE_URL || 'https://sonicautomotive.atlassian.net/wiki'
+  process.env.CONFLUENCE_BASE_URL || CONFLUENCE_SPACE.baseUrl
 ).replace(/\/+$/, '');
 const email = process.env.CONFLUENCE_EMAIL || '';
 const apiToken = process.env.CONFLUENCE_API_TOKEN || '';
@@ -525,7 +533,7 @@ function parentBody(reports) {
 <h2>Cleanup guidance</h2>
 <ol><li>Start with folders where every report has zero recent executions.</li><li>For active folders, preserve heavily used reports first and review low-use or duplicate pages second.</li><li>Use each report page to confirm SSRS path, user parameters, source query, and known support notes before making retirement or modernization decisions.</li></ol>
 <h2>Publishing note</h2>
-<p>Page titles intentionally use the report or folder name without generated prefixes. Where SSRS has duplicate report names in different folders, one exact-title page may list multiple SSRS paths because page titles must be unique in the Confluence space.</p>`;
+<p>Page titles intentionally use the report or folder name without technical prefixes. Where SSRS has duplicate report names in different folders, one exact-title page may list multiple SSRS paths because page titles must be unique in the Confluence space.</p>`;
 }
 
 const reports = readRows('ssrs-all-report-discovery.out');

@@ -1,0 +1,222 @@
+{
+  "packet_id": "ELDW-011",
+  "generated_at": "2026-06-20T14:01:17.322Z",
+  "scope": {
+    "publish_mode": "approved live Confluence publish packet",
+    "cleanup_mode": "none; cleanup remains separate",
+    "human_root": "Sonic Data Lineage / Database Catalog / eLeadDW",
+    "rovo_root": "Sonic Data Lineage / AI Retrieval Artifacts"
+  },
+  "required_labels": ["human-lineage-catalog", "eleaddw"],
+  "validation": {
+    "status": "passed",
+    "failures": []
+  },
+  "summary": {
+    "reference_pages": 2,
+    "leaf_pages": 14,
+    "cleanup_allowed": false
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "navigation",
+      "evidence_hash": null,
+      "labels": ["human-lineage-catalog", "database-catalog", "eleaddw"]
+    },
+    {
+      "kind": "reference",
+      "title": "AI Retrieval Artifacts",
+      "treePath": ["Sonic Data Lineage", "AI Retrieval Artifacts"],
+      "page_type": "navigation",
+      "evidence_hash": null,
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact", "eleaddw"]
+    },
+    {
+      "kind": "leaf",
+      "title": "eLeadDW",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "eLeadDW"],
+      "page_type": "database",
+      "evidence_hash": "sha256:E52985D89A2EEDB7DFD0BDBCA1A6784E7A08EE0CF242985942D9058170717236",
+      "evidence_file": "database-eleaddw.publish.evidence.json",
+      "markdown_file": "database-eleaddw.md",
+      "labels": ["human-lineage-catalog", "database-catalog", "eleaddw"]
+    },
+    {
+      "kind": "leaf",
+      "title": "dbo",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "eLeadDW", "dbo"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:A7CA831E6A0F8F8BFD861D41F87D2EBFAA51305BDFA7BA72031C7199B2DAFF2C",
+      "evidence_file": "schema-eleaddw-dbo.publish.evidence.json",
+      "markdown_file": "schema-eleaddw-dbo.md",
+      "labels": ["human-lineage-catalog", "database-catalog", "eleaddw"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Start Here - eLeadDW",
+      "treePath": ["Sonic Data Lineage", "AI Retrieval Artifacts", "Rovo Start Here - eLeadDW"],
+      "page_type": "rovo-start-here---eleaddw",
+      "evidence_hash": "sha256:C661B8EC7A662EB1117D1993A9904853310E165FC2C052882323F2D1E7DD832A",
+      "evidence_file": "rovo-start-here-eleaddw.publish.evidence.json",
+      "markdown_file": "rovo-start-here-eleaddw.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact", "eleaddw"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Object Locator eLeadDW 001",
+      "treePath": [
+        "Sonic Data Lineage",
+        "AI Retrieval Artifacts",
+        "Rovo Object Locator eLeadDW 001"
+      ],
+      "page_type": "rovo-object-locator-eleaddw-001",
+      "evidence_hash": "sha256:96BF0D75974493997AA8192D0CA94B04085C3B9FA6A270FFD1F0EAA8E64B4832",
+      "evidence_file": "rovo-object-locator-eleaddw-001.publish.evidence.json",
+      "markdown_file": "rovo-object-locator-eleaddw-001.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact", "eleaddw"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Object Locator eLeadDW 002",
+      "treePath": [
+        "Sonic Data Lineage",
+        "AI Retrieval Artifacts",
+        "Rovo Object Locator eLeadDW 002"
+      ],
+      "page_type": "rovo-object-locator-eleaddw-002",
+      "evidence_hash": "sha256:10DDB084EE7E08C46E9C621AA8F84135FBC5A84B16E57B79ECF717E18120CE73",
+      "evidence_file": "rovo-object-locator-eleaddw-002.publish.evidence.json",
+      "markdown_file": "rovo-object-locator-eleaddw-002.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact", "eleaddw"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Object Locator eLeadDW 003",
+      "treePath": [
+        "Sonic Data Lineage",
+        "AI Retrieval Artifacts",
+        "Rovo Object Locator eLeadDW 003"
+      ],
+      "page_type": "rovo-object-locator-eleaddw-003",
+      "evidence_hash": "sha256:DDA7A8B1F3390C01DA3103C07BBD84D439B321EC6BB642621368487352729D94",
+      "evidence_file": "rovo-object-locator-eleaddw-003.publish.evidence.json",
+      "markdown_file": "rovo-object-locator-eleaddw-003.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact", "eleaddw"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Object Locator eLeadDW 004",
+      "treePath": [
+        "Sonic Data Lineage",
+        "AI Retrieval Artifacts",
+        "Rovo Object Locator eLeadDW 004"
+      ],
+      "page_type": "rovo-object-locator-eleaddw-004",
+      "evidence_hash": "sha256:8B1A42506A54B02097BB312C62B66948D3E05557C21CDF0DE61006708CE4C7BA",
+      "evidence_file": "rovo-object-locator-eleaddw-004.publish.evidence.json",
+      "markdown_file": "rovo-object-locator-eleaddw-004.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact", "eleaddw"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Object Locator eLeadDW 005",
+      "treePath": [
+        "Sonic Data Lineage",
+        "AI Retrieval Artifacts",
+        "Rovo Object Locator eLeadDW 005"
+      ],
+      "page_type": "rovo-object-locator-eleaddw-005",
+      "evidence_hash": "sha256:F789AFBA99C7867A0F97261EA4C85BA21C0E94316E244618AD8463B8FCB1D1B8",
+      "evidence_file": "rovo-object-locator-eleaddw-005.publish.evidence.json",
+      "markdown_file": "rovo-object-locator-eleaddw-005.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact", "eleaddw"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Database Context eLeadDW 001",
+      "treePath": [
+        "Sonic Data Lineage",
+        "AI Retrieval Artifacts",
+        "Rovo Database Context eLeadDW 001"
+      ],
+      "page_type": "rovo-database-context-eleaddw-001",
+      "evidence_hash": "sha256:193063C4711AE6D90E53BD8CF2D869F2AD86A40553B418F8018F70A63D4FE6F1",
+      "evidence_file": "rovo-database-context-eleaddw-001.publish.evidence.json",
+      "markdown_file": "rovo-database-context-eleaddw-001.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact", "eleaddw"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Object Summary Context eLeadDW 001",
+      "treePath": [
+        "Sonic Data Lineage",
+        "AI Retrieval Artifacts",
+        "Rovo Object Summary Context eLeadDW 001"
+      ],
+      "page_type": "rovo-object-summary-context-eleaddw-001",
+      "evidence_hash": "sha256:C4F360A45158DBA747528D33EDE7C769EEDE0FED0277C97FE2B8FE6B2B9B53B8",
+      "evidence_file": "rovo-object-summary-context-eleaddw-001.publish.evidence.json",
+      "markdown_file": "rovo-object-summary-context-eleaddw-001.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact", "eleaddw"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Upstream Context eLeadDW 001",
+      "treePath": [
+        "Sonic Data Lineage",
+        "AI Retrieval Artifacts",
+        "Rovo Upstream Context eLeadDW 001"
+      ],
+      "page_type": "rovo-upstream-context-eleaddw-001",
+      "evidence_hash": "sha256:610834CE5EFB8B6B8D378A439C2A2B6F0145E36CE13B5A886E7BDFC2DB1DB383",
+      "evidence_file": "rovo-upstream-context-eleaddw-001.publish.evidence.json",
+      "markdown_file": "rovo-upstream-context-eleaddw-001.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact", "eleaddw"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Downstream Context eLeadDW 001",
+      "treePath": [
+        "Sonic Data Lineage",
+        "AI Retrieval Artifacts",
+        "Rovo Downstream Context eLeadDW 001"
+      ],
+      "page_type": "rovo-downstream-context-eleaddw-001",
+      "evidence_hash": "sha256:359D088CF1B6B9239ABBE29EBA6A32A3E3FF07961B74CD1F2130B7F057D581A6",
+      "evidence_file": "rovo-downstream-context-eleaddw-001.publish.evidence.json",
+      "markdown_file": "rovo-downstream-context-eleaddw-001.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact", "eleaddw"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Column Context eLeadDW 001",
+      "treePath": [
+        "Sonic Data Lineage",
+        "AI Retrieval Artifacts",
+        "Rovo Column Context eLeadDW 001"
+      ],
+      "page_type": "rovo-column-context-eleaddw-001",
+      "evidence_hash": "sha256:54569027A660A0DBED17B052336AD096D2EC54724BE87CD257F80B231A7FBFC4",
+      "evidence_file": "rovo-column-context-eleaddw-001.publish.evidence.json",
+      "markdown_file": "rovo-column-context-eleaddw-001.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact", "eleaddw"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Rovo Ambiguity Context eLeadDW 001",
+      "treePath": [
+        "Sonic Data Lineage",
+        "AI Retrieval Artifacts",
+        "Rovo Ambiguity Context eLeadDW 001"
+      ],
+      "page_type": "rovo-ambiguity-context-eleaddw-001",
+      "evidence_hash": "sha256:FE78DEF1C26957201681B6C5233B5E350F21B28FBC2E0FCF1CD727E90204738D",
+      "evidence_file": "rovo-ambiguity-context-eleaddw-001.publish.evidence.json",
+      "markdown_file": "rovo-ambiguity-context-eleaddw-001.md",
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact", "eleaddw"]
+    }
+  ]
+}

@@ -32,7 +32,7 @@
     "path": "/BI - Controllers/GL - Open Stores",
     "markdownFile": "docs\\ssrs-report-documentation\\GL - Open Stores.md",
     "htmlFile": "tmp\\ssrs-confluence-html\\GL - Open Stores.html",
-    "executionsLast6Months": 70
+    "executionsLast6Months": 67
   },
   {
     "title": "DailyStatus",
@@ -228,7 +228,7 @@
     "path": "/BI - New Vehicles/New Inventory - Playbook - SingleStore",
     "markdownFile": "docs\\ssrs-report-documentation\\New Inventory - Playbook - SingleStore.md",
     "htmlFile": "tmp\\ssrs-confluence-html\\New Inventory - Playbook - SingleStore.html",
-    "executionsLast6Months": 1327
+    "executionsLast6Months": 1330
   },
   {
     "title": "PayrollEntry_CoID_UserID",
@@ -340,21 +340,21 @@
     "path": "/CMA/Activity Details Report",
     "markdownFile": "docs\\ssrs-report-documentation\\Activity Details Report.md",
     "htmlFile": "tmp\\ssrs-confluence-html\\Activity Details Report.html",
-    "executionsLast6Months": 37919
+    "executionsLast6Months": 36517
   },
   {
     "title": "DailyActivitySummary",
     "path": "/CMA/DailyActivitySummary",
     "markdownFile": "docs\\ssrs-report-documentation\\DailyActivitySummary.md",
     "htmlFile": "tmp\\ssrs-confluence-html\\DailyActivitySummary.html",
-    "executionsLast6Months": 2317
+    "executionsLast6Months": 2291
   },
   {
     "title": "DailyCashSummary",
     "path": "/CMA/DailyCashSummary",
     "markdownFile": "docs\\ssrs-report-documentation\\DailyCashSummary.md",
     "htmlFile": "tmp\\ssrs-confluence-html\\DailyCashSummary.html",
-    "executionsLast6Months": 885
+    "executionsLast6Months": 856
   },
   {
     "title": "NegativeBalanceReportv3",
@@ -515,7 +515,7 @@
     "path": "/ProfitAnalysis/ReportsLibrary/New Inventory Pricing Issues",
     "markdownFile": "docs\\ssrs-report-documentation\\New Inventory Pricing Issues.md",
     "htmlFile": "tmp\\ssrs-confluence-html\\New Inventory Pricing Issues.html",
-    "executionsLast6Months": 427
+    "executionsLast6Months": 428
   },
   {
     "title": "RouteOneDetails",

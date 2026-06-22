@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "package_name": "eleaddw-runtime-dry-run",
+  "generated_at": "2026-06-20T13:36:09.692Z",
+  "work_packet": "ELDW-006",
+  "publish_mode": "dry-run",
+  "source": {
+    "local_catalog_manifest": "data/markdown/servers/L1-DWASQL-02,12010/databases/eLeadDW/_catalog/eleaddw-local-catalog-dry-run-manifest.json",
+    "schema_inventory": "data/markdown/servers/L1-DWASQL-02,12010/databases/eLeadDW/_catalog/schema-inventory.json",
+    "lineage_summary": "data/markdown/servers/L1-DWASQL-02,12010/databases/eLeadDW/_catalog/lineage-edge-summary.json"
+  },
+  "entrypoints": {
+    "canonical_objects": "registry/canonical-objects.jsonl",
+    "object_registry": "registry/object-registry.jsonl",
+    "database_index": "registry/database-index.json",
+    "object_path_index": "registry/object-path-index.json",
+    "alias_index": "indexes/aliases/by-key.json",
+    "context_packs": "context-packs/objects/by-id/",
+    "summary_answers": "answers/summary/by-object-id/",
+    "upstream_answers": "answers/upstream/by-object-id/",
+    "downstream_answers": "answers/downstream/by-object-id/",
+    "usage_answers": "answers/usage-count/by-object-id/",
+    "profile_teasers": "answers/profile-teaser/by-object-id/",
+    "validation_report": "validation/eleaddw-runtime-dry-run-validation.json"
+  },
+  "counts": {
+    "canonical_objects": 440,
+    "registry_rows": 440,
+    "alias_keys": 1320,
+    "context_packs": 440,
+    "answer_cards": 2200,
+    "upstream_downstream_positive_edges": 308,
+    "review_needed_edges": 27618
+  },
+  "safety": {
+    "raw_data_captured": false,
+    "sample_data_published": false,
+    "secret_exposed": false,
+    "credential_exposed": false,
+    "connection_string_exposed": false,
+    "azure_devops_published": false,
+    "confluence_published": false,
+    "teammate_repo_code_exposed": false
+  },
+  "runtime_content_hash": "471e2ebe932e80df3a058d53a5aa544aa012b194119c1235fe70c36e160560ba"
+}

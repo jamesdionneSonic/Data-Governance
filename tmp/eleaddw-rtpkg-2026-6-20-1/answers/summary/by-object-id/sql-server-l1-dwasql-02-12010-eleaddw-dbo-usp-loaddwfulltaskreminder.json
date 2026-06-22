@@ -1,0 +1,8 @@
+{
+  "object_id": "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.usp_LoadDwFullTaskReminder",
+  "question": "Tell me about eLeadDW.dbo.usp_LoadDwFullTaskReminder.",
+  "answer": "eLeadDW.dbo.usp_LoadDwFullTaskReminder is a stored_procedure in eLeadDW.dbo. Business meaning, owner, SLA, freshness, and certification are not surfaced in metadata.",
+  "source_context_pack": "context-packs/objects/by-id/sql-server-l1-dwasql-02-12010-eleaddw-dbo-usp-loaddwfulltaskreminder.json",
+  "raw_data_captured": false,
+  "secret_exposed": false
+}

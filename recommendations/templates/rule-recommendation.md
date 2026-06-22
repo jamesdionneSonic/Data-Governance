@@ -44,6 +44,15 @@ Why raw evidence was needed:
 
 -
 
+Required citation lines:
+
+```text
+Evidence: package <version>, hash <runtime_content_hash>; artifacts: <paths>.
+Raw evidence: <exact file paths>; reason: <why package artifacts were not enough>.
+```
+
+Omit the `Raw evidence:` line only when no raw evidence was used.
+
 ## Impact
 
 - affected objects/packages:

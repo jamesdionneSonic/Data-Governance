@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-06-20T13:36:09.691Z",
+  "status": "passed",
+  "checks": {
+    "eleaddw_records_present": true,
+    "count_reconciled": true,
+    "alias_index_present": true,
+    "context_packs_present": true,
+    "answer_cards_present": true,
+    "raw_data_captured": false,
+    "secret_exposed": false,
+    "live_publish": false,
+    "teammate_boundary_respected": true
+  },
+  "counts": {
+    "canonical_objects": 440,
+    "registry_rows": 440,
+    "alias_keys": 1320,
+    "context_packs": 440,
+    "answer_cards": 2200,
+    "upstream_downstream_positive_edges": 308,
+    "review_needed_edges": 27618
+  },
+  "forbidden_exposure": {
+    "ingestion_engines": false,
+    "parser_code": false,
+    "extractor_code": false,
+    "generator_code": false,
+    "secrets": false,
+    "credentials": false,
+    "connection_strings": false,
+    "raw_rows": false,
+    "sample_data": false
+  }
+}

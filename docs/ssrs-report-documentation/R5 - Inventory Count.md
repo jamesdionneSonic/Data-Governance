@@ -1,26 +1,44 @@
 # R5 - Inventory Count
 
-Generated: 2026-06-15  
-SSRS path: `/RTC/R5 - Inventory Count`  
+Generated: 2026-06-19T08:45:51.070Z
+SSRS path: `/RTC/R5 - Inventory Count`
 SSRS catalog source: `ReportServer` on `D1-SQL-01B\INST1`
 
-## Purpose
+## Plain-English Summary
 
-This report supports inventory review by showing vehicle inventory, pricing, or stock-level information used to monitor availability, pricing issues, and operational follow-up.
+This report supports inventory review by showing vehicle inventory, pricing, or stock-level information used to monitor availability, pricing issues, and operational follow-up. If this report is wrong, stale, or unavailable, users may make decisions from incomplete reporting output or lose a support lookup path. Start troubleshooting by confirming the SSRS path, selected parameters, shared datasource, and backend dataset commands.
 
-## Executive Summary
+## At a Glance
 
-| Field               | Value                                            |
-| ------------------- | ------------------------------------------------ |
-| Report name         | `R5 - Inventory Count`                           |
-| SSRS path           | `/RTC/R5 - Inventory Count`                      |
-| Status signal       | Review candidate: no executions in last 6 months |
-| Created             | 2014-10-17 11:35:45                              |
-| Modified            | 2017-12-13 10:15:24                              |
-| Modified by         | SONIC\Mark.Starnes                               |
-| Last 6 months usage | 0 executions by 0 users                          |
-| Last execution      | NULL                                             |
-| Subscriptions       | 0                                                |
+| Field                 | Value                                                                                                                                         |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Platform              | SSRS                                                                                                                                          |
+| Asset type            | Report                                                                                                                                        |
+| Native path           | `/RTC/R5 - Inventory Count`                                                                                                                   |
+| Support role          | Review candidate report                                                                                                                       |
+| Business process      | Use this when the business needs a vehicle inventory or pricing view for operational follow-up, exception review, or availability monitoring. |
+| Primary source        | /RTC/Data Sources/SIMS6200                                                                                                                    |
+| Primary target/output | SSRS report output                                                                                                                            |
+| Schedule or trigger   | No subscriptions surfaced                                                                                                                     |
+| Runtime/usage signal  | 0 executions by 0 users; last used Not used in last 6 months                                                                                  |
+| Status signal         | Review candidate: no executions in last 6 months                                                                                              |
+| Evidence              | `tmp/ssrs-all-report-discovery.out`, `tmp/ssrs-all-datasets.out`                                                                              |
+| Report name           | `R5 - Inventory Count`                                                                                                                        |
+| Created               | 2014-10-17 11:35:45                                                                                                                           |
+| Modified              | 2017-12-13 10:15:24                                                                                                                           |
+| Modified by           | SONIC\Mark.Starnes                                                                                                                            |
+
+## Business Use
+
+Use this when the business needs a vehicle inventory or pricing view for operational follow-up, exception review, or availability monitoring.
+
+## Support Checks
+
+1. Confirm the user is running the correct SSRS path: `/RTC/R5 - Inventory Count`.
+2. Confirm the selected report parameters match the intended business scenario.
+3. Confirm the shared datasource is enabled and points to the expected backend connection.
+4. If the report returns no data, review the dataset commands and backend objects listed below.
+5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
 
 ## Shared Data Sources
 
@@ -34,23 +52,11 @@ No user-facing report parameters were found in the RDL definition.
 
 ## Data Logic
 
-1. Dataset `DataSet1` (Text): SELECT DISTINCT o.Name 'Dealership', COUNT(CASE WHEN vi.Age < 21 THEN vi.Age END) 'Bucket 1', COUNT(CASE WHEN vi.Age between 21 and 35 THEN vi.Age END) 'Bucket 2', COUNT(CASE WHEN vi.Age between 36 and 45 THEN vi.Age END) 'Bucket 3', COUNT(CASE WHEN vi.Age >45 THEN vi.Age END) 'Bucket 4', COUNT(CASE WHEN vi.curr_status...
+1. Dataset `DataSet1` (Text): SELECT DISTINCT o.Name 'Dealership', COUNT(CASE WHEN vi.Age < 21 THEN vi.Age END) 'Bucket 1', COUNT(CASE WHEN vi.Age between 21 and 35 THEN vi.Age END) 'Bucket 2', COUNT(CASE WHEN vi.Age between 36 and 45 THEN vi.Age END) 'Bucket
 
 ## Backend Dependencies
 
-| Object or command hint           | Notes                                     |
-| -------------------------------- | ----------------------------------------- |
-| `SIMS6200.dbo.Vehicle_Inventory` | Referenced by one or more report datasets |
-| `FOR`                            | Referenced by one or more report datasets |
-| `SIMS6200.dbo.Organization`      | Referenced by one or more report datasets |
-
-## Support Troubleshooting Guide
-
-1. Confirm the user is running the correct SSRS path: `/RTC/R5 - Inventory Count`.
-2. Confirm the selected report parameters match the intended business scenario.
-3. Confirm the shared datasource is enabled and points to the expected backend connection.
-4. If the report returns no data, review the dataset commands and backend objects listed above.
-5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
+No backend object hints were extracted from the report datasets.
 
 ## Reports or Objects Needing Review
 
@@ -65,5 +71,5 @@ No user-facing report parameters were found in the RDL definition.
 Type: `Text`
 
 ```sql
-SELECT DISTINCT o.Name 'Dealership', COUNT(CASE    WHEN vi.Age < 21     THEN vi.Age END) 'Bucket 1',    COUNT(CASE    WHEN vi.Age between 21 and 35     THEN vi.Age END) 'Bucket 2',    COUNT(CASE    WHEN vi.Age between 36 and 45     THEN vi.Age END) 'Bucket 3',    COUNT(CASE    WHEN vi.Age >45     THEN vi.Age END) 'Bucket 4',    COUNT(CASE    WHEN vi.curr_status_id IN ('201','202','203') -- PA,IGT,IS    THEN vi.Vehicle_ID END) 'Total Inventory'    FROM  [SIMS6200].[dbo].[Vehicle_Inventory] vi  --JOIN FOR DEALERSHIPS inner join SIMS6200.dbo.Organization o --UPDATED 8.12.13 on o.Org_ID = vi.Store_ID  WHERE o.Is_Act = 1 --ACTIVE STORES --AND o.Org_Type = 20  AND vi.Invtr_Type = 10 --USED VEHICLES AND vi.Curr_Status_ID in (201,203,202) AND vi.Store_ID not in (0,138,177,229,231,237,119,137,109,175) --SONIC TEST STORE  GROUP BY o.Name   ORDER BY o.Name
+SELECT DISTINCT o.Name 'Dealership', COUNT(CASE    WHEN vi.Age < 21     THEN vi.Age END) 'Bucket 1',    COUNT(CASE    WHEN vi.Age between 21 and 35     THEN vi.Age END) 'Bucket 2',    COUNT(CASE    WHEN vi.Age between 36 and 45     THEN vi.Age END) 'Bucket
 ```

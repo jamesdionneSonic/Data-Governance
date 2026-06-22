@@ -9,10 +9,15 @@ import axios from 'axios';
 import { marked } from 'marked';
 import { setTimeout as delay } from 'timers/promises';
 
+import {
+  CONFLUENCE_GENERATED_ROOT_PAGE_IDS,
+  CONFLUENCE_SPACE,
+} from '../config/confluencePageMap.js';
+
 const DEFAULT_EXPORT_ROOT = './data/confluence/export';
-const DEFAULT_CONFLUENCE_BASE_URL = 'https://sonicautomotive.atlassian.net/wiki';
-const DEFAULT_CONFLUENCE_SPACE_KEY = 'TDE';
-const DEFAULT_CONFLUENCE_PARENT_PAGE_ID = '2221670415';
+const DEFAULT_CONFLUENCE_BASE_URL = CONFLUENCE_SPACE.baseUrl;
+const DEFAULT_CONFLUENCE_SPACE_KEY = CONFLUENCE_SPACE.spaceKey;
+const DEFAULT_CONFLUENCE_PARENT_PAGE_ID = CONFLUENCE_GENERATED_ROOT_PAGE_IDS.lineage;
 const DEFAULT_SYNC_CONCURRENCY = 3;
 const DEFAULT_ATTACHMENT_SYNC_CONCURRENCY = 2;
 const DEFAULT_HTTP_RETRIES = 4;
@@ -51,9 +56,7 @@ function escapeCqlString(value) {
 }
 
 function pageStorageFromMarkdown(markdown) {
-  const generatedNotice =
-    '<p><strong>Generated content.</strong> Edit source markdown or extractor logic, not this page.</p>';
-  return `${generatedNotice}\n${marked.parse(markdown || '')}`;
+  return marked.parse(markdown || '');
 }
 
 function contentTypeForAttachment(fileName) {

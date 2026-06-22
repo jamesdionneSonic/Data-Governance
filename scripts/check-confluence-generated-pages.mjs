@@ -4,6 +4,11 @@ import axios from 'axios';
 import { readFile } from 'fs/promises';
 import path from 'path';
 
+import {
+  CONFLUENCE_GENERATED_ROOT_PAGE_IDS,
+  CONFLUENCE_SPACE,
+} from '../src/config/confluencePageMap.js';
+
 function trimTrailingSlash(value) {
   return String(value || '').replace(/\/+$/, '');
 }
@@ -12,10 +17,16 @@ function encodeBasicAuth(email, apiToken) {
   return Buffer.from(`${email}:${apiToken}`).toString('base64');
 }
 
+function normalizeGeneratedTitle(title) {
+  return String(title || '').replace(/^\[AUTO\]\s+/, '').trim();
+}
+
 const baseUrl = trimTrailingSlash(
-  process.env.CONFLUENCE_BASE_URL || 'https://sonicautomotive.atlassian.net/wiki'
+  process.env.CONFLUENCE_BASE_URL || CONFLUENCE_SPACE.baseUrl
 );
-const parentPageId = String(process.env.CONFLUENCE_PARENT_PAGE_ID || '2221670415').trim();
+const parentPageId = String(
+  process.env.CONFLUENCE_PARENT_PAGE_ID || CONFLUENCE_GENERATED_ROOT_PAGE_IDS.lineage
+).trim();
 const email = process.env.CONFLUENCE_EMAIL || '';
 const apiToken = process.env.CONFLUENCE_API_TOKEN || '';
 
@@ -79,8 +90,17 @@ function isGeneratedPage(page) {
 
 const directChildren = await listChildPages(parentPageId);
 const generatedChildren = directChildren.filter(isGeneratedPage);
-const databasesPage = directChildren.find((page) => page.title === 'Databases') || null;
-const databaseChildren = databasesPage ? (await listChildPages(databasesPage.id)).filter(isGeneratedPage) : [];
+const aiRetrievalPage =
+  directChildren.find((page) => normalizeGeneratedTitle(page.title) === 'AI Retrieval Artifacts') ||
+  null;
+const aiRetrievalChildren = aiRetrievalPage
+  ? (await listChildPages(aiRetrievalPage.id)).filter(isGeneratedPage)
+  : [];
+const databasesPage =
+  aiRetrievalChildren.find((page) => normalizeGeneratedTitle(page.title) === 'Databases') || null;
+const databaseChildren = databasesPage
+  ? (await listChildPages(databasesPage.id)).filter(isGeneratedPage)
+  : [];
 let expectedDatabaseTitles = [];
 
 try {
@@ -98,21 +118,24 @@ try {
   expectedDatabaseTitles = [];
 }
 
-const actualDatabaseTitles = databaseChildren.map((page) => page.title).sort();
+const actualDatabaseTitles = databaseChildren.map((page) => normalizeGeneratedTitle(page.title)).sort();
 const missingDatabaseTitles = expectedDatabaseTitles.filter(
   (title) => !actualDatabaseTitles.includes(title)
 );
 const extraDatabaseTitles = actualDatabaseTitles.filter(
   (title) => !expectedDatabaseTitles.includes(title)
 );
+const hasDatabaseDrift = missingDatabaseTitles.length > 0 || extraDatabaseTitles.length > 0;
 
 console.log(
   JSON.stringify(
     {
-      status: 'ok',
+      status: hasDatabaseDrift ? 'drift' : 'ok',
       parentPageId,
       directChildren: directChildren.length,
       directGeneratedChildren: generatedChildren.length,
+      aiRetrievalPageId: aiRetrievalPage?.id || null,
+      aiRetrievalGeneratedChildren: aiRetrievalChildren.length,
       databasesPageId: databasesPage?.id || null,
       databaseGeneratedChildren: databaseChildren.length,
       expectedDatabaseChildren: expectedDatabaseTitles.length,
@@ -125,3 +148,7 @@ console.log(
     2
   )
 );
+
+if (hasDatabaseDrift) {
+  process.exitCode = 1;
+}

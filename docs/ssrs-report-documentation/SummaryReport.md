@@ -1,26 +1,44 @@
 # SummaryReport
 
-Generated: 2026-06-15  
-SSRS path: `/JobStatusReports/SummaryReport`  
+Generated: 2026-06-19T08:45:51.070Z
+SSRS path: `/JobStatusReports/SummaryReport`
 SSRS catalog source: `ReportServer` on `D1-SQL-01B\INST1`
 
-## Purpose
+## Plain-English Summary
 
-This report summarizes job status information so support teams can monitor batch or scheduled processing and identify failed or delayed work.
+This report summarizes job status information so support teams can monitor batch or scheduled processing and identify failed or delayed work. If this report is wrong, stale, or unavailable, users may make decisions from incomplete reporting output or lose a support lookup path. Start troubleshooting by confirming the SSRS path, selected parameters, shared datasource, and backend dataset commands.
 
-## Executive Summary
+## At a Glance
 
-| Field               | Value                             |
-| ------------------- | --------------------------------- |
-| Report name         | `SummaryReport`                   |
-| SSRS path           | `/JobStatusReports/SummaryReport` |
-| Status signal       | Active                            |
-| Created             | 2018-11-08 10:46:33               |
-| Modified            | 2018-11-08 10:46:33               |
-| Modified by         | SONIC\David.Ekren                 |
-| Last 6 months usage | 1 executions by 1 users           |
-| Last execution      | 2025-12-26 15:28:34               |
-| Subscriptions       | 0                                 |
+| Field                 | Value                                                                                                                                                                      |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Platform              | SSRS                                                                                                                                                                       |
+| Asset type            | Report                                                                                                                                                                     |
+| Native path           | `/JobStatusReports/SummaryReport`                                                                                                                                          |
+| Support role          | User-facing report                                                                                                                                                         |
+| Business process      | Use this to monitor scheduled job or batch-processing status so support can identify failed, delayed, or missing processing. The report is filtered by Select Report Date. |
+| Primary source        | /JobStatusReports/Data Sources/AFScrape                                                                                                                                    |
+| Primary target/output | SSRS report output                                                                                                                                                         |
+| Schedule or trigger   | No subscriptions surfaced                                                                                                                                                  |
+| Runtime/usage signal  | 1 executions by 1 users; last used 2025-12-26 15:28:34                                                                                                                     |
+| Status signal         | Active                                                                                                                                                                     |
+| Evidence              | `tmp/ssrs-all-report-discovery.out`, `tmp/ssrs-all-datasets.out`                                                                                                           |
+| Report name           | `SummaryReport`                                                                                                                                                            |
+| Created               | 2018-11-08 10:46:33                                                                                                                                                        |
+| Modified              | 2018-11-08 10:46:33                                                                                                                                                        |
+| Modified by           | SONIC\David.Ekren                                                                                                                                                          |
+
+## Business Use
+
+Use this to monitor scheduled job or batch-processing status so support can identify failed, delayed, or missing processing. The report is filtered by Select Report Date.
+
+## Support Checks
+
+1. Confirm the user is running the correct SSRS path: `/JobStatusReports/SummaryReport`.
+2. Confirm the selected report parameters match the intended business scenario.
+3. Confirm the shared datasource is enabled and points to the expected backend connection.
+4. If the report returns no data, review the dataset commands and backend objects listed below.
+5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
 
 ## Shared Data Sources
 
@@ -39,26 +57,14 @@ This report summarizes job status information so support teams can monitor batch
 ## Data Logic
 
 1. Dataset `DS_AFScrape` (StoredProcedure): Calls stored procedure `AFScrape_JobStatus`.
-2. Dataset `DS_D1SSIS02` (Text): DECLARE @RUN_DATE1 int = convert(varchar(8),@date,112) IF OBJECT_ID('tempdb..#temp') IS NOT NULL drop table #temp SELECT DISTINCT JOB.name ,CASE [dbo].fnCheckJobStatus_SSIS02( job.name , @date) when 1 THEN 'Success' else ( CASE WHEN H.RUN_DATE = @RUN_DATE1 AND H.run_status = 1 THEN 'Success' WHEN H.RUN_DATE = @RUN_DATE...
-3. Dataset `SSIS01ReportDataset` (Text): DECLARE @RUN_DATE1 int = convert(varchar(8),@date,112) IF OBJECT_ID('tempdb..#temp') IS NOT NULL drop table #temp SELECT DISTINCT JOB.name , CASE [dbo].fnCheckJobStatus_SSIS01( job.name , @date) when 1 THEN 'Success' else ( CASE WHEN H.RUN_DATE = @RUN_DATE1 AND H.run_status = 1 THEN 'Success' WHEN H.RUN_DATE = @RUN_DAT...
+2. Dataset `DS_D1SSIS02` (Text): DECLARE @RUN_DATE1 int = convert(varchar(8),@date,112) IF OBJECT_ID('tempdb..#temp') IS NOT NULL drop table #temp SELECT DISTINCT JOB.name ,CASE [dbo].fnCheckJobStatus_SSIS02( job.name , @date) when 1 THEN 'Success' else ( CASE WHEN H.RUN_DATE =
+3. Dataset `SSIS01ReportDataset` (Text): DECLARE @RUN_DATE1 int = convert(varchar(8),@date,112) IF OBJECT_ID('tempdb..#temp') IS NOT NULL drop table #temp SELECT DISTINCT JOB.name , CASE [dbo].fnCheckJobStatus_SSIS01( job.name , @date) when 1 THEN 'Success' else ( CASE WHEN H.RUN_DATE
 
 ## Backend Dependencies
 
-| Object or command hint    | Notes                                     |
-| ------------------------- | ----------------------------------------- |
-| `AFScrape_JobStatus`      | Referenced by one or more report datasets |
-| `msdb.DBO.SYSJOBS_VIEW`   | Referenced by one or more report datasets |
-| `msdb.DBO.SYSJOBHISTORY`  | Referenced by one or more report datasets |
-| `msdb.DBO.SYSJOBACTIVITY` | Referenced by one or more report datasets |
-| `msdb.dbo.sysschedules`   | Referenced by one or more report datasets |
-
-## Support Troubleshooting Guide
-
-1. Confirm the user is running the correct SSRS path: `/JobStatusReports/SummaryReport`.
-2. Confirm the selected report parameters match the intended business scenario.
-3. Confirm the shared datasource is enabled and points to the expected backend connection.
-4. If the report returns no data, review the dataset commands and backend objects listed above.
-5. If this report has no recent usage, confirm whether the business still needs it before investing in changes.
+| Object or command hint | Notes                                     |
+| ---------------------- | ----------------------------------------- |
+| `AFScrape_JobStatus`   | Referenced by one or more report datasets |
 
 ## Reports or Objects Needing Review
 
@@ -81,7 +87,7 @@ AFScrape_JobStatus
 Type: `Text`
 
 ```sql
-DECLARE @RUN_DATE1 int  =   convert(varchar(8),@date,112)   IF OBJECT_ID('tempdb..#temp') IS NOT NULL drop table #temp  SELECT  DISTINCT JOB.name ,CASE [dbo].fnCheckJobStatus_SSIS02( job.name  , @date) when 1 THEN 'Success'  else (  CASE  WHEN H.RUN_DATE = @RUN_DATE1 AND H.run_status = 1 THEN 'Success'      WHEN H.RUN_DATE = @RUN_DATE1 AND H.run_status = 0 THEN 'Failure'              --WHEN H.RUN_DATE = @RUN_DATE1 AND H.RUN_STATUS = 2 THEN 'Retry'             --WHEN H.RUN_DATE = @RUN_DATE1 AND H.RUN_STATUS = 3 THEN 'Cancelled'       WHEN GETDATE() <= next_scheduled_run_date THEN 'Yet to run'       WHEN H.RUN_DATE = @RUN_DATE1 and ACTIVITY.start_execution_date IS NOT NULL AND ACTIVITY.stop_execution_date IS NULL then 'Running'               ELSE 'Unknown'       END)      END  AS STATUS,                                         CASE WHEN run_date  < @RUN_DATE1  THEN CONVERT(VARCHAR(8),next_scheduled_run_date,112) ELSE RUN_DATE END AS RUN_DATE     INTO #TEMP      FROM  msdb.DBO.SYSJOBS_VIEW JOB(NOLOCK)--1             JOIN msdb.DBO.SYSJOBHISTORY H(NOLOCK) ON JOB.JOB_ID = H.JOB_ID --AND H.run_date = @RUN_DATE--2             JOIN msdb.DBO.SYSJOBACTIVITY ACTIVITY(NOLOCK) ON JOB.JOB_ID = ACTIVITY.JOB_ID--3             JOIN msdb.dbo.sysschedules ac ON ac.schedule_id = ac.schedule_id --4       AND INSTANCE_ID IN (        SELECT MAX(INSTANCE_ID) FROM  msdb.DBO.SYSJOBS_VIEW JOB(NOLOCK)--1                     JOIN msdb.DBO.SYSJOBHISTORY H(NOLOCK) ON JOB.JOB_ID = H.JOB_ID--2         WHERE (H.RUN_DATE  = @RUN_DATE1  OR  CONVERT(VARCHAR(8),next_scheduled_run_date,112) =@RUN_DATE1)        GROUP BY JOB.NAME, RUN_DATE     )         WHERE (H.RUN_DATE  = @RUN_DATE1 OR  CONVERT(VARCHAR(8),next_scheduled_run_date,112) = @RUN_DATE1)        AND JOB.ENABLED = 1   IF OBJECT_ID('tempdb..#FINAL') IS NOT NULL drop table #FINAL     SELECT * INTO #FINAL FROM (     SELECT DISTINCT NAME,'No Run' AS STATUS,NULL AS RUN_DATE FROM msdb.DBO.SYSJOBS_VIEW (NOLOCK)--1                 WHERE NAME NOT IN (SELECT DISTINCT NAME FROM #TEMP)  AND ENABLED = 1 -- FOR NOT RUNNING JOBS         UNION         SELECT * FROM #TEMP     )A  select name, case when row  = 2 then 'Yet to run(Multiple Run)' else status end as status from ( SELECT  name,status,row_number()over(partition by name order by status) as row FROM #FINAL where status != 'No Run' )a order by Status
+DECLARE @RUN_DATE1 int  =   convert(varchar(8),@date,112)   IF OBJECT_ID('tempdb..#temp') IS NOT NULL drop table #temp  SELECT  DISTINCT JOB.name ,CASE [dbo].fnCheckJobStatus_SSIS02( job.name  , @date) when 1 THEN 'Success'  else (  CASE  WHEN H.RUN_DATE =
 ```
 
 #### SSIS01ReportDataset
@@ -89,5 +95,5 @@ DECLARE @RUN_DATE1 int  =   convert(varchar(8),@date,112)   IF OBJECT_ID('tempdb
 Type: `Text`
 
 ```sql
-DECLARE @RUN_DATE1 int  =   convert(varchar(8),@date,112)   IF OBJECT_ID('tempdb..#temp') IS NOT NULL drop table #temp  SELECT  DISTINCT JOB.name , CASE [dbo].fnCheckJobStatus_SSIS01( job.name  , @date) when 1 THEN 'Success'  else (  CASE  WHEN H.RUN_DATE = @RUN_DATE1 AND H.run_status = 1 THEN 'Success'      WHEN H.RUN_DATE = @RUN_DATE1 AND H.run_status = 0 THEN 'Failure'              --WHEN H.RUN_DATE = @RUN_DATE1 AND H.RUN_STATUS = 2 THEN 'Retry'             --WHEN H.RUN_DATE = @RUN_DATE1 AND H.RUN_STATUS = 3 THEN 'Cancelled'       WHEN GETDATE() <= next_scheduled_run_date THEN 'Yet to run'       WHEN H.RUN_DATE = @RUN_DATE1 and ACTIVITY.start_execution_date IS NOT NULL AND ACTIVITY.stop_execution_date IS NULL then 'Running'               ELSE 'Unknown'      END)      END  AS STATUS,                                         CASE WHEN run_date  < @RUN_DATE1  THEN CONVERT(VARCHAR(8),next_scheduled_run_date,112) ELSE RUN_DATE END AS RUN_DATE     INTO #TEMP      FROM  msdb.DBO.SYSJOBS_VIEW JOB(NOLOCK)--1             JOIN msdb.DBO.SYSJOBHISTORY H(NOLOCK) ON JOB.JOB_ID = H.JOB_ID --AND H.run_date = @RUN_DATE--2             JOIN msdb.DBO.SYSJOBACTIVITY ACTIVITY(NOLOCK) ON JOB.JOB_ID = ACTIVITY.JOB_ID--3             JOIN msdb.dbo.sysschedules ac ON ac.schedule_id = ac.schedule_id --4       AND INSTANCE_ID IN (        SELECT MAX(INSTANCE_ID) FROM  msdb.DBO.SYSJOBS_VIEW JOB(NOLOCK)--1                     JOIN msdb.DBO.SYSJOBHISTORY H(NOLOCK) ON JOB.JOB_ID = H.JOB_ID--2         WHERE (H.RUN_DATE  = @RUN_DATE1  OR  CONVERT(VARCHAR(8),next_scheduled_run_date,112) =@RUN_DATE1)        GROUP BY JOB.NAME, RUN_DATE     )         WHERE (H.RUN_DATE  = @RUN_DATE1 OR  CONVERT(VARCHAR(8),next_scheduled_run_date,112) = @RUN_DATE1)        AND JOB.ENABLED = 1   IF OBJECT_ID('tempdb..#FINAL') IS NOT NULL drop table #FINAL     SELECT * INTO #FINAL FROM (     SELECT DISTINCT NAME,'No Run' AS STATUS,NULL AS RUN_DATE FROM msdb.DBO.SYSJOBS_VIEW (NOLOCK)--1                 WHERE NAME NOT IN (SELECT DISTINCT NAME FROM #TEMP)  AND ENABLED = 1 -- FOR NOT RUNNING JOBS         UNION         SELECT * FROM #TEMP     )A  select name, case when row  = 2 then 'Yet to run(Multiple Run)' else status end as status from ( SELECT  name,status,row_number()over(partition by name order by status) as row FROM #FINAL where status != 'No Run' )a order by Status
+DECLARE @RUN_DATE1 int  =   convert(varchar(8),@date,112)   IF OBJECT_ID('tempdb..#temp') IS NOT NULL drop table #temp  SELECT  DISTINCT JOB.name , CASE [dbo].fnCheckJobStatus_SSIS01( job.name  , @date) when 1 THEN 'Success'  else (  CASE  WHEN H.RUN_DATE
 ```

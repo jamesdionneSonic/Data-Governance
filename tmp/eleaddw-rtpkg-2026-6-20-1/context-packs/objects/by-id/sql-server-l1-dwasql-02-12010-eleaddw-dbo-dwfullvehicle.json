@@ -1,0 +1,38 @@
+{
+  "object_id": "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.dwFullVehicle",
+  "identity": {
+    "database": "eLeadDW",
+    "schema": "dbo",
+    "object_name": "dwFullVehicle",
+    "full_name": "eLeadDW.dbo.dwFullVehicle",
+    "type": "table"
+  },
+  "columns": {
+    "count": 90,
+    "source": "canonical-object-list-dbo"
+  },
+  "lineage": {
+    "upstream_count": 0,
+    "downstream_count": 0,
+    "upstream": [],
+    "downstream": [],
+    "review_needed_edge_count": 0
+  },
+  "confidence": {
+    "identity": "high",
+    "metadata": "high",
+    "lineage": "not surfaced in metadata"
+  },
+  "missing_facts": [
+    "owner",
+    "data steward",
+    "lifecycle/status",
+    "SLA",
+    "live freshness",
+    "certification"
+  ],
+  "safety": {
+    "raw_data_captured": false,
+    "secret_exposed": false
+  }
+}

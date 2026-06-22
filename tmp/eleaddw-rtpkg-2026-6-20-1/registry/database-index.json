@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-06-20T13:36:09.669Z",
+  "database_count": 1,
+  "databases": {
+    "eLeadDW": {
+      "database": "eLeadDW",
+      "server": "L1-DWASQL-02,12010",
+      "schema_count": 3,
+      "dbo_object_count": 440,
+      "object_count": 467,
+      "column_count": 5686,
+      "lineage_edge_count": 27926
+    }
+  }
+}

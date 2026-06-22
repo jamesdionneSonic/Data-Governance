@@ -218,10 +218,10 @@ describe('Confluence Sync Service', () => {
     );
   });
 
-  test('renders markdown to Confluence storage HTML with generated notice', () => {
+  test('renders markdown to Confluence storage HTML without a generated banner', () => {
     const storage = pageStorageFromMarkdown('# Hello\n\n```mermaid\nflowchart LR\n```');
 
-    expect(storage).toContain('Generated content');
+    expect(storage).not.toContain('Generated content');
     expect(storage).toContain('<h1>Hello</h1>');
     expect(storage).toContain('language-mermaid');
   });

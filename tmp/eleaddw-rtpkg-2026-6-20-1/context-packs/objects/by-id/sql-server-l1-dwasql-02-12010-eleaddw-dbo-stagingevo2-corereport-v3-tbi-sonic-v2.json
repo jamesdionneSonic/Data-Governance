@@ -1,0 +1,54 @@
+{
+  "object_id": "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2",
+  "identity": {
+    "database": "eLeadDW",
+    "schema": "dbo",
+    "object_name": "STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2",
+    "full_name": "eLeadDW.dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2",
+    "type": "stored_procedure"
+  },
+  "columns": {
+    "count": 0,
+    "source": "canonical-object-list-dbo"
+  },
+  "lineage": {
+    "upstream_count": 0,
+    "downstream_count": 1,
+    "upstream": [],
+    "downstream": [
+      {
+        "edge_id": "sql_server:dbo.stagingevo2_corereport_v3_tbi_sonic_v2->l1-dwasql-02,12010.stagingdb.dbo.stagetrafficsummary:loads",
+        "source": "dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2",
+        "target": "L1-DWASQL-02,12010.StagingDB.dbo.StageTrafficSummary",
+        "source_object": "dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2",
+        "target_object": "L1-DWASQL-02,12010.StagingDB.dbo.StageTrafficSummary",
+        "edge_type": "loads",
+        "class": "writes_to",
+        "score": 0.95,
+        "label": "positive",
+        "evidence": "Procedure dbo.STAGINGEvo2_CoreReport_V3_TBI_Sonic_V2 writes to L1-DWASQL-02,12010.StagingDB.dbo.StageTrafficSummary via INSERT/MERGE",
+        "source_stream": "relationships",
+        "extracted_at": "2026-06-20T13:15:45.012Z",
+        "matched_domains": ["StagingDB"]
+      }
+    ],
+    "review_needed_edge_count": 0
+  },
+  "confidence": {
+    "identity": "high",
+    "metadata": "high",
+    "lineage": "mixed"
+  },
+  "missing_facts": [
+    "owner",
+    "data steward",
+    "lifecycle/status",
+    "SLA",
+    "live freshness",
+    "certification"
+  ],
+  "safety": {
+    "raw_data_captured": false,
+    "secret_exposed": false
+  }
+}

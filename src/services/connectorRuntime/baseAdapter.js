@@ -689,6 +689,8 @@ export class BaseConnectorAdapter {
       mode === 'managed_identity' ||
       mode === 'iam_role' ||
       mode === 'workload_identity' ||
+      mode === 'azure_cli' ||
+      mode === 'delegated_oauth' ||
       mode === 'windows_integrated';
     if (!hasSecretReference) {
       throw new ConnectorCredentialError(
@@ -743,6 +745,8 @@ export class BaseConnectorAdapter {
     return {
       status: 'ready',
       live_supported: this.capability.supports_live_read,
+      live_connection_valid: true,
+      metadata_discovery_valid: true,
       warnings: credentialWarning === true ? [] : [credentialWarning],
     };
   }

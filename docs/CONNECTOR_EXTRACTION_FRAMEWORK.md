@@ -47,10 +47,7 @@ Every connector adapter implements the same behavior:
 
 ```js
 {
-  testConnection(),
-  discoverStreams(),
-  readStream(streamName, cursor),
-  getCapabilities()
+  (testConnection(), discoverStreams(), readStream(streamName, cursor), getCapabilities());
 }
 ```
 
@@ -178,6 +175,12 @@ The runtime is designed to harvest metadata, not business data. Connectors shoul
 Profile output and DevOps/Azure data pack publication must follow `docs/PROFILE_INDEX_SPEC.md`. Connector adapters may emit canonical events and sanitized aggregate/profile metadata, but they must not persist raw source payloads, sample values, report result rows, dashboard cell values, credentials, tokens, or vault references.
 
 Live SQL Server and SSIS adapters wrap the existing extractors so legacy ingestion and managed connectors do not become two competing engines. REST, signed HTTP, native-driver, repository, and artifact-based sources all run through the same adapter contract and emit the same canonical event model.
+
+Azure Data Factory operational triggers are governed separately from metadata
+harvest. Listing ADF metadata, activities, lineage, and run telemetry belongs in
+the shared connector runtime. Starting an ADF pipeline is a production operation
+and must follow `docs/adr/ADR-010-ADF-Operations-Through-Saved-Connector.md`
+and `docs/ADF_PIPELINE_OPERATIONS.md`.
 
 ## Documented Bridge Adapters
 

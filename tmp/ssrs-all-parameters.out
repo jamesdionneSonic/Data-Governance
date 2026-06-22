@@ -1,4 +1,4 @@
-ReportPath|ReportName|ParameterName|DataType|Prompt|AllowBlank|Nullable|MultiValue
+﻿ReportPath|ReportName|ParameterName|DataType|Prompt|AllowBlank|Nullable|MultiValue
 ----------|----------|-------------|--------|------|----------|--------|----------
 /AcctStd/Custno to Stockno|Custno to Stockno|AcctgAcct|String|Acctg Acct|NULL|NULL|NULL
 /AcctStd/Custno to Stockno|Custno to Stockno|CustNos|String|Cust Nos|NULL|NULL|true

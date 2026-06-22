@@ -1,0 +1,36 @@
+{
+  "object_id": "sql_server:L1-DWASQL-02,12010.eLeadDW.dbo.DeletedDeals",
+  "upstream_count": 2,
+  "upstream": [
+    {
+      "edge_id": "sql_server:dbo.activitymigrationcolist.lchildcompanyid->dbo.deleteddeals.lchildcompanyid",
+      "source": "dbo.ActivityMigrationCoList.lchildcompanyid",
+      "target": "dbo.DeletedDeals.lChildCompanyID",
+      "source_object": "dbo.ActivityMigrationCoList",
+      "target_object": "dbo.DeletedDeals",
+      "edge_type": "column_match",
+      "class": "maps_column",
+      "score": 0.8,
+      "label": "review",
+      "evidence": "Exact column name match: \"lchildcompanyid\" in both tables",
+      "source_stream": "relationships",
+      "extracted_at": "2026-06-20T13:15:44.975Z"
+    },
+    {
+      "edge_id": "sql_server:dbo.companiestmp.lchildcompanyid->dbo.deleteddeals.lchildcompanyid",
+      "source": "dbo.CompaniesTmp.lChildCompanyID",
+      "target": "dbo.DeletedDeals.lChildCompanyID",
+      "source_object": "dbo.CompaniesTmp",
+      "target_object": "dbo.DeletedDeals",
+      "edge_type": "column_match",
+      "class": "maps_column",
+      "score": 0.8,
+      "label": "review",
+      "evidence": "Exact column name match: \"lchildcompanyid\" in both tables",
+      "source_stream": "relationships",
+      "extracted_at": "2026-06-20T13:15:44.975Z"
+    }
+  ],
+  "caveat": "Use edge labels and scores; review-needed edges are not high-confidence lineage.",
+  "source_context_pack": "context-packs/objects/by-id/sql-server-l1-dwasql-02-12010-eleaddw-dbo-deleteddeals.json"
+}

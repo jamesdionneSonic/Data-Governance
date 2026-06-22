@@ -1,0 +1,7 @@
+{
+  "package_name": "eleaddw-runtime-dry-run",
+  "generated_at": "2026-06-20T13:36:09.692Z",
+  "runtime_content_hash": "471e2ebe932e80df3a058d53a5aa544aa012b194119c1235fe70c36e160560ba",
+  "manifest_path": "manifest.json",
+  "validation_report": "validation/eleaddw-runtime-dry-run-validation.json"
+}
