@@ -93,6 +93,7 @@
     "confluence:full:tier2:rovo-link-align:dry-run": "npm run confluence:rovo:publish:dry-run && node scripts/build-tier2-rovo-link-alignment-packet.mjs",
     "confluence:full:tier2:rovo-link-align:publish": "npm run confluence:full:tier2:rovo-link-align:dry-run && npm run confluence:rovo:publish",
     "confluence:full:tier2:rovo-link-align:published:check": "npm run confluence:rovo:published:check",
+    "confluence:full:tier2:readiness-gate": "node scripts/build-tier2-readiness-gate.mjs",
     "confluence:full:cleanup:dry-run": "node scripts/cleanup-full-database-catalog-superseded-pages.mjs",
     "confluence:full:cleanup:archive": "node scripts/cleanup-full-database-catalog-superseded-pages.mjs --archive",
     "confluence:check": "node scripts/check-confluence-export.mjs",

@@ -301,6 +301,8 @@ Align Rovo retrieval links after Tier 2 object pages are published.
 
 Backlog item: T2OBJ-011
 
+Status: Done; readiness gate says Tier 2 is not complete.
+
 Estimated tokens: 60k-110k
 
 ### Goal
@@ -318,6 +320,17 @@ Prove whether Tier 2 is complete.
 - Tier 2 is not called complete unless every publishable object is generated
   and published or explicitly blocked.
 - Remaining work is listed as concrete next packets.
+
+### Completion Evidence
+
+- `docs/confluence-full-database-catalog-deployment/T2P-08-tier2-readiness-gate.json`
+- `docs/confluence-full-database-catalog-deployment/T2P-08-tier2-readiness-gate.md`
+- `docs/confluence-full-database-catalog-deployment/T2P-08-tier2-readiness-gate-readback.md`
+- `npm run confluence:full:tier2:readiness-gate`
+- Result: Tier 2 is not complete. The gate counted 5,348 publishable objects,
+  0 current live platform-path object pages, 80 reviewed pending object pages,
+  5,268 remaining objects after pending packets publish, and 245 queued batches
+  after the current gate.
 
 ## Starting Prompt
 

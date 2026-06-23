@@ -287,6 +287,8 @@ Tier 2 batches publish.
 
 ### T2OBJ-011: Full Coverage Readiness Gate
 
+**Status**: Done; readiness gate says Tier 2 is not complete.
+
 **Goal**: Prevent declaring Tier 2 complete until all publishable objects are
 accounted for.
 
@@ -301,3 +303,14 @@ accounted for.
 - Tier 2 complete means zero missing publishable objects except approved
   blocked/excluded objects.
 - Final readback records gaps and next packets.
+
+**Completion Evidence**:
+
+- `docs/confluence-full-database-catalog-deployment/T2P-08-tier2-readiness-gate.json`
+- `docs/confluence-full-database-catalog-deployment/T2P-08-tier2-readiness-gate.md`
+- `docs/confluence-full-database-catalog-deployment/T2P-08-tier2-readiness-gate-readback.md`
+- `npm run confluence:full:tier2:readiness-gate`
+- Readback summary: 5,348 publishable Tier 2 objects, 0 current live
+  platform-path object pages confirmed, 80 reviewed pending object pages, 5,268
+  objects still remaining after pending packets publish, and 245 queued batches
+  after the current gate.
