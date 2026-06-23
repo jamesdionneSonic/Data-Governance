@@ -1,0 +1,17 @@
+{
+  "status": "dry-run",
+  "generated_at": "2026-06-23T14:47:08.081Z",
+  "rootPageId": "2221670415",
+  "databaseCatalogPageId": "2282422274",
+  "cleanup_mode": "dry-run only",
+  "summary": {
+    "direct_children_reviewed": 2,
+    "legacy_candidates": 0,
+    "eligible_for_archive": 0,
+    "archived": 0,
+    "skipped": 0,
+    "canonical_replacements_not_found": 0,
+    "skipped_for_live_risk": 0
+  },
+  "candidates": []
+}
