@@ -34,6 +34,10 @@ const humanCatalogDoNotPublishSchemas = [
 ];
 const humanCatalogExcludedArtifacts = [
   {
+    database: 'SNOWFLAKE_SAMPLE_DATA',
+    reason: 'Snowflake sample data is training/demo content and is excluded from the human Sonic Database Catalog.',
+  },
+  {
     database: 'ssisdb',
     objectTypes: ['dataset', 'package'],
     reason: 'SSIS package/catalog artifact; documented in SSIS support documentation, not as a Database Catalog object.',
@@ -101,6 +105,15 @@ async function resetOutputRoot() {
 
 async function readMarkdown(file) {
   return fs.readFile(file, 'utf8');
+}
+
+async function readMarkdownIfExists(file) {
+  try {
+    return await readMarkdown(file);
+  } catch (error) {
+    if (error?.code === 'ENOENT') return '';
+    throw error;
+  }
 }
 
 async function readRuntimeRegistryRows() {
@@ -294,7 +307,7 @@ function isDatabaseCatalogExcludedArtifact(row) {
   return humanCatalogExcludedArtifacts.some(
     (rule) =>
       database === rule.database.toLowerCase() &&
-      rule.objectTypes.map((value) => value.toLowerCase()).includes(type)
+      (!Array.isArray(rule.objectTypes) || rule.objectTypes.map((value) => value.toLowerCase()).includes(type))
   );
 }
 
@@ -362,7 +375,7 @@ function objectTypePlainEnglish(type, name) {
 
 async function objectSummaryFromRuntimeRow(row) {
   const file = registryMarkdownPath(row);
-  const metadata = file ? frontmatter(await readMarkdown(file)) : {};
+  const metadata = file ? frontmatter(await readMarkdownIfExists(file)) : {};
   const profileAvailable = Boolean(
     row.answer_cards?.profile_teaser ||
       metadata.profile_available === true ||

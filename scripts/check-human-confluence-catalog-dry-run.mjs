@@ -84,7 +84,7 @@ function isExcludedDatabaseCatalogPath(packet) {
   return (
     pathParts[0] === 'Sonic Data Lineage' &&
     pathParts[1] === 'Database Catalog' &&
-    String(pathParts[2] || '').toLowerCase() === databaseCatalogExcludedDatabase
+    pathParts.slice(2).some((part) => String(part || '').toLowerCase() === databaseCatalogExcludedDatabase)
   );
 }
 
@@ -133,9 +133,9 @@ function validatePage({ markdown, packet, markdownPath }) {
     if (isExcludedDatabaseCatalogObject(object)) {
       failures.push('SSIS package/catalog object pages must not be published under Database Catalog; use SSIS support documentation.');
     }
-    const expectedPath = ['Sonic Data Lineage', 'Database Catalog', object.database, object.schema, object.name].filter(Boolean);
-    if (expectedPath.length === 5 && (packet.page_tree_path || []).join(' / ') !== expectedPath.join(' / ')) {
-      failures.push('Object page tree path is not the canonical database/schema/object path.');
+    const expectedPath = ['Sonic Data Lineage', 'Database Catalog', object.platform, object.database, object.schema, object.name].filter(Boolean);
+    if (expectedPath.length === 6 && (packet.page_tree_path || []).join(' / ') !== expectedPath.join(' / ')) {
+      failures.push('Object page tree path is not the canonical platform/database/schema/object path.');
     }
     if (!packet.confidence || typeof packet.confidence !== 'object') {
       failures.push('Object evidence packet does not include page-level confidence.');
@@ -180,9 +180,15 @@ function validatePage({ markdown, packet, markdownPath }) {
     }
   }
   if (packet.page_type === 'schema') {
-    const expectedSchemaPath = ['Sonic Data Lineage', 'Database Catalog', packet.catalog_slice?.database, packet.catalog_slice?.schema].filter(Boolean);
-    if (expectedSchemaPath.length === 4 && (packet.page_tree_path || []).join(' / ') !== expectedSchemaPath.join(' / ')) {
-      failures.push('Schema page tree path is not the canonical Database Catalog / Database / Schema path.');
+    const expectedSchemaPath = [
+      'Sonic Data Lineage',
+      'Database Catalog',
+      packet.catalog_slice?.platform,
+      packet.catalog_slice?.database,
+      packet.catalog_slice?.schema,
+    ].filter(Boolean);
+    if (expectedSchemaPath.length === 5 && (packet.page_tree_path || []).join(' / ') !== expectedSchemaPath.join(' / ')) {
+      failures.push('Schema page tree path is not the canonical Database Catalog / Platform / Database / Schema path.');
     }
     const objects = packet.catalog_slice?.objects || [];
     const total = Number(packet.catalog_slice?.object_counts?.total || 0);
@@ -328,10 +334,11 @@ function runSmokeChecks() {
     object: {
       name: 'DimVehicle',
       qualified_name: 'Sonic_DW.dbo.DimVehicle',
+      platform: 'SQL Server',
       database: 'Sonic_DW',
       schema: 'dbo',
     },
-    page_tree_path: ['Sonic Data Lineage', 'Database Catalog', 'Sonic_DW', 'dbo', 'DimVehicle'],
+    page_tree_path: ['Sonic Data Lineage', 'Database Catalog', 'SQL Server', 'Sonic_DW', 'dbo', 'DimVehicle'],
     tags: ['high-use', 'profiled'],
     tag_reasons: ['high-use: 12 downstream consumer signals meet the threshold of 10.'],
     confidence: {
@@ -342,7 +349,10 @@ function runSmokeChecks() {
     },
     not_surfaced_facts: ['business owner', 'SLA', 'live freshness'],
     aliases: ['Sonic_DW.dbo.DimVehicle', 'dbo.DimVehicle', 'DimVehicle', 'dimvehicle'],
-    backlinks: ['Sonic Data Lineage / Database Catalog / Sonic_DW', 'Sonic Data Lineage / Database Catalog / Sonic_DW / dbo'],
+    backlinks: [
+      'Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW',
+      'Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo',
+    ],
     page_generation_level: 'thin',
     rich_promotion: {
       rule_version: 'dcat-009.2026-06-19',
@@ -420,13 +430,14 @@ FIRE represents retail sales and finance reporting. It is loaded by \`FIRE.Summa
     source_artifact_paths: ['data/lineage-runtime-package/registry/canonical-objects.jsonl'],
     page_tree_path: ['Sonic Data Lineage', 'Database Catalog', 'Sonic_DW', 'Schema - Sonic_DW.dbo'],
     catalog_slice: {
+      platform: 'SQL Server',
       database: 'Sonic_DW',
       schema: 'dbo',
       object_counts: { total: 1 },
       objects: [
         {
           full_name: 'Sonic_DW.dbo.DimVehicle',
-          canonical_page_path: 'Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / DimVehicle',
+          canonical_page_path: 'Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / DimVehicle',
           aliases: ['DimVehicle'],
           not_surfaced_facts: ['business definition'],
         },
@@ -452,8 +463,9 @@ FIRE represents retail sales and finance reporting. It is loaded by \`FIRE.Summa
     page_type: 'schema',
     evidence_hash: 'sha256:SSIS',
     source_artifact_paths: ['data/lineage-runtime-package/registry/canonical-objects.jsonl'],
-    page_tree_path: ['Sonic Data Lineage', 'Database Catalog', 'ssisdb', 'external_sources'],
+    page_tree_path: ['Sonic Data Lineage', 'Database Catalog', 'SQL Server', 'ssisdb', 'external_sources'],
     catalog_slice: {
+      platform: 'SQL Server',
       database: 'ssisdb',
       schema: 'external_sources',
       object_counts: { total: 1 },
@@ -464,7 +476,7 @@ FIRE represents retail sales and finance reporting. It is loaded by \`FIRE.Summa
           name: 'CallRevu_Master.dtsx',
           type: 'package',
           full_name: 'ssisdb.external_sources.CallRevu_Master.dtsx',
-          canonical_page_path: 'Sonic Data Lineage / Database Catalog / ssisdb / external_sources / CallRevu_Master.dtsx',
+          canonical_page_path: 'Sonic Data Lineage / Database Catalog / SQL Server / ssisdb / external_sources / CallRevu_Master.dtsx',
           aliases: ['CallRevu_Master.dtsx'],
           not_surfaced_facts: ['business definition'],
         },

@@ -34,6 +34,10 @@ const blockedSchemaRules = [
 
 const excludedArtifactRules = [
   {
+    database: 'SNOWFLAKE_SAMPLE_DATA',
+    reason: 'Snowflake sample data is training/demo content and is excluded from the human Sonic Database Catalog.',
+  },
+  {
     database: 'ssisdb',
     objectTypes: ['dataset', 'package'],
     reason: 'SSIS package/catalog artifact; documented in SSIS support documentation, not as a Database Catalog object.',
@@ -130,8 +134,26 @@ function isExcludedArtifact(row) {
   return excludedArtifactRules.find(
     (rule) =>
       database === String(rule.database).toLowerCase() &&
-      rule.objectTypes.map((value) => value.toLowerCase()).includes(type)
+      (!Array.isArray(rule.objectTypes) || rule.objectTypes.map((value) => value.toLowerCase()).includes(type))
   );
+}
+
+function platformForRow(row = {}) {
+  const signal = [
+    row.platform,
+    row.database_product,
+    row.source_type,
+    row.connector_type,
+    row.server,
+    row.source_system,
+    row.source_markdown_path,
+    row.context_pack_path,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+  if (signal.includes('snowflake')) return 'Snowflake';
+  return 'SQL Server';
 }
 
 function blankCounts() {
@@ -165,16 +187,16 @@ function summarizeTypeCounts(counts) {
     .join(', ');
 }
 
-function objectCanonicalPath(database, schema, objectName) {
-  return ['Sonic Data Lineage', 'Database Catalog', database, schema, objectName].join(' / ');
+function objectCanonicalPath(platform, database, schema, objectName) {
+  return ['Sonic Data Lineage', 'Database Catalog', platform, database, schema, objectName].join(' / ');
 }
 
-function schemaCanonicalPath(database, schema) {
-  return ['Sonic Data Lineage', 'Database Catalog', database, schema].join(' / ');
+function schemaCanonicalPath(platform, database, schema) {
+  return ['Sonic Data Lineage', 'Database Catalog', platform, database, schema].join(' / ');
 }
 
-function databaseCanonicalPath(database) {
-  return ['Sonic Data Lineage', 'Database Catalog', database].join(' / ');
+function databaseCanonicalPath(platform, database) {
+  return ['Sonic Data Lineage', 'Database Catalog', platform, database].join(' / ');
 }
 
 function buildInventory(rows, runtimeManifest, catalogManifest, supersededReport) {
@@ -193,6 +215,7 @@ function buildInventory(rows, runtimeManifest, catalogManifest, supersededReport
     const rawSchema = String(row.schema || '').trim();
     const rawObject = String(row.object_name || row.display_name || '').trim();
     const database = databaseMap.get(rawDatabase.toLowerCase()) || rawDatabase;
+    const platform = platformForRow(row);
     const type = objectType(row);
 
     increment(rawDatabaseCounts, rawDatabase);
@@ -203,6 +226,7 @@ function buildInventory(rows, runtimeManifest, catalogManifest, supersededReport
       if (!excludedArtifactGroups.has(key)) {
         excludedArtifactGroups.set(key, {
           database,
+          platform,
           type,
           reason: excludedArtifactRule.reason,
           object_count: 0,
@@ -237,7 +261,7 @@ function buildInventory(rows, runtimeManifest, catalogManifest, supersededReport
           rule: `${blockedRule.database}.${blockedRule.schemaPrefix}`,
           reason: blockedRule.reason,
           object_count: 0,
-          canonical_path: schemaCanonicalPath(database, schema),
+          canonical_path: schemaCanonicalPath(platform, database, schema),
         });
       }
       blockedSchemas.get(key).object_count += 1;
@@ -254,9 +278,10 @@ function buildInventory(rows, runtimeManifest, catalogManifest, supersededReport
     if (!databases.has(database)) {
       databases.set(database, {
         database,
+        platform,
         status: 'included',
         reason: 'Included from canonical runtime registry after blocked-schema rules.',
-        canonical_path: databaseCanonicalPath(database),
+        canonical_path: databaseCanonicalPath(platform, database),
         raw_database_variants: [],
         object_counts: blankCounts(),
         schema_count: 0,
@@ -272,9 +297,10 @@ function buildInventory(rows, runtimeManifest, catalogManifest, supersededReport
     if (!databaseRecord.schemas.has(schema)) {
       databaseRecord.schemas.set(schema, {
         database,
+        platform,
         schema,
         status: 'included',
-        canonical_path: schemaCanonicalPath(database, schema),
+        canonical_path: schemaCanonicalPath(platform, database, schema),
         object_counts: blankCounts(),
         source_systems: new Set(),
         sample_objects: [],
@@ -288,7 +314,7 @@ function buildInventory(rows, runtimeManifest, catalogManifest, supersededReport
       schemaRecord.sample_objects.push({
         object: rawObject,
         type,
-        canonical_path: objectCanonicalPath(database, schema, rawObject),
+        canonical_path: objectCanonicalPath(platform, database, schema, rawObject),
       });
     }
     if (databaseRecord.sample_objects.length < 5) {
@@ -296,7 +322,7 @@ function buildInventory(rows, runtimeManifest, catalogManifest, supersededReport
         schema,
         object: rawObject,
         type,
-        canonical_path: objectCanonicalPath(database, schema, rawObject),
+        canonical_path: objectCanonicalPath(platform, database, schema, rawObject),
       });
     }
   }
@@ -320,9 +346,10 @@ function buildInventory(rows, runtimeManifest, catalogManifest, supersededReport
           : 'All cataloged objects for this database are suppressed by human catalog blocked-schema rules.';
       excludedDatabases.set(canonicalDatabase, {
         database: canonicalDatabase,
+        platform: artifactGroups[0]?.platform || 'SQL Server',
         status: 'excluded',
         reason: artifactReason,
-        canonical_path: databaseCanonicalPath(canonicalDatabase),
+        canonical_path: databaseCanonicalPath(artifactGroups[0]?.platform || 'SQL Server', canonicalDatabase),
         raw_database_variants: [...rawDatabaseCounts.entries()]
           .filter(([name]) => name.toLowerCase() === rawKey)
           .map(([name, count]) => ({ name, object_count: count })),

@@ -19,6 +19,8 @@ const publishOutputRoot =
   outputRootArgIndex >= 0
     ? path.resolve(process.argv[outputRootArgIndex + 1] || '')
     : outputRoot;
+const resumeAtIndex = process.argv.indexOf('--resume-at');
+const resumeAtPath = resumeAtIndex >= 0 ? String(process.argv[resumeAtIndex + 1] || '').trim() : '';
 const baseUrl = trimTrailingSlash(process.env.CONFLUENCE_BASE_URL || CONFLUENCE_SPACE.baseUrl);
 const spaceKey = process.env.CONFLUENCE_SPACE_KEY || CONFLUENCE_SPACE.spaceKey;
 const rootPageId = String(
@@ -63,6 +65,31 @@ function headers(extra = {}) {
     'Content-Type': 'application/json',
     ...extra,
   };
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+async function confluenceRequest(label, fn) {
+  const maxAttempts = 5;
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      return await fn();
+    } catch (error) {
+      const status = error.response?.status;
+      if (status !== 429 || attempt === maxAttempts) throw error;
+      const retryAfter = Number(error.response?.headers?.['retry-after'] || 0);
+      const delayMs = Math.max(retryAfter * 1000, attempt * 30000);
+      console.warn(`${label} hit Confluence rate limit; retrying in ${Math.round(delayMs / 1000)}s (${attempt}/${maxAttempts}).`);
+      // eslint-disable-next-line no-await-in-loop
+      await sleep(delayMs);
+    }
+  }
+  throw new Error(`${label} failed after retry attempts.`);
 }
 
 function requirePublishConfig() {
@@ -227,39 +254,67 @@ const http = axios.create({
 
 async function findChildPage(title, parentPageId) {
   const cql = `parent=${parentPageId} and type=page and title="${escapeCqlString(title)}"`;
-  const response = await http.get('/rest/api/content/search', {
-    params: {
-      cql,
-      expand: 'version,metadata.labels',
-      limit: 25,
-    },
-  });
+  const response = await confluenceRequest(`find child page "${title}"`, () =>
+    http.get('/rest/api/content/search', {
+      params: {
+        cql,
+        expand: 'version,metadata.labels',
+        limit: 25,
+      },
+    })
+  );
   return (response.data?.results || []).find((page) => page.title === title) || null;
 }
 
+async function findSpacePageByTitle(title) {
+  const response = await confluenceRequest(`find space page "${title}"`, () =>
+    http.get('/rest/api/content', {
+      params: {
+        spaceKey,
+        title,
+        type: 'page',
+        expand: 'version,metadata.labels,ancestors',
+        limit: 25,
+      },
+    })
+  );
+  const matches = (response.data?.results || []).filter((page) => page.title === title);
+  return matches[0] || null;
+}
+
 async function addLabels(pageId, pageLabels) {
-  await http.post(
-    `/rest/api/content/${pageId}/label`,
-    pageLabels.map((label) => ({ prefix: 'global', name: cleanLabel(label) }))
+  await confluenceRequest(`add labels to page ${pageId}`, () =>
+    http.post(
+      `/rest/api/content/${pageId}/label`,
+      pageLabels.map((label) => ({ prefix: 'global', name: cleanLabel(label) }))
+    )
   );
 }
 
 async function createPage(page, parentPageId) {
-  const response = await http.post('/rest/api/content', {
-    type: 'page',
-    title: page.title,
-    ancestors: [{ id: parentPageId }],
-    space: { key: spaceKey },
-    metadata: {
-      labels: page.labels.map((label) => ({ prefix: 'global', name: cleanLabel(label) })),
-    },
-    body: {
-      storage: {
-        value: pageStorageFromMarkdown(page.markdown),
-        representation: 'storage',
-      },
-    },
-  });
+  let response;
+  try {
+    response = await confluenceRequest(`create page "${page.title}"`, () =>
+      http.post('/rest/api/content', {
+        type: 'page',
+        title: page.title,
+        ancestors: [{ id: parentPageId }],
+        space: { key: spaceKey },
+        metadata: {
+          labels: page.labels.map((label) => ({ prefix: 'global', name: cleanLabel(label) })),
+        },
+        body: {
+          storage: {
+            value: pageStorageFromMarkdown(page.markdown),
+            representation: 'storage',
+          },
+        },
+      })
+    );
+  } catch (error) {
+    const message = error.response?.data?.message || error.message;
+    throw new Error(`Failed to create Confluence page "${page.title}" at "${page.treePath.join(' / ')}": ${message}`);
+  }
   return {
     action: 'created',
     id: response.data?.id || null,
@@ -267,23 +322,26 @@ async function createPage(page, parentPageId) {
   };
 }
 
-async function updatePage(page, existingPage) {
+async function updatePage(page, existingPage, parentPageId) {
   const nextVersion = Number(existingPage.version?.number || 1) + 1;
-  const response = await http.put(`/rest/api/content/${existingPage.id}`, {
-    id: existingPage.id,
-    type: 'page',
-    title: page.title,
-    version: {
-      number: nextVersion,
-      message: `Human lineage catalog sync ${new Date().toISOString()}`,
-    },
-    body: {
-      storage: {
-        value: pageStorageFromMarkdown(page.markdown),
-        representation: 'storage',
+  const response = await confluenceRequest(`update page "${page.title}"`, () =>
+    http.put(`/rest/api/content/${existingPage.id}`, {
+      id: existingPage.id,
+      type: 'page',
+      title: page.title,
+      ancestors: [{ id: parentPageId }],
+      version: {
+        number: nextVersion,
+        message: `Human lineage catalog sync ${new Date().toISOString()}`,
       },
-    },
-  });
+      body: {
+        storage: {
+          value: pageStorageFromMarkdown(page.markdown),
+          representation: 'storage',
+        },
+      },
+    })
+  );
   await addLabels(existingPage.id, page.labels);
   return {
     action: 'updated',
@@ -296,20 +354,36 @@ async function updatePage(page, existingPage) {
 async function publishPlan(pages) {
   const pageIdsByPath = new Map([['Sonic Data Lineage', rootPageId]]);
   const results = [];
+  let resumeReached = !resumeAtPath;
 
   for (const page of pages) {
+    const fullPath = page.treePath.join(' / ');
     const parentPath = page.treePath.slice(0, -1).join(' / ');
     const parentPageId = pageIdsByPath.get(parentPath);
     if (!parentPageId) {
-      throw new Error(`Missing parent page id for ${page.treePath.join(' / ')}`);
+      throw new Error(`Missing parent page id for ${fullPath}`);
     }
 
-    const existingPage = await findChildPage(page.title, parentPageId);
+    const existingPage = (await findChildPage(page.title, parentPageId)) || (await findSpacePageByTitle(page.title));
+    if (!resumeReached && fullPath !== resumeAtPath) {
+      if (!existingPage) throw new Error(`Resume could not resolve existing page before resume point: ${fullPath}`);
+      pageIdsByPath.set(fullPath, existingPage.id);
+      results.push({
+        action: 'resume-skipped',
+        id: existingPage.id,
+        title: page.title,
+        kind: page.kind,
+        treePath: page.treePath,
+        evidenceHash: page.evidenceHash || null,
+      });
+      continue;
+    }
+    if (!resumeReached && fullPath === resumeAtPath) resumeReached = true;
     if (page.kind === 'reference') {
       if (!existingPage) {
-        throw new Error(`Required reference page was not found under expected parent: ${page.treePath.join(' / ')}`);
+        throw new Error(`Required reference page was not found under expected parent: ${fullPath}`);
       }
-      pageIdsByPath.set(page.treePath.join(' / '), existingPage.id);
+      pageIdsByPath.set(fullPath, existingPage.id);
       results.push({
         action: 'referenced',
         id: existingPage.id,
@@ -321,8 +395,8 @@ async function publishPlan(pages) {
       continue;
     }
 
-    const result = existingPage ? await updatePage(page, existingPage) : await createPage(page, parentPageId);
-    pageIdsByPath.set(page.treePath.join(' / '), result.id);
+    const result = existingPage ? await updatePage(page, existingPage, parentPageId) : await createPage(page, parentPageId);
+    pageIdsByPath.set(fullPath, result.id);
     results.push({
       ...result,
       kind: page.kind,
@@ -330,6 +404,7 @@ async function publishPlan(pages) {
       evidenceHash: page.evidenceHash || null,
     });
   }
+  if (resumeAtPath && !resumeReached) throw new Error(`Resume path was not found in publish plan: ${resumeAtPath}`);
 
   return results;
 }
@@ -351,6 +426,7 @@ async function main() {
           status: 'dry-run',
           rootPageId,
           publish: false,
+          resumeAtPath: resumeAtPath || null,
           pages: pages.map((page) => ({
             kind: page.kind,
             title: page.title,
@@ -374,6 +450,7 @@ async function main() {
       {
         status: 'published',
         rootPageId,
+        resumeAtPath: resumeAtPath || null,
         pages: results,
         spotCheckPaths: leafPages.map((page) => page.treePath.join(' / ')),
         rollback:
