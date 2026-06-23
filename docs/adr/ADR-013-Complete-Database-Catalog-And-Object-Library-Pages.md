@@ -12,30 +12,34 @@ Accepted
 
 The Sonic Data Lineage Confluence catalog currently has a useful human
 navigation model, but the database branch can stop too early. A user browsing
-`Database Catalog > Sonic_DW > dbo` expects to reach table, view, and procedure
-information, including columns and plain-English lineage. A schema page that
-only shows high-use objects is friendly but incomplete; it can make users think
-the catalog is missing objects.
+`Database Catalog > SQL Server > Sonic_DW > dbo` expects to reach table, view,
+and procedure information, including columns and plain-English lineage. A schema
+page that only shows high-use objects is friendly but incomplete; it can make
+users think the catalog is missing objects.
 
 There is also a page-title drift problem. Earlier reviewed pilots used a clean
 tree such as:
 
 ```text
 Database Catalog
-  Sonic_DW
-    dbo
+  SQL Server
+    Sonic_DW
+      dbo
 ```
 
 Later dry-run code generated schema pages with titles such as:
 
 ```text
 Database Catalog
-  Sonic_DW
-    Schema - Sonic_DW.dbo
+  SQL Server
+    Sonic_DW
+      Schema - Sonic_DW.dbo
 ```
 
 Both pages represent the same schema. The generated tree must use canonical
 titles so Confluence updates existing pages instead of creating duplicates.
+ADR-021 amends the tree to include the platform/product layer between Database
+Catalog and database name.
 
 ## Decision
 
@@ -48,9 +52,10 @@ The canonical Confluence tree is:
 ```text
 Sonic Data Lineage
   Database Catalog
-    <Database>
-      <Schema>
-        <Object page when promoted>
+    <Platform/Product>
+      <Database>
+        <Schema>
+          <Object page when promoted>
 ```
 
 Examples:
@@ -58,18 +63,20 @@ Examples:
 ```text
 Sonic Data Lineage
   Database Catalog
-    Sonic_DW
-      dbo
-        DimVehicle
-        factFIRE
-        vwFactFIRESummaryReport
-        usp_DOC_Booked
+    SQL Server
+      Sonic_DW
+        dbo
+          DimVehicle
+          factFIRE
+          vwFactFIRESummaryReport
+          usp_DOC_Booked
 ```
 
 Page titles should be short in the tree:
 
 | Page type | Tree title   | Full identity shown inside page |
 | --------- | ------------ | ------------------------------- |
+| Platform  | `SQL Server` | `SQL Server`                    |
 | Database  | `Sonic_DW`   | `Sonic_DW`                      |
 | Schema    | `dbo`        | `Sonic_DW.dbo`                  |
 | Object    | `DimVehicle` | `Sonic_DW.dbo.DimVehicle`       |
@@ -181,12 +188,13 @@ metadata`.
 - `Schema - <Database>.<Schema>` is not a canonical title under the database
   page.
 - `<Schema>` is the canonical schema title when it is already under
-  `<Database>`.
+  `<Platform/Product> / <Database>`.
 - `High-Value Assets` is not a canonical home for object pages.
 - `high-value` is an object tag, not a top-level page tree.
 - Existing `High-Value Object - <qualified name>` pages should be treated as
   superseded by canonical object pages under
-  `Database Catalog / <Database> / <Schema> / <ObjectName>`.
+  `Database Catalog / <Platform/Product> / <Database> / <Schema> /
+<ObjectName>`.
 - Before live publish, the dry run must report pages that would be superseded
   by canonical titles.
 - Duplicate cleanup requires explicit approval and should be handled as a

@@ -138,6 +138,7 @@ function runtimeObjectRow(row) {
     name: row.object_name || row.display_name || '',
     schema: row.schema || 'unknown',
     database: row.database || 'unknown',
+    platform: platformForRow(row),
     server: row.server || row.source_system || 'unknown',
     type: row.object_type || 'object',
     downstream: Number(row.downstream_count || 0),
@@ -150,7 +151,12 @@ function runtimeObjectRow(row) {
     not_surfaced_facts: summary.not_surfaced_facts,
     profile_status: summary.profile_status,
     aliases,
-    canonical_page_path: ['Sonic Data Lineage', 'Database Catalog', row.database || 'unknown', row.schema || 'unknown', row.object_name || row.display_name || 'unknown'],
+    canonical_page_path: databaseCatalogPath(
+      platformForRow(row),
+      row.database || 'unknown',
+      row.schema || 'unknown',
+      row.object_name || row.display_name || 'unknown'
+    ),
   };
 }
 
@@ -168,6 +174,45 @@ function confidenceLevel(value) {
 
 function unique(values) {
   return [...new Set((values || []).filter(Boolean))];
+}
+
+function platformForRow(row = {}) {
+  if (String(row.database || '').toLowerCase() === 'ssisdb' || ['package', 'dataset'].includes(String(row.object_type || '').toLowerCase())) {
+    return 'SSIS';
+  }
+  const signal = [
+    row.platform,
+    row.database_product,
+    row.source_type,
+    row.connector_type,
+    row.server,
+    row.source_system,
+    row.source_markdown_path,
+    row.context_pack_path,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+  if (signal.includes('snowflake')) return 'Snowflake';
+  return 'SQL Server';
+}
+
+function platformForRows(rows = []) {
+  const counts = new Map();
+  for (const row of rows) {
+    const platform = platformForRow(row);
+    counts.set(platform, (counts.get(platform) || 0) + 1);
+  }
+  return (
+    [...counts.entries()].sort(
+      ([leftPlatform, leftCount], [rightPlatform, rightCount]) =>
+        rightCount - leftCount || leftPlatform.localeCompare(rightPlatform)
+    )[0]?.[0] || 'SQL Server'
+  );
+}
+
+function databaseCatalogPath(platform, database, ...children) {
+  return ['Sonic Data Lineage', 'Database Catalog', platform || 'SQL Server', database || 'unknown', ...children.filter(Boolean)];
 }
 
 function splitFilterValues(value) {
@@ -328,6 +373,7 @@ async function objectSummaryFromRuntimeRow(row) {
     id: row.object_id || metadata.id || '',
     name: row.object_name || metadata.name || row.display_name || '',
     type: row.object_type || metadata.type || 'object',
+    platform: platformForRow({ ...row, ...metadata }),
     server: row.server || metadata.server || row.source_system || '',
     database: row.database || metadata.database || '',
     schema: row.schema || metadata.schema || '',
@@ -626,6 +672,7 @@ ${mdTable(
 async function renderDatabase(database) {
   const root = path.relative(process.cwd(), runtimeRegistryPath).replaceAll('\\', '/');
   const rows = await listRuntimeDatabaseRows(database);
+  const platform = platformForRows(rows);
   const schemas = {};
   const types = {};
   for (const row of rows) {
@@ -641,17 +688,18 @@ async function renderDatabase(database) {
   const high = rows
     .sort((left, right) => right.downstream - left.downstream || right.upstream - left.upstream)
     .slice(0, 10);
-  const evidenceHash = hashJson({ database, schemaRows, types, high });
+  const evidenceHash = hashJson({ platform, database, schemaRows, types, high });
   const slug = database.toLowerCase().replace(/[^a-z0-9]+/g, '-');
   const packet = {
     page_type: 'database',
-    page_title: `Database Catalog - ${database}`,
-    page_tree_path: ['Sonic Data Lineage', 'Database Catalog', database],
+    page_title: database,
+    page_tree_path: databaseCatalogPath(platform, database),
     canonical_id: `database-${slug}`,
     source_artifact_paths: [root],
     generated_at: new Date().toISOString().slice(0, 10),
     evidence_hash: `sha256:${evidenceHash}`,
     database_slice: {
+      platform,
       database,
       object_counts: { total: rows.length, ...types },
       schemas: schemaRows,
@@ -659,11 +707,11 @@ async function renderDatabase(database) {
     },
   };
 
-  const page = `# Database Catalog - ${database}
+  const page = `# ${database}
 
 ## Plain-English Summary
 
-\`${database}\` is a cataloged database in the Sonic lineage runtime package. This page summarizes ${rows.length} objects across ${schemaRows.length} schemas so support can browse by schema before opening object-level technical artifacts.
+\`${database}\` is a cataloged ${platform} database in the Sonic lineage runtime package. This page summarizes ${rows.length} objects across ${schemaRows.length} schemas so support can browse by schema before opening object-level technical artifacts.
 
 Use this page when you know the database but not the exact schema or table. Start with the highest-use schemas and objects, then drill into the schema page for table/view/procedure detail.
 
@@ -671,6 +719,7 @@ Use this page when you know the database but not the exact schema or table. Star
 
 | Signal | Value |
 | --- | --- |
+| Platform/Product | \`${platform}\` |
 | Database | \`${database}\` |
 | Total cataloged objects | ${rows.length} |
 | Tables | ${types.table || 0} |
@@ -772,6 +821,7 @@ async function renderSchema(schemaName) {
   if (!database || !schema) throw new Error('--schema must be in Database.Schema format.');
   const root = path.relative(process.cwd(), runtimeRegistryPath).replaceAll('\\', '/');
   const rows = await listRuntimeSchemaRows(database, schema);
+  const platform = platformForRows(rows);
   const counts = {};
   for (const row of rows) counts[row.type] = (counts[row.type] || 0) + 1;
   const sortedRows = [...rows].sort(
@@ -784,7 +834,7 @@ async function renderSchema(schemaName) {
     .sort((left, right) => right.downstream - left.downstream || right.upstream - left.upstream)
     .slice(0, 10);
   const allObjectEvidence = sortedRows.map(schemaObjectEvidence);
-  const evidenceHash = hashJson({ schemaName, counts, high, allObjectEvidence });
+  const evidenceHash = hashJson({ platform, schemaName, counts, high, allObjectEvidence });
   const slug = `${database}-${schema}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
   const tables = sortedRows.filter((row) => row.type === 'table');
   const views = sortedRows.filter((row) => row.type === 'view');
@@ -795,7 +845,7 @@ async function renderSchema(schemaName) {
   const packet = {
     page_type: 'schema',
     page_title: schema,
-    page_tree_path: ['Sonic Data Lineage', 'Database Catalog', database, schema],
+    page_tree_path: databaseCatalogPath(platform, database, schema),
     canonical_id: `schema-${slug}`,
     source_artifact_paths: [root],
     generated_at: new Date().toISOString().slice(0, 10),
@@ -805,6 +855,7 @@ async function renderSchema(schemaName) {
       caveats: ['Profile coverage is not surfaced by this dry-run renderer yet.'],
     },
     catalog_slice: {
+      platform,
       database,
       schema,
       object_counts: { total: rows.length, ...counts },
@@ -828,7 +879,16 @@ async function renderSchema(schemaName) {
     canonical_title: schema,
     canonical_path: pagePath(packet.page_tree_path),
     recommended_action: 'archive candidate after the canonical schema page is reviewed and linked correctly',
-    reason: 'Schema pages now use Database Catalog / Database / Schema so users can browse schemas and objects like a library.',
+    reason: 'Schema pages now use Database Catalog / Platform / Database / Schema so users can browse schemas and objects like a library.',
+  });
+  addSupersededPageCandidate({
+    candidate_type: 'schema-parent',
+    noncanonical_title: schema,
+    noncanonical_path: pagePath(['Sonic Data Lineage', 'Database Catalog', database, schema]),
+    canonical_title: schema,
+    canonical_path: pagePath(packet.page_tree_path),
+    recommended_action: 'archive candidate after the canonical platform-grouped schema page is reviewed and linked correctly',
+    reason: 'Schema pages must roll up under their platform/product and database, not directly under Database Catalog.',
   });
 
   const page = `# ${schema}
@@ -846,6 +906,7 @@ The highest-use objects in this slice include ${(high.length > 0 ? high : rows)
 
 | Signal | Value |
 | --- | --- |
+| Platform/Product | \`${platform}\` |
 | Database | \`${database}\` |
 | Schema | \`${schema}\` |
 | Total cataloged objects | ${rows.length} |
@@ -1023,10 +1084,11 @@ async function renderHighValueObjectPage(row) {
   const slug = objectPageSlug(row);
   const richPromotion = richPromotionForObject(object);
   const evidenceHash = hashJson({ object, richPromotion });
+  const objectPath = databaseCatalogPath(object.platform, object.database, object.schema, object.name);
   const packet = {
     page_type: 'object',
     page_title: object.name,
-    page_tree_path: ['Sonic Data Lineage', 'Database Catalog', object.database, object.schema, object.name],
+    page_tree_path: objectPath,
     canonical_id: `object-${slug}`,
     page_generation_level: 'thin',
     rich_promotion: richPromotion,
@@ -1036,6 +1098,7 @@ async function renderHighValueObjectPage(row) {
     object: {
       name: object.name,
       type: object.type,
+      platform: object.platform,
       server: object.server,
       database: object.database,
       schema: object.schema,
@@ -1067,8 +1130,8 @@ async function renderHighValueObjectPage(row) {
         : ['Profile row counts are not surfaced in this dry-run packet.'],
     },
     backlinks: [
-      ['Sonic Data Lineage', 'Database Catalog', object.database].join(' / '),
-      ['Sonic Data Lineage', 'Database Catalog', object.database, object.schema].join(' / '),
+      databaseCatalogPath(object.platform, object.database).join(' / '),
+      databaseCatalogPath(object.platform, object.database, object.schema).join(' / '),
     ],
   };
   addSupersededPageCandidate({
@@ -1079,6 +1142,15 @@ async function renderHighValueObjectPage(row) {
     canonical_path: pagePath(packet.page_tree_path),
     recommended_action: 'archive candidate after the canonical object page is reviewed and linked correctly',
     reason: 'High-value is now a deterministic tag on canonical object pages instead of a separate navigation section.',
+  });
+  addSupersededPageCandidate({
+    candidate_type: 'object-parent',
+    noncanonical_title: object.name,
+    noncanonical_path: pagePath(['Sonic Data Lineage', 'Database Catalog', object.database, object.schema, object.name]),
+    canonical_title: object.name,
+    canonical_path: pagePath(packet.page_tree_path),
+    recommended_action: 'archive candidate after the canonical platform-grouped object page is reviewed and linked correctly',
+    reason: 'Object pages must roll up under Platform / Database / Schema so SQL Server and Snowflake catalogs do not share a flat database namespace.',
   });
 
   const subject = objectTypePlainEnglish(object.type, object.name);
@@ -1112,6 +1184,7 @@ If this object is stale, missing, or structurally wrong, downstream consumers su
 
 | Signal | Value |
 | --- | --- |
+| Platform/Product | \`${object.platform}\` |
 | Server | \`${object.server || 'not surfaced in metadata'}\` |
 | Database | \`${object.database}\` |
 | Schema | \`${object.schema}\` |
@@ -1193,7 +1266,7 @@ ${listItems(richPromotion.blocked_reasons)}
 
 - Database page: \`${object.database}\`
 - Schema page: \`${object.database}.${object.schema}\`
-- Canonical path: \`Sonic Data Lineage / Database Catalog / ${object.database} / ${object.schema} / ${object.name}\`
+- Canonical path: \`${objectPath.join(' / ')}\`
 
 ## Technical Evidence
 
@@ -1265,7 +1338,9 @@ async function writeSupersededPagesReport() {
     summary: {
       total_candidates: candidates.length,
       schema_title_candidates: candidates.filter((candidate) => candidate.candidate_type === 'schema-title').length,
+      schema_parent_candidates: candidates.filter((candidate) => candidate.candidate_type === 'schema-parent').length,
       high_value_object_candidates: candidates.filter((candidate) => candidate.candidate_type === 'high-value-object').length,
+      object_parent_candidates: candidates.filter((candidate) => candidate.candidate_type === 'object-parent').length,
     },
     candidates,
   };
@@ -1279,7 +1354,9 @@ This report is advisory only. It does not publish, move, archive, or delete Conf
 | --- | --- |
 | Total candidates | ${report.summary.total_candidates} |
 | Schema title candidates | ${report.summary.schema_title_candidates} |
+| Schema parent candidates | ${report.summary.schema_parent_candidates} |
 | High-value object candidates | ${report.summary.high_value_object_candidates} |
+| Object parent candidates | ${report.summary.object_parent_candidates} |
 | Cleanup allowed | No |
 | Explicit cleanup approval required | Yes |
 

@@ -10,6 +10,7 @@ It implements:
 - `docs/adr/ADR-014-Canonical-Object-Catalog-Trust-Signals-And-Medium-Backlog.md`
 - `docs/adr/ADR-015-Rovo-Optimized-AI-Retrieval-Artifacts.md`
 - `docs/adr/ADR-016-Full-Database-Catalog-Deployment-And-Cleanup.md`
+- `docs/adr/ADR-021-Platform-Grouped-Database-Catalog.md`
 
 ## Purpose
 
@@ -17,6 +18,9 @@ The Database Catalog is the place users go when they know a database, schema,
 table, view, or procedure name.
 
 The pattern applies to every included cataloged database, not only `Sonic_DW`.
+It must group databases by platform/product first, then database, then schema.
+This keeps SQL Server and Snowflake catalogs from sharing one flat namespace and
+lets every database own multiple schemas.
 
 SSIS package/catalog artifacts from `ssisdb` are excluded from this tree. They
 belong in SSIS support documentation, though Database Catalog pages may link to
@@ -43,10 +47,15 @@ Use short, human-friendly page titles in the tree:
 ```text
 Sonic Data Lineage
   Database Catalog
-    <Database>
-      <Schema>
-        <Object>
+    <Platform/Product>
+      <Database>
+        <Schema>
+          <Object>
 ```
+
+Supported platform/product titles include `SQL Server` and `Snowflake`. The
+platform is derived from source metadata such as server, source system, or
+connector type; do not infer it from database-name suffixes such as `_SF`.
 
 Do not use generated schema page titles such as:
 
@@ -58,6 +67,21 @@ The full technical identity belongs inside the page:
 
 ```text
 Full name: Sonic_DW.dbo
+```
+
+Examples:
+
+```text
+Sonic Data Lineage
+  Database Catalog
+    SQL Server
+      Sonic_DW
+        dbo
+      eLeadDW_SF
+        dbo
+    Snowflake
+      HYPERNOVA_SONIC_CUSTACCESS
+        PUBLIC
 ```
 
 ## Database Pages
@@ -250,11 +274,11 @@ that differ only by generated prefixes.
 
 Examples:
 
-| Noncanonical                                   | Canonical                                                                      |
-| ---------------------------------------------- | ------------------------------------------------------------------------------ |
-| `Schema - Sonic_DW.dbo`                        | `Sonic_DW / dbo`                                                               |
-| `Schema Catalog - Sonic_DW.dbo`                | page heading only, not tree title                                              |
-| `High-Value Object - Sonic_DW.dbo.Dim_Vehicle` | `Sonic_DW / dbo / Dim_Vehicle` with a `high-value` tag if evidence supports it |
+| Noncanonical                                   | Canonical                                                                                   |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `Schema - Sonic_DW.dbo`                        | `SQL Server / Sonic_DW / dbo`                                                               |
+| `Schema Catalog - Sonic_DW.dbo`                | page heading only, not tree title                                                           |
+| `High-Value Object - Sonic_DW.dbo.Dim_Vehicle` | `SQL Server / Sonic_DW / dbo / Dim_Vehicle` with a `high-value` tag if evidence supports it |
 
 Do not delete or archive duplicate pages during generation. Cleanup requires a
 separate explicit approval.
@@ -262,13 +286,16 @@ separate explicit approval.
 During full deployment, old schema pages such as
 `Schema - Sonic_DW.dbo`, `Schema - Sonic_DW.dq`, and equivalent pages for any
 other database are superseded cleanup candidates after their clean
-`<Database> / <Schema>` replacements are verified.
+`<Platform/Product> / <Database> / <Schema>` replacements are verified. Existing
+pages already published under `Database Catalog / <Database> / <Schema>` are
+also superseded by the platform-grouped path after review.
 
 ## Page Link Rules
 
 Use these link priorities:
 
-1. canonical object page under `Database Catalog / <Database> / <Schema>`;
+1. canonical object page under
+   `Database Catalog / <Platform/Product> / <Database> / <Schema>`;
 2. DevOps answer card or compact context pack;
 3. Rovo AI Retrieval Artifact page only when a human page does not exist or
    when documenting the Rovo answer path;
@@ -297,6 +324,8 @@ A database catalog dry run fails when:
 - a schema page omits cataloged objects from the complete inventory;
 - SSIS package/catalog artifacts from `ssisdb` appear as database, schema, or
   object pages;
+- database pages are published directly under `Database Catalog` instead of
+  under the platform/product layer;
 - schema page titles use `Schema - <Database>.<Schema>` under a database page;
 - object pages are generated under `High-Value Assets` instead of their
   canonical schema location;
