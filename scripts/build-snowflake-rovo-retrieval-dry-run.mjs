@@ -12,6 +12,25 @@ const rovoRootPath = ['Sonic Data Lineage', 'AI Retrieval Artifacts', 'Snowflake
 const generatedAt = new Date().toISOString();
 const pages = [];
 
+function argValue(name, fallback = '') {
+  const prefix = `${name}=`;
+  const args = process.argv.slice(2);
+  const inline = args.find((arg) => arg.startsWith(prefix));
+  if (inline) return inline.slice(prefix.length);
+  const index = args.indexOf(name);
+  if (index >= 0) return args[index + 1] || fallback;
+  return fallback;
+}
+
+function databaseFilter() {
+  return new Set(
+    argValue('--database')
+      .split(',')
+      .map((value) => value.trim())
+      .filter(Boolean)
+  );
+}
+
 function hashJson(value) {
   return crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex').toUpperCase();
 }
@@ -47,13 +66,15 @@ async function readJson(file, fallback = null) {
 }
 
 async function readRuntimeRows() {
+  const targetDatabases = databaseFilter();
   const text = await fs.readFile(runtimeRegistryPath, 'utf8');
   return text
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter(Boolean)
     .map((line) => JSON.parse(line))
-    .filter((row) => row.server === snowflakeServer || row.source_system === snowflakeServer);
+    .filter((row) => row.server === snowflakeServer || row.source_system === snowflakeServer)
+    .filter((row) => targetDatabases.size === 0 || targetDatabases.has(row.database));
 }
 
 async function humanPagePathIndex() {
@@ -338,6 +359,7 @@ async function main() {
         outputRoot: outputRoot.replaceAll('\\', '/'),
         pages: pages.length,
         databases: databases.length,
+        databaseFilter: [...databaseFilter()],
         objects: rows.length,
         locatorRows: locator.length,
       },

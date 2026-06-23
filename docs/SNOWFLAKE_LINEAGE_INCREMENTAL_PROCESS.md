@@ -16,7 +16,7 @@ Default behavior:
 - clears the local dead proxy variables for the Snowflake SDK process unless
   `--respect-proxy` is passed;
 - runs `SHOW DATABASES`;
-- harvests visible non-internal database information schemas;
+- harvests visible non-internal, non-sample database information schemas;
 - writes only new or changed Snowflake object markdown/context artifacts;
 - upserts only the Snowflake slice in the DevOps catalog repo;
 - does not delete stale Snowflake objects.
@@ -61,16 +61,23 @@ Computer-friendly Snowflake Rovo retrieval artifacts:
 npm run confluence:snowflake-rovo:dry-run
 ```
 
+For the production Snowflake Confluence slice, exclude sample data:
+
+```powershell
+node scripts/build-human-confluence-catalog-dry-run.mjs --database CDK_ROADSTER_ELEAD_SONIC,HYPERNOVA_SONIC_CUSTACCESS
+node scripts/build-snowflake-rovo-retrieval-dry-run.mjs --database CDK_ROADSTER_ELEAD_SONIC,HYPERNOVA_SONIC_CUSTACCESS
+```
+
 Live Confluence publish remains a separate approval step after dry-run review.
 
 ## Current Scope
 
-Current harvested object-bearing databases:
+Current production object-bearing databases:
 
 - `CDK_ROADSTER_ELEAD_SONIC`
 - `HYPERNOVA_SONIC_CUSTACCESS`
-- `SNOWFLAKE_SAMPLE_DATA`
 
-The internal `SNOWFLAKE` database is skipped by default. Pass
-`--include-snowflake-internal` only when internal/account-usage metadata is
-explicitly in scope.
+The internal `SNOWFLAKE` database and the `SNOWFLAKE_SAMPLE_DATA` database are
+skipped by default. Pass `--include-snowflake-internal` only when
+internal/account-usage metadata is explicitly in scope. Pass
+`--include-snowflake-sample-data` only when sample data is explicitly in scope.

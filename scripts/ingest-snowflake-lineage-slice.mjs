@@ -12,6 +12,9 @@ const SERVER_ID = 'snowflake-bipslyv-tlb12786';
 const DEFAULT_CATALOG_REPO = '../Sonic-data-lineage';
 const DEFAULT_MARKDOWN_ROOT = './data/markdown';
 const OBJECT_TYPES = new Set(['table', 'view']);
+const DEFAULT_SKIPPED_DATABASES = new Map([
+  ['SNOWFLAKE_SAMPLE_DATA', 'snowflake_sample_database'],
+]);
 const REGISTRY_HEADERS = [
   'object_id',
   'display_name',
@@ -50,6 +53,17 @@ function argValue(name, fallback = '') {
 
 function hasFlag(name) {
   return process.argv.includes(name);
+}
+
+function databaseSkipReason(database) {
+  const normalized = String(database || '').toUpperCase();
+  if (!hasFlag('--include-snowflake-internal') && normalized === 'SNOWFLAKE') {
+    return 'snowflake_internal_database';
+  }
+  if (!hasFlag('--include-snowflake-sample-data') && DEFAULT_SKIPPED_DATABASES.has(normalized)) {
+    return DEFAULT_SKIPPED_DATABASES.get(normalized);
+  }
+  return '';
 }
 
 function hash(value, length = 12) {
@@ -581,8 +595,9 @@ async function harvestSnowflake() {
     for (const dbRow of databases) {
       const database = dbRow.name || dbRow.NAME;
       if (!database) continue;
-      if (!hasFlag('--include-snowflake-internal') && database.toUpperCase() === 'SNOWFLAKE') {
-        harvested.push({ database, skipped: true, reason: 'snowflake_internal_database' });
+      const skipReason = databaseSkipReason(database);
+      if (skipReason) {
+        harvested.push({ database, skipped: true, reason: skipReason });
         continue;
       }
       try {
