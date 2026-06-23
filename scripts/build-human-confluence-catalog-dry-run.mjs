@@ -9,6 +9,7 @@ const databaseFilter = valueAfter('--database');
 const schemaFilter = valueAfter('--schema');
 const objectsFilter = valueAfter('--objects');
 const tier2SchemaFilter = valueAfter('--tier2-schema');
+const tier2ObjectNamesFilter = valueAfter('--tier2-object-names');
 const productCatalogSlugs = [
   'fire',
   'force',
@@ -235,6 +236,20 @@ function splitFilterValues(value) {
     .split(',')
     .map((item) => item.trim())
     .filter(Boolean);
+}
+
+function parseTier2ObjectNamesFilter() {
+  if (!tier2ObjectNamesFilter) return null;
+  const [schemaName, objectList] = tier2ObjectNamesFilter.split(':');
+  const [database, schema] = String(schemaName || '').split('.');
+  if (!database || !schema || !objectList) {
+    throw new Error('--tier2-object-names must use Database.Schema:ObjectA,ObjectB format.');
+  }
+  return {
+    database,
+    schema,
+    names: new Set(splitFilterValues(objectList).map((name) => name.toLowerCase())),
+  };
 }
 
 function summarizeObjectTrustAndTags(object) {
@@ -486,12 +501,25 @@ async function listHighValueObjectRows() {
 }
 
 async function loadPlannedTier2ObjectPageKeys() {
-  const plannedRows = await listHighValueObjectRows();
+  const plannedRows = [];
+  if (!tier2ObjectNamesFilter && !tier2SchemaFilter) {
+    plannedRows.push(...(await listHighValueObjectRows()));
+  }
+  if (tier2ObjectNamesFilter) {
+    plannedRows.push(...(await listTier2ObjectNameRows()));
+  }
   if (tier2SchemaFilter) {
     plannedRows.push(...(await listRuntimeSchemaRows(...tier2SchemaFilter.split('.'))));
   }
   plannedTier2ObjectPageKeys = new Set(plannedRows.map(runtimeObjectIdentityKey));
   return plannedTier2ObjectPageKeys;
+}
+
+async function listTier2ObjectNameRows() {
+  const filter = parseTier2ObjectNamesFilter();
+  if (!filter) return [];
+  const rows = await listRuntimeSchemaRows(filter.database, filter.schema);
+  return rows.filter((row) => filter.names.has(String(row.name || '').toLowerCase()));
 }
 
 async function listRuntimeDatabaseNames() {
@@ -1409,7 +1437,11 @@ ${listItems(packet.source_artifact_paths)}
 
 async function renderHighValueObjectPages() {
   const pageTrees = [];
-  const rows = tier2SchemaFilter ? await listRuntimeSchemaRows(...tier2SchemaFilter.split('.')) : await listHighValueObjectRows();
+  const rows = tier2ObjectNamesFilter
+    ? await listTier2ObjectNameRows()
+    : tier2SchemaFilter
+      ? await listRuntimeSchemaRows(...tier2SchemaFilter.split('.'))
+      : await listHighValueObjectRows();
   for (const row of rows) {
     // eslint-disable-next-line no-await-in-loop
     pageTrees.push(await renderHighValueObjectPage(row));
@@ -1480,7 +1512,7 @@ async function main() {
   await resetOutputRoot();
   await loadPlannedTier2ObjectPageKeys();
   const pageTrees = [];
-  if (!productFilter && !databaseFilter && !schemaFilter && !objectsFilter && !tier2SchemaFilter) {
+  if (!productFilter && !databaseFilter && !schemaFilter && !objectsFilter && !tier2SchemaFilter && !tier2ObjectNamesFilter) {
     for (const slug of productCatalogSlugs) {
       // eslint-disable-next-line no-await-in-loop
       pageTrees.push(await renderProduct(slug));
@@ -1503,6 +1535,12 @@ async function main() {
     }
     if (schemaFilter) pageTrees.push(await renderSchema(schemaFilter));
     if (objectsFilter) pageTrees.push(await renderObjectPilot(objectsFilter));
+    if (tier2ObjectNamesFilter) {
+      const filter = parseTier2ObjectNamesFilter();
+      pageTrees.push(await renderDatabase(filter.database));
+      pageTrees.push(await renderSchema(`${filter.database}.${filter.schema}`));
+      pageTrees.push(...(await renderHighValueObjectPages()));
+    }
     if (tier2SchemaFilter) {
       const [database] = tier2SchemaFilter.split('.');
       pageTrees.push(await renderDatabase(database));

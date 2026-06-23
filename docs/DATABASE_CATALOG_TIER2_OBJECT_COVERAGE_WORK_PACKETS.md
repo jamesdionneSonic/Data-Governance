@@ -233,6 +233,8 @@ Define repeatable batches for the rest of the catalog.
 
 Backlog item: T2OBJ-009
 
+Status: Refresh packet ready; live Confluence publish pending explicit approval.
+
 Estimated tokens: 100k-180k
 
 ### Goal
@@ -250,6 +252,16 @@ Refresh existing pilot Tier 2 pages to the platform-grouped objective schema.
 - Existing `Sonic_DW.dbo` pages comply with ADR-021 and ADR-022 or are queued
   as stale.
 - Tier 1 links point to current canonical object pages.
+
+### Completion Evidence
+
+- `docs/confluence-full-database-catalog-deployment/T2P-06-sonic-dw-dbo-pilot-refresh-packet.json`
+- `docs/confluence-full-database-catalog-deployment/T2P-06-sonic-dw-dbo-pilot-refresh-packet.md`
+- `docs/confluence-full-database-catalog-deployment/T2P-06-sonic-dw-dbo-pilot-refresh-readback.md`
+- `npm run confluence:full:tier2:pilot-refresh:dry-run`
+- Result: 25 stale flat-path pilot pages queued for refresh, 25 object pages
+  regenerated under `Database Catalog / SQL Server / Sonic_DW / dbo`, and 2
+  Tier 1 link-refresh pages included. Live publish and cleanup were not run.
 
 ## T2P-07: Rovo Link Alignment
 

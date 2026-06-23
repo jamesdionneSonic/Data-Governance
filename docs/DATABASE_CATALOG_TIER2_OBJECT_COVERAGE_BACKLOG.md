@@ -229,6 +229,9 @@ schema-level Tier 2 slice.
 
 ### T2OBJ-009: Refresh Existing Pilot Tier 2 Pages
 
+**Status**: Refresh packet ready; live Confluence publish pending explicit
+approval.
+
 **Goal**: Bring already-published pilot pages up to the current objective
 schema.
 
@@ -242,6 +245,16 @@ schema.
 
 - Existing `Sonic_DW.dbo` pilot pages either comply or are queued for refresh.
 - No old path pattern remains treated as canonical.
+
+**Completion Evidence**:
+
+- `docs/confluence-full-database-catalog-deployment/T2P-06-sonic-dw-dbo-pilot-refresh-packet.json`
+- `docs/confluence-full-database-catalog-deployment/T2P-06-sonic-dw-dbo-pilot-refresh-packet.md`
+- `docs/confluence-full-database-catalog-deployment/T2P-06-sonic-dw-dbo-pilot-refresh-readback.md`
+- `npm run confluence:full:tier2:pilot-refresh:dry-run`
+- Readback summary: 25 existing live `Sonic_DW.dbo` pilot pages identified as
+  stale flat-path pages and queued for platform-grouped refresh under
+  `SQL Server / Sonic_DW / dbo`; no cleanup or live publish was performed.
 
 ### T2OBJ-010: Rovo Link Alignment After Tier 2 Coverage
 

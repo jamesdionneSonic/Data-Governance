@@ -1,0 +1,1042 @@
+{
+  "packet_id": "T2P-06",
+  "generated_at": "2026-06-23T16:10:50.636Z",
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "platform_product": "SQL Server",
+    "database": "Sonic_DW",
+    "schema": "dbo",
+    "publish_mode": "reviewed refresh packet; no live publish performed",
+    "cleanup_mode": "none; old flat-path pages remain cleanup candidates only"
+  },
+  "recommendation": "Ready for review. Live refresh publish requires explicit approval; cleanup remains separate.",
+  "required_labels": ["human-lineage-catalog", "database-catalog"],
+  "summary": {
+    "old_pilot_pages": 25,
+    "stale_flat_path_pages": 25,
+    "refreshed_object_pages": 25,
+    "link_refresh_pages": 2,
+    "reference_pages": 2,
+    "total_planned_entries": 29
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "Sonic_DW"],
+      "page_type": "database",
+      "evidence_hash": "sha256:3F1D200A4E458149CEAB6DC5C29B45620ACC0B6C4A986EC6F9EC88A834743F30",
+      "evidence_file": "database-sonic-dw.evidence.json",
+      "markdown_file": "database-sonic-dw.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "Sonic_DW", "dbo"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:94974F4578BE7DA1A725DA69D930953C3970C4A51C669E7F38769A2476432E59",
+      "evidence_file": "schema-sonic-dw-dbo.evidence.json",
+      "markdown_file": "schema-sonic-dw-dbo.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.Dim_Account",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "Dim_Account"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A198018055C3C441496866B026FFEC474C223A19DE2260269892E13A54D414BE",
+      "evidence_file": "object-sonic-dw-dbo-dim-account.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-dim-account.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.Dim_AccountMgmt",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "Dim_AccountMgmt"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:3FAC30C17E41E8D7F74990352093D717BAC78CB41D87BA95A7F7CAD5882AB464",
+      "evidence_file": "object-sonic-dw-dbo-dim-accountmgmt.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-dim-accountmgmt.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.Dim_Date",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "Dim_Date"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B3111610EC328FFE4B6E0BCFA1FC6175DAB7A3EA5FB6A3B5795CEA5D201D76D5",
+      "evidence_file": "object-sonic-dw-dbo-dim-date.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-dim-date.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.dim_DealType",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "dim_DealType"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B3A7F9D7F216E71D4E24AFBC9D084463CBD17F044D741961BC111DFE14E0EDE0",
+      "evidence_file": "object-sonic-dw-dbo-dim-dealtype.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-dim-dealtype.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.Dim_DMSCustomer",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "Dim_DMSCustomer"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:CD1FD38E47DC1102F2C4E1CA35ECBC2D5372C811D0294BCF96F3F0F1DA34CEDF",
+      "evidence_file": "object-sonic-dw-dbo-dim-dmscustomer.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-dim-dmscustomer.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.Dim_DMSEmployee",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "Dim_DMSEmployee"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:F2CFB5E6FB27B80F3CCD092125F7AAAA3B39DA5696D748D8CB3F1AF4ECE1E0BC",
+      "evidence_file": "object-sonic-dw-dbo-dim-dmsemployee.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-dim-dmsemployee.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.Dim_Entity",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "Dim_Entity"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:6FF022ED14A5D46620D7314A4B4558311DE537CBAEC1E0C89DA1635E5BF1C2B4",
+      "evidence_file": "object-sonic-dw-dbo-dim-entity.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-dim-entity.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.dim_FIGLAccounts",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "dim_FIGLAccounts"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:35AB6CF64738F00474F9F826BD3841870B196B635E54389569A4198AAE8F2B5E",
+      "evidence_file": "object-sonic-dw-dbo-dim-figlaccounts.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-dim-figlaccounts.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.dim_Time",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "dim_Time"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:32D18BB33374C26DE4091A9A98B2E9C0DA2949DC3B376443896B444BE6EC0943",
+      "evidence_file": "object-sonic-dw-dbo-dim-time.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-dim-time.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.Dim_Vehicle",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "Dim_Vehicle"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:7EA3F2AA8E99BEE48EE29347083C070D0D66D2B2AB72EF1C23760927DC3A8F20",
+      "evidence_file": "object-sonic-dw-dbo-dim-vehicle.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-dim-vehicle.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.DimActivityType",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "DimActivityType"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:694C2BF5C49C4E9E0D63C6324C8D38F94AD4FAA5772A21097D932F68EA60A28B",
+      "evidence_file": "object-sonic-dw-dbo-dimactivitytype.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-dimactivitytype.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.DimAssociate",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "DimAssociate"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:75F4BE2646E5376A2A30C6B6E787BA9167D06B5CB7FF0140CF6A191B65D40A57",
+      "evidence_file": "object-sonic-dw-dbo-dimassociate.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-dimassociate.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.DimEntityRelationship",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "DimEntityRelationship"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A09D29F894A9F5CC3C7F506F6C630CA29FF67C99EBE27B909EA2313988A7DF87",
+      "evidence_file": "object-sonic-dw-dbo-dimentityrelationship.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-dimentityrelationship.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.DimEntityRelationshipType",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "DimEntityRelationshipType"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:97D0207CC4E720D17D2E3AE62D51183E00A4B9C23E88B525969AA83EEBC4E2EC",
+      "evidence_file": "object-sonic-dw-dbo-dimentityrelationshiptype.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-dimentityrelationshiptype.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.DimLeadStatus",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "DimLeadStatus"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:8D5BA6B61A1B6A27582236E00D99CD68FD36040094273EB2F65059BFFE85046E",
+      "evidence_file": "object-sonic-dw-dbo-dimleadstatus.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-dimleadstatus.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.DimOpportunitySource",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "DimOpportunitySource"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:175FAC213B1E339B70164CFD4B0B6122CD18C5ECD59CA1008403A4F02617C759",
+      "evidence_file": "object-sonic-dw-dbo-dimopportunitysource.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-dimopportunitysource.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.DimUpType",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "DimUpType"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:F30B32872B08B3B35EE672A6B337189AE31EE9390F10040DF156700B6870D77B",
+      "evidence_file": "object-sonic-dw-dbo-dimuptype.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-dimuptype.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.dwDiffActivity_I",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "dwDiffActivity_I"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E3E2DDAC5F7325DC3B6AE8C77EC5114E1BBD009C89AC616323452F2D7057F92F",
+      "evidence_file": "object-sonic-dw-dbo-dwdiffactivity-i.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-dwdiffactivity-i.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.Fact_Service",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "Fact_Service"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:DA73E956A204BDACB023093317A8C89DCA6086761072B233CEE827057A325F83",
+      "evidence_file": "object-sonic-dw-dbo-fact-service.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-fact-service.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.FactActivity",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "FactActivity"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:539BD97887E3C2F21928FC19ED1BB814AC05D806B542570C573C2E84A728AA85",
+      "evidence_file": "object-sonic-dw-dbo-factactivity.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-factactivity.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.factFIRE",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "factFIRE"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:CC06C7437B5DB9B0F381077043298630409A99E26DDC9B7FE165F3EA81F83872",
+      "evidence_file": "object-sonic-dw-dbo-factfire.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-factfire.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.factFIRE_A",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "factFIRE_A"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:6443E0DD35573C3C784BE8A83B4636873E095BA7F8062824113442C5745FFFB0",
+      "evidence_file": "object-sonic-dw-dbo-factfire-a.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-factfire-a.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.FactOpportunity",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "FactOpportunity"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:C27F40110E551E31788E7F012F3CC0DE0550078A9DB4BEEA632FA801F3301F69",
+      "evidence_file": "object-sonic-dw-dbo-factopportunity.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-factopportunity.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.FBCustomAudience",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "FBCustomAudience"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:84FEE087B6F9C00FF0CBE4CB20BDF5253B6808BC9AF88CD216025D283AB74855",
+      "evidence_file": "object-sonic-dw-dbo-fbcustomaudience.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-fbcustomaudience.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dbo.vw_GPA_RateCap_SRC",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dbo",
+        "vw_GPA_RateCap_SRC"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:EAEAF10FCF1F95E739A55F37B0AAC604C5BBBA4B5212B3A711014C53281E1A97",
+      "evidence_file": "object-sonic-dw-dbo-vw-gpa-ratecap-src.evidence.json",
+      "markdown_file": "object-sonic-dw-dbo-vw-gpa-ratecap-src.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page",
+        "pilot-refresh"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "compliance_rows": [
+    {
+      "object": "Sonic_DW.dbo.Dim_Entity",
+      "confluence_page_id": "2286682225",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / Dim_Entity",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / Dim_Entity",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.Dim_Date",
+      "confluence_page_id": "2286518544",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / Dim_Date",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / Dim_Date",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.DimEntityRelationship",
+      "confluence_page_id": "2285764941",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / DimEntityRelationship",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / DimEntityRelationship",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.Dim_Vehicle",
+      "confluence_page_id": "2285764917",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / Dim_Vehicle",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / Dim_Vehicle",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.DimEntityRelationshipType",
+      "confluence_page_id": "2286715653",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / DimEntityRelationshipType",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / DimEntityRelationshipType",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.dim_FIGLAccounts",
+      "confluence_page_id": "2287599814",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / dim_FIGLAccounts",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / dim_FIGLAccounts",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.factFIRE",
+      "confluence_page_id": "2286223541",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / factFIRE",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / factFIRE",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.Dim_DMSCustomer",
+      "confluence_page_id": "2287698105",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / Dim_DMSCustomer",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / Dim_DMSCustomer",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.Dim_DMSEmployee",
+      "confluence_page_id": "2287993038",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / Dim_DMSEmployee",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / Dim_DMSEmployee",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.DimAssociate",
+      "confluence_page_id": "2286518568",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / DimAssociate",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / DimAssociate",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.FBCustomAudience",
+      "confluence_page_id": "2287599862",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / FBCustomAudience",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / FBCustomAudience",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.dim_DealType",
+      "confluence_page_id": "2287894743",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / dim_DealType",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / dim_DealType",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.FactOpportunity",
+      "confluence_page_id": "2287927574",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / FactOpportunity",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / FactOpportunity",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.dim_Time",
+      "confluence_page_id": "2287894767",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / dim_Time",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / dim_Time",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.Dim_Account",
+      "confluence_page_id": "2287305009",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / Dim_Account",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / Dim_Account",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.vw_GPA_RateCap_SRC",
+      "confluence_page_id": "2286223565",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / vw_GPA_RateCap_SRC",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / vw_GPA_RateCap_SRC",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.DimUpType",
+      "confluence_page_id": "2288091423",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / DimUpType",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / DimUpType",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.DimLeadStatus",
+      "confluence_page_id": "2287599838",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / DimLeadStatus",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / DimLeadStatus",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.DimOpportunitySource",
+      "confluence_page_id": "2288255159",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / DimOpportunitySource",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / DimOpportunitySource",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.Fact_Service",
+      "confluence_page_id": "2286223517",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / Fact_Service",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / Fact_Service",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.FactActivity",
+      "confluence_page_id": "2287993062",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / FactActivity",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / FactActivity",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.Dim_AccountMgmt",
+      "confluence_page_id": "2287305033",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / Dim_AccountMgmt",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / Dim_AccountMgmt",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.factFIRE_A",
+      "confluence_page_id": "2287305081",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / factFIRE_A",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / factFIRE_A",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.DimActivityType",
+      "confluence_page_id": "2287305057",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / DimActivityType",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / DimActivityType",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    },
+    {
+      "object": "Sonic_DW.dbo.dwDiffActivity_I",
+      "confluence_page_id": "2288025848",
+      "old_path": "Sonic Data Lineage / Database Catalog / Sonic_DW / dbo / dwDiffActivity_I",
+      "new_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / dwDiffActivity_I",
+      "old_path_status": "stale-flat-path",
+      "new_path_status": "platform-grouped",
+      "refresh_action": "publish refreshed canonical page; leave old page for separate cleanup approval"
+    }
+  ],
+  "source_artifacts": {
+    "old_publish_packet": "docs/confluence-full-database-catalog-deployment/FDP-04-tier2-thin-object-batch-01-publish-packet.json",
+    "old_live_readback": "docs/confluence-full-database-catalog-deployment/FDP-04-tier2-batch01-live-publish-readback.md",
+    "dry_run_output": "data/confluence/human-catalog-dry-run"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2P-06-sonic-dw-dbo-pilot-refresh-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2P-06-sonic-dw-dbo-pilot-refresh-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2P-06-sonic-dw-dbo-pilot-refresh-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}
