@@ -11,6 +11,7 @@ It implements:
 - `docs/adr/ADR-015-Rovo-Optimized-AI-Retrieval-Artifacts.md`
 - `docs/adr/ADR-016-Full-Database-Catalog-Deployment-And-Cleanup.md`
 - `docs/adr/ADR-021-Platform-Grouped-Database-Catalog.md`
+- `docs/adr/ADR-022-Complete-Tier2-Object-Pages-And-Schema-Hyperlinks.md`
 
 ## Purpose
 
@@ -128,7 +129,7 @@ Object rows should include:
 
 | Column     | Required | Notes                                                                                                                            |
 | ---------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| Object     | Yes      | Link to the canonical object page under this schema.                                                                             |
+| Object     | Yes      | Link to the canonical object page under this platform/database/schema when the page exists or is included in the same packet.    |
 | Type       | Yes      | Table, view, procedure, function, synonym, or other supported type.                                                              |
 | Tags       | Yes      | Evidence-backed signals such as `high-value`, `high-use`, `profiled`, `support-critical`, `review-needed`, or `lineage-hotspot`. |
 | Purpose    | Yes      | Specific summary when evidence supports it; otherwise `not surfaced in metadata`.                                                |
@@ -142,6 +143,12 @@ Object rows should include:
 
 Object pages are canonical pages under their database/schema. They may start as
 thin pages and become richer as evidence or review priority increases.
+
+Every publishable object should have a Tier 2 thin object page. A top-used or
+top-25 pilot batch is not complete coverage. Schema pages may be published
+before every object page exists, but rows must retain deterministic
+`canonical_page_path` and link status metadata so later Tier 2 packets can
+refresh the links without manual research.
 
 Rich generated prose should be added first for objects tagged:
 

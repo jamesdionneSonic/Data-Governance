@@ -26,16 +26,20 @@ plus additional Tier 2/Tier 3 batches as needed for page volume.
 1. `AI_README.md`
 2. `AGENTS.md`
 3. `docs/adr/ADR-016-Full-Database-Catalog-Deployment-And-Cleanup.md`
-4. `docs/CODEX_FULL_DATABASE_CATALOG_DEPLOYMENT_PACKET.md`
-5. `docs/DATABASE_CATALOG_FULL_DEPLOYMENT_BACKLOG.md`
-6. `docs/CONFLUENCE_DATABASE_CATALOG_LAYOUT.md`
-7. `docs/CONFLUENCE_FULL_REBUILD_SCOPE.md`
-8. `docs/CONFLUENCE_HUMAN_LINEAGE_PAGE_CONTRACT.md`
+4. `docs/adr/ADR-021-Platform-Grouped-Database-Catalog.md`
+5. `docs/adr/ADR-022-Complete-Tier2-Object-Pages-And-Schema-Hyperlinks.md`
+6. `docs/CODEX_FULL_DATABASE_CATALOG_DEPLOYMENT_PACKET.md`
+7. `docs/CODEX_DATABASE_CATALOG_TIER2_OBJECT_COVERAGE_PACKET.md`
+8. `docs/DATABASE_CATALOG_FULL_DEPLOYMENT_BACKLOG.md`
+9. `docs/CONFLUENCE_DATABASE_CATALOG_LAYOUT.md`
+10. `docs/CONFLUENCE_FULL_REBUILD_SCOPE.md`
+11. `docs/CONFLUENCE_HUMAN_LINEAGE_PAGE_CONTRACT.md`
 
 ## Global Guardrails
 
 - Dry-run first.
 - Full deployment means every included cataloged database.
+- Database Catalog paths include platform/product.
 - Do not hard-code `Sonic_DW` as the only database.
 - Do not publish old `Schema - <Database>.<Schema>` pages as canonical schema
   nodes.
@@ -138,9 +142,12 @@ Roll out thin canonical object pages in safe batches.
 
 ### Acceptance Criteria
 
-- Object pages live under `Database Catalog / <Database> / <Schema>`.
+- Object pages live under
+  `Database Catalog / <Platform/Product> / <Database> / <Schema>`.
 - Pages include identity, tags, aliases, columns, lineage counts, profile
   signals, confidence, backlinks, related pages, evidence, and missing facts.
+- Schema/database object rows are linked to canonical object pages when those
+  pages are generated or known live.
 - Unsupported governance fields are not inferred.
 
 ## FDP-05: Tier 3 Rich Priority Object Batches
@@ -232,6 +239,7 @@ Use this prompt when starting a packet:
 We are deploying the Sonic Data Lineage Database Catalog across every included
 cataloged database using ADR-016. Read the required packet docs, stay in dry-run
 mode unless I explicitly approve live publish or cleanup, and complete
-<packet id>. The final tree is Database Catalog / <Database> / <Schema> /
-<Object>. Old Schema - <Database>.<Schema> pages are cleanup candidates only.
+<packet id>. The final tree is Database Catalog / <Platform/Product> /
+<Database> / <Schema> / <Object>. Old Schema - <Database>.<Schema> pages are
+cleanup candidates only.
 ```

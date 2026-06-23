@@ -46,11 +46,11 @@ Sonic Data Lineage
 Examples:
 
 ```text
-Database Catalog / Sonic_DW / dbo / Dim_Vehicle
-Database Catalog / Sonic_DW / dq / vw_Fact_DQValidation
-Database Catalog / BI_WorkDB / dbo / <Object>
-Database Catalog / CBS / dbo / <Object>
-Database Catalog / VendorData / dbo / <Object>
+Database Catalog / SQL Server / Sonic_DW / dbo / Dim_Vehicle
+Database Catalog / SQL Server / Sonic_DW / dq / vw_Fact_DQValidation
+Database Catalog / SQL Server / BI_WorkDB / dbo / <Object>
+Database Catalog / SQL Server / CBS / dbo / <Object>
+Database Catalog / SQL Server / VendorData / dbo / <Object>
 ```
 
 The full deployment must:

@@ -17,12 +17,16 @@ Before starting a full deployment packet, read:
 5. `docs/adr/ADR-014-Canonical-Object-Catalog-Trust-Signals-And-Medium-Backlog.md`
 6. `docs/adr/ADR-015-Rovo-Optimized-AI-Retrieval-Artifacts.md`
 7. `docs/adr/ADR-016-Full-Database-Catalog-Deployment-And-Cleanup.md`
-8. `docs/CONFLUENCE_DATABASE_CATALOG_LAYOUT.md`
-9. `docs/CONFLUENCE_FULL_REBUILD_SCOPE.md`
-10. `docs/CONFLUENCE_HUMAN_LINEAGE_PAGE_CONTRACT.md`
-11. `docs/ROVO_AI_RETRIEVAL_ARTIFACTS_CONTRACT.md`
-12. `docs/DATABASE_CATALOG_FULL_DEPLOYMENT_BACKLOG.md`
-13. `docs/DATABASE_CATALOG_FULL_DEPLOYMENT_WORK_PACKETS.md`
+8. `docs/adr/ADR-021-Platform-Grouped-Database-Catalog.md`
+9. `docs/adr/ADR-022-Complete-Tier2-Object-Pages-And-Schema-Hyperlinks.md`
+10. `docs/CONFLUENCE_DATABASE_CATALOG_LAYOUT.md`
+11. `docs/CONFLUENCE_FULL_REBUILD_SCOPE.md`
+12. `docs/CONFLUENCE_HUMAN_LINEAGE_PAGE_CONTRACT.md`
+13. `docs/ROVO_AI_RETRIEVAL_ARTIFACTS_CONTRACT.md`
+14. `docs/DATABASE_CATALOG_FULL_DEPLOYMENT_BACKLOG.md`
+15. `docs/DATABASE_CATALOG_FULL_DEPLOYMENT_WORK_PACKETS.md`
+16. `docs/DATABASE_CATALOG_TIER2_OBJECT_COVERAGE_BACKLOG.md`
+17. `docs/DATABASE_CATALOG_TIER2_OBJECT_COVERAGE_WORK_PACKETS.md`
 
 ## Goal
 
@@ -30,7 +34,7 @@ Deploy the final human Database Catalog pattern across all included cataloged
 databases:
 
 ```text
-Database Catalog / <Database> / <Schema> / <Object>
+Database Catalog / <Platform/Product> / <Database> / <Schema> / <Object>
 ```
 
 The deployment must make the catalog complete enough for humans to browse and
@@ -71,9 +75,10 @@ Use:
 ```text
 Sonic Data Lineage
   Database Catalog
-    <Database>
-      <Schema>
-        <Object>
+    <Platform/Product>
+      <Database>
+        <Schema>
+          <Object>
 ```
 
 Do not publish new pages under:
@@ -105,6 +110,8 @@ everything.
 Deliver:
 
 - canonical object pages for the selected database/batch;
+- link refreshes for schema/database rows that reference generated or already
+  published canonical object pages;
 - identity, type, tags, aliases, columns, lineage counts, profile signals,
   confidence, backlinks, related pages, and missing facts;
 - no invented owner, status, SLA, or live freshness.

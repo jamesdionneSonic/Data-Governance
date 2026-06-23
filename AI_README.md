@@ -66,9 +66,14 @@ wrappers around engine modules, while `src/` remains the app/API/UI runtime.
 Database Catalog pages under `Sonic Data Lineage` must follow the complete
 object-library strategy:
 
+- the catalog groups by platform/product first, then database, schema, and
+  object;
 - database pages summarize schemas;
 - schema pages list every cataloged object in grouped sections;
 - canonical object pages live under their database/schema path;
+- every publishable object must eventually have a thin Tier 2 object page;
+- schema/database object rows must hyperlink to canonical object pages when the
+  object page exists or is included in the same reviewed publish packet;
 - tags such as `high-value`, `high-use`, `profiled`, `product-critical`,
   `support-critical`, `review-needed`, and `lineage-hotspot` identify priority
   and support context.
@@ -76,7 +81,7 @@ object-library strategy:
 Use short canonical Confluence tree titles:
 
 ```text
-Database Catalog / Sonic_DW / dbo / DimVehicle
+Database Catalog / SQL Server / Sonic_DW / dbo / DimVehicle
 ```
 
 Do not create duplicate schema pages such as
@@ -91,15 +96,20 @@ behavior:
 2. `docs/adr/ADR-014-Canonical-Object-Catalog-Trust-Signals-And-Medium-Backlog.md`
 3. `docs/adr/ADR-015-Rovo-Optimized-AI-Retrieval-Artifacts.md`
 4. `docs/adr/ADR-016-Full-Database-Catalog-Deployment-And-Cleanup.md`
-5. `docs/CONFLUENCE_DATABASE_CATALOG_LAYOUT.md`
-6. `docs/ROVO_AI_RETRIEVAL_ARTIFACTS_CONTRACT.md`
-7. `docs/CODEX_CONFLUENCE_DATABASE_CATALOG_PACKET.md`
-8. `docs/CODEX_FULL_DATABASE_CATALOG_DEPLOYMENT_PACKET.md`
-9. `docs/CODEX_ROVO_AI_RETRIEVAL_PACKET.md`
-10. `docs/DATABASE_CATALOG_MEDIUM_BACKLOG.md`
-11. `docs/DATABASE_CATALOG_FULL_DEPLOYMENT_BACKLOG.md`
-12. `docs/DATABASE_CATALOG_FULL_DEPLOYMENT_WORK_PACKETS.md`
-13. `docs/CONFLUENCE_HUMAN_LINEAGE_PAGE_CONTRACT.md`
+5. `docs/adr/ADR-021-Platform-Grouped-Database-Catalog.md`
+6. `docs/adr/ADR-022-Complete-Tier2-Object-Pages-And-Schema-Hyperlinks.md`
+7. `docs/CONFLUENCE_DATABASE_CATALOG_LAYOUT.md`
+8. `docs/ROVO_AI_RETRIEVAL_ARTIFACTS_CONTRACT.md`
+9. `docs/CODEX_CONFLUENCE_DATABASE_CATALOG_PACKET.md`
+10. `docs/CODEX_FULL_DATABASE_CATALOG_DEPLOYMENT_PACKET.md`
+11. `docs/CODEX_DATABASE_CATALOG_TIER2_OBJECT_COVERAGE_PACKET.md`
+12. `docs/CODEX_ROVO_AI_RETRIEVAL_PACKET.md`
+13. `docs/DATABASE_CATALOG_MEDIUM_BACKLOG.md`
+14. `docs/DATABASE_CATALOG_FULL_DEPLOYMENT_BACKLOG.md`
+15. `docs/DATABASE_CATALOG_FULL_DEPLOYMENT_WORK_PACKETS.md`
+16. `docs/DATABASE_CATALOG_TIER2_OBJECT_COVERAGE_BACKLOG.md`
+17. `docs/DATABASE_CATALOG_TIER2_OBJECT_COVERAGE_WORK_PACKETS.md`
+18. `docs/CONFLUENCE_HUMAN_LINEAGE_PAGE_CONTRACT.md`
 
 Do not infer owner, data steward, lifecycle/status, live freshness, or
 certification unless an approved evidence source explicitly surfaces it. Use
@@ -126,7 +136,7 @@ Full deployment means every included cataloged database, not only `Sonic_DW`.
 Use the canonical tree:
 
 ```text
-Database Catalog / <Database> / <Schema> / <Object>
+Database Catalog / <Platform/Product> / <Database> / <Schema> / <Object>
 ```
 
 Old pages such as `Schema - Sonic_DW.dbo` are superseded cleanup candidates.

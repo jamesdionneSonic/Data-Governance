@@ -4,7 +4,10 @@ This contract implements the first slice of
 `docs/adr/ADR-009-Human-Centered-Confluence-Lineage-Catalog.md`.
 Database Catalog pages must also follow
 `docs/adr/ADR-013-Complete-Database-Catalog-And-Object-Library-Pages.md` and
-`docs/CONFLUENCE_DATABASE_CATALOG_LAYOUT.md`.
+`docs/CONFLUENCE_DATABASE_CATALOG_LAYOUT.md`. Platform-grouped Database Catalog
+paths must follow `docs/adr/ADR-021-Platform-Grouped-Database-Catalog.md`, and
+complete Tier 2 object coverage plus schema hyperlinks must follow
+`docs/adr/ADR-022-Complete-Tier2-Object-Pages-And-Schema-Hyperlinks.md`.
 
 The goal is to make Confluence useful to humans without turning it into the
 machine-readable source for the Sonic lineage skill. Azure DevOps lineage
@@ -125,6 +128,7 @@ Database/schema-page fields:
 ```json
 {
   "catalog_slice": {
+    "platform_product": "",
     "database": "",
     "schema": "",
     "object_counts": {},
@@ -255,9 +259,15 @@ Object pages should use expandable sections for:
 - source artifact paths
 
 Object pages must live under the canonical database/schema path when published
-to the human catalog. Do not create a separate top-level `High-Value Assets`
-object hierarchy. Use `high-value`, `high-use`, `product-critical`,
-`support-critical`, `profiled`, `review-needed`, and `lineage-hotspot` as tags
+to the human catalog:
+
+```text
+Database Catalog / <Platform/Product> / <Database> / <Schema> / <Object>
+```
+
+Do not create a separate top-level `High-Value Assets` object hierarchy. Use
+`high-value`, `high-use`, `product-critical`, `support-critical`, `profiled`,
+`review-needed`, and `lineage-hotspot` as tags
 on object rows/pages instead.
 
 ## Quality Gate

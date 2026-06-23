@@ -13,8 +13,12 @@ Accepted
 ADR-013 makes the Database Catalog a complete object library:
 
 ```text
-Database Catalog / <Database> / <Schema> / <Object>
+Database Catalog / <Platform/Product> / <Database> / <Schema> / <Object>
 ```
+
+ADR-021 added the platform/product level after this object-page strategy was
+first defined. ADR-022 extends the same object-page strategy by requiring broad
+Tier 2 object coverage and schema hyperlinks to canonical object pages.
 
 That settles the information architecture, but it does not fully define how a
 user should trust, search, and interpret those object pages. A complete catalog
@@ -245,6 +249,8 @@ Not allowed without stronger review or explicit approval:
 - `docs/adr/ADR-013-Complete-Database-Catalog-And-Object-Library-Pages.md`
 - `docs/adr/ADR-015-Rovo-Optimized-AI-Retrieval-Artifacts.md`
 - `docs/adr/ADR-016-Full-Database-Catalog-Deployment-And-Cleanup.md`
+- `docs/adr/ADR-021-Platform-Grouped-Database-Catalog.md`
+- `docs/adr/ADR-022-Complete-Tier2-Object-Pages-And-Schema-Hyperlinks.md`
 - `docs/CONFLUENCE_DATABASE_CATALOG_LAYOUT.md`
 - `docs/ROVO_AI_RETRIEVAL_ARTIFACTS_CONTRACT.md`
 - `docs/CODEX_CONFLUENCE_DATABASE_CATALOG_PACKET.md`

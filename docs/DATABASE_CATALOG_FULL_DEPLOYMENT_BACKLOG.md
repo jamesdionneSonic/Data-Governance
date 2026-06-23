@@ -15,10 +15,13 @@ explicitly approves a reviewed packet.
 ## Principles
 
 - Full deployment means every included cataloged database, not just `Sonic_DW`.
-- The final tree is `Database Catalog / <Database> / <Schema> / <Object>`.
+- The final tree is
+  `Database Catalog / <Platform/Product> / <Database> / <Schema> / <Object>`.
 - Old pages such as `Schema - Sonic_DW.dbo` are superseded cleanup candidates.
 - Schema pages must expose every cataloged object after blocked-schema rules.
 - Thin object pages are enough for broad coverage; rich pages are priority-led.
+- Tier 2 broad coverage means every publishable object, with schema/database
+  rows linked to canonical pages as pages are generated or verified.
 - Cleanup is separate from generation and publish.
 - Rovo retrieval artifacts must link to canonical human pages but remain in the
   separated `AI Retrieval Artifacts` tree.
@@ -156,18 +159,21 @@ databases.
 
 ### FDCAT-009: Tier 2 Thin Object Page Batch Strategy
 
-**Goal**: Define safe batches for thin object pages.
+**Goal**: Define safe batches for complete thin object page coverage.
 
 **Scope**:
 
-- Batch by database, schema, object type, or priority tag.
+- Batch by platform/product, database, schema, object type, page-count slice, or
+  priority tag.
 - Set page-count limits per run.
 - Define retry and rollback handling.
+- Ensure the strategy does not permanently cap coverage at top-used objects.
 
 **Acceptance Criteria**:
 
 - Each batch can be completed at medium intelligence.
 - Broad all-object publish is split into reviewable packets.
+- Complete Tier 2 coverage remains the target.
 
 ### FDCAT-010: Tier 2 Thin Object Page Dry Run
 
@@ -177,12 +183,16 @@ databases.
 
 - Include identity, tags, aliases, columns, lineage counts, profile signals,
   confidence, backlinks, related pages, technical evidence, and missing facts.
+- Include link-status metadata for schema/database rows.
 
 **Acceptance Criteria**:
 
-- Object pages live under `Database Catalog / <Database> / <Schema>`.
+- Object pages live under
+  `Database Catalog / <Platform/Product> / <Database> / <Schema>`.
 - Unsupported owner, SLA, lifecycle/status, live freshness, and certification
   are `not surfaced in metadata`.
+- In-scope schema/database rows can link to canonical object pages or explain
+  why the link remains pending.
 
 ### FDCAT-011: Tier 2 Publish Packet And Verification
 
