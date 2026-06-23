@@ -1,0 +1,3012 @@
+{
+  "packet_id": "T2B-034",
+  "generated_at": "2026-06-23T18:03:10.126Z",
+  "batch": {
+    "batch_id": "T2B-034",
+    "priority_rank": 34,
+    "platform": "SQL Server",
+    "database": "ETL_Staging",
+    "schema": "dbo",
+    "object_type_scope": "table",
+    "object_count": 21,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "xrfCoraCompanyPrefix",
+    "last_object": "zzzzz_gljedetail_2012_09",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo",
+    "object_names": [
+      "xrfCoraCompanyPrefix",
+      "xrfFIAcctCode",
+      "xrfGLSchedule_Plugs",
+      "xrfGLSchedule_SchedRef",
+      "xrfGLScheduleExceptions",
+      "zzzzz_dbo.gljedetail_2012_06",
+      "zzzzz_dbo.gljedetail_2012_07",
+      "zzzzz_dbo.gljedetail_2012_08",
+      "zzzzz_dbo.gljedetail_2012_10",
+      "zzzzz_dbo.gljedetail_2012_11",
+      "zzzzz_dbo.gljedetail_2013_01",
+      "zzzzz_dbo.gljedetail_2013_02",
+      "zzzzz_dbo.gljedetail_2013_03",
+      "zzzzz_dbo.gljedetail_2013_04",
+      "zzzzz_dbo.gljedetail_2013_05",
+      "zzzzz_dbo.gljedetail_2013_06",
+      "zzzzz_dbo.gljedetail_agg_cora_2011",
+      "zzzzz_dbo.GLJEDetail_agg_cora_2011_2",
+      "zzzzz_dbo.gljedetail_cur_staging_Temp12212012",
+      "zzzzz_dbo.GLJEHeader_agg_cora_2011",
+      "zzzzz_gljedetail_2012_09"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "table",
+    "original_object_count": 21,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 21,
+    "total_planned_pages": 25
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "ETL_Staging"],
+      "page_type": "database",
+      "evidence_hash": "sha256:DAC2D90CB3BE061D63E9E2B32F595CD9386F3A5C44DBCECB3D4790E05ABC3057",
+      "evidence_file": "database-etl-staging.evidence.json",
+      "markdown_file": "database-etl-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "ETL_Staging", "dbo"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:BD6C3D84ABEAF3855D66256E4649C0A7BEF39E8860EB6282ED23AE07F8539DC3",
+      "evidence_file": "schema-etl-staging-dbo.evidence.json",
+      "markdown_file": "schema-etl-staging-dbo.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.xrfCoraCompanyPrefix",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "xrfCoraCompanyPrefix"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:AEC9CFBD4EEE00FA30E83CB655F0EAEDD5102B2198FAA8BEA3D9EFF21FDB91EA",
+      "evidence_file": "object-etl-staging-dbo-xrfcoracompanyprefix.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-xrfcoracompanyprefix.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.xrfFIAcctCode",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "xrfFIAcctCode"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:4541FA4376A2935251C50E557556AFE703C3E6D6D09ACAB2472BCF39277EDA94",
+      "evidence_file": "object-etl-staging-dbo-xrffiacctcode.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-xrffiacctcode.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.xrfGLSchedule_Plugs",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "xrfGLSchedule_Plugs"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:AB0F612069EA09171C6F7673CCF77E01A30A355745730DD84ECF56E57C2FAFE9",
+      "evidence_file": "object-etl-staging-dbo-xrfglschedule-plugs.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-xrfglschedule-plugs.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.xrfGLSchedule_SchedRef",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "xrfGLSchedule_SchedRef"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:7DE35055DB77D5F4B818228D0375A0E68D5D309DC80CC72BB8C883217C10BBDC",
+      "evidence_file": "object-etl-staging-dbo-xrfglschedule-schedref.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-xrfglschedule-schedref.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.xrfGLScheduleExceptions",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "xrfGLScheduleExceptions"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:1336F5F2EA198C3D2C50C1D4AE111FC07FBC490F876D8174B43688C3097F6BFB",
+      "evidence_file": "object-etl-staging-dbo-xrfglscheduleexceptions.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-xrfglscheduleexceptions.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2012_06",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2012_06"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:06CB23316C5B15B054A81DB3247EAE8387A024B90AABB2EB9F825FE12D29FC12",
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-06.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-06.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2012_07",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2012_07"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:BF3B0371FB289BFA3EB2746DF880B929BE7DE24107817B71E791E6A09D9D05F0",
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-07.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-07.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2012_08",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2012_08"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:F7C72C4950EC3B5C410A0527B37FF404534B2446D7D4E5D27B6B1E803CB2A1AC",
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-08.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-08.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2012_10",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2012_10"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:EC9584E9C969AA83E2576C2283BE8362036426F034E6F0E003067386ACFCABD1",
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-10.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-10.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2012_11",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2012_11"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:CF0FB5B11D24BFC15E1E56F38A10EF85082039DA9240C8145DB72407C22E768B",
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-11.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-11.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2013_01",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2013_01"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:6320BDE79FF8E79D6153D0E3170B1F665526BBFAA0965D2A43A1C2A2BBD51904",
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-01.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-01.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2013_02",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2013_02"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:DB85A46AD977ECBC814FE60A2D1ED1416D7FFBE585533DB8D530065110CBD18E",
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-02.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-02.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2013_03",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2013_03"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A4FE370BC11C51B22C4067BBAE95801AA04B98EE5476BA1593DF4A28BD2DBF3A",
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-03.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-03.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2013_04",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2013_04"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:AA03C145BCD2E786B5F6AD02A1095B3FF5EB199AEDE9064DE09B6B3A2DED341A",
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-04.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-04.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2013_05",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2013_05"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B4B9AC23EF5380E350D9ABC2E465A03ED26396822C9512394F0CFB2A6AB93F83",
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-05.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-05.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2013_06",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2013_06"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A1E4F2863CBE1A9A05FFB7A4921892C15EB3321F6D4D2C6550DDDCFFFD9D7074",
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-06.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-06.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_agg_cora_2011",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_agg_cora_2011"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:C6A593F36B413791EBCEF077FCD490378F8AFCACD13987ADB720AE9745C50863",
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-agg-cora-2011.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-agg-cora-2011.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.zzzzz_dbo.GLJEDetail_agg_cora_2011_2",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.GLJEDetail_agg_cora_2011_2"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:EA3E369F7345896BBC08CBEF0DFD54FB1A461D9B7EFF622A7A53587545551CF9",
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-agg-cora-2011-2.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-agg-cora-2011-2.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_cur_staging_Temp12212012",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_cur_staging_Temp12212012"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:4035C1AD114C208420F87A34B6B6111EDA09B1DDF1C07EBE2A15B8E01FE05156",
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-cur-staging-temp12212012.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-cur-staging-temp12212012.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.zzzzz_dbo.GLJEHeader_agg_cora_2011",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.GLJEHeader_agg_cora_2011"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:435C1EFF37838C836ED57AF317F4137BCD43B54AD24EF21F557727B78D009D6F",
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljeheader-agg-cora-2011.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljeheader-agg-cora-2011.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.dbo.zzzzz_gljedetail_2012_09",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_gljedetail_2012_09"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D075F4592B8A69BC89D2D852CB4AA4B652E27B6B0335EF01BA8748A76054E589",
+      "evidence_file": "object-etl-staging-dbo-zzzzz-gljedetail-2012-09.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-gljedetail-2012-09.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "xrfCoraCompanyPrefix",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "xrfCoraCompanyPrefix"
+      ],
+      "canonical_id": "object-etl-staging-dbo-xrfcoracompanyprefix",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__xrfCoraCompanyPrefix.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:AEC9CFBD4EEE00FA30E83CB655F0EAEDD5102B2198FAA8BEA3D9EFF21FDB91EA",
+      "object": {
+        "name": "xrfCoraCompanyPrefix",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.xrfCoraCompanyPrefix",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.xrfCoraCompanyPrefix",
+        "dbo.xrfCoraCompanyPrefix",
+        "xrfCoraCompanyPrefix",
+        "xrfcoracompanyprefix"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["cora_acct_id", "Companyid", "Prefix"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 3,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-xrfcoracompanyprefix.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-xrfcoracompanyprefix.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "xrfFIAcctCode",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "xrfFIAcctCode"
+      ],
+      "canonical_id": "object-etl-staging-dbo-xrffiacctcode",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__xrfFIAcctCode.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:4541FA4376A2935251C50E557556AFE703C3E6D6D09ACAB2472BCF39277EDA94",
+      "object": {
+        "name": "xrfFIAcctCode",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.xrfFIAcctCode",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.xrfFIAcctCode",
+        "dbo.xrfFIAcctCode",
+        "xrfFIAcctCode",
+        "xrffiacctcode"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["cora_acct_code"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 1,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-xrffiacctcode.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-xrffiacctcode.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "xrfGLSchedule_Plugs",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "xrfGLSchedule_Plugs"
+      ],
+      "canonical_id": "object-etl-staging-dbo-xrfglschedule-plugs",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__xrfGLSchedule_Plugs.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:AB0F612069EA09171C6F7673CCF77E01A30A355745730DD84ECF56E57C2FAFE9",
+      "object": {
+        "name": "xrfGLSchedule_Plugs",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.xrfGLSchedule_Plugs",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.xrfGLSchedule_Plugs",
+        "dbo.xrfGLSchedule_Plugs",
+        "xrfGLSchedule_Plugs",
+        "xrfGLSchedulePlugs",
+        "xrfglscheduleplugs"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "V1-SSIS25-01, 11040.SSISDB.FUEL_II.FUEL_II - Dependency Check and Load.SONIC_GLSchedule_Stg_Step_4.dtsx"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 34,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-xrfglschedule-plugs.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-xrfglschedule-plugs.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "xrfGLSchedule_SchedRef",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "xrfGLSchedule_SchedRef"
+      ],
+      "canonical_id": "object-etl-staging-dbo-xrfglschedule-schedref",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__xrfGLSchedule_SchedRef.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:7DE35055DB77D5F4B818228D0375A0E68D5D309DC80CC72BB8C883217C10BBDC",
+      "object": {
+        "name": "xrfGLSchedule_SchedRef",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.xrfGLSchedule_SchedRef",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.xrfGLSchedule_SchedRef",
+        "dbo.xrfGLSchedule_SchedRef",
+        "xrfGLSchedule_SchedRef",
+        "xrfGLScheduleSchedRef",
+        "xrfglscheduleschedref"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.FUEL_II.FUEL_II - Dependency Check and Load.SONIC_GLSchedule_Stg_Step_1.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["cora_acct_id", "companyid", "accountnumber", "schedulenumber", "currentmonth"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-xrfglschedule-schedref.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-xrfglschedule-schedref.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "xrfGLScheduleExceptions",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "xrfGLScheduleExceptions"
+      ],
+      "canonical_id": "object-etl-staging-dbo-xrfglscheduleexceptions",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__xrfGLScheduleExceptions.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:1336F5F2EA198C3D2C50C1D4AE111FC07FBC490F876D8174B43688C3097F6BFB",
+      "object": {
+        "name": "xrfGLScheduleExceptions",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.xrfGLScheduleExceptions",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.xrfGLScheduleExceptions",
+        "dbo.xrfGLScheduleExceptions",
+        "xrfGLScheduleExceptions",
+        "xrfglscheduleexceptions"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["companyid", "schedulenumber"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 2,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-xrfglscheduleexceptions.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-xrfglscheduleexceptions.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_dbo.gljedetail_2012_06",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2012_06"
+      ],
+      "canonical_id": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-06",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__zzzzz_dbo.gljedetail_2012_06.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:06CB23316C5B15B054A81DB3247EAE8387A024B90AABB2EB9F825FE12D29FC12",
+      "object": {
+        "name": "zzzzz_dbo.gljedetail_2012_06",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2012_06",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2012_06",
+        "dbo.zzzzz_dbo.gljedetail_2012_06",
+        "zzzzz_dbo.gljedetail_2012_06",
+        "zzzzzdbo.gljedetail201206",
+        "zzzzzdbogljedetail201206"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 32,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-06.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-06.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_dbo.gljedetail_2012_07",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2012_07"
+      ],
+      "canonical_id": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-07",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__zzzzz_dbo.gljedetail_2012_07.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:BF3B0371FB289BFA3EB2746DF880B929BE7DE24107817B71E791E6A09D9D05F0",
+      "object": {
+        "name": "zzzzz_dbo.gljedetail_2012_07",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2012_07",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2012_07",
+        "dbo.zzzzz_dbo.gljedetail_2012_07",
+        "zzzzz_dbo.gljedetail_2012_07",
+        "zzzzzdbo.gljedetail201207",
+        "zzzzzdbogljedetail201207"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 32,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-07.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-07.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_dbo.gljedetail_2012_08",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2012_08"
+      ],
+      "canonical_id": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-08",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__zzzzz_dbo.gljedetail_2012_08.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:F7C72C4950EC3B5C410A0527B37FF404534B2446D7D4E5D27B6B1E803CB2A1AC",
+      "object": {
+        "name": "zzzzz_dbo.gljedetail_2012_08",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2012_08",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2012_08",
+        "dbo.zzzzz_dbo.gljedetail_2012_08",
+        "zzzzz_dbo.gljedetail_2012_08",
+        "zzzzzdbo.gljedetail201208",
+        "zzzzzdbogljedetail201208"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 32,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-08.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-08.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_dbo.gljedetail_2012_10",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2012_10"
+      ],
+      "canonical_id": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-10",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__zzzzz_dbo.gljedetail_2012_10.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:EC9584E9C969AA83E2576C2283BE8362036426F034E6F0E003067386ACFCABD1",
+      "object": {
+        "name": "zzzzz_dbo.gljedetail_2012_10",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2012_10",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2012_10",
+        "dbo.zzzzz_dbo.gljedetail_2012_10",
+        "zzzzz_dbo.gljedetail_2012_10",
+        "zzzzzdbo.gljedetail201210",
+        "zzzzzdbogljedetail201210"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 32,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-10.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-10.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_dbo.gljedetail_2012_11",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2012_11"
+      ],
+      "canonical_id": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-11",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__zzzzz_dbo.gljedetail_2012_11.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:CF0FB5B11D24BFC15E1E56F38A10EF85082039DA9240C8145DB72407C22E768B",
+      "object": {
+        "name": "zzzzz_dbo.gljedetail_2012_11",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2012_11",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2012_11",
+        "dbo.zzzzz_dbo.gljedetail_2012_11",
+        "zzzzz_dbo.gljedetail_2012_11",
+        "zzzzzdbo.gljedetail201211",
+        "zzzzzdbogljedetail201211"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 32,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-11.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2012-11.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_dbo.gljedetail_2013_01",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2013_01"
+      ],
+      "canonical_id": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-01",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__zzzzz_dbo.gljedetail_2013_01.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:6320BDE79FF8E79D6153D0E3170B1F665526BBFAA0965D2A43A1C2A2BBD51904",
+      "object": {
+        "name": "zzzzz_dbo.gljedetail_2013_01",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2013_01",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2013_01",
+        "dbo.zzzzz_dbo.gljedetail_2013_01",
+        "zzzzz_dbo.gljedetail_2013_01",
+        "zzzzzdbo.gljedetail201301",
+        "zzzzzdbogljedetail201301"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 32,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-01.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-01.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_dbo.gljedetail_2013_02",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2013_02"
+      ],
+      "canonical_id": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-02",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__zzzzz_dbo.gljedetail_2013_02.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:DB85A46AD977ECBC814FE60A2D1ED1416D7FFBE585533DB8D530065110CBD18E",
+      "object": {
+        "name": "zzzzz_dbo.gljedetail_2013_02",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2013_02",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2013_02",
+        "dbo.zzzzz_dbo.gljedetail_2013_02",
+        "zzzzz_dbo.gljedetail_2013_02",
+        "zzzzzdbo.gljedetail201302",
+        "zzzzzdbogljedetail201302"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 32,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-02.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-02.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_dbo.gljedetail_2013_03",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2013_03"
+      ],
+      "canonical_id": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-03",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__zzzzz_dbo.gljedetail_2013_03.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A4FE370BC11C51B22C4067BBAE95801AA04B98EE5476BA1593DF4A28BD2DBF3A",
+      "object": {
+        "name": "zzzzz_dbo.gljedetail_2013_03",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2013_03",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2013_03",
+        "dbo.zzzzz_dbo.gljedetail_2013_03",
+        "zzzzz_dbo.gljedetail_2013_03",
+        "zzzzzdbo.gljedetail201303",
+        "zzzzzdbogljedetail201303"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 32,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-03.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-03.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_dbo.gljedetail_2013_04",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2013_04"
+      ],
+      "canonical_id": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-04",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__zzzzz_dbo.gljedetail_2013_04.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:AA03C145BCD2E786B5F6AD02A1095B3FF5EB199AEDE9064DE09B6B3A2DED341A",
+      "object": {
+        "name": "zzzzz_dbo.gljedetail_2013_04",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2013_04",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2013_04",
+        "dbo.zzzzz_dbo.gljedetail_2013_04",
+        "zzzzz_dbo.gljedetail_2013_04",
+        "zzzzzdbo.gljedetail201304",
+        "zzzzzdbogljedetail201304"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 32,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-04.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-04.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_dbo.gljedetail_2013_05",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2013_05"
+      ],
+      "canonical_id": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-05",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__zzzzz_dbo.gljedetail_2013_05.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B4B9AC23EF5380E350D9ABC2E465A03ED26396822C9512394F0CFB2A6AB93F83",
+      "object": {
+        "name": "zzzzz_dbo.gljedetail_2013_05",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2013_05",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2013_05",
+        "dbo.zzzzz_dbo.gljedetail_2013_05",
+        "zzzzz_dbo.gljedetail_2013_05",
+        "zzzzzdbo.gljedetail201305",
+        "zzzzzdbogljedetail201305"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 32,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-05.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-05.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_dbo.gljedetail_2013_06",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_2013_06"
+      ],
+      "canonical_id": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-06",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__zzzzz_dbo.gljedetail_2013_06.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A1E4F2863CBE1A9A05FFB7A4921892C15EB3321F6D4D2C6550DDDCFFFD9D7074",
+      "object": {
+        "name": "zzzzz_dbo.gljedetail_2013_06",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2013_06",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.zzzzz_dbo.gljedetail_2013_06",
+        "dbo.zzzzz_dbo.gljedetail_2013_06",
+        "zzzzz_dbo.gljedetail_2013_06",
+        "zzzzzdbo.gljedetail201306",
+        "zzzzzdbogljedetail201306"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 32,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-06.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-2013-06.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_dbo.gljedetail_agg_cora_2011",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_agg_cora_2011"
+      ],
+      "canonical_id": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-agg-cora-2011",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__zzzzz_dbo.gljedetail_agg_cora_2011.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:C6A593F36B413791EBCEF077FCD490378F8AFCACD13987ADB720AE9745C50863",
+      "object": {
+        "name": "zzzzz_dbo.gljedetail_agg_cora_2011",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_agg_cora_2011",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.zzzzz_dbo.gljedetail_agg_cora_2011",
+        "dbo.zzzzz_dbo.gljedetail_agg_cora_2011",
+        "zzzzz_dbo.gljedetail_agg_cora_2011",
+        "zzzzzdbo.gljedetailaggcora2011",
+        "zzzzzdbogljedetailaggcora2011"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "companyid",
+          "journalid",
+          "accountingdate",
+          "postingtime",
+          "refer",
+          "total_postingamouont",
+          "max_postingsequence",
+          "total_txns"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-agg-cora-2011.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-agg-cora-2011.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_dbo.GLJEDetail_agg_cora_2011_2",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.GLJEDetail_agg_cora_2011_2"
+      ],
+      "canonical_id": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-agg-cora-2011-2",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__zzzzz_dbo.GLJEDetail_agg_cora_2011_2.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:EA3E369F7345896BBC08CBEF0DFD54FB1A461D9B7EFF622A7A53587545551CF9",
+      "object": {
+        "name": "zzzzz_dbo.GLJEDetail_agg_cora_2011_2",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.zzzzz_dbo.GLJEDetail_agg_cora_2011_2",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.zzzzz_dbo.GLJEDetail_agg_cora_2011_2",
+        "dbo.zzzzz_dbo.GLJEDetail_agg_cora_2011_2",
+        "zzzzz_dbo.GLJEDetail_agg_cora_2011_2",
+        "zzzzzdbo.GLJEDetailaggcora20112",
+        "zzzzzdbogljedetailaggcora20112"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "companyid",
+          "journalid",
+          "accountingdate",
+          "postingtime",
+          "refer",
+          "total_postingamouont",
+          "max_postingsequence",
+          "total_txns"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-agg-cora-2011-2.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-agg-cora-2011-2.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_dbo.gljedetail_cur_staging_Temp12212012",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.gljedetail_cur_staging_Temp12212012"
+      ],
+      "canonical_id": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-cur-staging-temp12212012",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__zzzzz_dbo.gljedetail_cur_staging_Temp12212012.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:4035C1AD114C208420F87A34B6B6111EDA09B1DDF1C07EBE2A15B8E01FE05156",
+      "object": {
+        "name": "zzzzz_dbo.gljedetail_cur_staging_Temp12212012",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.zzzzz_dbo.gljedetail_cur_staging_Temp12212012",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.zzzzz_dbo.gljedetail_cur_staging_Temp12212012",
+        "dbo.zzzzz_dbo.gljedetail_cur_staging_Temp12212012",
+        "zzzzz_dbo.gljedetail_cur_staging_Temp12212012",
+        "zzzzzdbo.gljedetailcurstagingTemp12212012",
+        "zzzzzdbogljedetailcurstagingtemp12212012"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 43,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-cur-staging-temp12212012.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljedetail-cur-staging-temp12212012.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_dbo.GLJEHeader_agg_cora_2011",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_dbo.GLJEHeader_agg_cora_2011"
+      ],
+      "canonical_id": "object-etl-staging-dbo-zzzzz-dbo-gljeheader-agg-cora-2011",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__zzzzz_dbo.GLJEHeader_agg_cora_2011.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:435C1EFF37838C836ED57AF317F4137BCD43B54AD24EF21F557727B78D009D6F",
+      "object": {
+        "name": "zzzzz_dbo.GLJEHeader_agg_cora_2011",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.zzzzz_dbo.GLJEHeader_agg_cora_2011",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.zzzzz_dbo.GLJEHeader_agg_cora_2011",
+        "dbo.zzzzz_dbo.GLJEHeader_agg_cora_2011",
+        "zzzzz_dbo.GLJEHeader_agg_cora_2011",
+        "zzzzzdbo.GLJEHeaderaggcora2011",
+        "zzzzzdbogljeheaderaggcora2011"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "companyid",
+          "journalid",
+          "accountingdate",
+          "postingtime",
+          "lastpostsequence",
+          "refer"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 7,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-zzzzz-dbo-gljeheader-agg-cora-2011.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-dbo-gljeheader-agg-cora-2011.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_gljedetail_2012_09",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "dbo",
+        "zzzzz_gljedetail_2012_09"
+      ],
+      "canonical_id": "object-etl-staging-dbo-zzzzz-gljedetail-2012-09",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/dbo__zzzzz_gljedetail_2012_09.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D075F4592B8A69BC89D2D852CB4AA4B652E27B6B0335EF01BA8748A76054E589",
+      "object": {
+        "name": "zzzzz_gljedetail_2012_09",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "dbo",
+        "qualified_name": "ETL_Staging.dbo.zzzzz_gljedetail_2012_09",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.dbo.zzzzz_gljedetail_2012_09",
+        "dbo.zzzzz_gljedetail_2012_09",
+        "zzzzz_gljedetail_2012_09",
+        "zzzzzgljedetail201209"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 32,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / dbo"
+      ],
+      "evidence_file": "object-etl-staging-dbo-zzzzz-gljedetail-2012-09.evidence.json",
+      "markdown_file": "object-etl-staging-dbo-zzzzz-gljedetail-2012-09.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-034-etl-staging-dbo-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-034-etl-staging-dbo-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-034-etl-staging-dbo-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

@@ -1,0 +1,1557 @@
+{
+  "packet_id": "T2B-117",
+  "generated_at": "2026-06-23T18:47:16.955Z",
+  "batch": {
+    "batch_id": "T2B-117",
+    "priority_rank": 117,
+    "platform": "SQL Server",
+    "database": "ETL_Staging",
+    "schema": "clean",
+    "object_type_scope": "table",
+    "object_count": 10,
+    "high_use_objects": 0,
+    "downstream_uses": 10,
+    "first_object": "FactOpportunity",
+    "last_object": "FactOpportunity_test",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / clean",
+    "object_names": [
+      "FactOpportunity",
+      "DimAssociate",
+      "FactActivity",
+      "FactOpportunity_UAT",
+      "DimVehicleSought",
+      "DimAssociate_bak",
+      "Fact_ActivityType",
+      "FactActivity_BK_24",
+      "FactOpportunity_history",
+      "FactOpportunity_test"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 10,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 10,
+    "total_planned_pages": 14
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "ETL_Staging"],
+      "page_type": "database",
+      "evidence_hash": "sha256:DAC2D90CB3BE061D63E9E2B32F595CD9386F3A5C44DBCECB3D4790E05ABC3057",
+      "evidence_file": "database-etl-staging.evidence.json",
+      "markdown_file": "database-etl-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.clean",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "ETL_Staging", "clean"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:24161D4F51414DB16CA9B757850D93863A4920F204617919730E2FEDB60A8F84",
+      "evidence_file": "schema-etl-staging-clean.evidence.json",
+      "markdown_file": "schema-etl-staging-clean.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.clean.DimAssociate",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "DimAssociate"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:538C914F037501AB420E17FF49C316C37C51B4300A5C010FBCEA7A58652FF3C1",
+      "evidence_file": "object-etl-staging-clean-dimassociate.evidence.json",
+      "markdown_file": "object-etl-staging-clean-dimassociate.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.clean.DimAssociate_bak",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "DimAssociate_bak"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:F3F4A9DDD4408A607F244B75EDEABCBE28D1ACE2F5D122E390D93A0CB32C256F",
+      "evidence_file": "object-etl-staging-clean-dimassociate-bak.evidence.json",
+      "markdown_file": "object-etl-staging-clean-dimassociate-bak.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.clean.DimVehicleSought",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "DimVehicleSought"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:381D7E84D59B60BDDF52DDCAA74BA4CD283930E4B5332F7FEBBFAE484DAAC549",
+      "evidence_file": "object-etl-staging-clean-dimvehiclesought.evidence.json",
+      "markdown_file": "object-etl-staging-clean-dimvehiclesought.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.clean.Fact_ActivityType",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "Fact_ActivityType"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:5FCD3635C5923AE9D70CB138B02D54485D5B4667425A3BCE4D559DB03DD7F915",
+      "evidence_file": "object-etl-staging-clean-fact-activitytype.evidence.json",
+      "markdown_file": "object-etl-staging-clean-fact-activitytype.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.clean.FactActivity",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "FactActivity"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D88C9128B1033A9D10AE1793DD8CBD71C84EDA137A0CCB730ECE00BD051A719B",
+      "evidence_file": "object-etl-staging-clean-factactivity.evidence.json",
+      "markdown_file": "object-etl-staging-clean-factactivity.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.clean.FactActivity_BK_24",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "FactActivity_BK_24"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:73BC3172DEA7B226171FB7424D4BA9C001BA5DB80D2110B230D17F25BD28C8E8",
+      "evidence_file": "object-etl-staging-clean-factactivity-bk-24.evidence.json",
+      "markdown_file": "object-etl-staging-clean-factactivity-bk-24.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.clean.FactOpportunity",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "FactOpportunity"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:3DF8F0DB17A9078B4F4CC351A51D24C4600A12809355A209CC2E37522228CE49",
+      "evidence_file": "object-etl-staging-clean-factopportunity.evidence.json",
+      "markdown_file": "object-etl-staging-clean-factopportunity.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.clean.FactOpportunity_history",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "FactOpportunity_history"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:5257F09A4D22E42298C94DD79F326FF050734B94D7BF0FFF93B0C6EE4BD2F699",
+      "evidence_file": "object-etl-staging-clean-factopportunity-history.evidence.json",
+      "markdown_file": "object-etl-staging-clean-factopportunity-history.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.clean.FactOpportunity_test",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "FactOpportunity_test"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:64DE8CEB5CB6E80C16347420A4AB1A84CF6A592A24B571423A2551B84D4A6B5D",
+      "evidence_file": "object-etl-staging-clean-factopportunity-test.evidence.json",
+      "markdown_file": "object-etl-staging-clean-factopportunity-test.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.clean.FactOpportunity_UAT",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "FactOpportunity_UAT"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:4FDB5116711D16B5143239C0AABBFBC01AAA5691025E8B1EE10815529C00336C",
+      "evidence_file": "object-etl-staging-clean-factopportunity-uat.evidence.json",
+      "markdown_file": "object-etl-staging-clean-factopportunity-uat.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "DimAssociate",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "DimAssociate"
+      ],
+      "canonical_id": "object-etl-staging-clean-dimassociate",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/clean__DimAssociate.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:538C914F037501AB420E17FF49C316C37C51B4300A5C010FBCEA7A58652FF3C1",
+      "object": {
+        "name": "DimAssociate",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "clean",
+        "qualified_name": "ETL_Staging.clean.DimAssociate",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.clean.DimAssociate",
+        "clean.DimAssociate",
+        "DimAssociate",
+        "dimassociate"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.DimAssociate.DimAssociate.Sonic_Transform_DimAssociate.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-5FSQL-01.Sonic_DW.dbo.usp_Load_DimAssociate",
+          "L1-5FSQL-01.Sonic_DW.dbo.usp_Load_DimAssociate_03272109",
+          "L1-5FSQL-01.Sonic_DW.dbo.usp_Load_DimAssociate_BK"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "AssociateKey",
+          "AsoLocation",
+          "AsoDMS4Digit",
+          "AsoEmployeeNumber",
+          "AsoTimeClockID",
+          "AsoDepartmentCode",
+          "AsoDepartment",
+          "AsoDMSGLCode",
+          "AsoFirstName",
+          "AsoMiddleName",
+          "AsoLastName",
+          "AsoOriginalHireDateKey",
+          "AsoSeniorityDateKey",
+          "AsoTerminationDateKey",
+          "AsoLastHireDateKey",
+          "AsoEmployeeStatus",
+          "AsoEmplStatusStartDateKey",
+          "AsoFullOrPartTime",
+          "AsoDateInJobKey",
+          "AsoJobCode"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 73,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / clean"
+      ],
+      "evidence_file": "object-etl-staging-clean-dimassociate.evidence.json",
+      "markdown_file": "object-etl-staging-clean-dimassociate.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DimAssociate_bak",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "DimAssociate_bak"
+      ],
+      "canonical_id": "object-etl-staging-clean-dimassociate-bak",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/clean__DimAssociate_bak.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:F3F4A9DDD4408A607F244B75EDEABCBE28D1ACE2F5D122E390D93A0CB32C256F",
+      "object": {
+        "name": "DimAssociate_bak",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "clean",
+        "qualified_name": "ETL_Staging.clean.DimAssociate_bak",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.clean.DimAssociate_bak",
+        "clean.DimAssociate_bak",
+        "DimAssociate_bak",
+        "DimAssociatebak",
+        "dimassociatebak"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "AssociateKey",
+          "AsoLocation",
+          "AsoDMS4Digit",
+          "AsoEmployeeNumber",
+          "AsoTimeClockID",
+          "AsoDepartmentCode",
+          "AsoDepartment",
+          "AsoDMSGLCode",
+          "AsoFirstName",
+          "AsoMiddleName",
+          "AsoLastName",
+          "AsoOriginalHireDateKey",
+          "AsoSeniorityDateKey",
+          "AsoTerminationDateKey",
+          "AsoLastHireDateKey",
+          "AsoEmployeeStatus",
+          "AsoEmplStatusStartDateKey",
+          "AsoFullOrPartTime",
+          "AsoDateInJobKey",
+          "AsoJobCode"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 72,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / clean"
+      ],
+      "evidence_file": "object-etl-staging-clean-dimassociate-bak.evidence.json",
+      "markdown_file": "object-etl-staging-clean-dimassociate-bak.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DimVehicleSought",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "DimVehicleSought"
+      ],
+      "canonical_id": "object-etl-staging-clean-dimvehiclesought",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/clean__DimVehicleSought.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:381D7E84D59B60BDDF52DDCAA74BA4CD283930E4B5332F7FEBBFAE484DAAC549",
+      "object": {
+        "name": "DimVehicleSought",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "clean",
+        "qualified_name": "ETL_Staging.clean.DimVehicleSought",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.clean.DimVehicleSought",
+        "clean.DimVehicleSought",
+        "DimVehicleSought",
+        "dimvehiclesought"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.FOCUS_PROD_INC.FOCUS Incremental.Sonic_Transform_DimVehicleSought.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "VehicleSoughtKey",
+          "Make",
+          "Model",
+          "Style",
+          "Trim",
+          "NewUsed",
+          "ModelYear",
+          "ModelYearFrom",
+          "ModelYearTo",
+          "Meta_SrcSysID",
+          "Meta_SourceSystemName",
+          "Meta_ComputerName",
+          "Meta_RowEffectiveDate",
+          "Meta_RowExpiredDate",
+          "Meta_RowIsCurrent",
+          "Meta_RowLastChangeDate",
+          "Meta_AuditKey",
+          "Meta_AuditScore",
+          "User_ID",
+          "Meta_NaturalKey"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 23,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / clean"
+      ],
+      "evidence_file": "object-etl-staging-clean-dimvehiclesought.evidence.json",
+      "markdown_file": "object-etl-staging-clean-dimvehiclesought.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Fact_ActivityType",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "Fact_ActivityType"
+      ],
+      "canonical_id": "object-etl-staging-clean-fact-activitytype",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/clean__Fact_ActivityType.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:5FCD3635C5923AE9D70CB138B02D54485D5B4667425A3BCE4D559DB03DD7F915",
+      "object": {
+        "name": "Fact_ActivityType",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "clean",
+        "qualified_name": "ETL_Staging.clean.Fact_ActivityType",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.clean.Fact_ActivityType",
+        "clean.Fact_ActivityType",
+        "Fact_ActivityType",
+        "FactActivityType",
+        "factactivitytype"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ActivityTypeKey",
+          "ActivityName",
+          "ActivityDescription",
+          "ActivityType",
+          "ActivityGroupName",
+          "Meta_SrcSysID",
+          "Meta_RowEffectiveDate",
+          "Meta_RowExpiredDate",
+          "Meta_RowIsCurrent",
+          "Meta_SourceSystemName",
+          "Meta_RowLastChangeDate",
+          "Meta_AuditKey",
+          "Meta_AuditScore",
+          "Meta_NaturalKey",
+          "Meta_Checksum",
+          "ETLExecution_ID",
+          "Meta_ActionFlag"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 17,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / clean"
+      ],
+      "evidence_file": "object-etl-staging-clean-fact-activitytype.evidence.json",
+      "markdown_file": "object-etl-staging-clean-fact-activitytype.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "FactActivity",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "FactActivity"
+      ],
+      "canonical_id": "object-etl-staging-clean-factactivity",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/clean__FactActivity.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D88C9128B1033A9D10AE1793DD8CBD71C84EDA137A0CCB730ECE00BD051A719B",
+      "object": {
+        "name": "FactActivity",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "clean",
+        "qualified_name": "ETL_Staging.clean.FactActivity",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.clean.FactActivity",
+        "clean.FactActivity",
+        "FactActivity",
+        "factactivity"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.FOCUS_PROD_INC.FOCUS Incremental.Sonic_Transform_Fact_Activity.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-5FSQL-01.Sonic_DW.dbo.usp_Load_Fact_Activity",
+          "L1-5FSQL-01.Sonic_DW.dbo.usp_Load_Fact_Activity_BK_0124"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "FactActivityKey",
+          "OwnedByKey",
+          "CreatedByKey",
+          "EntityKey",
+          "LeadStatusKey",
+          "CreatedOnDateKey",
+          "CreatedOnTimeKey",
+          "SourceKey",
+          "OpportunityCreatedOnDateKey",
+          "ActivityType",
+          "WorkflowKey",
+          "ActivityStatusKey",
+          "Opportunity_NaturalKey",
+          "ScheduledStartTimeKey",
+          "ScheduledEndTimeKey",
+          "ActualStartTime",
+          "ActualEndTimeKey",
+          "ActualEndDateKey",
+          "ModifiedOnDateKey",
+          "NextActivityDateDueKey"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 66,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / clean"
+      ],
+      "evidence_file": "object-etl-staging-clean-factactivity.evidence.json",
+      "markdown_file": "object-etl-staging-clean-factactivity.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "FactActivity_BK_24",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "FactActivity_BK_24"
+      ],
+      "canonical_id": "object-etl-staging-clean-factactivity-bk-24",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/clean__FactActivity_BK_24.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:73BC3172DEA7B226171FB7424D4BA9C001BA5DB80D2110B230D17F25BD28C8E8",
+      "object": {
+        "name": "FactActivity_BK_24",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "clean",
+        "qualified_name": "ETL_Staging.clean.FactActivity_BK_24",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.clean.FactActivity_BK_24",
+        "clean.FactActivity_BK_24",
+        "FactActivity_BK_24",
+        "FactActivityBK24",
+        "factactivitybk24"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "FactActivityKey",
+          "EntityKey",
+          "LeadStatusKey",
+          "CreatedOnDateKey",
+          "CreatedOnTimeKey",
+          "SourceKey",
+          "OpportunityCreatedOnDateKey",
+          "CreatedByKey",
+          "ActivityType",
+          "WorkflowKey",
+          "ActivityStatusKey",
+          "Opportunity_NaturalKey",
+          "ScheduledStartTimeKey",
+          "ScheduledEndTimeKey",
+          "ActualStartTime",
+          "ActualEndTimeKey",
+          "ActualEndDateKey",
+          "ModifiedOnDateKey",
+          "NextActivityDateDueKey",
+          "ScheduledStartDateKey"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 62,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / clean"
+      ],
+      "evidence_file": "object-etl-staging-clean-factactivity-bk-24.evidence.json",
+      "markdown_file": "object-etl-staging-clean-factactivity-bk-24.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "FactOpportunity",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "FactOpportunity"
+      ],
+      "canonical_id": "object-etl-staging-clean-factopportunity",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/clean__FactOpportunity.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:3DF8F0DB17A9078B4F4CC351A51D24C4600A12809355A209CC2E37522228CE49",
+      "object": {
+        "name": "FactOpportunity",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "clean",
+        "qualified_name": "ETL_Staging.clean.FactOpportunity",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.clean.FactOpportunity",
+        "clean.FactOpportunity",
+        "FactOpportunity",
+        "factopportunity"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.FOCUS_PROD_INC.FOCUS Incremental.Sonic_Transform_FactOpportunity_INC.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-5FSQL-01.Sonic_DW.dbo.usp_Load_FactOpportunity",
+          "L1-5FSQL-01.Sonic_DW.dbo.usp_Load_FactOpportunity_20181216",
+          "L1-5FSQL-01.Sonic_DW.dbo.usp_Load_FactOpportunity_Bk",
+          "L1-5FSQL-01.Sonic_DW.dbo.usp_Load_FactOpportunity_BK_03212018"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "FactOpportunityKey",
+          "EntityKey",
+          "DimCustomerID",
+          "SourceKey",
+          "PrimarySalesAssociate",
+          "DateProspectInKey",
+          "LastActivityDateKey",
+          "LastActivityTimeKey",
+          "DateSoldKey",
+          "DMSDateSoldKey",
+          "InactiveDateKey",
+          "VehicleKey",
+          "TradeInVehicleKey",
+          "LeadStatusKey",
+          "DealTypeKey",
+          "LeadState",
+          "NewVehicleFlag",
+          "LeadCount",
+          "DuplicateLeadCount",
+          "LeadCost"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 65,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / clean"
+      ],
+      "evidence_file": "object-etl-staging-clean-factopportunity.evidence.json",
+      "markdown_file": "object-etl-staging-clean-factopportunity.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "FactOpportunity_history",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "FactOpportunity_history"
+      ],
+      "canonical_id": "object-etl-staging-clean-factopportunity-history",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/clean__FactOpportunity_history.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:5257F09A4D22E42298C94DD79F326FF050734B94D7BF0FFF93B0C6EE4BD2F699",
+      "object": {
+        "name": "FactOpportunity_history",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "clean",
+        "qualified_name": "ETL_Staging.clean.FactOpportunity_history",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.clean.FactOpportunity_history",
+        "clean.FactOpportunity_history",
+        "FactOpportunity_history",
+        "FactOpportunityhistory",
+        "factopportunityhistory"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "FactOpportunityKey",
+          "EntityKey",
+          "DimCustomerID",
+          "SourceKey",
+          "PrimarySalesAssociate",
+          "DateProspectInKey",
+          "LastActivityDateKey",
+          "LastActivityTimeKey",
+          "DateSoldKey",
+          "DMSDateSoldKey",
+          "InactiveDateKey",
+          "VehicleKey",
+          "TradeInVehicleKey",
+          "LeadStatusKey",
+          "DealTypeKey",
+          "LeadState",
+          "NewVehicleFlag",
+          "LeadCount",
+          "DuplicateLeadCount",
+          "LeadCost"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 60,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / clean"
+      ],
+      "evidence_file": "object-etl-staging-clean-factopportunity-history.evidence.json",
+      "markdown_file": "object-etl-staging-clean-factopportunity-history.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "FactOpportunity_test",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "FactOpportunity_test"
+      ],
+      "canonical_id": "object-etl-staging-clean-factopportunity-test",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/clean__FactOpportunity_test.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:64DE8CEB5CB6E80C16347420A4AB1A84CF6A592A24B571423A2551B84D4A6B5D",
+      "object": {
+        "name": "FactOpportunity_test",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "clean",
+        "qualified_name": "ETL_Staging.clean.FactOpportunity_test",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.clean.FactOpportunity_test",
+        "clean.FactOpportunity_test",
+        "FactOpportunity_test",
+        "FactOpportunitytest",
+        "factopportunitytest"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "FactOpportunityKey",
+          "EntityKey",
+          "DimCustomerID",
+          "SourceKey",
+          "PrimarySalesAssociate",
+          "DateProspectInKey",
+          "LastActivityDateKey",
+          "LastActivityTimeKey",
+          "DateSoldKey",
+          "DMSDateSoldKey",
+          "InactiveDateKey",
+          "VehicleKey",
+          "TradeInVehicleKey",
+          "LeadStatusKey",
+          "DealTypeKey",
+          "LeadState",
+          "NewVehicleFlag",
+          "LeadCount",
+          "DuplicateLeadCount",
+          "LeadCost"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 59,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / clean"
+      ],
+      "evidence_file": "object-etl-staging-clean-factopportunity-test.evidence.json",
+      "markdown_file": "object-etl-staging-clean-factopportunity-test.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "FactOpportunity_UAT",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "clean",
+        "FactOpportunity_UAT"
+      ],
+      "canonical_id": "object-etl-staging-clean-factopportunity-uat",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/clean__FactOpportunity_UAT.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:4FDB5116711D16B5143239C0AABBFBC01AAA5691025E8B1EE10815529C00336C",
+      "object": {
+        "name": "FactOpportunity_UAT",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "clean",
+        "qualified_name": "ETL_Staging.clean.FactOpportunity_UAT",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.clean.FactOpportunity_UAT",
+        "clean.FactOpportunity_UAT",
+        "FactOpportunity_UAT",
+        "FactOpportunityUAT",
+        "factopportunityuat"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-5FSQL-01.Sonic_DW.dbo.usp_Load_VehicleSoughtXref_new_UAT"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "FactOpportunityKey",
+          "EntityKey",
+          "DimCustomerID",
+          "CustomerKey",
+          "SourceKey",
+          "PrimarySalesAssociate",
+          "DateProspectInKey",
+          "LastActivityDateKey",
+          "LastActivityTimeKey",
+          "DateSoldKey",
+          "DMSDateSoldKey",
+          "InactiveDateKey",
+          "VehicleKey",
+          "TradeInVehicleKey",
+          "LeadStatusKey",
+          "DealTypeKey",
+          "LeadState",
+          "NewVehicleFlag",
+          "LeadCount",
+          "DuplicateLeadCount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 60,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / clean"
+      ],
+      "evidence_file": "object-etl-staging-clean-factopportunity-uat.evidence.json",
+      "markdown_file": "object-etl-staging-clean-factopportunity-uat.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-117-etl-staging-clean-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-117-etl-staging-clean-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-117-etl-staging-clean-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

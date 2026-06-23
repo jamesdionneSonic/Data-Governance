@@ -1,0 +1,659 @@
+{
+  "packet_id": "T2B-216",
+  "generated_at": "2026-06-23T19:11:56.814Z",
+  "batch": {
+    "batch_id": "T2B-216",
+    "priority_rank": 216,
+    "platform": "SQL Server",
+    "database": "VendorData",
+    "schema": "Verint",
+    "object_type_scope": "table",
+    "object_count": 4,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "AgentAdherence",
+    "last_object": "TardyEarlyOut",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / Verint",
+    "object_names": ["AgentAdherence", "AgentStatus", "StandardRoster", "TardyEarlyOut"],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 4,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 4,
+    "total_planned_pages": 8
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData"],
+      "page_type": "database",
+      "evidence_hash": "sha256:C029883539BC166EBDE80488ADFC36CDDDD0E84559188FE128628E553E29DFF1",
+      "evidence_file": "database-vendordata.evidence.json",
+      "markdown_file": "database-vendordata.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.Verint",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData", "Verint"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:61B54BD84F2C4E730371C3BAE045F0CE244C83758282E20B9C68C1A7394B0A37",
+      "evidence_file": "schema-vendordata-verint.evidence.json",
+      "markdown_file": "schema-vendordata-verint.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.Verint.AgentAdherence",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Verint",
+        "AgentAdherence"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:1DAFE66BBD9C145326306595ECA0CF4437493B03158629AA6C560D939D13A5AF",
+      "evidence_file": "object-vendordata-verint-agentadherence.evidence.json",
+      "markdown_file": "object-vendordata-verint-agentadherence.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.Verint.AgentStatus",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Verint",
+        "AgentStatus"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:55A5EBF2B02A64052F6787AFE7C4BC08F499C08AA82DC18A0EA05DE1468E9F70",
+      "evidence_file": "object-vendordata-verint-agentstatus.evidence.json",
+      "markdown_file": "object-vendordata-verint-agentstatus.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.Verint.StandardRoster",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Verint",
+        "StandardRoster"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:C660A3C223EC43DDD5631FDDFC2721E09E83AB4BE8BC14B687F6F0AB6E86CC39",
+      "evidence_file": "object-vendordata-verint-standardroster.evidence.json",
+      "markdown_file": "object-vendordata-verint-standardroster.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.Verint.TardyEarlyOut",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Verint",
+        "TardyEarlyOut"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9252FAC02B430AF2B94EADDE1C61B1B018D9395823AB23F9EA8FC81329C44F8C",
+      "evidence_file": "object-vendordata-verint-tardyearlyout.evidence.json",
+      "markdown_file": "object-vendordata-verint-tardyearlyout.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "AgentAdherence",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Verint",
+        "AgentAdherence"
+      ],
+      "canonical_id": "object-vendordata-verint-agentadherence",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/Verint__AgentAdherence.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:1DAFE66BBD9C145326306595ECA0CF4437493B03158629AA6C560D939D13A5AF",
+      "object": {
+        "name": "AgentAdherence",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "Verint",
+        "qualified_name": "VendorData.Verint.AgentAdherence",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.Verint.AgentAdherence",
+        "Verint.AgentAdherence",
+        "AgentAdherence",
+        "agentadherence"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "VerintAgentAdherenceID",
+          "WorkGroupName",
+          "WorkGroupID",
+          "datefrom",
+          "dateto",
+          "employeeid",
+          "AgentID",
+          "EmployeeTeam",
+          "fullname",
+          "assignminutes",
+          "lunchminutes",
+          "firstbreakminutes",
+          "secondbreakminutes",
+          "exceptionminutes",
+          "noncallminutes",
+          "trxcount",
+          "outofadherenceminutes",
+          "ScheduledMinutes",
+          "inadherencepercentage",
+          "SourceFileName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 21,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / Verint"
+      ],
+      "evidence_file": "object-vendordata-verint-agentadherence.evidence.json",
+      "markdown_file": "object-vendordata-verint-agentadherence.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "AgentStatus",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Verint",
+        "AgentStatus"
+      ],
+      "canonical_id": "object-vendordata-verint-agentstatus",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/Verint__AgentStatus.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:55A5EBF2B02A64052F6787AFE7C4BC08F499C08AA82DC18A0EA05DE1468E9F70",
+      "object": {
+        "name": "AgentStatus",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "Verint",
+        "qualified_name": "VendorData.Verint.AgentStatus",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.Verint.AgentStatus",
+        "Verint.AgentStatus",
+        "AgentStatus",
+        "agentstatus"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "VerintAgentStatusID",
+          "EmployeeID",
+          "EmployeeLastName",
+          "EmployeeFirstName",
+          "AgentID",
+          "EmployeeTeam",
+          "WorkgroupId",
+          "EventName",
+          "StatusTime",
+          "Duration",
+          "SourceFileName",
+          "Meta_LoadDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 12,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / Verint"
+      ],
+      "evidence_file": "object-vendordata-verint-agentstatus.evidence.json",
+      "markdown_file": "object-vendordata-verint-agentstatus.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StandardRoster",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Verint",
+        "StandardRoster"
+      ],
+      "canonical_id": "object-vendordata-verint-standardroster",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/Verint__StandardRoster.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:C660A3C223EC43DDD5631FDDFC2721E09E83AB4BE8BC14B687F6F0AB6E86CC39",
+      "object": {
+        "name": "StandardRoster",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "Verint",
+        "qualified_name": "VendorData.Verint.StandardRoster",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.Verint.StandardRoster",
+        "Verint.StandardRoster",
+        "StandardRoster",
+        "standardroster"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "VerintStandardRosterID",
+          "AssignDate",
+          "StartTime",
+          "EndTime",
+          "FirstBreakStart",
+          "FirstBreakEnd",
+          "LunchStartTime",
+          "LunchEndTime",
+          "SecondBreakStart",
+          "SecondBreakEnd",
+          "EmployeeFirstName",
+          "EmployeeLastName",
+          "AgentID",
+          "EmployeeTeam",
+          "Assignment",
+          "SourceFileName",
+          "Meta_LoadDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 17,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / Verint"
+      ],
+      "evidence_file": "object-vendordata-verint-standardroster.evidence.json",
+      "markdown_file": "object-vendordata-verint-standardroster.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TardyEarlyOut",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Verint",
+        "TardyEarlyOut"
+      ],
+      "canonical_id": "object-vendordata-verint-tardyearlyout",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/Verint__TardyEarlyOut.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9252FAC02B430AF2B94EADDE1C61B1B018D9395823AB23F9EA8FC81329C44F8C",
+      "object": {
+        "name": "TardyEarlyOut",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "Verint",
+        "qualified_name": "VendorData.Verint.TardyEarlyOut",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.Verint.TardyEarlyOut",
+        "Verint.TardyEarlyOut",
+        "TardyEarlyOut",
+        "tardyearlyout"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "VerintTardyEarlyOutID",
+          "EmployeeId",
+          "EmployeeLastName",
+          "EmployeeFirstName",
+          "Scheduled_Start",
+          "Actual_Start",
+          "Scheduled_End",
+          "Actual_End",
+          "Tardy",
+          "Time_Tardy",
+          "Early_Out",
+          "Time_Early_Out",
+          "WorkGroupName",
+          "SourceFileName",
+          "Meta_LoadDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 15,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / Verint"
+      ],
+      "evidence_file": "object-vendordata-verint-tardyearlyout.evidence.json",
+      "markdown_file": "object-vendordata-verint-tardyearlyout.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-216-vendordata-verint-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-216-vendordata-verint-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-216-vendordata-verint-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

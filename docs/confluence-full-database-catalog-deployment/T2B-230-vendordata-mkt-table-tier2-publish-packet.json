@@ -1,0 +1,393 @@
+{
+  "packet_id": "T2B-230",
+  "generated_at": "2026-06-23T19:13:34.560Z",
+  "batch": {
+    "batch_id": "T2B-230",
+    "priority_rank": 230,
+    "platform": "SQL Server",
+    "database": "VendorData",
+    "schema": "mkt",
+    "object_type_scope": "table",
+    "object_count": 2,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "Adhoc_SmFbAdByCampaignMonthly",
+    "last_object": "Adhoc_SmFbAdByCampaignMonthly_FBPhase2",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / mkt",
+    "object_names": ["Adhoc_SmFbAdByCampaignMonthly", "Adhoc_SmFbAdByCampaignMonthly_FBPhase2"],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 2,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 2,
+    "total_planned_pages": 6
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData"],
+      "page_type": "database",
+      "evidence_hash": "sha256:C029883539BC166EBDE80488ADFC36CDDDD0E84559188FE128628E553E29DFF1",
+      "evidence_file": "database-vendordata.evidence.json",
+      "markdown_file": "database-vendordata.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.mkt",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData", "mkt"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:8F16CE7EDC3950C83054B9B0782F48F9D71FC80E69AF39E418485DCF3AB388B3",
+      "evidence_file": "schema-vendordata-mkt.evidence.json",
+      "markdown_file": "schema-vendordata-mkt.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.mkt.Adhoc_SmFbAdByCampaignMonthly",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "mkt",
+        "Adhoc_SmFbAdByCampaignMonthly"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:EDC8B52E5BFA0BF5FD7B95296A296AD9423CD24251A958B482812D80FA660F81",
+      "evidence_file": "object-vendordata-mkt-adhoc-smfbadbycampaignmonthly.evidence.json",
+      "markdown_file": "object-vendordata-mkt-adhoc-smfbadbycampaignmonthly.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.mkt.Adhoc_SmFbAdByCampaignMonthly_FBPhase2",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "mkt",
+        "Adhoc_SmFbAdByCampaignMonthly_FBPhase2"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:FAB703754976D68B57849C71A6D5B4755B0B63039D349782569D192014C5B24C",
+      "evidence_file": "object-vendordata-mkt-adhoc-smfbadbycampaignmonthly-fbphase2.evidence.json",
+      "markdown_file": "object-vendordata-mkt-adhoc-smfbadbycampaignmonthly-fbphase2.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "Adhoc_SmFbAdByCampaignMonthly",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "mkt",
+        "Adhoc_SmFbAdByCampaignMonthly"
+      ],
+      "canonical_id": "object-vendordata-mkt-adhoc-smfbadbycampaignmonthly",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/mkt__Adhoc_SmFbAdByCampaignMonthly.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:EDC8B52E5BFA0BF5FD7B95296A296AD9423CD24251A958B482812D80FA660F81",
+      "object": {
+        "name": "Adhoc_SmFbAdByCampaignMonthly",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "mkt",
+        "qualified_name": "VendorData.mkt.Adhoc_SmFbAdByCampaignMonthly",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.mkt.Adhoc_SmFbAdByCampaignMonthly",
+        "mkt.Adhoc_SmFbAdByCampaignMonthly",
+        "Adhoc_SmFbAdByCampaignMonthly",
+        "AdhocSmFbAdByCampaignMonthly",
+        "adhocsmfbadbycampaignmonthly"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "SgAdsbyCampaignMonthlyID",
+          "AccountID",
+          "Accountname",
+          "CampaignID",
+          "CampaignName",
+          "CampaignObjective",
+          "Datadate",
+          "LinkClicks",
+          "Clicks",
+          "Cost",
+          "CPC",
+          "CTR",
+          "Impressions",
+          "Reach",
+          "MetaComputerName",
+          "MetaUserId",
+          "MetaSourceSystemName",
+          "MetaSrcSysID",
+          "ETLExecutionID",
+          "MetaLoadDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 22,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / mkt"
+      ],
+      "evidence_file": "object-vendordata-mkt-adhoc-smfbadbycampaignmonthly.evidence.json",
+      "markdown_file": "object-vendordata-mkt-adhoc-smfbadbycampaignmonthly.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Adhoc_SmFbAdByCampaignMonthly_FBPhase2",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "mkt",
+        "Adhoc_SmFbAdByCampaignMonthly_FBPhase2"
+      ],
+      "canonical_id": "object-vendordata-mkt-adhoc-smfbadbycampaignmonthly-fbphase2",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/mkt__Adhoc_SmFbAdByCampaignMonthly_FBPhase2.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:FAB703754976D68B57849C71A6D5B4755B0B63039D349782569D192014C5B24C",
+      "object": {
+        "name": "Adhoc_SmFbAdByCampaignMonthly_FBPhase2",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "mkt",
+        "qualified_name": "VendorData.mkt.Adhoc_SmFbAdByCampaignMonthly_FBPhase2",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.mkt.Adhoc_SmFbAdByCampaignMonthly_FBPhase2",
+        "mkt.Adhoc_SmFbAdByCampaignMonthly_FBPhase2",
+        "Adhoc_SmFbAdByCampaignMonthly_FBPhase2",
+        "AdhocSmFbAdByCampaignMonthlyFBPhase2",
+        "adhocsmfbadbycampaignmonthlyfbphase2"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "SgAdsbyCampaignMonthlyID",
+          "AccountID",
+          "Accountname",
+          "CampaignID",
+          "CampaignName",
+          "CampaignObjective",
+          "Datadate",
+          "LinkClicks",
+          "Clicks",
+          "Cost",
+          "CPC",
+          "CTR",
+          "Impressions",
+          "Reach",
+          "MetaComputerName",
+          "MetaUserId",
+          "MetaSourceSystemName",
+          "MetaSrcSysID",
+          "ETLExecutionID",
+          "MetaLoadDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 22,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / mkt"
+      ],
+      "evidence_file": "object-vendordata-mkt-adhoc-smfbadbycampaignmonthly-fbphase2.evidence.json",
+      "markdown_file": "object-vendordata-mkt-adhoc-smfbadbycampaignmonthly-fbphase2.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-230-vendordata-mkt-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-230-vendordata-mkt-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-230-vendordata-mkt-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

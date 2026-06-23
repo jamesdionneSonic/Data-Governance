@@ -1,0 +1,1420 @@
+{
+  "packet_id": "T2B-201",
+  "generated_at": "2026-06-23T19:10:14.482Z",
+  "batch": {
+    "batch_id": "T2B-201",
+    "priority_rank": 201,
+    "platform": "SQL Server",
+    "database": "StagingDB",
+    "schema": "uccx",
+    "object_type_scope": "table",
+    "object_count": 10,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "AgentConnectionDetail",
+    "last_object": "TeamCSQMapping",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / uccx",
+    "object_names": [
+      "AgentConnectionDetail",
+      "ContactCallDetail",
+      "ContactQueueDetail",
+      "ContactRoutingDetail",
+      "ContactServiceQueue",
+      "ProfileIDMapping",
+      "Resource",
+      "ResourceGroup",
+      "Team",
+      "TeamCSQMapping"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 10,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 10,
+    "total_planned_pages": 14
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB"],
+      "page_type": "database",
+      "evidence_hash": "sha256:86BBBA4A90EF1C66989EFB3B9746AF88467BE01889393493BBDE0177897E19A4",
+      "evidence_file": "database-stagingdb.evidence.json",
+      "markdown_file": "database-stagingdb.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.uccx",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB", "uccx"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:16BA5894FD5820C94CA3EB2897F0620D5DFCDA1EECA17D54C7A23729AC552EB4",
+      "evidence_file": "schema-stagingdb-uccx.evidence.json",
+      "markdown_file": "schema-stagingdb-uccx.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.uccx.AgentConnectionDetail",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "AgentConnectionDetail"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:7D9FD1522A0C88ED9B3C18EC7182B9052B8D558FA8DDBB39EC6851A5317A681D",
+      "evidence_file": "object-stagingdb-uccx-agentconnectiondetail.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-agentconnectiondetail.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.uccx.ContactCallDetail",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "ContactCallDetail"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:2F6ACF89766BE1D1FF78B0B5CE752061A37B469A9FB9289FBF958E725C4BC4C6",
+      "evidence_file": "object-stagingdb-uccx-contactcalldetail.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-contactcalldetail.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.uccx.ContactQueueDetail",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "ContactQueueDetail"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:963D802272D2E0075E4DC16909AE236128FDB18057798715266B4C070BFB06EE",
+      "evidence_file": "object-stagingdb-uccx-contactqueuedetail.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-contactqueuedetail.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.uccx.ContactRoutingDetail",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "ContactRoutingDetail"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:2CF25CA693A382CB8802DDD3722F4BDF2A7AB937480FDE4F34C05804D03320A3",
+      "evidence_file": "object-stagingdb-uccx-contactroutingdetail.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-contactroutingdetail.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.uccx.ContactServiceQueue",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "ContactServiceQueue"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:7F0E8107A90FA1CA6A356B35115E46DC290044304A5CFCDDC462F5B725978BE3",
+      "evidence_file": "object-stagingdb-uccx-contactservicequeue.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-contactservicequeue.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.uccx.ProfileIDMapping",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "ProfileIDMapping"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:3F180EBBDF12E8CD52110B7F4B8AB2D2F53FEE878626B82D66907E9B32598B7D",
+      "evidence_file": "object-stagingdb-uccx-profileidmapping.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-profileidmapping.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.uccx.Resource",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "Resource"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:480B9E5F705695D7988A5E032B2679A91383F68A18875C89DD7117ADCAD4845F",
+      "evidence_file": "object-stagingdb-uccx-resource.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-resource.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.uccx.ResourceGroup",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "ResourceGroup"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E7C17986FC7B2125C250D256D6C2DEE89ED7AEC819D0D3CA90DD7E5C8D07143A",
+      "evidence_file": "object-stagingdb-uccx-resourcegroup.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-resourcegroup.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.uccx.Team",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "Team"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:DC9F62593C7E746D49358507C4D6CEE6169A9B1408C86DCBE612E953AA5696BD",
+      "evidence_file": "object-stagingdb-uccx-team.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-team.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.uccx.TeamCSQMapping",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "TeamCSQMapping"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E6E435E2FAED9610084895187E579AE5A3673CABE2CBF381CC4B2CFFDC707215",
+      "evidence_file": "object-stagingdb-uccx-teamcsqmapping.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-teamcsqmapping.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "AgentConnectionDetail",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "AgentConnectionDetail"
+      ],
+      "canonical_id": "object-stagingdb-uccx-agentconnectiondetail",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/uccx__AgentConnectionDetail.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:7D9FD1522A0C88ED9B3C18EC7182B9052B8D558FA8DDBB39EC6851A5317A681D",
+      "object": {
+        "name": "AgentConnectionDetail",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "uccx",
+        "qualified_name": "StagingDB.uccx.AgentConnectionDetail",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.uccx.AgentConnectionDetail",
+        "uccx.AgentConnectionDetail",
+        "AgentConnectionDetail",
+        "agentconnectiondetail"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "sessionID",
+          "sessionseqnum",
+          "nodeid",
+          "profileid",
+          "resourceID",
+          "startdatetime",
+          "enddatetime",
+          "qIndex",
+          "gmtoffset",
+          "ringTime",
+          "talkTime",
+          "holdTime",
+          "workTime",
+          "callWrapupData",
+          "callResult",
+          "dialinglistid",
+          "rna"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 17,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / uccx"
+      ],
+      "evidence_file": "object-stagingdb-uccx-agentconnectiondetail.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-agentconnectiondetail.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ContactCallDetail",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "ContactCallDetail"
+      ],
+      "canonical_id": "object-stagingdb-uccx-contactcalldetail",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/uccx__ContactCallDetail.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:2F6ACF89766BE1D1FF78B0B5CE752061A37B469A9FB9289FBF958E725C4BC4C6",
+      "object": {
+        "name": "ContactCallDetail",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "uccx",
+        "qualified_name": "StagingDB.uccx.ContactCallDetail",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.uccx.ContactCallDetail",
+        "uccx.ContactCallDetail",
+        "ContactCallDetail",
+        "contactcalldetail"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "sessionid",
+          "sessionseqnum",
+          "nodeid",
+          "profileid",
+          "contacttype",
+          "contactdisposition",
+          "dispositionreason",
+          "originatortype",
+          "originatorid",
+          "originatordn",
+          "destinationtype",
+          "destinationid",
+          "destinationdn",
+          "startdatetime",
+          "enddatetime",
+          "gmtoffset",
+          "callednumber",
+          "origcallednumber",
+          "applicationtaskid",
+          "applicationid"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 45,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / uccx"
+      ],
+      "evidence_file": "object-stagingdb-uccx-contactcalldetail.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-contactcalldetail.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ContactQueueDetail",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "ContactQueueDetail"
+      ],
+      "canonical_id": "object-stagingdb-uccx-contactqueuedetail",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/uccx__ContactQueueDetail.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:963D802272D2E0075E4DC16909AE236128FDB18057798715266B4C070BFB06EE",
+      "object": {
+        "name": "ContactQueueDetail",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "uccx",
+        "qualified_name": "StagingDB.uccx.ContactQueueDetail",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.uccx.ContactQueueDetail",
+        "uccx.ContactQueueDetail",
+        "ContactQueueDetail",
+        "contactqueuedetail"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "sessionID",
+          "sessionSeqNum",
+          "profileID",
+          "nodeID",
+          "targetID",
+          "targetType",
+          "qIndex",
+          "queueOrder",
+          "disposition",
+          "metServiceLevel",
+          "queueTime",
+          "startdatetime",
+          "enddatetime",
+          "contactID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 14,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / uccx"
+      ],
+      "evidence_file": "object-stagingdb-uccx-contactqueuedetail.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-contactqueuedetail.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ContactRoutingDetail",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "ContactRoutingDetail"
+      ],
+      "canonical_id": "object-stagingdb-uccx-contactroutingdetail",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/uccx__ContactRoutingDetail.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:2CF25CA693A382CB8802DDD3722F4BDF2A7AB937480FDE4F34C05804D03320A3",
+      "object": {
+        "name": "ContactRoutingDetail",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "uccx",
+        "qualified_name": "StagingDB.uccx.ContactRoutingDetail",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.uccx.ContactRoutingDetail",
+        "uccx.ContactRoutingDetail",
+        "ContactRoutingDetail",
+        "contactroutingdetail"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "sessionid",
+          "sessionseqnum",
+          "nodeid",
+          "profileid",
+          "qIndex",
+          "origPriority",
+          "finalPriority",
+          "queueTime",
+          "startDateTime"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / uccx"
+      ],
+      "evidence_file": "object-stagingdb-uccx-contactroutingdetail.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-contactroutingdetail.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ContactServiceQueue",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "ContactServiceQueue"
+      ],
+      "canonical_id": "object-stagingdb-uccx-contactservicequeue",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/uccx__ContactServiceQueue.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:7F0E8107A90FA1CA6A356B35115E46DC290044304A5CFCDDC462F5B725978BE3",
+      "object": {
+        "name": "ContactServiceQueue",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "uccx",
+        "qualified_name": "StagingDB.uccx.ContactServiceQueue",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.uccx.ContactServiceQueue",
+        "uccx.ContactServiceQueue",
+        "ContactServiceQueue",
+        "contactservicequeue"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "contactServiceQueueID",
+          "profileid",
+          "CSQName",
+          "resourcePoolType",
+          "resourceGroupID",
+          "selectionCriteria",
+          "skillGroupID",
+          "serviceLevel",
+          "serviceLevelPercentage",
+          "active",
+          "autoWork",
+          "dateInactive",
+          "queueAlgorithm",
+          "recordID",
+          "orderList",
+          "wrapupTime",
+          "prompt",
+          "privateData",
+          "queueType",
+          "queueTypeName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 28,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / uccx"
+      ],
+      "evidence_file": "object-stagingdb-uccx-contactservicequeue.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-contactservicequeue.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ProfileIDMapping",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "ProfileIDMapping"
+      ],
+      "canonical_id": "object-stagingdb-uccx-profileidmapping",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/uccx__ProfileIDMapping.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:3F180EBBDF12E8CD52110B7F4B8AB2D2F53FEE878626B82D66907E9B32598B7D",
+      "object": {
+        "name": "ProfileIDMapping",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "uccx",
+        "qualified_name": "StagingDB.uccx.ProfileIDMapping",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.uccx.ProfileIDMapping",
+        "uccx.ProfileIDMapping",
+        "ProfileIDMapping",
+        "profileidmapping"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["profileName", "profileid"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 2,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / uccx"
+      ],
+      "evidence_file": "object-stagingdb-uccx-profileidmapping.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-profileidmapping.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Resource",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "Resource"
+      ],
+      "canonical_id": "object-stagingdb-uccx-resource",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/uccx__Resource.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:480B9E5F705695D7988A5E032B2679A91383F68A18875C89DD7117ADCAD4845F",
+      "object": {
+        "name": "Resource",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "uccx",
+        "qualified_name": "StagingDB.uccx.Resource",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["StagingDB.uccx.Resource", "uccx.Resource", "Resource", "resource"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "resourceid",
+          "profileid",
+          "resourceloginid",
+          "resourcename",
+          "resourcegroupid",
+          "resourcetype",
+          "active",
+          "autoavail",
+          "extension",
+          "orderinrg",
+          "dateinactive",
+          "resourceskillmapid",
+          "assignedteamid",
+          "resourcefirstname",
+          "resourcelastname",
+          "resourcealias"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 16,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / uccx"
+      ],
+      "evidence_file": "object-stagingdb-uccx-resource.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-resource.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ResourceGroup",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "ResourceGroup"
+      ],
+      "canonical_id": "object-stagingdb-uccx-resourcegroup",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/uccx__ResourceGroup.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E7C17986FC7B2125C250D256D6C2DEE89ED7AEC819D0D3CA90DD7E5C8D07143A",
+      "object": {
+        "name": "ResourceGroup",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "uccx",
+        "qualified_name": "StagingDB.uccx.ResourceGroup",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.uccx.ResourceGroup",
+        "uccx.ResourceGroup",
+        "ResourceGroup",
+        "resourcegroup"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["resourcegroupid", "profileid", "resourcegroupname", "active", "dateinactive"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / uccx"
+      ],
+      "evidence_file": "object-stagingdb-uccx-resourcegroup.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-resourcegroup.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Team",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "Team"
+      ],
+      "canonical_id": "object-stagingdb-uccx-team",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/uccx__Team.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:DC9F62593C7E746D49358507C4D6CEE6169A9B1408C86DCBE612E953AA5696BD",
+      "object": {
+        "name": "Team",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "uccx",
+        "qualified_name": "StagingDB.uccx.Team",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["StagingDB.uccx.Team", "uccx.Team", "Team", "team"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["teamid", "profileid", "teamname", "active", "dateinactive"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / uccx"
+      ],
+      "evidence_file": "object-stagingdb-uccx-team.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-team.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TeamCSQMapping",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "uccx",
+        "TeamCSQMapping"
+      ],
+      "canonical_id": "object-stagingdb-uccx-teamcsqmapping",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/uccx__TeamCSQMapping.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E6E435E2FAED9610084895187E579AE5A3673CABE2CBF381CC4B2CFFDC707215",
+      "object": {
+        "name": "TeamCSQMapping",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "uccx",
+        "qualified_name": "StagingDB.uccx.TeamCSQMapping",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.uccx.TeamCSQMapping",
+        "uccx.TeamCSQMapping",
+        "TeamCSQMapping",
+        "teamcsqmapping"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["recordID", "csqID", "teamID", "profileID", "active", "dateInactive"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 6,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / uccx"
+      ],
+      "evidence_file": "object-stagingdb-uccx-teamcsqmapping.evidence.json",
+      "markdown_file": "object-stagingdb-uccx-teamcsqmapping.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-201-stagingdb-uccx-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-201-stagingdb-uccx-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-201-stagingdb-uccx-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

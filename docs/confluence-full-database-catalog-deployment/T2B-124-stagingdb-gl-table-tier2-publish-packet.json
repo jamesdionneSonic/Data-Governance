@@ -1,0 +1,1842 @@
+{
+  "packet_id": "T2B-124",
+  "generated_at": "2026-06-23T18:48:30.034Z",
+  "batch": {
+    "batch_id": "T2B-124",
+    "priority_rank": 124,
+    "platform": "SQL Server",
+    "database": "StagingDB",
+    "schema": "gl",
+    "object_type_scope": "table",
+    "object_count": 12,
+    "high_use_objects": 0,
+    "downstream_uses": 4,
+    "first_object": "Fuel_gljedetail_cur_staging",
+    "last_object": "zzzzz_gl.gljeHeader_BU_20130613",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / gl",
+    "object_names": [
+      "Fuel_gljedetail_cur_staging",
+      "Fuel_gljeheader_staging",
+      "Fuel_gljedetail_cur_BU__staging",
+      "Fuel_gljedetail_cur_staging_rfj",
+      "Fuel_gljeheader_BU_staging",
+      "Fuel_MissingData",
+      "Fuel_MissingData_File",
+      "zzzzz_gl.Fuel_gljedetail_cur_staging_0824",
+      "zzzzz_gl.Fuel_gljedetail_cur_staging_08252017",
+      "zzzzz_gl.Fuel_gljedetail_cur_staging_20170827",
+      "zzzzz_gl.Fuel_gljedetail_cur_staging_back_0823",
+      "zzzzz_gl.gljeHeader_BU_20130613"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "table",
+    "original_object_count": 12,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 12,
+    "total_planned_pages": 16
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB"],
+      "page_type": "database",
+      "evidence_hash": "sha256:86BBBA4A90EF1C66989EFB3B9746AF88467BE01889393493BBDE0177897E19A4",
+      "evidence_file": "database-stagingdb.evidence.json",
+      "markdown_file": "database-stagingdb.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.gl",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB", "gl"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:B5C0CD769CC6179D6ED563B79DFCADFABEC8636429190650E7DD0B2DF286BB00",
+      "evidence_file": "schema-stagingdb-gl.evidence.json",
+      "markdown_file": "schema-stagingdb-gl.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.gl.Fuel_gljedetail_cur_BU__staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "Fuel_gljedetail_cur_BU__staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:6CE0600336386672D643C9A01F7B4A5123E874AF91ED6EAB1C1F698E01CE7A0D",
+      "evidence_file": "object-stagingdb-gl-fuel-gljedetail-cur-bu-staging.evidence.json",
+      "markdown_file": "object-stagingdb-gl-fuel-gljedetail-cur-bu-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.gl.Fuel_gljedetail_cur_staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "Fuel_gljedetail_cur_staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9A1B0002CE186A1FF2BC66417FD6CAB13DFA57E66C39908BAD40CD09AD8A674B",
+      "evidence_file": "object-stagingdb-gl-fuel-gljedetail-cur-staging.evidence.json",
+      "markdown_file": "object-stagingdb-gl-fuel-gljedetail-cur-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.gl.Fuel_gljedetail_cur_staging_rfj",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "Fuel_gljedetail_cur_staging_rfj"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:AF201ED48DF6CFE6212A8026E341CAD237DD7C807434F37405F331568E2764B6",
+      "evidence_file": "object-stagingdb-gl-fuel-gljedetail-cur-staging-rfj.evidence.json",
+      "markdown_file": "object-stagingdb-gl-fuel-gljedetail-cur-staging-rfj.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.gl.Fuel_gljeheader_BU_staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "Fuel_gljeheader_BU_staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B7F6CAB054DBA1E624632DACC91BA61E7E6CEC7895BAEBCFDD18D1D1048BAFF7",
+      "evidence_file": "object-stagingdb-gl-fuel-gljeheader-bu-staging.evidence.json",
+      "markdown_file": "object-stagingdb-gl-fuel-gljeheader-bu-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.gl.Fuel_gljeheader_staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "Fuel_gljeheader_staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:75444A28CE0F1CAE35B7C9954120B59484A5C152DC678FD8F6BBCB55463AA0A2",
+      "evidence_file": "object-stagingdb-gl-fuel-gljeheader-staging.evidence.json",
+      "markdown_file": "object-stagingdb-gl-fuel-gljeheader-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.gl.Fuel_MissingData",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "Fuel_MissingData"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A295D87A19C109D43C636DC184FAA58AB05645CC4E3C12D88D59A25C1B1CD1FC",
+      "evidence_file": "object-stagingdb-gl-fuel-missingdata.evidence.json",
+      "markdown_file": "object-stagingdb-gl-fuel-missingdata.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.gl.Fuel_MissingData_File",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "Fuel_MissingData_File"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:4B53A759C84474DD040578DE406FFEB17AF5A03F5C188C5466CB0DFE760098AE",
+      "evidence_file": "object-stagingdb-gl-fuel-missingdata-file.evidence.json",
+      "markdown_file": "object-stagingdb-gl-fuel-missingdata-file.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.gl.zzzzz_gl.Fuel_gljedetail_cur_staging_0824",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "zzzzz_gl.Fuel_gljedetail_cur_staging_0824"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:DF9405D0D26CFC717D6E1FF88CB832EC1DE3ECEECD114B4096446F7BDF06348A",
+      "evidence_file": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-0824.evidence.json",
+      "markdown_file": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-0824.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.gl.zzzzz_gl.Fuel_gljedetail_cur_staging_08252017",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "zzzzz_gl.Fuel_gljedetail_cur_staging_08252017"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D9D54DFCE519D2A01803D43254C6F34E936C395892C7E1DC04364CE667C7BCA7",
+      "evidence_file": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-08252017.evidence.json",
+      "markdown_file": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-08252017.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.gl.zzzzz_gl.Fuel_gljedetail_cur_staging_20170827",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "zzzzz_gl.Fuel_gljedetail_cur_staging_20170827"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:5DC0E2695DB75F9A24D673EDCF318A604B9C9B728A5D712E1A852C2463776BCB",
+      "evidence_file": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-20170827.evidence.json",
+      "markdown_file": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-20170827.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.gl.zzzzz_gl.Fuel_gljedetail_cur_staging_back_0823",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "zzzzz_gl.Fuel_gljedetail_cur_staging_back_0823"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A9B2A949AE179B73A737F494EAC55A7B36144DA186EC9849634749474F3F9F22",
+      "evidence_file": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-back-0823.evidence.json",
+      "markdown_file": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-back-0823.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.gl.zzzzz_gl.gljeHeader_BU_20130613",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "zzzzz_gl.gljeHeader_BU_20130613"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:889CA180379A5FFBCA5204493303030C33C84C6C381A9F4B96CD809166B05978",
+      "evidence_file": "object-stagingdb-gl-zzzzz-gl-gljeheader-bu-20130613.evidence.json",
+      "markdown_file": "object-stagingdb-gl-zzzzz-gl-gljeheader-bu-20130613.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "Fuel_gljedetail_cur_BU__staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "Fuel_gljedetail_cur_BU__staging"
+      ],
+      "canonical_id": "object-stagingdb-gl-fuel-gljedetail-cur-bu-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/gl__Fuel_gljedetail_cur_BU__staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:6CE0600336386672D643C9A01F7B4A5123E874AF91ED6EAB1C1F698E01CE7A0D",
+      "object": {
+        "name": "Fuel_gljedetail_cur_BU__staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "gl",
+        "qualified_name": "StagingDB.gl.Fuel_gljedetail_cur_BU__staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.gl.Fuel_gljedetail_cur_BU__staging",
+        "gl.Fuel_gljedetail_cur_BU__staging",
+        "Fuel_gljedetail_cur_BU__staging",
+        "FuelgljedetailcurBUstaging",
+        "fuelgljedetailcurbustaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 43,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / gl"
+      ],
+      "evidence_file": "object-stagingdb-gl-fuel-gljedetail-cur-bu-staging.evidence.json",
+      "markdown_file": "object-stagingdb-gl-fuel-gljedetail-cur-bu-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Fuel_gljedetail_cur_staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "Fuel_gljedetail_cur_staging"
+      ],
+      "canonical_id": "object-stagingdb-gl-fuel-gljedetail-cur-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/gl__Fuel_gljedetail_cur_staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9A1B0002CE186A1FF2BC66417FD6CAB13DFA57E66C39908BAD40CD09AD8A674B",
+      "object": {
+        "name": "Fuel_gljedetail_cur_staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "gl",
+        "qualified_name": "StagingDB.gl.Fuel_gljedetail_cur_staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.gl.Fuel_gljedetail_cur_staging",
+        "gl.Fuel_gljedetail_cur_staging",
+        "Fuel_gljedetail_cur_staging",
+        "Fuelgljedetailcurstaging",
+        "fuelgljedetailcurstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.PostGres.Daily - PostGres - Load GLDetail Group.pals_gljedetail.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-DWASQL-02,12010.StagingDB.gl.vw_Fuel_GLDetail_Staging",
+          "L1-DWASQL-02,12010.StagingDB.pgc.vw_Fact_GLDetail_Staging",
+          "L1-DWASQL-02,12010.StagingDB.pgc.vw_Fact_GLDetail_Staging_DEV"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 43,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / gl"
+      ],
+      "evidence_file": "object-stagingdb-gl-fuel-gljedetail-cur-staging.evidence.json",
+      "markdown_file": "object-stagingdb-gl-fuel-gljedetail-cur-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Fuel_gljedetail_cur_staging_rfj",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "Fuel_gljedetail_cur_staging_rfj"
+      ],
+      "canonical_id": "object-stagingdb-gl-fuel-gljedetail-cur-staging-rfj",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/gl__Fuel_gljedetail_cur_staging_rfj.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:AF201ED48DF6CFE6212A8026E341CAD237DD7C807434F37405F331568E2764B6",
+      "object": {
+        "name": "Fuel_gljedetail_cur_staging_rfj",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "gl",
+        "qualified_name": "StagingDB.gl.Fuel_gljedetail_cur_staging_rfj",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.gl.Fuel_gljedetail_cur_staging_rfj",
+        "gl.Fuel_gljedetail_cur_staging_rfj",
+        "Fuel_gljedetail_cur_staging_rfj",
+        "Fuelgljedetailcurstagingrfj",
+        "fuelgljedetailcurstagingrfj"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 43,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / gl"
+      ],
+      "evidence_file": "object-stagingdb-gl-fuel-gljedetail-cur-staging-rfj.evidence.json",
+      "markdown_file": "object-stagingdb-gl-fuel-gljedetail-cur-staging-rfj.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Fuel_gljeheader_BU_staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "Fuel_gljeheader_BU_staging"
+      ],
+      "canonical_id": "object-stagingdb-gl-fuel-gljeheader-bu-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/gl__Fuel_gljeheader_BU_staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B7F6CAB054DBA1E624632DACC91BA61E7E6CEC7895BAEBCFDD18D1D1048BAFF7",
+      "object": {
+        "name": "Fuel_gljeheader_BU_staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "gl",
+        "qualified_name": "StagingDB.gl.Fuel_gljeheader_BU_staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.gl.Fuel_gljeheader_BU_staging",
+        "gl.Fuel_gljeheader_BU_staging",
+        "Fuel_gljeheader_BU_staging",
+        "FuelgljeheaderBUstaging",
+        "fuelgljeheaderbustaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "applogonid",
+          "batchnumber",
+          "companyid",
+          "companyidright",
+          "docdescription",
+          "doctype",
+          "entrydate",
+          "interfacecode",
+          "journalid",
+          "journalidright",
+          "lastpostsequence",
+          "month13flag",
+          "partsinvoiceno",
+          "postingdate",
+          "postingtime",
+          "refer",
+          "referright"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 38,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / gl"
+      ],
+      "evidence_file": "object-stagingdb-gl-fuel-gljeheader-bu-staging.evidence.json",
+      "markdown_file": "object-stagingdb-gl-fuel-gljeheader-bu-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Fuel_gljeheader_staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "Fuel_gljeheader_staging"
+      ],
+      "canonical_id": "object-stagingdb-gl-fuel-gljeheader-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/gl__Fuel_gljeheader_staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:75444A28CE0F1CAE35B7C9954120B59484A5C152DC678FD8F6BBCB55463AA0A2",
+      "object": {
+        "name": "Fuel_gljeheader_staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "gl",
+        "qualified_name": "StagingDB.gl.Fuel_gljeheader_staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.gl.Fuel_gljeheader_staging",
+        "gl.Fuel_gljeheader_staging",
+        "Fuel_gljeheader_staging",
+        "Fuelgljeheaderstaging",
+        "fuelgljeheaderstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.PostGres.Daily - PostGres - Load GLDetail Group.pals_gljeheader.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-DWASQL-02,12010.StagingDB.gl.vw_Fuel_GLjeheader_Staging"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "applogonid",
+          "batchnumber",
+          "companyid",
+          "companyidright",
+          "docdescription",
+          "doctype",
+          "entrydate",
+          "interfacecode",
+          "journalid",
+          "journalidright",
+          "lastpostsequence",
+          "month13flag",
+          "partsinvoiceno",
+          "postingdate",
+          "postingtime",
+          "refer",
+          "referright"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 38,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / gl"
+      ],
+      "evidence_file": "object-stagingdb-gl-fuel-gljeheader-staging.evidence.json",
+      "markdown_file": "object-stagingdb-gl-fuel-gljeheader-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Fuel_MissingData",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "Fuel_MissingData"
+      ],
+      "canonical_id": "object-stagingdb-gl-fuel-missingdata",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/gl__Fuel_MissingData.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A295D87A19C109D43C636DC184FAA58AB05645CC4E3C12D88D59A25C1B1CD1FC",
+      "object": {
+        "name": "Fuel_MissingData",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "gl",
+        "qualified_name": "StagingDB.gl.Fuel_MissingData",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.gl.Fuel_MissingData",
+        "gl.Fuel_MissingData",
+        "Fuel_MissingData",
+        "FuelMissingData",
+        "fuelmissingdata"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 43,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / gl"
+      ],
+      "evidence_file": "object-stagingdb-gl-fuel-missingdata.evidence.json",
+      "markdown_file": "object-stagingdb-gl-fuel-missingdata.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Fuel_MissingData_File",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "Fuel_MissingData_File"
+      ],
+      "canonical_id": "object-stagingdb-gl-fuel-missingdata-file",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/gl__Fuel_MissingData_File.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:4B53A759C84474DD040578DE406FFEB17AF5A03F5C188C5466CB0DFE760098AE",
+      "object": {
+        "name": "Fuel_MissingData_File",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "gl",
+        "qualified_name": "StagingDB.gl.Fuel_MissingData_File",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.gl.Fuel_MissingData_File",
+        "gl.Fuel_MissingData_File",
+        "Fuel_MissingData_File",
+        "FuelMissingDataFile",
+        "fuelmissingdatafile"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 43,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / gl"
+      ],
+      "evidence_file": "object-stagingdb-gl-fuel-missingdata-file.evidence.json",
+      "markdown_file": "object-stagingdb-gl-fuel-missingdata-file.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_gl.Fuel_gljedetail_cur_staging_0824",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "zzzzz_gl.Fuel_gljedetail_cur_staging_0824"
+      ],
+      "canonical_id": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-0824",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/gl__zzzzz_gl.Fuel_gljedetail_cur_staging_0824.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:DF9405D0D26CFC717D6E1FF88CB832EC1DE3ECEECD114B4096446F7BDF06348A",
+      "object": {
+        "name": "zzzzz_gl.Fuel_gljedetail_cur_staging_0824",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "gl",
+        "qualified_name": "StagingDB.gl.zzzzz_gl.Fuel_gljedetail_cur_staging_0824",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.gl.zzzzz_gl.Fuel_gljedetail_cur_staging_0824",
+        "gl.zzzzz_gl.Fuel_gljedetail_cur_staging_0824",
+        "zzzzz_gl.Fuel_gljedetail_cur_staging_0824",
+        "zzzzzgl.Fuelgljedetailcurstaging0824",
+        "zzzzzglfuelgljedetailcurstaging0824"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 43,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / gl"
+      ],
+      "evidence_file": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-0824.evidence.json",
+      "markdown_file": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-0824.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_gl.Fuel_gljedetail_cur_staging_08252017",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "zzzzz_gl.Fuel_gljedetail_cur_staging_08252017"
+      ],
+      "canonical_id": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-08252017",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/gl__zzzzz_gl.Fuel_gljedetail_cur_staging_08252017.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D9D54DFCE519D2A01803D43254C6F34E936C395892C7E1DC04364CE667C7BCA7",
+      "object": {
+        "name": "zzzzz_gl.Fuel_gljedetail_cur_staging_08252017",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "gl",
+        "qualified_name": "StagingDB.gl.zzzzz_gl.Fuel_gljedetail_cur_staging_08252017",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.gl.zzzzz_gl.Fuel_gljedetail_cur_staging_08252017",
+        "gl.zzzzz_gl.Fuel_gljedetail_cur_staging_08252017",
+        "zzzzz_gl.Fuel_gljedetail_cur_staging_08252017",
+        "zzzzzgl.Fuelgljedetailcurstaging08252017",
+        "zzzzzglfuelgljedetailcurstaging08252017"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 43,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / gl"
+      ],
+      "evidence_file": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-08252017.evidence.json",
+      "markdown_file": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-08252017.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_gl.Fuel_gljedetail_cur_staging_20170827",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "zzzzz_gl.Fuel_gljedetail_cur_staging_20170827"
+      ],
+      "canonical_id": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-20170827",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/gl__zzzzz_gl.Fuel_gljedetail_cur_staging_20170827.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:5DC0E2695DB75F9A24D673EDCF318A604B9C9B728A5D712E1A852C2463776BCB",
+      "object": {
+        "name": "zzzzz_gl.Fuel_gljedetail_cur_staging_20170827",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "gl",
+        "qualified_name": "StagingDB.gl.zzzzz_gl.Fuel_gljedetail_cur_staging_20170827",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.gl.zzzzz_gl.Fuel_gljedetail_cur_staging_20170827",
+        "gl.zzzzz_gl.Fuel_gljedetail_cur_staging_20170827",
+        "zzzzz_gl.Fuel_gljedetail_cur_staging_20170827",
+        "zzzzzgl.Fuelgljedetailcurstaging20170827",
+        "zzzzzglfuelgljedetailcurstaging20170827"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 43,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / gl"
+      ],
+      "evidence_file": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-20170827.evidence.json",
+      "markdown_file": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-20170827.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_gl.Fuel_gljedetail_cur_staging_back_0823",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "zzzzz_gl.Fuel_gljedetail_cur_staging_back_0823"
+      ],
+      "canonical_id": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-back-0823",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/gl__zzzzz_gl.Fuel_gljedetail_cur_staging_back_0823.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A9B2A949AE179B73A737F494EAC55A7B36144DA186EC9849634749474F3F9F22",
+      "object": {
+        "name": "zzzzz_gl.Fuel_gljedetail_cur_staging_back_0823",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "gl",
+        "qualified_name": "StagingDB.gl.zzzzz_gl.Fuel_gljedetail_cur_staging_back_0823",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.gl.zzzzz_gl.Fuel_gljedetail_cur_staging_back_0823",
+        "gl.zzzzz_gl.Fuel_gljedetail_cur_staging_back_0823",
+        "zzzzz_gl.Fuel_gljedetail_cur_staging_back_0823",
+        "zzzzzgl.Fuelgljedetailcurstagingback0823",
+        "zzzzzglfuelgljedetailcurstagingback0823"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2",
+          "journalid",
+          "journalidright",
+          "postingamount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 43,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / gl"
+      ],
+      "evidence_file": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-back-0823.evidence.json",
+      "markdown_file": "object-stagingdb-gl-zzzzz-gl-fuel-gljedetail-cur-staging-back-0823.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_gl.gljeHeader_BU_20130613",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "gl",
+        "zzzzz_gl.gljeHeader_BU_20130613"
+      ],
+      "canonical_id": "object-stagingdb-gl-zzzzz-gl-gljeheader-bu-20130613",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/gl__zzzzz_gl.gljeHeader_BU_20130613.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:889CA180379A5FFBCA5204493303030C33C84C6C381A9F4B96CD809166B05978",
+      "object": {
+        "name": "zzzzz_gl.gljeHeader_BU_20130613",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "gl",
+        "qualified_name": "StagingDB.gl.zzzzz_gl.gljeHeader_BU_20130613",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.gl.zzzzz_gl.gljeHeader_BU_20130613",
+        "gl.zzzzz_gl.gljeHeader_BU_20130613",
+        "zzzzz_gl.gljeHeader_BU_20130613",
+        "zzzzzgl.gljeHeaderBU20130613",
+        "zzzzzglgljeheaderbu20130613"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingdate",
+          "applogonid",
+          "batchnumber",
+          "companyid",
+          "companyidright",
+          "docdescription",
+          "doctype",
+          "entrydate",
+          "interfacecode",
+          "journalid",
+          "journalidright",
+          "lastpostsequence",
+          "month13flag",
+          "partsinvoiceno",
+          "postingdate",
+          "postingtime",
+          "refer",
+          "referright"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 38,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / gl"
+      ],
+      "evidence_file": "object-stagingdb-gl-zzzzz-gl-gljeheader-bu-20130613.evidence.json",
+      "markdown_file": "object-stagingdb-gl-zzzzz-gl-gljeheader-bu-20130613.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-124-stagingdb-gl-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-124-stagingdb-gl-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-124-stagingdb-gl-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

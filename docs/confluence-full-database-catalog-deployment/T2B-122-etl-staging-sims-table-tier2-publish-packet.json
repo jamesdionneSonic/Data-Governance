@@ -1,0 +1,829 @@
+{
+  "packet_id": "T2B-122",
+  "generated_at": "2026-06-23T18:48:18.500Z",
+  "batch": {
+    "batch_id": "T2B-122",
+    "priority_rank": 122,
+    "platform": "SQL Server",
+    "database": "ETL_Staging",
+    "schema": "SIMS",
+    "object_type_scope": "table",
+    "object_count": 5,
+    "high_use_objects": 0,
+    "downstream_uses": 7,
+    "first_object": "CarInventory_Staging",
+    "last_object": "EP_CarsWebMetrics_Summary",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / SIMS",
+    "object_names": [
+      "CarInventory_Staging",
+      "CarsWebMetrics_Summary",
+      "Vehicle_To_Inventory",
+      "EP_CarInventory_Staging",
+      "EP_CarsWebMetrics_Summary"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "table",
+    "original_object_count": 5,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 5,
+    "total_planned_pages": 9
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "ETL_Staging"],
+      "page_type": "database",
+      "evidence_hash": "sha256:DAC2D90CB3BE061D63E9E2B32F595CD9386F3A5C44DBCECB3D4790E05ABC3057",
+      "evidence_file": "database-etl-staging.evidence.json",
+      "markdown_file": "database-etl-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.SIMS",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "ETL_Staging", "SIMS"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:63A6D14B95D18B53226686219591D52A2849F448D1AA07947EEDE1A7C957A0E0",
+      "evidence_file": "schema-etl-staging-sims.evidence.json",
+      "markdown_file": "schema-etl-staging-sims.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.SIMS.CarInventory_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "SIMS",
+        "CarInventory_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:4359A1A2C8552B5CEBC1FF19B104A0F161D9DB385B652FBA9167A91106DD6A44",
+      "evidence_file": "object-etl-staging-sims-carinventory-staging.evidence.json",
+      "markdown_file": "object-etl-staging-sims-carinventory-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.SIMS.CarsWebMetrics_Summary",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "SIMS",
+        "CarsWebMetrics_Summary"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:95E5B52A2658F2FE101917AC2F529A45239E6E6051170F82D838D8AF98D612B7",
+      "evidence_file": "object-etl-staging-sims-carswebmetrics-summary.evidence.json",
+      "markdown_file": "object-etl-staging-sims-carswebmetrics-summary.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.SIMS.EP_CarInventory_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "SIMS",
+        "EP_CarInventory_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:01A6373C8CD17B6DDFF9A14C01DF58B6D21817CFBBAA232DC64A6357032CC415",
+      "evidence_file": "object-etl-staging-sims-ep-carinventory-staging.evidence.json",
+      "markdown_file": "object-etl-staging-sims-ep-carinventory-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.SIMS.EP_CarsWebMetrics_Summary",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "SIMS",
+        "EP_CarsWebMetrics_Summary"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D79C844967C352C73C616493E1F35EE5B2206F9410E8030C9FDCF2FE7CE892D5",
+      "evidence_file": "object-etl-staging-sims-ep-carswebmetrics-summary.evidence.json",
+      "markdown_file": "object-etl-staging-sims-ep-carswebmetrics-summary.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.SIMS.Vehicle_To_Inventory",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "SIMS",
+        "Vehicle_To_Inventory"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A65E6268E6730FDADCFCF4725E40303E928DFEBB660B15F6705E788044E12673",
+      "evidence_file": "object-etl-staging-sims-vehicle-to-inventory.evidence.json",
+      "markdown_file": "object-etl-staging-sims-vehicle-to-inventory.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "CarInventory_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "SIMS",
+        "CarInventory_Staging"
+      ],
+      "canonical_id": "object-etl-staging-sims-carinventory-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/SIMS__CarInventory_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:4359A1A2C8552B5CEBC1FF19B104A0F161D9DB385B652FBA9167A91106DD6A44",
+      "object": {
+        "name": "CarInventory_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "SIMS",
+        "qualified_name": "ETL_Staging.SIMS.CarInventory_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.SIMS.CarInventory_Staging",
+        "SIMS.CarInventory_Staging",
+        "CarInventory_Staging",
+        "CarInventoryStaging",
+        "carinventorystaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.SIMS.SIMSClickMetrics.SIMSClickMetrics.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.SIMS.SIMSWebMetrics.SIMSWebMetrics.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "V1-SSIS25-01, 11040.SSISDB.SIMS.SIMSClickMetrics.SIMSClickMetrics.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.SIMS.SIMSWebMetrics.SIMSWebMetrics.dtsx"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RID",
+          "VIN",
+          "Vehicle_ID",
+          "Store_ID",
+          "Invtr_ID",
+          "Curr_Status_ID",
+          "Stock_No",
+          "Status_Name",
+          "Acquired_Type",
+          "Invtr_Type",
+          "Acquired_Date",
+          "Group_Acquired_Date",
+          "Age",
+          "Group_Age",
+          "Creation_Date",
+          "Modification_Date",
+          "ADP_Invtr_Type",
+          "ADP_Available",
+          "ADP_Is_Deleted",
+          "ADP_Status"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 33,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / SIMS"
+      ],
+      "evidence_file": "object-etl-staging-sims-carinventory-staging.evidence.json",
+      "markdown_file": "object-etl-staging-sims-carinventory-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "CarsWebMetrics_Summary",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "SIMS",
+        "CarsWebMetrics_Summary"
+      ],
+      "canonical_id": "object-etl-staging-sims-carswebmetrics-summary",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/SIMS__CarsWebMetrics_Summary.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:95E5B52A2658F2FE101917AC2F529A45239E6E6051170F82D838D8AF98D612B7",
+      "object": {
+        "name": "CarsWebMetrics_Summary",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "SIMS",
+        "qualified_name": "ETL_Staging.SIMS.CarsWebMetrics_Summary",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.SIMS.CarsWebMetrics_Summary",
+        "SIMS.CarsWebMetrics_Summary",
+        "CarsWebMetrics_Summary",
+        "CarsWebMetricsSummary",
+        "carswebmetricssummary"
+      ],
+      "lineage": {
+        "upstream_loaders": ["V1-SSIS25-01, 11040.SSISDB.SIMS.SIMSWebMetrics.SIMSWebMetrics.dtsx"],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "V1-SSIS25-01, 11040.SSISDB.SIMS.SIMSWebMetrics.SIMSWebMetrics.dtsx"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RID",
+          "Vehicle_ID",
+          "Store_ID",
+          "Invtr_ID",
+          "Curr_Status_ID",
+          "Stock_No",
+          "VIN",
+          "Acquired_Date",
+          "AT_Metrics",
+          "Cars_Metrics",
+          "DDC_Metrics",
+          "Meta_Src_Sys_ID",
+          "UserID",
+          "Meta_SourceSystemName",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "ETLExecution_ID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 17,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / SIMS"
+      ],
+      "evidence_file": "object-etl-staging-sims-carswebmetrics-summary.evidence.json",
+      "markdown_file": "object-etl-staging-sims-carswebmetrics-summary.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "EP_CarInventory_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "SIMS",
+        "EP_CarInventory_Staging"
+      ],
+      "canonical_id": "object-etl-staging-sims-ep-carinventory-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/SIMS__EP_CarInventory_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:01A6373C8CD17B6DDFF9A14C01DF58B6D21817CFBBAA232DC64A6357032CC415",
+      "object": {
+        "name": "EP_CarInventory_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "SIMS",
+        "qualified_name": "ETL_Staging.SIMS.EP_CarInventory_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.SIMS.EP_CarInventory_Staging",
+        "SIMS.EP_CarInventory_Staging",
+        "EP_CarInventory_Staging",
+        "EPCarInventoryStaging",
+        "epcarinventorystaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RID",
+          "EntityKey",
+          "EntDealerLvl1",
+          "VIN",
+          "Vehicle_ID",
+          "Store_ID",
+          "Invtr_ID",
+          "Curr_Status_ID",
+          "Stock_No",
+          "Status_Name",
+          "Acquired_Type",
+          "Invtr_Type",
+          "Acquired_Date",
+          "Group_Acquired_Date",
+          "Age",
+          "Group_Age",
+          "Creation_Date",
+          "Modification_Date",
+          "ADP_Invtr_Type",
+          "ADP_Available"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 36,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / SIMS"
+      ],
+      "evidence_file": "object-etl-staging-sims-ep-carinventory-staging.evidence.json",
+      "markdown_file": "object-etl-staging-sims-ep-carinventory-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "EP_CarsWebMetrics_Summary",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "SIMS",
+        "EP_CarsWebMetrics_Summary"
+      ],
+      "canonical_id": "object-etl-staging-sims-ep-carswebmetrics-summary",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/SIMS__EP_CarsWebMetrics_Summary.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D79C844967C352C73C616493E1F35EE5B2206F9410E8030C9FDCF2FE7CE892D5",
+      "object": {
+        "name": "EP_CarsWebMetrics_Summary",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "SIMS",
+        "qualified_name": "ETL_Staging.SIMS.EP_CarsWebMetrics_Summary",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.SIMS.EP_CarsWebMetrics_Summary",
+        "SIMS.EP_CarsWebMetrics_Summary",
+        "EP_CarsWebMetrics_Summary",
+        "EPCarsWebMetricsSummary",
+        "epcarswebmetricssummary"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RID",
+          "Vehicle_ID",
+          "Store_ID",
+          "Invtr_ID",
+          "Curr_Status_ID",
+          "Stock_No",
+          "VIN",
+          "Acquired_Date",
+          "AT_Metrics",
+          "Cars_Metrics",
+          "DDC_Metrics",
+          "Meta_Src_Sys_ID",
+          "UserID",
+          "Meta_SourceSystemName",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "ETLExecution_ID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 17,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / SIMS"
+      ],
+      "evidence_file": "object-etl-staging-sims-ep-carswebmetrics-summary.evidence.json",
+      "markdown_file": "object-etl-staging-sims-ep-carswebmetrics-summary.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Vehicle_To_Inventory",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "SIMS",
+        "Vehicle_To_Inventory"
+      ],
+      "canonical_id": "object-etl-staging-sims-vehicle-to-inventory",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/SIMS__Vehicle_To_Inventory.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A65E6268E6730FDADCFCF4725E40303E928DFEBB660B15F6705E788044E12673",
+      "object": {
+        "name": "Vehicle_To_Inventory",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "SIMS",
+        "qualified_name": "ETL_Staging.SIMS.Vehicle_To_Inventory",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.SIMS.Vehicle_To_Inventory",
+        "SIMS.Vehicle_To_Inventory",
+        "Vehicle_To_Inventory",
+        "VehicleToInventory",
+        "vehicletoinventory"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.Spped.DDC VehicleViews.Vehicle_VehicleInventory_2.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-5FSQL-01.ETL_Staging.SIMS.SIMS_StockHistory"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RID",
+          "Vehicle_ID",
+          "Store_ID",
+          "Invtr_ID",
+          "Invtr_Type",
+          "Stock_No",
+          "VIN",
+          "Acquired_Date",
+          "ADP_Dealer_ID",
+          "ADP_Company_ID",
+          "ADP_Prefix",
+          "ADP_FI_Cora",
+          "ADP_A_Cora",
+          "Curr_Status_ID",
+          "Meta_Src_Sys_ID",
+          "UserID",
+          "Meta_SourceSystemName",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "ETLExecution_ID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 20,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / SIMS"
+      ],
+      "evidence_file": "object-etl-staging-sims-vehicle-to-inventory.evidence.json",
+      "markdown_file": "object-etl-staging-sims-vehicle-to-inventory.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-122-etl-staging-sims-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-122-etl-staging-sims-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-122-etl-staging-sims-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

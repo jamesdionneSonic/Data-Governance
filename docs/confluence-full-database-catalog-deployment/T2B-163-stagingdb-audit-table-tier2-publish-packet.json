@@ -1,0 +1,224 @@
+{
+  "packet_id": "T2B-163",
+  "generated_at": "2026-06-23T18:59:34.366Z",
+  "batch": {
+    "batch_id": "T2B-163",
+    "priority_rank": 163,
+    "platform": "SQL Server",
+    "database": "StagingDB",
+    "schema": "Audit",
+    "object_type_scope": "table",
+    "object_count": 1,
+    "high_use_objects": 0,
+    "downstream_uses": 2,
+    "first_object": "test",
+    "last_object": "test",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Audit",
+    "object_names": ["test"],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 1,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 1,
+    "total_planned_pages": 5
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB"],
+      "page_type": "database",
+      "evidence_hash": "sha256:86BBBA4A90EF1C66989EFB3B9746AF88467BE01889393493BBDE0177897E19A4",
+      "evidence_file": "database-stagingdb.evidence.json",
+      "markdown_file": "database-stagingdb.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Audit",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB", "Audit"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:2EF9B42928AC292DA275DE479D1CD22F38D527629DBD48FB0F88D67D3EB3A8AB",
+      "evidence_file": "schema-stagingdb-audit.evidence.json",
+      "markdown_file": "schema-stagingdb-audit.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Audit.test",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Audit",
+        "test"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9593788ED155F9875D21428D4ADD7D466DBEBF174B01FE6DCB2A91F53E5BD057",
+      "evidence_file": "object-stagingdb-audit-test.evidence.json",
+      "markdown_file": "object-stagingdb-audit-test.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "test",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Audit",
+        "test"
+      ],
+      "canonical_id": "object-stagingdb-audit-test",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/StagingDB/tables/Audit__test.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9593788ED155F9875D21428D4ADD7D466DBEBF174B01FE6DCB2A91F53E5BD057",
+      "object": {
+        "name": "test",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "StagingDB",
+        "schema": "Audit",
+        "qualified_name": "StagingDB.Audit.test",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["StagingDB.Audit.test", "Audit.test", "test"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "V1-SSIS25-01, 11040.SSISDB.VehicleMart.CarFaxVehicleScoreDataLoad.CarFaxVehicleDataLoad.dtsx"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["VIN", "CarId", "SortDate", "Source", "SortOrder"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Audit"
+      ],
+      "evidence_file": "object-stagingdb-audit-test.evidence.json",
+      "markdown_file": "object-stagingdb-audit-test.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-163-stagingdb-audit-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-163-stagingdb-audit-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-163-stagingdb-audit-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

@@ -1,0 +1,901 @@
+{
+  "packet_id": "T2B-104",
+  "generated_at": "2026-06-23T18:44:00.645Z",
+  "batch": {
+    "batch_id": "T2B-104",
+    "priority_rank": 104,
+    "platform": "SQL Server",
+    "database": "eRIMS",
+    "schema": "dbo",
+    "object_type_scope": "table",
+    "object_count": 6,
+    "high_use_objects": 0,
+    "downstream_uses": 22,
+    "first_object": "AL_FR",
+    "last_object": "CRM_Customer",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / eRIMS / dbo",
+    "object_names": [
+      "AL_FR",
+      "DPD_FR_Vehicle",
+      "Premises_Loss_Claims",
+      "Property_FR",
+      "WC_FR",
+      "CRM_Customer"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 6,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 6,
+    "total_planned_pages": 10
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "eRIMS",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "eRIMS"],
+      "page_type": "database",
+      "evidence_hash": "sha256:43DC6825DB92B331490663B40129E421CFA5AC7CD0962DB0221A83D77D2F409B",
+      "evidence_file": "database-erims.evidence.json",
+      "markdown_file": "database-erims.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "eRIMS.dbo",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "eRIMS", "dbo"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:C2001951060478844D55BF5CD51931A05877886BEC85752D70142F2DA9B77F71",
+      "evidence_file": "schema-erims-dbo.evidence.json",
+      "markdown_file": "schema-erims-dbo.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "eRIMS.dbo.AL_FR",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "eRIMS", "dbo", "AL_FR"],
+      "page_type": "object",
+      "evidence_hash": "sha256:BC402CC7BFDFE2C795575A9C75A516268036B6320B85A00E88C748B993A2DD72",
+      "evidence_file": "object-erims-dbo-al-fr.evidence.json",
+      "markdown_file": "object-erims-dbo-al-fr.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "eRIMS.dbo.CRM_Customer",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "eRIMS",
+        "dbo",
+        "CRM_Customer"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:675DFACE6B7D0E7E19626AC7DD2FBC3A5CB50AA6B8BBA4121F8FDDCF5557F5DF",
+      "evidence_file": "object-erims-dbo-crm-customer.evidence.json",
+      "markdown_file": "object-erims-dbo-crm-customer.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "eRIMS.dbo.DPD_FR_Vehicle",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "eRIMS",
+        "dbo",
+        "DPD_FR_Vehicle"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A566BC6F33EAE8F9054335FA1FB0515E237B95FB3DCD3161F64218846667995C",
+      "evidence_file": "object-erims-dbo-dpd-fr-vehicle.evidence.json",
+      "markdown_file": "object-erims-dbo-dpd-fr-vehicle.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "eRIMS.dbo.Premises_Loss_Claims",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "eRIMS",
+        "dbo",
+        "Premises_Loss_Claims"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:5CAE73C198168BB26DA04F6F6824E0BBE44EF285EE7BDDEF2F261761CF850520",
+      "evidence_file": "object-erims-dbo-premises-loss-claims.evidence.json",
+      "markdown_file": "object-erims-dbo-premises-loss-claims.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "eRIMS.dbo.Property_FR",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "eRIMS",
+        "dbo",
+        "Property_FR"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:F8193B22CC72FB96BD00CB7271B05B05C82A80BD8FB153BF604942FA3561BCE1",
+      "evidence_file": "object-erims-dbo-property-fr.evidence.json",
+      "markdown_file": "object-erims-dbo-property-fr.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "eRIMS.dbo.WC_FR",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "eRIMS", "dbo", "WC_FR"],
+      "page_type": "object",
+      "evidence_hash": "sha256:30B4C41688E0D1C6761306D6F5CBB62657B5D54664A201C59C34E9A907800156",
+      "evidence_file": "object-erims-dbo-wc-fr.evidence.json",
+      "markdown_file": "object-erims-dbo-wc-fr.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "AL_FR",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "eRIMS",
+        "dbo",
+        "AL_FR"
+      ],
+      "canonical_id": "object-erims-dbo-al-fr",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/eRIMS/tables/dbo__AL_FR.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:BC402CC7BFDFE2C795575A9C75A516268036B6320B85A00E88C748B993A2DD72",
+      "object": {
+        "name": "AL_FR",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "eRIMS",
+        "schema": "dbo",
+        "qualified_name": "eRIMS.dbo.AL_FR",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["eRIMS.dbo.AL_FR", "dbo.AL_FR", "AL_FR", "ALFR", "alfr"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "V1-SSIS25-01, 11040.SSISDB.GPA.GPA.GPA_RiskManagementClaims_.dtsx"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Region",
+          "ClaimNumber",
+          "FiscalMonthKey",
+          "ClaimDate",
+          "ClaimType",
+          "ClaimTypeSubcategory",
+          "ClaimDescription",
+          "TakenByEmergencyTransport",
+          "Vehicle",
+          "PoliceNotified",
+          "SecurityVideo",
+          "Recovered",
+          "EstimatedCost",
+          "Comments",
+          "SonicLocationCode",
+          "EntityKey",
+          "AssociateName",
+          "Sonic_Location_Code"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 18,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / eRIMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / eRIMS / dbo"
+      ],
+      "evidence_file": "object-erims-dbo-al-fr.evidence.json",
+      "markdown_file": "object-erims-dbo-al-fr.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "CRM_Customer",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "eRIMS",
+        "dbo",
+        "CRM_Customer"
+      ],
+      "canonical_id": "object-erims-dbo-crm-customer",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/eRIMS/tables/dbo__CRM_Customer.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:675DFACE6B7D0E7E19626AC7DD2FBC3A5CB50AA6B8BBA4121F8FDDCF5557F5DF",
+      "object": {
+        "name": "CRM_Customer",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "eRIMS",
+        "schema": "dbo",
+        "qualified_name": "eRIMS.dbo.CRM_Customer",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "eRIMS.dbo.CRM_Customer",
+        "dbo.CRM_Customer",
+        "CRM_Customer",
+        "CRMCustomer",
+        "crmcustomer"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / eRIMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / eRIMS / dbo"
+      ],
+      "evidence_file": "object-erims-dbo-crm-customer.evidence.json",
+      "markdown_file": "object-erims-dbo-crm-customer.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DPD_FR_Vehicle",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "eRIMS",
+        "dbo",
+        "DPD_FR_Vehicle"
+      ],
+      "canonical_id": "object-erims-dbo-dpd-fr-vehicle",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/eRIMS/tables/dbo__DPD_FR_Vehicle.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A566BC6F33EAE8F9054335FA1FB0515E237B95FB3DCD3161F64218846667995C",
+      "object": {
+        "name": "DPD_FR_Vehicle",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "eRIMS",
+        "schema": "dbo",
+        "qualified_name": "eRIMS.dbo.DPD_FR_Vehicle",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "eRIMS.dbo.DPD_FR_Vehicle",
+        "dbo.DPD_FR_Vehicle",
+        "DPD_FR_Vehicle",
+        "DPDFRVehicle",
+        "dpdfrvehicle"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "V1-SSIS25-01, 11040.SSISDB.GPA.GPA.GPA_RiskManagementClaims_.dtsx"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Region",
+          "ClaimNumber",
+          "FiscalMonthKey",
+          "ClaimDate",
+          "ClaimType",
+          "ClaimTypeSubcategory",
+          "ClaimDescription",
+          "TakenByEmergencyTransport",
+          "SecurityVideo",
+          "Recovered",
+          "EstimatedCost",
+          "Comments",
+          "EntityKey",
+          "AssociateName",
+          "SonicLocationCode",
+          "PoliceNotified",
+          "Sonic_Location_Code"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 17,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / eRIMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / eRIMS / dbo"
+      ],
+      "evidence_file": "object-erims-dbo-dpd-fr-vehicle.evidence.json",
+      "markdown_file": "object-erims-dbo-dpd-fr-vehicle.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Premises_Loss_Claims",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "eRIMS",
+        "dbo",
+        "Premises_Loss_Claims"
+      ],
+      "canonical_id": "object-erims-dbo-premises-loss-claims",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/eRIMS/tables/dbo__Premises_Loss_Claims.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:5CAE73C198168BB26DA04F6F6824E0BBE44EF285EE7BDDEF2F261761CF850520",
+      "object": {
+        "name": "Premises_Loss_Claims",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "eRIMS",
+        "schema": "dbo",
+        "qualified_name": "eRIMS.dbo.Premises_Loss_Claims",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "eRIMS.dbo.Premises_Loss_Claims",
+        "dbo.Premises_Loss_Claims",
+        "Premises_Loss_Claims",
+        "PremisesLossClaims",
+        "premiseslossclaims"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 18,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / eRIMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / eRIMS / dbo"
+      ],
+      "evidence_file": "object-erims-dbo-premises-loss-claims.evidence.json",
+      "markdown_file": "object-erims-dbo-premises-loss-claims.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Property_FR",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "eRIMS",
+        "dbo",
+        "Property_FR"
+      ],
+      "canonical_id": "object-erims-dbo-property-fr",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/eRIMS/tables/dbo__Property_FR.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:F8193B22CC72FB96BD00CB7271B05B05C82A80BD8FB153BF604942FA3561BCE1",
+      "object": {
+        "name": "Property_FR",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "eRIMS",
+        "schema": "dbo",
+        "qualified_name": "eRIMS.dbo.Property_FR",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "eRIMS.dbo.Property_FR",
+        "dbo.Property_FR",
+        "Property_FR",
+        "PropertyFR",
+        "propertyfr"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "V1-SSIS25-01, 11040.SSISDB.GPA.GPA.GPA_RiskManagementClaims_.dtsx"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Region",
+          "ClaimNumber",
+          "FiscalMonthKey",
+          "ClaimDate",
+          "ClaimType",
+          "ClaimTypeSubcategory",
+          "ClaimDescription",
+          "TakenByEmergencyTransport",
+          "Vehicle",
+          "SecurityVideo",
+          "Recovered",
+          "EstimatedCost",
+          "Comments",
+          "EntityKey",
+          "AssociateName",
+          "SonicLocationCode",
+          "PoliceNotified",
+          "Sonic_Location_Code",
+          "WerePoliceNotified"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 19,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / eRIMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / eRIMS / dbo"
+      ],
+      "evidence_file": "object-erims-dbo-property-fr.evidence.json",
+      "markdown_file": "object-erims-dbo-property-fr.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "WC_FR",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "eRIMS",
+        "dbo",
+        "WC_FR"
+      ],
+      "canonical_id": "object-erims-dbo-wc-fr",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/eRIMS/tables/dbo__WC_FR.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:30B4C41688E0D1C6761306D6F5CBB62657B5D54664A201C59C34E9A907800156",
+      "object": {
+        "name": "WC_FR",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "eRIMS",
+        "schema": "dbo",
+        "qualified_name": "eRIMS.dbo.WC_FR",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["eRIMS.dbo.WC_FR", "dbo.WC_FR", "WC_FR", "WCFR", "wcfr"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "V1-SSIS25-01, 11040.SSISDB.GPA.GPA.GPA_RiskManagementClaims_.dtsx"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Region",
+          "ClaimNumber",
+          "FiscalMonthKey",
+          "ClaimDate",
+          "ClaimType",
+          "ClaimTypeSubcategory",
+          "ClaimDescription",
+          "TakenByEmergencyTransport",
+          "Vehicle",
+          "PoliceNotified",
+          "SecurityVideo",
+          "Recovered",
+          "EstimatedCost",
+          "Comments",
+          "SonicLocationCode",
+          "AssociateName",
+          "EntityKey",
+          "Sonic_Location_Code",
+          "Associate_Name"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 19,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / eRIMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / eRIMS / dbo"
+      ],
+      "evidence_file": "object-erims-dbo-wc-fr.evidence.json",
+      "markdown_file": "object-erims-dbo-wc-fr.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-104-erims-dbo-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-104-erims-dbo-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-104-erims-dbo-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

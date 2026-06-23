@@ -1,0 +1,34 @@
+{
+  "generated_at": "2026-06-23T19:15:30.000Z",
+  "publish_mode": "live table-only publish",
+  "cleanup_mode": "none",
+  "status": "complete",
+  "total_table_pages_published": 4037,
+  "queued_t2b_table_objects": 3982,
+  "separate_current_gate_table_objects": 55,
+  "t2b_table_bearing_batches": 179,
+  "bulk_logged_published_t2b_batches": 177,
+  "separately_published_batches": [
+    {
+      "id": "T2B-001",
+      "table_objects": 75
+    },
+    {
+      "id": "T2B-002",
+      "table_objects": 61
+    },
+    {
+      "id": "T2P-04",
+      "table_objects": 55
+    }
+  ],
+  "failed_live_publish_batches": [],
+  "canonical_path_template": "Sonic Data Lineage / Database Catalog / <Platform/Product> / <Database> / <Schema> / <Object>",
+  "evidence": {
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "coverage_manifest": "docs/confluence-full-database-catalog-deployment/T2P-01-tier2-object-coverage-manifest.jsonl",
+    "bulk_progress_ledger": "docs/confluence-full-database-catalog-deployment/tier2-table-publish-progress.json",
+    "local_batch_logs": "data/confluence/table-publish-logs/",
+    "summary_markdown": "docs/confluence-full-database-catalog-deployment/T2P-table-pages-live-publish-summary.md"
+  }
+}

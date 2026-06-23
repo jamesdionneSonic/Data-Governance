@@ -1,0 +1,1906 @@
+{
+  "packet_id": "T2B-073",
+  "generated_at": "2026-06-23T18:25:39.833Z",
+  "batch": {
+    "batch_id": "T2B-073",
+    "priority_rank": 73,
+    "platform": "SQL Server",
+    "database": "ETL_Staging",
+    "schema": "stage",
+    "object_type_scope": "table",
+    "object_count": 13,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "StartStopSaleUsedRetail",
+    "last_object": "StartTrafficManagementATIM_Matched",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / stage",
+    "object_names": [
+      "StartStopSaleUsedRetail",
+      "StartStopSaleUsedRetail_matched",
+      "StartTemplateData_Matched",
+      "StartTradeAppraisal",
+      "STARTTradeAppraisal_HIST",
+      "StartTradeAppraisal_Matched",
+      "StartTradeAppraisalEchoPark",
+      "StartTradeAppraisalEchoPark_Matched",
+      "StartTradeAppraisalRetail",
+      "StartTradeAppraisalRetail_Matched",
+      "STARTTradeAppraisalTraded_HIST",
+      "StartTrafficManagement_Matched",
+      "StartTrafficManagementATIM_Matched"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "table",
+    "original_object_count": 13,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 13,
+    "total_planned_pages": 17
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "ETL_Staging"],
+      "page_type": "database",
+      "evidence_hash": "sha256:DAC2D90CB3BE061D63E9E2B32F595CD9386F3A5C44DBCECB3D4790E05ABC3057",
+      "evidence_file": "database-etl-staging.evidence.json",
+      "markdown_file": "database-etl-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.stage",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "ETL_Staging", "stage"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:987B9348916CA60BA17DA057237C809274807A56491281E1D0DA7A0D9707CFFA",
+      "evidence_file": "schema-etl-staging-stage.evidence.json",
+      "markdown_file": "schema-etl-staging-stage.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.stage.StartStopSaleUsedRetail",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartStopSaleUsedRetail"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:BBDF32E08C3620299D14529BB420EAA57E785E27BA6F60B3693767C8F73A0ECD",
+      "evidence_file": "object-etl-staging-stage-startstopsaleusedretail.evidence.json",
+      "markdown_file": "object-etl-staging-stage-startstopsaleusedretail.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.stage.StartStopSaleUsedRetail_matched",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartStopSaleUsedRetail_matched"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:3C5AEC20F3F64A907502B3540C140E52EAD2B58149B807ACE9D47A410BECFE3E",
+      "evidence_file": "object-etl-staging-stage-startstopsaleusedretail-matched.evidence.json",
+      "markdown_file": "object-etl-staging-stage-startstopsaleusedretail-matched.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.stage.StartTemplateData_Matched",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartTemplateData_Matched"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:80ABDC11868C645C2AA1215C80AE231605350BA0FC0246501563BB8AA444790A",
+      "evidence_file": "object-etl-staging-stage-starttemplatedata-matched.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttemplatedata-matched.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.stage.StartTradeAppraisal",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartTradeAppraisal"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:68669810F18EB40EF04501A5E614522099F5120DFE3DE7BCBB11214F06DDCDE8",
+      "evidence_file": "object-etl-staging-stage-starttradeappraisal.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttradeappraisal.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.stage.STARTTradeAppraisal_HIST",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "STARTTradeAppraisal_HIST"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:DBAC5CFB2C6D552D33A538F7E15D632AF60D8C99AF296A29762E7A9AF3EBD3F0",
+      "evidence_file": "object-etl-staging-stage-starttradeappraisal-hist.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttradeappraisal-hist.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.stage.StartTradeAppraisal_Matched",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartTradeAppraisal_Matched"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:10C7DBC2A396606B2F287C86C92428576EA063AC9101C0A9327D301EE80D88B5",
+      "evidence_file": "object-etl-staging-stage-starttradeappraisal-matched.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttradeappraisal-matched.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.stage.StartTradeAppraisalEchoPark",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartTradeAppraisalEchoPark"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:F823CE94CCBF5F7FC72A997FDD12489AABDADF4001BBB234681A97BF14E88092",
+      "evidence_file": "object-etl-staging-stage-starttradeappraisalechopark.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttradeappraisalechopark.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.stage.StartTradeAppraisalEchoPark_Matched",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartTradeAppraisalEchoPark_Matched"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:4C1198015CD7201E8C63470D2DB1E04FFB99FCE1748469F9C2ABD133BD07F693",
+      "evidence_file": "object-etl-staging-stage-starttradeappraisalechopark-matched.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttradeappraisalechopark-matched.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.stage.StartTradeAppraisalRetail",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartTradeAppraisalRetail"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:4FD4FEE02BC5BC548C98DA377234824831862E77C9405742AA762AB6B795F871",
+      "evidence_file": "object-etl-staging-stage-starttradeappraisalretail.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttradeappraisalretail.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.stage.StartTradeAppraisalRetail_Matched",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartTradeAppraisalRetail_Matched"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9CE227E6D05348755EB8BCCCA46C6E76C7972A819CF0079E6D79C8FB6426B820",
+      "evidence_file": "object-etl-staging-stage-starttradeappraisalretail-matched.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttradeappraisalretail-matched.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.stage.STARTTradeAppraisalTraded_HIST",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "STARTTradeAppraisalTraded_HIST"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:98273C940F2E91264A74595E927C50C6FAE0714E27F7AD4C38C1C8D1C7A27A1D",
+      "evidence_file": "object-etl-staging-stage-starttradeappraisaltraded-hist.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttradeappraisaltraded-hist.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.stage.StartTrafficManagement_Matched",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartTrafficManagement_Matched"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:8084BFC22F5FB40F8C0D37DAD9BA0C0A9403B497C36D41BFC086535DD0472110",
+      "evidence_file": "object-etl-staging-stage-starttrafficmanagement-matched.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttrafficmanagement-matched.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.stage.StartTrafficManagementATIM_Matched",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartTrafficManagementATIM_Matched"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:F1F3CFDE4C7BCA1B40EF5776315BB62CB1E128D3E5B17405FE4665A70982617B",
+      "evidence_file": "object-etl-staging-stage-starttrafficmanagementatim-matched.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttrafficmanagementatim-matched.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "StartStopSaleUsedRetail",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartStopSaleUsedRetail"
+      ],
+      "canonical_id": "object-etl-staging-stage-startstopsaleusedretail",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/stage__StartStopSaleUsedRetail.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:BBDF32E08C3620299D14529BB420EAA57E785E27BA6F60B3693767C8F73A0ECD",
+      "object": {
+        "name": "StartStopSaleUsedRetail",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "stage",
+        "qualified_name": "ETL_Staging.stage.StartStopSaleUsedRetail",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.stage.StartStopSaleUsedRetail",
+        "stage.StartStopSaleUsedRetail",
+        "StartStopSaleUsedRetail",
+        "startstopsaleusedretail"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Name",
+          "Org_Id",
+          "StatCount",
+          "FiscalMonth",
+          "Meta_Src_Sys_ID",
+          "Meta_SourceSystemName",
+          "Meta_RowLastChangedDate",
+          "ETLExecution_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / stage"
+      ],
+      "evidence_file": "object-etl-staging-stage-startstopsaleusedretail.evidence.json",
+      "markdown_file": "object-etl-staging-stage-startstopsaleusedretail.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StartStopSaleUsedRetail_matched",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartStopSaleUsedRetail_matched"
+      ],
+      "canonical_id": "object-etl-staging-stage-startstopsaleusedretail-matched",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/stage__StartStopSaleUsedRetail_matched.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:3C5AEC20F3F64A907502B3540C140E52EAD2B58149B807ACE9D47A410BECFE3E",
+      "object": {
+        "name": "StartStopSaleUsedRetail_matched",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "stage",
+        "qualified_name": "ETL_Staging.stage.StartStopSaleUsedRetail_matched",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.stage.StartStopSaleUsedRetail_matched",
+        "stage.StartStopSaleUsedRetail_matched",
+        "StartStopSaleUsedRetail_matched",
+        "StartStopSaleUsedRetailmatched",
+        "startstopsaleusedretailmatched"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "EntityKey",
+          "DateKey",
+          "AccountMgmtKey",
+          "DepartmentKey",
+          "ScenarioKey",
+          "Amount",
+          "StatCount",
+          "Meta_Src_Sys_ID",
+          "Meta_LoadDate",
+          "UserID",
+          "Meta_ComputerName",
+          "Meta_LastUpdateDate",
+          "Meta_LastDMLAction",
+          "ETLExecutionID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 14,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / stage"
+      ],
+      "evidence_file": "object-etl-staging-stage-startstopsaleusedretail-matched.evidence.json",
+      "markdown_file": "object-etl-staging-stage-startstopsaleusedretail-matched.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StartTemplateData_Matched",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartTemplateData_Matched"
+      ],
+      "canonical_id": "object-etl-staging-stage-starttemplatedata-matched",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/stage__StartTemplateData_Matched.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:80ABDC11868C645C2AA1215C80AE231605350BA0FC0246501563BB8AA444790A",
+      "object": {
+        "name": "StartTemplateData_Matched",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "stage",
+        "qualified_name": "ETL_Staging.stage.StartTemplateData_Matched",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.stage.StartTemplateData_Matched",
+        "stage.StartTemplateData_Matched",
+        "StartTemplateData_Matched",
+        "StartTemplateDataMatched",
+        "starttemplatedatamatched"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "EntityKey",
+          "FiscalMonthKey",
+          "AccountMgmtKey",
+          "DepartmentKey",
+          "ScenarioKey",
+          "Amount",
+          "StatCount",
+          "Meta_Src_Sys_ID",
+          "Meta_LoadDate",
+          "UserID",
+          "Meta_ComputerName",
+          "Meta_LastUpdateDate",
+          "Meta_LastDMLAction",
+          "ETLExecutionID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 14,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / stage"
+      ],
+      "evidence_file": "object-etl-staging-stage-starttemplatedata-matched.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttemplatedata-matched.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StartTradeAppraisal",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartTradeAppraisal"
+      ],
+      "canonical_id": "object-etl-staging-stage-starttradeappraisal",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/stage__StartTradeAppraisal.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:68669810F18EB40EF04501A5E614522099F5120DFE3DE7BCBB11214F06DDCDE8",
+      "object": {
+        "name": "StartTradeAppraisal",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "stage",
+        "qualified_name": "ETL_Staging.stage.StartTradeAppraisal",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.stage.StartTradeAppraisal",
+        "stage.StartTradeAppraisal",
+        "StartTradeAppraisal",
+        "starttradeappraisal"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Store_ID",
+          "AAXAppraisals",
+          "AAXTraded",
+          "Meta_Src_Sys_ID",
+          "Meta_SourceSystemName",
+          "Meta_RowLastChangedDate",
+          "ETLExecution_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "Date"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / stage"
+      ],
+      "evidence_file": "object-etl-staging-stage-starttradeappraisal.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttradeappraisal.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "STARTTradeAppraisal_HIST",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "STARTTradeAppraisal_HIST"
+      ],
+      "canonical_id": "object-etl-staging-stage-starttradeappraisal-hist",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/stage__STARTTradeAppraisal_HIST.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:DBAC5CFB2C6D552D33A538F7E15D632AF60D8C99AF296A29762E7A9AF3EBD3F0",
+      "object": {
+        "name": "STARTTradeAppraisal_HIST",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "stage",
+        "qualified_name": "ETL_Staging.stage.STARTTradeAppraisal_HIST",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.stage.STARTTradeAppraisal_HIST",
+        "stage.STARTTradeAppraisal_HIST",
+        "STARTTradeAppraisal_HIST",
+        "STARTTradeAppraisalHIST",
+        "starttradeappraisalhist"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "EssCode",
+          "EntityName",
+          "Jan 2013",
+          "Feb 2013",
+          "Mar 2013",
+          "Apr 2013",
+          "May 2013",
+          "Jun 2013",
+          "Jul 2013",
+          "Aug 2013",
+          "Sep 2013",
+          "Oct 2013",
+          "Nov 2013",
+          "Jan 2014",
+          "Feb 2014",
+          "Mar 2014",
+          "Apr 2014",
+          "May 2014",
+          "Jun 2014",
+          "Jul 2014"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 77,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / stage"
+      ],
+      "evidence_file": "object-etl-staging-stage-starttradeappraisal-hist.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttradeappraisal-hist.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StartTradeAppraisal_Matched",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartTradeAppraisal_Matched"
+      ],
+      "canonical_id": "object-etl-staging-stage-starttradeappraisal-matched",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/stage__StartTradeAppraisal_Matched.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:10C7DBC2A396606B2F287C86C92428576EA063AC9101C0A9327D301EE80D88B5",
+      "object": {
+        "name": "StartTradeAppraisal_Matched",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "stage",
+        "qualified_name": "ETL_Staging.stage.StartTradeAppraisal_Matched",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.stage.StartTradeAppraisal_Matched",
+        "stage.StartTradeAppraisal_Matched",
+        "StartTradeAppraisal_Matched",
+        "StartTradeAppraisalMatched",
+        "starttradeappraisalmatched"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "EntityKey",
+          "DateKey",
+          "AccountMgmtKey",
+          "DepartmentKey",
+          "ScenarioKey",
+          "Amount",
+          "StatCount",
+          "Meta_Src_Sys_ID",
+          "Meta_LoadDate",
+          "UserID",
+          "Meta_ComputerName",
+          "Meta_LastUpdateDate",
+          "ETLExecutionID",
+          "FiscalMonthKey"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 14,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / stage"
+      ],
+      "evidence_file": "object-etl-staging-stage-starttradeappraisal-matched.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttradeappraisal-matched.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StartTradeAppraisalEchoPark",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartTradeAppraisalEchoPark"
+      ],
+      "canonical_id": "object-etl-staging-stage-starttradeappraisalechopark",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/stage__StartTradeAppraisalEchoPark.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:F823CE94CCBF5F7FC72A997FDD12489AABDADF4001BBB234681A97BF14E88092",
+      "object": {
+        "name": "StartTradeAppraisalEchoPark",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "stage",
+        "qualified_name": "ETL_Staging.stage.StartTradeAppraisalEchoPark",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.stage.StartTradeAppraisalEchoPark",
+        "stage.StartTradeAppraisalEchoPark",
+        "StartTradeAppraisalEchoPark",
+        "starttradeappraisalechopark"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Store_ID",
+          "ADP_Company_ID",
+          "FiscalMonth",
+          "AAXAppraisals",
+          "AAXTraded",
+          "Meta_Src_Sys_ID",
+          "Meta_SourceSystemName",
+          "Meta_RowLastChangedDate",
+          "ETLExecution_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 12,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / stage"
+      ],
+      "evidence_file": "object-etl-staging-stage-starttradeappraisalechopark.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttradeappraisalechopark.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StartTradeAppraisalEchoPark_Matched",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartTradeAppraisalEchoPark_Matched"
+      ],
+      "canonical_id": "object-etl-staging-stage-starttradeappraisalechopark-matched",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/stage__StartTradeAppraisalEchoPark_Matched.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:4C1198015CD7201E8C63470D2DB1E04FFB99FCE1748469F9C2ABD133BD07F693",
+      "object": {
+        "name": "StartTradeAppraisalEchoPark_Matched",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "stage",
+        "qualified_name": "ETL_Staging.stage.StartTradeAppraisalEchoPark_Matched",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.stage.StartTradeAppraisalEchoPark_Matched",
+        "stage.StartTradeAppraisalEchoPark_Matched",
+        "StartTradeAppraisalEchoPark_Matched",
+        "StartTradeAppraisalEchoParkMatched",
+        "starttradeappraisalechoparkmatched"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "EntityKey",
+          "DateKey",
+          "AccountMgmtKey",
+          "DepartmentKey",
+          "ScenarioKey",
+          "Amount",
+          "StatCount",
+          "Meta_Src_Sys_ID",
+          "Meta_LoadDate",
+          "UserID",
+          "Meta_ComputerName",
+          "Meta_LastUpdateDate",
+          "ETLExecutionID",
+          "FiscalMonthKey"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 14,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / stage"
+      ],
+      "evidence_file": "object-etl-staging-stage-starttradeappraisalechopark-matched.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttradeappraisalechopark-matched.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StartTradeAppraisalRetail",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartTradeAppraisalRetail"
+      ],
+      "canonical_id": "object-etl-staging-stage-starttradeappraisalretail",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/stage__StartTradeAppraisalRetail.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:4FD4FEE02BC5BC548C98DA377234824831862E77C9405742AA762AB6B795F871",
+      "object": {
+        "name": "StartTradeAppraisalRetail",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "stage",
+        "qualified_name": "ETL_Staging.stage.StartTradeAppraisalRetail",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.stage.StartTradeAppraisalRetail",
+        "stage.StartTradeAppraisalRetail",
+        "StartTradeAppraisalRetail",
+        "starttradeappraisalretail"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Store_ID",
+          "ADP_Company_ID",
+          "FiscalMonth",
+          "AAXAppraisals",
+          "AAXTraded",
+          "Meta_Src_Sys_ID",
+          "Meta_SourceSystemName",
+          "Meta_RowLastChangedDate",
+          "ETLExecution_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "ADP_GL_Prefix"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 13,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / stage"
+      ],
+      "evidence_file": "object-etl-staging-stage-starttradeappraisalretail.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttradeappraisalretail.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StartTradeAppraisalRetail_Matched",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartTradeAppraisalRetail_Matched"
+      ],
+      "canonical_id": "object-etl-staging-stage-starttradeappraisalretail-matched",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/stage__StartTradeAppraisalRetail_Matched.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9CE227E6D05348755EB8BCCCA46C6E76C7972A819CF0079E6D79C8FB6426B820",
+      "object": {
+        "name": "StartTradeAppraisalRetail_Matched",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "stage",
+        "qualified_name": "ETL_Staging.stage.StartTradeAppraisalRetail_Matched",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.stage.StartTradeAppraisalRetail_Matched",
+        "stage.StartTradeAppraisalRetail_Matched",
+        "StartTradeAppraisalRetail_Matched",
+        "StartTradeAppraisalRetailMatched",
+        "starttradeappraisalretailmatched"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "EntityKey",
+          "DateKey",
+          "AccountMgmtKey",
+          "DepartmentKey",
+          "ScenarioKey",
+          "Amount",
+          "StatCount",
+          "Meta_Src_Sys_ID",
+          "Meta_LoadDate",
+          "UserID",
+          "Meta_ComputerName",
+          "Meta_LastUpdateDate",
+          "ETLExecutionID",
+          "FiscalMonthKey"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 14,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / stage"
+      ],
+      "evidence_file": "object-etl-staging-stage-starttradeappraisalretail-matched.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttradeappraisalretail-matched.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "STARTTradeAppraisalTraded_HIST",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "STARTTradeAppraisalTraded_HIST"
+      ],
+      "canonical_id": "object-etl-staging-stage-starttradeappraisaltraded-hist",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/stage__STARTTradeAppraisalTraded_HIST.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:98273C940F2E91264A74595E927C50C6FAE0714E27F7AD4C38C1C8D1C7A27A1D",
+      "object": {
+        "name": "STARTTradeAppraisalTraded_HIST",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "stage",
+        "qualified_name": "ETL_Staging.stage.STARTTradeAppraisalTraded_HIST",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.stage.STARTTradeAppraisalTraded_HIST",
+        "stage.STARTTradeAppraisalTraded_HIST",
+        "STARTTradeAppraisalTraded_HIST",
+        "STARTTradeAppraisalTradedHIST",
+        "starttradeappraisaltradedhist"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "EssCode",
+          "EntityName",
+          "Jan 2013",
+          "Feb 2013",
+          "Mar 2013",
+          "Apr 2013",
+          "May 2013",
+          "Jun 2013",
+          "Jul 2013",
+          "Aug 2013",
+          "Sep 2013",
+          "Oct 2013",
+          "Nov 2013",
+          "Jan 2014",
+          "Feb 2014",
+          "Mar 2014",
+          "Apr 2014",
+          "May 2014",
+          "Jun 2014",
+          "Jul 2014"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 77,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / stage"
+      ],
+      "evidence_file": "object-etl-staging-stage-starttradeappraisaltraded-hist.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttradeappraisaltraded-hist.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StartTrafficManagement_Matched",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartTrafficManagement_Matched"
+      ],
+      "canonical_id": "object-etl-staging-stage-starttrafficmanagement-matched",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/stage__StartTrafficManagement_Matched.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:8084BFC22F5FB40F8C0D37DAD9BA0C0A9403B497C36D41BFC086535DD0472110",
+      "object": {
+        "name": "StartTrafficManagement_Matched",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "stage",
+        "qualified_name": "ETL_Staging.stage.StartTrafficManagement_Matched",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.stage.StartTrafficManagement_Matched",
+        "stage.StartTrafficManagement_Matched",
+        "StartTrafficManagement_Matched",
+        "StartTrafficManagementMatched",
+        "starttrafficmanagementmatched"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "TrafficManagementKey",
+          "EntityKey",
+          "DateKey",
+          "FiscalMonthKey",
+          "AccountMgmtKey",
+          "DepartmentKey",
+          "ScenarioKey",
+          "StatCount",
+          "Amount",
+          "Meta_Src_Sys_ID",
+          "Meta_LoadDate",
+          "UserID",
+          "Meta_ComputerName",
+          "Meta_LastUpdateDate",
+          "Meta_LastDMLAction",
+          "ETLExecutionID",
+          "Meta_eLead_Region",
+          "Meta_CompanyId"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 18,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / stage"
+      ],
+      "evidence_file": "object-etl-staging-stage-starttrafficmanagement-matched.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttrafficmanagement-matched.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StartTrafficManagementATIM_Matched",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "stage",
+        "StartTrafficManagementATIM_Matched"
+      ],
+      "canonical_id": "object-etl-staging-stage-starttrafficmanagementatim-matched",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/stage__StartTrafficManagementATIM_Matched.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:F1F3CFDE4C7BCA1B40EF5776315BB62CB1E128D3E5B17405FE4665A70982617B",
+      "object": {
+        "name": "StartTrafficManagementATIM_Matched",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "stage",
+        "qualified_name": "ETL_Staging.stage.StartTrafficManagementATIM_Matched",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.stage.StartTrafficManagementATIM_Matched",
+        "stage.StartTrafficManagementATIM_Matched",
+        "StartTrafficManagementATIM_Matched",
+        "StartTrafficManagementATIMMatched",
+        "starttrafficmanagementatimmatched"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "EntityKey",
+          "DateKey",
+          "AccountMgmtKey",
+          "DepartmentKey",
+          "ScenarioKey",
+          "StatCount",
+          "Meta_Src_Sys_ID",
+          "Meta_LoadDate",
+          "UserID",
+          "Meta_ComputerName",
+          "Meta_LastUpdateDate",
+          "Meta_LastDMLAction",
+          "ETLExecutionID",
+          "Amount",
+          "FiscalMonthKey"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 15,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / stage"
+      ],
+      "evidence_file": "object-etl-staging-stage-starttrafficmanagementatim-matched.evidence.json",
+      "markdown_file": "object-etl-staging-stage-starttrafficmanagementatim-matched.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-073-etl-staging-stage-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-073-etl-staging-stage-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-073-etl-staging-stage-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

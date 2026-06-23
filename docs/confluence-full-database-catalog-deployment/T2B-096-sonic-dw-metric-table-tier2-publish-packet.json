@@ -1,0 +1,1596 @@
+{
+  "packet_id": "T2B-096",
+  "generated_at": "2026-06-23T18:40:52.725Z",
+  "batch": {
+    "batch_id": "T2B-096",
+    "priority_rank": 96,
+    "platform": "SQL Server",
+    "database": "Sonic_DW",
+    "schema": "Metric",
+    "object_type_scope": "table",
+    "object_count": 11,
+    "high_use_objects": 0,
+    "downstream_uses": 30,
+    "first_object": "DIM_METRIC_TBL",
+    "last_object": "XREF_DEALERSHIP_TBL",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / Metric",
+    "object_names": [
+      "DIM_METRIC_TBL",
+      "EDWH_METRIC_TBL",
+      "DIM_DEALERSHIP_TBL",
+      "DIM_METRIC_ATTRIBUTE_TBL",
+      "DIM_DATE_TBL",
+      "EDWH_NOTIFICATION_LOG_TBL",
+      "DIM_DEALERSHIP_GROUPING_TBL",
+      "DIM_NOTIFICATION_TYPE_TBL",
+      "KPI_QUERY_CONFIGURATION",
+      "KPI_SOURCE_CONFIGURATION",
+      "XREF_DEALERSHIP_TBL"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "table",
+    "original_object_count": 11,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 11,
+    "total_planned_pages": 15
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "Sonic_DW"],
+      "page_type": "database",
+      "evidence_hash": "sha256:EA1134573BBFAAC7177722513513C90274A494AB02393F9F3FC5F86743318F98",
+      "evidence_file": "database-sonic-dw.evidence.json",
+      "markdown_file": "database-sonic-dw.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.Metric",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "Sonic_DW", "Metric"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:1139645694B73211971B68D5488A2839905F5C5FB7A62747E05352BB80858A2A",
+      "evidence_file": "schema-sonic-dw-metric.evidence.json",
+      "markdown_file": "schema-sonic-dw-metric.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.Metric.DIM_DATE_TBL",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "DIM_DATE_TBL"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:2255329B53827EF562ED3538639C36F683F81BA9AF5C2FE20E09B4FCF5DACA7A",
+      "evidence_file": "object-sonic-dw-metric-dim-date-tbl.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-dim-date-tbl.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.Metric.DIM_DEALERSHIP_GROUPING_TBL",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "DIM_DEALERSHIP_GROUPING_TBL"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:18A618260FAFCCDE2C3303BBADA4B9B7B6DEC19E2C5B5028D30774FA4A4247A7",
+      "evidence_file": "object-sonic-dw-metric-dim-dealership-grouping-tbl.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-dim-dealership-grouping-tbl.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.Metric.DIM_DEALERSHIP_TBL",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "DIM_DEALERSHIP_TBL"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:991E9440D8DDEEEA967FE3A121BCEBF27CEFD606785F28728938473494F8C4BC",
+      "evidence_file": "object-sonic-dw-metric-dim-dealership-tbl.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-dim-dealership-tbl.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.Metric.DIM_METRIC_ATTRIBUTE_TBL",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "DIM_METRIC_ATTRIBUTE_TBL"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:4785117224CBC6B5C8713C8180752ABB385F96BB136017C3EB4F0B0687AD132C",
+      "evidence_file": "object-sonic-dw-metric-dim-metric-attribute-tbl.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-dim-metric-attribute-tbl.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.Metric.DIM_METRIC_TBL",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "DIM_METRIC_TBL"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:5B7AE2AC2993516C2CE50F55D7F6CA4831F1E98CE253DEF8CA94AD5EB2FFE24F",
+      "evidence_file": "object-sonic-dw-metric-dim-metric-tbl.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-dim-metric-tbl.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.Metric.DIM_NOTIFICATION_TYPE_TBL",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "DIM_NOTIFICATION_TYPE_TBL"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:1F431F2DA996465065BEA2C29293917375E2F57E5D12890690530B1686F985D1",
+      "evidence_file": "object-sonic-dw-metric-dim-notification-type-tbl.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-dim-notification-type-tbl.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.Metric.EDWH_METRIC_TBL",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "EDWH_METRIC_TBL"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:2CA5A5608682B414D2FF5B73FDB570B5B0CA78A0FA60278DC84CEECF4874C3FA",
+      "evidence_file": "object-sonic-dw-metric-edwh-metric-tbl.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-edwh-metric-tbl.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.Metric.EDWH_NOTIFICATION_LOG_TBL",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "EDWH_NOTIFICATION_LOG_TBL"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:DF08032BDE7F7B31259CBD3FD3C7F667AE87783080CC6AA106CC5EC1C48C6042",
+      "evidence_file": "object-sonic-dw-metric-edwh-notification-log-tbl.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-edwh-notification-log-tbl.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.Metric.KPI_QUERY_CONFIGURATION",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "KPI_QUERY_CONFIGURATION"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:520186B8A61839854B0B2D88F2C6EE42FCE2C005F800CED8867EA866B723B541",
+      "evidence_file": "object-sonic-dw-metric-kpi-query-configuration.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-kpi-query-configuration.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.Metric.KPI_SOURCE_CONFIGURATION",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "KPI_SOURCE_CONFIGURATION"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:3E23FF18F97B8D40EEBF956F506B2CE91A922A54820EBA1D4DF78A182FAE2920",
+      "evidence_file": "object-sonic-dw-metric-kpi-source-configuration.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-kpi-source-configuration.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.Metric.XREF_DEALERSHIP_TBL",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "XREF_DEALERSHIP_TBL"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A2496FE778C767EDE0F30FB8E17405383344EA1A64FAD01D5A51F7D178D1DA88",
+      "evidence_file": "object-sonic-dw-metric-xref-dealership-tbl.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-xref-dealership-tbl.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "DIM_DATE_TBL",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "DIM_DATE_TBL"
+      ],
+      "canonical_id": "object-sonic-dw-metric-dim-date-tbl",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/Sonic_DW/tables/Metric__DIM_DATE_TBL.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:2255329B53827EF562ED3538639C36F683F81BA9AF5C2FE20E09B4FCF5DACA7A",
+      "object": {
+        "name": "DIM_DATE_TBL",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "Sonic_DW",
+        "schema": "Metric",
+        "qualified_name": "Sonic_DW.Metric.DIM_DATE_TBL",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.Metric.DIM_DATE_TBL",
+        "Metric.DIM_DATE_TBL",
+        "DIM_DATE_TBL",
+        "DIMDATETBL",
+        "dimdatetbl"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-5FSQL-01.Sonic_DW.Metric.UPDATE_DIM_DATE_TBL"],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-5FSQL-01.Sonic_DW.dbo.vw_ServiceAppts_ROType",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_SAME_DAY_APPOINTMENTS_METRICS_VW",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_SERVICE_APPOINTMENT_METRICS_VW",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_TURBO_METRICS_VW",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_WEBSITE_INVENTORY_METRICS_VW"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DIM_DATE_ID",
+          "FULL_DATE",
+          "CURRENT_WEEK_IND",
+          "PREVIOUS_WEEK_IND",
+          "CURRENT_2_WEEK_IND",
+          "PREVIOUS_2_WEEK_IND",
+          "CURRENT_YEAR_IND",
+          "PREVIOUS_YEAR_IND",
+          "YTD_IND",
+          "PREVIOUS_MONTH_IND",
+          "CURRENT_MONTH_IND",
+          "CURRENT_MONTH_PREVIOUS_YEAR_IND",
+          "INSERT_DATETIME",
+          "UPDATE_DATETIME"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 14,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / Metric"
+      ],
+      "evidence_file": "object-sonic-dw-metric-dim-date-tbl.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-dim-date-tbl.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DIM_DEALERSHIP_GROUPING_TBL",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "DIM_DEALERSHIP_GROUPING_TBL"
+      ],
+      "canonical_id": "object-sonic-dw-metric-dim-dealership-grouping-tbl",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/Sonic_DW/tables/Metric__DIM_DEALERSHIP_GROUPING_TBL.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:18A618260FAFCCDE2C3303BBADA4B9B7B6DEC19E2C5B5028D30774FA4A4247A7",
+      "object": {
+        "name": "DIM_DEALERSHIP_GROUPING_TBL",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "Sonic_DW",
+        "schema": "Metric",
+        "qualified_name": "Sonic_DW.Metric.DIM_DEALERSHIP_GROUPING_TBL",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.Metric.DIM_DEALERSHIP_GROUPING_TBL",
+        "Metric.DIM_DEALERSHIP_GROUPING_TBL",
+        "DIM_DEALERSHIP_GROUPING_TBL",
+        "DIMDEALERSHIPGROUPINGTBL",
+        "dimdealershipgroupingtbl"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DIM_DEALERSHIP_GROUPING_ID",
+          "DIM_DEALERSHIP_ID",
+          "GROUPING_NAME",
+          "GROUPING_VALUE",
+          "ACTIVE_IND",
+          "INSERT_DATETIME",
+          "UPDATE_DATETIME"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 7,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / Metric"
+      ],
+      "evidence_file": "object-sonic-dw-metric-dim-dealership-grouping-tbl.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-dim-dealership-grouping-tbl.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DIM_DEALERSHIP_TBL",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "DIM_DEALERSHIP_TBL"
+      ],
+      "canonical_id": "object-sonic-dw-metric-dim-dealership-tbl",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/Sonic_DW/tables/Metric__DIM_DEALERSHIP_TBL.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:991E9440D8DDEEEA967FE3A121BCEBF27CEFD606785F28728938473494F8C4BC",
+      "object": {
+        "name": "DIM_DEALERSHIP_TBL",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "Sonic_DW",
+        "schema": "Metric",
+        "qualified_name": "Sonic_DW.Metric.DIM_DEALERSHIP_TBL",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.Metric.DIM_DEALERSHIP_TBL",
+        "Metric.DIM_DEALERSHIP_TBL",
+        "DIM_DEALERSHIP_TBL",
+        "DIMDEALERSHIPTBL",
+        "dimdealershiptbl"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-5FSQL-01.Sonic_DW.dbo.usp_LoadSameDayAppointments_MetricDataModel",
+          "L1-5FSQL-01.Sonic_DW.dbo.vw_ServiceAppts_ROType",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_SAME_DAY_APPOINTMENTS_METRICS_VW",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_SERVICE_APPOINTMENT_METRICS_VW",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_TURBO_METRICS_VW",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_WEBSITE_INVENTORY_METRICS_VW"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DEALERSHIP_ID",
+          "DEALERSHIP_NAME",
+          "ENTITY_KEY",
+          "ELEAD_STORE_ID",
+          "ACTIVE_IND",
+          "LATITUDE",
+          "LONGITUDE",
+          "INSERT_DATETIME",
+          "UPDATE_DATETIME"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / Metric"
+      ],
+      "evidence_file": "object-sonic-dw-metric-dim-dealership-tbl.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-dim-dealership-tbl.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DIM_METRIC_ATTRIBUTE_TBL",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "DIM_METRIC_ATTRIBUTE_TBL"
+      ],
+      "canonical_id": "object-sonic-dw-metric-dim-metric-attribute-tbl",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/Sonic_DW/tables/Metric__DIM_METRIC_ATTRIBUTE_TBL.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:4785117224CBC6B5C8713C8180752ABB385F96BB136017C3EB4F0B0687AD132C",
+      "object": {
+        "name": "DIM_METRIC_ATTRIBUTE_TBL",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "Sonic_DW",
+        "schema": "Metric",
+        "qualified_name": "Sonic_DW.Metric.DIM_METRIC_ATTRIBUTE_TBL",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.Metric.DIM_METRIC_ATTRIBUTE_TBL",
+        "Metric.DIM_METRIC_ATTRIBUTE_TBL",
+        "DIM_METRIC_ATTRIBUTE_TBL",
+        "DIMMETRICATTRIBUTETBL",
+        "dimmetricattributetbl"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-5FSQL-01.Sonic_DW.dbo.usp_LoadSameDayAppointments_MetricDataModel",
+          "L1-5FSQL-01.Sonic_DW.dbo.vw_ServiceAppts_ROType",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_SAME_DAY_APPOINTMENTS_METRICS_VW",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_SERVICE_APPOINTMENT_METRICS_VW",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_TURBO_METRICS_VW",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_WEBSITE_INVENTORY_METRICS_VW"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DIM_METRIC_ATTRIBUTE_ID",
+          "DIM_METRIC_ID",
+          "ATTRIBUTE_CODE",
+          "ATTRIBUTE_DESC",
+          "ATTRIBUTE_TYPE",
+          "ACTIVE_IND",
+          "INSERT_DATETIME",
+          "UPDATE_DATETIME"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 8,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / Metric"
+      ],
+      "evidence_file": "object-sonic-dw-metric-dim-metric-attribute-tbl.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-dim-metric-attribute-tbl.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DIM_METRIC_TBL",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "DIM_METRIC_TBL"
+      ],
+      "canonical_id": "object-sonic-dw-metric-dim-metric-tbl",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/Sonic_DW/tables/Metric__DIM_METRIC_TBL.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:5B7AE2AC2993516C2CE50F55D7F6CA4831F1E98CE253DEF8CA94AD5EB2FFE24F",
+      "object": {
+        "name": "DIM_METRIC_TBL",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "Sonic_DW",
+        "schema": "Metric",
+        "qualified_name": "Sonic_DW.Metric.DIM_METRIC_TBL",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.Metric.DIM_METRIC_TBL",
+        "Metric.DIM_METRIC_TBL",
+        "DIM_METRIC_TBL",
+        "DIMMETRICTBL",
+        "dimmetrictbl"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-5FSQL-01.Sonic_DW.dbo.usp_LoadSameDayAppointments_MetricDataModel",
+          "L1-5FSQL-01.Sonic_DW.Metric.DELETE_METRIC_DATA",
+          "L1-5FSQL-01.Sonic_DW.dbo.vw_ServiceAppts_ROType",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_SAME_DAY_APPOINTMENTS_METRICS_VW",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_SERVICE_APPOINTMENT_METRICS_VW",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_TURBO_METRICS_VW",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_WEBSITE_INVENTORY_METRICS_VW",
+          "V1-SSIS25-01, 11040.SSISDB.DQMetric.DQMetrics.DQ_Turbo_Consistency.dtsx"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DIM_METRIC_ID",
+          "METRIC_CODE",
+          "METRIC_DESC",
+          "METRIC_SOURCE",
+          "METRIC_TYPE",
+          "ACTIVE_IND",
+          "INSERT_DATETIME",
+          "UPDATE_DATETIME"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 8,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / Metric"
+      ],
+      "evidence_file": "object-sonic-dw-metric-dim-metric-tbl.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-dim-metric-tbl.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DIM_NOTIFICATION_TYPE_TBL",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "DIM_NOTIFICATION_TYPE_TBL"
+      ],
+      "canonical_id": "object-sonic-dw-metric-dim-notification-type-tbl",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/Sonic_DW/tables/Metric__DIM_NOTIFICATION_TYPE_TBL.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:1F431F2DA996465065BEA2C29293917375E2F57E5D12890690530B1686F985D1",
+      "object": {
+        "name": "DIM_NOTIFICATION_TYPE_TBL",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "Sonic_DW",
+        "schema": "Metric",
+        "qualified_name": "Sonic_DW.Metric.DIM_NOTIFICATION_TYPE_TBL",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.Metric.DIM_NOTIFICATION_TYPE_TBL",
+        "Metric.DIM_NOTIFICATION_TYPE_TBL",
+        "DIM_NOTIFICATION_TYPE_TBL",
+        "DIMNOTIFICATIONTYPETBL",
+        "dimnotificationtypetbl"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DIM_NOTIFICATION_TYPE_ID",
+          "NOTIFICATION_TYPE_CODE",
+          "NOTIFICATION_TYPE_DESC",
+          "ACTIVE_IND",
+          "INSERT_DATETIME",
+          "UPDATE_DATETIME"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 6,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / Metric"
+      ],
+      "evidence_file": "object-sonic-dw-metric-dim-notification-type-tbl.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-dim-notification-type-tbl.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "EDWH_METRIC_TBL",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "EDWH_METRIC_TBL"
+      ],
+      "canonical_id": "object-sonic-dw-metric-edwh-metric-tbl",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/Sonic_DW/tables/Metric__EDWH_METRIC_TBL.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:2CA5A5608682B414D2FF5B73FDB570B5B0CA78A0FA60278DC84CEECF4874C3FA",
+      "object": {
+        "name": "EDWH_METRIC_TBL",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "Sonic_DW",
+        "schema": "Metric",
+        "qualified_name": "Sonic_DW.Metric.EDWH_METRIC_TBL",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.Metric.EDWH_METRIC_TBL",
+        "Metric.EDWH_METRIC_TBL",
+        "EDWH_METRIC_TBL",
+        "EDWHMETRICTBL",
+        "edwhmetrictbl"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "L1-5FSQL-01.Sonic_DW.dbo.usp_LoadSameDayAppointments_MetricDataModel",
+          "V1-SSIS25-01, 11040.SSISDB.DQMetric.DQMetrics.DQ_Turbo_Timeliness.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.DQMetric.DQMetrics.DQ_Turbo_Consistency.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-5FSQL-01.Sonic_DW.Metric.DELETE_METRIC_DATA",
+          "L1-5FSQL-01.Sonic_DW.dbo.vw_ServiceAppts_ROType",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_SAME_DAY_APPOINTMENTS_METRICS_VW",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_SERVICE_APPOINTMENT_METRICS_VW",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_TURBO_METRICS_VW",
+          "L1-5FSQL-01.Sonic_DW.Metric.DM_WEBSITE_INVENTORY_METRICS_VW"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "EDWH_METRIC_ID",
+          "DEALERSHIP_ID",
+          "DIM_METRIC_ID",
+          "DIM_METRIC_ATTRIBUTE_ID",
+          "METRIC_CAPTURE_DATE",
+          "METRIC_CAPTURE_DATETIME",
+          "METRIC_VALUE",
+          "METRIC_DATATYPE",
+          "INSERT_DATETIME",
+          "UPDATE_DATETIME"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / Metric"
+      ],
+      "evidence_file": "object-sonic-dw-metric-edwh-metric-tbl.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-edwh-metric-tbl.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "EDWH_NOTIFICATION_LOG_TBL",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "EDWH_NOTIFICATION_LOG_TBL"
+      ],
+      "canonical_id": "object-sonic-dw-metric-edwh-notification-log-tbl",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/Sonic_DW/tables/Metric__EDWH_NOTIFICATION_LOG_TBL.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:DF08032BDE7F7B31259CBD3FD3C7F667AE87783080CC6AA106CC5EC1C48C6042",
+      "object": {
+        "name": "EDWH_NOTIFICATION_LOG_TBL",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "Sonic_DW",
+        "schema": "Metric",
+        "qualified_name": "Sonic_DW.Metric.EDWH_NOTIFICATION_LOG_TBL",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.Metric.EDWH_NOTIFICATION_LOG_TBL",
+        "Metric.EDWH_NOTIFICATION_LOG_TBL",
+        "EDWH_NOTIFICATION_LOG_TBL",
+        "EDWHNOTIFICATIONLOGTBL",
+        "edwhnotificationlogtbl"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.DQMetric.DQMetrics.DQ_Turbo_Timeliness.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "NOTIFICATION_LOG_ID",
+          "DIM_NOTIFICATION_TYPE_ID",
+          "JOB_NAME",
+          "INSERT_DATETIME",
+          "UPDATE_DATETIME"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / Metric"
+      ],
+      "evidence_file": "object-sonic-dw-metric-edwh-notification-log-tbl.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-edwh-notification-log-tbl.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "KPI_QUERY_CONFIGURATION",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "KPI_QUERY_CONFIGURATION"
+      ],
+      "canonical_id": "object-sonic-dw-metric-kpi-query-configuration",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/Sonic_DW/tables/Metric__KPI_QUERY_CONFIGURATION.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:520186B8A61839854B0B2D88F2C6EE42FCE2C005F800CED8867EA866B723B541",
+      "object": {
+        "name": "KPI_QUERY_CONFIGURATION",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "Sonic_DW",
+        "schema": "Metric",
+        "qualified_name": "Sonic_DW.Metric.KPI_QUERY_CONFIGURATION",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.Metric.KPI_QUERY_CONFIGURATION",
+        "Metric.KPI_QUERY_CONFIGURATION",
+        "KPI_QUERY_CONFIGURATION",
+        "KPIQUERYCONFIGURATION",
+        "kpiqueryconfiguration"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "KPI_QUERY_CONFIGURATION_ID",
+          "METRIC_TYPE",
+          "SOURCE_SYSTEM",
+          "QUERY_NAME",
+          "QUERY_DESC",
+          "QUERY_SQL",
+          "ACTIVE_IND",
+          "INSERT_DATETIME",
+          "UPDATE_DATETIME"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / Metric"
+      ],
+      "evidence_file": "object-sonic-dw-metric-kpi-query-configuration.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-kpi-query-configuration.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "KPI_SOURCE_CONFIGURATION",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "KPI_SOURCE_CONFIGURATION"
+      ],
+      "canonical_id": "object-sonic-dw-metric-kpi-source-configuration",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/Sonic_DW/tables/Metric__KPI_SOURCE_CONFIGURATION.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:3E23FF18F97B8D40EEBF956F506B2CE91A922A54820EBA1D4DF78A182FAE2920",
+      "object": {
+        "name": "KPI_SOURCE_CONFIGURATION",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "Sonic_DW",
+        "schema": "Metric",
+        "qualified_name": "Sonic_DW.Metric.KPI_SOURCE_CONFIGURATION",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.Metric.KPI_SOURCE_CONFIGURATION",
+        "Metric.KPI_SOURCE_CONFIGURATION",
+        "KPI_SOURCE_CONFIGURATION",
+        "KPISOURCECONFIGURATION",
+        "kpisourceconfiguration"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "KPISourceConfigurationID",
+          "MetricType",
+          "SourceSystem",
+          "ConfigurationFilter",
+          "ConfigurationDesc",
+          "ConfiguredValue",
+          "ConfiguredValueType",
+          "PackagePath",
+          "ActiveInd",
+          "InsertDateTime",
+          "UpdateDateTime"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / Metric"
+      ],
+      "evidence_file": "object-sonic-dw-metric-kpi-source-configuration.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-kpi-source-configuration.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "XREF_DEALERSHIP_TBL",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "Metric",
+        "XREF_DEALERSHIP_TBL"
+      ],
+      "canonical_id": "object-sonic-dw-metric-xref-dealership-tbl",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/Sonic_DW/tables/Metric__XREF_DEALERSHIP_TBL.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A2496FE778C767EDE0F30FB8E17405383344EA1A64FAD01D5A51F7D178D1DA88",
+      "object": {
+        "name": "XREF_DEALERSHIP_TBL",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "Sonic_DW",
+        "schema": "Metric",
+        "qualified_name": "Sonic_DW.Metric.XREF_DEALERSHIP_TBL",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.Metric.XREF_DEALERSHIP_TBL",
+        "Metric.XREF_DEALERSHIP_TBL",
+        "XREF_DEALERSHIP_TBL",
+        "XREFDEALERSHIPTBL",
+        "xrefdealershiptbl"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "V1-SSIS25-01, 11040.SSISDB.DQMetric.DQMetrics.DQ_Turbo_Consistency.dtsx"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["DEALERSHIP_ID", "SYSTEM_CODE", "DOMAIN", "INSERT_DATETIME", "UPDATE_DATETIME"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / Metric"
+      ],
+      "evidence_file": "object-sonic-dw-metric-xref-dealership-tbl.evidence.json",
+      "markdown_file": "object-sonic-dw-metric-xref-dealership-tbl.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-096-sonic-dw-metric-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-096-sonic-dw-metric-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-096-sonic-dw-metric-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

@@ -1,0 +1,642 @@
+{
+  "packet_id": "T2B-214",
+  "generated_at": "2026-06-23T19:11:36.934Z",
+  "batch": {
+    "batch_id": "T2B-214",
+    "priority_rank": 214,
+    "platform": "SQL Server",
+    "database": "StagingDB",
+    "schema": "Google",
+    "object_type_scope": "table",
+    "object_count": 4,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "StgAppearanceDaily",
+    "last_object": "StgQueryDaily",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Google",
+    "object_names": [
+      "StgAppearanceDaily",
+      "StgDevicesCountryDaily",
+      "StgPagesDaily",
+      "StgQueryDaily"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 4,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 4,
+    "total_planned_pages": 8
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB"],
+      "page_type": "database",
+      "evidence_hash": "sha256:86BBBA4A90EF1C66989EFB3B9746AF88467BE01889393493BBDE0177897E19A4",
+      "evidence_file": "database-stagingdb.evidence.json",
+      "markdown_file": "database-stagingdb.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Google",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB", "Google"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:1F5FE4F421ADCFE03ABAC702953FBB2B3C245AD8C7D7B4DD0C7135DA68D6B80D",
+      "evidence_file": "schema-stagingdb-google.evidence.json",
+      "markdown_file": "schema-stagingdb-google.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Google.StgAppearanceDaily",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Google",
+        "StgAppearanceDaily"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:5D81EC1719FBBA5E5847B7F66BA28D26751BA47D5B15411286C23C5778E295D0",
+      "evidence_file": "object-stagingdb-google-stgappearancedaily.evidence.json",
+      "markdown_file": "object-stagingdb-google-stgappearancedaily.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Google.StgDevicesCountryDaily",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Google",
+        "StgDevicesCountryDaily"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:BE9E16D110AD4A26936344DC332BA7146CCFC8D73DCD22DDAE60D16195D3CFBF",
+      "evidence_file": "object-stagingdb-google-stgdevicescountrydaily.evidence.json",
+      "markdown_file": "object-stagingdb-google-stgdevicescountrydaily.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Google.StgPagesDaily",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Google",
+        "StgPagesDaily"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:14451A5A86E0DE2D27C036F66C11A42247C2A73B3198E529AA7D0CB88AF32F73",
+      "evidence_file": "object-stagingdb-google-stgpagesdaily.evidence.json",
+      "markdown_file": "object-stagingdb-google-stgpagesdaily.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Google.StgQueryDaily",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Google",
+        "StgQueryDaily"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A236F171E9FEEFE7E1CBD19B3CE26CE8A238BED58A4CB945CA188D39F282FCC6",
+      "evidence_file": "object-stagingdb-google-stgquerydaily.evidence.json",
+      "markdown_file": "object-stagingdb-google-stgquerydaily.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "StgAppearanceDaily",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Google",
+        "StgAppearanceDaily"
+      ],
+      "canonical_id": "object-stagingdb-google-stgappearancedaily",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/Google__StgAppearanceDaily.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:5D81EC1719FBBA5E5847B7F66BA28D26751BA47D5B15411286C23C5778E295D0",
+      "object": {
+        "name": "StgAppearanceDaily",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "Google",
+        "qualified_name": "StagingDB.Google.StgAppearanceDaily",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.Google.StgAppearanceDaily",
+        "Google.StgAppearanceDaily",
+        "StgAppearanceDaily",
+        "stgappearancedaily"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Date",
+          "Site",
+          "SearchAppearance",
+          "SearchType",
+          "Clicks",
+          "CTR",
+          "Impressions",
+          "AveragePosition",
+          "MetaSourceFileName",
+          "MetaFileModifiedDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Google"
+      ],
+      "evidence_file": "object-stagingdb-google-stgappearancedaily.evidence.json",
+      "markdown_file": "object-stagingdb-google-stgappearancedaily.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StgDevicesCountryDaily",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Google",
+        "StgDevicesCountryDaily"
+      ],
+      "canonical_id": "object-stagingdb-google-stgdevicescountrydaily",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/Google__StgDevicesCountryDaily.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:BE9E16D110AD4A26936344DC332BA7146CCFC8D73DCD22DDAE60D16195D3CFBF",
+      "object": {
+        "name": "StgDevicesCountryDaily",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "Google",
+        "qualified_name": "StagingDB.Google.StgDevicesCountryDaily",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.Google.StgDevicesCountryDaily",
+        "Google.StgDevicesCountryDaily",
+        "StgDevicesCountryDaily",
+        "stgdevicescountrydaily"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "CountryCode",
+          "Country",
+          "Date",
+          "Device",
+          "Site",
+          "SearchType",
+          "Clicks",
+          "CTR",
+          "Impressions",
+          "AveragePosition",
+          "MetaSourceFileName",
+          "MetaFileModifiedDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 12,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Google"
+      ],
+      "evidence_file": "object-stagingdb-google-stgdevicescountrydaily.evidence.json",
+      "markdown_file": "object-stagingdb-google-stgdevicescountrydaily.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StgPagesDaily",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Google",
+        "StgPagesDaily"
+      ],
+      "canonical_id": "object-stagingdb-google-stgpagesdaily",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/Google__StgPagesDaily.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:14451A5A86E0DE2D27C036F66C11A42247C2A73B3198E529AA7D0CB88AF32F73",
+      "object": {
+        "name": "StgPagesDaily",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "Google",
+        "qualified_name": "StagingDB.Google.StgPagesDaily",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.Google.StgPagesDaily",
+        "Google.StgPagesDaily",
+        "StgPagesDaily",
+        "stgpagesdaily"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Date",
+          "LandingPage",
+          "Site",
+          "SearchType",
+          "Clicks",
+          "CTR",
+          "Impressions",
+          "AveragePosition",
+          "MetaSourceFileName",
+          "MetaFileModifiedDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Google"
+      ],
+      "evidence_file": "object-stagingdb-google-stgpagesdaily.evidence.json",
+      "markdown_file": "object-stagingdb-google-stgpagesdaily.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StgQueryDaily",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Google",
+        "StgQueryDaily"
+      ],
+      "canonical_id": "object-stagingdb-google-stgquerydaily",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/Google__StgQueryDaily.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A236F171E9FEEFE7E1CBD19B3CE26CE8A238BED58A4CB945CA188D39F282FCC6",
+      "object": {
+        "name": "StgQueryDaily",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "Google",
+        "qualified_name": "StagingDB.Google.StgQueryDaily",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.Google.StgQueryDaily",
+        "Google.StgQueryDaily",
+        "StgQueryDaily",
+        "stgquerydaily"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Date",
+          "Site",
+          "SearchQuery",
+          "SearchType",
+          "Clicks",
+          "CTR",
+          "Impressions",
+          "AveragePosition",
+          "MetaSourceFileName",
+          "MetaFileModifiedDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Google"
+      ],
+      "evidence_file": "object-stagingdb-google-stgquerydaily.evidence.json",
+      "markdown_file": "object-stagingdb-google-stgquerydaily.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-214-stagingdb-google-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-214-stagingdb-google-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-214-stagingdb-google-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

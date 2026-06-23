@@ -1,0 +1,378 @@
+{
+  "packet_id": "T2B-113",
+  "generated_at": "2026-06-23T18:46:48.886Z",
+  "batch": {
+    "batch_id": "T2B-113",
+    "priority_rank": 113,
+    "platform": "SQL Server",
+    "database": "Sonic_DW",
+    "schema": "dq",
+    "object_type_scope": "table",
+    "object_count": 2,
+    "high_use_objects": 0,
+    "downstream_uses": 1,
+    "first_object": "Dim_ValidationManagement",
+    "last_object": "Fact_Force_Key_Validation",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dq",
+    "object_names": ["Dim_ValidationManagement", "Fact_Force_Key_Validation"],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "table",
+    "original_object_count": 2,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 2,
+    "total_planned_pages": 6
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "Sonic_DW"],
+      "page_type": "database",
+      "evidence_hash": "sha256:EA1134573BBFAAC7177722513513C90274A494AB02393F9F3FC5F86743318F98",
+      "evidence_file": "database-sonic-dw.evidence.json",
+      "markdown_file": "database-sonic-dw.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dq",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "Sonic_DW", "dq"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:6E8CB44A6E9BAB8F7BA6FE42F5F533A7E2FCE047A1DB9F770AD9917984147A9E",
+      "evidence_file": "schema-sonic-dw-dq.evidence.json",
+      "markdown_file": "schema-sonic-dw-dq.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dq.Dim_ValidationManagement",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dq",
+        "Dim_ValidationManagement"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:179C60B166455FE82E7E6C2810865A49D367605D128F808618787D47BF7073F4",
+      "evidence_file": "object-sonic-dw-dq-dim-validationmanagement.evidence.json",
+      "markdown_file": "object-sonic-dw-dq-dim-validationmanagement.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.dq.Fact_Force_Key_Validation",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dq",
+        "Fact_Force_Key_Validation"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E56A55EC4458928E06B97E4E794088C37FC1888FD15AA84531585D85FEE049F3",
+      "evidence_file": "object-sonic-dw-dq-fact-force-key-validation.evidence.json",
+      "markdown_file": "object-sonic-dw-dq-fact-force-key-validation.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "Dim_ValidationManagement",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dq",
+        "Dim_ValidationManagement"
+      ],
+      "canonical_id": "object-sonic-dw-dq-dim-validationmanagement",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/Sonic_DW/tables/dq__Dim_ValidationManagement.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:179C60B166455FE82E7E6C2810865A49D367605D128F808618787D47BF7073F4",
+      "object": {
+        "name": "Dim_ValidationManagement",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "Sonic_DW",
+        "schema": "dq",
+        "qualified_name": "Sonic_DW.dq.Dim_ValidationManagement",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.dq.Dim_ValidationManagement",
+        "dq.Dim_ValidationManagement",
+        "Dim_ValidationManagement",
+        "DimValidationManagement",
+        "dimvalidationmanagement"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-5FSQL-01.Sonic_DW.dq.vw_Fact_DQValidation"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "MgmtID",
+          "SourceKey",
+          "TargetKey",
+          "StepKey",
+          "ValidationKey",
+          "EntityKey",
+          "AccountKey",
+          "Prefixed_AccountNumber",
+          "Base_AccountNumber",
+          "Accounting_Prefix",
+          "Cora_Acct_ID",
+          "CompanyID",
+          "RowID",
+          "ExcludeFromDate",
+          "ExcludeToDate",
+          "Exclude_Always",
+          "ImpactDateKey_ExcludeStart",
+          "ImpactDateKey_ExcludeEnd",
+          "ImpactDate_ExcludeAlways",
+          "ActiveExclusionFlag"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 23,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dq"
+      ],
+      "evidence_file": "object-sonic-dw-dq-dim-validationmanagement.evidence.json",
+      "markdown_file": "object-sonic-dw-dq-dim-validationmanagement.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Fact_Force_Key_Validation",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "dq",
+        "Fact_Force_Key_Validation"
+      ],
+      "canonical_id": "object-sonic-dw-dq-fact-force-key-validation",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/Sonic_DW/tables/dq__Fact_Force_Key_Validation.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E56A55EC4458928E06B97E4E794088C37FC1888FD15AA84531585D85FEE049F3",
+      "object": {
+        "name": "Fact_Force_Key_Validation",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "Sonic_DW",
+        "schema": "dq",
+        "qualified_name": "Sonic_DW.dq.Fact_Force_Key_Validation",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.dq.Fact_Force_Key_Validation",
+        "dq.Fact_Force_Key_Validation",
+        "Fact_Force_Key_Validation",
+        "FactForceKeyValidation",
+        "factforcekeyvalidation"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "KeyAnalysisID",
+          "ExecutionDate",
+          "ValidationName",
+          "MetricValue",
+          "Misc",
+          "TableName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 6,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dq"
+      ],
+      "evidence_file": "object-sonic-dw-dq-fact-force-key-validation.evidence.json",
+      "markdown_file": "object-sonic-dw-dq-fact-force-key-validation.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-113-sonic-dw-dq-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-113-sonic-dw-dq-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-113-sonic-dw-dq-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

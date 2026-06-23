@@ -1,0 +1,218 @@
+{
+  "packet_id": "T2B-064",
+  "generated_at": "2026-06-23T18:21:04.756Z",
+  "batch": {
+    "batch_id": "T2B-064",
+    "priority_rank": 64,
+    "platform": "SQL Server",
+    "database": "SIMSEP",
+    "schema": "dbo",
+    "object_type_scope": "table",
+    "object_count": 1,
+    "high_use_objects": 1,
+    "downstream_uses": 24,
+    "first_object": "Book",
+    "last_object": "Book",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / SIMSEP / dbo",
+    "object_names": ["Book"],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 1,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 1,
+    "total_planned_pages": 5
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMSEP",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "SIMSEP"],
+      "page_type": "database",
+      "evidence_hash": "sha256:69571ED1FB9138CB5407F2693E24FB3FB10774DE07F33305D1558F331F295EA0",
+      "evidence_file": "database-simsep.evidence.json",
+      "markdown_file": "database-simsep.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMSEP.dbo",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "SIMSEP", "dbo"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:421D80D0A042E4F9F9BB7C44B39621F1B13637D33FE095DC787E6BDF7A84856A",
+      "evidence_file": "schema-simsep-dbo.evidence.json",
+      "markdown_file": "schema-simsep-dbo.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMSEP.dbo.Book",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "SIMSEP", "dbo", "Book"],
+      "page_type": "object",
+      "evidence_hash": "sha256:4B8E8A17591780AAEDC1593E2BB10B56CF71BB7117148DAD2BEBEE83B19FADBA",
+      "evidence_file": "object-simsep-dbo-book.evidence.json",
+      "markdown_file": "object-simsep-dbo-book.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "Book",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMSEP",
+        "dbo",
+        "Book"
+      ],
+      "canonical_id": "object-simsep-dbo-book",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMSEP/tables/dbo__Book.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:4B8E8A17591780AAEDC1593E2BB10B56CF71BB7117148DAD2BEBEE83B19FADBA",
+      "object": {
+        "name": "Book",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMSEP",
+        "schema": "dbo",
+        "qualified_name": "SIMSEP.dbo.Book",
+        "tags": ["high-use", "profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "high-use: 24 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 0 upstream and 24 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["SIMSEP.dbo.Book", "dbo.Book", "Book", "book"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 30,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMSEP",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMSEP / dbo"
+      ],
+      "evidence_file": "object-simsep-dbo-book.evidence.json",
+      "markdown_file": "object-simsep-dbo-book.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-064-simsep-dbo-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-064-simsep-dbo-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-064-simsep-dbo-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

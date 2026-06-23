@@ -1,0 +1,717 @@
+{
+  "packet_id": "T2B-177",
+  "generated_at": "2026-06-23T19:05:54.637Z",
+  "batch": {
+    "batch_id": "T2B-177",
+    "priority_rank": 177,
+    "platform": "SQL Server",
+    "database": "Google",
+    "schema": "dbo",
+    "object_type_scope": "table",
+    "object_count": 5,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "ga4property2",
+    "last_object": "temp_GA4_Req5",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / Google / dbo",
+    "object_names": [
+      "ga4property2",
+      "temp_GA4_Req1",
+      "temp_GA4_Req3",
+      "temp_GA4_Req4",
+      "temp_GA4_Req5"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 5,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 5,
+    "total_planned_pages": 9
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "Google",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "Google"],
+      "page_type": "database",
+      "evidence_hash": "sha256:429112235C8081F64968357AFA976DE14BA8FE9D92893ACA68AE82915D85365B",
+      "evidence_file": "database-google.evidence.json",
+      "markdown_file": "database-google.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Google.dbo",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "Google", "dbo"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:C919C0B40BF0CC1C1DF6A652EADBFE765558D9735DAD8BDE301B3CD0C9C3D91F",
+      "evidence_file": "schema-google-dbo.evidence.json",
+      "markdown_file": "schema-google-dbo.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Google.dbo.ga4property2",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Google",
+        "dbo",
+        "ga4property2"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A3093ACC257FFBA44ACCA9B7AD69A0DDE72C9043B127788E20B2DAA0D2894FEC",
+      "evidence_file": "object-google-dbo-ga4property2.evidence.json",
+      "markdown_file": "object-google-dbo-ga4property2.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Google.dbo.temp_GA4_Req1",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Google",
+        "dbo",
+        "temp_GA4_Req1"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:7CBEF6CB02DC433608134217E03DAE6781F30E11FC16F0FADEB24C9DBE78AA10",
+      "evidence_file": "object-google-dbo-temp-ga4-req1.evidence.json",
+      "markdown_file": "object-google-dbo-temp-ga4-req1.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Google.dbo.temp_GA4_Req3",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Google",
+        "dbo",
+        "temp_GA4_Req3"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:12672990D9AA094F75CF5C6E4391449D2586AA3D9E7766970721A26C20A4C4B8",
+      "evidence_file": "object-google-dbo-temp-ga4-req3.evidence.json",
+      "markdown_file": "object-google-dbo-temp-ga4-req3.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Google.dbo.temp_GA4_Req4",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Google",
+        "dbo",
+        "temp_GA4_Req4"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E669817C777A2D67DA0BF4326950D4506F7E6608299B1DEF2EB9C07D379EF8FB",
+      "evidence_file": "object-google-dbo-temp-ga4-req4.evidence.json",
+      "markdown_file": "object-google-dbo-temp-ga4-req4.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Google.dbo.temp_GA4_Req5",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Google",
+        "dbo",
+        "temp_GA4_Req5"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D40ABC1239B7F86D923FED6A9C86A40C4D27947B0C315BAC9AE6CAA3AA04BCE1",
+      "evidence_file": "object-google-dbo-temp-ga4-req5.evidence.json",
+      "markdown_file": "object-google-dbo-temp-ga4-req5.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "ga4property2",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Google",
+        "dbo",
+        "ga4property2"
+      ],
+      "canonical_id": "object-google-dbo-ga4property2",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/Google/tables/dbo__ga4property2.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A3093ACC257FFBA44ACCA9B7AD69A0DDE72C9043B127788E20B2DAA0D2894FEC",
+      "object": {
+        "name": "ga4property2",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "Google",
+        "schema": "dbo",
+        "qualified_name": "Google.dbo.ga4property2",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["Google.dbo.ga4property2", "dbo.ga4property2", "ga4property2"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 2,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Google",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Google / dbo"
+      ],
+      "evidence_file": "object-google-dbo-ga4property2.evidence.json",
+      "markdown_file": "object-google-dbo-ga4property2.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "temp_GA4_Req1",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Google",
+        "dbo",
+        "temp_GA4_Req1"
+      ],
+      "canonical_id": "object-google-dbo-temp-ga4-req1",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/Google/tables/dbo__temp_GA4_Req1.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:7CBEF6CB02DC433608134217E03DAE6781F30E11FC16F0FADEB24C9DBE78AA10",
+      "object": {
+        "name": "temp_GA4_Req1",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "Google",
+        "schema": "dbo",
+        "qualified_name": "Google.dbo.temp_GA4_Req1",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Google.dbo.temp_GA4_Req1",
+        "dbo.temp_GA4_Req1",
+        "temp_GA4_Req1",
+        "tempGA4Req1",
+        "tempga4req1"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 13,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Google",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Google / dbo"
+      ],
+      "evidence_file": "object-google-dbo-temp-ga4-req1.evidence.json",
+      "markdown_file": "object-google-dbo-temp-ga4-req1.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "temp_GA4_Req3",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Google",
+        "dbo",
+        "temp_GA4_Req3"
+      ],
+      "canonical_id": "object-google-dbo-temp-ga4-req3",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/Google/tables/dbo__temp_GA4_Req3.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:12672990D9AA094F75CF5C6E4391449D2586AA3D9E7766970721A26C20A4C4B8",
+      "object": {
+        "name": "temp_GA4_Req3",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "Google",
+        "schema": "dbo",
+        "qualified_name": "Google.dbo.temp_GA4_Req3",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Google.dbo.temp_GA4_Req3",
+        "dbo.temp_GA4_Req3",
+        "temp_GA4_Req3",
+        "tempGA4Req3",
+        "tempga4req3"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 1,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Google",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Google / dbo"
+      ],
+      "evidence_file": "object-google-dbo-temp-ga4-req3.evidence.json",
+      "markdown_file": "object-google-dbo-temp-ga4-req3.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "temp_GA4_Req4",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Google",
+        "dbo",
+        "temp_GA4_Req4"
+      ],
+      "canonical_id": "object-google-dbo-temp-ga4-req4",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/Google/tables/dbo__temp_GA4_Req4.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E669817C777A2D67DA0BF4326950D4506F7E6608299B1DEF2EB9C07D379EF8FB",
+      "object": {
+        "name": "temp_GA4_Req4",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "Google",
+        "schema": "dbo",
+        "qualified_name": "Google.dbo.temp_GA4_Req4",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Google.dbo.temp_GA4_Req4",
+        "dbo.temp_GA4_Req4",
+        "temp_GA4_Req4",
+        "tempGA4Req4",
+        "tempga4req4"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 7,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Google",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Google / dbo"
+      ],
+      "evidence_file": "object-google-dbo-temp-ga4-req4.evidence.json",
+      "markdown_file": "object-google-dbo-temp-ga4-req4.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "temp_GA4_Req5",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Google",
+        "dbo",
+        "temp_GA4_Req5"
+      ],
+      "canonical_id": "object-google-dbo-temp-ga4-req5",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/Google/tables/dbo__temp_GA4_Req5.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D40ABC1239B7F86D923FED6A9C86A40C4D27947B0C315BAC9AE6CAA3AA04BCE1",
+      "object": {
+        "name": "temp_GA4_Req5",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "Google",
+        "schema": "dbo",
+        "qualified_name": "Google.dbo.temp_GA4_Req5",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Google.dbo.temp_GA4_Req5",
+        "dbo.temp_GA4_Req5",
+        "temp_GA4_Req5",
+        "tempGA4Req5",
+        "tempga4req5"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 1,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Google",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Google / dbo"
+      ],
+      "evidence_file": "object-google-dbo-temp-ga4-req5.evidence.json",
+      "markdown_file": "object-google-dbo-temp-ga4-req5.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-177-google-dbo-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-177-google-dbo-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-177-google-dbo-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

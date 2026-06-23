@@ -1,0 +1,534 @@
+{
+  "packet_id": "T2B-207",
+  "generated_at": "2026-06-23T19:10:51.780Z",
+  "batch": {
+    "batch_id": "T2B-207",
+    "priority_rank": 207,
+    "platform": "SQL Server",
+    "database": "VendorData",
+    "schema": "acertus",
+    "object_type_scope": "table",
+    "object_count": 3,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "echopark_in_route",
+    "last_object": "sonic_orders",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / acertus",
+    "object_names": ["echopark_in_route", "EP_Delivered", "sonic_orders"],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "table",
+    "original_object_count": 3,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 3,
+    "total_planned_pages": 7
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData"],
+      "page_type": "database",
+      "evidence_hash": "sha256:C029883539BC166EBDE80488ADFC36CDDDD0E84559188FE128628E553E29DFF1",
+      "evidence_file": "database-vendordata.evidence.json",
+      "markdown_file": "database-vendordata.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.acertus",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData", "acertus"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:7FD897C7814915E7B579D08769549E6CDF1A3D49F95BF1DB1A0296DF8EB5094D",
+      "evidence_file": "schema-vendordata-acertus.evidence.json",
+      "markdown_file": "schema-vendordata-acertus.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.acertus.echopark_in_route",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "acertus",
+        "echopark_in_route"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A38E4D67639C4908DAD9DE2CA5438EE8DD1CB6DA2E24642520C0C35A7A699B5F",
+      "evidence_file": "object-vendordata-acertus-echopark-in-route.evidence.json",
+      "markdown_file": "object-vendordata-acertus-echopark-in-route.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.acertus.EP_Delivered",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "acertus",
+        "EP_Delivered"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9E71AD7D6E98DA5AA1A27F3B9122B1C21C18AB23C7A3B14194A9484573AF1CDA",
+      "evidence_file": "object-vendordata-acertus-ep-delivered.evidence.json",
+      "markdown_file": "object-vendordata-acertus-ep-delivered.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.acertus.sonic_orders",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "acertus",
+        "sonic_orders"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:47B0C6B6E268C2AED6ED906EF840FECD54420EA8D5BCBDC9AAFCBB9E43318367",
+      "evidence_file": "object-vendordata-acertus-sonic-orders.evidence.json",
+      "markdown_file": "object-vendordata-acertus-sonic-orders.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "echopark_in_route",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "acertus",
+        "echopark_in_route"
+      ],
+      "canonical_id": "object-vendordata-acertus-echopark-in-route",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/acertus__echopark_in_route.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A38E4D67639C4908DAD9DE2CA5438EE8DD1CB6DA2E24642520C0C35A7A699B5F",
+      "object": {
+        "name": "echopark_in_route",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "acertus",
+        "qualified_name": "VendorData.acertus.echopark_in_route",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.acertus.echopark_in_route",
+        "acertus.echopark_in_route",
+        "echopark_in_route",
+        "echoparkinroute"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "EP_InRoute_ID",
+          "origin",
+          "origin_city",
+          "origin_state",
+          "origin_zip",
+          "destination",
+          "destination_city",
+          "destination_state",
+          "destination_zip",
+          "price",
+          "miles",
+          "vins",
+          "vehicle_makes",
+          "vehicle_models",
+          "purchase_date",
+          "date_created",
+          "eta_date",
+          "Meta_LoadDate",
+          "SourceFileName",
+          "Meta_Date_From_File"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 24,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / acertus"
+      ],
+      "evidence_file": "object-vendordata-acertus-echopark-in-route.evidence.json",
+      "markdown_file": "object-vendordata-acertus-echopark-in-route.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "EP_Delivered",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "acertus",
+        "EP_Delivered"
+      ],
+      "canonical_id": "object-vendordata-acertus-ep-delivered",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/acertus__EP_Delivered.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9E71AD7D6E98DA5AA1A27F3B9122B1C21C18AB23C7A3B14194A9484573AF1CDA",
+      "object": {
+        "name": "EP_Delivered",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "acertus",
+        "qualified_name": "VendorData.acertus.EP_Delivered",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.acertus.EP_Delivered",
+        "acertus.EP_Delivered",
+        "EP_Delivered",
+        "EPDelivered",
+        "epdelivered"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "origin",
+          "origin_city",
+          "origin_state",
+          "origin_zip",
+          "destination",
+          "destination_city",
+          "destination_state",
+          "destination_zip",
+          "price",
+          "miles",
+          "vins",
+          "vehicle_makes",
+          "vehicle_models",
+          "purchase_date",
+          "date_created",
+          "delivered_at",
+          "Meta_LoadDate",
+          "SourceFileName",
+          "Meta_date_from_file",
+          "User_ID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 22,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / acertus"
+      ],
+      "evidence_file": "object-vendordata-acertus-ep-delivered.evidence.json",
+      "markdown_file": "object-vendordata-acertus-ep-delivered.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "sonic_orders",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "acertus",
+        "sonic_orders"
+      ],
+      "canonical_id": "object-vendordata-acertus-sonic-orders",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/acertus__sonic_orders.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:47B0C6B6E268C2AED6ED906EF840FECD54420EA8D5BCBDC9AAFCBB9E43318367",
+      "object": {
+        "name": "sonic_orders",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "acertus",
+        "qualified_name": "VendorData.acertus.sonic_orders",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.acertus.sonic_orders",
+        "acertus.sonic_orders",
+        "sonic_orders",
+        "sonicorders"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "sonic_orders_id",
+          "bill_to_id",
+          "bill_to_name",
+          "status",
+          "origin_id",
+          "destination_id",
+          "delivered_at",
+          "picked_up_at",
+          "dispatch_rep",
+          "vin_last_6",
+          "origin_zip",
+          "destination_zip",
+          "load_log_at",
+          "received_on",
+          "delivery_due_on",
+          "rush_status",
+          "vins",
+          "consignee",
+          "billing",
+          "det_count"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 58,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / acertus"
+      ],
+      "evidence_file": "object-vendordata-acertus-sonic-orders.evidence.json",
+      "markdown_file": "object-vendordata-acertus-sonic-orders.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-207-vendordata-acertus-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-207-vendordata-acertus-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-207-vendordata-acertus-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

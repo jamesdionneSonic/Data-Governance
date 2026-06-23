@@ -1,0 +1,250 @@
+{
+  "packet_id": "T2B-223",
+  "generated_at": "2026-06-23T19:12:44.951Z",
+  "batch": {
+    "batch_id": "T2B-223",
+    "priority_rank": 223,
+    "platform": "SQL Server",
+    "database": "StagingDB",
+    "schema": "carnow",
+    "object_type_scope": "table",
+    "object_count": 1,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "Sonic_CarNowChat",
+    "last_object": "Sonic_CarNowChat",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / carnow",
+    "object_names": ["Sonic_CarNowChat"],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "table",
+    "original_object_count": 1,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 1,
+    "total_planned_pages": 5
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB"],
+      "page_type": "database",
+      "evidence_hash": "sha256:86BBBA4A90EF1C66989EFB3B9746AF88467BE01889393493BBDE0177897E19A4",
+      "evidence_file": "database-stagingdb.evidence.json",
+      "markdown_file": "database-stagingdb.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.carnow",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB", "carnow"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:2292B8B217DB5208C9B41FAC04F6652B8CEFB2548B054414B22451FFAE05F476",
+      "evidence_file": "schema-stagingdb-carnow.evidence.json",
+      "markdown_file": "schema-stagingdb-carnow.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.carnow.Sonic_CarNowChat",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "carnow",
+        "Sonic_CarNowChat"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:8F192ADD7B472C7A029E0BC8FA67DF1250961EDF022D202FCB7694D42329B5A4",
+      "evidence_file": "object-stagingdb-carnow-sonic-carnowchat.evidence.json",
+      "markdown_file": "object-stagingdb-carnow-sonic-carnowchat.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "Sonic_CarNowChat",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "carnow",
+        "Sonic_CarNowChat"
+      ],
+      "canonical_id": "object-stagingdb-carnow-sonic-carnowchat",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/carnow__Sonic_CarNowChat.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:8F192ADD7B472C7A029E0BC8FA67DF1250961EDF022D202FCB7694D42329B5A4",
+      "object": {
+        "name": "Sonic_CarNowChat",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "carnow",
+        "qualified_name": "StagingDB.carnow.Sonic_CarNowChat",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.carnow.Sonic_CarNowChat",
+        "carnow.Sonic_CarNowChat",
+        "Sonic_CarNowChat",
+        "SonicCarNowChat",
+        "soniccarnowchat"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "id",
+          "chat_uqid",
+          "customer_id",
+          "customer_first_name",
+          "customer_last_name",
+          "agent_id",
+          "agent_jid",
+          "agent_username",
+          "partner_id",
+          "partner_name",
+          "dealer_id",
+          "dealer_name",
+          "dealer_time_zone",
+          "department_name",
+          "off_hours",
+          "managed_on_hours",
+          "session_created_at",
+          "pickup_at",
+          "agent_responded_at",
+          "response_time"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 69,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / carnow"
+      ],
+      "evidence_file": "object-stagingdb-carnow-sonic-carnowchat.evidence.json",
+      "markdown_file": "object-stagingdb-carnow-sonic-carnowchat.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-223-stagingdb-carnow-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-223-stagingdb-carnow-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-223-stagingdb-carnow-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

@@ -1,0 +1,946 @@
+{
+  "packet_id": "T2B-140",
+  "generated_at": "2026-06-23T18:51:52.627Z",
+  "batch": {
+    "batch_id": "T2B-140",
+    "priority_rank": 140,
+    "platform": "SQL Server",
+    "database": "ETL_Staging",
+    "schema": "Security",
+    "object_type_scope": "table",
+    "object_count": 6,
+    "high_use_objects": 0,
+    "downstream_uses": 5,
+    "first_object": "Security_Awareness",
+    "last_object": "TSC_Vulnerabilities_old",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Security",
+    "object_names": [
+      "Security_Awareness",
+      "SEIM_Offenses",
+      "Symantec_Events",
+      "TSC_Vulnerabilities",
+      "WHITEHAT_Events",
+      "TSC_Vulnerabilities_old"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 6,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 6,
+    "total_planned_pages": 10
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "ETL_Staging"],
+      "page_type": "database",
+      "evidence_hash": "sha256:DAC2D90CB3BE061D63E9E2B32F595CD9386F3A5C44DBCECB3D4790E05ABC3057",
+      "evidence_file": "database-etl-staging.evidence.json",
+      "markdown_file": "database-etl-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Security",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Security"
+      ],
+      "page_type": "schema",
+      "evidence_hash": "sha256:07E97AEB0A9057286F5070CE2002EB4E8C23474DFEDE7473144FC8CC08D55718",
+      "evidence_file": "schema-etl-staging-security.evidence.json",
+      "markdown_file": "schema-etl-staging-security.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Security.Security_Awareness",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Security",
+        "Security_Awareness"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:F142D9E3A81567281656AE38B0EC96B896FE1FAD21E2B123D2C783D57087A5BE",
+      "evidence_file": "object-etl-staging-security-security-awareness.evidence.json",
+      "markdown_file": "object-etl-staging-security-security-awareness.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Security.SEIM_Offenses",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Security",
+        "SEIM_Offenses"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:BB7AFC7ADF052F5394DDE128B7EFFF8C5CD19F5D0A075BD4037977764B83C46B",
+      "evidence_file": "object-etl-staging-security-seim-offenses.evidence.json",
+      "markdown_file": "object-etl-staging-security-seim-offenses.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Security.Symantec_Events",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Security",
+        "Symantec_Events"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A9831F8616DBDB4F60C30F7E6540953A5C63273399E7FE8E66B7B13B04B80AC6",
+      "evidence_file": "object-etl-staging-security-symantec-events.evidence.json",
+      "markdown_file": "object-etl-staging-security-symantec-events.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Security.TSC_Vulnerabilities",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Security",
+        "TSC_Vulnerabilities"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:0A963FEB1737999E5453F009A9E6D02679A7AD508F1D604EB5768CFFA6532C8D",
+      "evidence_file": "object-etl-staging-security-tsc-vulnerabilities.evidence.json",
+      "markdown_file": "object-etl-staging-security-tsc-vulnerabilities.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Security.TSC_Vulnerabilities_old",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Security",
+        "TSC_Vulnerabilities_old"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:6B6FA20F1F1DF40B2BB598280044D379015DB53A17237002AC4600340B0A10FF",
+      "evidence_file": "object-etl-staging-security-tsc-vulnerabilities-old.evidence.json",
+      "markdown_file": "object-etl-staging-security-tsc-vulnerabilities-old.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Security.WHITEHAT_Events",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Security",
+        "WHITEHAT_Events"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:620DAA9DBD19346237BF38A4F3EBA2C4D6D9E382FF66AAA112B0E4279352C4C2",
+      "evidence_file": "object-etl-staging-security-whitehat-events.evidence.json",
+      "markdown_file": "object-etl-staging-security-whitehat-events.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "Security_Awareness",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Security",
+        "Security_Awareness"
+      ],
+      "canonical_id": "object-etl-staging-security-security-awareness",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Security__Security_Awareness.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:F142D9E3A81567281656AE38B0EC96B896FE1FAD21E2B123D2C783D57087A5BE",
+      "object": {
+        "name": "Security_Awareness",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Security",
+        "qualified_name": "ETL_Staging.Security.Security_Awareness",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Security.Security_Awareness",
+        "Security.Security_Awareness",
+        "Security_Awareness",
+        "SecurityAwareness",
+        "securityawareness"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-5FSQL-01.ETL_Staging.wrk.vw_Fact_SecurityAwareness"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DateKey",
+          "Security_Module",
+          "CompletedPct",
+          "ETLExecution_ID",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "Meta_RowEffectiveDate",
+          "Meta_RowIsCurrent",
+          "SourceFileName",
+          "DW_FileProcessed_Flag",
+          "FileProcessedLogID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 13,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Security"
+      ],
+      "evidence_file": "object-etl-staging-security-security-awareness.evidence.json",
+      "markdown_file": "object-etl-staging-security-security-awareness.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "SEIM_Offenses",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Security",
+        "SEIM_Offenses"
+      ],
+      "canonical_id": "object-etl-staging-security-seim-offenses",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Security__SEIM_Offenses.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:BB7AFC7ADF052F5394DDE128B7EFFF8C5CD19F5D0A075BD4037977764B83C46B",
+      "object": {
+        "name": "SEIM_Offenses",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Security",
+        "qualified_name": "ETL_Staging.Security.SEIM_Offenses",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Security.SEIM_Offenses",
+        "Security.SEIM_Offenses",
+        "SEIM_Offenses",
+        "SEIMOffenses",
+        "seimoffenses"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-5FSQL-01.ETL_Staging.wrk.vw_Fact_SEIM_Offenses"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DateKey",
+          "Offense_ID",
+          "Offense_Description",
+          "Offense_Magnitude",
+          "Offense_Discovery_Time",
+          "ETLExecution_ID",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "Meta_RowEffectiveDate",
+          "Meta_RowIsCurrent",
+          "SourceFileName",
+          "DW_FileProcessed_Flag",
+          "FileProcessedLogID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 15,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Security"
+      ],
+      "evidence_file": "object-etl-staging-security-seim-offenses.evidence.json",
+      "markdown_file": "object-etl-staging-security-seim-offenses.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Symantec_Events",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Security",
+        "Symantec_Events"
+      ],
+      "canonical_id": "object-etl-staging-security-symantec-events",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Security__Symantec_Events.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A9831F8616DBDB4F60C30F7E6540953A5C63273399E7FE8E66B7B13B04B80AC6",
+      "object": {
+        "name": "Symantec_Events",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Security",
+        "qualified_name": "ETL_Staging.Security.Symantec_Events",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Security.Symantec_Events",
+        "Security.Symantec_Events",
+        "Symantec_Events",
+        "SymantecEvents",
+        "symantecevents"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-5FSQL-01.ETL_Staging.wrk.vw_Fact_Symantec_Events"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DateKey",
+          "asset_type",
+          "total_systems",
+          "yellow",
+          "red",
+          "ETLExecution_ID",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "Meta_RowEffectiveDate",
+          "Meta_RowIsCurrent",
+          "SourceFileName",
+          "DW_FileProcessed_Flag",
+          "FileProcessedLogID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 15,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Security"
+      ],
+      "evidence_file": "object-etl-staging-security-symantec-events.evidence.json",
+      "markdown_file": "object-etl-staging-security-symantec-events.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TSC_Vulnerabilities",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Security",
+        "TSC_Vulnerabilities"
+      ],
+      "canonical_id": "object-etl-staging-security-tsc-vulnerabilities",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Security__TSC_Vulnerabilities.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:0A963FEB1737999E5453F009A9E6D02679A7AD508F1D604EB5768CFFA6532C8D",
+      "object": {
+        "name": "TSC_Vulnerabilities",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Security",
+        "qualified_name": "ETL_Staging.Security.TSC_Vulnerabilities",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Security.TSC_Vulnerabilities",
+        "Security.TSC_Vulnerabilities",
+        "TSC_Vulnerabilities",
+        "TSCVulnerabilities",
+        "tscvulnerabilities"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-5FSQL-01.ETL_Staging.wrk.vw_Fact_TSCVulnerabilities"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DateKey",
+          "asset_group",
+          "critical_count",
+          "high_count",
+          "medium_count",
+          "ETLExecution_ID",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "Meta_RowEffectiveDate",
+          "Meta_RowIsCurrent",
+          "SourceFileName",
+          "DW_FileProcessed_Flag",
+          "FileProcessedLogID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 15,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Security"
+      ],
+      "evidence_file": "object-etl-staging-security-tsc-vulnerabilities.evidence.json",
+      "markdown_file": "object-etl-staging-security-tsc-vulnerabilities.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TSC_Vulnerabilities_old",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Security",
+        "TSC_Vulnerabilities_old"
+      ],
+      "canonical_id": "object-etl-staging-security-tsc-vulnerabilities-old",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Security__TSC_Vulnerabilities_old.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:6B6FA20F1F1DF40B2BB598280044D379015DB53A17237002AC4600340B0A10FF",
+      "object": {
+        "name": "TSC_Vulnerabilities_old",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Security",
+        "qualified_name": "ETL_Staging.Security.TSC_Vulnerabilities_old",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Security.TSC_Vulnerabilities_old",
+        "Security.TSC_Vulnerabilities_old",
+        "TSC_Vulnerabilities_old",
+        "TSCVulnerabilitiesold",
+        "tscvulnerabilitiesold"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DateKey",
+          "asset_group",
+          "critical_count",
+          "high_count",
+          "medium_count",
+          "ETLExecution_ID",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "Meta_RowEffectiveDate",
+          "Meta_RowIsCurrent",
+          "SourceFileName",
+          "DW_FileProcessed_Flag",
+          "FileProcessedLogID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 15,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Security"
+      ],
+      "evidence_file": "object-etl-staging-security-tsc-vulnerabilities-old.evidence.json",
+      "markdown_file": "object-etl-staging-security-tsc-vulnerabilities-old.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "WHITEHAT_Events",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Security",
+        "WHITEHAT_Events"
+      ],
+      "canonical_id": "object-etl-staging-security-whitehat-events",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Security__WHITEHAT_Events.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:620DAA9DBD19346237BF38A4F3EBA2C4D6D9E382FF66AAA112B0E4279352C4C2",
+      "object": {
+        "name": "WHITEHAT_Events",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Security",
+        "qualified_name": "ETL_Staging.Security.WHITEHAT_Events",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Security.WHITEHAT_Events",
+        "Security.WHITEHAT_Events",
+        "WHITEHAT_Events",
+        "WHITEHATEvents",
+        "whitehatevents"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-5FSQL-01.ETL_Staging.wrk.vw_Fact_Whitehat_Events"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DateKey",
+          "vuln_id",
+          "vuln_class",
+          "status",
+          "severity",
+          "threat",
+          "score",
+          "found_date",
+          "opened_date",
+          "closed_date",
+          "url",
+          "href",
+          "site",
+          "restest_state",
+          "ETLExecution_ID",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "Meta_RowEffectiveDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 24,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Security"
+      ],
+      "evidence_file": "object-etl-staging-security-whitehat-events.evidence.json",
+      "markdown_file": "object-etl-staging-security-whitehat-events.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-140-etl-staging-security-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-140-etl-staging-security-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-140-etl-staging-security-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

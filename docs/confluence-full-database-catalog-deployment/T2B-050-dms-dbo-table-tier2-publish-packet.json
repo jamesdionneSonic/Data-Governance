@@ -1,0 +1,4645 @@
+{
+  "packet_id": "T2B-050",
+  "generated_at": "2026-06-23T18:14:52.326Z",
+  "batch": {
+    "batch_id": "T2B-050",
+    "priority_rank": 50,
+    "platform": "SQL Server",
+    "database": "DMS",
+    "schema": "dbo",
+    "object_type_scope": "table",
+    "object_count": 38,
+    "high_use_objects": 3,
+    "downstream_uses": 171,
+    "first_object": "dm_cora_account",
+    "last_object": "tblstatus",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo",
+    "object_names": [
+      "dm_cora_account",
+      "vehiclesalescurrent",
+      "opcodes",
+      "vw_vsc_fiproducts_union",
+      "gljedetail_cur",
+      "vehicle",
+      "vw_Dim_Inventory_Vehicle_Staging",
+      "technician",
+      "vwFloorPlanDetailACV",
+      "stg_WeOwe",
+      "vw_Dim_DMSCstImport_update_Inc",
+      "appointments",
+      "glschedule",
+      "labortype",
+      "manufacturer",
+      "vw_FactService_staging",
+      "vw_Fuel_II_glaccountledger_INC",
+      "vw_GPA_RateCap_SRC",
+      "vw_vsc_All",
+      "vw_vscLender",
+      "vwTitleTrackingVSC",
+      "vw_Dim_Sales_Vehicle_Staging_hist",
+      "vw_Dim_Service_Vehicle_Staging_hist",
+      "glschedulesetupreload",
+      "partssales",
+      "ServiceVins_Staging",
+      "gldept",
+      "orgname",
+      "servicesalesclosed",
+      "servicesalesopen",
+      "vw_DMSVendor_Import",
+      "vw_Essbase_HR_OT_Stage",
+      "vw_PricingGrid_staging",
+      "vwFireSummaryVSC",
+      "vsc_fiproducts_union_stage",
+      "servicesalespartsclosed",
+      "tblperformance",
+      "tblstatus"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 38,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 38,
+    "total_planned_pages": 42
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "DMS"],
+      "page_type": "database",
+      "evidence_hash": "sha256:8F7D4D2A99017B23EB8592F26F55E507D430F326F4F6E37EB89B18C42F4BAB04",
+      "evidence_file": "database-dms.evidence.json",
+      "markdown_file": "database-dms.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "DMS", "dbo"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:34C458A8C4E3ECFBA04B7CF8935796252545965144A3914E658EE2D3242A3BA4",
+      "evidence_file": "schema-dms-dbo.evidence.json",
+      "markdown_file": "schema-dms-dbo.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.appointments",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "appointments"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D5B41BD3130D7C36C060D2D081CD690DE644AEFC305AD8AD03D339B189371225",
+      "evidence_file": "object-dms-dbo-appointments.evidence.json",
+      "markdown_file": "object-dms-dbo-appointments.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.dm_cora_account",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "dm_cora_account"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:0673F28315631591FC6BAA02041E59EA10F04B5CACC1FE62468FB139EE3AD217",
+      "evidence_file": "object-dms-dbo-dm-cora-account.evidence.json",
+      "markdown_file": "object-dms-dbo-dm-cora-account.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.gldept",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "DMS", "dbo", "gldept"],
+      "page_type": "object",
+      "evidence_hash": "sha256:04E848D4BCC7A75FDB5ED5755A015C246CD1809F2B0C1B96B0BA8E0232C6FDA6",
+      "evidence_file": "object-dms-dbo-gldept.evidence.json",
+      "markdown_file": "object-dms-dbo-gldept.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.gljedetail_cur",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "gljedetail_cur"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:FC585B460ECEFA7CF9B96372179744467AB623BC0075E66DEBEE85D6A49912FE",
+      "evidence_file": "object-dms-dbo-gljedetail-cur.evidence.json",
+      "markdown_file": "object-dms-dbo-gljedetail-cur.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.glschedule",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "glschedule"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:8FD9C40CF2F1DAE5BF30B9A4FBBB790C3B727E808EE54D9CB2A5777868DE3650",
+      "evidence_file": "object-dms-dbo-glschedule.evidence.json",
+      "markdown_file": "object-dms-dbo-glschedule.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.glschedulesetupreload",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "glschedulesetupreload"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:5E1F4760B53BF4D48D055915D7F1A19995555E6FB7EFBE8EEF8D42A3FD7BEE99",
+      "evidence_file": "object-dms-dbo-glschedulesetupreload.evidence.json",
+      "markdown_file": "object-dms-dbo-glschedulesetupreload.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.labortype",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "labortype"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:15C966DC621EEBB0AF68C94896E51299858A91B7FB47065882B68CEB75AC358C",
+      "evidence_file": "object-dms-dbo-labortype.evidence.json",
+      "markdown_file": "object-dms-dbo-labortype.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.manufacturer",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "manufacturer"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B01E085C7DB7C9EB06019E658323A7E63A538E65CE5B42F898BB9455A6828BE2",
+      "evidence_file": "object-dms-dbo-manufacturer.evidence.json",
+      "markdown_file": "object-dms-dbo-manufacturer.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.opcodes",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "DMS", "dbo", "opcodes"],
+      "page_type": "object",
+      "evidence_hash": "sha256:E07F97525325B37EF69EC268C6852D5AAF162086137712E4DA2DC5C5C732ADA0",
+      "evidence_file": "object-dms-dbo-opcodes.evidence.json",
+      "markdown_file": "object-dms-dbo-opcodes.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.orgname",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "DMS", "dbo", "orgname"],
+      "page_type": "object",
+      "evidence_hash": "sha256:0A7321CA5AAF4C06CF830D677B040D4F91DBC9482143D42692FDC7338BF95EDE",
+      "evidence_file": "object-dms-dbo-orgname.evidence.json",
+      "markdown_file": "object-dms-dbo-orgname.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.partssales",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "partssales"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:281D8B239810EB17FE8737E78674D7D13D7B88F3B1246D441D392F71553196CD",
+      "evidence_file": "object-dms-dbo-partssales.evidence.json",
+      "markdown_file": "object-dms-dbo-partssales.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.servicesalesclosed",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "servicesalesclosed"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B9D2FDE142F7568FBF1126942E9776E4A74DEDA0F6EB4A9BB2A9B8598DC5AC8C",
+      "evidence_file": "object-dms-dbo-servicesalesclosed.evidence.json",
+      "markdown_file": "object-dms-dbo-servicesalesclosed.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.servicesalesopen",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "servicesalesopen"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:70ECBA067BCF1AF0C3B8EB0E45D4418339C78E361FC72BF51996E8BC986C8AF4",
+      "evidence_file": "object-dms-dbo-servicesalesopen.evidence.json",
+      "markdown_file": "object-dms-dbo-servicesalesopen.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.servicesalespartsclosed",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "servicesalespartsclosed"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D90A8D5FFCE68249BF0AEE2C88CD4822DDA5B5E64FD52D1FA91F03D89E47C324",
+      "evidence_file": "object-dms-dbo-servicesalespartsclosed.evidence.json",
+      "markdown_file": "object-dms-dbo-servicesalespartsclosed.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.ServiceVins_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "ServiceVins_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:79AD545785AACBD00F47FE84E319AAF22ABC9120A59533B858470FFC30CBB129",
+      "evidence_file": "object-dms-dbo-servicevins-staging.evidence.json",
+      "markdown_file": "object-dms-dbo-servicevins-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.stg_WeOwe",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "stg_WeOwe"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:2BC4AB6CF327E997DF3E64DC7F7741E5F040DCA5BC5CE5FB160C9D3AD04A1A5F",
+      "evidence_file": "object-dms-dbo-stg-weowe.evidence.json",
+      "markdown_file": "object-dms-dbo-stg-weowe.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.tblperformance",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "tblperformance"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:477D9C6A03BE1930794FD3CBDB5F75CC429E20F9525E7DCCBC8422E356EBAD52",
+      "evidence_file": "object-dms-dbo-tblperformance.evidence.json",
+      "markdown_file": "object-dms-dbo-tblperformance.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.tblstatus",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "tblstatus"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A5B170EAF7B1B9DD7FED552145E3DB0FDF96BEEB535D0D20917A24163C6F5A25",
+      "evidence_file": "object-dms-dbo-tblstatus.evidence.json",
+      "markdown_file": "object-dms-dbo-tblstatus.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.technician",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "technician"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:75235F35654C649C824C1EE4EA215D337233198500EBEF997BC7DBD9AD10E80D",
+      "evidence_file": "object-dms-dbo-technician.evidence.json",
+      "markdown_file": "object-dms-dbo-technician.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vehicle",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "DMS", "dbo", "vehicle"],
+      "page_type": "object",
+      "evidence_hash": "sha256:F09D09F33D6C382256DEC8C582B176D76CE4C0CF3048F74D2F1FF61B2F8E340D",
+      "evidence_file": "object-dms-dbo-vehicle.evidence.json",
+      "markdown_file": "object-dms-dbo-vehicle.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vehiclesalescurrent",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vehiclesalescurrent"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9E5B9874B4D5BF4A59FD152FE0682762B4B45B125CC9549FA991C831C22AED46",
+      "evidence_file": "object-dms-dbo-vehiclesalescurrent.evidence.json",
+      "markdown_file": "object-dms-dbo-vehiclesalescurrent.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vsc_fiproducts_union_stage",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vsc_fiproducts_union_stage"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:F56C53A973041EB37B42BF79EA89487C7F12DA3D901DAD8395DE13982D2C8106",
+      "evidence_file": "object-dms-dbo-vsc-fiproducts-union-stage.evidence.json",
+      "markdown_file": "object-dms-dbo-vsc-fiproducts-union-stage.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vw_Dim_DMSCstImport_update_Inc",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_Dim_DMSCstImport_update_Inc"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:5B578D6BAAF15820032CA999DE52300BF233D61D9600D6EB5433F2F17F12AB82",
+      "evidence_file": "object-dms-dbo-vw-dim-dmscstimport-update-inc.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-dim-dmscstimport-update-inc.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vw_Dim_Inventory_Vehicle_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_Dim_Inventory_Vehicle_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B1588B50E5E9AD03BF56D69089979B0AF0149C37F8618C91E7A996E4D112DB8D",
+      "evidence_file": "object-dms-dbo-vw-dim-inventory-vehicle-staging.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-dim-inventory-vehicle-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vw_Dim_Sales_Vehicle_Staging_hist",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_Dim_Sales_Vehicle_Staging_hist"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:692B1D6D58B38749E082BECB477B186F2430961D569843283F7C3E7F8A3DE7EC",
+      "evidence_file": "object-dms-dbo-vw-dim-sales-vehicle-staging-hist.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-dim-sales-vehicle-staging-hist.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vw_Dim_Service_Vehicle_Staging_hist",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_Dim_Service_Vehicle_Staging_hist"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:6EA78B3754E6594B6DCF91D52CBB884A02F2490282B0C2281CD54F84855C04A4",
+      "evidence_file": "object-dms-dbo-vw-dim-service-vehicle-staging-hist.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-dim-service-vehicle-staging-hist.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vw_DMSVendor_Import",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_DMSVendor_Import"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:AF37B9FBD40E1626FC40F78347A1BAAFE6D023A155BCD015E47BB4B22015BA51",
+      "evidence_file": "object-dms-dbo-vw-dmsvendor-import.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-dmsvendor-import.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vw_Essbase_HR_OT_Stage",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_Essbase_HR_OT_Stage"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9C7459BEA36FCF5E933204296CDD8A8D00FB4B3CC805325FE56E55A1D572AEA0",
+      "evidence_file": "object-dms-dbo-vw-essbase-hr-ot-stage.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-essbase-hr-ot-stage.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vw_FactService_staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_FactService_staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B5D3519DAB9384953DDFA1A41A41D751F8F6AA124CAB0D7C2712A16457D141A6",
+      "evidence_file": "object-dms-dbo-vw-factservice-staging.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-factservice-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vw_Fuel_II_glaccountledger_INC",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_Fuel_II_glaccountledger_INC"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:4EB5188BD0F0B4F70F2386CE984D01D5E863D2C67B2764E028B533BAA64CD883",
+      "evidence_file": "object-dms-dbo-vw-fuel-ii-glaccountledger-inc.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-fuel-ii-glaccountledger-inc.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vw_GPA_RateCap_SRC",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_GPA_RateCap_SRC"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:0432B210A772A3E4F21F92AAD4E9CD5C640BDF5F5B4BBC2D60E9EFEBC2A3F88A",
+      "evidence_file": "object-dms-dbo-vw-gpa-ratecap-src.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-gpa-ratecap-src.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vw_PricingGrid_staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_PricingGrid_staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:BBF86D1FFEC7B1CBDD1965EE9666D60EA94F4CD7D6C3EA96D659AC77DE3DB120",
+      "evidence_file": "object-dms-dbo-vw-pricinggrid-staging.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-pricinggrid-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vw_vsc_All",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_vsc_All"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:31C903D11E2A7D8F91C3E14E970AF8E13B28FD79402E6B98655000FA366C8D63",
+      "evidence_file": "object-dms-dbo-vw-vsc-all.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-vsc-all.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vw_vsc_fiproducts_union",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_vsc_fiproducts_union"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:0E0EE8C7DB83189F71E4702B9274C2F1D7D4D602F5FBF4C404E76D0D25F3F1DF",
+      "evidence_file": "object-dms-dbo-vw-vsc-fiproducts-union.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-vsc-fiproducts-union.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vw_vscLender",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_vscLender"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:42B7F65621C2C1B4A66510B04553A9720FD1D069B480C44470DB9850D64DC6AE",
+      "evidence_file": "object-dms-dbo-vw-vsclender.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-vsclender.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vwFireSummaryVSC",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vwFireSummaryVSC"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:CA9E0A04E3665BBA5D494BFE9DD99D3622BD58F48D5179D21CF6C75360B997E4",
+      "evidence_file": "object-dms-dbo-vwfiresummaryvsc.evidence.json",
+      "markdown_file": "object-dms-dbo-vwfiresummaryvsc.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vwFloorPlanDetailACV",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vwFloorPlanDetailACV"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:3035C740003B18E2B8F416256F0D5D1F89F29743B6F1685E8627EB06C0853ABC",
+      "evidence_file": "object-dms-dbo-vwfloorplandetailacv.evidence.json",
+      "markdown_file": "object-dms-dbo-vwfloorplandetailacv.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DMS.dbo.vwTitleTrackingVSC",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vwTitleTrackingVSC"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A24570F33DE524ECB10699A91029343E613557F89AA2DAF255F8207AB675F4CA",
+      "evidence_file": "object-dms-dbo-vwtitletrackingvsc.evidence.json",
+      "markdown_file": "object-dms-dbo-vwtitletrackingvsc.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "appointments",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "appointments"
+      ],
+      "canonical_id": "object-dms-dbo-appointments",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__appointments.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D5B41BD3130D7C36C060D2D081CD690DE644AEFC305AD8AD03D339B189371225",
+      "object": {
+        "name": "appointments",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.appointments",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DMS.dbo.appointments", "dbo.appointments", "appointments"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 45,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-appointments.evidence.json",
+      "markdown_file": "object-dms-dbo-appointments.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "dm_cora_account",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "dm_cora_account"
+      ],
+      "canonical_id": "object-dms-dbo-dm-cora-account",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__dm_cora_account.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:0673F28315631591FC6BAA02041E59EA10F04B5CACC1FE62468FB139EE3AD217",
+      "object": {
+        "name": "dm_cora_account",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.dm_cora_account",
+        "tags": ["high-use", "profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "high-use: 25 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 6 upstream and 25 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.dm_cora_account",
+        "dbo.dm_cora_account",
+        "dm_cora_account",
+        "dmcoraaccount"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 17,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-dm-cora-account.evidence.json",
+      "markdown_file": "object-dms-dbo-dm-cora-account.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "gldept",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "gldept"
+      ],
+      "canonical_id": "object-dms-dbo-gldept",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__gldept.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:04E848D4BCC7A75FDB5ED5755A015C246CD1809F2B0C1B96B0BA8E0232C6FDA6",
+      "object": {
+        "name": "gldept",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.gldept",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DMS.dbo.gldept", "dbo.gldept", "gldept"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 8,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-gldept.evidence.json",
+      "markdown_file": "object-dms-dbo-gldept.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "gljedetail_cur",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "gljedetail_cur"
+      ],
+      "canonical_id": "object-dms-dbo-gljedetail-cur",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__gljedetail_cur.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:FC585B460ECEFA7CF9B96372179744467AB623BC0075E66DEBEE85D6A49912FE",
+      "object": {
+        "name": "gljedetail_cur",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.gljedetail_cur",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.gljedetail_cur",
+        "dbo.gljedetail_cur",
+        "gljedetail_cur",
+        "gljedetailcur"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 6,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-gljedetail-cur.evidence.json",
+      "markdown_file": "object-dms-dbo-gljedetail-cur.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "glschedule",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "glschedule"
+      ],
+      "canonical_id": "object-dms-dbo-glschedule",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__glschedule.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:8FD9C40CF2F1DAE5BF30B9A4FBBB790C3B727E808EE54D9CB2A5777868DE3650",
+      "object": {
+        "name": "glschedule",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.glschedule",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DMS.dbo.glschedule", "dbo.glschedule", "glschedule"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 6,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-glschedule.evidence.json",
+      "markdown_file": "object-dms-dbo-glschedule.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "glschedulesetupreload",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "glschedulesetupreload"
+      ],
+      "canonical_id": "object-dms-dbo-glschedulesetupreload",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__glschedulesetupreload.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:5E1F4760B53BF4D48D055915D7F1A19995555E6FB7EFBE8EEF8D42A3FD7BEE99",
+      "object": {
+        "name": "glschedulesetupreload",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.glschedulesetupreload",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.glschedulesetupreload",
+        "dbo.glschedulesetupreload",
+        "glschedulesetupreload"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 51,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-glschedulesetupreload.evidence.json",
+      "markdown_file": "object-dms-dbo-glschedulesetupreload.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "labortype",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "labortype"
+      ],
+      "canonical_id": "object-dms-dbo-labortype",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__labortype.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:15C966DC621EEBB0AF68C94896E51299858A91B7FB47065882B68CEB75AC358C",
+      "object": {
+        "name": "labortype",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.labortype",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DMS.dbo.labortype", "dbo.labortype", "labortype"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 91,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-labortype.evidence.json",
+      "markdown_file": "object-dms-dbo-labortype.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "manufacturer",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "manufacturer"
+      ],
+      "canonical_id": "object-dms-dbo-manufacturer",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__manufacturer.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B01E085C7DB7C9EB06019E658323A7E63A538E65CE5B42F898BB9455A6828BE2",
+      "object": {
+        "name": "manufacturer",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.manufacturer",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DMS.dbo.manufacturer", "dbo.manufacturer", "manufacturer"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 45,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-manufacturer.evidence.json",
+      "markdown_file": "object-dms-dbo-manufacturer.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "opcodes",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "opcodes"
+      ],
+      "canonical_id": "object-dms-dbo-opcodes",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__opcodes.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E07F97525325B37EF69EC268C6852D5AAF162086137712E4DA2DC5C5C732ADA0",
+      "object": {
+        "name": "opcodes",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.opcodes",
+        "tags": ["high-use", "profiled", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "review-needed"],
+      "tag_reasons": [
+        "high-use: 10 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DMS.dbo.opcodes", "dbo.opcodes", "opcodes"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 50,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-opcodes.evidence.json",
+      "markdown_file": "object-dms-dbo-opcodes.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "orgname",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "orgname"
+      ],
+      "canonical_id": "object-dms-dbo-orgname",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__orgname.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:0A7321CA5AAF4C06CF830D677B040D4F91DBC9482143D42692FDC7338BF95EDE",
+      "object": {
+        "name": "orgname",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.orgname",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DMS.dbo.orgname", "dbo.orgname", "orgname"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-orgname.evidence.json",
+      "markdown_file": "object-dms-dbo-orgname.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "partssales",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "partssales"
+      ],
+      "canonical_id": "object-dms-dbo-partssales",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__partssales.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:281D8B239810EB17FE8737E78674D7D13D7B88F3B1246D441D392F71553196CD",
+      "object": {
+        "name": "partssales",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.partssales",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DMS.dbo.partssales", "dbo.partssales", "partssales"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 30,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-partssales.evidence.json",
+      "markdown_file": "object-dms-dbo-partssales.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "servicesalesclosed",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "servicesalesclosed"
+      ],
+      "canonical_id": "object-dms-dbo-servicesalesclosed",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__servicesalesclosed.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B9D2FDE142F7568FBF1126942E9776E4A74DEDA0F6EB4A9BB2A9B8598DC5AC8C",
+      "object": {
+        "name": "servicesalesclosed",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.servicesalesclosed",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DMS.dbo.servicesalesclosed", "dbo.servicesalesclosed", "servicesalesclosed"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 6,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-servicesalesclosed.evidence.json",
+      "markdown_file": "object-dms-dbo-servicesalesclosed.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "servicesalesopen",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "servicesalesopen"
+      ],
+      "canonical_id": "object-dms-dbo-servicesalesopen",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__servicesalesopen.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:70ECBA067BCF1AF0C3B8EB0E45D4418339C78E361FC72BF51996E8BC986C8AF4",
+      "object": {
+        "name": "servicesalesopen",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.servicesalesopen",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DMS.dbo.servicesalesopen", "dbo.servicesalesopen", "servicesalesopen"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-servicesalesopen.evidence.json",
+      "markdown_file": "object-dms-dbo-servicesalesopen.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "servicesalespartsclosed",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "servicesalespartsclosed"
+      ],
+      "canonical_id": "object-dms-dbo-servicesalespartsclosed",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__servicesalespartsclosed.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D90A8D5FFCE68249BF0AEE2C88CD4822DDA5B5E64FD52D1FA91F03D89E47C324",
+      "object": {
+        "name": "servicesalespartsclosed",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.servicesalespartsclosed",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.servicesalespartsclosed",
+        "dbo.servicesalespartsclosed",
+        "servicesalespartsclosed"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 48,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-servicesalespartsclosed.evidence.json",
+      "markdown_file": "object-dms-dbo-servicesalespartsclosed.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ServiceVins_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "ServiceVins_Staging"
+      ],
+      "canonical_id": "object-dms-dbo-servicevins-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__ServiceVins_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:79AD545785AACBD00F47FE84E319AAF22ABC9120A59533B858470FFC30CBB129",
+      "object": {
+        "name": "ServiceVins_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.ServiceVins_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.ServiceVins_Staging",
+        "dbo.ServiceVins_Staging",
+        "ServiceVins_Staging",
+        "ServiceVinsStaging",
+        "servicevinsstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 8,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-servicevins-staging.evidence.json",
+      "markdown_file": "object-dms-dbo-servicevins-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "stg_WeOwe",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "stg_WeOwe"
+      ],
+      "canonical_id": "object-dms-dbo-stg-weowe",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__stg_WeOwe.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:2BC4AB6CF327E997DF3E64DC7F7741E5F040DCA5BC5CE5FB160C9D3AD04A1A5F",
+      "object": {
+        "name": "stg_WeOwe",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.stg_WeOwe",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DMS.dbo.stg_WeOwe", "dbo.stg_WeOwe", "stg_WeOwe", "stgWeOwe", "stgweowe"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 16,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-stg-weowe.evidence.json",
+      "markdown_file": "object-dms-dbo-stg-weowe.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "tblperformance",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "tblperformance"
+      ],
+      "canonical_id": "object-dms-dbo-tblperformance",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__tblperformance.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:477D9C6A03BE1930794FD3CBDB5F75CC429E20F9525E7DCCBC8422E356EBAD52",
+      "object": {
+        "name": "tblperformance",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.tblperformance",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DMS.dbo.tblperformance", "dbo.tblperformance", "tblperformance"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 15,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-tblperformance.evidence.json",
+      "markdown_file": "object-dms-dbo-tblperformance.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "tblstatus",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "tblstatus"
+      ],
+      "canonical_id": "object-dms-dbo-tblstatus",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__tblstatus.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A5B170EAF7B1B9DD7FED552145E3DB0FDF96BEEB535D0D20917A24163C6F5A25",
+      "object": {
+        "name": "tblstatus",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.tblstatus",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DMS.dbo.tblstatus", "dbo.tblstatus", "tblstatus"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 12,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-tblstatus.evidence.json",
+      "markdown_file": "object-dms-dbo-tblstatus.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "technician",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "technician"
+      ],
+      "canonical_id": "object-dms-dbo-technician",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__technician.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:75235F35654C649C824C1EE4EA215D337233198500EBEF997BC7DBD9AD10E80D",
+      "object": {
+        "name": "technician",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.technician",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DMS.dbo.technician", "dbo.technician", "technician"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 14,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-technician.evidence.json",
+      "markdown_file": "object-dms-dbo-technician.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vehicle",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vehicle"
+      ],
+      "canonical_id": "object-dms-dbo-vehicle",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vehicle.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:F09D09F33D6C382256DEC8C582B176D76CE4C0CF3048F74D2F1FF61B2F8E340D",
+      "object": {
+        "name": "vehicle",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vehicle",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DMS.dbo.vehicle", "dbo.vehicle", "vehicle"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vehicle.evidence.json",
+      "markdown_file": "object-dms-dbo-vehicle.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vehiclesalescurrent",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vehiclesalescurrent"
+      ],
+      "canonical_id": "object-dms-dbo-vehiclesalescurrent",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vehiclesalescurrent.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9E5B9874B4D5BF4A59FD152FE0682762B4B45B125CC9549FA991C831C22AED46",
+      "object": {
+        "name": "vehiclesalescurrent",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vehiclesalescurrent",
+        "tags": ["high-use", "profiled", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "review-needed"],
+      "tag_reasons": [
+        "high-use: 14 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DMS.dbo.vehiclesalescurrent", "dbo.vehiclesalescurrent", "vehiclesalescurrent"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 271,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vehiclesalescurrent.evidence.json",
+      "markdown_file": "object-dms-dbo-vehiclesalescurrent.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vsc_fiproducts_union_stage",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vsc_fiproducts_union_stage"
+      ],
+      "canonical_id": "object-dms-dbo-vsc-fiproducts-union-stage",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vsc_fiproducts_union_stage.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:F56C53A973041EB37B42BF79EA89487C7F12DA3D901DAD8395DE13982D2C8106",
+      "object": {
+        "name": "vsc_fiproducts_union_stage",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vsc_fiproducts_union_stage",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.vsc_fiproducts_union_stage",
+        "dbo.vsc_fiproducts_union_stage",
+        "vsc_fiproducts_union_stage",
+        "vscfiproductsunionstage"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 222,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vsc-fiproducts-union-stage.evidence.json",
+      "markdown_file": "object-dms-dbo-vsc-fiproducts-union-stage.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_Dim_DMSCstImport_update_Inc",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_Dim_DMSCstImport_update_Inc"
+      ],
+      "canonical_id": "object-dms-dbo-vw-dim-dmscstimport-update-inc",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vw_Dim_DMSCstImport_update_Inc.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:5B578D6BAAF15820032CA999DE52300BF233D61D9600D6EB5433F2F17F12AB82",
+      "object": {
+        "name": "vw_Dim_DMSCstImport_update_Inc",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vw_Dim_DMSCstImport_update_Inc",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.vw_Dim_DMSCstImport_update_Inc",
+        "dbo.vw_Dim_DMSCstImport_update_Inc",
+        "vw_Dim_DMSCstImport_update_Inc",
+        "vwDimDMSCstImportupdateInc",
+        "vwdimdmscstimportupdateinc"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 92,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vw-dim-dmscstimport-update-inc.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-dim-dmscstimport-update-inc.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_Dim_Inventory_Vehicle_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_Dim_Inventory_Vehicle_Staging"
+      ],
+      "canonical_id": "object-dms-dbo-vw-dim-inventory-vehicle-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vw_Dim_Inventory_Vehicle_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B1588B50E5E9AD03BF56D69089979B0AF0149C37F8618C91E7A996E4D112DB8D",
+      "object": {
+        "name": "vw_Dim_Inventory_Vehicle_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vw_Dim_Inventory_Vehicle_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.vw_Dim_Inventory_Vehicle_Staging",
+        "dbo.vw_Dim_Inventory_Vehicle_Staging",
+        "vw_Dim_Inventory_Vehicle_Staging",
+        "vwDimInventoryVehicleStaging",
+        "vwdiminventoryvehiclestaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 84,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vw-dim-inventory-vehicle-staging.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-dim-inventory-vehicle-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_Dim_Sales_Vehicle_Staging_hist",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_Dim_Sales_Vehicle_Staging_hist"
+      ],
+      "canonical_id": "object-dms-dbo-vw-dim-sales-vehicle-staging-hist",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vw_Dim_Sales_Vehicle_Staging_hist.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:692B1D6D58B38749E082BECB477B186F2430961D569843283F7C3E7F8A3DE7EC",
+      "object": {
+        "name": "vw_Dim_Sales_Vehicle_Staging_hist",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vw_Dim_Sales_Vehicle_Staging_hist",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.vw_Dim_Sales_Vehicle_Staging_hist",
+        "dbo.vw_Dim_Sales_Vehicle_Staging_hist",
+        "vw_Dim_Sales_Vehicle_Staging_hist",
+        "vwDimSalesVehicleStaginghist",
+        "vwdimsalesvehiclestaginghist"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 32,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vw-dim-sales-vehicle-staging-hist.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-dim-sales-vehicle-staging-hist.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_Dim_Service_Vehicle_Staging_hist",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_Dim_Service_Vehicle_Staging_hist"
+      ],
+      "canonical_id": "object-dms-dbo-vw-dim-service-vehicle-staging-hist",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vw_Dim_Service_Vehicle_Staging_hist.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:6EA78B3754E6594B6DCF91D52CBB884A02F2490282B0C2281CD54F84855C04A4",
+      "object": {
+        "name": "vw_Dim_Service_Vehicle_Staging_hist",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vw_Dim_Service_Vehicle_Staging_hist",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.vw_Dim_Service_Vehicle_Staging_hist",
+        "dbo.vw_Dim_Service_Vehicle_Staging_hist",
+        "vw_Dim_Service_Vehicle_Staging_hist",
+        "vwDimServiceVehicleStaginghist",
+        "vwdimservicevehiclestaginghist"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 32,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vw-dim-service-vehicle-staging-hist.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-dim-service-vehicle-staging-hist.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_DMSVendor_Import",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_DMSVendor_Import"
+      ],
+      "canonical_id": "object-dms-dbo-vw-dmsvendor-import",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vw_DMSVendor_Import.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:AF37B9FBD40E1626FC40F78347A1BAAFE6D023A155BCD015E47BB4B22015BA51",
+      "object": {
+        "name": "vw_DMSVendor_Import",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vw_DMSVendor_Import",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.vw_DMSVendor_Import",
+        "dbo.vw_DMSVendor_Import",
+        "vw_DMSVendor_Import",
+        "vwDMSVendorImport",
+        "vwdmsvendorimport"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 61,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vw-dmsvendor-import.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-dmsvendor-import.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_Essbase_HR_OT_Stage",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_Essbase_HR_OT_Stage"
+      ],
+      "canonical_id": "object-dms-dbo-vw-essbase-hr-ot-stage",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vw_Essbase_HR_OT_Stage.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9C7459BEA36FCF5E933204296CDD8A8D00FB4B3CC805325FE56E55A1D572AEA0",
+      "object": {
+        "name": "vw_Essbase_HR_OT_Stage",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vw_Essbase_HR_OT_Stage",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.vw_Essbase_HR_OT_Stage",
+        "dbo.vw_Essbase_HR_OT_Stage",
+        "vw_Essbase_HR_OT_Stage",
+        "vwEssbaseHROTStage",
+        "vwessbasehrotstage"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 33,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vw-essbase-hr-ot-stage.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-essbase-hr-ot-stage.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_FactService_staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_FactService_staging"
+      ],
+      "canonical_id": "object-dms-dbo-vw-factservice-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vw_FactService_staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B5D3519DAB9384953DDFA1A41A41D751F8F6AA124CAB0D7C2712A16457D141A6",
+      "object": {
+        "name": "vw_FactService_staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vw_FactService_staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.vw_FactService_staging",
+        "dbo.vw_FactService_staging",
+        "vw_FactService_staging",
+        "vwFactServicestaging",
+        "vwfactservicestaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 38,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vw-factservice-staging.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-factservice-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_Fuel_II_glaccountledger_INC",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_Fuel_II_glaccountledger_INC"
+      ],
+      "canonical_id": "object-dms-dbo-vw-fuel-ii-glaccountledger-inc",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vw_Fuel_II_glaccountledger_INC.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:4EB5188BD0F0B4F70F2386CE984D01D5E863D2C67B2764E028B533BAA64CD883",
+      "object": {
+        "name": "vw_Fuel_II_glaccountledger_INC",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vw_Fuel_II_glaccountledger_INC",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.vw_Fuel_II_glaccountledger_INC",
+        "dbo.vw_Fuel_II_glaccountledger_INC",
+        "vw_Fuel_II_glaccountledger_INC",
+        "vwFuelIIglaccountledgerINC",
+        "vwfueliiglaccountledgerinc"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vw-fuel-ii-glaccountledger-inc.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-fuel-ii-glaccountledger-inc.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_GPA_RateCap_SRC",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_GPA_RateCap_SRC"
+      ],
+      "canonical_id": "object-dms-dbo-vw-gpa-ratecap-src",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vw_GPA_RateCap_SRC.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:0432B210A772A3E4F21F92AAD4E9CD5C640BDF5F5B4BBC2D60E9EFEBC2A3F88A",
+      "object": {
+        "name": "vw_GPA_RateCap_SRC",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vw_GPA_RateCap_SRC",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.vw_GPA_RateCap_SRC",
+        "dbo.vw_GPA_RateCap_SRC",
+        "vw_GPA_RateCap_SRC",
+        "vwGPARateCapSRC",
+        "vwgparatecapsrc"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 65,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vw-gpa-ratecap-src.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-gpa-ratecap-src.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_PricingGrid_staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_PricingGrid_staging"
+      ],
+      "canonical_id": "object-dms-dbo-vw-pricinggrid-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vw_PricingGrid_staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:BBF86D1FFEC7B1CBDD1965EE9666D60EA94F4CD7D6C3EA96D659AC77DE3DB120",
+      "object": {
+        "name": "vw_PricingGrid_staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vw_PricingGrid_staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.vw_PricingGrid_staging",
+        "dbo.vw_PricingGrid_staging",
+        "vw_PricingGrid_staging",
+        "vwPricingGridstaging",
+        "vwpricinggridstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 14,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vw-pricinggrid-staging.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-pricinggrid-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_vsc_All",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_vsc_All"
+      ],
+      "canonical_id": "object-dms-dbo-vw-vsc-all",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vw_vsc_All.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:31C903D11E2A7D8F91C3E14E970AF8E13B28FD79402E6B98655000FA366C8D63",
+      "object": {
+        "name": "vw_vsc_All",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vw_vsc_All",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DMS.dbo.vw_vsc_All", "dbo.vw_vsc_All", "vw_vsc_All", "vwvscAll", "vwvscall"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 65,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vw-vsc-all.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-vsc-all.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_vsc_fiproducts_union",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_vsc_fiproducts_union"
+      ],
+      "canonical_id": "object-dms-dbo-vw-vsc-fiproducts-union",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vw_vsc_fiproducts_union.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:0E0EE8C7DB83189F71E4702B9274C2F1D7D4D602F5FBF4C404E76D0D25F3F1DF",
+      "object": {
+        "name": "vw_vsc_fiproducts_union",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vw_vsc_fiproducts_union",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.vw_vsc_fiproducts_union",
+        "dbo.vw_vsc_fiproducts_union",
+        "vw_vsc_fiproducts_union",
+        "vwvscfiproductsunion"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 222,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vw-vsc-fiproducts-union.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-vsc-fiproducts-union.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_vscLender",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vw_vscLender"
+      ],
+      "canonical_id": "object-dms-dbo-vw-vsclender",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vw_vscLender.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:42B7F65621C2C1B4A66510B04553A9720FD1D069B480C44470DB9850D64DC6AE",
+      "object": {
+        "name": "vw_vscLender",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vw_vscLender",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.vw_vscLender",
+        "dbo.vw_vscLender",
+        "vw_vscLender",
+        "vwvscLender",
+        "vwvsclender"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 15,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vw-vsclender.evidence.json",
+      "markdown_file": "object-dms-dbo-vw-vsclender.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vwFireSummaryVSC",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vwFireSummaryVSC"
+      ],
+      "canonical_id": "object-dms-dbo-vwfiresummaryvsc",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vwFireSummaryVSC.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:CA9E0A04E3665BBA5D494BFE9DD99D3622BD58F48D5179D21CF6C75360B997E4",
+      "object": {
+        "name": "vwFireSummaryVSC",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vwFireSummaryVSC",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.vwFireSummaryVSC",
+        "dbo.vwFireSummaryVSC",
+        "vwFireSummaryVSC",
+        "vwfiresummaryvsc"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 63,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vwfiresummaryvsc.evidence.json",
+      "markdown_file": "object-dms-dbo-vwfiresummaryvsc.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vwFloorPlanDetailACV",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vwFloorPlanDetailACV"
+      ],
+      "canonical_id": "object-dms-dbo-vwfloorplandetailacv",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vwFloorPlanDetailACV.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:3035C740003B18E2B8F416256F0D5D1F89F29743B6F1685E8627EB06C0853ABC",
+      "object": {
+        "name": "vwFloorPlanDetailACV",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vwFloorPlanDetailACV",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.vwFloorPlanDetailACV",
+        "dbo.vwFloorPlanDetailACV",
+        "vwFloorPlanDetailACV",
+        "vwfloorplandetailacv"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 35,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vwfloorplandetailacv.evidence.json",
+      "markdown_file": "object-dms-dbo-vwfloorplandetailacv.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vwTitleTrackingVSC",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DMS",
+        "dbo",
+        "vwTitleTrackingVSC"
+      ],
+      "canonical_id": "object-dms-dbo-vwtitletrackingvsc",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DMS/tables/dbo__vwTitleTrackingVSC.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A24570F33DE524ECB10699A91029343E613557F89AA2DAF255F8207AB675F4CA",
+      "object": {
+        "name": "vwTitleTrackingVSC",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DMS",
+        "schema": "dbo",
+        "qualified_name": "DMS.dbo.vwTitleTrackingVSC",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DMS.dbo.vwTitleTrackingVSC",
+        "dbo.vwTitleTrackingVSC",
+        "vwTitleTrackingVSC",
+        "vwtitletrackingvsc"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 18,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DMS / dbo"
+      ],
+      "evidence_file": "object-dms-dbo-vwtitletrackingvsc.evidence.json",
+      "markdown_file": "object-dms-dbo-vwtitletrackingvsc.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-050-dms-dbo-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-050-dms-dbo-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-050-dms-dbo-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

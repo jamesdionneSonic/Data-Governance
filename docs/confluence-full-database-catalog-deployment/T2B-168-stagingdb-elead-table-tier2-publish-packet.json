@@ -1,0 +1,1657 @@
+{
+  "packet_id": "T2B-168",
+  "generated_at": "2026-06-23T19:04:16.387Z",
+  "batch": {
+    "batch_id": "T2B-168",
+    "priority_rank": 168,
+    "platform": "SQL Server",
+    "database": "StagingDB",
+    "schema": "Elead",
+    "object_type_scope": "table",
+    "object_count": 11,
+    "high_use_objects": 0,
+    "downstream_uses": 1,
+    "first_object": "StgMarketingCampaignMonthly",
+    "last_object": "StgRetailGECReportMTDFis",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Elead",
+    "object_names": [
+      "StgMarketingCampaignMonthly",
+      "StgEchoParkGECReportWTD_DownloadedFiles",
+      "ScheduledCompletedTasks",
+      "StgEAPSLevelDaily",
+      "StgEAPSLevelMTD",
+      "StgEchoParkGECReportDaily",
+      "StgEchoParkGECReportMTD",
+      "StgEchoParkGECReportMTDFis",
+      "StgRetailGECReportDaily",
+      "StgRetailGECReportMTD",
+      "StgRetailGECReportMTDFis"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 11,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 11,
+    "total_planned_pages": 15
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB"],
+      "page_type": "database",
+      "evidence_hash": "sha256:86BBBA4A90EF1C66989EFB3B9746AF88467BE01889393493BBDE0177897E19A4",
+      "evidence_file": "database-stagingdb.evidence.json",
+      "markdown_file": "database-stagingdb.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Elead",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB", "Elead"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:FB7888C3C9B30C51FF20D1B8FE9A5E431290AFC73EB0AC35DE58D32219A4778C",
+      "evidence_file": "schema-stagingdb-elead.evidence.json",
+      "markdown_file": "schema-stagingdb-elead.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Elead.ScheduledCompletedTasks",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "ScheduledCompletedTasks"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:F5D487030D6606B11466AD5508F2D1EB1DA18BF6C371A075263D88D63418E773",
+      "evidence_file": "object-stagingdb-elead-scheduledcompletedtasks.evidence.json",
+      "markdown_file": "object-stagingdb-elead-scheduledcompletedtasks.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Elead.StgEAPSLevelDaily",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgEAPSLevelDaily"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:EBC9E1C180EFBAB940EF92824E28B7E0438CA385D632AF6729E79C9C1F6D73CA",
+      "evidence_file": "object-stagingdb-elead-stgeapsleveldaily.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgeapsleveldaily.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Elead.StgEAPSLevelMTD",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgEAPSLevelMTD"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D0A85A2CAFF72272D36F4F98E0B07259E3AD07F0D6DD248A0D34AFFB1327AA24",
+      "evidence_file": "object-stagingdb-elead-stgeapslevelmtd.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgeapslevelmtd.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Elead.StgEchoParkGECReportDaily",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgEchoParkGECReportDaily"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9C96A84EFE3F3BB2E4084FAF57372DF90F2A6B3D2181BCF1E825D6E434B05042",
+      "evidence_file": "object-stagingdb-elead-stgechoparkgecreportdaily.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgechoparkgecreportdaily.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Elead.StgEchoParkGECReportMTD",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgEchoParkGECReportMTD"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B17B6C0B36990B2F1502A76F651936A4DAAE117ACCBEE1617E2D3E863AB48CC6",
+      "evidence_file": "object-stagingdb-elead-stgechoparkgecreportmtd.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgechoparkgecreportmtd.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Elead.StgEchoParkGECReportMTDFis",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgEchoParkGECReportMTDFis"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:DC208FCE67F55614137F3F375AD40266DBB33B9FE1D924B7904C762659ACDDDB",
+      "evidence_file": "object-stagingdb-elead-stgechoparkgecreportmtdfis.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgechoparkgecreportmtdfis.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Elead.StgEchoParkGECReportWTD_DownloadedFiles",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgEchoParkGECReportWTD_DownloadedFiles"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D36921B2EDB702AEADBD6CF8E81FF41179BA524E2A538E858D93834325427E63",
+      "evidence_file": "object-stagingdb-elead-stgechoparkgecreportwtd-downloadedfiles.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgechoparkgecreportwtd-downloadedfiles.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Elead.StgMarketingCampaignMonthly",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgMarketingCampaignMonthly"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:95B49906891C2C746EB020BBF096AA7CB4D2EEB9F74989869B1A585A37D3B0E1",
+      "evidence_file": "object-stagingdb-elead-stgmarketingcampaignmonthly.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgmarketingcampaignmonthly.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Elead.StgRetailGECReportDaily",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgRetailGECReportDaily"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:40C119EE6F75747069BA5F5E9B7F0E2CE6926628F2ADD18D99F0DD1D190D6178",
+      "evidence_file": "object-stagingdb-elead-stgretailgecreportdaily.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgretailgecreportdaily.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Elead.StgRetailGECReportMTD",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgRetailGECReportMTD"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:637CC3135955FEE5B9296916553DFB2A1CDE5300AC69FDBB682EEA73EB38AB72",
+      "evidence_file": "object-stagingdb-elead-stgretailgecreportmtd.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgretailgecreportmtd.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Elead.StgRetailGECReportMTDFis",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgRetailGECReportMTDFis"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:EE3111A5DD317F822D31C4C972B0FCE9470CB585D6B93553C5D61FB56E2E5C5B",
+      "evidence_file": "object-stagingdb-elead-stgretailgecreportmtdfis.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgretailgecreportmtdfis.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "ScheduledCompletedTasks",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "ScheduledCompletedTasks"
+      ],
+      "canonical_id": "object-stagingdb-elead-scheduledcompletedtasks",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/Elead__ScheduledCompletedTasks.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:F5D487030D6606B11466AD5508F2D1EB1DA18BF6C371A075263D88D63418E773",
+      "object": {
+        "name": "ScheduledCompletedTasks",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "Elead",
+        "qualified_name": "StagingDB.Elead.ScheduledCompletedTasks",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.Elead.ScheduledCompletedTasks",
+        "Elead.ScheduledCompletedTasks",
+        "ScheduledCompletedTasks",
+        "scheduledcompletedtasks"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ChildCompanyID",
+          "ChildCompanyName",
+          "UserID",
+          "SalesRepresentative",
+          "Scheduled",
+          "Completed",
+          "StillOpen",
+          "Deleted",
+          "OverDue",
+          "PercentComplete",
+          "ETLExecution_ID",
+          "MonthYear",
+          "FileDateSerial",
+          "FileDate",
+          "SourceFileName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 15,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Elead"
+      ],
+      "evidence_file": "object-stagingdb-elead-scheduledcompletedtasks.evidence.json",
+      "markdown_file": "object-stagingdb-elead-scheduledcompletedtasks.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StgEAPSLevelDaily",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgEAPSLevelDaily"
+      ],
+      "canonical_id": "object-stagingdb-elead-stgeapsleveldaily",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/Elead__StgEAPSLevelDaily.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:EBC9E1C180EFBAB940EF92824E28B7E0438CA385D632AF6729E79C9C1F6D73CA",
+      "object": {
+        "name": "StgEAPSLevelDaily",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "Elead",
+        "qualified_name": "StagingDB.Elead.StgEAPSLevelDaily",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.Elead.StgEAPSLevelDaily",
+        "Elead.StgEAPSLevelDaily",
+        "StgEAPSLevelDaily",
+        "stgeapsleveldaily"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "lCompanyID",
+          "SZChild",
+          "lUserID",
+          "UserName",
+          "Showroom",
+          "Phone",
+          "Internet",
+          "Campaign",
+          "BeBacks",
+          "InShowroom",
+          "ApptSet",
+          "ApptDue",
+          "ApptShown",
+          "ApptSold",
+          "SoldCRM",
+          "SoldDMS",
+          "SoldDMSPCT",
+          "Meta_SourceFileName",
+          "Meta_UpdateDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 19,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Elead"
+      ],
+      "evidence_file": "object-stagingdb-elead-stgeapsleveldaily.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgeapsleveldaily.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StgEAPSLevelMTD",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgEAPSLevelMTD"
+      ],
+      "canonical_id": "object-stagingdb-elead-stgeapslevelmtd",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/Elead__StgEAPSLevelMTD.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D0A85A2CAFF72272D36F4F98E0B07259E3AD07F0D6DD248A0D34AFFB1327AA24",
+      "object": {
+        "name": "StgEAPSLevelMTD",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "Elead",
+        "qualified_name": "StagingDB.Elead.StgEAPSLevelMTD",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.Elead.StgEAPSLevelMTD",
+        "Elead.StgEAPSLevelMTD",
+        "StgEAPSLevelMTD",
+        "stgeapslevelmtd"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "lCompanyID",
+          "SZChild",
+          "lUserID",
+          "UserName",
+          "Showroom",
+          "Phone",
+          "Internet",
+          "Campaign",
+          "BeBacks",
+          "InShowroom",
+          "ApptSet",
+          "ApptDue",
+          "ApptShown",
+          "ApptSold",
+          "SoldCRM",
+          "SoldDMS",
+          "SoldDMSPCT",
+          "Meta_SourceFileName",
+          "Meta_UpdateDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 19,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Elead"
+      ],
+      "evidence_file": "object-stagingdb-elead-stgeapslevelmtd.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgeapslevelmtd.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StgEchoParkGECReportDaily",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgEchoParkGECReportDaily"
+      ],
+      "canonical_id": "object-stagingdb-elead-stgechoparkgecreportdaily",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/Elead__StgEchoParkGECReportDaily.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9C96A84EFE3F3BB2E4084FAF57372DF90F2A6B3D2181BCF1E825D6E434B05042",
+      "object": {
+        "name": "StgEchoParkGECReportDaily",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "Elead",
+        "qualified_name": "StagingDB.Elead.StgEchoParkGECReportDaily",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.Elead.StgEchoParkGECReportDaily",
+        "Elead.StgEchoParkGECReportDaily",
+        "StgEchoParkGECReportDaily",
+        "stgechoparkgecreportdaily"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "CompanyName",
+          "ChildCompanyID",
+          "AgentOrder",
+          "Agent",
+          "lUserID",
+          "ChildUserID",
+          "UserName",
+          "UpTypeOrder",
+          "NewUsedOrder",
+          "NewUsed",
+          "Ups",
+          "Visit",
+          "ApptsSet",
+          "ApptsDue",
+          "ApptsShown",
+          "ApptsNoShow",
+          "ApptsCancel",
+          "CRMSold",
+          "DMSSold",
+          "CloseRatio"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 28,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Elead"
+      ],
+      "evidence_file": "object-stagingdb-elead-stgechoparkgecreportdaily.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgechoparkgecreportdaily.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StgEchoParkGECReportMTD",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgEchoParkGECReportMTD"
+      ],
+      "canonical_id": "object-stagingdb-elead-stgechoparkgecreportmtd",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/Elead__StgEchoParkGECReportMTD.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B17B6C0B36990B2F1502A76F651936A4DAAE117ACCBEE1617E2D3E863AB48CC6",
+      "object": {
+        "name": "StgEchoParkGECReportMTD",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "Elead",
+        "qualified_name": "StagingDB.Elead.StgEchoParkGECReportMTD",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.Elead.StgEchoParkGECReportMTD",
+        "Elead.StgEchoParkGECReportMTD",
+        "StgEchoParkGECReportMTD",
+        "stgechoparkgecreportmtd"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "CompanyName",
+          "ChildCompanyID",
+          "AgentOrder",
+          "Agent",
+          "lUserID",
+          "ChildUserID",
+          "UserName",
+          "UpTypeOrder",
+          "NewUsedOrder",
+          "NewUsed",
+          "Ups",
+          "Visit",
+          "ApptsSet",
+          "ApptsDue",
+          "ApptsShown",
+          "ApptsNoShow",
+          "ApptsCancel",
+          "CRMSold",
+          "DMSSold",
+          "CloseRatio"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 28,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Elead"
+      ],
+      "evidence_file": "object-stagingdb-elead-stgechoparkgecreportmtd.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgechoparkgecreportmtd.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StgEchoParkGECReportMTDFis",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgEchoParkGECReportMTDFis"
+      ],
+      "canonical_id": "object-stagingdb-elead-stgechoparkgecreportmtdfis",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/Elead__StgEchoParkGECReportMTDFis.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:DC208FCE67F55614137F3F375AD40266DBB33B9FE1D924B7904C762659ACDDDB",
+      "object": {
+        "name": "StgEchoParkGECReportMTDFis",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "Elead",
+        "qualified_name": "StagingDB.Elead.StgEchoParkGECReportMTDFis",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.Elead.StgEchoParkGECReportMTDFis",
+        "Elead.StgEchoParkGECReportMTDFis",
+        "StgEchoParkGECReportMTDFis",
+        "stgechoparkgecreportmtdfis"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "CompanyName",
+          "ChildCompanyID",
+          "AgentOrder",
+          "Agent",
+          "lUserID",
+          "ChildUserID",
+          "UserName",
+          "UpTypeOrder",
+          "NewUsedOrder",
+          "NewUsed",
+          "Ups",
+          "Visit",
+          "ApptsSet",
+          "ApptsDue",
+          "ApptsShown",
+          "ApptsNoShow",
+          "ApptsCancel",
+          "CRMSold",
+          "DMSSold",
+          "CloseRatio"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 28,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Elead"
+      ],
+      "evidence_file": "object-stagingdb-elead-stgechoparkgecreportmtdfis.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgechoparkgecreportmtdfis.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StgEchoParkGECReportWTD_DownloadedFiles",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgEchoParkGECReportWTD_DownloadedFiles"
+      ],
+      "canonical_id": "object-stagingdb-elead-stgechoparkgecreportwtd-downloadedfiles",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/Elead__StgEchoParkGECReportWTD_DownloadedFiles.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D36921B2EDB702AEADBD6CF8E81FF41179BA524E2A538E858D93834325427E63",
+      "object": {
+        "name": "StgEchoParkGECReportWTD_DownloadedFiles",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "Elead",
+        "qualified_name": "StagingDB.Elead.StgEchoParkGECReportWTD_DownloadedFiles",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.Elead.StgEchoParkGECReportWTD_DownloadedFiles",
+        "Elead.StgEchoParkGECReportWTD_DownloadedFiles",
+        "StgEchoParkGECReportWTD_DownloadedFiles",
+        "StgEchoParkGECReportWTDDownloadedFiles",
+        "stgechoparkgecreportwtddownloadedfiles"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.EleadEchoPark.EleadEchoParkGECReportWTD.EleadEchoParkGECRptWTD.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["Downloaded_Files"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 1,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Elead"
+      ],
+      "evidence_file": "object-stagingdb-elead-stgechoparkgecreportwtd-downloadedfiles.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgechoparkgecreportwtd-downloadedfiles.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StgMarketingCampaignMonthly",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgMarketingCampaignMonthly"
+      ],
+      "canonical_id": "object-stagingdb-elead-stgmarketingcampaignmonthly",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/Elead__StgMarketingCampaignMonthly.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:95B49906891C2C746EB020BBF096AA7CB4D2EEB9F74989869B1A585A37D3B0E1",
+      "object": {
+        "name": "StgMarketingCampaignMonthly",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "Elead",
+        "qualified_name": "StagingDB.Elead.StgMarketingCampaignMonthly",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.Elead.StgMarketingCampaignMonthly",
+        "Elead.StgMarketingCampaignMonthly",
+        "StgMarketingCampaignMonthly",
+        "stgmarketingcampaignmonthly"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-DWASQL-02,12010.VendorData.dbo.uspEleadMktCampaignMonthlyDataLoad"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Company",
+          "CampaignName",
+          "CampaignSource",
+          "ReleaseDate",
+          "Triggered",
+          "Communications",
+          "Email",
+          "LiveCall",
+          "DirectMail",
+          "ExternalCampaign",
+          "InquiriesReplies",
+          "CXCAlerts",
+          "SalesApptSet",
+          "SalesApptConfirmed",
+          "SalesTotal",
+          "SalesRevenue",
+          "ServiceApptsSet",
+          "ServiceTotal",
+          "ServiceRevenue",
+          "TotalRevenue"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 23,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Elead"
+      ],
+      "evidence_file": "object-stagingdb-elead-stgmarketingcampaignmonthly.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgmarketingcampaignmonthly.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StgRetailGECReportDaily",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgRetailGECReportDaily"
+      ],
+      "canonical_id": "object-stagingdb-elead-stgretailgecreportdaily",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/Elead__StgRetailGECReportDaily.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:40C119EE6F75747069BA5F5E9B7F0E2CE6926628F2ADD18D99F0DD1D190D6178",
+      "object": {
+        "name": "StgRetailGECReportDaily",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "Elead",
+        "qualified_name": "StagingDB.Elead.StgRetailGECReportDaily",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.Elead.StgRetailGECReportDaily",
+        "Elead.StgRetailGECReportDaily",
+        "StgRetailGECReportDaily",
+        "stgretailgecreportdaily"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "CompanyName",
+          "ChildCompanyID",
+          "AgentOrder",
+          "Agent",
+          "lUserID",
+          "ChildUserID",
+          "UserName",
+          "UpTypeOrder",
+          "NewUsedOrder",
+          "NewUsed",
+          "Ups",
+          "Visit",
+          "ApptsSet",
+          "ApptsDue",
+          "ApptsShown",
+          "ApptsNoShow",
+          "ApptsCancel",
+          "CRMSold",
+          "DMSSold",
+          "CloseRatio"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 28,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Elead"
+      ],
+      "evidence_file": "object-stagingdb-elead-stgretailgecreportdaily.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgretailgecreportdaily.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StgRetailGECReportMTD",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgRetailGECReportMTD"
+      ],
+      "canonical_id": "object-stagingdb-elead-stgretailgecreportmtd",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/Elead__StgRetailGECReportMTD.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:637CC3135955FEE5B9296916553DFB2A1CDE5300AC69FDBB682EEA73EB38AB72",
+      "object": {
+        "name": "StgRetailGECReportMTD",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "Elead",
+        "qualified_name": "StagingDB.Elead.StgRetailGECReportMTD",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.Elead.StgRetailGECReportMTD",
+        "Elead.StgRetailGECReportMTD",
+        "StgRetailGECReportMTD",
+        "stgretailgecreportmtd"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "CompanyName",
+          "ChildCompanyID",
+          "AgentOrder",
+          "Agent",
+          "lUserID",
+          "ChildUserID",
+          "UserName",
+          "UpTypeOrder",
+          "NewUsedOrder",
+          "NewUsed",
+          "Ups",
+          "Visit",
+          "ApptsSet",
+          "ApptsDue",
+          "ApptsShown",
+          "ApptsNoShow",
+          "ApptsCancel",
+          "CRMSold",
+          "DMSSold",
+          "CloseRatio"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 29,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Elead"
+      ],
+      "evidence_file": "object-stagingdb-elead-stgretailgecreportmtd.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgretailgecreportmtd.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StgRetailGECReportMTDFis",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Elead",
+        "StgRetailGECReportMTDFis"
+      ],
+      "canonical_id": "object-stagingdb-elead-stgretailgecreportmtdfis",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/Elead__StgRetailGECReportMTDFis.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:EE3111A5DD317F822D31C4C972B0FCE9470CB585D6B93553C5D61FB56E2E5C5B",
+      "object": {
+        "name": "StgRetailGECReportMTDFis",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "Elead",
+        "qualified_name": "StagingDB.Elead.StgRetailGECReportMTDFis",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.Elead.StgRetailGECReportMTDFis",
+        "Elead.StgRetailGECReportMTDFis",
+        "StgRetailGECReportMTDFis",
+        "stgretailgecreportmtdfis"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "CompanyName",
+          "ChildCompanyID",
+          "AgentOrder",
+          "Agent",
+          "lUserID",
+          "ChildUserID",
+          "UserName",
+          "UpTypeOrder",
+          "NewUsedOrder",
+          "NewUsed",
+          "Ups",
+          "Visit",
+          "ApptsSet",
+          "ApptsDue",
+          "ApptsShown",
+          "ApptsNoShow",
+          "ApptsCancel",
+          "CRMSold",
+          "DMSSold",
+          "CloseRatio"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 29,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Elead"
+      ],
+      "evidence_file": "object-stagingdb-elead-stgretailgecreportmtdfis.evidence.json",
+      "markdown_file": "object-stagingdb-elead-stgretailgecreportmtdfis.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-168-stagingdb-elead-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-168-stagingdb-elead-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-168-stagingdb-elead-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

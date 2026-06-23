@@ -1,0 +1,2073 @@
+{
+  "packet_id": "T2B-158",
+  "generated_at": "2026-06-23T18:54:28.801Z",
+  "batch": {
+    "batch_id": "T2B-158",
+    "priority_rank": 158,
+    "platform": "SQL Server",
+    "database": "VendorData",
+    "schema": "recon",
+    "object_type_scope": "table",
+    "object_count": 14,
+    "high_use_objects": 0,
+    "downstream_uses": 2,
+    "first_object": "OrderPhases",
+    "last_object": "TechnicianDetails",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / recon",
+    "object_names": [
+      "OrderPhases",
+      "OrderVehicles",
+      "DirtReport_WIP",
+      "Documents",
+      "InspectionVehicles",
+      "LocationWorkingHours",
+      "NetworkPeriods",
+      "OrderLogs",
+      "OrderServices",
+      "OrderServices_Backup20230209",
+      "PhaseAggregators",
+      "ServiceOrderQuestions",
+      "ServiceReqServices",
+      "TechnicianDetails"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 14,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 14,
+    "total_planned_pages": 18
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData"],
+      "page_type": "database",
+      "evidence_hash": "sha256:C029883539BC166EBDE80488ADFC36CDDDD0E84559188FE128628E553E29DFF1",
+      "evidence_file": "database-vendordata.evidence.json",
+      "markdown_file": "database-vendordata.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.recon",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData", "recon"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:CB26C09DBDB21CA6C8E3725633E9C45ED9BB41005BBA50138269EB0BEB5704C3",
+      "evidence_file": "schema-vendordata-recon.evidence.json",
+      "markdown_file": "schema-vendordata-recon.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.recon.DirtReport_WIP",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "DirtReport_WIP"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:4EE02F00D81A15BD48C1348CD0954D105DE06618F1211F555F699E33175D5C13",
+      "evidence_file": "object-vendordata-recon-dirtreport-wip.evidence.json",
+      "markdown_file": "object-vendordata-recon-dirtreport-wip.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.recon.Documents",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "Documents"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A59D174DB5130D5D40B7B18E33B83743AB8D0B7D162DBC8C1A1F699B9639CDA4",
+      "evidence_file": "object-vendordata-recon-documents.evidence.json",
+      "markdown_file": "object-vendordata-recon-documents.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.recon.InspectionVehicles",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "InspectionVehicles"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B9F04A7C576AB2DD01810A539334853A38761CCF79C3D470FB843D68DD8697E5",
+      "evidence_file": "object-vendordata-recon-inspectionvehicles.evidence.json",
+      "markdown_file": "object-vendordata-recon-inspectionvehicles.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.recon.LocationWorkingHours",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "LocationWorkingHours"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:07C9B586032F6E64EDC31527B6BD927AE8C6E37E5D2217D62DE5C9548A0FAB42",
+      "evidence_file": "object-vendordata-recon-locationworkinghours.evidence.json",
+      "markdown_file": "object-vendordata-recon-locationworkinghours.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.recon.NetworkPeriods",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "NetworkPeriods"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A67CCFEF65ED0E0A73E5B50D8132E415EA4362F141DA13DC78938BDF049504CF",
+      "evidence_file": "object-vendordata-recon-networkperiods.evidence.json",
+      "markdown_file": "object-vendordata-recon-networkperiods.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.recon.OrderLogs",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "OrderLogs"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:C72ADC4F6C426E7555A9547ACA50B6E18EEB7B3159C0E6B50D9FAFE22B87B423",
+      "evidence_file": "object-vendordata-recon-orderlogs.evidence.json",
+      "markdown_file": "object-vendordata-recon-orderlogs.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.recon.OrderPhases",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "OrderPhases"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:509A175F18F24AC9DEBAF34EC592826D73DEEE9CDDF1286350B45AD1F488E6A3",
+      "evidence_file": "object-vendordata-recon-orderphases.evidence.json",
+      "markdown_file": "object-vendordata-recon-orderphases.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.recon.OrderServices",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "OrderServices"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:41120A118BD97391EB6CE54111ABE12D2A582C41E88779D15BB42B67F8558B57",
+      "evidence_file": "object-vendordata-recon-orderservices.evidence.json",
+      "markdown_file": "object-vendordata-recon-orderservices.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.recon.OrderServices_Backup20230209",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "OrderServices_Backup20230209"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:884A1E22A7EC8B9159034756E05EA1786AB9B8F4EF504EB72841E633FD9D5C3C",
+      "evidence_file": "object-vendordata-recon-orderservices-backup20230209.evidence.json",
+      "markdown_file": "object-vendordata-recon-orderservices-backup20230209.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.recon.OrderVehicles",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "OrderVehicles"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A5E1762A2B246F2C7D2ABBFFA0A27A9A2E82D68BC862D971B9E9E6116C7A5C7D",
+      "evidence_file": "object-vendordata-recon-ordervehicles.evidence.json",
+      "markdown_file": "object-vendordata-recon-ordervehicles.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.recon.PhaseAggregators",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "PhaseAggregators"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:ADEC9A3E75F45C9B2304FCD2A15862BFD52237154A0F5BC91FB4D80C82FA3E38",
+      "evidence_file": "object-vendordata-recon-phaseaggregators.evidence.json",
+      "markdown_file": "object-vendordata-recon-phaseaggregators.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.recon.ServiceOrderQuestions",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "ServiceOrderQuestions"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:7B01ECD08CD06ABF5F2B1E42A132F00F884D6341CA52914B5975EC967616D210",
+      "evidence_file": "object-vendordata-recon-serviceorderquestions.evidence.json",
+      "markdown_file": "object-vendordata-recon-serviceorderquestions.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.recon.ServiceReqServices",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "ServiceReqServices"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:00868D1ED8C962CBC15E6B1DA5091494DB3D3F4D0361A1E386F379CEF1B4501F",
+      "evidence_file": "object-vendordata-recon-servicereqservices.evidence.json",
+      "markdown_file": "object-vendordata-recon-servicereqservices.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.recon.TechnicianDetails",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "TechnicianDetails"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:30667822B2F353C22EBC68CC0CB9914670F7F426432C6F0C15FC7E0182376D4C",
+      "evidence_file": "object-vendordata-recon-techniciandetails.evidence.json",
+      "markdown_file": "object-vendordata-recon-techniciandetails.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "DirtReport_WIP",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "DirtReport_WIP"
+      ],
+      "canonical_id": "object-vendordata-recon-dirtreport-wip",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/recon__DirtReport_WIP.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:4EE02F00D81A15BD48C1348CD0954D105DE06618F1211F555F699E33175D5C13",
+      "object": {
+        "name": "DirtReport_WIP",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "recon",
+        "qualified_name": "VendorData.recon.DirtReport_WIP",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.recon.DirtReport_WIP",
+        "recon.DirtReport_WIP",
+        "DirtReport_WIP",
+        "DirtReportWIP",
+        "dirtreportwip"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DayDate",
+          "Inspections",
+          "PartsHold",
+          "Mechanical",
+          "DealerSublet",
+          "Cosmetic",
+          "FQC_Photo",
+          "LocationId",
+          "LocationName",
+          "TimeZone",
+          "MetaLoadDate",
+          "MetaComputerName",
+          "MetaUserId",
+          "MetaSourceSystemName",
+          "MetaSrcSysId",
+          "ETLExecutionId"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 16,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / recon"
+      ],
+      "evidence_file": "object-vendordata-recon-dirtreport-wip.evidence.json",
+      "markdown_file": "object-vendordata-recon-dirtreport-wip.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Documents",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "Documents"
+      ],
+      "canonical_id": "object-vendordata-recon-documents",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/recon__Documents.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A59D174DB5130D5D40B7B18E33B83743AB8D0B7D162DBC8C1A1F699B9639CDA4",
+      "object": {
+        "name": "Documents",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "recon",
+        "qualified_name": "VendorData.recon.Documents",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VendorData.recon.Documents", "recon.Documents", "Documents", "documents"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ReconDocumentsID",
+          "ModifyUTCTime",
+          "OrderId",
+          "OrderNumber",
+          "OrderDate",
+          "OrderTypeId",
+          "OrderTypeName",
+          "VendorId",
+          "VendorName",
+          "DocumentsName",
+          "DocumentsId",
+          "DocumentsNumber",
+          "DocumentsDate",
+          "DocumentsDueDate",
+          "DocumentsAmount",
+          "StoreName",
+          "MetaJsonFileName",
+          "MetaFileName",
+          "MetaFileDate",
+          "MetaLoadDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 25,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / recon"
+      ],
+      "evidence_file": "object-vendordata-recon-documents.evidence.json",
+      "markdown_file": "object-vendordata-recon-documents.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "InspectionVehicles",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "InspectionVehicles"
+      ],
+      "canonical_id": "object-vendordata-recon-inspectionvehicles",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/recon__InspectionVehicles.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B9F04A7C576AB2DD01810A539334853A38761CCF79C3D470FB843D68DD8697E5",
+      "object": {
+        "name": "InspectionVehicles",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "recon",
+        "qualified_name": "VendorData.recon.InspectionVehicles",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.recon.InspectionVehicles",
+        "recon.InspectionVehicles",
+        "InspectionVehicles",
+        "inspectionvehicles"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ReconInspectionVehiclesID",
+          "ModifyUTCTime",
+          "OrderId",
+          "OrderNumber",
+          "OrderDate",
+          "InspectionID",
+          "InspectionNumber",
+          "InspectionType",
+          "InspectionDate",
+          "Amount",
+          "ApprovedAmount",
+          "DiscountAmount",
+          "TaxAmount",
+          "FeesAmount",
+          "EmployeeName",
+          "ClientAddress",
+          "ClientPhone",
+          "ClientExternalID",
+          "VIN",
+          "Year"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 59,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / recon"
+      ],
+      "evidence_file": "object-vendordata-recon-inspectionvehicles.evidence.json",
+      "markdown_file": "object-vendordata-recon-inspectionvehicles.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "LocationWorkingHours",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "LocationWorkingHours"
+      ],
+      "canonical_id": "object-vendordata-recon-locationworkinghours",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/recon__LocationWorkingHours.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:07C9B586032F6E64EDC31527B6BD927AE8C6E37E5D2217D62DE5C9548A0FAB42",
+      "object": {
+        "name": "LocationWorkingHours",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "recon",
+        "qualified_name": "VendorData.recon.LocationWorkingHours",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.recon.LocationWorkingHours",
+        "recon.LocationWorkingHours",
+        "LocationWorkingHours",
+        "locationworkinghours"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "WorkingHoursId",
+          "CreateDateUTC",
+          "UTCTimestamp",
+          "LocationId",
+          "LocationName",
+          "LocationNo",
+          "PhaseEnforcement",
+          "TimeZone",
+          "Monday",
+          "Monday_StartTime",
+          "Monday_FinishTime",
+          "Tuesday",
+          "Tuesday_StartTime",
+          "Tuesday_FinishTime",
+          "Wednesday",
+          "Wednesday_StartTime",
+          "Wednesday_FinishTime",
+          "Thursday",
+          "Thursday_StartTime",
+          "Thursday_FinishTime"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 53,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / recon"
+      ],
+      "evidence_file": "object-vendordata-recon-locationworkinghours.evidence.json",
+      "markdown_file": "object-vendordata-recon-locationworkinghours.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "NetworkPeriods",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "NetworkPeriods"
+      ],
+      "canonical_id": "object-vendordata-recon-networkperiods",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/recon__NetworkPeriods.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A67CCFEF65ED0E0A73E5B50D8132E415EA4362F141DA13DC78938BDF049504CF",
+      "object": {
+        "name": "NetworkPeriods",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "recon",
+        "qualified_name": "VendorData.recon.NetworkPeriods",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.recon.NetworkPeriods",
+        "recon.NetworkPeriods",
+        "NetworkPeriods",
+        "networkperiods"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ReconNetworkPeriodsId",
+          "ModifyUTCTime",
+          "OrderID",
+          "OrderNumber",
+          "OrderDate",
+          "UserId",
+          "UserName",
+          "StartUTCTime",
+          "FinishUTCTime",
+          "DurationTimeInMin",
+          "StoreName",
+          "MetaJsonFileName",
+          "MetaFileName",
+          "MetaFileDate",
+          "MetaLoadDate",
+          "MetaUserId",
+          "MetaSourceSystemName",
+          "MetaSrcSysId",
+          "ETLExecId",
+          "ModifiedDBDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 20,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / recon"
+      ],
+      "evidence_file": "object-vendordata-recon-networkperiods.evidence.json",
+      "markdown_file": "object-vendordata-recon-networkperiods.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "OrderLogs",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "OrderLogs"
+      ],
+      "canonical_id": "object-vendordata-recon-orderlogs",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/recon__OrderLogs.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:C72ADC4F6C426E7555A9547ACA50B6E18EEB7B3159C0E6B50D9FAFE22B87B423",
+      "object": {
+        "name": "OrderLogs",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "recon",
+        "qualified_name": "VendorData.recon.OrderLogs",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VendorData.recon.OrderLogs", "recon.OrderLogs", "OrderLogs", "orderlogs"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ReconOrderLogsID",
+          "ModifyUTCTime",
+          "OrderId",
+          "OrderNumber",
+          "OrderDate",
+          "LogText",
+          "LogUTCTime",
+          "UserName",
+          "StoreName",
+          "MetaJsonFileName",
+          "MetaFileName",
+          "MetaFileDate",
+          "MetaLoadDate",
+          "MetaUserId",
+          "MetaSourceSystemName",
+          "MetaSrcSysId",
+          "ETLExecId",
+          "ModifiedDBDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 18,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / recon"
+      ],
+      "evidence_file": "object-vendordata-recon-orderlogs.evidence.json",
+      "markdown_file": "object-vendordata-recon-orderlogs.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "OrderPhases",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "OrderPhases"
+      ],
+      "canonical_id": "object-vendordata-recon-orderphases",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/recon__OrderPhases.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:509A175F18F24AC9DEBAF34EC592826D73DEEE9CDDF1286350B45AD1F488E6A3",
+      "object": {
+        "name": "OrderPhases",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "recon",
+        "qualified_name": "VendorData.recon.OrderPhases",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.recon.OrderPhases",
+        "recon.OrderPhases",
+        "OrderPhases",
+        "orderphases"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-5FSQL-01.ETL_Staging.dbo.usp_KPI_DailyReconProduction_Src"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ReconOrderPhasesId",
+          "ModifyUTCTime",
+          "OrderId",
+          "OrderNumber",
+          "OrderDate",
+          "OrderPhaseId",
+          "OrderPhaseName",
+          "PhaseId",
+          "PhaseName",
+          "PhaseOrder",
+          "PhaseStatusId",
+          "PhaseStatus",
+          "PhaseStartUTCTime",
+          "PhaseCompletedUTCTime",
+          "CheckOutUTCTime",
+          "CheckInUTCTime",
+          "CheckInOutById",
+          "CheckInOutByName",
+          "FinishedByID",
+          "FinishedByName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 35,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / recon"
+      ],
+      "evidence_file": "object-vendordata-recon-orderphases.evidence.json",
+      "markdown_file": "object-vendordata-recon-orderphases.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "OrderServices",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "OrderServices"
+      ],
+      "canonical_id": "object-vendordata-recon-orderservices",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/recon__OrderServices.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:41120A118BD97391EB6CE54111ABE12D2A582C41E88779D15BB42B67F8558B57",
+      "object": {
+        "name": "OrderServices",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "recon",
+        "qualified_name": "VendorData.recon.OrderServices",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.recon.OrderServices",
+        "recon.OrderServices",
+        "OrderServices",
+        "orderservices"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ReconOrderServicesID",
+          "ModifyUTCTime",
+          "OrderId",
+          "OrderNumber",
+          "OrderDate",
+          "ServiceId",
+          "ExternalId",
+          "Description",
+          "PriceTypeId",
+          "PriceTypeName",
+          "DocumentsTypeName",
+          "VehiclePartId",
+          "VendorId",
+          "VendorName",
+          "CoreStatusId",
+          "CoreStatusName",
+          "OrderServiceStatusId",
+          "OrderServiceStatusName",
+          "OrderServiceSubStatusId",
+          "OrderServiceSubStatusName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 87,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / recon"
+      ],
+      "evidence_file": "object-vendordata-recon-orderservices.evidence.json",
+      "markdown_file": "object-vendordata-recon-orderservices.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "OrderServices_Backup20230209",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "OrderServices_Backup20230209"
+      ],
+      "canonical_id": "object-vendordata-recon-orderservices-backup20230209",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/recon__OrderServices_Backup20230209.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:884A1E22A7EC8B9159034756E05EA1786AB9B8F4EF504EB72841E633FD9D5C3C",
+      "object": {
+        "name": "OrderServices_Backup20230209",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "recon",
+        "qualified_name": "VendorData.recon.OrderServices_Backup20230209",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.recon.OrderServices_Backup20230209",
+        "recon.OrderServices_Backup20230209",
+        "OrderServices_Backup20230209",
+        "OrderServicesBackup20230209",
+        "orderservicesbackup20230209"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ReconOrderServicesID",
+          "ModifyUTCTime",
+          "OrderId",
+          "OrderNumber",
+          "OrderDate",
+          "ServiceId",
+          "ExternalId",
+          "Description",
+          "PriceTypeId",
+          "PriceTypeName",
+          "DocumentsTypeName",
+          "VehiclePartId",
+          "VendorId",
+          "VendorName",
+          "CoreStatusId",
+          "CoreStatusName",
+          "OrderServiceStatusId",
+          "OrderServiceStatusName",
+          "OrderServiceSubStatusId",
+          "OrderServiceSubStatusName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 87,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / recon"
+      ],
+      "evidence_file": "object-vendordata-recon-orderservices-backup20230209.evidence.json",
+      "markdown_file": "object-vendordata-recon-orderservices-backup20230209.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "OrderVehicles",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "OrderVehicles"
+      ],
+      "canonical_id": "object-vendordata-recon-ordervehicles",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/recon__OrderVehicles.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A5E1762A2B246F2C7D2ABBFFA0A27A9A2E82D68BC862D971B9E9E6116C7A5C7D",
+      "object": {
+        "name": "OrderVehicles",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "recon",
+        "qualified_name": "VendorData.recon.OrderVehicles",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.recon.OrderVehicles",
+        "recon.OrderVehicles",
+        "OrderVehicles",
+        "ordervehicles"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-5FSQL-01.ETL_Staging.dbo.usp_KPI_DailyReconProduction_Src"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ReconOrderVehiclesID",
+          "EntityText",
+          "UTCTimestamp",
+          "ModifyUTCTime",
+          "OrderId",
+          "OrderNumber",
+          "OrderDate",
+          "TimeZone",
+          "OrderTypeId",
+          "OrderTypeName",
+          "Amount",
+          "DiscountAmount",
+          "TaxAmount",
+          "FeesAmount",
+          "TotalSale",
+          "ServicePackageId",
+          "ServicePackageName",
+          "EmployeeId",
+          "EmployeeName",
+          "EmployeeExternalID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 74,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / recon"
+      ],
+      "evidence_file": "object-vendordata-recon-ordervehicles.evidence.json",
+      "markdown_file": "object-vendordata-recon-ordervehicles.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "PhaseAggregators",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "PhaseAggregators"
+      ],
+      "canonical_id": "object-vendordata-recon-phaseaggregators",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/recon__PhaseAggregators.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:ADEC9A3E75F45C9B2304FCD2A15862BFD52237154A0F5BC91FB4D80C82FA3E38",
+      "object": {
+        "name": "PhaseAggregators",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "recon",
+        "qualified_name": "VendorData.recon.PhaseAggregators",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.recon.PhaseAggregators",
+        "recon.PhaseAggregators",
+        "PhaseAggregators",
+        "phaseaggregators"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["AggregatorID", "TemplateName", "AggregatorName", "PhaseName"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 4,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / recon"
+      ],
+      "evidence_file": "object-vendordata-recon-phaseaggregators.evidence.json",
+      "markdown_file": "object-vendordata-recon-phaseaggregators.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ServiceOrderQuestions",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "ServiceOrderQuestions"
+      ],
+      "canonical_id": "object-vendordata-recon-serviceorderquestions",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/recon__ServiceOrderQuestions.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:7B01ECD08CD06ABF5F2B1E42A132F00F884D6341CA52914B5975EC967616D210",
+      "object": {
+        "name": "ServiceOrderQuestions",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "recon",
+        "qualified_name": "VendorData.recon.ServiceOrderQuestions",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.recon.ServiceOrderQuestions",
+        "recon.ServiceOrderQuestions",
+        "ServiceOrderQuestions",
+        "serviceorderquestions"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ReconServiceOrderQuestionsID",
+          "ModifyUTCTime",
+          "OrderId",
+          "OrderNumber",
+          "OrderDate",
+          "OrderTypeId",
+          "OrderTypeName",
+          "ServiceReqId",
+          "ServiceReqNumber",
+          "FormName",
+          "SectionName",
+          "QuestionText",
+          "FormSeqNo",
+          "SectionSeqNo",
+          "QuestionSeqNo",
+          "Answer",
+          "AnswerType",
+          "Comments",
+          "StoreName",
+          "MetaJsonFileName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 28,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / recon"
+      ],
+      "evidence_file": "object-vendordata-recon-serviceorderquestions.evidence.json",
+      "markdown_file": "object-vendordata-recon-serviceorderquestions.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ServiceReqServices",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "ServiceReqServices"
+      ],
+      "canonical_id": "object-vendordata-recon-servicereqservices",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/recon__ServiceReqServices.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:00868D1ED8C962CBC15E6B1DA5091494DB3D3F4D0361A1E386F379CEF1B4501F",
+      "object": {
+        "name": "ServiceReqServices",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "recon",
+        "qualified_name": "VendorData.recon.ServiceReqServices",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.recon.ServiceReqServices",
+        "recon.ServiceReqServices",
+        "ServiceReqServices",
+        "servicereqservices"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ReconServiceReqServicesID",
+          "ModifyUTCTime",
+          "OrderId",
+          "OrderNumber",
+          "OrderDate",
+          "ServiceRequestID",
+          "ServiceRequestNumber",
+          "ServiceName",
+          "ServiceExternalID",
+          "ServiceDescription",
+          "PriceType",
+          "Quantity",
+          "Amount",
+          "VehiclePart",
+          "Notes",
+          "StoreName",
+          "MetaJsonFileName",
+          "MetaFileName",
+          "MetaFileDate",
+          "MetaLoadDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 25,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / recon"
+      ],
+      "evidence_file": "object-vendordata-recon-servicereqservices.evidence.json",
+      "markdown_file": "object-vendordata-recon-servicereqservices.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TechnicianDetails",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "recon",
+        "TechnicianDetails"
+      ],
+      "canonical_id": "object-vendordata-recon-techniciandetails",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/recon__TechnicianDetails.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:30667822B2F353C22EBC68CC0CB9914670F7F426432C6F0C15FC7E0182376D4C",
+      "object": {
+        "name": "TechnicianDetails",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "recon",
+        "qualified_name": "VendorData.recon.TechnicianDetails",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.recon.TechnicianDetails",
+        "recon.TechnicianDetails",
+        "TechnicianDetails",
+        "techniciandetails"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ReconTechnicianDetailsID",
+          "ModifyUTCTime",
+          "OrderId",
+          "OrderNumber",
+          "OrderDate",
+          "OrderTypeId",
+          "TechniciansId",
+          "TechniciansName",
+          "TechniciansTeamId",
+          "TechniciansTeamName",
+          "StoreName",
+          "MetaJsonFileName",
+          "MetaFileName",
+          "MetaFileDate",
+          "MetaLoadDate",
+          "MetaUserId",
+          "MetaSourceSystemName",
+          "MetaSrcSysId",
+          "ETLExecId",
+          "ModifiedDBDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 20,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / recon"
+      ],
+      "evidence_file": "object-vendordata-recon-techniciandetails.evidence.json",
+      "markdown_file": "object-vendordata-recon-techniciandetails.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-158-vendordata-recon-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-158-vendordata-recon-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-158-vendordata-recon-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

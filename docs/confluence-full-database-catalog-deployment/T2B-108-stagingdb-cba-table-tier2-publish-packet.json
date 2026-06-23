@@ -1,0 +1,1932 @@
+{
+  "packet_id": "T2B-108",
+  "generated_at": "2026-06-23T18:45:11.534Z",
+  "batch": {
+    "batch_id": "T2B-108",
+    "priority_rank": 108,
+    "platform": "SQL Server",
+    "database": "StagingDB",
+    "schema": "cba",
+    "object_type_scope": "table",
+    "object_count": 13,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "BuyerTarget",
+    "last_object": "TransportCompany",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / cba",
+    "object_names": [
+      "BuyerTarget",
+      "DealerDMSMapping",
+      "Market",
+      "MarketParameter",
+      "MarketParameterType",
+      "MarketPerformanceIndicators",
+      "MarketPerformanceIndicatorType",
+      "MarketTarget",
+      "PurchaseDetails",
+      "PurchaseDetails_ErrorOutput",
+      "PurchaseMethods",
+      "Sources",
+      "TransportCompany"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "table",
+    "original_object_count": 13,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 13,
+    "total_planned_pages": 17
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB"],
+      "page_type": "database",
+      "evidence_hash": "sha256:86BBBA4A90EF1C66989EFB3B9746AF88467BE01889393493BBDE0177897E19A4",
+      "evidence_file": "database-stagingdb.evidence.json",
+      "markdown_file": "database-stagingdb.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.cba",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB", "cba"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:89C74A05BDB4B435065FC6D86ADB5F3109B3B7F00335B13F04F2A85C733E1ED8",
+      "evidence_file": "schema-stagingdb-cba.evidence.json",
+      "markdown_file": "schema-stagingdb-cba.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.cba.BuyerTarget",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "BuyerTarget"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:FFEA83E6786EF63E03DFE1F143E79607622105005809CC87CEA136553B96230E",
+      "evidence_file": "object-stagingdb-cba-buyertarget.evidence.json",
+      "markdown_file": "object-stagingdb-cba-buyertarget.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.cba.DealerDMSMapping",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "DealerDMSMapping"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:609A08921F3D17DD93CB6E6ADA5B5C82725823AE499F61F6998C3E12AAD798E9",
+      "evidence_file": "object-stagingdb-cba-dealerdmsmapping.evidence.json",
+      "markdown_file": "object-stagingdb-cba-dealerdmsmapping.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.cba.Market",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "Market"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:CE23747E7D4EB304738344D170CEBE8E9333F99924571BF330DBA575497FA2FB",
+      "evidence_file": "object-stagingdb-cba-market.evidence.json",
+      "markdown_file": "object-stagingdb-cba-market.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.cba.MarketParameter",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "MarketParameter"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:11B4717F7E77F248DA050F7E1AC58941EB5179A39FD0C6C061481E40793B7EC2",
+      "evidence_file": "object-stagingdb-cba-marketparameter.evidence.json",
+      "markdown_file": "object-stagingdb-cba-marketparameter.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.cba.MarketParameterType",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "MarketParameterType"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9216DBC02B96C6E2682DA99242B71AC4EDA4C82D905A0F7793D44348B3F83193",
+      "evidence_file": "object-stagingdb-cba-marketparametertype.evidence.json",
+      "markdown_file": "object-stagingdb-cba-marketparametertype.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.cba.MarketPerformanceIndicators",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "MarketPerformanceIndicators"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:23AFC0A937EF5ECD37A7423FAD1DFFCE31485E3A25BD0B7F8C2A9953DABEE1DB",
+      "evidence_file": "object-stagingdb-cba-marketperformanceindicators.evidence.json",
+      "markdown_file": "object-stagingdb-cba-marketperformanceindicators.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.cba.MarketPerformanceIndicatorType",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "MarketPerformanceIndicatorType"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:FBDB535AF1D0B7488CD67C16E953F84C957A5218649FAD71AF47C0F187F03896",
+      "evidence_file": "object-stagingdb-cba-marketperformanceindicatortype.evidence.json",
+      "markdown_file": "object-stagingdb-cba-marketperformanceindicatortype.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.cba.MarketTarget",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "MarketTarget"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:F6033A0377B5D0DEEB9788A4C22420D107B06A31BD4698B554F455EFFCE817C9",
+      "evidence_file": "object-stagingdb-cba-markettarget.evidence.json",
+      "markdown_file": "object-stagingdb-cba-markettarget.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.cba.PurchaseDetails",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "PurchaseDetails"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:40015257F2D823A6D0BA805DDC82D4436BDF8796867321C74F3C167683EC16AF",
+      "evidence_file": "object-stagingdb-cba-purchasedetails.evidence.json",
+      "markdown_file": "object-stagingdb-cba-purchasedetails.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.cba.PurchaseDetails_ErrorOutput",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "PurchaseDetails_ErrorOutput"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:0221CCC06A76B73EE8A7662377CC201BE64188925834DFB436D62F850427BB63",
+      "evidence_file": "object-stagingdb-cba-purchasedetails-erroroutput.evidence.json",
+      "markdown_file": "object-stagingdb-cba-purchasedetails-erroroutput.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.cba.PurchaseMethods",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "PurchaseMethods"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:27968C3B795D1CE8FBA894F69BB8A554F88337E5F54279C769BDE2FEBCE4A798",
+      "evidence_file": "object-stagingdb-cba-purchasemethods.evidence.json",
+      "markdown_file": "object-stagingdb-cba-purchasemethods.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.cba.Sources",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "Sources"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E6D39B799CEFB59AD1A160D4DF53760D5C3FBE2A3DF455700EE08E7407D2EBFC",
+      "evidence_file": "object-stagingdb-cba-sources.evidence.json",
+      "markdown_file": "object-stagingdb-cba-sources.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.cba.TransportCompany",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "TransportCompany"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:6307D4659AC798359E309BC12310854F4B2F155ABE852E50380211D790C756DC",
+      "evidence_file": "object-stagingdb-cba-transportcompany.evidence.json",
+      "markdown_file": "object-stagingdb-cba-transportcompany.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "BuyerTarget",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "BuyerTarget"
+      ],
+      "canonical_id": "object-stagingdb-cba-buyertarget",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/cba__BuyerTarget.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:FFEA83E6786EF63E03DFE1F143E79607622105005809CC87CEA136553B96230E",
+      "object": {
+        "name": "BuyerTarget",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "cba",
+        "qualified_name": "StagingDB.cba.BuyerTarget",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["StagingDB.cba.BuyerTarget", "cba.BuyerTarget", "BuyerTarget", "buyertarget"],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_BuyerTarget.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "BuyerTargetId",
+          "UserId",
+          "UserName",
+          "Target",
+          "WeekId",
+          "CreatedBy",
+          "CreatedOn",
+          "ModifiedBy",
+          "ModifiedOn",
+          "Meta_LoadDate",
+          "ETLExecution_ID",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_SourceSystemName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 15,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / cba"
+      ],
+      "evidence_file": "object-stagingdb-cba-buyertarget.evidence.json",
+      "markdown_file": "object-stagingdb-cba-buyertarget.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DealerDMSMapping",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "DealerDMSMapping"
+      ],
+      "canonical_id": "object-stagingdb-cba-dealerdmsmapping",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/cba__DealerDMSMapping.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:609A08921F3D17DD93CB6E6ADA5B5C82725823AE499F61F6998C3E12AAD798E9",
+      "object": {
+        "name": "DealerDMSMapping",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "cba",
+        "qualified_name": "StagingDB.cba.DealerDMSMapping",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.cba.DealerDMSMapping",
+        "cba.DealerDMSMapping",
+        "DealerDMSMapping",
+        "dealerdmsmapping"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_DealerDMSMapping.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "MappingId",
+          "EntityKey",
+          "MappedName",
+          "CreatedOn",
+          "CreatedBy",
+          "ModifiedOn",
+          "ModifiedBy",
+          "RetailPurchasing",
+          "RetailReceiving",
+          "EchoparkPurchasing",
+          "EchoparkReceiving",
+          "MarketId",
+          "DistributionList",
+          "ManheimDealerNumber",
+          "Meta_LoadDate",
+          "ETLExecution_ID",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_SourceSystemName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 20,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / cba"
+      ],
+      "evidence_file": "object-stagingdb-cba-dealerdmsmapping.evidence.json",
+      "markdown_file": "object-stagingdb-cba-dealerdmsmapping.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Market",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "Market"
+      ],
+      "canonical_id": "object-stagingdb-cba-market",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/cba__Market.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:CE23747E7D4EB304738344D170CEBE8E9333F99924571BF330DBA575497FA2FB",
+      "object": {
+        "name": "Market",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "cba",
+        "qualified_name": "StagingDB.cba.Market",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["StagingDB.cba.Market", "cba.Market", "Market", "market"],
+      "lineage": {
+        "upstream_loaders": ["V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_Market.dtsx"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "MarketId",
+          "MarketName",
+          "IsActive",
+          "RetailActive",
+          "EchoparkActive",
+          "CreatedBy",
+          "CreatedOn",
+          "ModifiedBy",
+          "ModifiedOn",
+          "Meta_LoadDate",
+          "ETLExecution_ID",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_SourceSystemName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 15,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / cba"
+      ],
+      "evidence_file": "object-stagingdb-cba-market.evidence.json",
+      "markdown_file": "object-stagingdb-cba-market.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "MarketParameter",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "MarketParameter"
+      ],
+      "canonical_id": "object-stagingdb-cba-marketparameter",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/cba__MarketParameter.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:11B4717F7E77F248DA050F7E1AC58941EB5179A39FD0C6C061481E40793B7EC2",
+      "object": {
+        "name": "MarketParameter",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "cba",
+        "qualified_name": "StagingDB.cba.MarketParameter",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.cba.MarketParameter",
+        "cba.MarketParameter",
+        "MarketParameter",
+        "marketparameter"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_MarketParameter.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "MarketParameterId",
+          "MarketId",
+          "MarketParameterTypeId",
+          "IsActive",
+          "ParameterValue",
+          "CreatedBy",
+          "CreatedOn",
+          "ModifiedBy",
+          "ModifiedOn",
+          "Meta_LoadDate",
+          "ETLExecution_ID",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_SourceSystemName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 15,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / cba"
+      ],
+      "evidence_file": "object-stagingdb-cba-marketparameter.evidence.json",
+      "markdown_file": "object-stagingdb-cba-marketparameter.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "MarketParameterType",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "MarketParameterType"
+      ],
+      "canonical_id": "object-stagingdb-cba-marketparametertype",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/cba__MarketParameterType.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9216DBC02B96C6E2682DA99242B71AC4EDA4C82D905A0F7793D44348B3F83193",
+      "object": {
+        "name": "MarketParameterType",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "cba",
+        "qualified_name": "StagingDB.cba.MarketParameterType",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.cba.MarketParameterType",
+        "cba.MarketParameterType",
+        "MarketParameterType",
+        "marketparametertype"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_MarketParameterType.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "MarketParameterTypeId",
+          "DisplayName",
+          "MarketParameterTypeName",
+          "IsActive",
+          "CreatedBy",
+          "CreatedOn",
+          "ModifiedBy",
+          "ModifiedOn",
+          "Meta_LoadDate",
+          "ETLExecution_ID",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_SourceSystemName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 14,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / cba"
+      ],
+      "evidence_file": "object-stagingdb-cba-marketparametertype.evidence.json",
+      "markdown_file": "object-stagingdb-cba-marketparametertype.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "MarketPerformanceIndicators",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "MarketPerformanceIndicators"
+      ],
+      "canonical_id": "object-stagingdb-cba-marketperformanceindicators",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/cba__MarketPerformanceIndicators.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:23AFC0A937EF5ECD37A7423FAD1DFFCE31485E3A25BD0B7F8C2A9953DABEE1DB",
+      "object": {
+        "name": "MarketPerformanceIndicators",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "cba",
+        "qualified_name": "StagingDB.cba.MarketPerformanceIndicators",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.cba.MarketPerformanceIndicators",
+        "cba.MarketPerformanceIndicators",
+        "MarketPerformanceIndicators",
+        "marketperformanceindicators"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_MarketPerformanceIndicators.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "IndicatorId",
+          "MarketId",
+          "Month",
+          "Year",
+          "Value",
+          "TypeId",
+          "CreatedBy",
+          "CreatedOn",
+          "ModifiedBy",
+          "ModifiedOn",
+          "Meta_LoadDate",
+          "ETLExecution_ID",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_SourceSystemName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 16,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / cba"
+      ],
+      "evidence_file": "object-stagingdb-cba-marketperformanceindicators.evidence.json",
+      "markdown_file": "object-stagingdb-cba-marketperformanceindicators.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "MarketPerformanceIndicatorType",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "MarketPerformanceIndicatorType"
+      ],
+      "canonical_id": "object-stagingdb-cba-marketperformanceindicatortype",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/cba__MarketPerformanceIndicatorType.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:FBDB535AF1D0B7488CD67C16E953F84C957A5218649FAD71AF47C0F187F03896",
+      "object": {
+        "name": "MarketPerformanceIndicatorType",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "cba",
+        "qualified_name": "StagingDB.cba.MarketPerformanceIndicatorType",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.cba.MarketPerformanceIndicatorType",
+        "cba.MarketPerformanceIndicatorType",
+        "MarketPerformanceIndicatorType",
+        "marketperformanceindicatortype"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_MarketPerformanceIndicatorType.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "TypeId",
+          "TypeName",
+          "CreatedBy",
+          "CreatedOn",
+          "ModifiedBy",
+          "ModifiedOn",
+          "Meta_LoadDate",
+          "ETLExecution_ID",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_SourceSystemName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 12,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / cba"
+      ],
+      "evidence_file": "object-stagingdb-cba-marketperformanceindicatortype.evidence.json",
+      "markdown_file": "object-stagingdb-cba-marketperformanceindicatortype.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "MarketTarget",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "MarketTarget"
+      ],
+      "canonical_id": "object-stagingdb-cba-markettarget",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/cba__MarketTarget.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:F6033A0377B5D0DEEB9788A4C22420D107B06A31BD4698B554F455EFFCE817C9",
+      "object": {
+        "name": "MarketTarget",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "cba",
+        "qualified_name": "StagingDB.cba.MarketTarget",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["StagingDB.cba.MarketTarget", "cba.MarketTarget", "MarketTarget", "markettarget"],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_MarketTarget.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "MarketTargetId",
+          "MarketId",
+          "WeekId",
+          "MinTarget",
+          "MaxTarget",
+          "CreatedBy",
+          "CreatedOn",
+          "ModifiedBy",
+          "ModifiedOn",
+          "Meta_LoadDate",
+          "ETLExecution_ID",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_SourceSystemName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 15,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / cba"
+      ],
+      "evidence_file": "object-stagingdb-cba-markettarget.evidence.json",
+      "markdown_file": "object-stagingdb-cba-markettarget.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "PurchaseDetails",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "PurchaseDetails"
+      ],
+      "canonical_id": "object-stagingdb-cba-purchasedetails",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/cba__PurchaseDetails.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:40015257F2D823A6D0BA805DDC82D4436BDF8796867321C74F3C167683EC16AF",
+      "object": {
+        "name": "PurchaseDetails",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "cba",
+        "qualified_name": "StagingDB.cba.PurchaseDetails",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.cba.PurchaseDetails",
+        "cba.PurchaseDetails",
+        "PurchaseDetails",
+        "purchasedetails"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_PurchaseDetails.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "V1-SSIS25-01, 11040.SSISDB.CBA.CBADW.CBA_DimAuctionSource.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.CBADW.CBA_DimLineOfBusiness.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.CBADW.CBA_DimMarket.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.CBADW.CBA_DimPurchaseMethod.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.CBADW.CBA_DimTransportCompany.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.CBADW.CBA_FactCBABuyerTarget.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.CBADW.CBA_FactCBAMarketTarget.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.CBADW.CBA_FactVehiclePurchase.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_PurchaseDetails.dtsx"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "PurchaseDetailID",
+          "PurchaseGuid",
+          "VehicleGuid",
+          "PurchaseDate",
+          "BuyerName",
+          "DealType",
+          "PurchasingDealer",
+          "ReceivingDealer",
+          "VehicleSource",
+          "PurchaseMethod",
+          "IsAuctionClosed",
+          "Seller",
+          "Cost",
+          "AuctionFee",
+          "TransportationCost",
+          "TransportationAssistanceAmount",
+          "PSIFee",
+          "MHFees",
+          "TransportationCompany",
+          "CertCPO"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 67,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / cba"
+      ],
+      "evidence_file": "object-stagingdb-cba-purchasedetails.evidence.json",
+      "markdown_file": "object-stagingdb-cba-purchasedetails.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "PurchaseDetails_ErrorOutput",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "PurchaseDetails_ErrorOutput"
+      ],
+      "canonical_id": "object-stagingdb-cba-purchasedetails-erroroutput",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/cba__PurchaseDetails_ErrorOutput.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:0221CCC06A76B73EE8A7662377CC201BE64188925834DFB436D62F850427BB63",
+      "object": {
+        "name": "PurchaseDetails_ErrorOutput",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "cba",
+        "qualified_name": "StagingDB.cba.PurchaseDetails_ErrorOutput",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.cba.PurchaseDetails_ErrorOutput",
+        "cba.PurchaseDetails_ErrorOutput",
+        "PurchaseDetails_ErrorOutput",
+        "PurchaseDetailsErrorOutput",
+        "purchasedetailserroroutput"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_PurchaseDetails.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "PurchaseDetailID",
+          "PurchaseGuid",
+          "VehicleGuid",
+          "PurchaseDate",
+          "BuyerName",
+          "DealType",
+          "PurchasingDealer",
+          "ReceivingDealer",
+          "VehicleSource",
+          "PurchaseMethod",
+          "IsAuctionClosed",
+          "Seller",
+          "Cost",
+          "AuctionFee",
+          "TransportationCost",
+          "TransportationAssistanceAmount",
+          "PSIFee",
+          "MHFees",
+          "TransportationCompany",
+          "CertCPO"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 84,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / cba"
+      ],
+      "evidence_file": "object-stagingdb-cba-purchasedetails-erroroutput.evidence.json",
+      "markdown_file": "object-stagingdb-cba-purchasedetails-erroroutput.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "PurchaseMethods",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "PurchaseMethods"
+      ],
+      "canonical_id": "object-stagingdb-cba-purchasemethods",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/cba__PurchaseMethods.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:27968C3B795D1CE8FBA894F69BB8A554F88337E5F54279C769BDE2FEBCE4A798",
+      "object": {
+        "name": "PurchaseMethods",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "cba",
+        "qualified_name": "StagingDB.cba.PurchaseMethods",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.cba.PurchaseMethods",
+        "cba.PurchaseMethods",
+        "PurchaseMethods",
+        "purchasemethods"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_PurchaseMethods.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "MethodID",
+          "MethodName",
+          "CreatedOn",
+          "CreatedBy",
+          "ModifiedOn",
+          "ModifiedBy",
+          "IsActive",
+          "MethodGuid",
+          "RetailActive",
+          "EchoparkActive",
+          "Meta_LoadDate",
+          "ETLExecution_ID",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_SourceSystemName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 16,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / cba"
+      ],
+      "evidence_file": "object-stagingdb-cba-purchasemethods.evidence.json",
+      "markdown_file": "object-stagingdb-cba-purchasemethods.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Sources",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "Sources"
+      ],
+      "canonical_id": "object-stagingdb-cba-sources",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/cba__Sources.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E6D39B799CEFB59AD1A160D4DF53760D5C3FBE2A3DF455700EE08E7407D2EBFC",
+      "object": {
+        "name": "Sources",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "cba",
+        "qualified_name": "StagingDB.cba.Sources",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["StagingDB.cba.Sources", "cba.Sources", "Sources", "sources"],
+      "lineage": {
+        "upstream_loaders": ["V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_Sources.dtsx"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "SourceID",
+          "SourceName",
+          "CreatedOn",
+          "CreatedBy",
+          "ModifiedOn",
+          "ModifiedBy",
+          "IsActive",
+          "SourceGuid",
+          "AuctionFee",
+          "VehicleMartSource",
+          "RetailActive",
+          "EchoparkActive",
+          "Meta_LoadDate",
+          "ETLExecution_ID",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_SourceSystemName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 18,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / cba"
+      ],
+      "evidence_file": "object-stagingdb-cba-sources.evidence.json",
+      "markdown_file": "object-stagingdb-cba-sources.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TransportCompany",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "cba",
+        "TransportCompany"
+      ],
+      "canonical_id": "object-stagingdb-cba-transportcompany",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/cba__TransportCompany.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:6307D4659AC798359E309BC12310854F4B2F155ABE852E50380211D790C756DC",
+      "object": {
+        "name": "TransportCompany",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "cba",
+        "qualified_name": "StagingDB.cba.TransportCompany",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.cba.TransportCompany",
+        "cba.TransportCompany",
+        "TransportCompany",
+        "transportcompany"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_TransportCompany.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "CompanyID",
+          "CompanyName",
+          "CreatedOn",
+          "CreatedBy",
+          "ModifiedOn",
+          "ModifiedBy",
+          "IsActive",
+          "CompanyGuid",
+          "EmailAddress",
+          "RetailActive",
+          "EchoparkActive",
+          "Meta_LoadDate",
+          "ETLExecution_ID",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_SourceSystemName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 17,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / cba"
+      ],
+      "evidence_file": "object-stagingdb-cba-transportcompany.evidence.json",
+      "markdown_file": "object-stagingdb-cba-transportcompany.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-108-stagingdb-cba-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-108-stagingdb-cba-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-108-stagingdb-cba-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

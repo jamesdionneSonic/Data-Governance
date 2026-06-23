@@ -1,0 +1,835 @@
+{
+  "packet_id": "T2B-058",
+  "generated_at": "2026-06-23T18:18:52.388Z",
+  "batch": {
+    "batch_id": "T2B-058",
+    "priority_rank": 58,
+    "platform": "SQL Server",
+    "database": "SIMSRT",
+    "schema": "dbo",
+    "object_type_scope": "table",
+    "object_count": 6,
+    "high_use_objects": 1,
+    "downstream_uses": 36,
+    "first_object": "Vehicle_Inventory",
+    "last_object": "Vehicle_Source",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / SIMSRT / dbo",
+    "object_names": [
+      "Vehicle_Inventory",
+      "Vehicle",
+      "Vehicle_Status_Log",
+      "Appraisal",
+      "Book_Value_Response",
+      "Vehicle_Source"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 6,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 6,
+    "total_planned_pages": 10
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMSRT",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "SIMSRT"],
+      "page_type": "database",
+      "evidence_hash": "sha256:D61AEEF58EFCD7AB035CD7281C5B60346E4B995C4996EA95EE57A311D0C247D8",
+      "evidence_file": "database-simsrt.evidence.json",
+      "markdown_file": "database-simsrt.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMSRT.dbo",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "SIMSRT", "dbo"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:A2CF89FA3E27BD1CB2C904BA3FC5AC39F19AA637E60DDA07886FB59360250E96",
+      "evidence_file": "schema-simsrt-dbo.evidence.json",
+      "markdown_file": "schema-simsrt-dbo.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMSRT.dbo.Appraisal",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMSRT",
+        "dbo",
+        "Appraisal"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:977EA2A2AAF1BB0767D4AF9EA6604E80EE3BE05646EBDE15854B56632A1A970A",
+      "evidence_file": "object-simsrt-dbo-appraisal.evidence.json",
+      "markdown_file": "object-simsrt-dbo-appraisal.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMSRT.dbo.Book_Value_Response",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMSRT",
+        "dbo",
+        "Book_Value_Response"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:5EFDFD875E9DE057A40EDFAC688AB8DEAE46BE1CCC5A0635DB2268F1E8A26E77",
+      "evidence_file": "object-simsrt-dbo-book-value-response.evidence.json",
+      "markdown_file": "object-simsrt-dbo-book-value-response.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMSRT.dbo.Vehicle",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMSRT",
+        "dbo",
+        "Vehicle"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:07981FC7A35FD3F7593DAAB7B64C21EFAD146F659BCBACFC7D75B0FFDDFA2325",
+      "evidence_file": "object-simsrt-dbo-vehicle.evidence.json",
+      "markdown_file": "object-simsrt-dbo-vehicle.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMSRT.dbo.Vehicle_Inventory",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMSRT",
+        "dbo",
+        "Vehicle_Inventory"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:192EA4DCD5117EA041EE1DFCD511D2D3FA4985FDE747D1EAB1D447BCE4D595F0",
+      "evidence_file": "object-simsrt-dbo-vehicle-inventory.evidence.json",
+      "markdown_file": "object-simsrt-dbo-vehicle-inventory.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMSRT.dbo.Vehicle_Source",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMSRT",
+        "dbo",
+        "Vehicle_Source"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:7CBD989707D0F6A15F153BADE7B2B1BD87E3F29911916C5694A9E6542E066011",
+      "evidence_file": "object-simsrt-dbo-vehicle-source.evidence.json",
+      "markdown_file": "object-simsrt-dbo-vehicle-source.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMSRT.dbo.Vehicle_Status_Log",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMSRT",
+        "dbo",
+        "Vehicle_Status_Log"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:215151D6A98EF9461AF7E612C23CE69609517516B64605C57CE4CA255AA8DCDE",
+      "evidence_file": "object-simsrt-dbo-vehicle-status-log.evidence.json",
+      "markdown_file": "object-simsrt-dbo-vehicle-status-log.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "Appraisal",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMSRT",
+        "dbo",
+        "Appraisal"
+      ],
+      "canonical_id": "object-simsrt-dbo-appraisal",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMSRT/tables/dbo__Appraisal.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:977EA2A2AAF1BB0767D4AF9EA6604E80EE3BE05646EBDE15854B56632A1A970A",
+      "object": {
+        "name": "Appraisal",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMSRT",
+        "schema": "dbo",
+        "qualified_name": "SIMSRT.dbo.Appraisal",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["SIMSRT.dbo.Appraisal", "dbo.Appraisal", "Appraisal", "appraisal"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 16,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMSRT",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMSRT / dbo"
+      ],
+      "evidence_file": "object-simsrt-dbo-appraisal.evidence.json",
+      "markdown_file": "object-simsrt-dbo-appraisal.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Book_Value_Response",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMSRT",
+        "dbo",
+        "Book_Value_Response"
+      ],
+      "canonical_id": "object-simsrt-dbo-book-value-response",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMSRT/tables/dbo__Book_Value_Response.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:5EFDFD875E9DE057A40EDFAC688AB8DEAE46BE1CCC5A0635DB2268F1E8A26E77",
+      "object": {
+        "name": "Book_Value_Response",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMSRT",
+        "schema": "dbo",
+        "qualified_name": "SIMSRT.dbo.Book_Value_Response",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMSRT.dbo.Book_Value_Response",
+        "dbo.Book_Value_Response",
+        "Book_Value_Response",
+        "BookValueResponse",
+        "bookvalueresponse"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 29,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMSRT",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMSRT / dbo"
+      ],
+      "evidence_file": "object-simsrt-dbo-book-value-response.evidence.json",
+      "markdown_file": "object-simsrt-dbo-book-value-response.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Vehicle",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMSRT",
+        "dbo",
+        "Vehicle"
+      ],
+      "canonical_id": "object-simsrt-dbo-vehicle",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMSRT/tables/dbo__Vehicle.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:07981FC7A35FD3F7593DAAB7B64C21EFAD146F659BCBACFC7D75B0FFDDFA2325",
+      "object": {
+        "name": "Vehicle",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMSRT",
+        "schema": "dbo",
+        "qualified_name": "SIMSRT.dbo.Vehicle",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["SIMSRT.dbo.Vehicle", "dbo.Vehicle", "Vehicle", "vehicle"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 24,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMSRT",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMSRT / dbo"
+      ],
+      "evidence_file": "object-simsrt-dbo-vehicle.evidence.json",
+      "markdown_file": "object-simsrt-dbo-vehicle.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Vehicle_Inventory",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMSRT",
+        "dbo",
+        "Vehicle_Inventory"
+      ],
+      "canonical_id": "object-simsrt-dbo-vehicle-inventory",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMSRT/tables/dbo__Vehicle_Inventory.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:192EA4DCD5117EA041EE1DFCD511D2D3FA4985FDE747D1EAB1D447BCE4D595F0",
+      "object": {
+        "name": "Vehicle_Inventory",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMSRT",
+        "schema": "dbo",
+        "qualified_name": "SIMSRT.dbo.Vehicle_Inventory",
+        "tags": ["high-use", "profiled", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "review-needed"],
+      "tag_reasons": [
+        "high-use: 12 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMSRT.dbo.Vehicle_Inventory",
+        "dbo.Vehicle_Inventory",
+        "Vehicle_Inventory",
+        "VehicleInventory",
+        "vehicleinventory"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 3,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMSRT",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMSRT / dbo"
+      ],
+      "evidence_file": "object-simsrt-dbo-vehicle-inventory.evidence.json",
+      "markdown_file": "object-simsrt-dbo-vehicle-inventory.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Vehicle_Source",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMSRT",
+        "dbo",
+        "Vehicle_Source"
+      ],
+      "canonical_id": "object-simsrt-dbo-vehicle-source",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMSRT/tables/dbo__Vehicle_Source.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:7CBD989707D0F6A15F153BADE7B2B1BD87E3F29911916C5694A9E6542E066011",
+      "object": {
+        "name": "Vehicle_Source",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMSRT",
+        "schema": "dbo",
+        "qualified_name": "SIMSRT.dbo.Vehicle_Source",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMSRT.dbo.Vehicle_Source",
+        "dbo.Vehicle_Source",
+        "Vehicle_Source",
+        "VehicleSource",
+        "vehiclesource"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMSRT",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMSRT / dbo"
+      ],
+      "evidence_file": "object-simsrt-dbo-vehicle-source.evidence.json",
+      "markdown_file": "object-simsrt-dbo-vehicle-source.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Vehicle_Status_Log",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMSRT",
+        "dbo",
+        "Vehicle_Status_Log"
+      ],
+      "canonical_id": "object-simsrt-dbo-vehicle-status-log",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMSRT/tables/dbo__Vehicle_Status_Log.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:215151D6A98EF9461AF7E612C23CE69609517516B64605C57CE4CA255AA8DCDE",
+      "object": {
+        "name": "Vehicle_Status_Log",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMSRT",
+        "schema": "dbo",
+        "qualified_name": "SIMSRT.dbo.Vehicle_Status_Log",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMSRT.dbo.Vehicle_Status_Log",
+        "dbo.Vehicle_Status_Log",
+        "Vehicle_Status_Log",
+        "VehicleStatusLog",
+        "vehiclestatuslog"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 13,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMSRT",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMSRT / dbo"
+      ],
+      "evidence_file": "object-simsrt-dbo-vehicle-status-log.evidence.json",
+      "markdown_file": "object-simsrt-dbo-vehicle-status-log.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-058-simsrt-dbo-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-058-simsrt-dbo-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-058-simsrt-dbo-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

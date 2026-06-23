@@ -1,0 +1,1817 @@
+{
+  "packet_id": "T2B-119",
+  "generated_at": "2026-06-23T18:47:46.493Z",
+  "batch": {
+    "batch_id": "T2B-119",
+    "priority_rank": 119,
+    "platform": "SQL Server",
+    "database": "VendorData",
+    "schema": "Elead",
+    "object_type_scope": "table",
+    "object_count": 12,
+    "high_use_objects": 0,
+    "downstream_uses": 9,
+    "first_object": "EAPSLevelMTD",
+    "last_object": "ScheduledCompletedTasksDaily",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / Elead",
+    "object_names": [
+      "EAPSLevelMTD",
+      "EchoParkGECReportDaily",
+      "EchoParkGECReportMTD",
+      "EAPSLevelDaily",
+      "EchoParkGECReportMTDFis",
+      "RetailGECReportDaily",
+      "EchoParkGECReportWTD",
+      "DimStoreRegionMapping",
+      "MarketingCampaignMonthly",
+      "RetailGECReportMTD",
+      "RetailGECReportMTDFis",
+      "ScheduledCompletedTasksDaily"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 12,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 12,
+    "total_planned_pages": 16
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData"],
+      "page_type": "database",
+      "evidence_hash": "sha256:C029883539BC166EBDE80488ADFC36CDDDD0E84559188FE128628E553E29DFF1",
+      "evidence_file": "database-vendordata.evidence.json",
+      "markdown_file": "database-vendordata.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.Elead",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData", "Elead"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:77337F225FF895902776ADA5A080E45F956EC529699724908E33F97FC9791AA6",
+      "evidence_file": "schema-vendordata-elead.evidence.json",
+      "markdown_file": "schema-vendordata-elead.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.Elead.DimStoreRegionMapping",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "DimStoreRegionMapping"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:CC79F2650EB5A285D1DBE24DA605888E6A7A57366CC1CAC722F216844342516E",
+      "evidence_file": "object-vendordata-elead-dimstoreregionmapping.evidence.json",
+      "markdown_file": "object-vendordata-elead-dimstoreregionmapping.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.Elead.EAPSLevelDaily",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "EAPSLevelDaily"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A2E377B5007A3ACCB2BFD69EF381F7D5FB5169EAD2DACD3C0EF7C6A3A738D946",
+      "evidence_file": "object-vendordata-elead-eapsleveldaily.evidence.json",
+      "markdown_file": "object-vendordata-elead-eapsleveldaily.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.Elead.EAPSLevelMTD",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "EAPSLevelMTD"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:671AB10A446A711E23FACB736975BEB9BCA057F26BE6DFF0CFD5F83EB1196E57",
+      "evidence_file": "object-vendordata-elead-eapslevelmtd.evidence.json",
+      "markdown_file": "object-vendordata-elead-eapslevelmtd.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.Elead.EchoParkGECReportDaily",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "EchoParkGECReportDaily"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:411218BBDCA7D447907B84D3409AA0D0742B0CCBF19F8BAB68FC799A7A8A0825",
+      "evidence_file": "object-vendordata-elead-echoparkgecreportdaily.evidence.json",
+      "markdown_file": "object-vendordata-elead-echoparkgecreportdaily.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.Elead.EchoParkGECReportMTD",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "EchoParkGECReportMTD"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B7BA1CA19728340CF61DB9E85A57F2A776C324576AD24C751C4E2B0D52333970",
+      "evidence_file": "object-vendordata-elead-echoparkgecreportmtd.evidence.json",
+      "markdown_file": "object-vendordata-elead-echoparkgecreportmtd.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.Elead.EchoParkGECReportMTDFis",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "EchoParkGECReportMTDFis"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:3197E0D0E2BAD34BDA06DF0B9255532969B823550A1652A848F72D923409EED6",
+      "evidence_file": "object-vendordata-elead-echoparkgecreportmtdfis.evidence.json",
+      "markdown_file": "object-vendordata-elead-echoparkgecreportmtdfis.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.Elead.EchoParkGECReportWTD",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "EchoParkGECReportWTD"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:3F03D1D4F8E40E396D082849494A2BFE58C33B9E3272D5423CC74E069B5DF809",
+      "evidence_file": "object-vendordata-elead-echoparkgecreportwtd.evidence.json",
+      "markdown_file": "object-vendordata-elead-echoparkgecreportwtd.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.Elead.MarketingCampaignMonthly",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "MarketingCampaignMonthly"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:66C7C58D98FD2BB31FE53FA128340DD513F9A8E14214A4773228A0B98472EFFF",
+      "evidence_file": "object-vendordata-elead-marketingcampaignmonthly.evidence.json",
+      "markdown_file": "object-vendordata-elead-marketingcampaignmonthly.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.Elead.RetailGECReportDaily",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "RetailGECReportDaily"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:EDCB8FD2B5D3A1E5F0D0DB287D045A860DE62418B32CD79852825558A909B5BE",
+      "evidence_file": "object-vendordata-elead-retailgecreportdaily.evidence.json",
+      "markdown_file": "object-vendordata-elead-retailgecreportdaily.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.Elead.RetailGECReportMTD",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "RetailGECReportMTD"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9AC6C8196D12187538360CF978997E95AE58FE86F5E26FCBE487998514DB1D72",
+      "evidence_file": "object-vendordata-elead-retailgecreportmtd.evidence.json",
+      "markdown_file": "object-vendordata-elead-retailgecreportmtd.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.Elead.RetailGECReportMTDFis",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "RetailGECReportMTDFis"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:80E12FA460EE6B8C41B9CE731489E56955E7FEFED0BCDE26D0FD423A3AA25C3D",
+      "evidence_file": "object-vendordata-elead-retailgecreportmtdfis.evidence.json",
+      "markdown_file": "object-vendordata-elead-retailgecreportmtdfis.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.Elead.ScheduledCompletedTasksDaily",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "ScheduledCompletedTasksDaily"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:15A1FD6E41148A66CC4EEC98DC0F02053EC208AF560B09B6063D2CEC48527453",
+      "evidence_file": "object-vendordata-elead-scheduledcompletedtasksdaily.evidence.json",
+      "markdown_file": "object-vendordata-elead-scheduledcompletedtasksdaily.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "DimStoreRegionMapping",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "DimStoreRegionMapping"
+      ],
+      "canonical_id": "object-vendordata-elead-dimstoreregionmapping",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/Elead__DimStoreRegionMapping.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:CC79F2650EB5A285D1DBE24DA605888E6A7A57366CC1CAC722F216844342516E",
+      "object": {
+        "name": "DimStoreRegionMapping",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "Elead",
+        "qualified_name": "VendorData.Elead.DimStoreRegionMapping",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.Elead.DimStoreRegionMapping",
+        "Elead.DimStoreRegionMapping",
+        "DimStoreRegionMapping",
+        "dimstoreregionmapping"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.VendorData.dbo.uspLoadDimStoreRegionMapping"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "SgDimStoreRegionMappingID",
+          "StoreID",
+          "StoreName",
+          "RegionID",
+          "RegionName",
+          "IsActive",
+          "Meta_UpdateDate",
+          "Meta_LoadDate",
+          "Meta_ComputerName",
+          "Meta_UpdatedBy",
+          "Meta_SourceSystemName",
+          "Meta_SrcSysID",
+          "ETLExecutionID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 13,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / Elead"
+      ],
+      "evidence_file": "object-vendordata-elead-dimstoreregionmapping.evidence.json",
+      "markdown_file": "object-vendordata-elead-dimstoreregionmapping.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "EAPSLevelDaily",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "EAPSLevelDaily"
+      ],
+      "canonical_id": "object-vendordata-elead-eapsleveldaily",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/Elead__EAPSLevelDaily.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A2E377B5007A3ACCB2BFD69EF381F7D5FB5169EAD2DACD3C0EF7C6A3A738D946",
+      "object": {
+        "name": "EAPSLevelDaily",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "Elead",
+        "qualified_name": "VendorData.Elead.EAPSLevelDaily",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.Elead.EAPSLevelDaily",
+        "Elead.EAPSLevelDaily",
+        "EAPSLevelDaily",
+        "eapsleveldaily"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-DWASQL-02,12010.VendorData.dbo.uspLoadDimStoreRegionMapping"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "EAPSLevelDailyID",
+          "lCompanyID",
+          "SZChild",
+          "lUserID",
+          "UserName",
+          "Showroom",
+          "Phone",
+          "Internet",
+          "Campaign",
+          "BeBacks",
+          "InShowroom",
+          "ApptSet",
+          "ApptDue",
+          "ApptShown",
+          "ApptSold",
+          "SoldCRM",
+          "SoldDMS",
+          "SoldDMSPCT",
+          "Meta_SourceFileName",
+          "Meta_FileDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 27,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / Elead"
+      ],
+      "evidence_file": "object-vendordata-elead-eapsleveldaily.evidence.json",
+      "markdown_file": "object-vendordata-elead-eapsleveldaily.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "EAPSLevelMTD",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "EAPSLevelMTD"
+      ],
+      "canonical_id": "object-vendordata-elead-eapslevelmtd",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/Elead__EAPSLevelMTD.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:671AB10A446A711E23FACB736975BEB9BCA057F26BE6DFF0CFD5F83EB1196E57",
+      "object": {
+        "name": "EAPSLevelMTD",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "Elead",
+        "qualified_name": "VendorData.Elead.EAPSLevelMTD",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.Elead.EAPSLevelMTD",
+        "Elead.EAPSLevelMTD",
+        "EAPSLevelMTD",
+        "eapslevelmtd"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-DWASQL-02,12010.VendorData.dbo.uspEleadChangeInMTDLeads",
+          "L1-DWASQL-02,12010.VendorData.dbo.uspLoadDimStoreRegionMapping"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "EAPSLevelMTDID",
+          "lCompanyID",
+          "SZChild",
+          "lUserID",
+          "UserName",
+          "Showroom",
+          "Phone",
+          "Internet",
+          "Campaign",
+          "BeBacks",
+          "InShowroom",
+          "ApptSet",
+          "ApptDue",
+          "ApptShown",
+          "ApptSold",
+          "SoldCRM",
+          "SoldDMS",
+          "SoldDMSPCT",
+          "Meta_SourceFileName",
+          "Meta_FileDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 27,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / Elead"
+      ],
+      "evidence_file": "object-vendordata-elead-eapslevelmtd.evidence.json",
+      "markdown_file": "object-vendordata-elead-eapslevelmtd.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "EchoParkGECReportDaily",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "EchoParkGECReportDaily"
+      ],
+      "canonical_id": "object-vendordata-elead-echoparkgecreportdaily",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/Elead__EchoParkGECReportDaily.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:411218BBDCA7D447907B84D3409AA0D0742B0CCBF19F8BAB68FC799A7A8A0825",
+      "object": {
+        "name": "EchoParkGECReportDaily",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "Elead",
+        "qualified_name": "VendorData.Elead.EchoParkGECReportDaily",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.Elead.EchoParkGECReportDaily",
+        "Elead.EchoParkGECReportDaily",
+        "EchoParkGECReportDaily",
+        "echoparkgecreportdaily"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-5FSQL-01.Sonic_DW.dbo.vw_Fact_GECReportDaily",
+          "L1-DWASQL-02,12010.VendorData.dbo.uspLoadDimStoreRegionMapping"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "EchoParkGECReportDailyID",
+          "CompanyName",
+          "ChildCompanyID",
+          "AgentOrder",
+          "Agent",
+          "lUserID",
+          "ChildUserID",
+          "UserName",
+          "UpTypeOrder",
+          "NewUsedOrder",
+          "NewUsed",
+          "Ups",
+          "Visit",
+          "ApptsSet",
+          "ApptsDue",
+          "ApptsShown",
+          "ApptsNoShow",
+          "ApptsCancel",
+          "CRMSold",
+          "DMSSold"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 36,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / Elead"
+      ],
+      "evidence_file": "object-vendordata-elead-echoparkgecreportdaily.evidence.json",
+      "markdown_file": "object-vendordata-elead-echoparkgecreportdaily.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "EchoParkGECReportMTD",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "EchoParkGECReportMTD"
+      ],
+      "canonical_id": "object-vendordata-elead-echoparkgecreportmtd",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/Elead__EchoParkGECReportMTD.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B7BA1CA19728340CF61DB9E85A57F2A776C324576AD24C751C4E2B0D52333970",
+      "object": {
+        "name": "EchoParkGECReportMTD",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "Elead",
+        "qualified_name": "VendorData.Elead.EchoParkGECReportMTD",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.Elead.EchoParkGECReportMTD",
+        "Elead.EchoParkGECReportMTD",
+        "EchoParkGECReportMTD",
+        "echoparkgecreportmtd"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-DWASQL-02,12010.VendorData.dbo.uspLoadDimStoreRegionMapping",
+          "L1-DWASQL-02,12010.VendorData.dbo.usp_KPI_EleadGEC_Src"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "EchoParkGECReportMTDID",
+          "CompanyName",
+          "ChildCompanyID",
+          "AgentOrder",
+          "Agent",
+          "lUserID",
+          "ChildUserID",
+          "UserName",
+          "UpTypeOrder",
+          "NewUsedOrder",
+          "NewUsed",
+          "Ups",
+          "Visit",
+          "ApptsSet",
+          "ApptsDue",
+          "ApptsShown",
+          "ApptsNoShow",
+          "ApptsCancel",
+          "CRMSold",
+          "DMSSold"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 36,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / Elead"
+      ],
+      "evidence_file": "object-vendordata-elead-echoparkgecreportmtd.evidence.json",
+      "markdown_file": "object-vendordata-elead-echoparkgecreportmtd.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "EchoParkGECReportMTDFis",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "EchoParkGECReportMTDFis"
+      ],
+      "canonical_id": "object-vendordata-elead-echoparkgecreportmtdfis",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/Elead__EchoParkGECReportMTDFis.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:3197E0D0E2BAD34BDA06DF0B9255532969B823550A1652A848F72D923409EED6",
+      "object": {
+        "name": "EchoParkGECReportMTDFis",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "Elead",
+        "qualified_name": "VendorData.Elead.EchoParkGECReportMTDFis",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.Elead.EchoParkGECReportMTDFis",
+        "Elead.EchoParkGECReportMTDFis",
+        "EchoParkGECReportMTDFis",
+        "echoparkgecreportmtdfis"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-DWASQL-02,12010.VendorData.dbo.uspLoadDimStoreRegionMapping"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "EchoParkGECReportMTDFisID",
+          "CompanyName",
+          "ChildCompanyID",
+          "AgentOrder",
+          "Agent",
+          "lUserID",
+          "ChildUserID",
+          "UserName",
+          "UpTypeOrder",
+          "NewUsedOrder",
+          "NewUsed",
+          "Ups",
+          "Visit",
+          "ApptsSet",
+          "ApptsDue",
+          "ApptsShown",
+          "ApptsNoShow",
+          "ApptsCancel",
+          "CRMSold",
+          "DMSSold"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 36,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / Elead"
+      ],
+      "evidence_file": "object-vendordata-elead-echoparkgecreportmtdfis.evidence.json",
+      "markdown_file": "object-vendordata-elead-echoparkgecreportmtdfis.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "EchoParkGECReportWTD",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "EchoParkGECReportWTD"
+      ],
+      "canonical_id": "object-vendordata-elead-echoparkgecreportwtd",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/Elead__EchoParkGECReportWTD.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:3F03D1D4F8E40E396D082849494A2BFE58C33B9E3272D5423CC74E069B5DF809",
+      "object": {
+        "name": "EchoParkGECReportWTD",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "Elead",
+        "qualified_name": "VendorData.Elead.EchoParkGECReportWTD",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.Elead.EchoParkGECReportWTD",
+        "Elead.EchoParkGECReportWTD",
+        "EchoParkGECReportWTD",
+        "echoparkgecreportwtd"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.VendorData.dbo.usp_EchoParkGECReportWTDLoad"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "EchoParkGECReportWTDID",
+          "CompanyName",
+          "ChildCompanyID",
+          "AgentOrder",
+          "Agent",
+          "lUserID",
+          "ChildUserID",
+          "UserName",
+          "UpTypeOrder",
+          "NewUsedOrder",
+          "NewUsed",
+          "Ups",
+          "Visit",
+          "ApptsSet",
+          "ApptsDue",
+          "ApptsShown",
+          "ApptsNoShow",
+          "ApptsCancel",
+          "CRMSold",
+          "DMSSold"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 38,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / Elead"
+      ],
+      "evidence_file": "object-vendordata-elead-echoparkgecreportwtd.evidence.json",
+      "markdown_file": "object-vendordata-elead-echoparkgecreportwtd.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "MarketingCampaignMonthly",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "MarketingCampaignMonthly"
+      ],
+      "canonical_id": "object-vendordata-elead-marketingcampaignmonthly",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/Elead__MarketingCampaignMonthly.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:66C7C58D98FD2BB31FE53FA128340DD513F9A8E14214A4773228A0B98472EFFF",
+      "object": {
+        "name": "MarketingCampaignMonthly",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "Elead",
+        "qualified_name": "VendorData.Elead.MarketingCampaignMonthly",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.Elead.MarketingCampaignMonthly",
+        "Elead.MarketingCampaignMonthly",
+        "MarketingCampaignMonthly",
+        "marketingcampaignmonthly"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "L1-DWASQL-02,12010.VendorData.dbo.uspEleadMktCampaignMonthlyDataLoad"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "MarketingCampaignMonthlyID",
+          "Company",
+          "CampaignName",
+          "CampaignSource",
+          "ReleaseDate",
+          "Triggered",
+          "Communications",
+          "Email",
+          "LiveCall",
+          "DirectMail",
+          "ExternalCampaign",
+          "InquiriesReplies",
+          "CXCAlerts",
+          "SalesApptSet",
+          "SalesApptConfirmed",
+          "SalesTotal",
+          "SalesRevenue",
+          "ServiceApptsSet",
+          "ServiceTotal",
+          "ServiceRevenue"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 31,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / Elead"
+      ],
+      "evidence_file": "object-vendordata-elead-marketingcampaignmonthly.evidence.json",
+      "markdown_file": "object-vendordata-elead-marketingcampaignmonthly.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "RetailGECReportDaily",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "RetailGECReportDaily"
+      ],
+      "canonical_id": "object-vendordata-elead-retailgecreportdaily",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/Elead__RetailGECReportDaily.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:EDCB8FD2B5D3A1E5F0D0DB287D045A860DE62418B32CD79852825558A909B5BE",
+      "object": {
+        "name": "RetailGECReportDaily",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "Elead",
+        "qualified_name": "VendorData.Elead.RetailGECReportDaily",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.Elead.RetailGECReportDaily",
+        "Elead.RetailGECReportDaily",
+        "RetailGECReportDaily",
+        "retailgecreportdaily"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-5FSQL-01.Sonic_DW.dbo.vw_Fact_GECReportDaily"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RetailGECReportDailyID",
+          "CompanyName",
+          "ChildCompanyID",
+          "AgentOrder",
+          "Agent",
+          "lUserID",
+          "ChildUserID",
+          "UserName",
+          "UpTypeOrder",
+          "NewUsedOrder",
+          "NewUsed",
+          "Ups",
+          "Visit",
+          "ApptsSet",
+          "ApptsDue",
+          "ApptsShown",
+          "ApptsNoShow",
+          "ApptsCancel",
+          "CRMSold",
+          "DMSSold"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 36,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / Elead"
+      ],
+      "evidence_file": "object-vendordata-elead-retailgecreportdaily.evidence.json",
+      "markdown_file": "object-vendordata-elead-retailgecreportdaily.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "RetailGECReportMTD",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "RetailGECReportMTD"
+      ],
+      "canonical_id": "object-vendordata-elead-retailgecreportmtd",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/Elead__RetailGECReportMTD.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9AC6C8196D12187538360CF978997E95AE58FE86F5E26FCBE487998514DB1D72",
+      "object": {
+        "name": "RetailGECReportMTD",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "Elead",
+        "qualified_name": "VendorData.Elead.RetailGECReportMTD",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.Elead.RetailGECReportMTD",
+        "Elead.RetailGECReportMTD",
+        "RetailGECReportMTD",
+        "retailgecreportmtd"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RetailGECReportMTDID",
+          "CompanyName",
+          "ChildCompanyID",
+          "AgentOrder",
+          "Agent",
+          "lUserID",
+          "ChildUserID",
+          "UserName",
+          "UpTypeOrder",
+          "NewUsedOrder",
+          "NewUsed",
+          "Ups",
+          "Visit",
+          "ApptsSet",
+          "ApptsDue",
+          "ApptsShown",
+          "ApptsNoShow",
+          "ApptsCancel",
+          "CRMSold",
+          "DMSSold"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 37,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / Elead"
+      ],
+      "evidence_file": "object-vendordata-elead-retailgecreportmtd.evidence.json",
+      "markdown_file": "object-vendordata-elead-retailgecreportmtd.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "RetailGECReportMTDFis",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "RetailGECReportMTDFis"
+      ],
+      "canonical_id": "object-vendordata-elead-retailgecreportmtdfis",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/Elead__RetailGECReportMTDFis.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:80E12FA460EE6B8C41B9CE731489E56955E7FEFED0BCDE26D0FD423A3AA25C3D",
+      "object": {
+        "name": "RetailGECReportMTDFis",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "Elead",
+        "qualified_name": "VendorData.Elead.RetailGECReportMTDFis",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.Elead.RetailGECReportMTDFis",
+        "Elead.RetailGECReportMTDFis",
+        "RetailGECReportMTDFis",
+        "retailgecreportmtdfis"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RetailGECReportMTDFisID",
+          "CompanyName",
+          "ChildCompanyID",
+          "AgentOrder",
+          "Agent",
+          "lUserID",
+          "ChildUserID",
+          "UserName",
+          "UpTypeOrder",
+          "NewUsedOrder",
+          "NewUsed",
+          "Ups",
+          "Visit",
+          "ApptsSet",
+          "ApptsDue",
+          "ApptsShown",
+          "ApptsNoShow",
+          "ApptsCancel",
+          "CRMSold",
+          "DMSSold"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 37,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / Elead"
+      ],
+      "evidence_file": "object-vendordata-elead-retailgecreportmtdfis.evidence.json",
+      "markdown_file": "object-vendordata-elead-retailgecreportmtdfis.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ScheduledCompletedTasksDaily",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "Elead",
+        "ScheduledCompletedTasksDaily"
+      ],
+      "canonical_id": "object-vendordata-elead-scheduledcompletedtasksdaily",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/Elead__ScheduledCompletedTasksDaily.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:15A1FD6E41148A66CC4EEC98DC0F02053EC208AF560B09B6063D2CEC48527453",
+      "object": {
+        "name": "ScheduledCompletedTasksDaily",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "Elead",
+        "qualified_name": "VendorData.Elead.ScheduledCompletedTasksDaily",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.Elead.ScheduledCompletedTasksDaily",
+        "Elead.ScheduledCompletedTasksDaily",
+        "ScheduledCompletedTasksDaily",
+        "scheduledcompletedtasksdaily"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ChildCompanyID",
+          "ChildCompanyName",
+          "UserID",
+          "SalesRepresentative",
+          "Scheduled",
+          "Completed",
+          "StillOpen",
+          "Deleted",
+          "OverDue",
+          "PercentComplete",
+          "ETLExecution_ID",
+          "MonthYear",
+          "FileDateSerial",
+          "FileDate",
+          "SourceFileName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 15,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / Elead"
+      ],
+      "evidence_file": "object-vendordata-elead-scheduledcompletedtasksdaily.evidence.json",
+      "markdown_file": "object-vendordata-elead-scheduledcompletedtasksdaily.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-119-vendordata-elead-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-119-vendordata-elead-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-119-vendordata-elead-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

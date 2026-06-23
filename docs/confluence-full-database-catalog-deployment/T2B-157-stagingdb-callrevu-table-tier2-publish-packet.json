@@ -1,0 +1,250 @@
+{
+  "packet_id": "T2B-157",
+  "generated_at": "2026-06-23T18:54:22.017Z",
+  "batch": {
+    "batch_id": "T2B-157",
+    "priority_rank": 157,
+    "platform": "SQL Server",
+    "database": "StagingDB",
+    "schema": "callrevu",
+    "object_type_scope": "table",
+    "object_count": 1,
+    "high_use_objects": 0,
+    "downstream_uses": 2,
+    "first_object": "CallReviewStage",
+    "last_object": "CallReviewStage",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / callrevu",
+    "object_names": ["CallReviewStage"],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 1,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 1,
+    "total_planned_pages": 5
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB"],
+      "page_type": "database",
+      "evidence_hash": "sha256:86BBBA4A90EF1C66989EFB3B9746AF88467BE01889393493BBDE0177897E19A4",
+      "evidence_file": "database-stagingdb.evidence.json",
+      "markdown_file": "database-stagingdb.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.callrevu",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB", "callrevu"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:3E055C5E9D6F92D850348ADE0135E0858A16C08A945FED161BB1E925DC57F6D6",
+      "evidence_file": "schema-stagingdb-callrevu.evidence.json",
+      "markdown_file": "schema-stagingdb-callrevu.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.callrevu.CallReviewStage",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "callrevu",
+        "CallReviewStage"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B9E104B6DEB84097F0B318E5B175D9236FED21F110DF44EEBEABBC7EA3ED6158",
+      "evidence_file": "object-stagingdb-callrevu-callreviewstage.evidence.json",
+      "markdown_file": "object-stagingdb-callrevu-callreviewstage.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "CallReviewStage",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "callrevu",
+        "CallReviewStage"
+      ],
+      "canonical_id": "object-stagingdb-callrevu-callreviewstage",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/callrevu__CallReviewStage.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B9E104B6DEB84097F0B318E5B175D9236FED21F110DF44EEBEABBC7EA3ED6158",
+      "object": {
+        "name": "CallReviewStage",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "callrevu",
+        "qualified_name": "StagingDB.callrevu.CallReviewStage",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.callrevu.CallReviewStage",
+        "callrevu.CallReviewStage",
+        "CallReviewStage",
+        "callreviewstage"
+      ],
+      "lineage": {
+        "upstream_loaders": ["V1-SSIS25-01, 11040.SSISDB.CallRevu.CallRevu.CallRevu_SrcToStg.dtsx"],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "V1-SSIS25-01, 11040.SSISDB.CallRevu.CallRevu.CallRevu_StgToVendorData.dtsx"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Audio Link",
+          "Call ID",
+          "Index",
+          "Date",
+          "Day",
+          "Time",
+          "Location Code",
+          "Location ID",
+          "Location Name",
+          "Ad Source1",
+          "Ad Source2",
+          "Ad Source3",
+          "Ad Source4",
+          "Ad Source5",
+          "Result",
+          "Duration",
+          "Review Status",
+          "Sales Status",
+          "Call Type Status",
+          "Tracking Number"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 70,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / callrevu"
+      ],
+      "evidence_file": "object-stagingdb-callrevu-callreviewstage.evidence.json",
+      "markdown_file": "object-stagingdb-callrevu-callreviewstage.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-157-stagingdb-callrevu-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-157-stagingdb-callrevu-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-157-stagingdb-callrevu-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

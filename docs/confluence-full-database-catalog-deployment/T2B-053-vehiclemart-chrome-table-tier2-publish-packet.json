@@ -1,0 +1,3754 @@
+{
+  "packet_id": "T2B-053",
+  "generated_at": "2026-06-23T18:16:53.997Z",
+  "batch": {
+    "batch_id": "T2B-053",
+    "priority_rank": 53,
+    "platform": "SQL Server",
+    "database": "VehicleMart",
+    "schema": "Chrome",
+    "object_type_scope": "table",
+    "object_count": 30,
+    "high_use_objects": 2,
+    "downstream_uses": 30,
+    "first_object": "Input",
+    "last_object": "UVCFuzzyLookupPricingApp",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome",
+    "object_names": [
+      "Input",
+      "VinList",
+      "UVCFuzzyLookup",
+      "AmbiguousOption",
+      "BodyType",
+      "ChromeStyleIdFuzzyResponse",
+      "ConsumerInfo",
+      "ConsumerInfoValue",
+      "ExteriorColor",
+      "ExteriorColorXref",
+      "GenericEquipment",
+      "GenericExteriorColor",
+      "Image",
+      "InteriorColor",
+      "MatchedEquipment",
+      "MatchedNonfactoryEquipment",
+      "Option",
+      "ResponseLog",
+      "ResponseStatus",
+      "StandardEquipment",
+      "Style",
+      "TechSpec",
+      "TechSpecValue",
+      "UVCMappingStg",
+      "Acode",
+      "Engine",
+      "OemDescription",
+      "VehicleDescription",
+      "UVCFuzzyLookupBB",
+      "UVCFuzzyLookupPricingApp"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 30,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 30,
+    "total_planned_pages": 34
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VehicleMart"],
+      "page_type": "database",
+      "evidence_hash": "sha256:BC17440ACC9200DD007BC9CDFE5033D96E88BF08A9A936D38117301D42448B6E",
+      "evidence_file": "database-vehiclemart.evidence.json",
+      "markdown_file": "database-vehiclemart.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VehicleMart", "Chrome"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:06F60E600C139A65C098B0C1F2C312A56F4EAB7A9C30B993F5231760A4BF4CB1",
+      "evidence_file": "schema-vehiclemart-chrome.evidence.json",
+      "markdown_file": "schema-vehiclemart-chrome.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.Acode",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "Acode"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:2AD8956FE254A37CCB95F2E0075551351349A212D57AFA8D8605D5B39BACFAC3",
+      "evidence_file": "object-vehiclemart-chrome-acode.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-acode.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.AmbiguousOption",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "AmbiguousOption"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B82C1F2E22E5BE1B29869E601B91703C874DC896A2554AAD7243E371E7042621",
+      "evidence_file": "object-vehiclemart-chrome-ambiguousoption.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-ambiguousoption.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.BodyType",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "BodyType"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:CB667A022E5128D2F216FCB53995A919C88691F678D0A5A06296D35691C4E60F",
+      "evidence_file": "object-vehiclemart-chrome-bodytype.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-bodytype.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.ChromeStyleIdFuzzyResponse",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "ChromeStyleIdFuzzyResponse"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:F21C7BAD8215FEF33398531031CDE25AE3B5520AAA38B10BDFDFC1E80FC60810",
+      "evidence_file": "object-vehiclemart-chrome-chromestyleidfuzzyresponse.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-chromestyleidfuzzyresponse.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.ConsumerInfo",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "ConsumerInfo"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:EA54EA4728B071A17D435B7A3C11D4552772D134F321B9AE3DF15364BC26BC0E",
+      "evidence_file": "object-vehiclemart-chrome-consumerinfo.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-consumerinfo.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.ConsumerInfoValue",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "ConsumerInfoValue"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B787EE36D84E6BC266BDD6F640B9A5852EFC7EBC2AD9C987253D54ED99524408",
+      "evidence_file": "object-vehiclemart-chrome-consumerinfovalue.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-consumerinfovalue.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.Engine",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "Engine"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E8A612B33C3FE3A68F7D1647F775809F6020C1777C3CEC5B4F6DC480DCD1E155",
+      "evidence_file": "object-vehiclemart-chrome-engine.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-engine.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.ExteriorColor",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "ExteriorColor"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:701DE1485E757715B0098EF67E7AA9240EC0FD905478A98EF3237A4921C079C1",
+      "evidence_file": "object-vehiclemart-chrome-exteriorcolor.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-exteriorcolor.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.ExteriorColorXref",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "ExteriorColorXref"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:1D76C81ECE32C182A718958179D5BC3F0D42D32484D590AF6C3FA5995EDF24D4",
+      "evidence_file": "object-vehiclemart-chrome-exteriorcolorxref.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-exteriorcolorxref.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.GenericEquipment",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "GenericEquipment"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:4D8C1B0BD6058BAFD62C4773FFA9C0E1EF49AE7ACE974B0A6731F8A573E24B73",
+      "evidence_file": "object-vehiclemart-chrome-genericequipment.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-genericequipment.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.GenericExteriorColor",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "GenericExteriorColor"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:0FA183F98F99DFD0E147B02574AEBCFF20AFEC48EE83908E7D3965B46CF1756A",
+      "evidence_file": "object-vehiclemart-chrome-genericexteriorcolor.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-genericexteriorcolor.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.Image",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "Image"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:BD9D58ADF4BEF3B5A827A9EB85C9692F6618590E563DE0E2F371FD295CC38DAA",
+      "evidence_file": "object-vehiclemart-chrome-image.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-image.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.Input",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "Input"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:1F136C12BF61449B9540AAB07F622291E09BAC0EAC340EE77C2B87776B89FC47",
+      "evidence_file": "object-vehiclemart-chrome-input.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-input.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.InteriorColor",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "InteriorColor"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D1282DBDAE829967A5234391F583A7F90BCE099ABB3BB08BA899DF092F6A0F5D",
+      "evidence_file": "object-vehiclemart-chrome-interiorcolor.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-interiorcolor.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.MatchedEquipment",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "MatchedEquipment"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:25B07C21C5C421148C27DA12C9F851CAD3B49483FD7B9E848DEEFB5C5A7AC29D",
+      "evidence_file": "object-vehiclemart-chrome-matchedequipment.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-matchedequipment.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.MatchedNonfactoryEquipment",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "MatchedNonfactoryEquipment"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:813B104D70973B3B9C62B3E46AF105E771B77B66FA2AFB42EE119F688C141469",
+      "evidence_file": "object-vehiclemart-chrome-matchednonfactoryequipment.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-matchednonfactoryequipment.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.OemDescription",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "OemDescription"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:90B4374FEB9892675792E0C3591D21392335D806B35F7CB5DDDD8E13D698BB70",
+      "evidence_file": "object-vehiclemart-chrome-oemdescription.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-oemdescription.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.Option",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "Option"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:45F61E5038B1D801886CC672638C7067BCCFCC31B4AEEC996BE78D752BD35784",
+      "evidence_file": "object-vehiclemart-chrome-option.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-option.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.ResponseLog",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "ResponseLog"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9D0577283056B9869BB60306AB1AB4502645D81D671B1858A1C34ACE32C2FE32",
+      "evidence_file": "object-vehiclemart-chrome-responselog.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-responselog.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.ResponseStatus",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "ResponseStatus"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:37FE1B9412AFC236EDF8E9AA55DE800F75F622B36297F625E07DC77FC73C9BD2",
+      "evidence_file": "object-vehiclemart-chrome-responsestatus.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-responsestatus.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.StandardEquipment",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "StandardEquipment"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:2050696A87DEC95E57CA5CADE127E2339F79C6513BAC7C74E866ECDFC6B90425",
+      "evidence_file": "object-vehiclemart-chrome-standardequipment.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-standardequipment.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.Style",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "Style"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:03F5E185D5726AFB8D2399D87F0653CD096C20866D88F68F1BC7E4AB2947C386",
+      "evidence_file": "object-vehiclemart-chrome-style.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-style.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.TechSpec",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "TechSpec"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9E309AAD30C97DDAF4365A2EDAB99DD959CAE95BAB771F7DAB64E24E203CB29A",
+      "evidence_file": "object-vehiclemart-chrome-techspec.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-techspec.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.TechSpecValue",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "TechSpecValue"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:FE38AB3AE6117AD17FC9D228626AD78176E3329C820AD5E829321CF4D84C5DFD",
+      "evidence_file": "object-vehiclemart-chrome-techspecvalue.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-techspecvalue.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.UVCFuzzyLookup",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "UVCFuzzyLookup"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:520B3A96DBDA8B7DAAFA59203DA5FB9AD455165E23886D913C4A37A48E9634A7",
+      "evidence_file": "object-vehiclemart-chrome-uvcfuzzylookup.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-uvcfuzzylookup.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.UVCFuzzyLookupBB",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "UVCFuzzyLookupBB"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:50959F5064CA80F2C7DEA70DA6377A72DF6A86C8C025FE811E3A2EBE9CB1223F",
+      "evidence_file": "object-vehiclemart-chrome-uvcfuzzylookupbb.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-uvcfuzzylookupbb.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.UVCFuzzyLookupPricingApp",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "UVCFuzzyLookupPricingApp"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D7A39D52ACF3DB47B26E0007BF27BAAE436A24BF61D4C5EB8B3851BB204CDDB5",
+      "evidence_file": "object-vehiclemart-chrome-uvcfuzzylookuppricingapp.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-uvcfuzzylookuppricingapp.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.UVCMappingStg",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "UVCMappingStg"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:2A04FA485BAC6962AC9F5ECD9380E8D6FCFBB0E2549BD1E2CEB87CC01088D38B",
+      "evidence_file": "object-vehiclemart-chrome-uvcmappingstg.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-uvcmappingstg.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.VehicleDescription",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "VehicleDescription"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:58D798686BBA2F2C967E179022854E662EA3BE50BAC9F7C73716C6B98159ACED",
+      "evidence_file": "object-vehiclemart-chrome-vehicledescription.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-vehicledescription.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Chrome.VinList",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "VinList"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:3C00B7564E85B9F78BBCCE58F78FD2A562249BE58036E765D22259297E8B6D43",
+      "evidence_file": "object-vehiclemart-chrome-vinlist.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-vinlist.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "Acode",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "Acode"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-acode",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__Acode.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:2AD8956FE254A37CCB95F2E0075551351349A212D57AFA8D8605D5B39BACFAC3",
+      "object": {
+        "name": "Acode",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.Acode",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 12 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VehicleMart.Chrome.Acode", "Chrome.Acode", "Acode", "acode"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 8,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-acode.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-acode.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "AmbiguousOption",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "AmbiguousOption"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-ambiguousoption",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__AmbiguousOption.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B82C1F2E22E5BE1B29869E601B91703C874DC896A2554AAD7243E371E7042621",
+      "object": {
+        "name": "AmbiguousOption",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.AmbiguousOption",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.AmbiguousOption",
+        "Chrome.AmbiguousOption",
+        "AmbiguousOption",
+        "ambiguousoption"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 28,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-ambiguousoption.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-ambiguousoption.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "BodyType",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "BodyType"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-bodytype",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__BodyType.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:CB667A022E5128D2F216FCB53995A919C88691F678D0A5A06296D35691C4E60F",
+      "object": {
+        "name": "BodyType",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.BodyType",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VehicleMart.Chrome.BodyType", "Chrome.BodyType", "BodyType", "bodytype"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-bodytype.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-bodytype.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ChromeStyleIdFuzzyResponse",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "ChromeStyleIdFuzzyResponse"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-chromestyleidfuzzyresponse",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__ChromeStyleIdFuzzyResponse.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:F21C7BAD8215FEF33398531031CDE25AE3B5520AAA38B10BDFDFC1E80FC60810",
+      "object": {
+        "name": "ChromeStyleIdFuzzyResponse",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.ChromeStyleIdFuzzyResponse",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.ChromeStyleIdFuzzyResponse",
+        "Chrome.ChromeStyleIdFuzzyResponse",
+        "ChromeStyleIdFuzzyResponse",
+        "chromestyleidfuzzyresponse"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-chromestyleidfuzzyresponse.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-chromestyleidfuzzyresponse.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ConsumerInfo",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "ConsumerInfo"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-consumerinfo",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__ConsumerInfo.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:EA54EA4728B071A17D435B7A3C11D4552772D134F321B9AE3DF15364BC26BC0E",
+      "object": {
+        "name": "ConsumerInfo",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.ConsumerInfo",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.ConsumerInfo",
+        "Chrome.ConsumerInfo",
+        "ConsumerInfo",
+        "consumerinfo"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-consumerinfo.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-consumerinfo.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ConsumerInfoValue",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "ConsumerInfoValue"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-consumerinfovalue",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__ConsumerInfoValue.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B787EE36D84E6BC266BDD6F640B9A5852EFC7EBC2AD9C987253D54ED99524408",
+      "object": {
+        "name": "ConsumerInfoValue",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.ConsumerInfoValue",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.ConsumerInfoValue",
+        "Chrome.ConsumerInfoValue",
+        "ConsumerInfoValue",
+        "consumerinfovalue"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-consumerinfovalue.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-consumerinfovalue.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Engine",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "Engine"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-engine",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__Engine.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E8A612B33C3FE3A68F7D1647F775809F6020C1777C3CEC5B4F6DC480DCD1E155",
+      "object": {
+        "name": "Engine",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.Engine",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 12 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VehicleMart.Chrome.Engine", "Chrome.Engine", "Engine", "engine"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 32,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-engine.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-engine.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ExteriorColor",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "ExteriorColor"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-exteriorcolor",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__ExteriorColor.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:701DE1485E757715B0098EF67E7AA9240EC0FD905478A98EF3237A4921C079C1",
+      "object": {
+        "name": "ExteriorColor",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.ExteriorColor",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.ExteriorColor",
+        "Chrome.ExteriorColor",
+        "ExteriorColor",
+        "exteriorcolor"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 13,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-exteriorcolor.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-exteriorcolor.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ExteriorColorXref",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "ExteriorColorXref"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-exteriorcolorxref",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__ExteriorColorXref.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:1D76C81ECE32C182A718958179D5BC3F0D42D32484D590AF6C3FA5995EDF24D4",
+      "object": {
+        "name": "ExteriorColorXref",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.ExteriorColorXref",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.ExteriorColorXref",
+        "Chrome.ExteriorColorXref",
+        "ExteriorColorXref",
+        "exteriorcolorxref"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-exteriorcolorxref.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-exteriorcolorxref.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GenericEquipment",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "GenericEquipment"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-genericequipment",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__GenericEquipment.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:4D8C1B0BD6058BAFD62C4773FFA9C0E1EF49AE7ACE974B0A6731F8A573E24B73",
+      "object": {
+        "name": "GenericEquipment",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.GenericEquipment",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.GenericEquipment",
+        "Chrome.GenericEquipment",
+        "GenericEquipment",
+        "genericequipment"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-genericequipment.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-genericequipment.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GenericExteriorColor",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "GenericExteriorColor"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-genericexteriorcolor",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__GenericExteriorColor.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:0FA183F98F99DFD0E147B02574AEBCFF20AFEC48EE83908E7D3965B46CF1756A",
+      "object": {
+        "name": "GenericExteriorColor",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.GenericExteriorColor",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.GenericExteriorColor",
+        "Chrome.GenericExteriorColor",
+        "GenericExteriorColor",
+        "genericexteriorcolor"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-genericexteriorcolor.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-genericexteriorcolor.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Image",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "Image"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-image",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__Image.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:BD9D58ADF4BEF3B5A827A9EB85C9692F6618590E563DE0E2F371FD295CC38DAA",
+      "object": {
+        "name": "Image",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.Image",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VehicleMart.Chrome.Image", "Chrome.Image", "Image", "image"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 22,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-image.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-image.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Input",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "Input"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-input",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__Input.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:1F136C12BF61449B9540AAB07F622291E09BAC0EAC340EE77C2B87776B89FC47",
+      "object": {
+        "name": "Input",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.Input",
+        "tags": ["high-use", "profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "high-use: 15 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 15 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VehicleMart.Chrome.Input", "Chrome.Input", "Input", "input"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-input.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-input.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "InteriorColor",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "InteriorColor"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-interiorcolor",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__InteriorColor.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D1282DBDAE829967A5234391F583A7F90BCE099ABB3BB08BA899DF092F6A0F5D",
+      "object": {
+        "name": "InteriorColor",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.InteriorColor",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.InteriorColor",
+        "Chrome.InteriorColor",
+        "InteriorColor",
+        "interiorcolor"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 13,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-interiorcolor.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-interiorcolor.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "MatchedEquipment",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "MatchedEquipment"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-matchedequipment",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__MatchedEquipment.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:25B07C21C5C421148C27DA12C9F851CAD3B49483FD7B9E848DEEFB5C5A7AC29D",
+      "object": {
+        "name": "MatchedEquipment",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.MatchedEquipment",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.MatchedEquipment",
+        "Chrome.MatchedEquipment",
+        "MatchedEquipment",
+        "matchedequipment"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-matchedequipment.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-matchedequipment.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "MatchedNonfactoryEquipment",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "MatchedNonfactoryEquipment"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-matchednonfactoryequipment",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__MatchedNonfactoryEquipment.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:813B104D70973B3B9C62B3E46AF105E771B77B66FA2AFB42EE119F688C141469",
+      "object": {
+        "name": "MatchedNonfactoryEquipment",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.MatchedNonfactoryEquipment",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.MatchedNonfactoryEquipment",
+        "Chrome.MatchedNonfactoryEquipment",
+        "MatchedNonfactoryEquipment",
+        "matchednonfactoryequipment"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-matchednonfactoryequipment.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-matchednonfactoryequipment.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "OemDescription",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "OemDescription"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-oemdescription",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__OemDescription.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:90B4374FEB9892675792E0C3591D21392335D806B35F7CB5DDDD8E13D698BB70",
+      "object": {
+        "name": "OemDescription",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.OemDescription",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 12 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.OemDescription",
+        "Chrome.OemDescription",
+        "OemDescription",
+        "oemdescription"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 12,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-oemdescription.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-oemdescription.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Option",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "Option"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-option",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__Option.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:45F61E5038B1D801886CC672638C7067BCCFCC31B4AEEC996BE78D752BD35784",
+      "object": {
+        "name": "Option",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.Option",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VehicleMart.Chrome.Option", "Chrome.Option", "Option", "option"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 28,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-option.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-option.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ResponseLog",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "ResponseLog"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-responselog",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__ResponseLog.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9D0577283056B9869BB60306AB1AB4502645D81D671B1858A1C34ACE32C2FE32",
+      "object": {
+        "name": "ResponseLog",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.ResponseLog",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.ResponseLog",
+        "Chrome.ResponseLog",
+        "ResponseLog",
+        "responselog"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-responselog.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-responselog.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ResponseStatus",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "ResponseStatus"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-responsestatus",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__ResponseStatus.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:37FE1B9412AFC236EDF8E9AA55DE800F75F622B36297F625E07DC77FC73C9BD2",
+      "object": {
+        "name": "ResponseStatus",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.ResponseStatus",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.ResponseStatus",
+        "Chrome.ResponseStatus",
+        "ResponseStatus",
+        "responsestatus"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-responsestatus.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-responsestatus.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StandardEquipment",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "StandardEquipment"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-standardequipment",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__StandardEquipment.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:2050696A87DEC95E57CA5CADE127E2339F79C6513BAC7C74E866ECDFC6B90425",
+      "object": {
+        "name": "StandardEquipment",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.StandardEquipment",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.StandardEquipment",
+        "Chrome.StandardEquipment",
+        "StandardEquipment",
+        "standardequipment"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 15,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-standardequipment.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-standardequipment.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Style",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "Style"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-style",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__Style.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:03F5E185D5726AFB8D2399D87F0653CD096C20866D88F68F1BC7E4AB2947C386",
+      "object": {
+        "name": "Style",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.Style",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VehicleMart.Chrome.Style", "Chrome.Style", "Style", "style"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 28,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-style.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-style.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TechSpec",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "TechSpec"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-techspec",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__TechSpec.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9E309AAD30C97DDAF4365A2EDAB99DD959CAE95BAB771F7DAB64E24E203CB29A",
+      "object": {
+        "name": "TechSpec",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.TechSpec",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VehicleMart.Chrome.TechSpec", "Chrome.TechSpec", "TechSpec", "techspec"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-techspec.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-techspec.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TechSpecValue",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "TechSpecValue"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-techspecvalue",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__TechSpecValue.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:FE38AB3AE6117AD17FC9D228626AD78176E3329C820AD5E829321CF4D84C5DFD",
+      "object": {
+        "name": "TechSpecValue",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.TechSpecValue",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.TechSpecValue",
+        "Chrome.TechSpecValue",
+        "TechSpecValue",
+        "techspecvalue"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-techspecvalue.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-techspecvalue.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "UVCFuzzyLookup",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "UVCFuzzyLookup"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-uvcfuzzylookup",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__UVCFuzzyLookup.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:520B3A96DBDA8B7DAAFA59203DA5FB9AD455165E23886D913C4A37A48E9634A7",
+      "object": {
+        "name": "UVCFuzzyLookup",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.UVCFuzzyLookup",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 19 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.UVCFuzzyLookup",
+        "Chrome.UVCFuzzyLookup",
+        "UVCFuzzyLookup",
+        "uvcfuzzylookup"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-uvcfuzzylookup.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-uvcfuzzylookup.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "UVCFuzzyLookupBB",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "UVCFuzzyLookupBB"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-uvcfuzzylookupbb",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__UVCFuzzyLookupBB.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:50959F5064CA80F2C7DEA70DA6377A72DF6A86C8C025FE811E3A2EBE9CB1223F",
+      "object": {
+        "name": "UVCFuzzyLookupBB",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.UVCFuzzyLookupBB",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 10 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.UVCFuzzyLookupBB",
+        "Chrome.UVCFuzzyLookupBB",
+        "UVCFuzzyLookupBB",
+        "uvcfuzzylookupbb"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-uvcfuzzylookupbb.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-uvcfuzzylookupbb.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "UVCFuzzyLookupPricingApp",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "UVCFuzzyLookupPricingApp"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-uvcfuzzylookuppricingapp",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__UVCFuzzyLookupPricingApp.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D7A39D52ACF3DB47B26E0007BF27BAAE436A24BF61D4C5EB8B3851BB204CDDB5",
+      "object": {
+        "name": "UVCFuzzyLookupPricingApp",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.UVCFuzzyLookupPricingApp",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.UVCFuzzyLookupPricingApp",
+        "Chrome.UVCFuzzyLookupPricingApp",
+        "UVCFuzzyLookupPricingApp",
+        "uvcfuzzylookuppricingapp"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-uvcfuzzylookuppricingapp.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-uvcfuzzylookuppricingapp.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "UVCMappingStg",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "UVCMappingStg"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-uvcmappingstg",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__UVCMappingStg.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:2A04FA485BAC6962AC9F5ECD9380E8D6FCFBB0E2549BD1E2CEB87CC01088D38B",
+      "object": {
+        "name": "UVCMappingStg",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.UVCMappingStg",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.UVCMappingStg",
+        "Chrome.UVCMappingStg",
+        "UVCMappingStg",
+        "uvcmappingstg"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-uvcmappingstg.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-uvcmappingstg.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "VehicleDescription",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "VehicleDescription"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-vehicledescription",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__VehicleDescription.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:58D798686BBA2F2C967E179022854E662EA3BE50BAC9F7C73716C6B98159ACED",
+      "object": {
+        "name": "VehicleDescription",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.VehicleDescription",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 12 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Chrome.VehicleDescription",
+        "Chrome.VehicleDescription",
+        "VehicleDescription",
+        "vehicledescription"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 36,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-vehicledescription.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-vehicledescription.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "VinList",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Chrome",
+        "VinList"
+      ],
+      "canonical_id": "object-vehiclemart-chrome-vinlist",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Chrome__VinList.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:3C00B7564E85B9F78BBCCE58F78FD2A562249BE58036E765D22259297E8B6D43",
+      "object": {
+        "name": "VinList",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Chrome",
+        "qualified_name": "VehicleMart.Chrome.VinList",
+        "tags": ["high-use", "profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "high-use: 15 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 15 upstream and 15 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VehicleMart.Chrome.VinList", "Chrome.VinList", "VinList", "vinlist"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Chrome"
+      ],
+      "evidence_file": "object-vehiclemart-chrome-vinlist.evidence.json",
+      "markdown_file": "object-vehiclemart-chrome-vinlist.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-053-vehiclemart-chrome-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-053-vehiclemart-chrome-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-053-vehiclemart-chrome-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

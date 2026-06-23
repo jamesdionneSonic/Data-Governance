@@ -1,0 +1,500 @@
+{
+  "packet_id": "T2B-062",
+  "generated_at": "2026-06-23T18:19:13.621Z",
+  "batch": {
+    "batch_id": "T2B-062",
+    "priority_rank": 62,
+    "platform": "SQL Server",
+    "database": "CBS",
+    "schema": "dbo",
+    "object_type_scope": "table",
+    "object_count": 3,
+    "high_use_objects": 1,
+    "downstream_uses": 28,
+    "first_object": "Template",
+    "last_object": "ManheimPurchaseLog",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / CBS / dbo",
+    "object_names": ["Template", "DealerDMSMapping", "ManheimPurchaseLog"],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 3,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 3,
+    "total_planned_pages": 7
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "CBS",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "CBS"],
+      "page_type": "database",
+      "evidence_hash": "sha256:FCE36329055DA896FAB1EDD28D2E13CC99F36EA13597200B0E505868217AD3E5",
+      "evidence_file": "database-cbs.evidence.json",
+      "markdown_file": "database-cbs.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "CBS.dbo",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "CBS", "dbo"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:251F0E1F6217E374F845BC5761E639CFE814AEF06EF359AE12DAA8F25688205B",
+      "evidence_file": "schema-cbs-dbo.evidence.json",
+      "markdown_file": "schema-cbs-dbo.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "CBS.dbo.DealerDMSMapping",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "CBS",
+        "dbo",
+        "DealerDMSMapping"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D8B420EB2DBAC14CAC4684F083FAE2443ECA4AE9759B8DF080FD5A200FB16790",
+      "evidence_file": "object-cbs-dbo-dealerdmsmapping.evidence.json",
+      "markdown_file": "object-cbs-dbo-dealerdmsmapping.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "CBS.dbo.ManheimPurchaseLog",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "CBS",
+        "dbo",
+        "ManheimPurchaseLog"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:C1834432208699BB03DFFA18C757A47EE580462E4D1F30F877283DB6914EE6AC",
+      "evidence_file": "object-cbs-dbo-manheimpurchaselog.evidence.json",
+      "markdown_file": "object-cbs-dbo-manheimpurchaselog.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "CBS.dbo.Template",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "CBS",
+        "dbo",
+        "Template"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:DF91F6BF0A3BCE16C19E56BC75CCE681C03CAD3C595EB633BD865EFDA6107E00",
+      "evidence_file": "object-cbs-dbo-template.evidence.json",
+      "markdown_file": "object-cbs-dbo-template.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "DealerDMSMapping",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "CBS",
+        "dbo",
+        "DealerDMSMapping"
+      ],
+      "canonical_id": "object-cbs-dbo-dealerdmsmapping",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/CBS/tables/dbo__DealerDMSMapping.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D8B420EB2DBAC14CAC4684F083FAE2443ECA4AE9759B8DF080FD5A200FB16790",
+      "object": {
+        "name": "DealerDMSMapping",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "CBS",
+        "schema": "dbo",
+        "qualified_name": "CBS.dbo.DealerDMSMapping",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "CBS.dbo.DealerDMSMapping",
+        "dbo.DealerDMSMapping",
+        "DealerDMSMapping",
+        "dealerdmsmapping"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 4,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / CBS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / CBS / dbo"
+      ],
+      "evidence_file": "object-cbs-dbo-dealerdmsmapping.evidence.json",
+      "markdown_file": "object-cbs-dbo-dealerdmsmapping.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ManheimPurchaseLog",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "CBS",
+        "dbo",
+        "ManheimPurchaseLog"
+      ],
+      "canonical_id": "object-cbs-dbo-manheimpurchaselog",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/CBS/tables/dbo__ManheimPurchaseLog.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:C1834432208699BB03DFFA18C757A47EE580462E4D1F30F877283DB6914EE6AC",
+      "object": {
+        "name": "ManheimPurchaseLog",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "CBS",
+        "schema": "dbo",
+        "qualified_name": "CBS.dbo.ManheimPurchaseLog",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "CBS.dbo.ManheimPurchaseLog",
+        "dbo.ManheimPurchaseLog",
+        "ManheimPurchaseLog",
+        "manheimpurchaselog"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 12,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / CBS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / CBS / dbo"
+      ],
+      "evidence_file": "object-cbs-dbo-manheimpurchaselog.evidence.json",
+      "markdown_file": "object-cbs-dbo-manheimpurchaselog.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Template",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "CBS",
+        "dbo",
+        "Template"
+      ],
+      "canonical_id": "object-cbs-dbo-template",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/CBS/tables/dbo__Template.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:DF91F6BF0A3BCE16C19E56BC75CCE681C03CAD3C595EB633BD865EFDA6107E00",
+      "object": {
+        "name": "Template",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "CBS",
+        "schema": "dbo",
+        "qualified_name": "CBS.dbo.Template",
+        "tags": ["high-use", "profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "high-use: 24 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 0 upstream and 24 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["CBS.dbo.Template", "dbo.Template", "Template", "template"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_BuyerTarget.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_DealerDMSMapping.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_Market.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_MarketParameter.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_MarketParameterType.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_MarketPerformanceIndicators.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_MarketPerformanceIndicatorType.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_MarketTarget.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_PurchaseDetails.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_PurchaseMethods.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_Sources.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.CBA.VendorData.CBA_Stage_TransportCompany.dtsx"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "CreatedOn",
+          "CreatedBy",
+          "ModifiedOn",
+          "ModifiedBy",
+          "WeekId",
+          "BuyerTargetId",
+          "UserId",
+          "UserName",
+          "Target",
+          "ManheimDealerNumber",
+          "MarketId",
+          "EchoparkReceiving",
+          "EchoparkPurchasing",
+          "RetailReceiving",
+          "RetailPurchasing",
+          "MappedName",
+          "DistributionList",
+          "MappingId",
+          "EntityKey",
+          "EchoparkActive"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 116,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / CBS",
+        "Sonic Data Lineage / Database Catalog / SQL Server / CBS / dbo"
+      ],
+      "evidence_file": "object-cbs-dbo-template.evidence.json",
+      "markdown_file": "object-cbs-dbo-template.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-062-cbs-dbo-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-062-cbs-dbo-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-062-cbs-dbo-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

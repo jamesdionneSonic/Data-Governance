@@ -1,0 +1,2441 @@
+{
+  "packet_id": "T2B-169",
+  "generated_at": "2026-06-23T19:04:35.384Z",
+  "batch": {
+    "batch_id": "T2B-169",
+    "priority_rank": 169,
+    "platform": "SQL Server",
+    "database": "ETL_Staging",
+    "schema": "perm",
+    "object_type_scope": "table",
+    "object_count": 18,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "veh_acquired_by",
+    "last_object": "service_vehicles",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm",
+    "object_names": [
+      "veh_acquired_by",
+      "veh_acquired_type",
+      "veh_exterior_color",
+      "veh_interior_color",
+      "veh_inventory",
+      "veh_loc_make",
+      "veh_loc_model",
+      "veh_loc_series",
+      "veh_order",
+      "veh_process_code",
+      "veh_segment",
+      "veh_source",
+      "veh_vehicle",
+      "ROAMs_LaborTypes_staging",
+      "ROAMs_MenuMileage_staging",
+      "ROAMs_OpCodes_staging",
+      "ROAMs_PricingGrid_staging",
+      "service_vehicles"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 18,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 18,
+    "total_planned_pages": 22
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "ETL_Staging"],
+      "page_type": "database",
+      "evidence_hash": "sha256:DAC2D90CB3BE061D63E9E2B32F595CD9386F3A5C44DBCECB3D4790E05ABC3057",
+      "evidence_file": "database-etl-staging.evidence.json",
+      "markdown_file": "database-etl-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "ETL_Staging", "perm"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:2F09F01CDACF4F0CF626396E870C500011023F203D561CB2673D819544680AB7",
+      "evidence_file": "schema-etl-staging-perm.evidence.json",
+      "markdown_file": "schema-etl-staging-perm.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm.ROAMs_LaborTypes_staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "ROAMs_LaborTypes_staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:93FABD8F30BA1B8D28A27D4863A48290C7D8E086629A956C0D50157D1BFC7404",
+      "evidence_file": "object-etl-staging-perm-roams-labortypes-staging.evidence.json",
+      "markdown_file": "object-etl-staging-perm-roams-labortypes-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm.ROAMs_MenuMileage_staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "ROAMs_MenuMileage_staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:80FB901B0AF011B1381FB928406BAFC016FE2EE9CEB44BF2B13E501AE8C28063",
+      "evidence_file": "object-etl-staging-perm-roams-menumileage-staging.evidence.json",
+      "markdown_file": "object-etl-staging-perm-roams-menumileage-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm.ROAMs_OpCodes_staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "ROAMs_OpCodes_staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:5113643F484C1274290EDC649B4D9871F85D65D1FA4DDCC65048B91AB3769FE8",
+      "evidence_file": "object-etl-staging-perm-roams-opcodes-staging.evidence.json",
+      "markdown_file": "object-etl-staging-perm-roams-opcodes-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm.ROAMs_PricingGrid_staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "ROAMs_PricingGrid_staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:10BCB04C34D0854C300FB7557F7AB2DB453449D8584BEC3C9B8A9EC0A0FCC351",
+      "evidence_file": "object-etl-staging-perm-roams-pricinggrid-staging.evidence.json",
+      "markdown_file": "object-etl-staging-perm-roams-pricinggrid-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm.service_vehicles",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "service_vehicles"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:7535B9BBEE8A85B526BD094277088A2619878D49787F13E29EB43E1C641C232A",
+      "evidence_file": "object-etl-staging-perm-service-vehicles.evidence.json",
+      "markdown_file": "object-etl-staging-perm-service-vehicles.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm.veh_acquired_by",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_acquired_by"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:6642DF6B122633F15DA89657DBB5E65B8131893AB040D46B96EBEE15065F5F7F",
+      "evidence_file": "object-etl-staging-perm-veh-acquired-by.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-acquired-by.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm.veh_acquired_type",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_acquired_type"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:8E245B1DEC439A56F70C5B5211B61C3B3BE2D4F91E26507B82513DB3DF90551B",
+      "evidence_file": "object-etl-staging-perm-veh-acquired-type.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-acquired-type.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm.veh_exterior_color",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_exterior_color"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:8E8203B571179E1BAFDBA90F7CEFA69D3033365DA2D6F6F4024D669B86124312",
+      "evidence_file": "object-etl-staging-perm-veh-exterior-color.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-exterior-color.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm.veh_interior_color",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_interior_color"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A4478F7CEA34ED05E03D83A53CF4F60300A9077D143006878AB9294F4BA62CEB",
+      "evidence_file": "object-etl-staging-perm-veh-interior-color.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-interior-color.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm.veh_inventory",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_inventory"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:82A0B7966B3FEDA4AEFED4B144557047E7B3609B4AD8B6ACD28583CBA5F56A3F",
+      "evidence_file": "object-etl-staging-perm-veh-inventory.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-inventory.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm.veh_loc_make",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_loc_make"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:C80AF7CF3353952F5389AED9DA9209CFCB14A654B530A4AEBB28DF20A1477B64",
+      "evidence_file": "object-etl-staging-perm-veh-loc-make.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-loc-make.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm.veh_loc_model",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_loc_model"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:8A87DFFF79CB5C0BB140D6E89DBCEC98B936C58C6B24E74DC071EBBC11968ADF",
+      "evidence_file": "object-etl-staging-perm-veh-loc-model.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-loc-model.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm.veh_loc_series",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_loc_series"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:26079649144C4F8B159F5F23FFF982A59C4E6EEFC6D784F9197E251031FB0546",
+      "evidence_file": "object-etl-staging-perm-veh-loc-series.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-loc-series.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm.veh_order",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_order"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E7CAA1D591AC898EB0A520391438A1E0AE7DB3EA7F8C5D3A432D18FF1DA0F4B3",
+      "evidence_file": "object-etl-staging-perm-veh-order.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-order.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm.veh_process_code",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_process_code"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:BCA222CD8D737A963069D21D11BDAD8E310E481A084362654DB4902ED1A1C44F",
+      "evidence_file": "object-etl-staging-perm-veh-process-code.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-process-code.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm.veh_segment",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_segment"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:BA6050FF57E16270C5F2E352781E43BAB95A2421698439CC5ECC36F68D382A90",
+      "evidence_file": "object-etl-staging-perm-veh-segment.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-segment.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm.veh_source",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_source"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E56B4F32C985DED19704C646099C5DB44798016C180BA905E7948751158EB7FB",
+      "evidence_file": "object-etl-staging-perm-veh-source.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-source.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.perm.veh_vehicle",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_vehicle"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:8FD2B5157C75E327186D2BA3C97CF1A16F47B02F2B9F1EC5E92057BF025CD604",
+      "evidence_file": "object-etl-staging-perm-veh-vehicle.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-vehicle.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "ROAMs_LaborTypes_staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "ROAMs_LaborTypes_staging"
+      ],
+      "canonical_id": "object-etl-staging-perm-roams-labortypes-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/perm__ROAMs_LaborTypes_staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:93FABD8F30BA1B8D28A27D4863A48290C7D8E086629A956C0D50157D1BFC7404",
+      "object": {
+        "name": "ROAMs_LaborTypes_staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "perm",
+        "qualified_name": "ETL_Staging.perm.ROAMs_LaborTypes_staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.perm.ROAMs_LaborTypes_staging",
+        "perm.ROAMs_LaborTypes_staging",
+        "ROAMs_LaborTypes_staging",
+        "ROAMsLaborTypesstaging",
+        "roamslabortypesstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RowID",
+          "cora_acct_id",
+          "Dealership",
+          "LaborType",
+          "CP_WTY_INT",
+          "OffGridFlag"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 6,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm"
+      ],
+      "evidence_file": "object-etl-staging-perm-roams-labortypes-staging.evidence.json",
+      "markdown_file": "object-etl-staging-perm-roams-labortypes-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ROAMs_MenuMileage_staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "ROAMs_MenuMileage_staging"
+      ],
+      "canonical_id": "object-etl-staging-perm-roams-menumileage-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/perm__ROAMs_MenuMileage_staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:80FB901B0AF011B1381FB928406BAFC016FE2EE9CEB44BF2B13E501AE8C28063",
+      "object": {
+        "name": "ROAMs_MenuMileage_staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "perm",
+        "qualified_name": "ETL_Staging.perm.ROAMs_MenuMileage_staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.perm.ROAMs_MenuMileage_staging",
+        "perm.ROAMs_MenuMileage_staging",
+        "ROAMs_MenuMileage_staging",
+        "ROAMsMenuMileagestaging",
+        "roamsmenumileagestaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Make",
+          "MenuInterval",
+          "BeforeMileage",
+          "AfterMileage",
+          "StartYear",
+          "EndYear"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 6,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm"
+      ],
+      "evidence_file": "object-etl-staging-perm-roams-menumileage-staging.evidence.json",
+      "markdown_file": "object-etl-staging-perm-roams-menumileage-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ROAMs_OpCodes_staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "ROAMs_OpCodes_staging"
+      ],
+      "canonical_id": "object-etl-staging-perm-roams-opcodes-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/perm__ROAMs_OpCodes_staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:5113643F484C1274290EDC649B4D9871F85D65D1FA4DDCC65048B91AB3769FE8",
+      "object": {
+        "name": "ROAMs_OpCodes_staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "perm",
+        "qualified_name": "ETL_Staging.perm.ROAMs_OpCodes_staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.perm.ROAMs_OpCodes_staging",
+        "perm.ROAMs_OpCodes_staging",
+        "ROAMs_OpCodes_staging",
+        "ROAMsOpCodesstaging",
+        "roamsopcodesstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RowID",
+          "cora_acct_id",
+          "Dealership",
+          "OpCode",
+          "OpCodeDescription",
+          "LOF_Maint_Repair_NA",
+          "FDCIFlag",
+          "FDCIDeniedFlag",
+          "FDCINotEligibleFlag",
+          "MenuFlag",
+          "MenuNotEligibleFlag",
+          "VIPReinspectionFlag",
+          "OffGridFlag",
+          "DeclineFlag",
+          "UnAssignedFlag",
+          "FactoryPaidMaintenanceFlag",
+          "WSAFlag",
+          "StateInspectionFlag"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 18,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm"
+      ],
+      "evidence_file": "object-etl-staging-perm-roams-opcodes-staging.evidence.json",
+      "markdown_file": "object-etl-staging-perm-roams-opcodes-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ROAMs_PricingGrid_staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "ROAMs_PricingGrid_staging"
+      ],
+      "canonical_id": "object-etl-staging-perm-roams-pricinggrid-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/perm__ROAMs_PricingGrid_staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:10BCB04C34D0854C300FB7557F7AB2DB453449D8584BEC3C9B8A9EC0A0FCC351",
+      "object": {
+        "name": "ROAMs_PricingGrid_staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "perm",
+        "qualified_name": "ETL_Staging.perm.ROAMs_PricingGrid_staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.perm.ROAMs_PricingGrid_staging",
+        "perm.ROAMs_PricingGrid_staging",
+        "ROAMs_PricingGrid_staging",
+        "ROAMsPricingGridstaging",
+        "roamspricinggridstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["cora_acct_id", "Dealership", "Hours", "Rate"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 4,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm"
+      ],
+      "evidence_file": "object-etl-staging-perm-roams-pricinggrid-staging.evidence.json",
+      "markdown_file": "object-etl-staging-perm-roams-pricinggrid-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "service_vehicles",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "service_vehicles"
+      ],
+      "canonical_id": "object-etl-staging-perm-service-vehicles",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/perm__service_vehicles.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:7535B9BBEE8A85B526BD094277088A2619878D49787F13E29EB43E1C641C232A",
+      "object": {
+        "name": "service_vehicles",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "perm",
+        "qualified_name": "ETL_Staging.perm.service_vehicles",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.perm.service_vehicles",
+        "perm.service_vehicles",
+        "service_vehicles",
+        "servicevehicles"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingaccount",
+          "axle",
+          "axleno",
+          "balance",
+          "baseinvoiceprice",
+          "baseretailprice",
+          "bodystyle",
+          "brakesys",
+          "cabtype",
+          "chassis",
+          "color",
+          "country",
+          "custflag",
+          "custid",
+          "custno",
+          "cylinderno",
+          "dealercode",
+          "dealerdefined1"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 135,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm"
+      ],
+      "evidence_file": "object-etl-staging-perm-service-vehicles.evidence.json",
+      "markdown_file": "object-etl-staging-perm-service-vehicles.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "veh_acquired_by",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_acquired_by"
+      ],
+      "canonical_id": "object-etl-staging-perm-veh-acquired-by",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/perm__veh_acquired_by.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:6642DF6B122633F15DA89657DBB5E65B8131893AB040D46B96EBEE15065F5F7F",
+      "object": {
+        "name": "veh_acquired_by",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "perm",
+        "qualified_name": "ETL_Staging.perm.veh_acquired_by",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.perm.veh_acquired_by",
+        "perm.veh_acquired_by",
+        "veh_acquired_by",
+        "vehacquiredby"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-5FSQL-01.ETL_Staging.dbo.usp_load_perm_veh_acquired_by"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["acquired_by_id", "acquired_by_nm"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 2,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm"
+      ],
+      "evidence_file": "object-etl-staging-perm-veh-acquired-by.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-acquired-by.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "veh_acquired_type",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_acquired_type"
+      ],
+      "canonical_id": "object-etl-staging-perm-veh-acquired-type",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/perm__veh_acquired_type.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:8E245B1DEC439A56F70C5B5211B61C3B3BE2D4F91E26507B82513DB3DF90551B",
+      "object": {
+        "name": "veh_acquired_type",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "perm",
+        "qualified_name": "ETL_Staging.perm.veh_acquired_type",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.perm.veh_acquired_type",
+        "perm.veh_acquired_type",
+        "veh_acquired_type",
+        "vehacquiredtype"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-5FSQL-01.ETL_Staging.dbo.usp_load_perm_veh_acquired_type"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["aqrd_type_cd", "new_veh_flg", "aqrd_type_desc"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 3,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm"
+      ],
+      "evidence_file": "object-etl-staging-perm-veh-acquired-type.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-acquired-type.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "veh_exterior_color",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_exterior_color"
+      ],
+      "canonical_id": "object-etl-staging-perm-veh-exterior-color",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/perm__veh_exterior_color.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:8E8203B571179E1BAFDBA90F7CEFA69D3033365DA2D6F6F4024D669B86124312",
+      "object": {
+        "name": "veh_exterior_color",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "perm",
+        "qualified_name": "ETL_Staging.perm.veh_exterior_color",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.perm.veh_exterior_color",
+        "perm.veh_exterior_color",
+        "veh_exterior_color",
+        "vehexteriorcolor"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-5FSQL-01.ETL_Staging.dbo.usp_load_perm_veh_exterior_color"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "extr_color_id",
+          "mod_yr",
+          "loc_make_id",
+          "extr_color_cd",
+          "extr_color_desc",
+          "gen_extr_color_id",
+          "act_flg",
+          "mfr_extr_color_cd",
+          "source_cd",
+          "mod_spec_flg",
+          "elt_update_action",
+          "arch_dt"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 12,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm"
+      ],
+      "evidence_file": "object-etl-staging-perm-veh-exterior-color.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-exterior-color.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "veh_interior_color",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_interior_color"
+      ],
+      "canonical_id": "object-etl-staging-perm-veh-interior-color",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/perm__veh_interior_color.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A4478F7CEA34ED05E03D83A53CF4F60300A9077D143006878AB9294F4BA62CEB",
+      "object": {
+        "name": "veh_interior_color",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "perm",
+        "qualified_name": "ETL_Staging.perm.veh_interior_color",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.perm.veh_interior_color",
+        "perm.veh_interior_color",
+        "veh_interior_color",
+        "vehinteriorcolor"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-5FSQL-01.ETL_Staging.dbo.usp_load_perm_veh_interior_color"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "intr_color_id",
+          "mod_yr",
+          "loc_make_id",
+          "intr_color_cd",
+          "gen_intr_color_id",
+          "intr_color_desc",
+          "act_flg",
+          "mfr_intr_color_cd",
+          "source_cd",
+          "mod_spec_flg",
+          "arch_dt"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm"
+      ],
+      "evidence_file": "object-etl-staging-perm-veh-interior-color.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-interior-color.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "veh_inventory",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_inventory"
+      ],
+      "canonical_id": "object-etl-staging-perm-veh-inventory",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/perm__veh_inventory.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:82A0B7966B3FEDA4AEFED4B144557047E7B3609B4AD8B6ACD28583CBA5F56A3F",
+      "object": {
+        "name": "veh_inventory",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "perm",
+        "qualified_name": "ETL_Staging.perm.veh_inventory",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.perm.veh_inventory",
+        "perm.veh_inventory",
+        "veh_inventory",
+        "vehinventory"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-5FSQL-01.ETL_Staging.dbo.usp_load_perm_veh_inventory"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "veh_id",
+          "vin2",
+          "stk_nbr",
+          "new_veh_flg",
+          "dmv_new_veh_flg",
+          "inv_type_cd",
+          "base_list_amt",
+          "base_cost_amt",
+          "tot_list_amt",
+          "hb_amt",
+          "internet_price_amt",
+          "mfr_invc_nbr",
+          "mfr_inctv_amt",
+          "invc_tot_list_amt",
+          "adj_list_amt",
+          "dflt_slng_price_amt",
+          "invc_dt",
+          "acctg_txn_hdr_id",
+          "chk_mailed_dt",
+          "arr_odo_rd_nbr"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 55,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm"
+      ],
+      "evidence_file": "object-etl-staging-perm-veh-inventory.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-inventory.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "veh_loc_make",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_loc_make"
+      ],
+      "canonical_id": "object-etl-staging-perm-veh-loc-make",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/perm__veh_loc_make.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:C80AF7CF3353952F5389AED9DA9209CFCB14A654B530A4AEBB28DF20A1477B64",
+      "object": {
+        "name": "veh_loc_make",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "perm",
+        "qualified_name": "ETL_Staging.perm.veh_loc_make",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.perm.veh_loc_make",
+        "perm.veh_loc_make",
+        "veh_loc_make",
+        "vehlocmake"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-5FSQL-01.ETL_Staging.dbo.usp_load_perm_veh_loc_make"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "loc_make_id",
+          "make_cd",
+          "source_cd",
+          "mfr_make_cd",
+          "make_desc",
+          "act_flg",
+          "elt_update_action"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 7,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm"
+      ],
+      "evidence_file": "object-etl-staging-perm-veh-loc-make.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-loc-make.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "veh_loc_model",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_loc_model"
+      ],
+      "canonical_id": "object-etl-staging-perm-veh-loc-model",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/perm__veh_loc_model.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:8A87DFFF79CB5C0BB140D6E89DBCEC98B936C58C6B24E74DC071EBBC11968ADF",
+      "object": {
+        "name": "veh_loc_model",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "perm",
+        "qualified_name": "ETL_Staging.perm.veh_loc_model",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.perm.veh_loc_model",
+        "perm.veh_loc_model",
+        "veh_loc_model",
+        "vehlocmodel"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-5FSQL-01.ETL_Staging.dbo.usp_load_perm_veh_loc_model"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "loc_mod_id",
+          "mod_cd",
+          "source_cd",
+          "mfr_mod_cd",
+          "mod_desc",
+          "loc_make_id",
+          "act_flg",
+          "elt_update_action"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 8,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm"
+      ],
+      "evidence_file": "object-etl-staging-perm-veh-loc-model.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-loc-model.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "veh_loc_series",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_loc_series"
+      ],
+      "canonical_id": "object-etl-staging-perm-veh-loc-series",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/perm__veh_loc_series.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:26079649144C4F8B159F5F23FFF982A59C4E6EEFC6D784F9197E251031FB0546",
+      "object": {
+        "name": "veh_loc_series",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "perm",
+        "qualified_name": "ETL_Staging.perm.veh_loc_series",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.perm.veh_loc_series",
+        "perm.veh_loc_series",
+        "veh_loc_series",
+        "vehlocseries"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-5FSQL-01.ETL_Staging.dbo.usp_load_perm_veh_loc_series"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "loc_srs_id",
+          "mfr_srs_cd",
+          "source_cd",
+          "srs_cd",
+          "srs_desc",
+          "loc_mod_id",
+          "act_flg"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 7,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm"
+      ],
+      "evidence_file": "object-etl-staging-perm-veh-loc-series.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-loc-series.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "veh_order",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_order"
+      ],
+      "canonical_id": "object-etl-staging-perm-veh-order",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/perm__veh_order.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E7CAA1D591AC898EB0A520391438A1E0AE7DB3EA7F8C5D3A432D18FF1DA0F4B3",
+      "object": {
+        "name": "veh_order",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "perm",
+        "qualified_name": "ETL_Staging.perm.veh_order",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["ETL_Staging.perm.veh_order", "perm.veh_order", "veh_order", "vehorder"],
+      "lineage": {
+        "upstream_loaders": ["L1-5FSQL-01.ETL_Staging.dbo.usp_load_perm_veh_order"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "vin",
+          "extr_color_id",
+          "intr_color_id",
+          "loc_srs_id",
+          "veh_ord_id",
+          "last_chng_dttm"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 6,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm"
+      ],
+      "evidence_file": "object-etl-staging-perm-veh-order.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-order.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "veh_process_code",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_process_code"
+      ],
+      "canonical_id": "object-etl-staging-perm-veh-process-code",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/perm__veh_process_code.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:BCA222CD8D737A963069D21D11BDAD8E310E481A084362654DB4902ED1A1C44F",
+      "object": {
+        "name": "veh_process_code",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "perm",
+        "qualified_name": "ETL_Staging.perm.veh_process_code",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.perm.veh_process_code",
+        "perm.veh_process_code",
+        "veh_process_code",
+        "vehprocesscode"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-5FSQL-01.ETL_Staging.dbo.usp_load_perm_veh_process_code"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["prc_code_id", "prc_code_nm"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 2,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm"
+      ],
+      "evidence_file": "object-etl-staging-perm-veh-process-code.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-process-code.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "veh_segment",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_segment"
+      ],
+      "canonical_id": "object-etl-staging-perm-veh-segment",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/perm__veh_segment.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:BA6050FF57E16270C5F2E352781E43BAB95A2421698439CC5ECC36F68D382A90",
+      "object": {
+        "name": "veh_segment",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "perm",
+        "qualified_name": "ETL_Staging.perm.veh_segment",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["ETL_Staging.perm.veh_segment", "perm.veh_segment", "veh_segment", "vehsegment"],
+      "lineage": {
+        "upstream_loaders": ["L1-5FSQL-01.ETL_Staging.dbo.usp_load_perm_veh_segment"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["segment_id", "segment_nm"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 2,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm"
+      ],
+      "evidence_file": "object-etl-staging-perm-veh-segment.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-segment.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "veh_source",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_source"
+      ],
+      "canonical_id": "object-etl-staging-perm-veh-source",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/perm__veh_source.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E56B4F32C985DED19704C646099C5DB44798016C180BA905E7948751158EB7FB",
+      "object": {
+        "name": "veh_source",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "perm",
+        "qualified_name": "ETL_Staging.perm.veh_source",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["ETL_Staging.perm.veh_source", "perm.veh_source", "veh_source", "vehsource"],
+      "lineage": {
+        "upstream_loaders": ["L1-5FSQL-01.ETL_Staging.dbo.usp_load_perm_veh_source"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["source_id", "source_nm"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 2,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm"
+      ],
+      "evidence_file": "object-etl-staging-perm-veh-source.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-source.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "veh_vehicle",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "perm",
+        "veh_vehicle"
+      ],
+      "canonical_id": "object-etl-staging-perm-veh-vehicle",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/perm__veh_vehicle.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:8FD2B5157C75E327186D2BA3C97CF1A16F47B02F2B9F1EC5E92057BF025CD604",
+      "object": {
+        "name": "veh_vehicle",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "perm",
+        "qualified_name": "ETL_Staging.perm.veh_vehicle",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["ETL_Staging.perm.veh_vehicle", "perm.veh_vehicle", "veh_vehicle", "vehvehicle"],
+      "lineage": {
+        "upstream_loaders": ["L1-5FSQL-01.ETL_Staging.dbo.usp_load_perm_veh_vehicle"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "veh_id",
+          "mod_yr",
+          "loc_make_id",
+          "loc_mod_id",
+          "loc_srs_id",
+          "loc_mod_nbr_id",
+          "vin",
+          "ctgy_cd",
+          "veh_ord_id",
+          "body_style_desc",
+          "cyl_cnt",
+          "eng_desc",
+          "eng_sn",
+          "gr_veh_wt_txt",
+          "wb_desc",
+          "key1_desc",
+          "key2_desc",
+          "trans_desc",
+          "is_auto_trans_flg",
+          "doors_nbr"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 32,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / perm"
+      ],
+      "evidence_file": "object-etl-staging-perm-veh-vehicle.evidence.json",
+      "markdown_file": "object-etl-staging-perm-veh-vehicle.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-169-etl-staging-perm-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-169-etl-staging-perm-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-169-etl-staging-perm-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

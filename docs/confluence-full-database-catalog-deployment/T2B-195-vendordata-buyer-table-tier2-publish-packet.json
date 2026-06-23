@@ -1,0 +1,2124 @@
+{
+  "packet_id": "T2B-195",
+  "generated_at": "2026-06-23T19:08:49.704Z",
+  "batch": {
+    "batch_id": "T2B-195",
+    "priority_rank": 195,
+    "platform": "SQL Server",
+    "database": "VendorData",
+    "schema": "buyer",
+    "object_type_scope": "table",
+    "object_count": 15,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "AppDirectSitesVINsHeader",
+    "last_object": "VINToBuyer",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / buyer",
+    "object_names": [
+      "AppDirectSitesVINsHeader",
+      "AppDirectSitesVINsLine",
+      "AuctionAndDirectSitesExecutions",
+      "CarfaxVINs",
+      "CBAPurchasesByVIN",
+      "CompetitorAppraisals_LogTable",
+      "CriticalDataHolding",
+      "Dim_DNBReason",
+      "DirectSitesVINsHeader",
+      "DirectSitesVINsLine",
+      "LiveAuctionVINs",
+      "TXN_DirectSitePreviewList",
+      "TXN_DirectSitePreviewList_History",
+      "VINsProcByAutomation",
+      "VINToBuyer"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "table",
+    "original_object_count": 15,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 15,
+    "total_planned_pages": 19
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData"],
+      "page_type": "database",
+      "evidence_hash": "sha256:C029883539BC166EBDE80488ADFC36CDDDD0E84559188FE128628E553E29DFF1",
+      "evidence_file": "database-vendordata.evidence.json",
+      "markdown_file": "database-vendordata.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.buyer",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData", "buyer"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:F34C727C81A52092467CB92FB68D1F5D30BB929C71248AF8C4A9E2623ED9B214",
+      "evidence_file": "schema-vendordata-buyer.evidence.json",
+      "markdown_file": "schema-vendordata-buyer.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.buyer.AppDirectSitesVINsHeader",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "AppDirectSitesVINsHeader"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A791CE09CCAEAFE5D3DE9E5127D6376DC23A89E2D46ECB7A5505FA91C4D28B60",
+      "evidence_file": "object-vendordata-buyer-appdirectsitesvinsheader.evidence.json",
+      "markdown_file": "object-vendordata-buyer-appdirectsitesvinsheader.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.buyer.AppDirectSitesVINsLine",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "AppDirectSitesVINsLine"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:F10B29310D5A707E88290D94721ACA3124DF9718E248DC533CDB4CF28DC4C468",
+      "evidence_file": "object-vendordata-buyer-appdirectsitesvinsline.evidence.json",
+      "markdown_file": "object-vendordata-buyer-appdirectsitesvinsline.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.buyer.AuctionAndDirectSitesExecutions",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "AuctionAndDirectSitesExecutions"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:AA0985938EBD8CF6CF96F260C55481D5A0B04CC81F4D1C8DA09797EB59C6BB41",
+      "evidence_file": "object-vendordata-buyer-auctionanddirectsitesexecutions.evidence.json",
+      "markdown_file": "object-vendordata-buyer-auctionanddirectsitesexecutions.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.buyer.CarfaxVINs",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "CarfaxVINs"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B7C49B8206D8A7D00398C8508FFDA61B3DAD99C924BE57840323F509D2122B93",
+      "evidence_file": "object-vendordata-buyer-carfaxvins.evidence.json",
+      "markdown_file": "object-vendordata-buyer-carfaxvins.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.buyer.CBAPurchasesByVIN",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "CBAPurchasesByVIN"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:61DF6674125C1F726379DCE8A87A112C5E167D189D29BD64427D22E89335B30C",
+      "evidence_file": "object-vendordata-buyer-cbapurchasesbyvin.evidence.json",
+      "markdown_file": "object-vendordata-buyer-cbapurchasesbyvin.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.buyer.CompetitorAppraisals_LogTable",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "CompetitorAppraisals_LogTable"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:1506F52C3D54823D805DA6977BAA5012AB12865BDE69A7C5F2C06A15FF6F016D",
+      "evidence_file": "object-vendordata-buyer-competitorappraisals-logtable.evidence.json",
+      "markdown_file": "object-vendordata-buyer-competitorappraisals-logtable.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.buyer.CriticalDataHolding",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "CriticalDataHolding"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:174406717FD39E91E4637EE6B32AD85C81923F950C1C74D48FB0A581796A8DD8",
+      "evidence_file": "object-vendordata-buyer-criticaldataholding.evidence.json",
+      "markdown_file": "object-vendordata-buyer-criticaldataholding.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.buyer.Dim_DNBReason",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "Dim_DNBReason"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:948521D0202BE432446E3AC38921C5F07D241DF1107FD98327E1D277109907A0",
+      "evidence_file": "object-vendordata-buyer-dim-dnbreason.evidence.json",
+      "markdown_file": "object-vendordata-buyer-dim-dnbreason.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.buyer.DirectSitesVINsHeader",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "DirectSitesVINsHeader"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:6E1DA851F5775CC6F0C9722CA381AC683B3D41DD9800E375CAE2ABE5EA07713D",
+      "evidence_file": "object-vendordata-buyer-directsitesvinsheader.evidence.json",
+      "markdown_file": "object-vendordata-buyer-directsitesvinsheader.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.buyer.DirectSitesVINsLine",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "DirectSitesVINsLine"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:5DE27A13BAD983DD0BA6BC03CEF09D049D29BE66AA4637E404C10E4BF64B08D5",
+      "evidence_file": "object-vendordata-buyer-directsitesvinsline.evidence.json",
+      "markdown_file": "object-vendordata-buyer-directsitesvinsline.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.buyer.LiveAuctionVINs",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "LiveAuctionVINs"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:EA89378152872FB9CC8C61AF82405827DBB229E6050BD743E3AFB195D7604A25",
+      "evidence_file": "object-vendordata-buyer-liveauctionvins.evidence.json",
+      "markdown_file": "object-vendordata-buyer-liveauctionvins.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.buyer.TXN_DirectSitePreviewList",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "TXN_DirectSitePreviewList"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:41E6B76905D82E6724406030CAD4CB9F6F00B64F9F2803DB77B7D2F8B16CD38C",
+      "evidence_file": "object-vendordata-buyer-txn-directsitepreviewlist.evidence.json",
+      "markdown_file": "object-vendordata-buyer-txn-directsitepreviewlist.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.buyer.TXN_DirectSitePreviewList_History",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "TXN_DirectSitePreviewList_History"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:7E218C6BCE8793DDFEFC11C4FE6C308FA412FBEFF4FA7F28200002D6E96A4B6C",
+      "evidence_file": "object-vendordata-buyer-txn-directsitepreviewlist-history.evidence.json",
+      "markdown_file": "object-vendordata-buyer-txn-directsitepreviewlist-history.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.buyer.VINsProcByAutomation",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "VINsProcByAutomation"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:89F7BE1DD78311243AA0631CB615AB42227C7BDE1A6247D577C062440C693A18",
+      "evidence_file": "object-vendordata-buyer-vinsprocbyautomation.evidence.json",
+      "markdown_file": "object-vendordata-buyer-vinsprocbyautomation.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.buyer.VINToBuyer",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "VINToBuyer"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:F685E4FABE95CF732096A781318FD095FF395DCE58C0B5341504CD789DEC5333",
+      "evidence_file": "object-vendordata-buyer-vintobuyer.evidence.json",
+      "markdown_file": "object-vendordata-buyer-vintobuyer.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "AppDirectSitesVINsHeader",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "AppDirectSitesVINsHeader"
+      ],
+      "canonical_id": "object-vendordata-buyer-appdirectsitesvinsheader",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/buyer__AppDirectSitesVINsHeader.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A791CE09CCAEAFE5D3DE9E5127D6376DC23A89E2D46ECB7A5505FA91C4D28B60",
+      "object": {
+        "name": "AppDirectSitesVINsHeader",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "buyer",
+        "qualified_name": "VendorData.buyer.AppDirectSitesVINsHeader",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.buyer.AppDirectSitesVINsHeader",
+        "buyer.AppDirectSitesVINsHeader",
+        "AppDirectSitesVINsHeader",
+        "appdirectsitesvinsheader"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Autonum",
+          "DateAddedToDB",
+          "VIN",
+          "Year",
+          "Make",
+          "Model",
+          "Miles",
+          "AutoGrade",
+          "Status",
+          "FrameDamage",
+          "Announcements",
+          "BuyNowPrice",
+          "BidFloorPrice",
+          "AuctionCity",
+          "AuctionState",
+          "OptionalEquipment#1",
+          "Transmission",
+          "Autocheck",
+          "CARFAX",
+          "CARFAXCommentsFromQuickVIN"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 44,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / buyer"
+      ],
+      "evidence_file": "object-vendordata-buyer-appdirectsitesvinsheader.evidence.json",
+      "markdown_file": "object-vendordata-buyer-appdirectsitesvinsheader.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "AppDirectSitesVINsLine",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "AppDirectSitesVINsLine"
+      ],
+      "canonical_id": "object-vendordata-buyer-appdirectsitesvinsline",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/buyer__AppDirectSitesVINsLine.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:F10B29310D5A707E88290D94721ACA3124DF9718E248DC533CDB4CF28DC4C468",
+      "object": {
+        "name": "AppDirectSitesVINsLine",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "buyer",
+        "qualified_name": "VendorData.buyer.AppDirectSitesVINsLine",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.buyer.AppDirectSitesVINsLine",
+        "buyer.AppDirectSitesVINsLine",
+        "AppDirectSitesVINsLine",
+        "appdirectsitesvinsline"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Autonum",
+          "DateAddedToDB",
+          "VIN",
+          "OptionalEquipment",
+          "OptionalEquipmentPrice"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / buyer"
+      ],
+      "evidence_file": "object-vendordata-buyer-appdirectsitesvinsline.evidence.json",
+      "markdown_file": "object-vendordata-buyer-appdirectsitesvinsline.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "AuctionAndDirectSitesExecutions",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "AuctionAndDirectSitesExecutions"
+      ],
+      "canonical_id": "object-vendordata-buyer-auctionanddirectsitesexecutions",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/buyer__AuctionAndDirectSitesExecutions.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:AA0985938EBD8CF6CF96F260C55481D5A0B04CC81F4D1C8DA09797EB59C6BB41",
+      "object": {
+        "name": "AuctionAndDirectSitesExecutions",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "buyer",
+        "qualified_name": "VendorData.buyer.AuctionAndDirectSitesExecutions",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.buyer.AuctionAndDirectSitesExecutions",
+        "buyer.AuctionAndDirectSitesExecutions",
+        "AuctionAndDirectSitesExecutions",
+        "auctionanddirectsitesexecutions"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["JobId", "MachineName", "BotAccount", "ProcessName", "ExecutionDate"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / buyer"
+      ],
+      "evidence_file": "object-vendordata-buyer-auctionanddirectsitesexecutions.evidence.json",
+      "markdown_file": "object-vendordata-buyer-auctionanddirectsitesexecutions.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "CarfaxVINs",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "CarfaxVINs"
+      ],
+      "canonical_id": "object-vendordata-buyer-carfaxvins",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/buyer__CarfaxVINs.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B7C49B8206D8A7D00398C8508FFDA61B3DAD99C924BE57840323F509D2122B93",
+      "object": {
+        "name": "CarfaxVINs",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "buyer",
+        "qualified_name": "VendorData.buyer.CarfaxVINs",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VendorData.buyer.CarfaxVINs", "buyer.CarfaxVINs", "CarfaxVINs", "carfaxvins"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "CarfaxVINsID",
+          "VIN",
+          "SaleChannel",
+          "AuctionStartDate",
+          "Year",
+          "Make",
+          "Model",
+          "ExteriorColor",
+          "Mileage",
+          "Transmission",
+          "Drivetrain",
+          "VehicleAge",
+          "CRGrade",
+          "BuyNowPrice",
+          "VehicleOptions",
+          "VehicleParts",
+          "AuctionLocation",
+          "SaleDate",
+          "crURL",
+          "vehicleURL"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 39,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / buyer"
+      ],
+      "evidence_file": "object-vendordata-buyer-carfaxvins.evidence.json",
+      "markdown_file": "object-vendordata-buyer-carfaxvins.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "CBAPurchasesByVIN",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "CBAPurchasesByVIN"
+      ],
+      "canonical_id": "object-vendordata-buyer-cbapurchasesbyvin",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/buyer__CBAPurchasesByVIN.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:61DF6674125C1F726379DCE8A87A112C5E167D189D29BD64427D22E89335B30C",
+      "object": {
+        "name": "CBAPurchasesByVIN",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "buyer",
+        "qualified_name": "VendorData.buyer.CBAPurchasesByVIN",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.buyer.CBAPurchasesByVIN",
+        "buyer.CBAPurchasesByVIN",
+        "CBAPurchasesByVIN",
+        "cbapurchasesbyvin"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "CBAPurchasesByVINID",
+          "BOSSent",
+          "AuctionFee",
+          "AvgMMR",
+          "Brass",
+          "BuyerName",
+          "BuyerID",
+          "Confirmed",
+          "Comments",
+          "Cost",
+          "CRLink",
+          "CRGrade",
+          "DMVFee",
+          "Drivetrain",
+          "ExteriorColor",
+          "InteriorColor",
+          "AuctionClosed",
+          "IsLiveOrFixed",
+          "Make",
+          "MHFees"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 57,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / buyer"
+      ],
+      "evidence_file": "object-vendordata-buyer-cbapurchasesbyvin.evidence.json",
+      "markdown_file": "object-vendordata-buyer-cbapurchasesbyvin.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "CompetitorAppraisals_LogTable",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "CompetitorAppraisals_LogTable"
+      ],
+      "canonical_id": "object-vendordata-buyer-competitorappraisals-logtable",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/buyer__CompetitorAppraisals_LogTable.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:1506F52C3D54823D805DA6977BAA5012AB12865BDE69A7C5F2C06A15FF6F016D",
+      "object": {
+        "name": "CompetitorAppraisals_LogTable",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "buyer",
+        "qualified_name": "VendorData.buyer.CompetitorAppraisals_LogTable",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.buyer.CompetitorAppraisals_LogTable",
+        "buyer.CompetitorAppraisals_LogTable",
+        "CompetitorAppraisals_LogTable",
+        "CompetitorAppraisalsLogTable",
+        "competitorappraisalslogtable"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "competitor_appraisals_id",
+          "offer_id",
+          "meta_loaddate",
+          "request_date_time_utc",
+          "vin",
+          "year",
+          "make",
+          "model",
+          "mileage",
+          "launch_zip_code",
+          "ext_color",
+          "transmission",
+          "trim",
+          "keys_count",
+          "drive_train",
+          "engine",
+          "mmr",
+          "accident_count",
+          "smoke_flag",
+          "exterior_damage"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 58,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / buyer"
+      ],
+      "evidence_file": "object-vendordata-buyer-competitorappraisals-logtable.evidence.json",
+      "markdown_file": "object-vendordata-buyer-competitorappraisals-logtable.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "CriticalDataHolding",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "CriticalDataHolding"
+      ],
+      "canonical_id": "object-vendordata-buyer-criticaldataholding",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/buyer__CriticalDataHolding.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:174406717FD39E91E4637EE6B32AD85C81923F950C1C74D48FB0A581796A8DD8",
+      "object": {
+        "name": "CriticalDataHolding",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "buyer",
+        "qualified_name": "VendorData.buyer.CriticalDataHolding",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.buyer.CriticalDataHolding",
+        "buyer.CriticalDataHolding",
+        "CriticalDataHolding",
+        "criticaldataholding"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "BuyerToBrandID",
+          "VIN",
+          "Source",
+          "Make",
+          "Auction_Location",
+          "Auction_Date",
+          "Missing_Value",
+          "Processing_Date"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 8,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / buyer"
+      ],
+      "evidence_file": "object-vendordata-buyer-criticaldataholding.evidence.json",
+      "markdown_file": "object-vendordata-buyer-criticaldataholding.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Dim_DNBReason",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "Dim_DNBReason"
+      ],
+      "canonical_id": "object-vendordata-buyer-dim-dnbreason",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/buyer__Dim_DNBReason.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:948521D0202BE432446E3AC38921C5F07D241DF1107FD98327E1D277109907A0",
+      "object": {
+        "name": "Dim_DNBReason",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "buyer",
+        "qualified_name": "VendorData.buyer.Dim_DNBReason",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.buyer.Dim_DNBReason",
+        "buyer.Dim_DNBReason",
+        "Dim_DNBReason",
+        "DimDNBReason",
+        "dimdnbreason"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["Hide", "DNBReason"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 2,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / buyer"
+      ],
+      "evidence_file": "object-vendordata-buyer-dim-dnbreason.evidence.json",
+      "markdown_file": "object-vendordata-buyer-dim-dnbreason.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DirectSitesVINsHeader",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "DirectSitesVINsHeader"
+      ],
+      "canonical_id": "object-vendordata-buyer-directsitesvinsheader",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/buyer__DirectSitesVINsHeader.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:6E1DA851F5775CC6F0C9722CA381AC683B3D41DD9800E375CAE2ABE5EA07713D",
+      "object": {
+        "name": "DirectSitesVINsHeader",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "buyer",
+        "qualified_name": "VendorData.buyer.DirectSitesVINsHeader",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.buyer.DirectSitesVINsHeader",
+        "buyer.DirectSitesVINsHeader",
+        "DirectSitesVINsHeader",
+        "directsitesvinsheader"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Autonum",
+          "DateAddedToDB",
+          "VIN",
+          "Year",
+          "Make",
+          "Model",
+          "Miles",
+          "AutoGrade",
+          "Status",
+          "FrameDamage",
+          "Announcements",
+          "BuyNowPrice",
+          "BidFloorPrice",
+          "AuctionCity",
+          "AuctionState",
+          "OptionalEquipment#1",
+          "Transmission",
+          "Autocheck",
+          "CARFAX",
+          "CARFAXCommentsFromQuickVIN"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 44,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / buyer"
+      ],
+      "evidence_file": "object-vendordata-buyer-directsitesvinsheader.evidence.json",
+      "markdown_file": "object-vendordata-buyer-directsitesvinsheader.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DirectSitesVINsLine",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "DirectSitesVINsLine"
+      ],
+      "canonical_id": "object-vendordata-buyer-directsitesvinsline",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/buyer__DirectSitesVINsLine.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:5DE27A13BAD983DD0BA6BC03CEF09D049D29BE66AA4637E404C10E4BF64B08D5",
+      "object": {
+        "name": "DirectSitesVINsLine",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "buyer",
+        "qualified_name": "VendorData.buyer.DirectSitesVINsLine",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.buyer.DirectSitesVINsLine",
+        "buyer.DirectSitesVINsLine",
+        "DirectSitesVINsLine",
+        "directsitesvinsline"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Autonum",
+          "DateAddedToDB",
+          "VIN",
+          "OptionalEquipment",
+          "OptionalEquipmentPrice"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / buyer"
+      ],
+      "evidence_file": "object-vendordata-buyer-directsitesvinsline.evidence.json",
+      "markdown_file": "object-vendordata-buyer-directsitesvinsline.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "LiveAuctionVINs",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "LiveAuctionVINs"
+      ],
+      "canonical_id": "object-vendordata-buyer-liveauctionvins",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/buyer__LiveAuctionVINs.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:EA89378152872FB9CC8C61AF82405827DBB229E6050BD743E3AFB195D7604A25",
+      "object": {
+        "name": "LiveAuctionVINs",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "buyer",
+        "qualified_name": "VendorData.buyer.LiveAuctionVINs",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.buyer.LiveAuctionVINs",
+        "buyer.LiveAuctionVINs",
+        "LiveAuctionVINs",
+        "liveauctionvins"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "LiveAuctionVINsID",
+          "Source",
+          "AuctionLocation",
+          "AuctionTime",
+          "Brand",
+          "Vin",
+          "crURL",
+          "Model",
+          "crGrade",
+          "Transmission",
+          "Drivetrain",
+          "SaleDate",
+          "VehicleOptions",
+          "VehicleParts",
+          "Notes",
+          "Status",
+          "Buyer",
+          "DBNotes",
+          "Meta_LoadDate",
+          "Seller"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 25,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / buyer"
+      ],
+      "evidence_file": "object-vendordata-buyer-liveauctionvins.evidence.json",
+      "markdown_file": "object-vendordata-buyer-liveauctionvins.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TXN_DirectSitePreviewList",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "TXN_DirectSitePreviewList"
+      ],
+      "canonical_id": "object-vendordata-buyer-txn-directsitepreviewlist",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/buyer__TXN_DirectSitePreviewList.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:41E6B76905D82E6724406030CAD4CB9F6F00B64F9F2803DB77B7D2F8B16CD38C",
+      "object": {
+        "name": "TXN_DirectSitePreviewList",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "buyer",
+        "qualified_name": "VendorData.buyer.TXN_DirectSitePreviewList",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.buyer.TXN_DirectSitePreviewList",
+        "buyer.TXN_DirectSitePreviewList",
+        "TXN_DirectSitePreviewList",
+        "TXNDirectSitePreviewList",
+        "txndirectsitepreviewlist"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "PreviewListID",
+          "Autonum",
+          "VIN",
+          "Comments",
+          "Favorite",
+          "Purchased",
+          "Hide",
+          "Buyer",
+          "SysStartTime",
+          "SysEndTime",
+          "BuyNowPrice"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / buyer"
+      ],
+      "evidence_file": "object-vendordata-buyer-txn-directsitepreviewlist.evidence.json",
+      "markdown_file": "object-vendordata-buyer-txn-directsitepreviewlist.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TXN_DirectSitePreviewList_History",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "TXN_DirectSitePreviewList_History"
+      ],
+      "canonical_id": "object-vendordata-buyer-txn-directsitepreviewlist-history",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/buyer__TXN_DirectSitePreviewList_History.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:7E218C6BCE8793DDFEFC11C4FE6C308FA412FBEFF4FA7F28200002D6E96A4B6C",
+      "object": {
+        "name": "TXN_DirectSitePreviewList_History",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "buyer",
+        "qualified_name": "VendorData.buyer.TXN_DirectSitePreviewList_History",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.buyer.TXN_DirectSitePreviewList_History",
+        "buyer.TXN_DirectSitePreviewList_History",
+        "TXN_DirectSitePreviewList_History",
+        "TXNDirectSitePreviewListHistory",
+        "txndirectsitepreviewlisthistory"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "PreviewListID",
+          "Autonum",
+          "VIN",
+          "Comments",
+          "Favorite",
+          "Purchased",
+          "Hide",
+          "Buyer",
+          "SysStartTime",
+          "SysEndTime",
+          "BuyNowPrice"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / buyer"
+      ],
+      "evidence_file": "object-vendordata-buyer-txn-directsitepreviewlist-history.evidence.json",
+      "markdown_file": "object-vendordata-buyer-txn-directsitepreviewlist-history.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "VINsProcByAutomation",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "VINsProcByAutomation"
+      ],
+      "canonical_id": "object-vendordata-buyer-vinsprocbyautomation",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/buyer__VINsProcByAutomation.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:89F7BE1DD78311243AA0631CB615AB42227C7BDE1A6247D577C062440C693A18",
+      "object": {
+        "name": "VINsProcByAutomation",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "buyer",
+        "qualified_name": "VendorData.buyer.VINsProcByAutomation",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.buyer.VINsProcByAutomation",
+        "buyer.VINsProcByAutomation",
+        "VINsProcByAutomation",
+        "vinsprocbyautomation"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "VINsProcByAutomationID",
+          "VIN",
+          "Make",
+          "Model",
+          "CRGrade",
+          "Transmission",
+          "DriveTrain",
+          "SaleDate",
+          "BuyerName",
+          "Notes",
+          "CRFields",
+          "ConditionReportType",
+          "Status",
+          "DetailedStatus",
+          "ExceptionScreenshot",
+          "Source",
+          "CrURL",
+          "BuyerFrom",
+          "Process",
+          "AuctionType"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 38,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / buyer"
+      ],
+      "evidence_file": "object-vendordata-buyer-vinsprocbyautomation.evidence.json",
+      "markdown_file": "object-vendordata-buyer-vinsprocbyautomation.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "VINToBuyer",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "buyer",
+        "VINToBuyer"
+      ],
+      "canonical_id": "object-vendordata-buyer-vintobuyer",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/buyer__VINToBuyer.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:F685E4FABE95CF732096A781318FD095FF395DCE58C0B5341504CD789DEC5333",
+      "object": {
+        "name": "VINToBuyer",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "buyer",
+        "qualified_name": "VendorData.buyer.VINToBuyer",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VendorData.buyer.VINToBuyer", "buyer.VINToBuyer", "VINToBuyer", "vintobuyer"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["VINToBuyerID", "Source", "Brand", "Buyer", "VinsAssigned", "Active"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 6,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / buyer"
+      ],
+      "evidence_file": "object-vendordata-buyer-vintobuyer.evidence.json",
+      "markdown_file": "object-vendordata-buyer-vintobuyer.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-195-vendordata-buyer-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-195-vendordata-buyer-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-195-vendordata-buyer-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

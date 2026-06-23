@@ -1,0 +1,688 @@
+{
+  "packet_id": "T2B-138",
+  "generated_at": "2026-06-23T18:51:32.051Z",
+  "batch": {
+    "batch_id": "T2B-138",
+    "priority_rank": 138,
+    "platform": "SQL Server",
+    "database": "DASimsRetail",
+    "schema": "dbo",
+    "object_type_scope": "table",
+    "object_count": 4,
+    "high_use_objects": 0,
+    "downstream_uses": 5,
+    "first_object": "vehicle_staging",
+    "last_object": "VehicleSalesCurrent_Staging",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / DASimsRetail / dbo",
+    "object_names": [
+      "vehicle_staging",
+      "dm_cora_account_staging",
+      "GLJEDetail_Cur_Staging",
+      "VehicleSalesCurrent_Staging"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 4,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 4,
+    "total_planned_pages": 8
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "DASimsRetail",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "DASimsRetail"],
+      "page_type": "database",
+      "evidence_hash": "sha256:7F0456CCF2630BA218077403B4D37E465BDF7F776858042850D0AE374822A610",
+      "evidence_file": "database-dasimsretail.evidence.json",
+      "markdown_file": "database-dasimsretail.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "DASimsRetail.dbo",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "DASimsRetail", "dbo"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:DAD51D715F092B293C8CB93CAFFFEF52722AD30040DD65FEE8D97FC4EF52A568",
+      "evidence_file": "schema-dasimsretail-dbo.evidence.json",
+      "markdown_file": "schema-dasimsretail-dbo.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "DASimsRetail.dbo.dm_cora_account_staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DASimsRetail",
+        "dbo",
+        "dm_cora_account_staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:AC72314648C4FFE0B8921D3AA8FBE5BC04819E213335D6D66349554BD59BC45A",
+      "evidence_file": "object-dasimsretail-dbo-dm-cora-account-staging.evidence.json",
+      "markdown_file": "object-dasimsretail-dbo-dm-cora-account-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DASimsRetail.dbo.GLJEDetail_Cur_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DASimsRetail",
+        "dbo",
+        "GLJEDetail_Cur_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:34B4516EE1A4B1EB643ECD8D1236AE0097E7146B1A001E6CC0A562336D6887EE",
+      "evidence_file": "object-dasimsretail-dbo-gljedetail-cur-staging.evidence.json",
+      "markdown_file": "object-dasimsretail-dbo-gljedetail-cur-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DASimsRetail.dbo.vehicle_staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DASimsRetail",
+        "dbo",
+        "vehicle_staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:42911D53995C13E42ACA6A269CEE07C37B0208A521FB64EAD3294BCEA8229C53",
+      "evidence_file": "object-dasimsretail-dbo-vehicle-staging.evidence.json",
+      "markdown_file": "object-dasimsretail-dbo-vehicle-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DASimsRetail.dbo.VehicleSalesCurrent_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DASimsRetail",
+        "dbo",
+        "VehicleSalesCurrent_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:64BEAA89EC684B14533A314EA38D3ABFE07ED0DFF189DB2396C233B5BD5339BC",
+      "evidence_file": "object-dasimsretail-dbo-vehiclesalescurrent-staging.evidence.json",
+      "markdown_file": "object-dasimsretail-dbo-vehiclesalescurrent-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "dm_cora_account_staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DASimsRetail",
+        "dbo",
+        "dm_cora_account_staging"
+      ],
+      "canonical_id": "object-dasimsretail-dbo-dm-cora-account-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DASimsRetail/tables/dbo__dm_cora_account_staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:AC72314648C4FFE0B8921D3AA8FBE5BC04819E213335D6D66349554BD59BC45A",
+      "object": {
+        "name": "dm_cora_account_staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DASimsRetail",
+        "schema": "dbo",
+        "qualified_name": "DASimsRetail.dbo.dm_cora_account_staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DASimsRetail.dbo.dm_cora_account_staging",
+        "dbo.dm_cora_account_staging",
+        "dm_cora_account_staging",
+        "dmcoraaccountstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.PostGres.Daily - PostGres - Load Common Group.pals_dm_cora_account_SIMS.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "V1-SSIS25-01, 11040.SSISDB.PostGres.Daily - PostGres - Load Common Group.pals_dm_cora_account_SIMS.dtsx"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "cora_acct_code",
+          "acct_type_id",
+          "dms_server_id",
+          "last_modified_dt",
+          "related_acctg_cora_acct_id",
+          "dwnld_acct_sw",
+          "Meta_RowLastDMLAction",
+          "Meta_Src_Sys_ID",
+          "Meta_ADPGroup",
+          "Meta_StageGroupNumber",
+          "Meta_LoadDate",
+          "Meta_RowEffectiveDate",
+          "Meta_RowLastChangeDate",
+          "Meta_RowIsCurrent",
+          "ETLExecution_ID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 16,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DASimsRetail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DASimsRetail / dbo"
+      ],
+      "evidence_file": "object-dasimsretail-dbo-dm-cora-account-staging.evidence.json",
+      "markdown_file": "object-dasimsretail-dbo-dm-cora-account-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GLJEDetail_Cur_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DASimsRetail",
+        "dbo",
+        "GLJEDetail_Cur_Staging"
+      ],
+      "canonical_id": "object-dasimsretail-dbo-gljedetail-cur-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DASimsRetail/tables/dbo__GLJEDetail_Cur_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:34B4516EE1A4B1EB643ECD8D1236AE0097E7146B1A001E6CC0A562336D6887EE",
+      "object": {
+        "name": "GLJEDetail_Cur_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DASimsRetail",
+        "schema": "dbo",
+        "qualified_name": "DASimsRetail.dbo.GLJEDetail_Cur_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DASimsRetail.dbo.GLJEDetail_Cur_Staging",
+        "dbo.GLJEDetail_Cur_Staging",
+        "GLJEDetail_Cur_Staging",
+        "GLJEDetailCurStaging",
+        "gljedetailcurstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.PostGres.Daily - PostGres - Load GLDetail Group.pals_gljedetail_SIMS.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "refer",
+          "prodtype2",
+          "prodtype",
+          "prodnoright",
+          "accountnumber",
+          "accountnumberright",
+          "companyid",
+          "companyidright",
+          "control",
+          "control2",
+          "control2right",
+          "controlright",
+          "controltype",
+          "controltype2",
+          "currentmonth",
+          "detaildescription",
+          "distillcontroltype",
+          "distillcontroltype2"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 33,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DASimsRetail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DASimsRetail / dbo"
+      ],
+      "evidence_file": "object-dasimsretail-dbo-gljedetail-cur-staging.evidence.json",
+      "markdown_file": "object-dasimsretail-dbo-gljedetail-cur-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vehicle_staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DASimsRetail",
+        "dbo",
+        "vehicle_staging"
+      ],
+      "canonical_id": "object-dasimsretail-dbo-vehicle-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DASimsRetail/tables/dbo__vehicle_staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:42911D53995C13E42ACA6A269CEE07C37B0208A521FB64EAD3294BCEA8229C53",
+      "object": {
+        "name": "vehicle_staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DASimsRetail",
+        "schema": "dbo",
+        "qualified_name": "DASimsRetail.dbo.vehicle_staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DASimsRetail.dbo.vehicle_staging",
+        "dbo.vehicle_staging",
+        "vehicle_staging",
+        "vehiclestaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.PostGres.Daily - PostGres - Load Common Group.pals_vehicle_SIMS.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "V1-SSIS25-01, 11040.SSISDB.PostGres.Daily - PostGres - Load Common Group.pals_vehicle_SIMS.dtsx"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "cora_acct_id",
+          "hostitemid",
+          "accountingaccount",
+          "axle",
+          "axleno",
+          "balance",
+          "baseinvoiceprice",
+          "baseretailprice",
+          "bodystyle",
+          "brakesys",
+          "cabtype",
+          "chassis",
+          "color",
+          "country",
+          "custflag",
+          "custid",
+          "custno",
+          "cylinderno",
+          "dealercode",
+          "dealerdefined1"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 136,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DASimsRetail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DASimsRetail / dbo"
+      ],
+      "evidence_file": "object-dasimsretail-dbo-vehicle-staging.evidence.json",
+      "markdown_file": "object-dasimsretail-dbo-vehicle-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "VehicleSalesCurrent_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DASimsRetail",
+        "dbo",
+        "VehicleSalesCurrent_Staging"
+      ],
+      "canonical_id": "object-dasimsretail-dbo-vehiclesalescurrent-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DASimsRetail/tables/dbo__VehicleSalesCurrent_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:64BEAA89EC684B14533A314EA38D3ABFE07ED0DFF189DB2396C233B5BD5339BC",
+      "object": {
+        "name": "VehicleSalesCurrent_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DASimsRetail",
+        "schema": "dbo",
+        "qualified_name": "DASimsRetail.dbo.VehicleSalesCurrent_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "DASimsRetail.dbo.VehicleSalesCurrent_Staging",
+        "dbo.VehicleSalesCurrent_Staging",
+        "VehicleSalesCurrent_Staging",
+        "VehicleSalesCurrentStaging",
+        "vehiclesalescurrentstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.PostGres.Daily - PostGres - Load Sales Group.pals_vehiclesalescurrent_SIMS.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ahincome",
+          "ahpremium",
+          "accountingdate",
+          "addtocapamount",
+          "adjustedcostofvehicle",
+          "adjustmentsdealerdefined",
+          "adjustmentsropo",
+          "adjustmentsstandard",
+          "age",
+          "backgross",
+          "backweowes",
+          "bankfee",
+          "bonussp1",
+          "bonussp2",
+          "bonussp3",
+          "buyrateapr",
+          "buyrateaddon",
+          "buyratelfm",
+          "buyratelmf",
+          "clincome"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 228,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DASimsRetail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DASimsRetail / dbo"
+      ],
+      "evidence_file": "object-dasimsretail-dbo-vehiclesalescurrent-staging.evidence.json",
+      "markdown_file": "object-dasimsretail-dbo-vehiclesalescurrent-staging.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-138-dasimsretail-dbo-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-138-dasimsretail-dbo-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-138-dasimsretail-dbo-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

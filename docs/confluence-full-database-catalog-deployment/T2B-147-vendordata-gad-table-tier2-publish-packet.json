@@ -1,0 +1,670 @@
+{
+  "packet_id": "T2B-147",
+  "generated_at": "2026-06-23T18:53:13.843Z",
+  "batch": {
+    "batch_id": "T2B-147",
+    "priority_rank": 147,
+    "platform": "SQL Server",
+    "database": "VendorData",
+    "schema": "gad",
+    "object_type_scope": "table",
+    "object_count": 4,
+    "high_use_objects": 0,
+    "downstream_uses": 4,
+    "first_object": "Campaign",
+    "last_object": "Campaign_delete",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / gad",
+    "object_names": ["Campaign", "Conversion", "Campaign_Backup_06012021", "Campaign_delete"],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 4,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 4,
+    "total_planned_pages": 8
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData"],
+      "page_type": "database",
+      "evidence_hash": "sha256:C029883539BC166EBDE80488ADFC36CDDDD0E84559188FE128628E553E29DFF1",
+      "evidence_file": "database-vendordata.evidence.json",
+      "markdown_file": "database-vendordata.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.gad",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData", "gad"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:9BAE0BFA280CE5B46BA8B6A4556821A3B7FED8983EF2FF9999395BE216A80A9B",
+      "evidence_file": "schema-vendordata-gad.evidence.json",
+      "markdown_file": "schema-vendordata-gad.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.gad.Campaign",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gad",
+        "Campaign"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D20873E028B1B8856C3F39C42021DF6E936EA348ED0202E210FCCE407C615B96",
+      "evidence_file": "object-vendordata-gad-campaign.evidence.json",
+      "markdown_file": "object-vendordata-gad-campaign.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.gad.Campaign_Backup_06012021",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gad",
+        "Campaign_Backup_06012021"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D0C219497923A1AA00D223644F44444B02EFF1D6C4D1349975FDF63B9942DB16",
+      "evidence_file": "object-vendordata-gad-campaign-backup-06012021.evidence.json",
+      "markdown_file": "object-vendordata-gad-campaign-backup-06012021.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.gad.Campaign_delete",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gad",
+        "Campaign_delete"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:738B914FAEF7F8C98F2167DF9373245E38DBD2F0EAFD6050FD8FA12AC3D65747",
+      "evidence_file": "object-vendordata-gad-campaign-delete.evidence.json",
+      "markdown_file": "object-vendordata-gad-campaign-delete.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.gad.Conversion",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gad",
+        "Conversion"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:86E2C28F402F020E30FED23869C7677961009147B62BF96CD5573496FDDF72FB",
+      "evidence_file": "object-vendordata-gad-conversion.evidence.json",
+      "markdown_file": "object-vendordata-gad-conversion.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "Campaign",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gad",
+        "Campaign"
+      ],
+      "canonical_id": "object-vendordata-gad-campaign",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/gad__Campaign.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D20873E028B1B8856C3F39C42021DF6E936EA348ED0202E210FCCE407C615B96",
+      "object": {
+        "name": "Campaign",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "gad",
+        "qualified_name": "VendorData.gad.Campaign",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VendorData.gad.Campaign", "gad.Campaign", "Campaign", "campaign"],
+      "lineage": {
+        "upstream_loaders": [
+          "L1-DWASQL-02,12010.StagingDB.gad.uspCampaign",
+          "L1-DWASQL-02,12010.StagingDB.gad.uspCampaign_back_06012021"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GoogleAds_Advertising_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GoogleAds_Service",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GoogleAds_view"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "accountId",
+          "account",
+          "campaignId",
+          "campaignName",
+          "advertisingChannelType",
+          "date",
+          "availableImpressions",
+          "clicks",
+          "configuredBudget",
+          "conversionRate",
+          "conversions",
+          "cost",
+          "costPerConversion",
+          "cpc",
+          "cpm",
+          "ctr",
+          "impressions",
+          "lostImpressionsDueToBudget",
+          "lostImpressionsDueToRank",
+          "searchBudgetLostImpressionShare"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 33,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / gad"
+      ],
+      "evidence_file": "object-vendordata-gad-campaign.evidence.json",
+      "markdown_file": "object-vendordata-gad-campaign.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Campaign_Backup_06012021",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gad",
+        "Campaign_Backup_06012021"
+      ],
+      "canonical_id": "object-vendordata-gad-campaign-backup-06012021",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/gad__Campaign_Backup_06012021.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D0C219497923A1AA00D223644F44444B02EFF1D6C4D1349975FDF63B9942DB16",
+      "object": {
+        "name": "Campaign_Backup_06012021",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "gad",
+        "qualified_name": "VendorData.gad.Campaign_Backup_06012021",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.gad.Campaign_Backup_06012021",
+        "gad.Campaign_Backup_06012021",
+        "Campaign_Backup_06012021",
+        "CampaignBackup06012021",
+        "campaignbackup06012021"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "accountId",
+          "account",
+          "campaignId",
+          "campaignName",
+          "advertisingChannelType",
+          "date",
+          "availableImpressions",
+          "clicks",
+          "configuredBudget",
+          "conversionRate",
+          "conversions",
+          "cost",
+          "costPerConversion",
+          "cpc",
+          "cpm",
+          "ctr",
+          "impressions",
+          "lostImpressionsDueToBudget",
+          "lostImpressionsDueToRank",
+          "searchBudgetLostImpressionShare"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 30,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / gad"
+      ],
+      "evidence_file": "object-vendordata-gad-campaign-backup-06012021.evidence.json",
+      "markdown_file": "object-vendordata-gad-campaign-backup-06012021.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Campaign_delete",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gad",
+        "Campaign_delete"
+      ],
+      "canonical_id": "object-vendordata-gad-campaign-delete",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/gad__Campaign_delete.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:738B914FAEF7F8C98F2167DF9373245E38DBD2F0EAFD6050FD8FA12AC3D65747",
+      "object": {
+        "name": "Campaign_delete",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "gad",
+        "qualified_name": "VendorData.gad.Campaign_delete",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.gad.Campaign_delete",
+        "gad.Campaign_delete",
+        "Campaign_delete",
+        "Campaigndelete",
+        "campaigndelete"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "accountId",
+          "account",
+          "campaignId",
+          "campaignName",
+          "advertisingChannelType",
+          "date",
+          "availableImpressions",
+          "clicks",
+          "configuredBudget",
+          "conversionRate",
+          "conversions",
+          "cost",
+          "costPerConversion",
+          "cpc",
+          "cpm",
+          "ctr",
+          "impressions",
+          "lostImpressionsDueToBudget",
+          "lostImpressionsDueToRank",
+          "searchBudgetLostImpressionShare"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 30,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / gad"
+      ],
+      "evidence_file": "object-vendordata-gad-campaign-delete.evidence.json",
+      "markdown_file": "object-vendordata-gad-campaign-delete.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Conversion",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gad",
+        "Conversion"
+      ],
+      "canonical_id": "object-vendordata-gad-conversion",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/gad__Conversion.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:86E2C28F402F020E30FED23869C7677961009147B62BF96CD5573496FDDF72FB",
+      "object": {
+        "name": "Conversion",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "gad",
+        "qualified_name": "VendorData.gad.Conversion",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VendorData.gad.Conversion", "gad.Conversion", "Conversion", "conversion"],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.StagingDB.gad.uspConversion"],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-DWASQL-02,12010.VendorData.dbo.vw_GoogleAds_StoreVisits_view"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "accountId",
+          "account",
+          "campaignId",
+          "campaignName",
+          "campaignStatus",
+          "conversionTypeName",
+          "date",
+          "externalConversionSource",
+          "conversions",
+          "DW_FileProcessed_Flag",
+          "ETLExecution_ID",
+          "Meta_LoadDate",
+          "Meta_ComputerName",
+          "Meta_SourceFileName",
+          "Meta_SourceSystemname",
+          "Meta_Src_Sys_ID",
+          "Meta_UserID",
+          "Labels"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 18,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / gad"
+      ],
+      "evidence_file": "object-vendordata-gad-conversion.evidence.json",
+      "markdown_file": "object-vendordata-gad-conversion.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-147-vendordata-gad-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-147-vendordata-gad-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-147-vendordata-gad-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

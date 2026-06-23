@@ -1,0 +1,593 @@
+{
+  "packet_id": "T2B-111",
+  "generated_at": "2026-06-23T18:46:37.993Z",
+  "batch": {
+    "batch_id": "T2B-111",
+    "priority_rank": 111,
+    "platform": "SQL Server",
+    "database": "TitleTracking",
+    "schema": "dbo",
+    "object_type_scope": "table",
+    "object_count": 4,
+    "high_use_objects": 0,
+    "downstream_uses": 14,
+    "first_object": "TitleStatus_staging",
+    "last_object": "TitleStatus_staging_sonic",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / TitleTracking / dbo",
+    "object_names": [
+      "TitleStatus_staging",
+      "FactTitle",
+      "FactInventoryTitle",
+      "TitleStatus_staging_sonic"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 4,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 4,
+    "total_planned_pages": 8
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "TitleTracking",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "TitleTracking"],
+      "page_type": "database",
+      "evidence_hash": "sha256:6B946DC8AD39DCE92DE38EB28BEB54C152A90AA1330FDF4EA90E7559DC279CCC",
+      "evidence_file": "database-titletracking.evidence.json",
+      "markdown_file": "database-titletracking.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "TitleTracking.dbo",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "TitleTracking", "dbo"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:D74B8B65246D156933BAED1649100505CD00580CB829541C28F09E9F0CD7A741",
+      "evidence_file": "schema-titletracking-dbo.evidence.json",
+      "markdown_file": "schema-titletracking-dbo.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "TitleTracking.dbo.FactInventoryTitle",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "TitleTracking",
+        "dbo",
+        "FactInventoryTitle"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:391A071A0FD0F195CF01110DC7A809F0188ED388450CF6EEB96BEA183E27C51D",
+      "evidence_file": "object-titletracking-dbo-factinventorytitle.evidence.json",
+      "markdown_file": "object-titletracking-dbo-factinventorytitle.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "TitleTracking.dbo.FactTitle",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "TitleTracking",
+        "dbo",
+        "FactTitle"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:59DC8C7CD731EEE77C54CABEAE26A296162AFFA2D98814C890915B0E0A48D3E4",
+      "evidence_file": "object-titletracking-dbo-facttitle.evidence.json",
+      "markdown_file": "object-titletracking-dbo-facttitle.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "TitleTracking.dbo.TitleStatus_staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "TitleTracking",
+        "dbo",
+        "TitleStatus_staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:8D773848D77565D629A30FFC52B54F268590A3CAFD4F578FCB6BD0AD90B75EC5",
+      "evidence_file": "object-titletracking-dbo-titlestatus-staging.evidence.json",
+      "markdown_file": "object-titletracking-dbo-titlestatus-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "TitleTracking.dbo.TitleStatus_staging_sonic",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "TitleTracking",
+        "dbo",
+        "TitleStatus_staging_sonic"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:214F4DF85CC10D1EDB1040F099FBE68E483CBF6CDE20A7C13EDD842480DEE0FE",
+      "evidence_file": "object-titletracking-dbo-titlestatus-staging-sonic.evidence.json",
+      "markdown_file": "object-titletracking-dbo-titlestatus-staging-sonic.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "FactInventoryTitle",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "TitleTracking",
+        "dbo",
+        "FactInventoryTitle"
+      ],
+      "canonical_id": "object-titletracking-dbo-factinventorytitle",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/TitleTracking/tables/dbo__FactInventoryTitle.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:391A071A0FD0F195CF01110DC7A809F0188ED388450CF6EEB96BEA183E27C51D",
+      "object": {
+        "name": "FactInventoryTitle",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "TitleTracking",
+        "schema": "dbo",
+        "qualified_name": "TitleTracking.dbo.FactInventoryTitle",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "TitleTracking.dbo.FactInventoryTitle",
+        "dbo.FactInventoryTitle",
+        "FactInventoryTitle",
+        "factinventorytitle"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / TitleTracking",
+        "Sonic Data Lineage / Database Catalog / SQL Server / TitleTracking / dbo"
+      ],
+      "evidence_file": "object-titletracking-dbo-factinventorytitle.evidence.json",
+      "markdown_file": "object-titletracking-dbo-factinventorytitle.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "FactTitle",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "TitleTracking",
+        "dbo",
+        "FactTitle"
+      ],
+      "canonical_id": "object-titletracking-dbo-facttitle",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/TitleTracking/tables/dbo__FactTitle.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:59DC8C7CD731EEE77C54CABEAE26A296162AFFA2D98814C890915B0E0A48D3E4",
+      "object": {
+        "name": "FactTitle",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "TitleTracking",
+        "schema": "dbo",
+        "qualified_name": "TitleTracking.dbo.FactTitle",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["TitleTracking.dbo.FactTitle", "dbo.FactTitle", "FactTitle", "facttitle"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / TitleTracking",
+        "Sonic Data Lineage / Database Catalog / SQL Server / TitleTracking / dbo"
+      ],
+      "evidence_file": "object-titletracking-dbo-facttitle.evidence.json",
+      "markdown_file": "object-titletracking-dbo-facttitle.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TitleStatus_staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "TitleTracking",
+        "dbo",
+        "TitleStatus_staging"
+      ],
+      "canonical_id": "object-titletracking-dbo-titlestatus-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01,12013/databases/TitleTracking/tables/dbo__TitleStatus_staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:8D773848D77565D629A30FFC52B54F268590A3CAFD4F578FCB6BD0AD90B75EC5",
+      "object": {
+        "name": "TitleStatus_staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01,12013",
+        "database": "TitleTracking",
+        "schema": "dbo",
+        "qualified_name": "TitleTracking.dbo.TitleStatus_staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "TitleTracking.dbo.TitleStatus_staging",
+        "dbo.TitleStatus_staging",
+        "TitleStatus_staging",
+        "TitleStatusstaging",
+        "titlestatusstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / TitleTracking",
+        "Sonic Data Lineage / Database Catalog / SQL Server / TitleTracking / dbo"
+      ],
+      "evidence_file": "object-titletracking-dbo-titlestatus-staging.evidence.json",
+      "markdown_file": "object-titletracking-dbo-titlestatus-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TitleStatus_staging_sonic",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "TitleTracking",
+        "dbo",
+        "TitleStatus_staging_sonic"
+      ],
+      "canonical_id": "object-titletracking-dbo-titlestatus-staging-sonic",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01,12013/databases/TitleTracking/tables/dbo__TitleStatus_staging_sonic.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:214F4DF85CC10D1EDB1040F099FBE68E483CBF6CDE20A7C13EDD842480DEE0FE",
+      "object": {
+        "name": "TitleStatus_staging_sonic",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01,12013",
+        "database": "TitleTracking",
+        "schema": "dbo",
+        "qualified_name": "TitleTracking.dbo.TitleStatus_staging_sonic",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "TitleTracking.dbo.TitleStatus_staging_sonic",
+        "dbo.TitleStatus_staging_sonic",
+        "TitleStatus_staging_sonic",
+        "TitleStatusstagingsonic",
+        "titlestatusstagingsonic"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / TitleTracking",
+        "Sonic Data Lineage / Database Catalog / SQL Server / TitleTracking / dbo"
+      ],
+      "evidence_file": "object-titletracking-dbo-titlestatus-staging-sonic.evidence.json",
+      "markdown_file": "object-titletracking-dbo-titlestatus-staging-sonic.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-111-titletracking-dbo-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-111-titletracking-dbo-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-111-titletracking-dbo-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

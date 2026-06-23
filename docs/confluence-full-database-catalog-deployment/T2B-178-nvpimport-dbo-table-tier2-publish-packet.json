@@ -1,0 +1,472 @@
+{
+  "packet_id": "T2B-178",
+  "generated_at": "2026-06-23T19:06:06.752Z",
+  "batch": {
+    "batch_id": "T2B-178",
+    "priority_rank": 178,
+    "platform": "SQL Server",
+    "database": "NVPImport",
+    "schema": "dbo",
+    "object_type_scope": "table",
+    "object_count": 3,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "EP_Veh_Inventory_postStagingMerge",
+    "last_object": "Gljedetail_stage",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / NVPImport / dbo",
+    "object_names": ["EP_Veh_Inventory_postStagingMerge", "veh_inventory", "Gljedetail_stage"],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 3,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 3,
+    "total_planned_pages": 7
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "NVPImport",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "NVPImport"],
+      "page_type": "database",
+      "evidence_hash": "sha256:FF42A3C0213222A9B73FD457E64D0F4720F452B2D5607BE03404DE8B67F6B957",
+      "evidence_file": "database-nvpimport.evidence.json",
+      "markdown_file": "database-nvpimport.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "NVPImport.dbo",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "NVPImport", "dbo"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:744C6BB09A981EECB08C31BFD17033A0C0772E7006B39645B59BA685C1478AAB",
+      "evidence_file": "schema-nvpimport-dbo.evidence.json",
+      "markdown_file": "schema-nvpimport-dbo.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "NVPImport.dbo.EP_Veh_Inventory_postStagingMerge",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "NVPImport",
+        "dbo",
+        "EP_Veh_Inventory_postStagingMerge"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:7F9D5C4AA4D59C5A012218F4C6B557215660ED0B85D52B655450F339E3898AB0",
+      "evidence_file": "object-nvpimport-dbo-ep-veh-inventory-poststagingmerge.evidence.json",
+      "markdown_file": "object-nvpimport-dbo-ep-veh-inventory-poststagingmerge.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "NVPImport.dbo.Gljedetail_stage",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "NVPImport",
+        "dbo",
+        "Gljedetail_stage"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:44C61DB0DE81E1A8ECD1DA289F49DBC0AF371687630379A4517627868BF047AE",
+      "evidence_file": "object-nvpimport-dbo-gljedetail-stage.evidence.json",
+      "markdown_file": "object-nvpimport-dbo-gljedetail-stage.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "NVPImport.dbo.veh_inventory",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "NVPImport",
+        "dbo",
+        "veh_inventory"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:053FE137CD4D5E2AB70732AF75398987D44DBEE73B5688E43D7757A671F5574A",
+      "evidence_file": "object-nvpimport-dbo-veh-inventory.evidence.json",
+      "markdown_file": "object-nvpimport-dbo-veh-inventory.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "EP_Veh_Inventory_postStagingMerge",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "NVPImport",
+        "dbo",
+        "EP_Veh_Inventory_postStagingMerge"
+      ],
+      "canonical_id": "object-nvpimport-dbo-ep-veh-inventory-poststagingmerge",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/NVPImport/tables/dbo__EP_Veh_Inventory_postStagingMerge.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:7F9D5C4AA4D59C5A012218F4C6B557215660ED0B85D52B655450F339E3898AB0",
+      "object": {
+        "name": "EP_Veh_Inventory_postStagingMerge",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "NVPImport",
+        "schema": "dbo",
+        "qualified_name": "NVPImport.dbo.EP_Veh_Inventory_postStagingMerge",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "NVPImport.dbo.EP_Veh_Inventory_postStagingMerge",
+        "dbo.EP_Veh_Inventory_postStagingMerge",
+        "EP_Veh_Inventory_postStagingMerge",
+        "EPVehInventorypostStagingMerge",
+        "epvehinventorypoststagingmerge"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 168,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / NVPImport",
+        "Sonic Data Lineage / Database Catalog / SQL Server / NVPImport / dbo"
+      ],
+      "evidence_file": "object-nvpimport-dbo-ep-veh-inventory-poststagingmerge.evidence.json",
+      "markdown_file": "object-nvpimport-dbo-ep-veh-inventory-poststagingmerge.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Gljedetail_stage",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "NVPImport",
+        "dbo",
+        "Gljedetail_stage"
+      ],
+      "canonical_id": "object-nvpimport-dbo-gljedetail-stage",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/NVPImport/tables/dbo__Gljedetail_stage.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:44C61DB0DE81E1A8ECD1DA289F49DBC0AF371687630379A4517627868BF047AE",
+      "object": {
+        "name": "Gljedetail_stage",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "NVPImport",
+        "schema": "dbo",
+        "qualified_name": "NVPImport.dbo.Gljedetail_stage",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "NVPImport.dbo.Gljedetail_stage",
+        "dbo.Gljedetail_stage",
+        "Gljedetail_stage",
+        "Gljedetailstage",
+        "gljedetailstage"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 43,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / NVPImport",
+        "Sonic Data Lineage / Database Catalog / SQL Server / NVPImport / dbo"
+      ],
+      "evidence_file": "object-nvpimport-dbo-gljedetail-stage.evidence.json",
+      "markdown_file": "object-nvpimport-dbo-gljedetail-stage.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "veh_inventory",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "NVPImport",
+        "dbo",
+        "veh_inventory"
+      ],
+      "canonical_id": "object-nvpimport-dbo-veh-inventory",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/NVPImport/tables/dbo__veh_inventory.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:053FE137CD4D5E2AB70732AF75398987D44DBEE73B5688E43D7757A671F5574A",
+      "object": {
+        "name": "veh_inventory",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "NVPImport",
+        "schema": "dbo",
+        "qualified_name": "NVPImport.dbo.veh_inventory",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "NVPImport.dbo.veh_inventory",
+        "dbo.veh_inventory",
+        "veh_inventory",
+        "vehinventory"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 168,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / NVPImport",
+        "Sonic Data Lineage / Database Catalog / SQL Server / NVPImport / dbo"
+      ],
+      "evidence_file": "object-nvpimport-dbo-veh-inventory.evidence.json",
+      "markdown_file": "object-nvpimport-dbo-veh-inventory.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-178-nvpimport-dbo-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-178-nvpimport-dbo-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-178-nvpimport-dbo-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

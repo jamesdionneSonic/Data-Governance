@@ -1,0 +1,1495 @@
+{
+  "packet_id": "T2B-116",
+  "generated_at": "2026-06-23T18:46:57.261Z",
+  "batch": {
+    "batch_id": "T2B-116",
+    "priority_rank": 116,
+    "platform": "SQL Server",
+    "database": "VendorData",
+    "schema": "uccx",
+    "object_type_scope": "table",
+    "object_count": 10,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "AgentConnectionDetail",
+    "last_object": "TeamCSQMapping",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / uccx",
+    "object_names": [
+      "AgentConnectionDetail",
+      "ContactCallDetail",
+      "ContactQueueDetail",
+      "ContactRoutingDetail",
+      "ContactServiceQueue",
+      "ProfileIDMapping",
+      "Resource",
+      "ResourceGroup",
+      "Team",
+      "TeamCSQMapping"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "table",
+    "original_object_count": 10,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 10,
+    "total_planned_pages": 14
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData"],
+      "page_type": "database",
+      "evidence_hash": "sha256:C029883539BC166EBDE80488ADFC36CDDDD0E84559188FE128628E553E29DFF1",
+      "evidence_file": "database-vendordata.evidence.json",
+      "markdown_file": "database-vendordata.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.uccx",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData", "uccx"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:BB2B8847117ED95C1ED1B4E2B63BBD992F2298416DECF1679897589B8B750EA4",
+      "evidence_file": "schema-vendordata-uccx.evidence.json",
+      "markdown_file": "schema-vendordata-uccx.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.uccx.AgentConnectionDetail",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "AgentConnectionDetail"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:3A2CC0152D9E2CD4120CAB331F23D5BB5DD1F5CF1317BE1753087CD55C968F84",
+      "evidence_file": "object-vendordata-uccx-agentconnectiondetail.evidence.json",
+      "markdown_file": "object-vendordata-uccx-agentconnectiondetail.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.uccx.ContactCallDetail",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "ContactCallDetail"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:5C9D4875BE178B3933E037A1F8CE726518040AFE94B4E7E617E1E6EC9043B069",
+      "evidence_file": "object-vendordata-uccx-contactcalldetail.evidence.json",
+      "markdown_file": "object-vendordata-uccx-contactcalldetail.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.uccx.ContactQueueDetail",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "ContactQueueDetail"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:86DEFB687DC8B65E6D2A386181A81D8CDFEDD446784A932BDFDAFC08992E93CF",
+      "evidence_file": "object-vendordata-uccx-contactqueuedetail.evidence.json",
+      "markdown_file": "object-vendordata-uccx-contactqueuedetail.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.uccx.ContactRoutingDetail",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "ContactRoutingDetail"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:067C3FDBC4E731209ECC7AB30AEB5DDD233FDBA21E5D4E2A1C08001D70A00EAD",
+      "evidence_file": "object-vendordata-uccx-contactroutingdetail.evidence.json",
+      "markdown_file": "object-vendordata-uccx-contactroutingdetail.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.uccx.ContactServiceQueue",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "ContactServiceQueue"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:6D80C7B9E9E9A87F06C5EF9E7301909A0069EA25B83B107C5037E64BBEF00D55",
+      "evidence_file": "object-vendordata-uccx-contactservicequeue.evidence.json",
+      "markdown_file": "object-vendordata-uccx-contactservicequeue.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.uccx.ProfileIDMapping",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "ProfileIDMapping"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B97749B7B73C0ACD0E6411F7196E773B24E6B4B5B7E400BD5C4900A8E0BF8A5C",
+      "evidence_file": "object-vendordata-uccx-profileidmapping.evidence.json",
+      "markdown_file": "object-vendordata-uccx-profileidmapping.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.uccx.Resource",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "Resource"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9CBACCF16C2C5F75326CD9D85FCC0916EEF5064F802A3DE2323B7D5427D26E8A",
+      "evidence_file": "object-vendordata-uccx-resource.evidence.json",
+      "markdown_file": "object-vendordata-uccx-resource.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.uccx.ResourceGroup",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "ResourceGroup"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E9CB8A17107FA1C5C2E78F5DB561C857ECCF52E2B8F07C9696E3B16353B3EC78",
+      "evidence_file": "object-vendordata-uccx-resourcegroup.evidence.json",
+      "markdown_file": "object-vendordata-uccx-resourcegroup.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.uccx.Team",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "Team"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B946CE1AE1168A2F4E97231D5184F19501EC6F8A82F8FBCE1C00B6DE5E9AB3A2",
+      "evidence_file": "object-vendordata-uccx-team.evidence.json",
+      "markdown_file": "object-vendordata-uccx-team.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.uccx.TeamCSQMapping",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "TeamCSQMapping"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:C4C4E75EB7B817F221B636F94337F8C2AF869F50317314D4FBA5F9B8BD9EB364",
+      "evidence_file": "object-vendordata-uccx-teamcsqmapping.evidence.json",
+      "markdown_file": "object-vendordata-uccx-teamcsqmapping.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "AgentConnectionDetail",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "AgentConnectionDetail"
+      ],
+      "canonical_id": "object-vendordata-uccx-agentconnectiondetail",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/uccx__AgentConnectionDetail.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:3A2CC0152D9E2CD4120CAB331F23D5BB5DD1F5CF1317BE1753087CD55C968F84",
+      "object": {
+        "name": "AgentConnectionDetail",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "uccx",
+        "qualified_name": "VendorData.uccx.AgentConnectionDetail",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.uccx.AgentConnectionDetail",
+        "uccx.AgentConnectionDetail",
+        "AgentConnectionDetail",
+        "agentconnectiondetail"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.VendorData.uccx.uspLoadAgentConnectionDetail"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "UccxAgentConnectionDetailID",
+          "sessionID",
+          "sessionseqnum",
+          "nodeid",
+          "profileid",
+          "resourceID",
+          "startdatetime",
+          "enddatetime",
+          "qIndex",
+          "gmtoffset",
+          "ringTime",
+          "talkTime",
+          "holdTime",
+          "workTime",
+          "callWrapupData",
+          "callResult",
+          "dialinglistid",
+          "rna",
+          "Meta_LoadDate",
+          "Meta_UserID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 25,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / uccx"
+      ],
+      "evidence_file": "object-vendordata-uccx-agentconnectiondetail.evidence.json",
+      "markdown_file": "object-vendordata-uccx-agentconnectiondetail.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ContactCallDetail",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "ContactCallDetail"
+      ],
+      "canonical_id": "object-vendordata-uccx-contactcalldetail",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/uccx__ContactCallDetail.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:5C9D4875BE178B3933E037A1F8CE726518040AFE94B4E7E617E1E6EC9043B069",
+      "object": {
+        "name": "ContactCallDetail",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "uccx",
+        "qualified_name": "VendorData.uccx.ContactCallDetail",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.uccx.ContactCallDetail",
+        "uccx.ContactCallDetail",
+        "ContactCallDetail",
+        "contactcalldetail"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.VendorData.uccx.uspLoadContactCallDetail"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "UccxContactCallDetailID",
+          "sessionid",
+          "sessionseqnum",
+          "nodeid",
+          "profileid",
+          "contacttype",
+          "contactdisposition",
+          "dispositionreason",
+          "originatortype",
+          "originatorid",
+          "originatordn",
+          "destinationtype",
+          "destinationid",
+          "destinationdn",
+          "startdatetime",
+          "enddatetime",
+          "gmtoffset",
+          "callednumber",
+          "origcallednumber",
+          "applicationtaskid"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 53,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / uccx"
+      ],
+      "evidence_file": "object-vendordata-uccx-contactcalldetail.evidence.json",
+      "markdown_file": "object-vendordata-uccx-contactcalldetail.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ContactQueueDetail",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "ContactQueueDetail"
+      ],
+      "canonical_id": "object-vendordata-uccx-contactqueuedetail",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/uccx__ContactQueueDetail.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:86DEFB687DC8B65E6D2A386181A81D8CDFEDD446784A932BDFDAFC08992E93CF",
+      "object": {
+        "name": "ContactQueueDetail",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "uccx",
+        "qualified_name": "VendorData.uccx.ContactQueueDetail",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.uccx.ContactQueueDetail",
+        "uccx.ContactQueueDetail",
+        "ContactQueueDetail",
+        "contactqueuedetail"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.VendorData.uccx.uspLoadContactQueueDetail"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "UccxContactQueueDetailID",
+          "sessionID",
+          "sessionSeqNum",
+          "profileID",
+          "nodeID",
+          "targetID",
+          "targetType",
+          "qIndex",
+          "queueOrder",
+          "disposition",
+          "metServiceLevel",
+          "queueTime",
+          "startdatetime",
+          "enddatetime",
+          "contactID",
+          "Meta_LoadDate",
+          "Meta_UserID",
+          "Meta_ComputerName",
+          "Meta_SourceSystemName",
+          "ETLExecution_ID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 22,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / uccx"
+      ],
+      "evidence_file": "object-vendordata-uccx-contactqueuedetail.evidence.json",
+      "markdown_file": "object-vendordata-uccx-contactqueuedetail.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ContactRoutingDetail",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "ContactRoutingDetail"
+      ],
+      "canonical_id": "object-vendordata-uccx-contactroutingdetail",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/uccx__ContactRoutingDetail.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:067C3FDBC4E731209ECC7AB30AEB5DDD233FDBA21E5D4E2A1C08001D70A00EAD",
+      "object": {
+        "name": "ContactRoutingDetail",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "uccx",
+        "qualified_name": "VendorData.uccx.ContactRoutingDetail",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.uccx.ContactRoutingDetail",
+        "uccx.ContactRoutingDetail",
+        "ContactRoutingDetail",
+        "contactroutingdetail"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.VendorData.uccx.uspLoadContactRoutingDetail"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "UccxContactRoutingDetailID",
+          "sessionid",
+          "sessionseqnum",
+          "nodeid",
+          "profileid",
+          "qIndex",
+          "origPriority",
+          "finalPriority",
+          "queueTime",
+          "startDateTime",
+          "Meta_LoadDate",
+          "Meta_UserID",
+          "Meta_ComputerName",
+          "Meta_SourceSystemName",
+          "ETLExecution_ID",
+          "Meta_RowLastChangedDate",
+          "Meta_RowLastDMLAction"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 17,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / uccx"
+      ],
+      "evidence_file": "object-vendordata-uccx-contactroutingdetail.evidence.json",
+      "markdown_file": "object-vendordata-uccx-contactroutingdetail.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ContactServiceQueue",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "ContactServiceQueue"
+      ],
+      "canonical_id": "object-vendordata-uccx-contactservicequeue",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/uccx__ContactServiceQueue.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:6D80C7B9E9E9A87F06C5EF9E7301909A0069EA25B83B107C5037E64BBEF00D55",
+      "object": {
+        "name": "ContactServiceQueue",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "uccx",
+        "qualified_name": "VendorData.uccx.ContactServiceQueue",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.uccx.ContactServiceQueue",
+        "uccx.ContactServiceQueue",
+        "ContactServiceQueue",
+        "contactservicequeue"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.VendorData.uccx.uspLoadContactServiceQueue"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "UccxContactServiceQueueID",
+          "contactServiceQueueID",
+          "profileid",
+          "CSQName",
+          "resourcePoolType",
+          "resourceGroupID",
+          "selectionCriteria",
+          "skillGroupID",
+          "serviceLevel",
+          "serviceLevelPercentage",
+          "active",
+          "autoWork",
+          "dateInactive",
+          "queueAlgorithm",
+          "recordID",
+          "orderList",
+          "wrapupTime",
+          "prompt",
+          "privateData",
+          "queueType"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 36,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / uccx"
+      ],
+      "evidence_file": "object-vendordata-uccx-contactservicequeue.evidence.json",
+      "markdown_file": "object-vendordata-uccx-contactservicequeue.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ProfileIDMapping",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "ProfileIDMapping"
+      ],
+      "canonical_id": "object-vendordata-uccx-profileidmapping",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/uccx__ProfileIDMapping.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B97749B7B73C0ACD0E6411F7196E773B24E6B4B5B7E400BD5C4900A8E0BF8A5C",
+      "object": {
+        "name": "ProfileIDMapping",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "uccx",
+        "qualified_name": "VendorData.uccx.ProfileIDMapping",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.uccx.ProfileIDMapping",
+        "uccx.ProfileIDMapping",
+        "ProfileIDMapping",
+        "profileidmapping"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.VendorData.uccx.uspLoadProfileIDMapping"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "UccxProfileIDMappingID",
+          "profileName",
+          "profileid",
+          "Meta_LoadDate",
+          "Meta_UserID",
+          "Meta_ComputerName",
+          "Meta_SourceSystemName",
+          "ETLExecution_ID",
+          "Meta_RowLastChangedDate",
+          "Meta_RowLastDMLAction"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / uccx"
+      ],
+      "evidence_file": "object-vendordata-uccx-profileidmapping.evidence.json",
+      "markdown_file": "object-vendordata-uccx-profileidmapping.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Resource",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "Resource"
+      ],
+      "canonical_id": "object-vendordata-uccx-resource",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/uccx__Resource.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9CBACCF16C2C5F75326CD9D85FCC0916EEF5064F802A3DE2323B7D5427D26E8A",
+      "object": {
+        "name": "Resource",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "uccx",
+        "qualified_name": "VendorData.uccx.Resource",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VendorData.uccx.Resource", "uccx.Resource", "Resource", "resource"],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.VendorData.uccx.uspLoadResource"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "UccxResourceID",
+          "resourceid",
+          "profileid",
+          "resourceloginid",
+          "resourcename",
+          "resourcegroupid",
+          "resourcetype",
+          "active",
+          "autoavail",
+          "extension",
+          "orderinrg",
+          "dateinactive",
+          "resourceskillmapid",
+          "assignedteamid",
+          "resourcefirstname",
+          "resourcelastname",
+          "resourcealias",
+          "Meta_LoadDate",
+          "Meta_UserID",
+          "Meta_ComputerName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 24,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / uccx"
+      ],
+      "evidence_file": "object-vendordata-uccx-resource.evidence.json",
+      "markdown_file": "object-vendordata-uccx-resource.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ResourceGroup",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "ResourceGroup"
+      ],
+      "canonical_id": "object-vendordata-uccx-resourcegroup",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/uccx__ResourceGroup.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E9CB8A17107FA1C5C2E78F5DB561C857ECCF52E2B8F07C9696E3B16353B3EC78",
+      "object": {
+        "name": "ResourceGroup",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "uccx",
+        "qualified_name": "VendorData.uccx.ResourceGroup",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.uccx.ResourceGroup",
+        "uccx.ResourceGroup",
+        "ResourceGroup",
+        "resourcegroup"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.VendorData.uccx.uspLoadResourceGroup"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "UccxResourceGroupID",
+          "resourcegroupid",
+          "profileid",
+          "resourcegroupname",
+          "active",
+          "dateinactive",
+          "Meta_LoadDate",
+          "Meta_UserID",
+          "Meta_ComputerName",
+          "Meta_SourceSystemName",
+          "ETLExecution_ID",
+          "Meta_RowLastChangedDate",
+          "Meta_RowLastDMLAction"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 13,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / uccx"
+      ],
+      "evidence_file": "object-vendordata-uccx-resourcegroup.evidence.json",
+      "markdown_file": "object-vendordata-uccx-resourcegroup.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Team",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "Team"
+      ],
+      "canonical_id": "object-vendordata-uccx-team",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/uccx__Team.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B946CE1AE1168A2F4E97231D5184F19501EC6F8A82F8FBCE1C00B6DE5E9AB3A2",
+      "object": {
+        "name": "Team",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "uccx",
+        "qualified_name": "VendorData.uccx.Team",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VendorData.uccx.Team", "uccx.Team", "Team", "team"],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.VendorData.uccx.uspLoadTeam"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "UccxTeamID",
+          "teamid",
+          "profileid",
+          "teamname",
+          "active",
+          "dateinactive",
+          "Meta_LoadDate",
+          "Meta_UserID",
+          "Meta_ComputerName",
+          "Meta_SourceSystemName",
+          "ETLExecution_ID",
+          "Meta_RowLastChangedDate",
+          "Meta_RowLastDMLAction"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 13,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / uccx"
+      ],
+      "evidence_file": "object-vendordata-uccx-team.evidence.json",
+      "markdown_file": "object-vendordata-uccx-team.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TeamCSQMapping",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "uccx",
+        "TeamCSQMapping"
+      ],
+      "canonical_id": "object-vendordata-uccx-teamcsqmapping",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/uccx__TeamCSQMapping.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:C4C4E75EB7B817F221B636F94337F8C2AF869F50317314D4FBA5F9B8BD9EB364",
+      "object": {
+        "name": "TeamCSQMapping",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "uccx",
+        "qualified_name": "VendorData.uccx.TeamCSQMapping",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.uccx.TeamCSQMapping",
+        "uccx.TeamCSQMapping",
+        "TeamCSQMapping",
+        "teamcsqmapping"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.VendorData.uccx.uspLoadTeamCSQMapping"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "UccxTeamCSQMappingID",
+          "recordID",
+          "csqID",
+          "teamID",
+          "profileID",
+          "active",
+          "dateInactive",
+          "Meta_LoadDate",
+          "Meta_UserID",
+          "Meta_ComputerName",
+          "Meta_SourceSystemName",
+          "ETLExecution_ID",
+          "Meta_RowLastChangedDate",
+          "Meta_RowLastDMLAction"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 14,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / uccx"
+      ],
+      "evidence_file": "object-vendordata-uccx-teamcsqmapping.evidence.json",
+      "markdown_file": "object-vendordata-uccx-teamcsqmapping.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-116-vendordata-uccx-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-116-vendordata-uccx-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-116-vendordata-uccx-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

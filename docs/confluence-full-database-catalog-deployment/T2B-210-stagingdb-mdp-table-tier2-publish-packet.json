@@ -1,0 +1,787 @@
+{
+  "packet_id": "T2B-210",
+  "generated_at": "2026-06-23T19:11:09.159Z",
+  "batch": {
+    "batch_id": "T2B-210",
+    "priority_rank": 210,
+    "platform": "SQL Server",
+    "database": "StagingDB",
+    "schema": "mdp",
+    "object_type_scope": "table",
+    "object_count": 5,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "DMSOrgIDxref",
+    "last_object": "eleadOrgIDxref_UAT",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / mdp",
+    "object_names": [
+      "DMSOrgIDxref",
+      "DMSOrgIDxref_BKP_20260417",
+      "DMSOrgIDxref_uat",
+      "eleadOrgIDxref",
+      "eleadOrgIDxref_UAT"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 5,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 5,
+    "total_planned_pages": 9
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB"],
+      "page_type": "database",
+      "evidence_hash": "sha256:86BBBA4A90EF1C66989EFB3B9746AF88467BE01889393493BBDE0177897E19A4",
+      "evidence_file": "database-stagingdb.evidence.json",
+      "markdown_file": "database-stagingdb.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.mdp",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB", "mdp"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:5409A165B3C1D01C2E55517F33B21B08D6A62CA0FC6AEC1C2F7C121289A7330C",
+      "evidence_file": "schema-stagingdb-mdp.evidence.json",
+      "markdown_file": "schema-stagingdb-mdp.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.mdp.DMSOrgIDxref",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "mdp",
+        "DMSOrgIDxref"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:741AA195D277CB72F557774F2163D8EC35FE054732C724131B110ECEBB52DD27",
+      "evidence_file": "object-stagingdb-mdp-dmsorgidxref.evidence.json",
+      "markdown_file": "object-stagingdb-mdp-dmsorgidxref.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.mdp.DMSOrgIDxref_BKP_20260417",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "mdp",
+        "DMSOrgIDxref_BKP_20260417"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:22617B3C35123F3C37DB6D62E166A8D0116922F1FECC0E9D68EDF7858F978732",
+      "evidence_file": "object-stagingdb-mdp-dmsorgidxref-bkp-20260417.evidence.json",
+      "markdown_file": "object-stagingdb-mdp-dmsorgidxref-bkp-20260417.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.mdp.DMSOrgIDxref_uat",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "mdp",
+        "DMSOrgIDxref_uat"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:7891115443646EE38CE1CD46FF0D58ADC6984598625793C35A1FEE9134FB4864",
+      "evidence_file": "object-stagingdb-mdp-dmsorgidxref-uat.evidence.json",
+      "markdown_file": "object-stagingdb-mdp-dmsorgidxref-uat.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.mdp.eleadOrgIDxref",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "mdp",
+        "eleadOrgIDxref"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:59100E6CA50FDA08B964E5553E3EB8FC50C64C37B7888F03AF30F9F31A0C489D",
+      "evidence_file": "object-stagingdb-mdp-eleadorgidxref.evidence.json",
+      "markdown_file": "object-stagingdb-mdp-eleadorgidxref.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.mdp.eleadOrgIDxref_UAT",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "mdp",
+        "eleadOrgIDxref_UAT"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D2E82970F8D874C493D73807CDA11B09C9EDDCD3B4C30FA7A8520D55D23D4929",
+      "evidence_file": "object-stagingdb-mdp-eleadorgidxref-uat.evidence.json",
+      "markdown_file": "object-stagingdb-mdp-eleadorgidxref-uat.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "DMSOrgIDxref",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "mdp",
+        "DMSOrgIDxref"
+      ],
+      "canonical_id": "object-stagingdb-mdp-dmsorgidxref",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/mdp__DMSOrgIDxref.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:741AA195D277CB72F557774F2163D8EC35FE054732C724131B110ECEBB52DD27",
+      "object": {
+        "name": "DMSOrgIDxref",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "mdp",
+        "qualified_name": "StagingDB.mdp.DMSOrgIDxref",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["StagingDB.mdp.DMSOrgIDxref", "mdp.DMSOrgIDxref", "DMSOrgIDxref", "dmsorgidxref"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-DWASQL-02,12010.DMS.mdp.usp_get_mdp_dms_individual",
+          "L1-DWASQL-02,12010.DMS.mdp.usp_get_mdp_dms_individual_HT",
+          "L1-DWASQL-02,12010.DMS.mdp.usp_get_mdp_dms_individual_inc",
+          "L1-DWASQL-02,12010.DMS.mdp.usp_mdp_dms_purchase_info",
+          "L1-DWASQL-02,12010.DMS.mdp.usp_mdp_dms_purchase_info_history",
+          "L1-DWASQL-02,12010.DMS.mdp.usp_mdp_dms_purchase_info_HT",
+          "L1-DWASQL-02,12010.DMS.mdp.usp_mdp_dms_purchase_info_inc"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "OrgID",
+          "OrgName",
+          "GroupMemberID",
+          "GroupMemberName",
+          "IsPrimaryOrg",
+          "CoraAcctID",
+          "CDKAccountTypeName",
+          "CDKLogon",
+          "LineOfBusinessName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / mdp"
+      ],
+      "evidence_file": "object-stagingdb-mdp-dmsorgidxref.evidence.json",
+      "markdown_file": "object-stagingdb-mdp-dmsorgidxref.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DMSOrgIDxref_BKP_20260417",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "mdp",
+        "DMSOrgIDxref_BKP_20260417"
+      ],
+      "canonical_id": "object-stagingdb-mdp-dmsorgidxref-bkp-20260417",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/mdp__DMSOrgIDxref_BKP_20260417.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:22617B3C35123F3C37DB6D62E166A8D0116922F1FECC0E9D68EDF7858F978732",
+      "object": {
+        "name": "DMSOrgIDxref_BKP_20260417",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "mdp",
+        "qualified_name": "StagingDB.mdp.DMSOrgIDxref_BKP_20260417",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.mdp.DMSOrgIDxref_BKP_20260417",
+        "mdp.DMSOrgIDxref_BKP_20260417",
+        "DMSOrgIDxref_BKP_20260417",
+        "DMSOrgIDxrefBKP20260417",
+        "dmsorgidxrefbkp20260417"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "OrgID",
+          "OrgName",
+          "GroupMemberID",
+          "GroupMemberName",
+          "IsPrimaryOrg",
+          "CoraAcctID",
+          "CDKAccountTypeName",
+          "CDKLogon",
+          "LineOfBusinessName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / mdp"
+      ],
+      "evidence_file": "object-stagingdb-mdp-dmsorgidxref-bkp-20260417.evidence.json",
+      "markdown_file": "object-stagingdb-mdp-dmsorgidxref-bkp-20260417.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DMSOrgIDxref_uat",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "mdp",
+        "DMSOrgIDxref_uat"
+      ],
+      "canonical_id": "object-stagingdb-mdp-dmsorgidxref-uat",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/mdp__DMSOrgIDxref_uat.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:7891115443646EE38CE1CD46FF0D58ADC6984598625793C35A1FEE9134FB4864",
+      "object": {
+        "name": "DMSOrgIDxref_uat",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "mdp",
+        "qualified_name": "StagingDB.mdp.DMSOrgIDxref_uat",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.mdp.DMSOrgIDxref_uat",
+        "mdp.DMSOrgIDxref_uat",
+        "DMSOrgIDxref_uat",
+        "DMSOrgIDxrefuat",
+        "dmsorgidxrefuat"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "OrgID",
+          "OrgName",
+          "GroupMemberID",
+          "GroupMemberName",
+          "IsPrimaryOrg",
+          "CoraAcctID",
+          "CDKAccountTypeName",
+          "CDKLogon",
+          "LineOfBusinessName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / mdp"
+      ],
+      "evidence_file": "object-stagingdb-mdp-dmsorgidxref-uat.evidence.json",
+      "markdown_file": "object-stagingdb-mdp-dmsorgidxref-uat.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "eleadOrgIDxref",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "mdp",
+        "eleadOrgIDxref"
+      ],
+      "canonical_id": "object-stagingdb-mdp-eleadorgidxref",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/mdp__eleadOrgIDxref.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:59100E6CA50FDA08B964E5553E3EB8FC50C64C37B7888F03AF30F9F31A0C489D",
+      "object": {
+        "name": "eleadOrgIDxref",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "mdp",
+        "qualified_name": "StagingDB.mdp.eleadOrgIDxref",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.mdp.eleadOrgIDxref",
+        "mdp.eleadOrgIDxref",
+        "eleadOrgIDxref",
+        "eleadorgidxref"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-DWASQL-02,12010.eLeadDW.dbo.usp_pricefx_elead_appointment_activities",
+          "L1-DWASQL-02,12010.eLeadDW.dbo.usp_pricefx_elead_opportunity",
+          "L1-DWASQL-02,12010.eLeadDW.dbo.usp_pricefx_elead_vehicle",
+          "L1-DWASQL-02,12010.eLeadDW.mdp.usp_get_elead_vehicle_interest",
+          "L1-DWASQL-02,12010.eLeadDW.mdp.usp_get_elead_vehicle_interest_count",
+          "L1-DWASQL-02,12010.eLeadDW.mdp.usp_get_elead_vehicle_interest_dev",
+          "L1-DWASQL-02,12010.eLeadDW.mdp.usp_get_elead_vehicle_interest_HT",
+          "L1-DWASQL-02,12010.eLeadDW.mdp.usp_get_elead_vehicle_interest_incremental",
+          "L1-DWASQL-02,12010.eLeadDW.mdp.usp_mdp_elead_activity",
+          "L1-DWASQL-02,12010.eLeadDW.mdp.usp_mdp_elead_activity_HT",
+          "L1-DWASQL-02,12010.eLeadDW.mdp.usp_mdp_elead_activity_incremental",
+          "L1-DWASQL-02,12010.eLeadDW.mdp.usp_mdp_elead_individual",
+          "L1-DWASQL-02,12010.eLeadDW.mdp.usp_mdp_elead_individual_HT",
+          "L1-DWASQL-02,12010.eLeadDW.mdp.usp_mdp_elead_individual__incremental"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "OrgID",
+          "OrgName",
+          "GroupMemberID",
+          "GroupMemberName",
+          "externalid",
+          "isPrimaryOrg",
+          "ExternalGroupName",
+          "ExternalProviderName",
+          "LineOfBusinessName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / mdp"
+      ],
+      "evidence_file": "object-stagingdb-mdp-eleadorgidxref.evidence.json",
+      "markdown_file": "object-stagingdb-mdp-eleadorgidxref.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "eleadOrgIDxref_UAT",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "mdp",
+        "eleadOrgIDxref_UAT"
+      ],
+      "canonical_id": "object-stagingdb-mdp-eleadorgidxref-uat",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/mdp__eleadOrgIDxref_UAT.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D2E82970F8D874C493D73807CDA11B09C9EDDCD3B4C30FA7A8520D55D23D4929",
+      "object": {
+        "name": "eleadOrgIDxref_UAT",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "mdp",
+        "qualified_name": "StagingDB.mdp.eleadOrgIDxref_UAT",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.mdp.eleadOrgIDxref_UAT",
+        "mdp.eleadOrgIDxref_UAT",
+        "eleadOrgIDxref_UAT",
+        "eleadOrgIDxrefUAT",
+        "eleadorgidxrefuat"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "OrgID",
+          "OrgName",
+          "GroupMemberID",
+          "GroupMemberName",
+          "externalid",
+          "isPrimaryOrg",
+          "ExternalGroupName",
+          "ExternalProviderName",
+          "LineOfBusinessName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / mdp"
+      ],
+      "evidence_file": "object-stagingdb-mdp-eleadorgidxref-uat.evidence.json",
+      "markdown_file": "object-stagingdb-mdp-eleadorgidxref-uat.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-210-stagingdb-mdp-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-210-stagingdb-mdp-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-210-stagingdb-mdp-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

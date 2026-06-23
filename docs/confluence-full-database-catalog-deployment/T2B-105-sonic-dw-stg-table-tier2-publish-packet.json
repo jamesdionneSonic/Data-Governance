@@ -1,0 +1,1328 @@
+{
+  "packet_id": "T2B-105",
+  "generated_at": "2026-06-23T18:44:15.205Z",
+  "batch": {
+    "batch_id": "T2B-105",
+    "priority_rank": 105,
+    "platform": "SQL Server",
+    "database": "Sonic_DW",
+    "schema": "stg",
+    "object_type_scope": "table",
+    "object_count": 10,
+    "high_use_objects": 0,
+    "downstream_uses": 20,
+    "first_object": "TextConversation",
+    "last_object": "TextOptInStatusDelete",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / stg",
+    "object_names": [
+      "TextConversation",
+      "TextConversationDelete",
+      "TextConversationElement",
+      "TextConversationElementDelete",
+      "TextConversationMessage",
+      "TextConversationMessageDelete",
+      "TextCustomerNumber",
+      "TextCustomerNumberDelete",
+      "TextOptInStatus",
+      "TextOptInStatusDelete"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 10,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 10,
+    "total_planned_pages": 14
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "Sonic_DW"],
+      "page_type": "database",
+      "evidence_hash": "sha256:EA1134573BBFAAC7177722513513C90274A494AB02393F9F3FC5F86743318F98",
+      "evidence_file": "database-sonic-dw.evidence.json",
+      "markdown_file": "database-sonic-dw.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.stg",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "Sonic_DW", "stg"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:D2630FF327FED53F9708C90024CE5BD36E4E049EE1C24B7974445DEE80A08E17",
+      "evidence_file": "schema-sonic-dw-stg.evidence.json",
+      "markdown_file": "schema-sonic-dw-stg.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.stg.TextConversation",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextConversation"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:5121DE6B8F92F70C4F2C2A9C0F757660184BDEB15F05738BDF35A53232EE8A8E",
+      "evidence_file": "object-sonic-dw-stg-textconversation.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textconversation.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.stg.TextConversationDelete",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextConversationDelete"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:53E8090670A124615027E49C5EB13569D489B648287F4A05B49B5BD2EE2EFF10",
+      "evidence_file": "object-sonic-dw-stg-textconversationdelete.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textconversationdelete.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.stg.TextConversationElement",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextConversationElement"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:0D1ACC23B673A2E3BB49A5523E0115E709E1AD61C38A51AE2E1F32B737820ACD",
+      "evidence_file": "object-sonic-dw-stg-textconversationelement.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textconversationelement.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.stg.TextConversationElementDelete",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextConversationElementDelete"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:8B2076DBFEB1FE8C9F6AF6164AB801536E06652201DC0FAF0D1179EE6FF7A5DC",
+      "evidence_file": "object-sonic-dw-stg-textconversationelementdelete.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textconversationelementdelete.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.stg.TextConversationMessage",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextConversationMessage"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:6FE29B2E695B7AABCFB38BB6DBAEB5A42464F76C9772C70BBB3283DBD22D4377",
+      "evidence_file": "object-sonic-dw-stg-textconversationmessage.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textconversationmessage.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.stg.TextConversationMessageDelete",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextConversationMessageDelete"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:BCD9FCC0B0EFC84C300DCF64DA3BF0E4DB7C5545F32AAA7BA1CDF5832BCA23F1",
+      "evidence_file": "object-sonic-dw-stg-textconversationmessagedelete.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textconversationmessagedelete.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.stg.TextCustomerNumber",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextCustomerNumber"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:13359E8E2CA3A2358AAC125235202D2549EA4282A3E21BBBF123482FBC851E05",
+      "evidence_file": "object-sonic-dw-stg-textcustomernumber.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textcustomernumber.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.stg.TextCustomerNumberDelete",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextCustomerNumberDelete"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:2ADCA5D6987EB572893AA5CB3A49E6DC81095D9B5EE8AC6DC167E933A615C686",
+      "evidence_file": "object-sonic-dw-stg-textcustomernumberdelete.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textcustomernumberdelete.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.stg.TextOptInStatus",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextOptInStatus"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:376038AD8B7B4E9922D6DBCCA01746D001254AF59E46AD2774D97308F8AD3D55",
+      "evidence_file": "object-sonic-dw-stg-textoptinstatus.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textoptinstatus.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "Sonic_DW.stg.TextOptInStatusDelete",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextOptInStatusDelete"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:66504B9FA2C6AE73A55A5C3FCA1C09016CEEC8AFE796B4BC37FF5851A1F49F0A",
+      "evidence_file": "object-sonic-dw-stg-textoptinstatusdelete.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textoptinstatusdelete.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "TextConversation",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextConversation"
+      ],
+      "canonical_id": "object-sonic-dw-stg-textconversation",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/192.224.101.80/databases/Sonic_DW/tables/stg__TextConversation.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:5121DE6B8F92F70C4F2C2A9C0F757660184BDEB15F05738BDF35A53232EE8A8E",
+      "object": {
+        "name": "TextConversation",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "192.224.101.80",
+        "database": "Sonic_DW",
+        "schema": "stg",
+        "qualified_name": "Sonic_DW.stg.TextConversation",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.stg.TextConversation",
+        "stg.TextConversation",
+        "TextConversation",
+        "textconversation"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 12,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / stg"
+      ],
+      "evidence_file": "object-sonic-dw-stg-textconversation.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textconversation.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TextConversationDelete",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextConversationDelete"
+      ],
+      "canonical_id": "object-sonic-dw-stg-textconversationdelete",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/192.224.101.80/databases/Sonic_DW/tables/stg__TextConversationDelete.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:53E8090670A124615027E49C5EB13569D489B648287F4A05B49B5BD2EE2EFF10",
+      "object": {
+        "name": "TextConversationDelete",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "192.224.101.80",
+        "database": "Sonic_DW",
+        "schema": "stg",
+        "qualified_name": "Sonic_DW.stg.TextConversationDelete",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.stg.TextConversationDelete",
+        "stg.TextConversationDelete",
+        "TextConversationDelete",
+        "textconversationdelete"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 1,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / stg"
+      ],
+      "evidence_file": "object-sonic-dw-stg-textconversationdelete.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textconversationdelete.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TextConversationElement",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextConversationElement"
+      ],
+      "canonical_id": "object-sonic-dw-stg-textconversationelement",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/192.224.101.80/databases/Sonic_DW/tables/stg__TextConversationElement.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:0D1ACC23B673A2E3BB49A5523E0115E709E1AD61C38A51AE2E1F32B737820ACD",
+      "object": {
+        "name": "TextConversationElement",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "192.224.101.80",
+        "database": "Sonic_DW",
+        "schema": "stg",
+        "qualified_name": "Sonic_DW.stg.TextConversationElement",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.stg.TextConversationElement",
+        "stg.TextConversationElement",
+        "TextConversationElement",
+        "textconversationelement"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 18,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / stg"
+      ],
+      "evidence_file": "object-sonic-dw-stg-textconversationelement.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textconversationelement.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TextConversationElementDelete",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextConversationElementDelete"
+      ],
+      "canonical_id": "object-sonic-dw-stg-textconversationelementdelete",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/192.224.101.80/databases/Sonic_DW/tables/stg__TextConversationElementDelete.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:8B2076DBFEB1FE8C9F6AF6164AB801536E06652201DC0FAF0D1179EE6FF7A5DC",
+      "object": {
+        "name": "TextConversationElementDelete",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "192.224.101.80",
+        "database": "Sonic_DW",
+        "schema": "stg",
+        "qualified_name": "Sonic_DW.stg.TextConversationElementDelete",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.stg.TextConversationElementDelete",
+        "stg.TextConversationElementDelete",
+        "TextConversationElementDelete",
+        "textconversationelementdelete"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 1,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / stg"
+      ],
+      "evidence_file": "object-sonic-dw-stg-textconversationelementdelete.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textconversationelementdelete.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TextConversationMessage",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextConversationMessage"
+      ],
+      "canonical_id": "object-sonic-dw-stg-textconversationmessage",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/192.224.101.80/databases/Sonic_DW/tables/stg__TextConversationMessage.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:6FE29B2E695B7AABCFB38BB6DBAEB5A42464F76C9772C70BBB3283DBD22D4377",
+      "object": {
+        "name": "TextConversationMessage",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "192.224.101.80",
+        "database": "Sonic_DW",
+        "schema": "stg",
+        "qualified_name": "Sonic_DW.stg.TextConversationMessage",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.stg.TextConversationMessage",
+        "stg.TextConversationMessage",
+        "TextConversationMessage",
+        "textconversationmessage"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 19,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / stg"
+      ],
+      "evidence_file": "object-sonic-dw-stg-textconversationmessage.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textconversationmessage.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TextConversationMessageDelete",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextConversationMessageDelete"
+      ],
+      "canonical_id": "object-sonic-dw-stg-textconversationmessagedelete",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/192.224.101.80/databases/Sonic_DW/tables/stg__TextConversationMessageDelete.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:BCD9FCC0B0EFC84C300DCF64DA3BF0E4DB7C5545F32AAA7BA1CDF5832BCA23F1",
+      "object": {
+        "name": "TextConversationMessageDelete",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "192.224.101.80",
+        "database": "Sonic_DW",
+        "schema": "stg",
+        "qualified_name": "Sonic_DW.stg.TextConversationMessageDelete",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.stg.TextConversationMessageDelete",
+        "stg.TextConversationMessageDelete",
+        "TextConversationMessageDelete",
+        "textconversationmessagedelete"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 1,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / stg"
+      ],
+      "evidence_file": "object-sonic-dw-stg-textconversationmessagedelete.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textconversationmessagedelete.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TextCustomerNumber",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextCustomerNumber"
+      ],
+      "canonical_id": "object-sonic-dw-stg-textcustomernumber",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/192.224.101.80/databases/Sonic_DW/tables/stg__TextCustomerNumber.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:13359E8E2CA3A2358AAC125235202D2549EA4282A3E21BBBF123482FBC851E05",
+      "object": {
+        "name": "TextCustomerNumber",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "192.224.101.80",
+        "database": "Sonic_DW",
+        "schema": "stg",
+        "qualified_name": "Sonic_DW.stg.TextCustomerNumber",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.stg.TextCustomerNumber",
+        "stg.TextCustomerNumber",
+        "TextCustomerNumber",
+        "textcustomernumber"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 12,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / stg"
+      ],
+      "evidence_file": "object-sonic-dw-stg-textcustomernumber.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textcustomernumber.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TextCustomerNumberDelete",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextCustomerNumberDelete"
+      ],
+      "canonical_id": "object-sonic-dw-stg-textcustomernumberdelete",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/192.224.101.80/databases/Sonic_DW/tables/stg__TextCustomerNumberDelete.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:2ADCA5D6987EB572893AA5CB3A49E6DC81095D9B5EE8AC6DC167E933A615C686",
+      "object": {
+        "name": "TextCustomerNumberDelete",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "192.224.101.80",
+        "database": "Sonic_DW",
+        "schema": "stg",
+        "qualified_name": "Sonic_DW.stg.TextCustomerNumberDelete",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.stg.TextCustomerNumberDelete",
+        "stg.TextCustomerNumberDelete",
+        "TextCustomerNumberDelete",
+        "textcustomernumberdelete"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 1,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / stg"
+      ],
+      "evidence_file": "object-sonic-dw-stg-textcustomernumberdelete.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textcustomernumberdelete.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TextOptInStatus",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextOptInStatus"
+      ],
+      "canonical_id": "object-sonic-dw-stg-textoptinstatus",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/192.224.101.80/databases/Sonic_DW/tables/stg__TextOptInStatus.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:376038AD8B7B4E9922D6DBCCA01746D001254AF59E46AD2774D97308F8AD3D55",
+      "object": {
+        "name": "TextOptInStatus",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "192.224.101.80",
+        "database": "Sonic_DW",
+        "schema": "stg",
+        "qualified_name": "Sonic_DW.stg.TextOptInStatus",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.stg.TextOptInStatus",
+        "stg.TextOptInStatus",
+        "TextOptInStatus",
+        "textoptinstatus"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / stg"
+      ],
+      "evidence_file": "object-sonic-dw-stg-textoptinstatus.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textoptinstatus.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TextOptInStatusDelete",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Sonic_DW",
+        "stg",
+        "TextOptInStatusDelete"
+      ],
+      "canonical_id": "object-sonic-dw-stg-textoptinstatusdelete",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/192.224.101.80/databases/Sonic_DW/tables/stg__TextOptInStatusDelete.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:66504B9FA2C6AE73A55A5C3FCA1C09016CEEC8AFE796B4BC37FF5851A1F49F0A",
+      "object": {
+        "name": "TextOptInStatusDelete",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "192.224.101.80",
+        "database": "Sonic_DW",
+        "schema": "stg",
+        "qualified_name": "Sonic_DW.stg.TextOptInStatusDelete",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "Sonic_DW.stg.TextOptInStatusDelete",
+        "stg.TextOptInStatusDelete",
+        "TextOptInStatusDelete",
+        "textoptinstatusdelete"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 1,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / stg"
+      ],
+      "evidence_file": "object-sonic-dw-stg-textoptinstatusdelete.evidence.json",
+      "markdown_file": "object-sonic-dw-stg-textoptinstatusdelete.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-105-sonic-dw-stg-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-105-sonic-dw-stg-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-105-sonic-dw-stg-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

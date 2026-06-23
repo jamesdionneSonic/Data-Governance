@@ -1,0 +1,684 @@
+{
+  "packet_id": "T2B-155",
+  "generated_at": "2026-06-23T18:54:02.196Z",
+  "batch": {
+    "batch_id": "T2B-155",
+    "priority_rank": 155,
+    "platform": "SQL Server",
+    "database": "VendorData",
+    "schema": "JMA",
+    "object_type_scope": "table",
+    "object_count": 4,
+    "high_use_objects": 0,
+    "downstream_uses": 2,
+    "first_object": "JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+    "last_object": "ERR_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / JMA",
+    "object_names": [
+      "JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+      "JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+      "ERR_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+      "ERR_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 4,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 4,
+    "total_planned_pages": 8
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData"],
+      "page_type": "database",
+      "evidence_hash": "sha256:C029883539BC166EBDE80488ADFC36CDDDD0E84559188FE128628E553E29DFF1",
+      "evidence_file": "database-vendordata.evidence.json",
+      "markdown_file": "database-vendordata.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.JMA",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData", "JMA"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:B6409D4573CCBCD1CF48586F5D6C626D0797F1868A13DF37A6B8562EBADD0CD0",
+      "evidence_file": "schema-vendordata-jma.evidence.json",
+      "markdown_file": "schema-vendordata-jma.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.JMA.ERR_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "JMA",
+        "ERR_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:2116CF6416C05826DDBF9D643EB0CBBFA6D3CC72DA91921C440FF79B8EC10142",
+      "evidence_file": "object-vendordata-jma-err-jma-claims-financial-transactions-tbl.evidence.json",
+      "markdown_file": "object-vendordata-jma-err-jma-claims-financial-transactions-tbl.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.JMA.ERR_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "JMA",
+        "ERR_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A55939DB2EAF6244E971C478407C1FEEF041DFA8597DA092D2F8BA5781031C6E",
+      "evidence_file": "object-vendordata-jma-err-jma-contract-financial-transactions-tbl.evidence.json",
+      "markdown_file": "object-vendordata-jma-err-jma-contract-financial-transactions-tbl.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.JMA.JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "JMA",
+        "JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:2695974DA27F89C39C331D89353D7A1FB7390046D8AFB7E398E4B814D6043A89",
+      "evidence_file": "object-vendordata-jma-jma-claims-financial-transactions-tbl.evidence.json",
+      "markdown_file": "object-vendordata-jma-jma-claims-financial-transactions-tbl.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.JMA.JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "JMA",
+        "JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:EBAD427A2D75480AE3F2149EDD34291972515CDB007C871D5B332E70F9141EAD",
+      "evidence_file": "object-vendordata-jma-jma-contract-financial-transactions-tbl.evidence.json",
+      "markdown_file": "object-vendordata-jma-jma-contract-financial-transactions-tbl.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "ERR_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "JMA",
+        "ERR_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL"
+      ],
+      "canonical_id": "object-vendordata-jma-err-jma-claims-financial-transactions-tbl",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/JMA__ERR_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:2116CF6416C05826DDBF9D643EB0CBBFA6D3CC72DA91921C440FF79B8EC10142",
+      "object": {
+        "name": "ERR_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "JMA",
+        "qualified_name": "VendorData.JMA.ERR_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.JMA.ERR_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+        "JMA.ERR_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+        "ERR_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+        "ERRJMACLAIMSFINANCIALTRANSACTIONSTBL",
+        "errjmaclaimsfinancialtransactionstbl"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ERR_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_ID",
+          "TRANSACTION_DATE",
+          "VIN",
+          "SERVICING_BILLING_ENTITY_NUMBER",
+          "SELLING_DEALER_ACCOUNT_NUMBER",
+          "CONTRACT_HOLDER_FIRST_NAME",
+          "CONTRACT_HOLDER_LAST_NAME",
+          "CONTRACT_NUMBER_12",
+          "PRODUCT_TYPE_CODE",
+          "PRODUCT_TYPE_CODE_DESCRIPTION",
+          "AUTHORIZATION_NUMBER",
+          "AUTHORIZATION_DATE",
+          "CLAIM_DEBIT_CREDIT_CODE",
+          "CLAIM_CREDIT_DEBIT_CODE_DESCRIPTION",
+          "PAID_DATE",
+          "MAINTENANCE_COUPON_NUMBER",
+          "SERVICING_FACILITY_ZIP_CODE",
+          "SELLING_DEALER_ACCOUNT_NAME",
+          "PAID_AMOUNT_LIST_NAME",
+          "PAID_AMOUNT_LIST_AMOUNT"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 25,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / JMA"
+      ],
+      "evidence_file": "object-vendordata-jma-err-jma-claims-financial-transactions-tbl.evidence.json",
+      "markdown_file": "object-vendordata-jma-err-jma-claims-financial-transactions-tbl.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ERR_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "JMA",
+        "ERR_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL"
+      ],
+      "canonical_id": "object-vendordata-jma-err-jma-contract-financial-transactions-tbl",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/JMA__ERR_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A55939DB2EAF6244E971C478407C1FEEF041DFA8597DA092D2F8BA5781031C6E",
+      "object": {
+        "name": "ERR_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "JMA",
+        "qualified_name": "VendorData.JMA.ERR_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.JMA.ERR_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+        "JMA.ERR_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+        "ERR_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+        "ERRJMACONTRACTFINANCIALTRANSACTIONSTBL",
+        "errjmacontractfinancialtransactionstbl"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ERR_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_ID",
+          "CANCELLATION_EFFECTIVE_DATE",
+          "CANCELLATION_FEE_AMOUNT",
+          "CANCELLATION_REFUND_AMOUNT",
+          "CANCELLATION_REFUND_METHOD_DESCRIPTION",
+          "CANCELLATION_REFUND_PERCENT",
+          "CANCELLATION_REFUND_METHOD",
+          "CHECK_DATE",
+          "CHECK_NUMBER",
+          "CONTRACT_COVERAGE_CODE",
+          "CONTRACT_COVERAGE_CODE_DESCRIPTION",
+          "CONTRACT_COVERAGE_LENGTH",
+          "CONTRACT_COVERAGE_LENGTH_CODE",
+          "CONTRACT_COVERAGE_LENGTH_CODE_DESCRIPTION",
+          "CONTRACT_HOLDER_FIRST_NAME",
+          "CONTRACT_HOLDER_LAST_NAME",
+          "CONTRACT_MILEAGE_TERM",
+          "CONTRACT_NUMBER_12",
+          "CONTRACT_PURCHASE_DATE",
+          "DEBIT_CREDIT_CODE"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 63,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / JMA"
+      ],
+      "evidence_file": "object-vendordata-jma-err-jma-contract-financial-transactions-tbl.evidence.json",
+      "markdown_file": "object-vendordata-jma-err-jma-contract-financial-transactions-tbl.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "JMA",
+        "JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL"
+      ],
+      "canonical_id": "object-vendordata-jma-jma-claims-financial-transactions-tbl",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/JMA__JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:2695974DA27F89C39C331D89353D7A1FB7390046D8AFB7E398E4B814D6043A89",
+      "object": {
+        "name": "JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "JMA",
+        "qualified_name": "VendorData.JMA.JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.JMA.JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+        "JMA.JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+        "JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+        "JMACLAIMSFINANCIALTRANSACTIONSTBL",
+        "jmaclaimsfinancialtransactionstbl"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-5FSQL-01.ETL_Staging.JMA.Load_Claim_Financial_Transactions"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "JMA_CLAIMS_FINANCIAL_TRANSACTIONS_ID",
+          "SERVICING_BILLING_ENTITY_NUMBER",
+          "TRANSACTION_DATE",
+          "VIN",
+          "CONTRACT_NUMBER_12",
+          "SELLING_DEALER_ACCOUNT_NUMBER",
+          "PRODUCT_TYPE_CODE",
+          "PRODUCT_TYPE_CODE_DESCRIPTION",
+          "AUTHORIZATION_NUMBER",
+          "AUTHORIZATION_DATE",
+          "CLAIM_DEBIT_CREDIT_CODE",
+          "CLAIM_CREDIT_DEBIT_CODE_DESCRIPTION",
+          "PAID_DATE",
+          "MAINTENANCE_COUPON_NUMBER",
+          "CONTRACT_HOLDER_FIRST_NAME",
+          "CONTRACT_HOLDER_LAST_NAME",
+          "PAID_AMOUNT_LIST_NAME",
+          "PAID_AMOUNT_LIST_AMOUNT",
+          "SERVICING_FACILITY_ZIP_CODE",
+          "SELLING_DEALER_ACCOUNT_NAME"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 24,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / JMA"
+      ],
+      "evidence_file": "object-vendordata-jma-jma-claims-financial-transactions-tbl.evidence.json",
+      "markdown_file": "object-vendordata-jma-jma-claims-financial-transactions-tbl.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "JMA",
+        "JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL"
+      ],
+      "canonical_id": "object-vendordata-jma-jma-contract-financial-transactions-tbl",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/JMA__JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:EBAD427A2D75480AE3F2149EDD34291972515CDB007C871D5B332E70F9141EAD",
+      "object": {
+        "name": "JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "JMA",
+        "qualified_name": "VendorData.JMA.JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.JMA.JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+        "JMA.JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+        "JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+        "JMACONTRACTFINANCIALTRANSACTIONSTBL",
+        "jmacontractfinancialtransactionstbl"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-5FSQL-01.ETL_Staging.JMA.Load_Contract_Financial_Transactions"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "JMA_CONTRACT_FINANCIAL_TRANSACTIONS_ID",
+          "CANCELLATION_EFFECTIVE_DATE",
+          "CANCELLATION_FEE_AMOUNT",
+          "CANCELLATION_REFUND_AMOUNT",
+          "CANCELLATION_REFUND_METHOD_DESCRIPTION",
+          "CANCELLATION_REFUND_PERCENT",
+          "CANCELLATION_REFUND_METHOD",
+          "CHECK_DATE",
+          "CHECK_NUMBER",
+          "CONTRACT_COVERAGE_CODE",
+          "CONTRACT_COVERAGE_CODE_DESCRIPTION",
+          "CONTRACT_COVERAGE_LENGTH",
+          "CONTRACT_COVERAGE_LENGTH_CODE",
+          "CONTRACT_COVERAGE_LENGTH_CODE_DESCRIPTION",
+          "CONTRACT_HOLDER_FIRST_NAME",
+          "CONTRACT_HOLDER_LAST_NAME",
+          "CONTRACT_MILEAGE_TERM",
+          "CONTRACT_NUMBER_12",
+          "CONTRACT_PURCHASE_DATE",
+          "DEBIT_CREDIT_CODE"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 62,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / JMA"
+      ],
+      "evidence_file": "object-vendordata-jma-jma-contract-financial-transactions-tbl.evidence.json",
+      "markdown_file": "object-vendordata-jma-jma-contract-financial-transactions-tbl.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-155-vendordata-jma-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-155-vendordata-jma-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-155-vendordata-jma-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

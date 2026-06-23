@@ -1,0 +1,345 @@
+{
+  "packet_id": "T2B-136",
+  "generated_at": "2026-06-23T18:51:23.472Z",
+  "batch": {
+    "batch_id": "T2B-136",
+    "priority_rank": 136,
+    "platform": "SQL Server",
+    "database": "DA_SIMS_EP",
+    "schema": "BlackBook",
+    "object_type_scope": "table",
+    "object_count": 2,
+    "high_use_objects": 0,
+    "downstream_uses": 6,
+    "first_object": "DimUVC",
+    "last_object": "DimMMY",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / DA_SIMS_EP / BlackBook",
+    "object_names": ["DimUVC", "DimMMY"],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 2,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 2,
+    "total_planned_pages": 6
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "DA_SIMS_EP",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "DA_SIMS_EP"],
+      "page_type": "database",
+      "evidence_hash": "sha256:FD5930FA7F1D2A36E1FD4F1079B4C33AE0CD35EFDAD425DC86F5BB255AD903B0",
+      "evidence_file": "database-da-sims-ep.evidence.json",
+      "markdown_file": "database-da-sims-ep.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "DA_SIMS_EP.BlackBook",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DA_SIMS_EP",
+        "BlackBook"
+      ],
+      "page_type": "schema",
+      "evidence_hash": "sha256:BBFF34506AB213D996834651B811EECB8AD627253AFB91754C6043BCE35104D9",
+      "evidence_file": "schema-da-sims-ep-blackbook.evidence.json",
+      "markdown_file": "schema-da-sims-ep-blackbook.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "DA_SIMS_EP.BlackBook.DimMMY",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DA_SIMS_EP",
+        "BlackBook",
+        "DimMMY"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:EE53BA721DDA47740BF47CAA9D3806DC61C949E3E2AD2272A43A8873360F9B15",
+      "evidence_file": "object-da-sims-ep-blackbook-dimmmy.evidence.json",
+      "markdown_file": "object-da-sims-ep-blackbook-dimmmy.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "DA_SIMS_EP.BlackBook.DimUVC",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DA_SIMS_EP",
+        "BlackBook",
+        "DimUVC"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:2F358A0FF4E44552A24B2F46A517BCC3F8E34DA6E890B74D5290453B5FFE41FE",
+      "evidence_file": "object-da-sims-ep-blackbook-dimuvc.evidence.json",
+      "markdown_file": "object-da-sims-ep-blackbook-dimuvc.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "DimMMY",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DA_SIMS_EP",
+        "BlackBook",
+        "DimMMY"
+      ],
+      "canonical_id": "object-da-sims-ep-blackbook-dimmmy",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DA_SIMS_EP/tables/BlackBook__DimMMY.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:EE53BA721DDA47740BF47CAA9D3806DC61C949E3E2AD2272A43A8873360F9B15",
+      "object": {
+        "name": "DimMMY",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DA_SIMS_EP",
+        "schema": "BlackBook",
+        "qualified_name": "DA_SIMS_EP.BlackBook.DimMMY",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DA_SIMS_EP.BlackBook.DimMMY", "BlackBook.DimMMY", "DimMMY", "dimmmy"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 13,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DA_SIMS_EP",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DA_SIMS_EP / BlackBook"
+      ],
+      "evidence_file": "object-da-sims-ep-blackbook-dimmmy.evidence.json",
+      "markdown_file": "object-da-sims-ep-blackbook-dimmmy.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DimUVC",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "DA_SIMS_EP",
+        "BlackBook",
+        "DimUVC"
+      ],
+      "canonical_id": "object-da-sims-ep-blackbook-dimuvc",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/DA_SIMS_EP/tables/BlackBook__DimUVC.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:2F358A0FF4E44552A24B2F46A517BCC3F8E34DA6E890B74D5290453B5FFE41FE",
+      "object": {
+        "name": "DimUVC",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "DA_SIMS_EP",
+        "schema": "BlackBook",
+        "qualified_name": "DA_SIMS_EP.BlackBook.DimUVC",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["DA_SIMS_EP.BlackBook.DimUVC", "BlackBook.DimUVC", "DimUVC", "dimuvc"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 22,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / DA_SIMS_EP",
+        "Sonic Data Lineage / Database Catalog / SQL Server / DA_SIMS_EP / BlackBook"
+      ],
+      "evidence_file": "object-da-sims-ep-blackbook-dimuvc.evidence.json",
+      "markdown_file": "object-da-sims-ep-blackbook-dimuvc.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-136-da-sims-ep-blackbook-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-136-da-sims-ep-blackbook-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-136-da-sims-ep-blackbook-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

@@ -1,0 +1,2069 @@
+{
+  "packet_id": "T2B-142",
+  "generated_at": "2026-06-23T18:52:12.677Z",
+  "batch": {
+    "batch_id": "T2B-142",
+    "priority_rank": 142,
+    "platform": "SQL Server",
+    "database": "StagingDB",
+    "schema": "HFM",
+    "object_type_scope": "table",
+    "object_count": 14,
+    "high_use_objects": 0,
+    "downstream_uses": 4,
+    "first_object": "STG_Brand_Attributes",
+    "last_object": "SubAcct_Excel_Unmatched",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / HFM",
+    "object_names": [
+      "STG_Brand_Attributes",
+      "STG_Brand_Dim",
+      "STG_Entity_Attributes",
+      "STG_Entity_Dim",
+      "HFM_Measures_unmatched",
+      "STG_Account_CORP_Dim",
+      "STG_Account_Dim",
+      "STG_Account_sec_Dim",
+      "STG_Department_Dim",
+      "STG_Excel_Load",
+      "STG_Scenario_Dim",
+      "STG_Source_Dim",
+      "STG_SubAccount_Dim",
+      "SubAcct_Excel_Unmatched"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "table",
+    "original_object_count": 14,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 14,
+    "total_planned_pages": 18
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB"],
+      "page_type": "database",
+      "evidence_hash": "sha256:86BBBA4A90EF1C66989EFB3B9746AF88467BE01889393493BBDE0177897E19A4",
+      "evidence_file": "database-stagingdb.evidence.json",
+      "markdown_file": "database-stagingdb.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.HFM",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB", "HFM"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:D0726695EF6754C952B26816CF94156CFD4B088C4932EDE1FA14B80FE539063E",
+      "evidence_file": "schema-stagingdb-hfm.evidence.json",
+      "markdown_file": "schema-stagingdb-hfm.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.HFM.HFM_Measures_unmatched",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "HFM_Measures_unmatched"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B589A67FB52F5CB0C083F0088A2C35B9404A9362FF6F9808BDF5F0F3D9FD2B0A",
+      "evidence_file": "object-stagingdb-hfm-hfm-measures-unmatched.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-hfm-measures-unmatched.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.HFM.STG_Account_CORP_Dim",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Account_CORP_Dim"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:28C13E30AAAD7B2AA0C11637C1B8C89F50D4AC1E91418B992B3D6551D3B866F8",
+      "evidence_file": "object-stagingdb-hfm-stg-account-corp-dim.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-account-corp-dim.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.HFM.STG_Account_Dim",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Account_Dim"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:72423BECC122C7B93540D641D1AAB8871DD9069292B07CB27103B3402BF100A1",
+      "evidence_file": "object-stagingdb-hfm-stg-account-dim.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-account-dim.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.HFM.STG_Account_sec_Dim",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Account_sec_Dim"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:EFEE227CFC23825F962A53532C724D935113A6FFFBC8D991D2F218FB8E04A93E",
+      "evidence_file": "object-stagingdb-hfm-stg-account-sec-dim.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-account-sec-dim.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.HFM.STG_Brand_Attributes",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Brand_Attributes"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:8701F2F64D3C4AC4E8F7041C0395E853BD45857824F00188D8B192564D298160",
+      "evidence_file": "object-stagingdb-hfm-stg-brand-attributes.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-brand-attributes.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.HFM.STG_Brand_Dim",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Brand_Dim"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:AF91C7C77714A4CB865AB9ABD1B726225005325D018FBB1702BB275B81B9E9A3",
+      "evidence_file": "object-stagingdb-hfm-stg-brand-dim.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-brand-dim.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.HFM.STG_Department_Dim",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Department_Dim"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:CA283FD3A66C66EDE4BB7102C5E5F7A89E225ACBC3FA9B852A71221B90C5D6CA",
+      "evidence_file": "object-stagingdb-hfm-stg-department-dim.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-department-dim.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.HFM.STG_Entity_Attributes",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Entity_Attributes"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:4158AB2B884286E0B495C560C1FFCB4AD551DD21D7D729E8DEEFF8E9A35934B9",
+      "evidence_file": "object-stagingdb-hfm-stg-entity-attributes.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-entity-attributes.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.HFM.STG_Entity_Dim",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Entity_Dim"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:7A0A3924E721EB9AC7B07E142B88469F0907C941F81FD1A906077AFC0ADE9252",
+      "evidence_file": "object-stagingdb-hfm-stg-entity-dim.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-entity-dim.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.HFM.STG_Excel_Load",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Excel_Load"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E5BAB4D032D5340CBF02A88CB6A4A647BBBCCCF0BD132AF4F197763FAA9FED2A",
+      "evidence_file": "object-stagingdb-hfm-stg-excel-load.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-excel-load.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.HFM.STG_Scenario_Dim",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Scenario_Dim"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B87CAC4574E4A53F7D66BA33A4434F434ADEB45BE0532F9150F4AB30DCE5ABC2",
+      "evidence_file": "object-stagingdb-hfm-stg-scenario-dim.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-scenario-dim.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.HFM.STG_Source_Dim",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Source_Dim"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:AAE6996D77752382F46E185E7D6079767AE3D74E5FAEBD58FDA15BE779EB610B",
+      "evidence_file": "object-stagingdb-hfm-stg-source-dim.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-source-dim.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.HFM.STG_SubAccount_Dim",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_SubAccount_Dim"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:F9982925297DB2140E794CC56938CE06B0BEC800AACF0F12517548504151C976",
+      "evidence_file": "object-stagingdb-hfm-stg-subaccount-dim.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-subaccount-dim.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.HFM.SubAcct_Excel_Unmatched",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "SubAcct_Excel_Unmatched"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:601594F8E2D46FEFE1CFD75E7579041994C727D6386E2F80B34C1A2B60F9FBF6",
+      "evidence_file": "object-stagingdb-hfm-subacct-excel-unmatched.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-subacct-excel-unmatched.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "HFM_Measures_unmatched",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "HFM_Measures_unmatched"
+      ],
+      "canonical_id": "object-stagingdb-hfm-hfm-measures-unmatched",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/HFM__HFM_Measures_unmatched.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B589A67FB52F5CB0C083F0088A2C35B9404A9362FF6F9808BDF5F0F3D9FD2B0A",
+      "object": {
+        "name": "HFM_Measures_unmatched",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "HFM",
+        "qualified_name": "StagingDB.HFM.HFM_Measures_unmatched",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.HFM.HFM_Measures_unmatched",
+        "HFM.HFM_Measures_unmatched",
+        "HFM_Measures_unmatched",
+        "HFMMeasuresunmatched",
+        "hfmmeasuresunmatched"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ScenarioID",
+          "YearID",
+          "PeriodID",
+          "EntityID",
+          "AccountID",
+          "BrandID",
+          "DepartmentID",
+          "SubAcctID",
+          "CalendarID",
+          "SourceID",
+          "TYPE",
+          "dData",
+          "Account_Level",
+          "Entity_level",
+          "Scenario_level",
+          "brand_level",
+          "department_level",
+          "subacct_level",
+          "calendar_level"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 19,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / HFM"
+      ],
+      "evidence_file": "object-stagingdb-hfm-hfm-measures-unmatched.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-hfm-measures-unmatched.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "STG_Account_CORP_Dim",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Account_CORP_Dim"
+      ],
+      "canonical_id": "object-stagingdb-hfm-stg-account-corp-dim",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/HFM__STG_Account_CORP_Dim.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:28C13E30AAAD7B2AA0C11637C1B8C89F50D4AC1E91418B992B3D6551D3B866F8",
+      "object": {
+        "name": "STG_Account_CORP_Dim",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "HFM",
+        "qualified_name": "StagingDB.HFM.STG_Account_CORP_Dim",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.HFM.STG_Account_CORP_Dim",
+        "HFM.STG_Account_CORP_Dim",
+        "STG_Account_CORP_Dim",
+        "STGAccountCORPDim",
+        "stgaccountcorpdim"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ParentID",
+          "ID",
+          "Level1",
+          "Level2",
+          "Level3",
+          "Level4",
+          "Level5",
+          "Level6",
+          "Level7",
+          "Level8",
+          "Level9",
+          "Level10",
+          "Level11",
+          "Level0",
+          "Label",
+          "ParentLabel",
+          "Description",
+          "AccountType",
+          "ReportType"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 19,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / HFM"
+      ],
+      "evidence_file": "object-stagingdb-hfm-stg-account-corp-dim.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-account-corp-dim.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "STG_Account_Dim",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Account_Dim"
+      ],
+      "canonical_id": "object-stagingdb-hfm-stg-account-dim",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/HFM__STG_Account_Dim.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:72423BECC122C7B93540D641D1AAB8871DD9069292B07CB27103B3402BF100A1",
+      "object": {
+        "name": "STG_Account_Dim",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "HFM",
+        "qualified_name": "StagingDB.HFM.STG_Account_Dim",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.HFM.STG_Account_Dim",
+        "HFM.STG_Account_Dim",
+        "STG_Account_Dim",
+        "STGAccountDim",
+        "stgaccountdim"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ParentID",
+          "ID",
+          "Level1",
+          "Level2",
+          "Level3",
+          "Level4",
+          "Level5",
+          "Level6",
+          "Level7",
+          "Level8",
+          "Level9",
+          "Level10",
+          "Level11",
+          "Level0",
+          "Label",
+          "ParentLabel",
+          "Description",
+          "AccountType",
+          "ReportType"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 19,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / HFM"
+      ],
+      "evidence_file": "object-stagingdb-hfm-stg-account-dim.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-account-dim.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "STG_Account_sec_Dim",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Account_sec_Dim"
+      ],
+      "canonical_id": "object-stagingdb-hfm-stg-account-sec-dim",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/HFM__STG_Account_sec_Dim.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:EFEE227CFC23825F962A53532C724D935113A6FFFBC8D991D2F218FB8E04A93E",
+      "object": {
+        "name": "STG_Account_sec_Dim",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "HFM",
+        "qualified_name": "StagingDB.HFM.STG_Account_sec_Dim",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.HFM.STG_Account_sec_Dim",
+        "HFM.STG_Account_sec_Dim",
+        "STG_Account_sec_Dim",
+        "STGAccountsecDim",
+        "stgaccountsecdim"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ParentID",
+          "ID",
+          "Level1",
+          "Level2",
+          "Level3",
+          "Level4",
+          "Level5",
+          "Level6",
+          "Level7",
+          "Level8",
+          "Level9",
+          "Level10",
+          "Level11",
+          "Level0",
+          "Label",
+          "ParentLabel",
+          "Description",
+          "AccountType",
+          "ReportType"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 19,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / HFM"
+      ],
+      "evidence_file": "object-stagingdb-hfm-stg-account-sec-dim.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-account-sec-dim.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "STG_Brand_Attributes",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Brand_Attributes"
+      ],
+      "canonical_id": "object-stagingdb-hfm-stg-brand-attributes",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/HFM__STG_Brand_Attributes.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:8701F2F64D3C4AC4E8F7041C0395E853BD45857824F00188D8B192564D298160",
+      "object": {
+        "name": "STG_Brand_Attributes",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "HFM",
+        "qualified_name": "StagingDB.HFM.STG_Brand_Attributes",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.HFM.STG_Brand_Attributes",
+        "HFM.STG_Brand_Attributes",
+        "STG_Brand_Attributes",
+        "STGBrandAttributes",
+        "stgbrandattributes"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-DWASQL-02,12010.StagingDB.HFM.Update_BrandAttributes"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["Brand", "Category"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 2,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / HFM"
+      ],
+      "evidence_file": "object-stagingdb-hfm-stg-brand-attributes.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-brand-attributes.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "STG_Brand_Dim",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Brand_Dim"
+      ],
+      "canonical_id": "object-stagingdb-hfm-stg-brand-dim",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/HFM__STG_Brand_Dim.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:AF91C7C77714A4CB865AB9ABD1B726225005325D018FBB1702BB275B81B9E9A3",
+      "object": {
+        "name": "STG_Brand_Dim",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "HFM",
+        "qualified_name": "StagingDB.HFM.STG_Brand_Dim",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.HFM.STG_Brand_Dim",
+        "HFM.STG_Brand_Dim",
+        "STG_Brand_Dim",
+        "STGBrandDim",
+        "stgbranddim"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-DWASQL-02,12010.StagingDB.HFM.Update_BrandAttributes"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ParentID",
+          "ID",
+          "Level1",
+          "Level2",
+          "Level3",
+          "Level4",
+          "Level5",
+          "Level6",
+          "Level7",
+          "Level8",
+          "Level9",
+          "Level10",
+          "Level11",
+          "Level0",
+          "Label",
+          "ParentLabel",
+          "Description",
+          "Category"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 18,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / HFM"
+      ],
+      "evidence_file": "object-stagingdb-hfm-stg-brand-dim.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-brand-dim.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "STG_Department_Dim",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Department_Dim"
+      ],
+      "canonical_id": "object-stagingdb-hfm-stg-department-dim",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/HFM__STG_Department_Dim.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:CA283FD3A66C66EDE4BB7102C5E5F7A89E225ACBC3FA9B852A71221B90C5D6CA",
+      "object": {
+        "name": "STG_Department_Dim",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "HFM",
+        "qualified_name": "StagingDB.HFM.STG_Department_Dim",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.HFM.STG_Department_Dim",
+        "HFM.STG_Department_Dim",
+        "STG_Department_Dim",
+        "STGDepartmentDim",
+        "stgdepartmentdim"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ParentID",
+          "ID",
+          "Level1",
+          "Level2",
+          "Level3",
+          "Level4",
+          "Level5",
+          "Level6",
+          "Level7",
+          "Level8",
+          "Level9",
+          "Level10",
+          "Level11",
+          "Level0",
+          "Label",
+          "ParentLabel",
+          "Description"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 17,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / HFM"
+      ],
+      "evidence_file": "object-stagingdb-hfm-stg-department-dim.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-department-dim.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "STG_Entity_Attributes",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Entity_Attributes"
+      ],
+      "canonical_id": "object-stagingdb-hfm-stg-entity-attributes",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/HFM__STG_Entity_Attributes.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:4158AB2B884286E0B495C560C1FFCB4AD551DD21D7D729E8DEEFF8E9A35934B9",
+      "object": {
+        "name": "STG_Entity_Attributes",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "HFM",
+        "qualified_name": "StagingDB.HFM.STG_Entity_Attributes",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.HFM.STG_Entity_Attributes",
+        "HFM.STG_Entity_Attributes",
+        "STG_Entity_Attributes",
+        "STGEntityAttributes",
+        "stgentityattributes"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-DWASQL-02,12010.StagingDB.HFM.Update_EntityAttributes"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Leaf",
+          "RegionLvl0",
+          "RegionLvl1",
+          "RegionLvl2",
+          "RegionLvl3",
+          "RegionLvl4",
+          "GroupLvl0",
+          "GroupLvl1",
+          "GroupLvl2",
+          "GroupLvl3",
+          "GroupLvl4",
+          "GroupLvl5",
+          "RegionByBrandLvl1",
+          "RegionByBrandLvl2",
+          "RegionByBrandLvl3",
+          "DFODRegion",
+          "DFIDRegion",
+          "DUVDRegion"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 18,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / HFM"
+      ],
+      "evidence_file": "object-stagingdb-hfm-stg-entity-attributes.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-entity-attributes.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "STG_Entity_Dim",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Entity_Dim"
+      ],
+      "canonical_id": "object-stagingdb-hfm-stg-entity-dim",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/HFM__STG_Entity_Dim.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:7A0A3924E721EB9AC7B07E142B88469F0907C941F81FD1A906077AFC0ADE9252",
+      "object": {
+        "name": "STG_Entity_Dim",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "HFM",
+        "qualified_name": "StagingDB.HFM.STG_Entity_Dim",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.HFM.STG_Entity_Dim",
+        "HFM.STG_Entity_Dim",
+        "STG_Entity_Dim",
+        "STGEntityDim",
+        "stgentitydim"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-DWASQL-02,12010.StagingDB.HFM.Update_EntityAttributes"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ParentID",
+          "ID",
+          "Level1",
+          "Level2",
+          "Level3",
+          "Level4",
+          "Level5",
+          "Level6",
+          "Level7",
+          "Level8",
+          "Level9",
+          "Level10",
+          "Level11",
+          "Level0",
+          "Label",
+          "ParentLabel",
+          "Description",
+          "RegionLvl0",
+          "RegionLvl1",
+          "RegionLvl2"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 35,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / HFM"
+      ],
+      "evidence_file": "object-stagingdb-hfm-stg-entity-dim.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-entity-dim.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "STG_Excel_Load",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Excel_Load"
+      ],
+      "canonical_id": "object-stagingdb-hfm-stg-excel-load",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/HFM__STG_Excel_Load.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E5BAB4D032D5340CBF02A88CB6A4A647BBBCCCF0BD132AF4F197763FAA9FED2A",
+      "object": {
+        "name": "STG_Excel_Load",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "HFM",
+        "qualified_name": "StagingDB.HFM.STG_Excel_Load",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.HFM.STG_Excel_Load",
+        "HFM.STG_Excel_Load",
+        "STG_Excel_Load",
+        "STGExcelLoad",
+        "stgexcelload"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Entity",
+          "Scenario",
+          "View",
+          "Department",
+          "TimeDate",
+          "Source",
+          "Brand",
+          "SubAcct",
+          "Account",
+          "Value",
+          "Subacct_ID",
+          "Department_ID",
+          "Account_ID",
+          "Entity_ID",
+          "Brand_ID",
+          "Scenario_ID",
+          "Timedate_ID",
+          "Source_ID",
+          "View_ID",
+          "Year_ID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 21,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / HFM"
+      ],
+      "evidence_file": "object-stagingdb-hfm-stg-excel-load.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-excel-load.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "STG_Scenario_Dim",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Scenario_Dim"
+      ],
+      "canonical_id": "object-stagingdb-hfm-stg-scenario-dim",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/HFM__STG_Scenario_Dim.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B87CAC4574E4A53F7D66BA33A4434F434ADEB45BE0532F9150F4AB30DCE5ABC2",
+      "object": {
+        "name": "STG_Scenario_Dim",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "HFM",
+        "qualified_name": "StagingDB.HFM.STG_Scenario_Dim",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.HFM.STG_Scenario_Dim",
+        "HFM.STG_Scenario_Dim",
+        "STG_Scenario_Dim",
+        "STGScenarioDim",
+        "stgscenariodim"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ParentID",
+          "ID",
+          "Level1",
+          "Level2",
+          "Level3",
+          "Level4",
+          "Level5",
+          "Level6",
+          "Level7",
+          "Level8",
+          "Level9",
+          "Level10",
+          "Level11",
+          "Level0",
+          "Label",
+          "ParentLabel",
+          "Description"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 17,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / HFM"
+      ],
+      "evidence_file": "object-stagingdb-hfm-stg-scenario-dim.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-scenario-dim.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "STG_Source_Dim",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_Source_Dim"
+      ],
+      "canonical_id": "object-stagingdb-hfm-stg-source-dim",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/HFM__STG_Source_Dim.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:AAE6996D77752382F46E185E7D6079767AE3D74E5FAEBD58FDA15BE779EB610B",
+      "object": {
+        "name": "STG_Source_Dim",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "HFM",
+        "qualified_name": "StagingDB.HFM.STG_Source_Dim",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.HFM.STG_Source_Dim",
+        "HFM.STG_Source_Dim",
+        "STG_Source_Dim",
+        "STGSourceDim",
+        "stgsourcedim"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ParentID",
+          "ID",
+          "Level1",
+          "Level2",
+          "Level3",
+          "Level4",
+          "Level5",
+          "Level6",
+          "Level7",
+          "Level8",
+          "Level9",
+          "Level10",
+          "Level11",
+          "Level0",
+          "Label",
+          "ParentLabel",
+          "Description"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 17,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / HFM"
+      ],
+      "evidence_file": "object-stagingdb-hfm-stg-source-dim.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-source-dim.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "STG_SubAccount_Dim",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "STG_SubAccount_Dim"
+      ],
+      "canonical_id": "object-stagingdb-hfm-stg-subaccount-dim",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/HFM__STG_SubAccount_Dim.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:F9982925297DB2140E794CC56938CE06B0BEC800AACF0F12517548504151C976",
+      "object": {
+        "name": "STG_SubAccount_Dim",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "HFM",
+        "qualified_name": "StagingDB.HFM.STG_SubAccount_Dim",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.HFM.STG_SubAccount_Dim",
+        "HFM.STG_SubAccount_Dim",
+        "STG_SubAccount_Dim",
+        "STGSubAccountDim",
+        "stgsubaccountdim"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ParentID",
+          "ID",
+          "Level1",
+          "Level2",
+          "Level3",
+          "Level4",
+          "Level5",
+          "Level6",
+          "Level7",
+          "Level8",
+          "Level9",
+          "Level10",
+          "Level11",
+          "Level0",
+          "Label",
+          "ParentLabel",
+          "Description"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 17,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / HFM"
+      ],
+      "evidence_file": "object-stagingdb-hfm-stg-subaccount-dim.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-stg-subaccount-dim.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "SubAcct_Excel_Unmatched",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "HFM",
+        "SubAcct_Excel_Unmatched"
+      ],
+      "canonical_id": "object-stagingdb-hfm-subacct-excel-unmatched",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/HFM__SubAcct_Excel_Unmatched.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:601594F8E2D46FEFE1CFD75E7579041994C727D6386E2F80B34C1A2B60F9FBF6",
+      "object": {
+        "name": "SubAcct_Excel_Unmatched",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "HFM",
+        "qualified_name": "StagingDB.HFM.SubAcct_Excel_Unmatched",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.HFM.SubAcct_Excel_Unmatched",
+        "HFM.SubAcct_Excel_Unmatched",
+        "SubAcct_Excel_Unmatched",
+        "SubAcctExcelUnmatched",
+        "subacctexcelunmatched"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Entity",
+          "Scenario",
+          "View",
+          "Department",
+          "TimeDate",
+          "Source",
+          "Brand",
+          "SubAcct",
+          "Account",
+          "Value"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / HFM"
+      ],
+      "evidence_file": "object-stagingdb-hfm-subacct-excel-unmatched.evidence.json",
+      "markdown_file": "object-stagingdb-hfm-subacct-excel-unmatched.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-142-stagingdb-hfm-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-142-stagingdb-hfm-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-142-stagingdb-hfm-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

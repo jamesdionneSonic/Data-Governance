@@ -1,0 +1,619 @@
+{
+  "packet_id": "T2B-055",
+  "generated_at": "2026-06-23T18:17:47.378Z",
+  "batch": {
+    "batch_id": "T2B-055",
+    "priority_rank": 55,
+    "platform": "SQL Server",
+    "database": "VehicleMart",
+    "schema": "Stage",
+    "object_type_scope": "table",
+    "object_count": 4,
+    "high_use_objects": 2,
+    "downstream_uses": 24,
+    "first_object": "AutoTrader_BBVinProList",
+    "last_object": "DimVehicle_VehicleMart",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Stage",
+    "object_names": [
+      "AutoTrader_BBVinProList",
+      "Vehicle",
+      "CarMaxSF_StagingOutput",
+      "DimVehicle_VehicleMart"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 4,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 4,
+    "total_planned_pages": 8
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VehicleMart"],
+      "page_type": "database",
+      "evidence_hash": "sha256:F9825CD074672687A625166AE112DF0BA27C4D1E7AC786992D9621813BACDB5A",
+      "evidence_file": "database-vehiclemart.evidence.json",
+      "markdown_file": "database-vehiclemart.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Stage",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VehicleMart", "Stage"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:EF335866634B314E08060C99244139CA19A8F3D158B92BFDDF8C61F709465DDA",
+      "evidence_file": "schema-vehiclemart-stage.evidence.json",
+      "markdown_file": "schema-vehiclemart-stage.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Stage.AutoTrader_BBVinProList",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Stage",
+        "AutoTrader_BBVinProList"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:64BE67660F2F43A114CB8E537C0495AC712E1D98C532B35C2C5936362E358B6F",
+      "evidence_file": "object-vehiclemart-stage-autotrader-bbvinprolist.evidence.json",
+      "markdown_file": "object-vehiclemart-stage-autotrader-bbvinprolist.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Stage.CarMaxSF_StagingOutput",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Stage",
+        "CarMaxSF_StagingOutput"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:C8293D14C59A973C66EDA20CE4F98796D3D4AD6D9F172C9D2451A9648380CA73",
+      "evidence_file": "object-vehiclemart-stage-carmaxsf-stagingoutput.evidence.json",
+      "markdown_file": "object-vehiclemart-stage-carmaxsf-stagingoutput.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Stage.DimVehicle_VehicleMart",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Stage",
+        "DimVehicle_VehicleMart"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:CDE16D3F3C3A782665489EA06C2A1ECA17EBE593C51B22A0D0E7D05088714ED3",
+      "evidence_file": "object-vehiclemart-stage-dimvehicle-vehiclemart.evidence.json",
+      "markdown_file": "object-vehiclemart-stage-dimvehicle-vehiclemart.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.Stage.Vehicle",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Stage",
+        "Vehicle"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:5860E262F3ADB0D295E1662ECB972E2E6AF876C5D19F43F64140C3D67C723F03",
+      "evidence_file": "object-vehiclemart-stage-vehicle.evidence.json",
+      "markdown_file": "object-vehiclemart-stage-vehicle.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "AutoTrader_BBVinProList",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Stage",
+        "AutoTrader_BBVinProList"
+      ],
+      "canonical_id": "object-vehiclemart-stage-autotrader-bbvinprolist",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Stage__AutoTrader_BBVinProList.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:64BE67660F2F43A114CB8E537C0495AC712E1D98C532B35C2C5936362E358B6F",
+      "object": {
+        "name": "AutoTrader_BBVinProList",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Stage",
+        "qualified_name": "VehicleMart.Stage.AutoTrader_BBVinProList",
+        "tags": ["high-use", "profiled", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "review-needed"],
+      "tag_reasons": [
+        "high-use: 14 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Stage.AutoTrader_BBVinProList",
+        "Stage.AutoTrader_BBVinProList",
+        "AutoTrader_BBVinProList",
+        "AutoTraderBBVinProList",
+        "autotraderbbvinprolist"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 13,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Stage"
+      ],
+      "evidence_file": "object-vehiclemart-stage-autotrader-bbvinprolist.evidence.json",
+      "markdown_file": "object-vehiclemart-stage-autotrader-bbvinprolist.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "CarMaxSF_StagingOutput",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Stage",
+        "CarMaxSF_StagingOutput"
+      ],
+      "canonical_id": "object-vehiclemart-stage-carmaxsf-stagingoutput",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Stage__CarMaxSF_StagingOutput.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:C8293D14C59A973C66EDA20CE4F98796D3D4AD6D9F172C9D2451A9648380CA73",
+      "object": {
+        "name": "CarMaxSF_StagingOutput",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Stage",
+        "qualified_name": "VehicleMart.Stage.CarMaxSF_StagingOutput",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Stage.CarMaxSF_StagingOutput",
+        "Stage.CarMaxSF_StagingOutput",
+        "CarMaxSF_StagingOutput",
+        "CarMaxSFStagingOutput",
+        "carmaxsfstagingoutput"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 31,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Stage"
+      ],
+      "evidence_file": "object-vehiclemart-stage-carmaxsf-stagingoutput.evidence.json",
+      "markdown_file": "object-vehiclemart-stage-carmaxsf-stagingoutput.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DimVehicle_VehicleMart",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Stage",
+        "DimVehicle_VehicleMart"
+      ],
+      "canonical_id": "object-vehiclemart-stage-dimvehicle-vehiclemart",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Stage__DimVehicle_VehicleMart.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:CDE16D3F3C3A782665489EA06C2A1ECA17EBE593C51B22A0D0E7D05088714ED3",
+      "object": {
+        "name": "DimVehicle_VehicleMart",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Stage",
+        "qualified_name": "VehicleMart.Stage.DimVehicle_VehicleMart",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.Stage.DimVehicle_VehicleMart",
+        "Stage.DimVehicle_VehicleMart",
+        "DimVehicle_VehicleMart",
+        "DimVehicleVehicleMart",
+        "dimvehiclevehiclemart"
+      ],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.DimVehicle.VehicleMart.DimVehicle_STG_VehicleMart.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Vin",
+          "VehicleKey",
+          "Meta_UserID",
+          "Meta_ComputerName",
+          "ETLExecution_ID",
+          "Meta_LoadDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 6,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Stage"
+      ],
+      "evidence_file": "object-vehiclemart-stage-dimvehicle-vehiclemart.evidence.json",
+      "markdown_file": "object-vehiclemart-stage-dimvehicle-vehiclemart.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Vehicle",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "Stage",
+        "Vehicle"
+      ],
+      "canonical_id": "object-vehiclemart-stage-vehicle",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/Stage__Vehicle.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:5860E262F3ADB0D295E1662ECB972E2E6AF876C5D19F43F64140C3D67C723F03",
+      "object": {
+        "name": "Vehicle",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "Stage",
+        "qualified_name": "VehicleMart.Stage.Vehicle",
+        "tags": ["high-use", "profiled", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "review-needed"],
+      "tag_reasons": [
+        "high-use: 10 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VehicleMart.Stage.Vehicle", "Stage.Vehicle", "Vehicle", "vehicle"],
+      "lineage": {
+        "upstream_loaders": [
+          "V1-SSIS25-01, 11040.SSISDB.VehicleMart.EPPricingDataLoad.EPACVVehicleDataload.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.VehicleMart.EPPricingDataLoad.EPCarmaxAuctionVehicleDataload.dtsx"
+        ],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "V1-SSIS25-01, 11040.SSISDB.VehicleMart.EPVehicleNewDataLoad.EPNewVehicle_Chrome.dtsx",
+          "V1-SSIS25-01, 11040.SSISDB.VehicleMart.EPVehicleNewDataLoad.EPNewVehicle_BlackBook.dtsx"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "IsProcessed",
+          "VIN",
+          "Year",
+          "Make",
+          "Model",
+          "Trim",
+          "ExteriorColor",
+          "InteriorColor"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 8,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / Stage"
+      ],
+      "evidence_file": "object-vehiclemart-stage-vehicle.evidence.json",
+      "markdown_file": "object-vehiclemart-stage-vehicle.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-055-vehiclemart-stage-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-055-vehiclemart-stage-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-055-vehiclemart-stage-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

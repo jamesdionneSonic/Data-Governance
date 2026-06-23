@@ -1,0 +1,589 @@
+{
+  "packet_id": "T2B-069",
+  "generated_at": "2026-06-23T18:21:55.430Z",
+  "batch": {
+    "batch_id": "T2B-069",
+    "priority_rank": 69,
+    "platform": "SQL Server",
+    "database": "VehicleMart",
+    "schema": "BlackBook",
+    "object_type_scope": "table",
+    "object_count": 4,
+    "high_use_objects": 1,
+    "downstream_uses": 16,
+    "first_object": "DimUVC",
+    "last_object": "CarfaxOutputStg",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / BlackBook",
+    "object_names": ["DimUVC", "DimMMY", "AutoTraderOutputStg", "CarfaxOutputStg"],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 4,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 4,
+    "total_planned_pages": 8
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VehicleMart"],
+      "page_type": "database",
+      "evidence_hash": "sha256:9DAF64965B81F4E77EDD7514073C2025F9D3D12F3A41E174A24A00DC46799332",
+      "evidence_file": "database-vehiclemart.evidence.json",
+      "markdown_file": "database-vehiclemart.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.BlackBook",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "BlackBook"
+      ],
+      "page_type": "schema",
+      "evidence_hash": "sha256:C5DC1898183D0ADB3F4DE4122FFCAC68657AF96616D40E467283BCC5653D85BB",
+      "evidence_file": "schema-vehiclemart-blackbook.evidence.json",
+      "markdown_file": "schema-vehiclemart-blackbook.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.BlackBook.AutoTraderOutputStg",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "BlackBook",
+        "AutoTraderOutputStg"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D5E714A1F55590074624026F0AE6CA5E93B38296D2D4DDB8513D466610DF0D9E",
+      "evidence_file": "object-vehiclemart-blackbook-autotraderoutputstg.evidence.json",
+      "markdown_file": "object-vehiclemart-blackbook-autotraderoutputstg.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.BlackBook.CarfaxOutputStg",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "BlackBook",
+        "CarfaxOutputStg"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:107EBDD0A16817AD20136E7472855F62187DF4883666CE9594D6CA119BFA97B0",
+      "evidence_file": "object-vehiclemart-blackbook-carfaxoutputstg.evidence.json",
+      "markdown_file": "object-vehiclemart-blackbook-carfaxoutputstg.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.BlackBook.DimMMY",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "BlackBook",
+        "DimMMY"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D0FFC8C72EAB4209379A297FAF21020F96C75A5E10A4DCEB8CAB992ACA76E6D3",
+      "evidence_file": "object-vehiclemart-blackbook-dimmmy.evidence.json",
+      "markdown_file": "object-vehiclemart-blackbook-dimmmy.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VehicleMart.BlackBook.DimUVC",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "BlackBook",
+        "DimUVC"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:26BFA2B932796ED79E7BBF474774C79140756A2CE3FF71A3B3CADCC2A69F42AC",
+      "evidence_file": "object-vehiclemart-blackbook-dimuvc.evidence.json",
+      "markdown_file": "object-vehiclemart-blackbook-dimuvc.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "AutoTraderOutputStg",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "BlackBook",
+        "AutoTraderOutputStg"
+      ],
+      "canonical_id": "object-vehiclemart-blackbook-autotraderoutputstg",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/BlackBook__AutoTraderOutputStg.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D5E714A1F55590074624026F0AE6CA5E93B38296D2D4DDB8513D466610DF0D9E",
+      "object": {
+        "name": "AutoTraderOutputStg",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "BlackBook",
+        "qualified_name": "VehicleMart.BlackBook.AutoTraderOutputStg",
+        "tags": ["profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 10 upstream and 0 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.BlackBook.AutoTraderOutputStg",
+        "BlackBook.AutoTraderOutputStg",
+        "AutoTraderOutputStg",
+        "autotraderoutputstg"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 46,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / BlackBook"
+      ],
+      "evidence_file": "object-vehiclemart-blackbook-autotraderoutputstg.evidence.json",
+      "markdown_file": "object-vehiclemart-blackbook-autotraderoutputstg.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "CarfaxOutputStg",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "BlackBook",
+        "CarfaxOutputStg"
+      ],
+      "canonical_id": "object-vehiclemart-blackbook-carfaxoutputstg",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/BlackBook__CarfaxOutputStg.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:107EBDD0A16817AD20136E7472855F62187DF4883666CE9594D6CA119BFA97B0",
+      "object": {
+        "name": "CarfaxOutputStg",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "BlackBook",
+        "qualified_name": "VehicleMart.BlackBook.CarfaxOutputStg",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VehicleMart.BlackBook.CarfaxOutputStg",
+        "BlackBook.CarfaxOutputStg",
+        "CarfaxOutputStg",
+        "carfaxoutputstg"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 46,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / BlackBook"
+      ],
+      "evidence_file": "object-vehiclemart-blackbook-carfaxoutputstg.evidence.json",
+      "markdown_file": "object-vehiclemart-blackbook-carfaxoutputstg.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DimMMY",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "BlackBook",
+        "DimMMY"
+      ],
+      "canonical_id": "object-vehiclemart-blackbook-dimmmy",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/BlackBook__DimMMY.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D0FFC8C72EAB4209379A297FAF21020F96C75A5E10A4DCEB8CAB992ACA76E6D3",
+      "object": {
+        "name": "DimMMY",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "BlackBook",
+        "qualified_name": "VehicleMart.BlackBook.DimMMY",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VehicleMart.BlackBook.DimMMY", "BlackBook.DimMMY", "DimMMY", "dimmmy"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 13,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / BlackBook"
+      ],
+      "evidence_file": "object-vehiclemart-blackbook-dimmmy.evidence.json",
+      "markdown_file": "object-vehiclemart-blackbook-dimmmy.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DimUVC",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VehicleMart",
+        "BlackBook",
+        "DimUVC"
+      ],
+      "canonical_id": "object-vehiclemart-blackbook-dimuvc",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-VMARTSQL-01/databases/VehicleMart/tables/blackbook__DimUVC.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:26BFA2B932796ED79E7BBF474774C79140756A2CE3FF71A3B3CADCC2A69F42AC",
+      "object": {
+        "name": "DimUVC",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-VMARTSQL-01",
+        "database": "VehicleMart",
+        "schema": "BlackBook",
+        "qualified_name": "VehicleMart.BlackBook.DimUVC",
+        "tags": ["high-use", "profiled", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "review-needed"],
+      "tag_reasons": [
+        "high-use: 12 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["VehicleMart.BlackBook.DimUVC", "BlackBook.DimUVC", "DimUVC", "dimuvc"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 21,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VehicleMart / BlackBook"
+      ],
+      "evidence_file": "object-vehiclemart-blackbook-dimuvc.evidence.json",
+      "markdown_file": "object-vehiclemart-blackbook-dimuvc.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-069-vehiclemart-blackbook-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-069-vehiclemart-blackbook-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-069-vehiclemart-blackbook-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

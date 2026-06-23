@@ -1,0 +1,394 @@
+{
+  "packet_id": "T2B-121",
+  "generated_at": "2026-06-23T18:48:09.594Z",
+  "batch": {
+    "batch_id": "T2B-121",
+    "priority_rank": 121,
+    "platform": "SQL Server",
+    "database": "ETL_Staging",
+    "schema": "JMA",
+    "object_type_scope": "table",
+    "object_count": 2,
+    "high_use_objects": 0,
+    "downstream_uses": 2,
+    "first_object": "ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+    "last_object": "ETL_STG_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / JMA",
+    "object_names": [
+      "ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+      "ETL_STG_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "table",
+    "original_object_count": 2,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 2,
+    "total_planned_pages": 6
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "ETL_Staging"],
+      "page_type": "database",
+      "evidence_hash": "sha256:DAC2D90CB3BE061D63E9E2B32F595CD9386F3A5C44DBCECB3D4790E05ABC3057",
+      "evidence_file": "database-etl-staging.evidence.json",
+      "markdown_file": "database-etl-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.JMA",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "ETL_Staging", "JMA"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:7DF4FA7851C1DD16824D47B1BB4D819C4CBB9FE68C4BD053A42F7F2D0C8E5E3A",
+      "evidence_file": "schema-etl-staging-jma.evidence.json",
+      "markdown_file": "schema-etl-staging-jma.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.JMA.ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "JMA",
+        "ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A64E0ECAD753BF6D4674A7C7A877EE1D5610BFFB7429B6DC7C3FF80B8CF461DD",
+      "evidence_file": "object-etl-staging-jma-etl-stg-jma-claims-financial-transactions-tbl.evidence.json",
+      "markdown_file": "object-etl-staging-jma-etl-stg-jma-claims-financial-transactions-tbl.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.JMA.ETL_STG_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "JMA",
+        "ETL_STG_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:72D63C744675F5DE2717938C0564D886548B55980BB4C30281A69176C292D44D",
+      "evidence_file": "object-etl-staging-jma-etl-stg-jma-contract-financial-transactions-tbl.evidence.json",
+      "markdown_file": "object-etl-staging-jma-etl-stg-jma-contract-financial-transactions-tbl.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "JMA",
+        "ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL"
+      ],
+      "canonical_id": "object-etl-staging-jma-etl-stg-jma-claims-financial-transactions-tbl",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/JMA__ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A64E0ECAD753BF6D4674A7C7A877EE1D5610BFFB7429B6DC7C3FF80B8CF461DD",
+      "object": {
+        "name": "ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "JMA",
+        "qualified_name": "ETL_Staging.JMA.ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.JMA.ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+        "JMA.ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+        "ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_TBL",
+        "ETLSTGJMACLAIMSFINANCIALTRANSACTIONSTBL",
+        "etlstgjmaclaimsfinancialtransactionstbl"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-5FSQL-01.ETL_Staging.JMA.Load_Claim_Financial_Transactions"],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-5FSQL-01.ETL_Staging.JMA.LOAD_FACT_JMA_CLAIMS_TBL"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ETL_STG_JMA_CLAIMS_FINANCIAL_TRANSACTIONS_ID",
+          "JMA_CLAIMS_REF",
+          "SERVICING_BILLING_ENTITY_NUMBER",
+          "TRANSACTION_DATE",
+          "VIN",
+          "CONTRACT_NUMBER_12",
+          "SELLING_DEALER_ACCOUNT_NUMBER",
+          "PRODUCT_TYPE_CODE",
+          "PRODUCT_TYPE_CODE_DESCRIPTION",
+          "AUTHORIZATION_NUMBER",
+          "AUTHORIZATION_DATE",
+          "CLAIM_DEBIT_CREDIT_CODE",
+          "CLAIM_CREDIT_DEBIT_CODE_DESCRIPTION",
+          "PAID_DATE",
+          "MAINTENANCE_COUPON_NUMBER",
+          "CONTRACT_HOLDER_FIRST_NAME",
+          "CONTRACT_HOLDER_LAST_NAME",
+          "PAID_AMOUNT_LIST_NAME",
+          "PAID_AMOUNT_LIST_AMOUNT",
+          "SERVICING_FACILITY_ZIP_CODE"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 25,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / JMA"
+      ],
+      "evidence_file": "object-etl-staging-jma-etl-stg-jma-claims-financial-transactions-tbl.evidence.json",
+      "markdown_file": "object-etl-staging-jma-etl-stg-jma-claims-financial-transactions-tbl.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ETL_STG_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "JMA",
+        "ETL_STG_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL"
+      ],
+      "canonical_id": "object-etl-staging-jma-etl-stg-jma-contract-financial-transactions-tbl",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/JMA__ETL_STG_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:72D63C744675F5DE2717938C0564D886548B55980BB4C30281A69176C292D44D",
+      "object": {
+        "name": "ETL_STG_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "JMA",
+        "qualified_name": "ETL_Staging.JMA.ETL_STG_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.JMA.ETL_STG_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+        "JMA.ETL_STG_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+        "ETL_STG_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_TBL",
+        "ETLSTGJMACONTRACTFINANCIALTRANSACTIONSTBL",
+        "etlstgjmacontractfinancialtransactionstbl"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-5FSQL-01.ETL_Staging.JMA.Load_Contract_Financial_Transactions"],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-5FSQL-01.ETL_Staging.JMA.LOAD_FACT_JMA_CONTRACT_TBL"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ETL_STG_JMA_CONTRACT_FINANCIAL_TRANSACTIONS_ID",
+          "JMA_CONTRACT_REF",
+          "CANCELLATION_EFFECTIVE_DATE",
+          "CANCELLATION_FEE_AMOUNT",
+          "CANCELLATION_REFUND_AMOUNT",
+          "CANCELLATION_REFUND_METHOD_DESCRIPTION",
+          "CANCELLATION_REFUND_PERCENT",
+          "CANCELLATION_REFUND_METHOD",
+          "CHECK_DATE",
+          "CHECK_NUMBER",
+          "CONTRACT_COVERAGE_CODE",
+          "CONTRACT_COVERAGE_CODE_DESCRIPTION",
+          "CONTRACT_COVERAGE_LENGTH",
+          "CONTRACT_COVERAGE_LENGTH_CODE",
+          "CONTRACT_COVERAGE_LENGTH_CODE_DESCRIPTION",
+          "CONTRACT_HOLDER_FIRST_NAME",
+          "CONTRACT_HOLDER_LAST_NAME",
+          "CONTRACT_MILEAGE_TERM",
+          "CONTRACT_NUMBER_12",
+          "CONTRACT_PURCHASE_DATE"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 63,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / JMA"
+      ],
+      "evidence_file": "object-etl-staging-jma-etl-stg-jma-contract-financial-transactions-tbl.evidence.json",
+      "markdown_file": "object-etl-staging-jma-etl-stg-jma-contract-financial-transactions-tbl.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-121-etl-staging-jma-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-121-etl-staging-jma-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-121-etl-staging-jma-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

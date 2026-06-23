@@ -100,6 +100,8 @@
     "confluence:full:tier2:t2b-002:dry-run": "node scripts/run-tier2-strategy-batch-dry-run.mjs --batch-id=T2B-002",
     "confluence:full:tier2:t2b-002:publish": "npm run confluence:full:tier2:t2b-002:dry-run && node scripts/publish-human-confluence-catalog-pilot.mjs --packet docs/confluence-full-database-catalog-deployment/T2B-002-eleaddw-sf-dbo-tier2-publish-packet.json --publish",
     "confluence:full:tier2:t2b-002:published:check": "node scripts/check-human-confluence-catalog-pilot.mjs --packet docs/confluence-full-database-catalog-deployment/T2B-002-eleaddw-sf-dbo-tier2-publish-packet.json",
+    "confluence:full:tier2:tables:publish": "node scripts/publish-tier2-table-pages.mjs --start-after T2B-002",
+    "confluence:full:tier2:tables:publish:resume": "node scripts/publish-tier2-table-pages.mjs",
     "confluence:full:cleanup:dry-run": "node scripts/cleanup-full-database-catalog-superseded-pages.mjs",
     "confluence:full:cleanup:archive": "node scripts/cleanup-full-database-catalog-superseded-pages.mjs --archive",
     "confluence:check": "node scripts/check-confluence-export.mjs",

@@ -1,0 +1,828 @@
+{
+  "packet_id": "T2B-209",
+  "generated_at": "2026-06-23T19:10:59.238Z",
+  "batch": {
+    "batch_id": "T2B-209",
+    "priority_rank": 209,
+    "platform": "SQL Server",
+    "database": "StagingDB",
+    "schema": "easy",
+    "object_type_scope": "table",
+    "object_count": 5,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "Mailings_staging",
+    "last_object": "PhoneEmailText_staging",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / easy",
+    "object_names": [
+      "Mailings_staging",
+      "PhoneEmailText_Campaign_Staging",
+      "PhoneEmailText_Coupons_staging",
+      "PhoneEmailText_Notification_staging",
+      "PhoneEmailText_staging"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 5,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 5,
+    "total_planned_pages": 9
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB"],
+      "page_type": "database",
+      "evidence_hash": "sha256:86BBBA4A90EF1C66989EFB3B9746AF88467BE01889393493BBDE0177897E19A4",
+      "evidence_file": "database-stagingdb.evidence.json",
+      "markdown_file": "database-stagingdb.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.easy",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB", "easy"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:D7B6ADB6FF965D00C266D5D040D0DE804ED8E4BE452B509B641A3380466D5392",
+      "evidence_file": "schema-stagingdb-easy.evidence.json",
+      "markdown_file": "schema-stagingdb-easy.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.easy.Mailings_staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "easy",
+        "Mailings_staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:276114391C23AAC766153C2F31CAC5034FB467A904F0081A3470CB1C9AEE3D72",
+      "evidence_file": "object-stagingdb-easy-mailings-staging.evidence.json",
+      "markdown_file": "object-stagingdb-easy-mailings-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.easy.PhoneEmailText_Campaign_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "easy",
+        "PhoneEmailText_Campaign_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:CB22792B745A924C3E0ABE4DF98EA15855355AEC98BB516438B528C26CC2F1AA",
+      "evidence_file": "object-stagingdb-easy-phoneemailtext-campaign-staging.evidence.json",
+      "markdown_file": "object-stagingdb-easy-phoneemailtext-campaign-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.easy.PhoneEmailText_Coupons_staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "easy",
+        "PhoneEmailText_Coupons_staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:87C14FCFC25A9FD505189A1C2398A70C3CF4295E4F21FECAF1BDC49F754437AE",
+      "evidence_file": "object-stagingdb-easy-phoneemailtext-coupons-staging.evidence.json",
+      "markdown_file": "object-stagingdb-easy-phoneemailtext-coupons-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.easy.PhoneEmailText_Notification_staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "easy",
+        "PhoneEmailText_Notification_staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:2D46E0AD713069E55FDC42B4CAB466C68F8AD106B4CBFC2E5D1C4F9DCD762086",
+      "evidence_file": "object-stagingdb-easy-phoneemailtext-notification-staging.evidence.json",
+      "markdown_file": "object-stagingdb-easy-phoneemailtext-notification-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.easy.PhoneEmailText_staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "easy",
+        "PhoneEmailText_staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:95A3AB09BC2F56B8D13D6F12701B8C388D03EFE274E8EFE0C2F25B8EB2B08B85",
+      "evidence_file": "object-stagingdb-easy-phoneemailtext-staging.evidence.json",
+      "markdown_file": "object-stagingdb-easy-phoneemailtext-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "Mailings_staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "easy",
+        "Mailings_staging"
+      ],
+      "canonical_id": "object-stagingdb-easy-mailings-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/easy__Mailings_staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:276114391C23AAC766153C2F31CAC5034FB467A904F0081A3470CB1C9AEE3D72",
+      "object": {
+        "name": "Mailings_staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "easy",
+        "qualified_name": "StagingDB.easy.Mailings_staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.easy.Mailings_staging",
+        "easy.Mailings_staging",
+        "Mailings_staging",
+        "Mailingsstaging",
+        "mailingsstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DealerId",
+          "DealerCode",
+          "CustomerCode",
+          "Vin",
+          "First",
+          "Middle",
+          "Last",
+          "Suffix",
+          "Address",
+          "City",
+          "State",
+          "Zip",
+          "MailSource",
+          "MailDetail",
+          "MailDate",
+          "Expire",
+          "Category",
+          "Job",
+          "WorkOrder",
+          "DealerCost"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 58,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / easy"
+      ],
+      "evidence_file": "object-stagingdb-easy-mailings-staging.evidence.json",
+      "markdown_file": "object-stagingdb-easy-mailings-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "PhoneEmailText_Campaign_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "easy",
+        "PhoneEmailText_Campaign_Staging"
+      ],
+      "canonical_id": "object-stagingdb-easy-phoneemailtext-campaign-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/easy__PhoneEmailText_Campaign_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:CB22792B745A924C3E0ABE4DF98EA15855355AEC98BB516438B528C26CC2F1AA",
+      "object": {
+        "name": "PhoneEmailText_Campaign_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "easy",
+        "qualified_name": "StagingDB.easy.PhoneEmailText_Campaign_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.easy.PhoneEmailText_Campaign_Staging",
+        "easy.PhoneEmailText_Campaign_Staging",
+        "PhoneEmailText_Campaign_Staging",
+        "PhoneEmailTextCampaignStaging",
+        "phoneemailtextcampaignstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RowNumber",
+          "SonicId",
+          "DealershipName",
+          "BatchName",
+          "BatchCreatedOn",
+          "BatchStartTime",
+          "LoopCompanyId",
+          "BatchCancelled",
+          "LoopServiceName",
+          "BatchCompleteTime",
+          "CustomerName",
+          "PhoneNumber",
+          "EmailAddress",
+          "TextNumber",
+          "VoiceSendStatusId",
+          "VoiceSendStatus",
+          "VoiceStatusInfoId",
+          "VoiceStatusInfo",
+          "EmailSendStatusId",
+          "EmailSendStatus"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 51,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / easy"
+      ],
+      "evidence_file": "object-stagingdb-easy-phoneemailtext-campaign-staging.evidence.json",
+      "markdown_file": "object-stagingdb-easy-phoneemailtext-campaign-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "PhoneEmailText_Coupons_staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "easy",
+        "PhoneEmailText_Coupons_staging"
+      ],
+      "canonical_id": "object-stagingdb-easy-phoneemailtext-coupons-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/easy__PhoneEmailText_Coupons_staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:87C14FCFC25A9FD505189A1C2398A70C3CF4295E4F21FECAF1BDC49F754437AE",
+      "object": {
+        "name": "PhoneEmailText_Coupons_staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "easy",
+        "qualified_name": "StagingDB.easy.PhoneEmailText_Coupons_staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.easy.PhoneEmailText_Coupons_staging",
+        "easy.PhoneEmailText_Coupons_staging",
+        "PhoneEmailText_Coupons_staging",
+        "PhoneEmailTextCouponsstaging",
+        "phoneemailtextcouponsstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RowNumber",
+          "SonicId",
+          "DealershipName",
+          "NotificationId",
+          "Name",
+          "Details",
+          "CouponTypeId",
+          "Amount",
+          "Expiration",
+          "Code",
+          "LoopCompanyId",
+          "RelativeExpirationDays",
+          "OriginalCouponId",
+          "Subtitle",
+          "Body",
+          "OpCodes",
+          "CompanyGroupId",
+          "MasterCouponId",
+          "MileageFilter",
+          "AssetID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 43,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / easy"
+      ],
+      "evidence_file": "object-stagingdb-easy-phoneemailtext-coupons-staging.evidence.json",
+      "markdown_file": "object-stagingdb-easy-phoneemailtext-coupons-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "PhoneEmailText_Notification_staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "easy",
+        "PhoneEmailText_Notification_staging"
+      ],
+      "canonical_id": "object-stagingdb-easy-phoneemailtext-notification-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/easy__PhoneEmailText_Notification_staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:2D46E0AD713069E55FDC42B4CAB466C68F8AD106B4CBFC2E5D1C4F9DCD762086",
+      "object": {
+        "name": "PhoneEmailText_Notification_staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "easy",
+        "qualified_name": "StagingDB.easy.PhoneEmailText_Notification_staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.easy.PhoneEmailText_Notification_staging",
+        "easy.PhoneEmailText_Notification_staging",
+        "PhoneEmailText_Notification_staging",
+        "PhoneEmailTextNotificationstaging",
+        "phoneemailtextnotificationstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RowNumber",
+          "SonicId",
+          "DealershipName",
+          "NotificationId",
+          "LoopCompanyId",
+          "BatchName",
+          "BatchCreatedOn",
+          "BatchStartTime",
+          "BatchCancelled",
+          "LoopServiceName",
+          "BatchCompleteTime",
+          "CustomerName",
+          "PhoneNumber",
+          "EmailAddress",
+          "TextNumber",
+          "VoiceSendStatusId",
+          "VoiceSendStatus",
+          "VoiceStatusInfoId",
+          "VoiceStatusInfo",
+          "EmailSendStatusId"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 51,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / easy"
+      ],
+      "evidence_file": "object-stagingdb-easy-phoneemailtext-notification-staging.evidence.json",
+      "markdown_file": "object-stagingdb-easy-phoneemailtext-notification-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "PhoneEmailText_staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "easy",
+        "PhoneEmailText_staging"
+      ],
+      "canonical_id": "object-stagingdb-easy-phoneemailtext-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/easy__PhoneEmailText_staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:95A3AB09BC2F56B8D13D6F12701B8C388D03EFE274E8EFE0C2F25B8EB2B08B85",
+      "object": {
+        "name": "PhoneEmailText_staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "easy",
+        "qualified_name": "StagingDB.easy.PhoneEmailText_staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.easy.PhoneEmailText_staging",
+        "easy.PhoneEmailText_staging",
+        "PhoneEmailText_staging",
+        "PhoneEmailTextstaging",
+        "phoneemailtextstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RowNumber",
+          "SonicId",
+          "DealershipName",
+          "BatchName",
+          "BatchCreatedOn",
+          "BatchStartTime",
+          "LoopCompanyId",
+          "BatchCancelled",
+          "LoopServiceName",
+          "BatchCompleteTime",
+          "CustomerName",
+          "PhoneNumber",
+          "EmailAddress",
+          "TextNumber",
+          "VoiceSendStatusId",
+          "VoiceSendStatus",
+          "VoiceStatusInfoId",
+          "VoiceStatusInfo",
+          "EmailSendStatusId",
+          "EmailSendStatus"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 65,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / easy"
+      ],
+      "evidence_file": "object-stagingdb-easy-phoneemailtext-staging.evidence.json",
+      "markdown_file": "object-stagingdb-easy-phoneemailtext-staging.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-209-stagingdb-easy-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-209-stagingdb-easy-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-209-stagingdb-easy-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

@@ -1,0 +1,223 @@
+{
+  "packet_id": "T2B-183",
+  "generated_at": "2026-06-23T19:06:46.337Z",
+  "batch": {
+    "batch_id": "T2B-183",
+    "priority_rank": 183,
+    "platform": "SQL Server",
+    "database": "Speed",
+    "schema": "DDC",
+    "object_type_scope": "table",
+    "object_count": 1,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "VehicleViews",
+    "last_object": "VehicleViews",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / Speed / DDC",
+    "object_names": ["VehicleViews"],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 1,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 1,
+    "total_planned_pages": 5
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "Speed",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "Speed"],
+      "page_type": "database",
+      "evidence_hash": "sha256:ABC70748562123706726BD7A7543000C86EF657617BD75CB7477AFC09A532DC0",
+      "evidence_file": "database-speed.evidence.json",
+      "markdown_file": "database-speed.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Speed.DDC",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "Speed", "DDC"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:40B1EC3DD66E61C58C6A243B7C1FDE356C58566BF0070DAB59727509046700AF",
+      "evidence_file": "schema-speed-ddc.evidence.json",
+      "markdown_file": "schema-speed-ddc.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Speed.DDC.VehicleViews",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Speed",
+        "DDC",
+        "VehicleViews"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A27683D6F844FFF8A864BCDCA53DD004DA396AD8F54BDEE8B74860EE84D27BF1",
+      "evidence_file": "object-speed-ddc-vehicleviews.evidence.json",
+      "markdown_file": "object-speed-ddc-vehicleviews.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "VehicleViews",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "Speed",
+        "DDC",
+        "VehicleViews"
+      ],
+      "canonical_id": "object-speed-ddc-vehicleviews",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/Speed/tables/DDC__VehicleViews.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A27683D6F844FFF8A864BCDCA53DD004DA396AD8F54BDEE8B74860EE84D27BF1",
+      "object": {
+        "name": "VehicleViews",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "Speed",
+        "schema": "DDC",
+        "qualified_name": "Speed.DDC.VehicleViews",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["Speed.DDC.VehicleViews", "DDC.VehicleViews", "VehicleViews", "vehicleviews"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 21,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / Speed",
+        "Sonic Data Lineage / Database Catalog / SQL Server / Speed / DDC"
+      ],
+      "evidence_file": "object-speed-ddc-vehicleviews.evidence.json",
+      "markdown_file": "object-speed-ddc-vehicleviews.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-183-speed-ddc-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-183-speed-ddc-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-183-speed-ddc-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

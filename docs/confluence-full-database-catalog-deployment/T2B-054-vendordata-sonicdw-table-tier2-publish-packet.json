@@ -1,0 +1,843 @@
+{
+  "packet_id": "T2B-054",
+  "generated_at": "2026-06-23T18:17:37.246Z",
+  "batch": {
+    "batch_id": "T2B-054",
+    "priority_rank": 54,
+    "platform": "SQL Server",
+    "database": "VendorData",
+    "schema": "sonicdw",
+    "object_type_scope": "table",
+    "object_count": 5,
+    "high_use_objects": 2,
+    "downstream_uses": 30,
+    "first_object": "Dim_Date",
+    "last_object": "vw_Dim_date",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / sonicdw",
+    "object_names": [
+      "Dim_Date",
+      "DimEntityRelationship",
+      "DimEntityRelationshipType",
+      "Dim_Entity",
+      "vw_Dim_date"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 5,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 5,
+    "total_planned_pages": 9
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData"],
+      "page_type": "database",
+      "evidence_hash": "sha256:683FDDE8F1AC4FF15E02E2706747E6F8B99F6143A10DA6EF7B2ABFB09E646CC2",
+      "evidence_file": "database-vendordata.evidence.json",
+      "markdown_file": "database-vendordata.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.sonicdw",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData", "sonicdw"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:749E4D00640DD13EB2D69B498E91E95A735B0E2F1E5F389A1C85F40619E03180",
+      "evidence_file": "schema-vendordata-sonicdw.evidence.json",
+      "markdown_file": "schema-vendordata-sonicdw.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.sonicdw.Dim_Date",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "sonicdw",
+        "Dim_Date"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:05F07C99226490B140D73F4390F53AEF2FC46E54F9F87FAAF26331D30606C0F3",
+      "evidence_file": "object-vendordata-sonicdw-dim-date.evidence.json",
+      "markdown_file": "object-vendordata-sonicdw-dim-date.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.sonicdw.Dim_Entity",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "sonicdw",
+        "Dim_Entity"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:878A803094E0F3B2719F7B6AEA1118D956386746C9C73C32D06360C952D0ED33",
+      "evidence_file": "object-vendordata-sonicdw-dim-entity.evidence.json",
+      "markdown_file": "object-vendordata-sonicdw-dim-entity.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.sonicdw.DimEntityRelationship",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "sonicdw",
+        "DimEntityRelationship"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:DCA8D2C6D72CEF101F78D9BA7B00CA1E9DDFDEDDEBCB06F032CEE1A17A300725",
+      "evidence_file": "object-vendordata-sonicdw-dimentityrelationship.evidence.json",
+      "markdown_file": "object-vendordata-sonicdw-dimentityrelationship.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.sonicdw.DimEntityRelationshipType",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "sonicdw",
+        "DimEntityRelationshipType"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:29F2BF067811463EAA573978A951C6D63361A51705FDA7555F76887243D582E4",
+      "evidence_file": "object-vendordata-sonicdw-dimentityrelationshiptype.evidence.json",
+      "markdown_file": "object-vendordata-sonicdw-dimentityrelationshiptype.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.sonicdw.vw_Dim_date",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "sonicdw",
+        "vw_Dim_date"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:1CB52E1FB4AFA7053EF2A9F26071A39E03DDF53E5A3592ED3EA73214ED37A2CF",
+      "evidence_file": "object-vendordata-sonicdw-vw-dim-date.evidence.json",
+      "markdown_file": "object-vendordata-sonicdw-vw-dim-date.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "Dim_Date",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "sonicdw",
+        "Dim_Date"
+      ],
+      "canonical_id": "object-vendordata-sonicdw-dim-date",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/sonicdw__Dim_Date.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:05F07C99226490B140D73F4390F53AEF2FC46E54F9F87FAAF26331D30606C0F3",
+      "object": {
+        "name": "Dim_Date",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "sonicdw",
+        "qualified_name": "VendorData.sonicdw.Dim_Date",
+        "tags": ["high-use", "profiled", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "review-needed"],
+      "tag_reasons": [
+        "high-use: 10 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.sonicdw.Dim_Date",
+        "sonicdw.Dim_Date",
+        "Dim_Date",
+        "DimDate",
+        "dimdate"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_facebook_metricsdaily_social_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GA_Combined_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GA_Service_Combined_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GA_Social_Combined_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GMB_Service_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GMB_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GoogleAds_Advertising_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GoogleAds_Service",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GoogleAds_StoreVisits_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GoogleAds_view"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DateKey",
+          "DateKey_LY",
+          "FullDate",
+          "FullDate_LY_Join",
+          "MonthNumberOfYear",
+          "MonthNumberOfQuarter",
+          "ISOYearAndWeekNumber",
+          "ISOWeekNumberOfYear",
+          "SSWeekNumberOfYear",
+          "ISOWeekNumberOfQuarter_454_Pattern",
+          "SSWeekNumberOfQuarter_454_Pattern",
+          "SSWeekNumberOfMonth",
+          "DayNumberOfYear",
+          "DaysSince1900",
+          "DayNumberOfFiscalYear",
+          "DayNumberOfQuarter",
+          "DayNumberOfMonth",
+          "DayNumberOfWeek_Sun_Start",
+          "MonthName",
+          "MonthNameAbbreviation"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 73,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / sonicdw"
+      ],
+      "evidence_file": "object-vendordata-sonicdw-dim-date.evidence.json",
+      "markdown_file": "object-vendordata-sonicdw-dim-date.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Dim_Entity",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "sonicdw",
+        "Dim_Entity"
+      ],
+      "canonical_id": "object-vendordata-sonicdw-dim-entity",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/sonicdw__Dim_Entity.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:878A803094E0F3B2719F7B6AEA1118D956386746C9C73C32D06360C952D0ED33",
+      "object": {
+        "name": "Dim_Entity",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "sonicdw",
+        "qualified_name": "VendorData.sonicdw.Dim_Entity",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.sonicdw.Dim_Entity",
+        "sonicdw.Dim_Entity",
+        "Dim_Entity",
+        "DimEntity",
+        "dimentity"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GA_Combined_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GA_Service_Combined_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GA_Social_Combined_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GoogleAds_view"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "EntName",
+          "EntityKey",
+          "EntCora_Account_ID",
+          "EntADPCompanyID",
+          "EntAccountingPrefix",
+          "EntSCORES_Company_Dealership_ID",
+          "EntFDMName",
+          "EntRegionRVP_Prev",
+          "EntRegion",
+          "EntAcquiredDate",
+          "EntAddressLine1",
+          "EntAddressMailingLine1",
+          "EntAddressCity",
+          "EntAddressState",
+          "EntAddressCounty",
+          "EntAddressZipCode",
+          "EntMainPhoneNumber",
+          "EntLegalStructure",
+          "EntOwnershipPct",
+          "EntFranchiseCount"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 121,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / sonicdw"
+      ],
+      "evidence_file": "object-vendordata-sonicdw-dim-entity.evidence.json",
+      "markdown_file": "object-vendordata-sonicdw-dim-entity.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DimEntityRelationship",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "sonicdw",
+        "DimEntityRelationship"
+      ],
+      "canonical_id": "object-vendordata-sonicdw-dimentityrelationship",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/sonicdw__DimEntityRelationship.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:DCA8D2C6D72CEF101F78D9BA7B00CA1E9DDFDEDDEBCB06F032CEE1A17A300725",
+      "object": {
+        "name": "DimEntityRelationship",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "sonicdw",
+        "qualified_name": "VendorData.sonicdw.DimEntityRelationship",
+        "tags": ["high-use", "profiled", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "review-needed"],
+      "tag_reasons": [
+        "high-use: 10 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.sonicdw.DimEntityRelationship",
+        "sonicdw.DimEntityRelationship",
+        "DimEntityRelationship",
+        "dimentityrelationship"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_facebook_metricsdaily_social_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GA_Combined_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GA_Service_Combined_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GA_Social_Combined_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GMB_Service_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GMB_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GoogleAds_Advertising_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GoogleAds_Service",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GoogleAds_StoreVisits_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GoogleAds_view"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RelationshipGuid",
+          "RelationshipId",
+          "RelationshipTypeGuid",
+          "EntityKey",
+          "StartDate",
+          "EndDate",
+          "IsActive",
+          "CreatedDate",
+          "UpdatedDate",
+          "CreatedBy",
+          "UpdatedBy",
+          "IntegerField",
+          "AttributeField",
+          "DateField",
+          "NumericField",
+          "BigIntegerField"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 16,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / sonicdw"
+      ],
+      "evidence_file": "object-vendordata-sonicdw-dimentityrelationship.evidence.json",
+      "markdown_file": "object-vendordata-sonicdw-dimentityrelationship.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DimEntityRelationshipType",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "sonicdw",
+        "DimEntityRelationshipType"
+      ],
+      "canonical_id": "object-vendordata-sonicdw-dimentityrelationshiptype",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/sonicdw__DimEntityRelationshipType.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:29F2BF067811463EAA573978A951C6D63361A51705FDA7555F76887243D582E4",
+      "object": {
+        "name": "DimEntityRelationshipType",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "sonicdw",
+        "qualified_name": "VendorData.sonicdw.DimEntityRelationshipType",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.sonicdw.DimEntityRelationshipType",
+        "sonicdw.DimEntityRelationshipType",
+        "DimEntityRelationshipType",
+        "dimentityrelationshiptype"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_facebook_metricsdaily_social_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GA_Combined_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GA_Service_Combined_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GA_Social_Combined_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GMB_Service_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GMB_view"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RelationshipTypeGuid",
+          "RelationshipId",
+          "RelationshipType",
+          "RelationshipTypeDescription",
+          "CreatedDate",
+          "UpdatedDate",
+          "CreatedBy",
+          "UpdatedBy",
+          "ColumnType"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / sonicdw"
+      ],
+      "evidence_file": "object-vendordata-sonicdw-dimentityrelationshiptype.evidence.json",
+      "markdown_file": "object-vendordata-sonicdw-dimentityrelationshiptype.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_Dim_date",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "sonicdw",
+        "vw_Dim_date"
+      ],
+      "canonical_id": "object-vendordata-sonicdw-vw-dim-date",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/sonicdw__vw_Dim_date.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:1CB52E1FB4AFA7053EF2A9F26071A39E03DDF53E5A3592ED3EA73214ED37A2CF",
+      "object": {
+        "name": "vw_Dim_date",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "sonicdw",
+        "qualified_name": "VendorData.sonicdw.vw_Dim_date",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.sonicdw.vw_Dim_date",
+        "sonicdw.vw_Dim_date",
+        "vw_Dim_date",
+        "vwDimdate",
+        "vwdimdate"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DateKey",
+          "FullDate",
+          "MonthNumberOfYear",
+          "MonthNumberOfQuarter",
+          "ISOYearAndWeekNumber",
+          "ISOWeekNumberOfYear",
+          "SSWeekNumberOfYear",
+          "ISOWeekNumberOfQuarter_454_Pattern",
+          "SSWeekNumberOfQuarter_454_Pattern",
+          "SSWeekNumberOfMonth",
+          "DayNumberOfYear",
+          "DaysSince1900",
+          "DayNumberOfFiscalYear",
+          "DayNumberOfQuarter",
+          "DayNumberOfMonth",
+          "DayNumberOfWeek_Sun_Start",
+          "MonthName",
+          "MonthNameAbbreviation",
+          "DayName",
+          "DayNameAbbreviation"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 76,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / sonicdw"
+      ],
+      "evidence_file": "object-vendordata-sonicdw-vw-dim-date.evidence.json",
+      "markdown_file": "object-vendordata-sonicdw-vw-dim-date.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-054-vendordata-sonicdw-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-054-vendordata-sonicdw-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-054-vendordata-sonicdw-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

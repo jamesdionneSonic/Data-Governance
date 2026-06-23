@@ -1,0 +1,523 @@
+{
+  "packet_id": "T2B-150",
+  "generated_at": "2026-06-23T18:53:35.849Z",
+  "batch": {
+    "batch_id": "T2B-150",
+    "priority_rank": 150,
+    "platform": "SQL Server",
+    "database": "StagingDB",
+    "schema": "tsd",
+    "object_type_scope": "table",
+    "object_count": 3,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "Appointment",
+    "last_object": "Fleet",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / tsd",
+    "object_names": ["Appointment", "ClosedAgreement", "Fleet"],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "table",
+    "original_object_count": 3,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 3,
+    "total_planned_pages": 7
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB"],
+      "page_type": "database",
+      "evidence_hash": "sha256:86BBBA4A90EF1C66989EFB3B9746AF88467BE01889393493BBDE0177897E19A4",
+      "evidence_file": "database-stagingdb.evidence.json",
+      "markdown_file": "database-stagingdb.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.tsd",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB", "tsd"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:F2D12D097002666F99DB787C2860DEA2511535157B8864546AD6239E5AF789C3",
+      "evidence_file": "schema-stagingdb-tsd.evidence.json",
+      "markdown_file": "schema-stagingdb-tsd.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.tsd.Appointment",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "tsd",
+        "Appointment"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:7602B89EA87E6A23FA9EED9A44F1CD5B0DD827A13C301756BB4BDEA8980DFAC0",
+      "evidence_file": "object-stagingdb-tsd-appointment.evidence.json",
+      "markdown_file": "object-stagingdb-tsd-appointment.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.tsd.ClosedAgreement",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "tsd",
+        "ClosedAgreement"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:33C8F1BBD440CD1B049B335C5EE1313E620F440751734B3CBAF61425DBDEF4C7",
+      "evidence_file": "object-stagingdb-tsd-closedagreement.evidence.json",
+      "markdown_file": "object-stagingdb-tsd-closedagreement.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.tsd.Fleet",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "tsd",
+        "Fleet"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D0A2853BAFB3AD81FD4DEF91061199FAD4337814D16C3D72437263171822ED05",
+      "evidence_file": "object-stagingdb-tsd-fleet.evidence.json",
+      "markdown_file": "object-stagingdb-tsd-fleet.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "Appointment",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "tsd",
+        "Appointment"
+      ],
+      "canonical_id": "object-stagingdb-tsd-appointment",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/tsd__Appointment.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:7602B89EA87E6A23FA9EED9A44F1CD5B0DD827A13C301756BB4BDEA8980DFAC0",
+      "object": {
+        "name": "Appointment",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "tsd",
+        "qualified_name": "StagingDB.tsd.Appointment",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["StagingDB.tsd.Appointment", "tsd.Appointment", "Appointment", "appointment"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ReservationID",
+          "Address",
+          "AgreementID",
+          "CancellationDate",
+          "CellNumber",
+          "CustomerVIN",
+          "CustomerVINMake",
+          "CustomerVINModel",
+          "CustomerVINYear",
+          "DealershipID",
+          "DealershipName",
+          "DriverName",
+          "EmailAddress",
+          "EstimatedLengthOfUse",
+          "ExpectedReturnDate",
+          "IsPickupAndDelivery",
+          "LocationCenterID",
+          "LocationID",
+          "LocationName",
+          "PickUpDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 34,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / tsd"
+      ],
+      "evidence_file": "object-stagingdb-tsd-appointment.evidence.json",
+      "markdown_file": "object-stagingdb-tsd-appointment.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ClosedAgreement",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "tsd",
+        "ClosedAgreement"
+      ],
+      "canonical_id": "object-stagingdb-tsd-closedagreement",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/tsd__ClosedAgreement.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:33C8F1BBD440CD1B049B335C5EE1313E620F440751734B3CBAF61425DBDEF4C7",
+      "object": {
+        "name": "ClosedAgreement",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "tsd",
+        "qualified_name": "StagingDB.tsd.ClosedAgreement",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.tsd.ClosedAgreement",
+        "tsd.ClosedAgreement",
+        "ClosedAgreement",
+        "closedagreement"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "AgreementID",
+          "AssetNumber",
+          "AdditionalFees",
+          "Address",
+          "AgreementEndDate",
+          "AgreementNumber",
+          "AgreementStartDate",
+          "AgreementType",
+          "BusinessSource",
+          "CellNumber",
+          "CheckInDate",
+          "CheckOutDate",
+          "Classification",
+          "CustomerVIN",
+          "CustomerVINMake",
+          "CustomerVINModel",
+          "CustomerVINYear",
+          "DailyRate",
+          "DealershipID",
+          "DealershipName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 60,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / tsd"
+      ],
+      "evidence_file": "object-stagingdb-tsd-closedagreement.evidence.json",
+      "markdown_file": "object-stagingdb-tsd-closedagreement.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Fleet",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "tsd",
+        "Fleet"
+      ],
+      "canonical_id": "object-stagingdb-tsd-fleet",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/tsd__Fleet.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D0A2853BAFB3AD81FD4DEF91061199FAD4337814D16C3D72437263171822ED05",
+      "object": {
+        "name": "Fleet",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "tsd",
+        "qualified_name": "StagingDB.tsd.Fleet",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["StagingDB.tsd.Fleet", "tsd.Fleet", "Fleet", "fleet"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "VehicleID",
+          "VIN",
+          "DealershipID",
+          "DealershipName",
+          "ExteriorColor",
+          "FleetStatus",
+          "FuelReading",
+          "FuelUnit",
+          "HasDamage",
+          "HasOpenRecall",
+          "InspectionStickerExpiration",
+          "InventoryEndDate",
+          "InventoryStartDate",
+          "IsConnectedCar",
+          "IsOnHardHold",
+          "IsShuttle",
+          "LastModifiedDate",
+          "LicensePlateExpiration",
+          "LicensePlateNumber",
+          "LocationCenterID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 41,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / tsd"
+      ],
+      "evidence_file": "object-stagingdb-tsd-fleet.evidence.json",
+      "markdown_file": "object-stagingdb-tsd-fleet.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-150-stagingdb-tsd-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-150-stagingdb-tsd-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-150-stagingdb-tsd-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

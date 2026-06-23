@@ -1,0 +1,3785 @@
+{
+  "packet_id": "T2B-192",
+  "generated_at": "2026-06-23T19:07:56.830Z",
+  "batch": {
+    "batch_id": "T2B-192",
+    "priority_rank": 192,
+    "platform": "SQL Server",
+    "database": "ETL_Staging",
+    "schema": "HMN",
+    "object_type_scope": "table",
+    "object_count": 27,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "AdvertisedDealScenarios",
+    "last_object": "ProgramVehicleCodes_Staging",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN",
+    "object_names": [
+      "AdvertisedDealScenarios",
+      "AdvertisedDealScenarios_Staging",
+      "BulletPoints",
+      "BulletPoints_Staging",
+      "CCRAddPrograms_Staging",
+      "ConsumerCash_Staging",
+      "ConsumerCashProgram_Staging",
+      "ConsumerSpecialProgram_Staging",
+      "DealerCash_Staging",
+      "DealerCashProgram_Staging",
+      "DealerSpecialProgram_Staging",
+      "HomeNetAISRebates_Staging",
+      "IncentiveDealers",
+      "IncentivesRunConfig",
+      "Inventory_Staging",
+      "InventoryDetails_Staging",
+      "InventoryDetails_Staging_Error_Out",
+      "Make_Staging",
+      "MakeReference",
+      "MakeReference_Staging",
+      "OriginalAdvertisedContent",
+      "OriginalAdvertisedContent_Staging",
+      "ProgramDealScenarioProgram_Staging",
+      "ProgramDealScenarioProgramDeducts_Staging",
+      "ProgramDealScenarioProgramTiersAPR_Staging",
+      "ProgramDealScenarioProgramTiersLease_Staging",
+      "ProgramVehicleCodes_Staging"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 27,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 27,
+    "total_planned_pages": 31
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "ETL_Staging"],
+      "page_type": "database",
+      "evidence_hash": "sha256:DAC2D90CB3BE061D63E9E2B32F595CD9386F3A5C44DBCECB3D4790E05ABC3057",
+      "evidence_file": "database-etl-staging.evidence.json",
+      "markdown_file": "database-etl-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "ETL_Staging", "HMN"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:1D62BAC1AC04C43478B860425A05F9A1033C34D2AB0A4D13D7B30C4F6D4A2917",
+      "evidence_file": "schema-etl-staging-hmn.evidence.json",
+      "markdown_file": "schema-etl-staging-hmn.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.AdvertisedDealScenarios",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "AdvertisedDealScenarios"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A4E9D49EB2951DA1DC2332AE3B801E8406F0AD60DEC82541458815981FCAE4F6",
+      "evidence_file": "object-etl-staging-hmn-advertiseddealscenarios.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-advertiseddealscenarios.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.AdvertisedDealScenarios_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "AdvertisedDealScenarios_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:BE19C8D40875232903BA0F58135F18E5A29F177EE31465271FAA4E34156F2495",
+      "evidence_file": "object-etl-staging-hmn-advertiseddealscenarios-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-advertiseddealscenarios-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.BulletPoints",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "BulletPoints"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A668AB41B21929C65FDC8ECD76B58A007559E0B9E214F28CDFC4F0935277F080",
+      "evidence_file": "object-etl-staging-hmn-bulletpoints.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-bulletpoints.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.BulletPoints_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "BulletPoints_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:96EFE6F70AF93B24EEC7226B55E1C0239157EE1DF0124499FE0A41ABDE3B4753",
+      "evidence_file": "object-etl-staging-hmn-bulletpoints-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-bulletpoints-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.CCRAddPrograms_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "CCRAddPrograms_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:81512BC4DE153B29BF64D8ACEA51515D32F67252042D6FB0AAF44F3815FC1F59",
+      "evidence_file": "object-etl-staging-hmn-ccraddprograms-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-ccraddprograms-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.ConsumerCash_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "ConsumerCash_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:413DE344F36C5FAA359C8889DD45A8BACE14E156161BE913E91A23F52090A167",
+      "evidence_file": "object-etl-staging-hmn-consumercash-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-consumercash-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.ConsumerCashProgram_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "ConsumerCashProgram_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:FE2905B39EF459F29019A1B8727A30A59CE5592D32253BD6115F59630B183F26",
+      "evidence_file": "object-etl-staging-hmn-consumercashprogram-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-consumercashprogram-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.ConsumerSpecialProgram_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "ConsumerSpecialProgram_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:431F8823B3FE4EAB94291095D813526E38CF059AD1C73A6F77D35888F034E368",
+      "evidence_file": "object-etl-staging-hmn-consumerspecialprogram-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-consumerspecialprogram-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.DealerCash_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "DealerCash_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:AF8D9BFE198334BECD380E87DC965036830D7DE2496C6BB53991AFA78869739D",
+      "evidence_file": "object-etl-staging-hmn-dealercash-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-dealercash-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.DealerCashProgram_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "DealerCashProgram_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:ECC718889FA3742E12E93B693B8A74361CAE329190EC0875A0B87BBF52060CE4",
+      "evidence_file": "object-etl-staging-hmn-dealercashprogram-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-dealercashprogram-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.DealerSpecialProgram_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "DealerSpecialProgram_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:8C11C7ACAF674D1F731CAC934AC3C1519E1DDC54B5AB9849A7480A105AF55C15",
+      "evidence_file": "object-etl-staging-hmn-dealerspecialprogram-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-dealerspecialprogram-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.HomeNetAISRebates_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "HomeNetAISRebates_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:D5834B607AE03E576D263518A24C85386E2218A97FD7FB6D9831B82EC4592BC5",
+      "evidence_file": "object-etl-staging-hmn-homenetaisrebates-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-homenetaisrebates-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.IncentiveDealers",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "IncentiveDealers"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:99E6F82EE609FDB7B9E92EDE88AC964D21AACA9C25F8316F71AEC03EBACCEB0D",
+      "evidence_file": "object-etl-staging-hmn-incentivedealers.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-incentivedealers.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.IncentivesRunConfig",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "IncentivesRunConfig"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A6F2CE988AC805D6516100973435EF4EAD0720CDEBA7ECCC029DFE077A5DF49C",
+      "evidence_file": "object-etl-staging-hmn-incentivesrunconfig.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-incentivesrunconfig.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.Inventory_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "Inventory_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9E10FB427E9A56CD9D9578D79D73A9E04AC741A99A3D5CE1BF20BC073AACE7D3",
+      "evidence_file": "object-etl-staging-hmn-inventory-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-inventory-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.InventoryDetails_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "InventoryDetails_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:8297B9D3779E99FCD98579957E29CF9CE257F5F7C35F5640B4C8556E3EA55FFE",
+      "evidence_file": "object-etl-staging-hmn-inventorydetails-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-inventorydetails-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.InventoryDetails_Staging_Error_Out",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "InventoryDetails_Staging_Error_Out"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:62E7C5699005A69EC8212F23736D251769382CB7B2788A178D84938272A34324",
+      "evidence_file": "object-etl-staging-hmn-inventorydetails-staging-error-out.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-inventorydetails-staging-error-out.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.Make_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "Make_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:5662E5085BE6075A085CC13B011ADC122EAF799DDD3FC1C495C71F650FE661A8",
+      "evidence_file": "object-etl-staging-hmn-make-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-make-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.MakeReference",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "MakeReference"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:3A3A96A94CB12581F8C78BF01DA973E494720F73434D2E877682A6DE15AD5C35",
+      "evidence_file": "object-etl-staging-hmn-makereference.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-makereference.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.MakeReference_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "MakeReference_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:6A14AA645C87C62A6D083B606C6482A6AF665D28EF6A432DB6866557FE5F61BC",
+      "evidence_file": "object-etl-staging-hmn-makereference-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-makereference-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.OriginalAdvertisedContent",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "OriginalAdvertisedContent"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:5F3BA0CF1AD28C9E6CCF6C876B50080A4677FF21E716EE2FDFA291B50835A2CD",
+      "evidence_file": "object-etl-staging-hmn-originaladvertisedcontent.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-originaladvertisedcontent.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.OriginalAdvertisedContent_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "OriginalAdvertisedContent_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:AB7E6B455C31C3B246C284D798CA72D440C2C065161D673813FAADD3E0AB75A4",
+      "evidence_file": "object-etl-staging-hmn-originaladvertisedcontent-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-originaladvertisedcontent-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.ProgramDealScenarioProgram_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "ProgramDealScenarioProgram_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:8C823F2F196F6699EF123D305C403DF4D3D8B3AD1E2CEFD0AF4A0984A60391CB",
+      "evidence_file": "object-etl-staging-hmn-programdealscenarioprogram-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-programdealscenarioprogram-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.ProgramDealScenarioProgramDeducts_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "ProgramDealScenarioProgramDeducts_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:C042585C3B30964049A7C9D8884A1D6DBA4DC369019E75FCB377B39123DE275D",
+      "evidence_file": "object-etl-staging-hmn-programdealscenarioprogramdeducts-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-programdealscenarioprogramdeducts-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.ProgramDealScenarioProgramTiersAPR_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "ProgramDealScenarioProgramTiersAPR_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:264EC6207058DF0AF8322551007B5022D5AB6CF85BD93F0515105C42099F1BEB",
+      "evidence_file": "object-etl-staging-hmn-programdealscenarioprogramtiersapr-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-programdealscenarioprogramtiersapr-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.ProgramDealScenarioProgramTiersLease_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "ProgramDealScenarioProgramTiersLease_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:BBB01DF6E18783A82CD6AD890DAE93490D984E32D085D7AB8BFDCB8ED25E3B6B",
+      "evidence_file": "object-etl-staging-hmn-programdealscenarioprogramtierslease-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-programdealscenarioprogramtierslease-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.HMN.ProgramVehicleCodes_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "ProgramVehicleCodes_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:77E5BDD7E495D57C1BCF4BDE1DFEC16E970E1DC08DA3BD99B416EEE5AB8026D0",
+      "evidence_file": "object-etl-staging-hmn-programvehiclecodes-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-programvehiclecodes-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "AdvertisedDealScenarios",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "AdvertisedDealScenarios"
+      ],
+      "canonical_id": "object-etl-staging-hmn-advertiseddealscenarios",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__AdvertisedDealScenarios.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A4E9D49EB2951DA1DC2332AE3B801E8406F0AD60DEC82541458815981FCAE4F6",
+      "object": {
+        "name": "AdvertisedDealScenarios",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.AdvertisedDealScenarios",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.AdvertisedDealScenarios",
+        "HMN.AdvertisedDealScenarios",
+        "AdvertisedDealScenarios",
+        "advertiseddealscenarios"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "advPgmVehID",
+          "advertisedDealScenarioKind",
+          "startDate",
+          "stopDate",
+          "description",
+          "apr",
+          "lease",
+          "balloon",
+          "cash",
+          "securityDeposit",
+          "firstPayment",
+          "payment",
+          "dueAtSigning",
+          "term",
+          "msrp",
+          "vehicleElements",
+          "make",
+          "region"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 18,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-advertiseddealscenarios.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-advertiseddealscenarios.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "AdvertisedDealScenarios_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "AdvertisedDealScenarios_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-advertiseddealscenarios-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__AdvertisedDealScenarios_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:BE19C8D40875232903BA0F58135F18E5A29F177EE31465271FAA4E34156F2495",
+      "object": {
+        "name": "AdvertisedDealScenarios_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.AdvertisedDealScenarios_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.AdvertisedDealScenarios_Staging",
+        "HMN.AdvertisedDealScenarios_Staging",
+        "AdvertisedDealScenarios_Staging",
+        "AdvertisedDealScenariosStaging",
+        "advertiseddealscenariosstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "advPgmVehID",
+          "advertisedDealScenarioKind",
+          "startDate",
+          "stopDate",
+          "description",
+          "apr",
+          "lease",
+          "balloon",
+          "cash",
+          "securityDeposit",
+          "firstPayment",
+          "payment",
+          "dueAtSigning",
+          "term",
+          "msrp",
+          "vehicleElements",
+          "make",
+          "region"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 18,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-advertiseddealscenarios-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-advertiseddealscenarios-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "BulletPoints",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "BulletPoints"
+      ],
+      "canonical_id": "object-etl-staging-hmn-bulletpoints",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__BulletPoints.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A668AB41B21929C65FDC8ECD76B58A007559E0B9E214F28CDFC4F0935277F080",
+      "object": {
+        "name": "BulletPoints",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.BulletPoints",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.BulletPoints",
+        "HMN.BulletPoints",
+        "BulletPoints",
+        "bulletpoints"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["Make", "advPgmVehID", "bulletpointID", "bulletPoint"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 4,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-bulletpoints.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-bulletpoints.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "BulletPoints_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "BulletPoints_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-bulletpoints-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__BulletPoints_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:96EFE6F70AF93B24EEC7226B55E1C0239157EE1DF0124499FE0A41ABDE3B4753",
+      "object": {
+        "name": "BulletPoints_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.BulletPoints_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.BulletPoints_Staging",
+        "HMN.BulletPoints_Staging",
+        "BulletPoints_Staging",
+        "BulletPointsStaging",
+        "bulletpointsstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["Make", "advPgmVehID", "bulletpointID", "bulletPoint"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 4,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-bulletpoints-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-bulletpoints-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "CCRAddPrograms_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "CCRAddPrograms_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-ccraddprograms-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__CCRAddPrograms_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:81512BC4DE153B29BF64D8ACEA51515D32F67252042D6FB0AAF44F3815FC1F59",
+      "object": {
+        "name": "CCRAddPrograms_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.CCRAddPrograms_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.CCRAddPrograms_Staging",
+        "HMN.CCRAddPrograms_Staging",
+        "CCRAddPrograms_Staging",
+        "CCRAddProgramsStaging",
+        "ccraddprogramsstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ProgramID",
+          "ProgramNumber",
+          "VIN",
+          "VehicleGroupName",
+          "DealScenarioTypeID",
+          "DealScenarioTypeName",
+          "LeaseTerms",
+          "ProgramName",
+          "TermsID",
+          "FinancialInstitution",
+          "RevisionID",
+          "CCR",
+          "LoadDate",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "SourceFileName",
+          "DW_FileProcessed_Flag",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "ETLExecution_ID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 20,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-ccraddprograms-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-ccraddprograms-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ConsumerCash_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "ConsumerCash_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-consumercash-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__ConsumerCash_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:413DE344F36C5FAA359C8889DD45A8BACE14E156161BE913E91A23F52090A167",
+      "object": {
+        "name": "ConsumerCash_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.ConsumerCash_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.ConsumerCash_Staging",
+        "HMN.ConsumerCash_Staging",
+        "ConsumerCash_Staging",
+        "ConsumerCashStaging",
+        "consumercashstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "CashOrProgramDealScenario",
+          "ProgramID",
+          "VIN",
+          "VehicleGroupName",
+          "DealScenarioTypeID",
+          "DealScenarioName",
+          "ConsumerCashName",
+          "TotalConsumerCash",
+          "LoadDate",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "SourceFileName",
+          "DW_FileProcessed_Flag",
+          "ETLExecution_ID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 16,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-consumercash-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-consumercash-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ConsumerCashProgram_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "ConsumerCashProgram_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-consumercashprogram-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__ConsumerCashProgram_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:FE2905B39EF459F29019A1B8727A30A59CE5592D32253BD6115F59630B183F26",
+      "object": {
+        "name": "ConsumerCashProgram_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.ConsumerCashProgram_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.ConsumerCashProgram_Staging",
+        "HMN.ConsumerCashProgram_Staging",
+        "ConsumerCashProgram_Staging",
+        "ConsumerCashProgramStaging",
+        "consumercashprogramstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "CashOrProgramDealScenario",
+          "ProgramID",
+          "VIN",
+          "VehicleGroupName",
+          "DealScenarioTypeID",
+          "DealScenarioName",
+          "Cash",
+          "CashProgramID",
+          "FinancialInstitution",
+          "FinancialInstitutionID",
+          "ProgramIdentificationCode",
+          "ProgramName",
+          "ProgramNumber",
+          "RevisionID",
+          "StartDate",
+          "StopDate",
+          "LoadDate",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 24,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-consumercashprogram-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-consumercashprogram-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ConsumerSpecialProgram_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "ConsumerSpecialProgram_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-consumerspecialprogram-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__ConsumerSpecialProgram_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:431F8823B3FE4EAB94291095D813526E38CF059AD1C73A6F77D35888F034E368",
+      "object": {
+        "name": "ConsumerSpecialProgram_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.ConsumerSpecialProgram_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.ConsumerSpecialProgram_Staging",
+        "HMN.ConsumerSpecialProgram_Staging",
+        "ConsumerSpecialProgram_Staging",
+        "ConsumerSpecialProgramStaging",
+        "consumerspecialprogramstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "CashOrProgramDealScenario",
+          "ProgramID",
+          "VIN",
+          "VehicleGroupName",
+          "DealScenarioTypeID",
+          "DealScenarioName",
+          "Cash",
+          "MaxCertificateQty",
+          "RevisionID",
+          "Scope",
+          "ShortTitle",
+          "SpecialProgramID",
+          "SpecialProgramIdentificationCode",
+          "SpecialProgramName",
+          "SpecialProgramNumber",
+          "SpecialProgramType",
+          "StartDate",
+          "StopDate",
+          "LoadDate",
+          "Meta_Src_Sys_ID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 26,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-consumerspecialprogram-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-consumerspecialprogram-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DealerCash_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "DealerCash_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-dealercash-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__DealerCash_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:AF8D9BFE198334BECD380E87DC965036830D7DE2496C6BB53991AFA78869739D",
+      "object": {
+        "name": "DealerCash_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.DealerCash_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.DealerCash_Staging",
+        "HMN.DealerCash_Staging",
+        "DealerCash_Staging",
+        "DealerCashStaging",
+        "dealercashstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "CashOrProgramDealScenario",
+          "ProgramID",
+          "VIN",
+          "VehicleGroupName",
+          "DealScenarioTypeID",
+          "DealScenarioName",
+          "DealerCashName",
+          "TotalDealerCash",
+          "LoadDate",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "SourceFileName",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "DW_FileProcessed_Flag",
+          "ETLExecution_ID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 16,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-dealercash-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-dealercash-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DealerCashProgram_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "DealerCashProgram_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-dealercashprogram-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__DealerCashProgram_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:ECC718889FA3742E12E93B693B8A74361CAE329190EC0875A0B87BBF52060CE4",
+      "object": {
+        "name": "DealerCashProgram_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.DealerCashProgram_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.DealerCashProgram_Staging",
+        "HMN.DealerCashProgram_Staging",
+        "DealerCashProgram_Staging",
+        "DealerCashProgramStaging",
+        "dealercashprogramstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "CashOrProgramDealScenario",
+          "ProgramID",
+          "VIN",
+          "VehicleGroupName",
+          "DealScenarioTypeID",
+          "DealScenarioTypeName",
+          "Cash",
+          "CashProgramID",
+          "FinancialInstitution",
+          "FinancialInstitutionID",
+          "ProgramIdentificationCode",
+          "ProgramName",
+          "ProgramNumber",
+          "RevisionID",
+          "StartDate",
+          "StopDate",
+          "LoadDate",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 24,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-dealercashprogram-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-dealercashprogram-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DealerSpecialProgram_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "DealerSpecialProgram_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-dealerspecialprogram-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__DealerSpecialProgram_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:8C11C7ACAF674D1F731CAC934AC3C1519E1DDC54B5AB9849A7480A105AF55C15",
+      "object": {
+        "name": "DealerSpecialProgram_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.DealerSpecialProgram_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.DealerSpecialProgram_Staging",
+        "HMN.DealerSpecialProgram_Staging",
+        "DealerSpecialProgram_Staging",
+        "DealerSpecialProgramStaging",
+        "dealerspecialprogramstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "CashOrProgramDealScenario",
+          "ProgramID",
+          "VIN",
+          "VehicleGroupName",
+          "DealScenarioTypeID",
+          "DealScenarioTypeName",
+          "Cash",
+          "MaxCertificateQty",
+          "RevisionID",
+          "Scope",
+          "ShortTitle",
+          "SpecialProgramID",
+          "SpecialProgramIdentificationCode",
+          "SpecialProgramName",
+          "SpecialProgramNumber",
+          "SpecialProgramType",
+          "StartDate",
+          "StopDate",
+          "LoadDate",
+          "Meta_Src_Sys_ID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 26,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-dealerspecialprogram-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-dealerspecialprogram-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "HomeNetAISRebates_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "HomeNetAISRebates_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-homenetaisrebates-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__HomeNetAISRebates_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:D5834B607AE03E576D263518A24C85386E2218A97FD7FB6D9831B82EC4592BC5",
+      "object": {
+        "name": "HomeNetAISRebates_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.HomeNetAISRebates_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.HomeNetAISRebates_Staging",
+        "HMN.HomeNetAISRebates_Staging",
+        "HomeNetAISRebates_Staging",
+        "HomeNetAISRebatesStaging",
+        "homenetaisrebatesstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "VIN",
+          "Vehicle_ID",
+          "Dealership",
+          "Model",
+          "Stock_No",
+          "Trim",
+          "Body",
+          "Transmission",
+          "Displacement",
+          "Cylinders",
+          "Doors",
+          "PostalCode",
+          "VehicleGroupName",
+          "RebateType",
+          "ProgramName",
+          "ProgramID",
+          "TotalCash",
+          "ProgramCash",
+          "StartDate",
+          "StopDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 27,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-homenetaisrebates-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-homenetaisrebates-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "IncentiveDealers",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "IncentiveDealers"
+      ],
+      "canonical_id": "object-etl-staging-hmn-incentivedealers",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__IncentiveDealers.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:99E6F82EE609FDB7B9E92EDE88AC964D21AACA9C25F8316F71AEC03EBACCEB0D",
+      "object": {
+        "name": "IncentiveDealers",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.IncentiveDealers",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.IncentiveDealers",
+        "HMN.IncentiveDealers",
+        "IncentiveDealers",
+        "incentivedealers"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["DealershipName", "InsertDate"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 2,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-incentivedealers.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-incentivedealers.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "IncentivesRunConfig",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "IncentivesRunConfig"
+      ],
+      "canonical_id": "object-etl-staging-hmn-incentivesrunconfig",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__IncentivesRunConfig.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A6F2CE988AC805D6516100973435EF4EAD0720CDEBA7ECCC029DFE077A5DF49C",
+      "object": {
+        "name": "IncentivesRunConfig",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.IncentivesRunConfig",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.IncentivesRunConfig",
+        "HMN.IncentivesRunConfig",
+        "IncentivesRunConfig",
+        "incentivesrunconfig"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["RunType"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 1,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-incentivesrunconfig.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-incentivesrunconfig.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Inventory_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "Inventory_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-inventory-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__Inventory_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9E10FB427E9A56CD9D9578D79D73A9E04AC741A99A3D5CE1BF20BC073AACE7D3",
+      "object": {
+        "name": "Inventory_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.Inventory_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.Inventory_Staging",
+        "HMN.Inventory_Staging",
+        "Inventory_Staging",
+        "InventoryStaging",
+        "inventorystaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "VIN",
+          "Vehicle_ID",
+          "Dealership",
+          "Make",
+          "Model",
+          "Stock_No",
+          "Trim",
+          "Body",
+          "Transmission",
+          "Engine",
+          "Cylinders",
+          "Doors",
+          "Zip_Code",
+          "Meta_Src_Sys_ID",
+          "Meta_SourceSytemName",
+          "ETLExecution_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "Year"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 20,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-inventory-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-inventory-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "InventoryDetails_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "InventoryDetails_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-inventorydetails-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__InventoryDetails_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:8297B9D3779E99FCD98579957E29CF9CE257F5F7C35F5640B4C8556E3EA55FFE",
+      "object": {
+        "name": "InventoryDetails_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.InventoryDetails_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.InventoryDetails_Staging",
+        "HMN.InventoryDetails_Staging",
+        "InventoryDetails_Staging",
+        "InventoryDetailsStaging",
+        "inventorydetailsstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "VIN",
+          "Vehicle_ID",
+          "Dealership",
+          "Make",
+          "Model",
+          "Stock_No",
+          "Trim",
+          "Body",
+          "Transmission",
+          "Engine",
+          "Cylinders",
+          "Doors",
+          "Zip_Code",
+          "LoadDate",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "Meta_RowIsCurrent",
+          "SourceFileName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 23,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-inventorydetails-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-inventorydetails-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "InventoryDetails_Staging_Error_Out",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "InventoryDetails_Staging_Error_Out"
+      ],
+      "canonical_id": "object-etl-staging-hmn-inventorydetails-staging-error-out",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__InventoryDetails_Staging_Error_Out.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:62E7C5699005A69EC8212F23736D251769382CB7B2788A178D84938272A34324",
+      "object": {
+        "name": "InventoryDetails_Staging_Error_Out",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.InventoryDetails_Staging_Error_Out",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.InventoryDetails_Staging_Error_Out",
+        "HMN.InventoryDetails_Staging_Error_Out",
+        "InventoryDetails_Staging_Error_Out",
+        "InventoryDetailsStagingErrorOut",
+        "inventorydetailsstagingerrorout"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "VIN",
+          "LoadDate",
+          "Vehicle_ID",
+          "Dealership",
+          "Model",
+          "Stock_No",
+          "Trim",
+          "Body",
+          "Transmission",
+          "Displacement",
+          "Cylinders",
+          "Doors",
+          "PostalCode",
+          "Make",
+          "Year",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "SourceFileName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 24,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-inventorydetails-staging-error-out.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-inventorydetails-staging-error-out.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Make_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "Make_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-make-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__Make_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:5662E5085BE6075A085CC13B011ADC122EAF799DDD3FC1C495C71F650FE661A8",
+      "object": {
+        "name": "Make_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.Make_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.Make_Staging",
+        "HMN.Make_Staging",
+        "Make_Staging",
+        "MakeStaging",
+        "makestaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["IncentiveMake", "LoadDate"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 2,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-make-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-make-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "MakeReference",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "MakeReference"
+      ],
+      "canonical_id": "object-etl-staging-hmn-makereference",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__MakeReference.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:3A3A96A94CB12581F8C78BF01DA973E494720F73434D2E877682A6DE15AD5C35",
+      "object": {
+        "name": "MakeReference",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.MakeReference",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.MakeReference",
+        "HMN.MakeReference",
+        "MakeReference",
+        "makereference"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["makeID", "makeName", "manufacturerID", "manufacturerName", "hashcode"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-makereference.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-makereference.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "MakeReference_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "MakeReference_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-makereference-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__MakeReference_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:6A14AA645C87C62A6D083B606C6482A6AF665D28EF6A432DB6866557FE5F61BC",
+      "object": {
+        "name": "MakeReference_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.MakeReference_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.MakeReference_Staging",
+        "HMN.MakeReference_Staging",
+        "MakeReference_Staging",
+        "MakeReferenceStaging",
+        "makereferencestaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["makeID", "makeName", "manufacturerID", "manufacturerName", "hashcode"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-makereference-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-makereference-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "OriginalAdvertisedContent",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "OriginalAdvertisedContent"
+      ],
+      "canonical_id": "object-etl-staging-hmn-originaladvertisedcontent",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__OriginalAdvertisedContent.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:5F3BA0CF1AD28C9E6CCF6C876B50080A4677FF21E716EE2FDFA291B50835A2CD",
+      "object": {
+        "name": "OriginalAdvertisedContent",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.OriginalAdvertisedContent",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.OriginalAdvertisedContent",
+        "HMN.OriginalAdvertisedContent",
+        "OriginalAdvertisedContent",
+        "originaladvertisedcontent"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Make",
+          "advPgmVehID",
+          "originalAdvertisedContentID",
+          "advertisedContentKind",
+          "content"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-originaladvertisedcontent.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-originaladvertisedcontent.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "OriginalAdvertisedContent_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "OriginalAdvertisedContent_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-originaladvertisedcontent-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__OriginalAdvertisedContent_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:AB7E6B455C31C3B246C284D798CA72D440C2C065161D673813FAADD3E0AB75A4",
+      "object": {
+        "name": "OriginalAdvertisedContent_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.OriginalAdvertisedContent_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.OriginalAdvertisedContent_Staging",
+        "HMN.OriginalAdvertisedContent_Staging",
+        "OriginalAdvertisedContent_Staging",
+        "OriginalAdvertisedContentStaging",
+        "originaladvertisedcontentstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Make",
+          "advPgmVehID",
+          "originalAdvertisedContentID",
+          "advertisedContentKind",
+          "content"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-originaladvertisedcontent-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-originaladvertisedcontent-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ProgramDealScenarioProgram_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "ProgramDealScenarioProgram_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-programdealscenarioprogram-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__ProgramDealScenarioProgram_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:8C823F2F196F6699EF123D305C403DF4D3D8B3AD1E2CEFD0AF4A0984A60391CB",
+      "object": {
+        "name": "ProgramDealScenarioProgram_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.ProgramDealScenarioProgram_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.ProgramDealScenarioProgram_Staging",
+        "HMN.ProgramDealScenarioProgram_Staging",
+        "ProgramDealScenarioProgram_Staging",
+        "ProgramDealScenarioProgramStaging",
+        "programdealscenarioprogramstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ProgramID",
+          "VIN",
+          "VehicleGroupName",
+          "FinancialInstitution",
+          "FinancialInstitutionID",
+          "MRM",
+          "DealScenarioTypeID",
+          "DealScenarioTypeName",
+          "ProgramIdentificationCode",
+          "ProgramName",
+          "ProgramNumber",
+          "ProgramType",
+          "RateType",
+          "RevisionID",
+          "StartDate",
+          "StopDate",
+          "LoadDate",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 25,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-programdealscenarioprogram-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-programdealscenarioprogram-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ProgramDealScenarioProgramDeducts_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "ProgramDealScenarioProgramDeducts_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-programdealscenarioprogramdeducts-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__ProgramDealScenarioProgramDeducts_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:C042585C3B30964049A7C9D8884A1D6DBA4DC369019E75FCB377B39123DE275D",
+      "object": {
+        "name": "ProgramDealScenarioProgramDeducts_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.ProgramDealScenarioProgramDeducts_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.ProgramDealScenarioProgramDeducts_Staging",
+        "HMN.ProgramDealScenarioProgramDeducts_Staging",
+        "ProgramDealScenarioProgramDeducts_Staging",
+        "ProgramDealScenarioProgramDeductsStaging",
+        "programdealscenarioprogramdeductsstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ProgramID",
+          "ProgramNumber",
+          "VIN",
+          "VehicleGroupName",
+          "DealScenarioTypeID",
+          "DealScenarioTypeName",
+          "Equipment",
+          "TermValues",
+          "LoadDate",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "SourceFileName",
+          "DW_FileProcessed_Flag",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "ETLExecution_ID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 16,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-programdealscenarioprogramdeducts-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-programdealscenarioprogramdeducts-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ProgramDealScenarioProgramTiersAPR_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "ProgramDealScenarioProgramTiersAPR_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-programdealscenarioprogramtiersapr-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__ProgramDealScenarioProgramTiersAPR_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:264EC6207058DF0AF8322551007B5022D5AB6CF85BD93F0515105C42099F1BEB",
+      "object": {
+        "name": "ProgramDealScenarioProgramTiersAPR_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.ProgramDealScenarioProgramTiersAPR_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.ProgramDealScenarioProgramTiersAPR_Staging",
+        "HMN.ProgramDealScenarioProgramTiersAPR_Staging",
+        "ProgramDealScenarioProgramTiersAPR_Staging",
+        "ProgramDealScenarioProgramTiersAPRStaging",
+        "programdealscenarioprogramtiersaprstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ProgramID",
+          "ProgramNumber",
+          "VIN",
+          "VehicleGroupName",
+          "DealScenarioTypeID",
+          "DealScenarioTypeName",
+          "APRTerms",
+          "ID",
+          "Value",
+          "LoadDate",
+          "Meta_Src_Sys_ID",
+          "SourceFileName",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "ETLExecution_ID",
+          "DW_FileProcessed_Flag"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 17,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-programdealscenarioprogramtiersapr-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-programdealscenarioprogramtiersapr-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ProgramDealScenarioProgramTiersLease_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "ProgramDealScenarioProgramTiersLease_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-programdealscenarioprogramtierslease-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__ProgramDealScenarioProgramTiersLease_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:BBB01DF6E18783A82CD6AD890DAE93490D984E32D085D7AB8BFDCB8ED25E3B6B",
+      "object": {
+        "name": "ProgramDealScenarioProgramTiersLease_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.ProgramDealScenarioProgramTiersLease_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.ProgramDealScenarioProgramTiersLease_Staging",
+        "HMN.ProgramDealScenarioProgramTiersLease_Staging",
+        "ProgramDealScenarioProgramTiersLease_Staging",
+        "ProgramDealScenarioProgramTiersLeaseStaging",
+        "programdealscenarioprogramtiersleasestaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ProgramID",
+          "ProgramNumber",
+          "VIN",
+          "VehicleGroupName",
+          "DealScenarioTypeID",
+          "DealScenarioTypeName",
+          "LeaseTerms",
+          "ID",
+          "Value",
+          "LoadDate",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "SourceFileName",
+          "DW_FileProcessed_Flag",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "ETLExecution_ID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 17,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-programdealscenarioprogramtierslease-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-programdealscenarioprogramtierslease-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ProgramVehicleCodes_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "HMN",
+        "ProgramVehicleCodes_Staging"
+      ],
+      "canonical_id": "object-etl-staging-hmn-programvehiclecodes-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/HMN__ProgramVehicleCodes_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:77E5BDD7E495D57C1BCF4BDE1DFEC16E970E1DC08DA3BD99B416EEE5AB8026D0",
+      "object": {
+        "name": "ProgramVehicleCodes_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "HMN",
+        "qualified_name": "ETL_Staging.HMN.ProgramVehicleCodes_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.HMN.ProgramVehicleCodes_Staging",
+        "HMN.ProgramVehicleCodes_Staging",
+        "ProgramVehicleCodes_Staging",
+        "ProgramVehicleCodesStaging",
+        "programvehiclecodesstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "VIN",
+          "VehicleGroupName",
+          "ACode",
+          "ModelCode",
+          "StyleID",
+          "LoadDate",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "Meta_RowIsCurrent",
+          "SourceFileName",
+          "DW_FileProcessed_Flag",
+          "ETLExecution_ID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 14,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / HMN"
+      ],
+      "evidence_file": "object-etl-staging-hmn-programvehiclecodes-staging.evidence.json",
+      "markdown_file": "object-etl-staging-hmn-programvehiclecodes-staging.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-192-etl-staging-hmn-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-192-etl-staging-hmn-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-192-etl-staging-hmn-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

@@ -1,0 +1,2684 @@
+{
+  "packet_id": "T2B-099",
+  "generated_at": "2026-06-23T18:41:10.770Z",
+  "batch": {
+    "batch_id": "T2B-099",
+    "priority_rank": 99,
+    "platform": "SQL Server",
+    "database": "BI_WorkDB",
+    "schema": "dbo",
+    "object_type_scope": "table",
+    "object_count": 21,
+    "high_use_objects": 0,
+    "downstream_uses": 28,
+    "first_object": "GLBalance_Step_1",
+    "last_object": "xrfGLSchedule_SchedRef",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo",
+    "object_names": [
+      "GLBalance_Step_1",
+      "GLCheck_Step_1",
+      "GLSchedule_OpenMonths",
+      "GLSchedule_Step_6",
+      "vw_Fuel_II_GLSchedule_Step_1_BALANCE",
+      "vw_Fuel_II_GLSchedule_Step_1_CHANGES",
+      "vw_Fuel_II_GLSchedule_Step_1_DETAIL_new",
+      "vw_Fuel_II_GLSchedule_Step_3A_ControlType",
+      "vw_Fuel_II_GLSchedule_Step_4",
+      "vw_Fuel_II_GLSchedule_Step_4_Control_1",
+      "vw_Fuel_II_xrfGLSchedule_SchedRef",
+      "xrfGLSchedule_Plugs",
+      "Error_output",
+      "GLJEDetail_Cur_ErrorOutput",
+      "GLSchedule_Step_0",
+      "GLSchedule_Step_1",
+      "GLSchedule_Step_3A",
+      "GLSchedule_Step_4",
+      "InventorySnapshot",
+      "tmpOpCodes",
+      "xrfGLSchedule_SchedRef"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 21,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 21,
+    "total_planned_pages": 25
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "BI_WorkDB"],
+      "page_type": "database",
+      "evidence_hash": "sha256:47B0C123B405A69AE72D198855E591455C5F61D38664A07C85127E351A1991CA",
+      "evidence_file": "database-bi-workdb.evidence.json",
+      "markdown_file": "database-bi-workdb.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "BI_WorkDB", "dbo"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:A61D8D659B13B976C3338AADE47D55F6968C83EBA8AB57B0A7E7FD3E9FA3C84D",
+      "evidence_file": "schema-bi-workdb-dbo.evidence.json",
+      "markdown_file": "schema-bi-workdb-dbo.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.Error_output",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "Error_output"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:91DBD3D415AE344B3B8410E094DEDF29556D513207BC4DECF16833A22B5F09B0",
+      "evidence_file": "object-bi-workdb-dbo-error-output.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-error-output.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.GLBalance_Step_1",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "GLBalance_Step_1"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:63B817764E93175151BCCAA271E080AE455E68C23333791E9E7DB06620453CAD",
+      "evidence_file": "object-bi-workdb-dbo-glbalance-step-1.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-glbalance-step-1.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.GLCheck_Step_1",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "GLCheck_Step_1"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:3226D0703EE47E3EC9511B8B23DC7E9B3D8D652248EE188A75250D0AE9DCEEB7",
+      "evidence_file": "object-bi-workdb-dbo-glcheck-step-1.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-glcheck-step-1.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.GLJEDetail_Cur_ErrorOutput",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "GLJEDetail_Cur_ErrorOutput"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:81DBFD827E9C1E7046EDFB6FEE057B57CA1428CD426F3916F53D7E907CDF4BED",
+      "evidence_file": "object-bi-workdb-dbo-gljedetail-cur-erroroutput.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-gljedetail-cur-erroroutput.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.GLSchedule_OpenMonths",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "GLSchedule_OpenMonths"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:DBBA75DD54E72AB0A5A4C8DC7597669E761565947A4B6C84B36AF0D9D30A0541",
+      "evidence_file": "object-bi-workdb-dbo-glschedule-openmonths.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-glschedule-openmonths.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.GLSchedule_Step_0",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "GLSchedule_Step_0"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:93D156519139BFF73C8D90B39FB85E880FCC70FCFE0A234EC0F59FE1904248B3",
+      "evidence_file": "object-bi-workdb-dbo-glschedule-step-0.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-glschedule-step-0.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.GLSchedule_Step_1",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "GLSchedule_Step_1"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:1E9D820BF64DE72D50CDB99FFD39979FFEA9395C3D23CE78B9AFEB6B4158F041",
+      "evidence_file": "object-bi-workdb-dbo-glschedule-step-1.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-glschedule-step-1.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.GLSchedule_Step_3A",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "GLSchedule_Step_3A"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:1FE4B7EFA0A6436893C9E3E01E3CB13514908A3FF5BBEF5BCA206EEAF1842980",
+      "evidence_file": "object-bi-workdb-dbo-glschedule-step-3a.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-glschedule-step-3a.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.GLSchedule_Step_4",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "GLSchedule_Step_4"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:66607DAD97F548BE495C2715280836EA649AFF764D5A8578DCE2AB2361CB6B04",
+      "evidence_file": "object-bi-workdb-dbo-glschedule-step-4.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-glschedule-step-4.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.GLSchedule_Step_6",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "GLSchedule_Step_6"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:F5E2B4C4AA3C0D91F364B8E73B386F8AA68CDDE7C4238C41F6D6C75C53CA57C3",
+      "evidence_file": "object-bi-workdb-dbo-glschedule-step-6.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-glschedule-step-6.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.InventorySnapshot",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "InventorySnapshot"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:1AC90640DD82B1E3FB585E72C29ED14CFCD221E4679136BFCEDAA54E4DD7CEE3",
+      "evidence_file": "object-bi-workdb-dbo-inventorysnapshot.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-inventorysnapshot.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.tmpOpCodes",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "tmpOpCodes"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:C245CAE541D07D31EB948190A835512D0DFC79259204350E8EBF87533B7DBE51",
+      "evidence_file": "object-bi-workdb-dbo-tmpopcodes.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-tmpopcodes.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.vw_Fuel_II_GLSchedule_Step_1_BALANCE",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "vw_Fuel_II_GLSchedule_Step_1_BALANCE"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:3D6E95CDCCF7C833E6CF1D31B576E2E0D7F35BD9DBA5339A4AB3442B542BB30B",
+      "evidence_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-1-balance.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-1-balance.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.vw_Fuel_II_GLSchedule_Step_1_CHANGES",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "vw_Fuel_II_GLSchedule_Step_1_CHANGES"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:0AFDA3330A5124D2A2BEF5F70168FBE03E94E65D3FF6B9B8F056A420D108E2EE",
+      "evidence_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-1-changes.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-1-changes.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.vw_Fuel_II_GLSchedule_Step_1_DETAIL_new",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "vw_Fuel_II_GLSchedule_Step_1_DETAIL_new"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:C68D8EC83F1AA14D5CA05A6D81CC204D47B0F8773590D943DFD7BC0F6E783915",
+      "evidence_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-1-detail-new.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-1-detail-new.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.vw_Fuel_II_GLSchedule_Step_3A_ControlType",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "vw_Fuel_II_GLSchedule_Step_3A_ControlType"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:1DE04F86A03DD959BCC14132EDC71F13261AE189CC51B4FACC86DE49553ED998",
+      "evidence_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-3a-controltype.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-3a-controltype.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.vw_Fuel_II_GLSchedule_Step_4",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "vw_Fuel_II_GLSchedule_Step_4"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:1FA9CD38533C401F6F74734379430589E462F17989EE0AA4840E5555A42307DB",
+      "evidence_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-4.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-4.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.vw_Fuel_II_GLSchedule_Step_4_Control_1",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "vw_Fuel_II_GLSchedule_Step_4_Control_1"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:0986ACF27B4CD12EF875FA02233B2B3E9044F21955104116AA690EDBBE2E6B68",
+      "evidence_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-4-control-1.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-4-control-1.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.vw_Fuel_II_xrfGLSchedule_SchedRef",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "vw_Fuel_II_xrfGLSchedule_SchedRef"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9CE535932F7FF81AB79A660A71578D9832E2064FA511D1D8E2C20D71B8D917E6",
+      "evidence_file": "object-bi-workdb-dbo-vw-fuel-ii-xrfglschedule-schedref.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-vw-fuel-ii-xrfglschedule-schedref.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.xrfGLSchedule_Plugs",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "xrfGLSchedule_Plugs"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:27854E511933642D49FBB93CF956FABDB70364C374F189913E59EC92D4DD5EBC",
+      "evidence_file": "object-bi-workdb-dbo-xrfglschedule-plugs.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-xrfglschedule-plugs.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "BI_WorkDB.dbo.xrfGLSchedule_SchedRef",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "xrfGLSchedule_SchedRef"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:6D60FB79E731E3E53065E8F7338995AB7FC2249E943635BCBAFCF744AE411D56",
+      "evidence_file": "object-bi-workdb-dbo-xrfglschedule-schedref.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-xrfglschedule-schedref.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "Error_output",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "Error_output"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-error-output",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__Error_output.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:91DBD3D415AE344B3B8410E094DEDF29556D513207BC4DECF16833A22B5F09B0",
+      "object": {
+        "name": "Error_output",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.Error_output",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.Error_output",
+        "dbo.Error_output",
+        "Error_output",
+        "Erroroutput",
+        "erroroutput"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 45,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-error-output.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-error-output.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GLBalance_Step_1",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "GLBalance_Step_1"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-glbalance-step-1",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__GLBalance_Step_1.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:63B817764E93175151BCCAA271E080AE455E68C23333791E9E7DB06620453CAD",
+      "object": {
+        "name": "GLBalance_Step_1",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.GLBalance_Step_1",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.GLBalance_Step_1",
+        "dbo.GLBalance_Step_1",
+        "GLBalance_Step_1",
+        "GLBalanceStep1",
+        "glbalancestep1"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-glbalance-step-1.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-glbalance-step-1.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GLCheck_Step_1",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "GLCheck_Step_1"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-glcheck-step-1",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__GLCheck_Step_1.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:3226D0703EE47E3EC9511B8B23DC7E9B3D8D652248EE188A75250D0AE9DCEEB7",
+      "object": {
+        "name": "GLCheck_Step_1",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.GLCheck_Step_1",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.GLCheck_Step_1",
+        "dbo.GLCheck_Step_1",
+        "GLCheck_Step_1",
+        "GLCheckStep1",
+        "glcheckstep1"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 28,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-glcheck-step-1.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-glcheck-step-1.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GLJEDetail_Cur_ErrorOutput",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "GLJEDetail_Cur_ErrorOutput"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-gljedetail-cur-erroroutput",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/DBO__GLJEDetail_Cur_ErrorOutput.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:81DBFD827E9C1E7046EDFB6FEE057B57CA1428CD426F3916F53D7E907CDF4BED",
+      "object": {
+        "name": "GLJEDetail_Cur_ErrorOutput",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.GLJEDetail_Cur_ErrorOutput",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.GLJEDetail_Cur_ErrorOutput",
+        "dbo.GLJEDetail_Cur_ErrorOutput",
+        "GLJEDetail_Cur_ErrorOutput",
+        "GLJEDetailCurErrorOutput",
+        "gljedetailcurerroroutput"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 47,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-gljedetail-cur-erroroutput.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-gljedetail-cur-erroroutput.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GLSchedule_OpenMonths",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "GLSchedule_OpenMonths"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-glschedule-openmonths",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__GLSchedule_OpenMonths.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:DBBA75DD54E72AB0A5A4C8DC7597669E761565947A4B6C84B36AF0D9D30A0541",
+      "object": {
+        "name": "GLSchedule_OpenMonths",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.GLSchedule_OpenMonths",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.GLSchedule_OpenMonths",
+        "dbo.GLSchedule_OpenMonths",
+        "GLSchedule_OpenMonths",
+        "GLScheduleOpenMonths",
+        "glscheduleopenmonths"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 36,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-glschedule-openmonths.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-glschedule-openmonths.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GLSchedule_Step_0",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "GLSchedule_Step_0"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-glschedule-step-0",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__GLSchedule_Step_0.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:93D156519139BFF73C8D90B39FB85E880FCC70FCFE0A234EC0F59FE1904248B3",
+      "object": {
+        "name": "GLSchedule_Step_0",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.GLSchedule_Step_0",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.GLSchedule_Step_0",
+        "dbo.GLSchedule_Step_0",
+        "GLSchedule_Step_0",
+        "GLScheduleStep0",
+        "glschedulestep0"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 8,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-glschedule-step-0.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-glschedule-step-0.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GLSchedule_Step_1",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "GLSchedule_Step_1"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-glschedule-step-1",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__GLSchedule_Step_1.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:1E9D820BF64DE72D50CDB99FFD39979FFEA9395C3D23CE78B9AFEB6B4158F041",
+      "object": {
+        "name": "GLSchedule_Step_1",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.GLSchedule_Step_1",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.GLSchedule_Step_1",
+        "dbo.GLSchedule_Step_1",
+        "GLSchedule_Step_1",
+        "GLScheduleStep1",
+        "glschedulestep1"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 13,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-glschedule-step-1.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-glschedule-step-1.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GLSchedule_Step_3A",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "GLSchedule_Step_3A"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-glschedule-step-3a",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__GLSchedule_Step_3A.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:1FE4B7EFA0A6436893C9E3E01E3CB13514908A3FF5BBEF5BCA206EEAF1842980",
+      "object": {
+        "name": "GLSchedule_Step_3A",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.GLSchedule_Step_3A",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.GLSchedule_Step_3A",
+        "dbo.GLSchedule_Step_3A",
+        "GLSchedule_Step_3A",
+        "GLScheduleStep3A",
+        "glschedulestep3a"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 32,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-glschedule-step-3a.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-glschedule-step-3a.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GLSchedule_Step_4",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "GLSchedule_Step_4"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-glschedule-step-4",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__GLSchedule_Step_4.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:66607DAD97F548BE495C2715280836EA649AFF764D5A8578DCE2AB2361CB6B04",
+      "object": {
+        "name": "GLSchedule_Step_4",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.GLSchedule_Step_4",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.GLSchedule_Step_4",
+        "dbo.GLSchedule_Step_4",
+        "GLSchedule_Step_4",
+        "GLScheduleStep4",
+        "glschedulestep4"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 33,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-glschedule-step-4.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-glschedule-step-4.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GLSchedule_Step_6",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "GLSchedule_Step_6"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-glschedule-step-6",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__GLSchedule_Step_6.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:F5E2B4C4AA3C0D91F364B8E73B386F8AA68CDDE7C4238C41F6D6C75C53CA57C3",
+      "object": {
+        "name": "GLSchedule_Step_6",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.GLSchedule_Step_6",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.GLSchedule_Step_6",
+        "dbo.GLSchedule_Step_6",
+        "GLSchedule_Step_6",
+        "GLScheduleStep6",
+        "glschedulestep6"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 35,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-glschedule-step-6.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-glschedule-step-6.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "InventorySnapshot",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "InventorySnapshot"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-inventorysnapshot",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__InventorySnapshot.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:1AC90640DD82B1E3FB585E72C29ED14CFCD221E4679136BFCEDAA54E4DD7CEE3",
+      "object": {
+        "name": "InventorySnapshot",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.InventorySnapshot",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.InventorySnapshot",
+        "dbo.InventorySnapshot",
+        "InventorySnapshot",
+        "inventorysnapshot"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 12,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-inventorysnapshot.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-inventorysnapshot.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "tmpOpCodes",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "tmpOpCodes"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-tmpopcodes",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__tmpOpCodes.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:C245CAE541D07D31EB948190A835512D0DFC79259204350E8EBF87533B7DBE51",
+      "object": {
+        "name": "tmpOpCodes",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.tmpOpCodes",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["BI_WorkDB.dbo.tmpOpCodes", "dbo.tmpOpCodes", "tmpOpCodes", "tmpopcodes"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 8,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-tmpopcodes.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-tmpopcodes.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_Fuel_II_GLSchedule_Step_1_BALANCE",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "vw_Fuel_II_GLSchedule_Step_1_BALANCE"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-1-balance",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__vw_Fuel_II_GLSchedule_Step_1_BALANCE.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:3D6E95CDCCF7C833E6CF1D31B576E2E0D7F35BD9DBA5339A4AB3442B542BB30B",
+      "object": {
+        "name": "vw_Fuel_II_GLSchedule_Step_1_BALANCE",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.vw_Fuel_II_GLSchedule_Step_1_BALANCE",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.vw_Fuel_II_GLSchedule_Step_1_BALANCE",
+        "dbo.vw_Fuel_II_GLSchedule_Step_1_BALANCE",
+        "vw_Fuel_II_GLSchedule_Step_1_BALANCE",
+        "vwFuelIIGLScheduleStep1BALANCE",
+        "vwfueliiglschedulestep1balance"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 29,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-1-balance.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-1-balance.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_Fuel_II_GLSchedule_Step_1_CHANGES",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "vw_Fuel_II_GLSchedule_Step_1_CHANGES"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-1-changes",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__vw_Fuel_II_GLSchedule_Step_1_CHANGES.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:0AFDA3330A5124D2A2BEF5F70168FBE03E94E65D3FF6B9B8F056A420D108E2EE",
+      "object": {
+        "name": "vw_Fuel_II_GLSchedule_Step_1_CHANGES",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.vw_Fuel_II_GLSchedule_Step_1_CHANGES",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.vw_Fuel_II_GLSchedule_Step_1_CHANGES",
+        "dbo.vw_Fuel_II_GLSchedule_Step_1_CHANGES",
+        "vw_Fuel_II_GLSchedule_Step_1_CHANGES",
+        "vwFuelIIGLScheduleStep1CHANGES",
+        "vwfueliiglschedulestep1changes"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 29,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-1-changes.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-1-changes.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_Fuel_II_GLSchedule_Step_1_DETAIL_new",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "vw_Fuel_II_GLSchedule_Step_1_DETAIL_new"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-1-detail-new",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__vw_Fuel_II_GLSchedule_Step_1_DETAIL_new.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:C68D8EC83F1AA14D5CA05A6D81CC204D47B0F8773590D943DFD7BC0F6E783915",
+      "object": {
+        "name": "vw_Fuel_II_GLSchedule_Step_1_DETAIL_new",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.vw_Fuel_II_GLSchedule_Step_1_DETAIL_new",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.vw_Fuel_II_GLSchedule_Step_1_DETAIL_new",
+        "dbo.vw_Fuel_II_GLSchedule_Step_1_DETAIL_new",
+        "vw_Fuel_II_GLSchedule_Step_1_DETAIL_new",
+        "vwFuelIIGLScheduleStep1DETAILnew",
+        "vwfueliiglschedulestep1detailnew"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 29,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-1-detail-new.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-1-detail-new.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_Fuel_II_GLSchedule_Step_3A_ControlType",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "vw_Fuel_II_GLSchedule_Step_3A_ControlType"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-3a-controltype",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__vw_Fuel_II_GLSchedule_Step_3A_ControlType.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:1DE04F86A03DD959BCC14132EDC71F13261AE189CC51B4FACC86DE49553ED998",
+      "object": {
+        "name": "vw_Fuel_II_GLSchedule_Step_3A_ControlType",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.vw_Fuel_II_GLSchedule_Step_3A_ControlType",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.vw_Fuel_II_GLSchedule_Step_3A_ControlType",
+        "dbo.vw_Fuel_II_GLSchedule_Step_3A_ControlType",
+        "vw_Fuel_II_GLSchedule_Step_3A_ControlType",
+        "vwFuelIIGLScheduleStep3AControlType",
+        "vwfueliiglschedulestep3acontroltype"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 24,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-3a-controltype.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-3a-controltype.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_Fuel_II_GLSchedule_Step_4",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "vw_Fuel_II_GLSchedule_Step_4"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-4",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__vw_Fuel_II_GLSchedule_Step_4.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:1FA9CD38533C401F6F74734379430589E462F17989EE0AA4840E5555A42307DB",
+      "object": {
+        "name": "vw_Fuel_II_GLSchedule_Step_4",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.vw_Fuel_II_GLSchedule_Step_4",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.vw_Fuel_II_GLSchedule_Step_4",
+        "dbo.vw_Fuel_II_GLSchedule_Step_4",
+        "vw_Fuel_II_GLSchedule_Step_4",
+        "vwFuelIIGLScheduleStep4",
+        "vwfueliiglschedulestep4"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 29,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-4.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-4.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_Fuel_II_GLSchedule_Step_4_Control_1",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "vw_Fuel_II_GLSchedule_Step_4_Control_1"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-4-control-1",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__vw_Fuel_II_GLSchedule_Step_4_Control_1.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:0986ACF27B4CD12EF875FA02233B2B3E9044F21955104116AA690EDBBE2E6B68",
+      "object": {
+        "name": "vw_Fuel_II_GLSchedule_Step_4_Control_1",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.vw_Fuel_II_GLSchedule_Step_4_Control_1",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.vw_Fuel_II_GLSchedule_Step_4_Control_1",
+        "dbo.vw_Fuel_II_GLSchedule_Step_4_Control_1",
+        "vw_Fuel_II_GLSchedule_Step_4_Control_1",
+        "vwFuelIIGLScheduleStep4Control1",
+        "vwfueliiglschedulestep4control1"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 28,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-4-control-1.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-vw-fuel-ii-glschedule-step-4-control-1.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "vw_Fuel_II_xrfGLSchedule_SchedRef",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "vw_Fuel_II_xrfGLSchedule_SchedRef"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-vw-fuel-ii-xrfglschedule-schedref",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__vw_Fuel_II_xrfGLSchedule_SchedRef.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9CE535932F7FF81AB79A660A71578D9832E2064FA511D1D8E2C20D71B8D917E6",
+      "object": {
+        "name": "vw_Fuel_II_xrfGLSchedule_SchedRef",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.vw_Fuel_II_xrfGLSchedule_SchedRef",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.vw_Fuel_II_xrfGLSchedule_SchedRef",
+        "dbo.vw_Fuel_II_xrfGLSchedule_SchedRef",
+        "vw_Fuel_II_xrfGLSchedule_SchedRef",
+        "vwFuelIIxrfGLScheduleSchedRef",
+        "vwfueliixrfglscheduleschedref"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-vw-fuel-ii-xrfglschedule-schedref.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-vw-fuel-ii-xrfglschedule-schedref.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "xrfGLSchedule_Plugs",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "xrfGLSchedule_Plugs"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-xrfglschedule-plugs",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__xrfGLSchedule_Plugs.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:27854E511933642D49FBB93CF956FABDB70364C374F189913E59EC92D4DD5EBC",
+      "object": {
+        "name": "xrfGLSchedule_Plugs",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.xrfGLSchedule_Plugs",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.xrfGLSchedule_Plugs",
+        "dbo.xrfGLSchedule_Plugs",
+        "xrfGLSchedule_Plugs",
+        "xrfGLSchedulePlugs",
+        "xrfglscheduleplugs"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 19,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-xrfglschedule-plugs.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-xrfglschedule-plugs.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "xrfGLSchedule_SchedRef",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "BI_WorkDB",
+        "dbo",
+        "xrfGLSchedule_SchedRef"
+      ],
+      "canonical_id": "object-bi-workdb-dbo-xrfglschedule-schedref",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/BI_WorkDB/tables/dbo__xrfGLSchedule_SchedRef.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:6D60FB79E731E3E53065E8F7338995AB7FC2249E943635BCBAFCF744AE411D56",
+      "object": {
+        "name": "xrfGLSchedule_SchedRef",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "BI_WorkDB",
+        "schema": "dbo",
+        "qualified_name": "BI_WorkDB.dbo.xrfGLSchedule_SchedRef",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "BI_WorkDB.dbo.xrfGLSchedule_SchedRef",
+        "dbo.xrfGLSchedule_SchedRef",
+        "xrfGLSchedule_SchedRef",
+        "xrfGLScheduleSchedRef",
+        "xrfglscheduleschedref"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / BI_WorkDB / dbo"
+      ],
+      "evidence_file": "object-bi-workdb-dbo-xrfglschedule-schedref.evidence.json",
+      "markdown_file": "object-bi-workdb-dbo-xrfglschedule-schedref.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-099-bi-workdb-dbo-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-099-bi-workdb-dbo-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-099-bi-workdb-dbo-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

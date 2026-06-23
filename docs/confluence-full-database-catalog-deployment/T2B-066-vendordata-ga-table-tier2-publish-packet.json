@@ -1,0 +1,969 @@
+{
+  "packet_id": "T2B-066",
+  "generated_at": "2026-06-23T18:21:20.993Z",
+  "batch": {
+    "batch_id": "T2B-066",
+    "priority_rank": 66,
+    "platform": "SQL Server",
+    "database": "VendorData",
+    "schema": "ga",
+    "object_type_scope": "table",
+    "object_count": 6,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "GoogleAnalyticsReport_delete",
+    "last_object": "GoogleAnalyticsRequestHistorical",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / ga",
+    "object_names": [
+      "GoogleAnalyticsReport_delete",
+      "GoogleAnalyticsReport_new",
+      "GoogleAnalyticsReportHistorical",
+      "GoogleAnalyticsRequest_BK",
+      "GoogleAnalyticsRequestbkp20221113",
+      "GoogleAnalyticsRequestHistorical"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "table",
+    "original_object_count": 6,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 6,
+    "total_planned_pages": 10
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData"],
+      "page_type": "database",
+      "evidence_hash": "sha256:C029883539BC166EBDE80488ADFC36CDDDD0E84559188FE128628E553E29DFF1",
+      "evidence_file": "database-vendordata.evidence.json",
+      "markdown_file": "database-vendordata.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.ga",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData", "ga"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:BB63415E5B9017A66899BE43BE360751FCF2B5DC74A1F9A8A505A10F9467A370",
+      "evidence_file": "schema-vendordata-ga.evidence.json",
+      "markdown_file": "schema-vendordata-ga.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.ga.GoogleAnalyticsReport_delete",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "ga",
+        "GoogleAnalyticsReport_delete"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B72A50CF6EC26A7372840763AB729B98D598D8F15CA795461F50837E91BF0492",
+      "evidence_file": "object-vendordata-ga-googleanalyticsreport-delete.evidence.json",
+      "markdown_file": "object-vendordata-ga-googleanalyticsreport-delete.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.ga.GoogleAnalyticsReport_new",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "ga",
+        "GoogleAnalyticsReport_new"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:0D8D002A355D8F02059AE0595F9576B31D34231762375305D8793A18AA44B0CE",
+      "evidence_file": "object-vendordata-ga-googleanalyticsreport-new.evidence.json",
+      "markdown_file": "object-vendordata-ga-googleanalyticsreport-new.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.ga.GoogleAnalyticsReportHistorical",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "ga",
+        "GoogleAnalyticsReportHistorical"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E1C5B62CE69C114B0BCCC2E3DCA66BFB6A71D63247669039643FA4C06D3E342E",
+      "evidence_file": "object-vendordata-ga-googleanalyticsreporthistorical.evidence.json",
+      "markdown_file": "object-vendordata-ga-googleanalyticsreporthistorical.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.ga.GoogleAnalyticsRequest_BK",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "ga",
+        "GoogleAnalyticsRequest_BK"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9A73D5156D378DF442A9AB93D3D736A4748765E6C4027C43955365B704D67EE4",
+      "evidence_file": "object-vendordata-ga-googleanalyticsrequest-bk.evidence.json",
+      "markdown_file": "object-vendordata-ga-googleanalyticsrequest-bk.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.ga.GoogleAnalyticsRequestbkp20221113",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "ga",
+        "GoogleAnalyticsRequestbkp20221113"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:AB3B99D49FA4540EC64F5332763313940C5F7EB52B1D52C5DC47EC954C13F017",
+      "evidence_file": "object-vendordata-ga-googleanalyticsrequestbkp20221113.evidence.json",
+      "markdown_file": "object-vendordata-ga-googleanalyticsrequestbkp20221113.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.ga.GoogleAnalyticsRequestHistorical",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "ga",
+        "GoogleAnalyticsRequestHistorical"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:5E6AE24138A13D2B1C131E8118861459BA188883E60586EDBBDB10A6464368AE",
+      "evidence_file": "object-vendordata-ga-googleanalyticsrequesthistorical.evidence.json",
+      "markdown_file": "object-vendordata-ga-googleanalyticsrequesthistorical.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "GoogleAnalyticsReport_delete",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "ga",
+        "GoogleAnalyticsReport_delete"
+      ],
+      "canonical_id": "object-vendordata-ga-googleanalyticsreport-delete",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/ga__GoogleAnalyticsReport_delete.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B72A50CF6EC26A7372840763AB729B98D598D8F15CA795461F50837E91BF0492",
+      "object": {
+        "name": "GoogleAnalyticsReport_delete",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "ga",
+        "qualified_name": "VendorData.ga.GoogleAnalyticsReport_delete",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.ga.GoogleAnalyticsReport_delete",
+        "ga.GoogleAnalyticsReport_delete",
+        "GoogleAnalyticsReport_delete",
+        "GoogleAnalyticsReportdelete",
+        "googleanalyticsreportdelete"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RequestId",
+          "ViewID",
+          "StartDate",
+          "EndDate",
+          "Dimension0Value",
+          "Dimension1Value",
+          "Dimension2Value",
+          "Dimension3Value",
+          "Dimension4Value",
+          "Dimension5Value",
+          "Dimension6Value",
+          "Metric0Value",
+          "Metric1Value",
+          "Metric2Value",
+          "Metric3Value",
+          "Metric4Value",
+          "Metric5Value",
+          "Metric6Value",
+          "Metric7Value",
+          "Metric8Value"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 27,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / ga"
+      ],
+      "evidence_file": "object-vendordata-ga-googleanalyticsreport-delete.evidence.json",
+      "markdown_file": "object-vendordata-ga-googleanalyticsreport-delete.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GoogleAnalyticsReport_new",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "ga",
+        "GoogleAnalyticsReport_new"
+      ],
+      "canonical_id": "object-vendordata-ga-googleanalyticsreport-new",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/ga__GoogleAnalyticsReport_new.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:0D8D002A355D8F02059AE0595F9576B31D34231762375305D8793A18AA44B0CE",
+      "object": {
+        "name": "GoogleAnalyticsReport_new",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "ga",
+        "qualified_name": "VendorData.ga.GoogleAnalyticsReport_new",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.ga.GoogleAnalyticsReport_new",
+        "ga.GoogleAnalyticsReport_new",
+        "GoogleAnalyticsReport_new",
+        "GoogleAnalyticsReportnew",
+        "googleanalyticsreportnew"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RequestId",
+          "ViewID",
+          "StartDate",
+          "EndDate",
+          "Dimension0Value",
+          "Dimension1Value",
+          "Dimension2Value",
+          "Dimension3Value",
+          "Dimension4Value",
+          "Dimension5Value",
+          "Dimension6Value",
+          "Metric0Value",
+          "Metric1Value",
+          "Metric2Value",
+          "Metric3Value",
+          "Metric4Value",
+          "Metric5Value",
+          "Metric6Value",
+          "Metric7Value",
+          "Metric8Value"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 27,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / ga"
+      ],
+      "evidence_file": "object-vendordata-ga-googleanalyticsreport-new.evidence.json",
+      "markdown_file": "object-vendordata-ga-googleanalyticsreport-new.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GoogleAnalyticsReportHistorical",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "ga",
+        "GoogleAnalyticsReportHistorical"
+      ],
+      "canonical_id": "object-vendordata-ga-googleanalyticsreporthistorical",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/ga__GoogleAnalyticsReportHistorical.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E1C5B62CE69C114B0BCCC2E3DCA66BFB6A71D63247669039643FA4C06D3E342E",
+      "object": {
+        "name": "GoogleAnalyticsReportHistorical",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "ga",
+        "qualified_name": "VendorData.ga.GoogleAnalyticsReportHistorical",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.ga.GoogleAnalyticsReportHistorical",
+        "ga.GoogleAnalyticsReportHistorical",
+        "GoogleAnalyticsReportHistorical",
+        "googleanalyticsreporthistorical"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "SgGARptHistoricalID",
+          "RequestId",
+          "ViewID",
+          "StartDate",
+          "EndDate",
+          "Dimension0Value",
+          "Dimension1Value",
+          "Dimension2Value",
+          "Dimension3Value",
+          "Dimension4Value",
+          "Dimension5Value",
+          "Dimension6Value",
+          "Metric0Value",
+          "Metric1Value",
+          "Metric2Value",
+          "Metric3Value",
+          "Metric4Value",
+          "Metric5Value",
+          "Metric6Value",
+          "Metric7Value"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 28,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / ga"
+      ],
+      "evidence_file": "object-vendordata-ga-googleanalyticsreporthistorical.evidence.json",
+      "markdown_file": "object-vendordata-ga-googleanalyticsreporthistorical.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GoogleAnalyticsRequest_BK",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "ga",
+        "GoogleAnalyticsRequest_BK"
+      ],
+      "canonical_id": "object-vendordata-ga-googleanalyticsrequest-bk",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/ga__GoogleAnalyticsRequest_BK.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9A73D5156D378DF442A9AB93D3D736A4748765E6C4027C43955365B704D67EE4",
+      "object": {
+        "name": "GoogleAnalyticsRequest_BK",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "ga",
+        "qualified_name": "VendorData.ga.GoogleAnalyticsRequest_BK",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.ga.GoogleAnalyticsRequest_BK",
+        "ga.GoogleAnalyticsRequest_BK",
+        "GoogleAnalyticsRequest_BK",
+        "GoogleAnalyticsRequestBK",
+        "googleanalyticsrequestbk"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RequestId",
+          "Metric0",
+          "Metric1",
+          "Metric2",
+          "Metric3",
+          "Metric4",
+          "Metric5",
+          "Metric6",
+          "Metric7",
+          "Metric8",
+          "Metric9",
+          "Metric0Type",
+          "Metric1Type",
+          "Metric2Type",
+          "Metric3Type",
+          "Metric4Type",
+          "Metric5Type",
+          "Metric6Type",
+          "Metric7Type",
+          "Metric8Type"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 34,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / ga"
+      ],
+      "evidence_file": "object-vendordata-ga-googleanalyticsrequest-bk.evidence.json",
+      "markdown_file": "object-vendordata-ga-googleanalyticsrequest-bk.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GoogleAnalyticsRequestbkp20221113",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "ga",
+        "GoogleAnalyticsRequestbkp20221113"
+      ],
+      "canonical_id": "object-vendordata-ga-googleanalyticsrequestbkp20221113",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/ga__GoogleAnalyticsRequestbkp20221113.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:AB3B99D49FA4540EC64F5332763313940C5F7EB52B1D52C5DC47EC954C13F017",
+      "object": {
+        "name": "GoogleAnalyticsRequestbkp20221113",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "ga",
+        "qualified_name": "VendorData.ga.GoogleAnalyticsRequestbkp20221113",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.ga.GoogleAnalyticsRequestbkp20221113",
+        "ga.GoogleAnalyticsRequestbkp20221113",
+        "GoogleAnalyticsRequestbkp20221113",
+        "googleanalyticsrequestbkp20221113"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RequestId",
+          "Metric0",
+          "Metric1",
+          "Metric2",
+          "Metric3",
+          "Metric4",
+          "Metric5",
+          "Metric6",
+          "Metric7",
+          "Metric8",
+          "Metric9",
+          "Metric0Type",
+          "Metric1Type",
+          "Metric2Type",
+          "Metric3Type",
+          "Metric4Type",
+          "Metric5Type",
+          "Metric6Type",
+          "Metric7Type",
+          "Metric8Type"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 34,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / ga"
+      ],
+      "evidence_file": "object-vendordata-ga-googleanalyticsrequestbkp20221113.evidence.json",
+      "markdown_file": "object-vendordata-ga-googleanalyticsrequestbkp20221113.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GoogleAnalyticsRequestHistorical",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "ga",
+        "GoogleAnalyticsRequestHistorical"
+      ],
+      "canonical_id": "object-vendordata-ga-googleanalyticsrequesthistorical",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/ga__GoogleAnalyticsRequestHistorical.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:5E6AE24138A13D2B1C131E8118861459BA188883E60586EDBBDB10A6464368AE",
+      "object": {
+        "name": "GoogleAnalyticsRequestHistorical",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "ga",
+        "qualified_name": "VendorData.ga.GoogleAnalyticsRequestHistorical",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.ga.GoogleAnalyticsRequestHistorical",
+        "ga.GoogleAnalyticsRequestHistorical",
+        "GoogleAnalyticsRequestHistorical",
+        "googleanalyticsrequesthistorical"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RequestId",
+          "Metric0",
+          "Metric1",
+          "Metric2",
+          "Metric3",
+          "Metric4",
+          "Metric5",
+          "Metric6",
+          "Metric7",
+          "Metric8",
+          "Metric9",
+          "Metric0Type",
+          "Metric1Type",
+          "Metric2Type",
+          "Metric3Type",
+          "Metric4Type",
+          "Metric5Type",
+          "Metric6Type",
+          "Metric7Type",
+          "Metric8Type"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 34,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / ga"
+      ],
+      "evidence_file": "object-vendordata-ga-googleanalyticsrequesthistorical.evidence.json",
+      "markdown_file": "object-vendordata-ga-googleanalyticsrequesthistorical.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-066-vendordata-ga-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-066-vendordata-ga-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-066-vendordata-ga-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

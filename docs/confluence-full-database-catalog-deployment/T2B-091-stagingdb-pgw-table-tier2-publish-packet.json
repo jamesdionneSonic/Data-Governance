@@ -1,0 +1,540 @@
+{
+  "packet_id": "T2B-091",
+  "generated_at": "2026-06-23T18:37:48.105Z",
+  "batch": {
+    "batch_id": "T2B-091",
+    "priority_rank": 91,
+    "platform": "SQL Server",
+    "database": "StagingDB",
+    "schema": "pgw",
+    "object_type_scope": "table",
+    "object_count": 3,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "webV_personnels",
+    "last_object": "zzzzz_pgw.veh_inventory_staging_2017",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / pgw",
+    "object_names": [
+      "webV_personnels",
+      "webv_personnels_MatchStaging",
+      "zzzzz_pgw.veh_inventory_staging_2017"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 3,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 3,
+    "total_planned_pages": 7
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB"],
+      "page_type": "database",
+      "evidence_hash": "sha256:86BBBA4A90EF1C66989EFB3B9746AF88467BE01889393493BBDE0177897E19A4",
+      "evidence_file": "database-stagingdb.evidence.json",
+      "markdown_file": "database-stagingdb.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.pgw",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB", "pgw"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:4EA57B7A219B13A8B24A683771719C961755FB09E4C6BD1565BDB00CD71EDC0F",
+      "evidence_file": "schema-stagingdb-pgw.evidence.json",
+      "markdown_file": "schema-stagingdb-pgw.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.pgw.webV_personnels",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "pgw",
+        "webV_personnels"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:24DDC57AB6D1784A52D8B4FE7896F899A30D86C613A9AAD5809A895B2EA8D3CE",
+      "evidence_file": "object-stagingdb-pgw-webv-personnels.evidence.json",
+      "markdown_file": "object-stagingdb-pgw-webv-personnels.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.pgw.webv_personnels_MatchStaging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "pgw",
+        "webv_personnels_MatchStaging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:4ABFF5F88642B997729FF3B534B6F58CD168DE63B31C2E84547FE39987053790",
+      "evidence_file": "object-stagingdb-pgw-webv-personnels-matchstaging.evidence.json",
+      "markdown_file": "object-stagingdb-pgw-webv-personnels-matchstaging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.pgw.zzzzz_pgw.veh_inventory_staging_2017",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "pgw",
+        "zzzzz_pgw.veh_inventory_staging_2017"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:65F0498C50E89031F161B4B4615303846A8B10299F4057ACC1E98F72AD9FDDB8",
+      "evidence_file": "object-stagingdb-pgw-zzzzz-pgw-veh-inventory-staging-2017.evidence.json",
+      "markdown_file": "object-stagingdb-pgw-zzzzz-pgw-veh-inventory-staging-2017.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "webV_personnels",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "pgw",
+        "webV_personnels"
+      ],
+      "canonical_id": "object-stagingdb-pgw-webv-personnels",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/pgw__webV_personnels.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:24DDC57AB6D1784A52D8B4FE7896F899A30D86C613A9AAD5809A895B2EA8D3CE",
+      "object": {
+        "name": "webV_personnels",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "pgw",
+        "qualified_name": "StagingDB.pgw.webV_personnels",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.pgw.webV_personnels",
+        "pgw.webV_personnels",
+        "webV_personnels",
+        "webVpersonnels",
+        "webvpersonnels"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "PERSONNEL_ID",
+          "PREF_PROFILE_ID",
+          "LAST_NAME",
+          "FIRST_NAME",
+          "SIGNATURE_NAME",
+          "SIGNATURE_ID",
+          "USER_NAME",
+          "PASSWORD",
+          "PERSONNEL_TYPE_ID",
+          "CELL_PHONE",
+          "LOCATION_ID",
+          "DMS_NO",
+          "JOB_TITLE",
+          "START_DATE",
+          "END_DATE",
+          "WORK_PHONE",
+          "WORK_PHONE_EXT",
+          "WORK_EMAIL_ADDRESS",
+          "INBOUND_EMAIL_SERVER",
+          "INBOUND_EMAIL_USER_ID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 98,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / pgw"
+      ],
+      "evidence_file": "object-stagingdb-pgw-webv-personnels.evidence.json",
+      "markdown_file": "object-stagingdb-pgw-webv-personnels.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "webv_personnels_MatchStaging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "pgw",
+        "webv_personnels_MatchStaging"
+      ],
+      "canonical_id": "object-stagingdb-pgw-webv-personnels-matchstaging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/pgw__webv_personnels_MatchStaging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:4ABFF5F88642B997729FF3B534B6F58CD168DE63B31C2E84547FE39987053790",
+      "object": {
+        "name": "webv_personnels_MatchStaging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "pgw",
+        "qualified_name": "StagingDB.pgw.webv_personnels_MatchStaging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.pgw.webv_personnels_MatchStaging",
+        "pgw.webv_personnels_MatchStaging",
+        "webv_personnels_MatchStaging",
+        "webvpersonnelsMatchStaging",
+        "webvpersonnelsmatchstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "PERSONNEL_ID",
+          "PREF_PROFILE_ID",
+          "LAST_NAME",
+          "FIRST_NAME",
+          "SIGNATURE_NAME",
+          "SIGNATURE_ID",
+          "USER_NAME",
+          "PASSWORD",
+          "PERSONNEL_TYPE_ID",
+          "CELL_PHONE",
+          "LOCATION_ID",
+          "DMS_NO",
+          "JOB_TITLE",
+          "START_DATE",
+          "END_DATE",
+          "WORK_PHONE",
+          "WORK_PHONE_EXT",
+          "WORK_EMAIL_ADDRESS",
+          "INBOUND_EMAIL_SERVER",
+          "INBOUND_EMAIL_USER_ID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 98,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / pgw"
+      ],
+      "evidence_file": "object-stagingdb-pgw-webv-personnels-matchstaging.evidence.json",
+      "markdown_file": "object-stagingdb-pgw-webv-personnels-matchstaging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "zzzzz_pgw.veh_inventory_staging_2017",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "pgw",
+        "zzzzz_pgw.veh_inventory_staging_2017"
+      ],
+      "canonical_id": "object-stagingdb-pgw-zzzzz-pgw-veh-inventory-staging-2017",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/pgw__zzzzz_pgw.veh_inventory_staging_2017.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:65F0498C50E89031F161B4B4615303846A8B10299F4057ACC1E98F72AD9FDDB8",
+      "object": {
+        "name": "zzzzz_pgw.veh_inventory_staging_2017",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "pgw",
+        "qualified_name": "StagingDB.pgw.zzzzz_pgw.veh_inventory_staging_2017",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.pgw.zzzzz_pgw.veh_inventory_staging_2017",
+        "pgw.zzzzz_pgw.veh_inventory_staging_2017",
+        "zzzzz_pgw.veh_inventory_staging_2017",
+        "zzzzzpgw.vehinventorystaging2017",
+        "zzzzzpgwvehinventorystaging2017"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "veh_inv_id",
+          "loc_id",
+          "veh_id",
+          "stk_nbr",
+          "new_veh_flg",
+          "dmv_new_veh_flg",
+          "dmv_ctgy_cd",
+          "dmv_body_style_id",
+          "inv_type_cd",
+          "base_list_amt",
+          "base_cost_amt",
+          "tot_list_amt",
+          "tot_cost_amt",
+          "acctg_cost_amt",
+          "hb_amt",
+          "equip_hb_tot_amt",
+          "internet_price_amt",
+          "add_exp_amt",
+          "dlr_pack_cost_amt",
+          "mfr_invc_nbr"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 156,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / pgw"
+      ],
+      "evidence_file": "object-stagingdb-pgw-zzzzz-pgw-veh-inventory-staging-2017.evidence.json",
+      "markdown_file": "object-stagingdb-pgw-zzzzz-pgw-veh-inventory-staging-2017.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-091-stagingdb-pgw-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-091-stagingdb-pgw-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-091-stagingdb-pgw-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

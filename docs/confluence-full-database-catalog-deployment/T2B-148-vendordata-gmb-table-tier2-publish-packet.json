@@ -1,0 +1,931 @@
+{
+  "packet_id": "T2B-148",
+  "generated_at": "2026-06-23T18:53:23.242Z",
+  "batch": {
+    "batch_id": "T2B-148",
+    "priority_rank": 148,
+    "platform": "SQL Server",
+    "database": "VendorData",
+    "schema": "gmb",
+    "object_type_scope": "table",
+    "object_count": 6,
+    "high_use_objects": 0,
+    "downstream_uses": 3,
+    "first_object": "GoogleMyBusinessMetric",
+    "last_object": "GoogleMyBusinessMetric_DoNotDelete",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / gmb",
+    "object_names": [
+      "GoogleMyBusinessMetric",
+      "GoogleMyBusinessReview",
+      "GoogleMyBusinessAccount",
+      "GoogleMyBusinessLocation",
+      "GoogleMyBusinessReviews",
+      "GoogleMyBusinessMetric_DoNotDelete"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 6,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 6,
+    "total_planned_pages": 10
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData"],
+      "page_type": "database",
+      "evidence_hash": "sha256:C029883539BC166EBDE80488ADFC36CDDDD0E84559188FE128628E553E29DFF1",
+      "evidence_file": "database-vendordata.evidence.json",
+      "markdown_file": "database-vendordata.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.gmb",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData", "gmb"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:39C1EAF72B66453D80802F191483BD0AE5C8C3709744F8FA11372310378D4ADE",
+      "evidence_file": "schema-vendordata-gmb.evidence.json",
+      "markdown_file": "schema-vendordata-gmb.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.gmb.GoogleMyBusinessAccount",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gmb",
+        "GoogleMyBusinessAccount"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:CCFE1FF7B02A960DB425E58FEB34955C78A5E477180741CA556B94CDF6392523",
+      "evidence_file": "object-vendordata-gmb-googlemybusinessaccount.evidence.json",
+      "markdown_file": "object-vendordata-gmb-googlemybusinessaccount.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.gmb.GoogleMyBusinessLocation",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gmb",
+        "GoogleMyBusinessLocation"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:064D4ED5F33818211FCD7B0C84DAB189D7D54B5A7EFAD87051F611BC0562F0B8",
+      "evidence_file": "object-vendordata-gmb-googlemybusinesslocation.evidence.json",
+      "markdown_file": "object-vendordata-gmb-googlemybusinesslocation.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.gmb.GoogleMyBusinessMetric",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gmb",
+        "GoogleMyBusinessMetric"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:EBFE475C60662616451C01D9BD0D33DE2699BA52E7F1352E9659691C41EFEC32",
+      "evidence_file": "object-vendordata-gmb-googlemybusinessmetric.evidence.json",
+      "markdown_file": "object-vendordata-gmb-googlemybusinessmetric.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.gmb.GoogleMyBusinessMetric_DoNotDelete",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gmb",
+        "GoogleMyBusinessMetric_DoNotDelete"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:73A8E55D278D2B2847DBBB1B813CAA49F7B47C3F0F80E81605C87760970C6A7E",
+      "evidence_file": "object-vendordata-gmb-googlemybusinessmetric-donotdelete.evidence.json",
+      "markdown_file": "object-vendordata-gmb-googlemybusinessmetric-donotdelete.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.gmb.GoogleMyBusinessReview",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gmb",
+        "GoogleMyBusinessReview"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:5738309CAFB74CE240E0DD16041EAFE3E4D2C8015F3AC27A20AC1168037CDCD4",
+      "evidence_file": "object-vendordata-gmb-googlemybusinessreview.evidence.json",
+      "markdown_file": "object-vendordata-gmb-googlemybusinessreview.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.gmb.GoogleMyBusinessReviews",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gmb",
+        "GoogleMyBusinessReviews"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:0EF1409EC458A87499557E95F0B15D22F55DE8A4BDA1E55062A098F9354ACD4E",
+      "evidence_file": "object-vendordata-gmb-googlemybusinessreviews.evidence.json",
+      "markdown_file": "object-vendordata-gmb-googlemybusinessreviews.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "GoogleMyBusinessAccount",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gmb",
+        "GoogleMyBusinessAccount"
+      ],
+      "canonical_id": "object-vendordata-gmb-googlemybusinessaccount",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/gmb__GoogleMyBusinessAccount.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:CCFE1FF7B02A960DB425E58FEB34955C78A5E477180741CA556B94CDF6392523",
+      "object": {
+        "name": "GoogleMyBusinessAccount",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "gmb",
+        "qualified_name": "VendorData.gmb.GoogleMyBusinessAccount",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.gmb.GoogleMyBusinessAccount",
+        "gmb.GoogleMyBusinessAccount",
+        "GoogleMyBusinessAccount",
+        "googlemybusinessaccount"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.VendorData.dbo.usp_GoogleMyBusinessAccount"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "gmbAccountName",
+          "accountName",
+          "accountNumber",
+          "permissionLevel",
+          "gmbRole",
+          "stateStatus",
+          "gmbType",
+          "ETLExecution_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "Meta_RowLastChangedate",
+          "Meta_SourceSystemName",
+          "Meta_Src_Sys_ID",
+          "UserID",
+          "vettedState"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 15,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / gmb"
+      ],
+      "evidence_file": "object-vendordata-gmb-googlemybusinessaccount.evidence.json",
+      "markdown_file": "object-vendordata-gmb-googlemybusinessaccount.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GoogleMyBusinessLocation",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gmb",
+        "GoogleMyBusinessLocation"
+      ],
+      "canonical_id": "object-vendordata-gmb-googlemybusinesslocation",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/gmb__GoogleMyBusinessLocation.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:064D4ED5F33818211FCD7B0C84DAB189D7D54B5A7EFAD87051F611BC0562F0B8",
+      "object": {
+        "name": "GoogleMyBusinessLocation",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "gmb",
+        "qualified_name": "VendorData.gmb.GoogleMyBusinessLocation",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.gmb.GoogleMyBusinessLocation",
+        "gmb.GoogleMyBusinessLocation",
+        "GoogleMyBusinessLocation",
+        "googlemybusinesslocation"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.VendorData.dbo.usp_GoogleMyBusinessLocation"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "gmbLocationName",
+          "gmbAccountName",
+          "storeCode",
+          "websiteUrl",
+          "ETLExecution_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "Meta_RowLastChangeDate",
+          "Meta_SourceSystemName",
+          "Meta_Src_Sys_ID",
+          "UserID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / gmb"
+      ],
+      "evidence_file": "object-vendordata-gmb-googlemybusinesslocation.evidence.json",
+      "markdown_file": "object-vendordata-gmb-googlemybusinesslocation.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GoogleMyBusinessMetric",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gmb",
+        "GoogleMyBusinessMetric"
+      ],
+      "canonical_id": "object-vendordata-gmb-googlemybusinessmetric",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/gmb__GoogleMyBusinessMetric.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:EBFE475C60662616451C01D9BD0D33DE2699BA52E7F1352E9659691C41EFEC32",
+      "object": {
+        "name": "GoogleMyBusinessMetric",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "gmb",
+        "qualified_name": "VendorData.gmb.GoogleMyBusinessMetric",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.gmb.GoogleMyBusinessMetric",
+        "gmb.GoogleMyBusinessMetric",
+        "GoogleMyBusinessMetric",
+        "googlemybusinessmetric"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.VendorData.dbo.usp_GoogleMyBusinessMetric"],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GMB_Service_view",
+          "L1-DWASQL-02,12010.VendorData.dbo.vw_GMB_view"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "gmbLocationName",
+          "timezone",
+          "metric",
+          "metricValue",
+          "metricStartTime",
+          "metricEndTime",
+          "metricOption",
+          "ETLExecution_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "Meta_RowLastChangeDate",
+          "Meta_SourceSystemName",
+          "Meta_Src_Sys_ID",
+          "UserID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 14,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / gmb"
+      ],
+      "evidence_file": "object-vendordata-gmb-googlemybusinessmetric.evidence.json",
+      "markdown_file": "object-vendordata-gmb-googlemybusinessmetric.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GoogleMyBusinessMetric_DoNotDelete",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gmb",
+        "GoogleMyBusinessMetric_DoNotDelete"
+      ],
+      "canonical_id": "object-vendordata-gmb-googlemybusinessmetric-donotdelete",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/gmb__GoogleMyBusinessMetric_DoNotDelete.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:73A8E55D278D2B2847DBBB1B813CAA49F7B47C3F0F80E81605C87760970C6A7E",
+      "object": {
+        "name": "GoogleMyBusinessMetric_DoNotDelete",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "gmb",
+        "qualified_name": "VendorData.gmb.GoogleMyBusinessMetric_DoNotDelete",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.gmb.GoogleMyBusinessMetric_DoNotDelete",
+        "gmb.GoogleMyBusinessMetric_DoNotDelete",
+        "GoogleMyBusinessMetric_DoNotDelete",
+        "GoogleMyBusinessMetricDoNotDelete",
+        "googlemybusinessmetricdonotdelete"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "gmbLocationName",
+          "timezone",
+          "metric",
+          "metricValue",
+          "metricStartTime",
+          "metricEndTime",
+          "metricOption",
+          "ETLExecution_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "Meta_RowLastChangeDate",
+          "Meta_SourceSystemName",
+          "Meta_Src_Sys_ID",
+          "UserID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 14,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / gmb"
+      ],
+      "evidence_file": "object-vendordata-gmb-googlemybusinessmetric-donotdelete.evidence.json",
+      "markdown_file": "object-vendordata-gmb-googlemybusinessmetric-donotdelete.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GoogleMyBusinessReview",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gmb",
+        "GoogleMyBusinessReview"
+      ],
+      "canonical_id": "object-vendordata-gmb-googlemybusinessreview",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/gmb__GoogleMyBusinessReview.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:5738309CAFB74CE240E0DD16041EAFE3E4D2C8015F3AC27A20AC1168037CDCD4",
+      "object": {
+        "name": "GoogleMyBusinessReview",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "gmb",
+        "qualified_name": "VendorData.gmb.GoogleMyBusinessReview",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.gmb.GoogleMyBusinessReview",
+        "gmb.GoogleMyBusinessReview",
+        "GoogleMyBusinessReview",
+        "googlemybusinessreview"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.StagingDB.gmb.uspLoadReview"],
+        "upstream_sources": [],
+        "downstream_consumers": ["L1-DWASQL-02,12010.VendorData.dbo.vw_GMB_view"],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "gmbLocationName",
+          "averageRating",
+          "totalReviewCount",
+          "ETLExecution_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "Meta_RowIsCurrent",
+          "Meta_SourceSystemName",
+          "Meta_Src_Sys_ID",
+          "Meta_UserID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / gmb"
+      ],
+      "evidence_file": "object-vendordata-gmb-googlemybusinessreview.evidence.json",
+      "markdown_file": "object-vendordata-gmb-googlemybusinessreview.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GoogleMyBusinessReviews",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "gmb",
+        "GoogleMyBusinessReviews"
+      ],
+      "canonical_id": "object-vendordata-gmb-googlemybusinessreviews",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/gmb__GoogleMyBusinessReviews.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:0EF1409EC458A87499557E95F0B15D22F55DE8A4BDA1E55062A098F9354ACD4E",
+      "object": {
+        "name": "GoogleMyBusinessReviews",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "gmb",
+        "qualified_name": "VendorData.gmb.GoogleMyBusinessReviews",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.gmb.GoogleMyBusinessReviews",
+        "gmb.GoogleMyBusinessReviews",
+        "GoogleMyBusinessReviews",
+        "googlemybusinessreviews"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.StagingDB.gmb.uspMergeReviews"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "gmbLocationName",
+          "reviewComment",
+          "reviewCreateTime",
+          "reviewName",
+          "reviewID",
+          "reviewStarRating",
+          "reviewUpdateTime",
+          "reviewReplyComment",
+          "reviewReplyUpdateTime",
+          "reviewerDisplayName",
+          "reviewerIsAnonymous",
+          "reviewerProfilePhotoUrl",
+          "ETLExecution_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate",
+          "Meta_RowLastChangedDate",
+          "Meta_SourceSystemname",
+          "Meta_Src_Sys_ID",
+          "Meta_UserID"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 19,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / gmb"
+      ],
+      "evidence_file": "object-vendordata-gmb-googlemybusinessreviews.evidence.json",
+      "markdown_file": "object-vendordata-gmb-googlemybusinessreviews.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-148-vendordata-gmb-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-148-vendordata-gmb-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-148-vendordata-gmb-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

@@ -1,0 +1,518 @@
+{
+  "packet_id": "T2B-218",
+  "generated_at": "2026-06-23T19:12:18.782Z",
+  "batch": {
+    "batch_id": "T2B-218",
+    "priority_rank": 218,
+    "platform": "SQL Server",
+    "database": "StagingDB",
+    "schema": "Facebook",
+    "object_type_scope": "table",
+    "object_count": 3,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "StgCampaignDaily",
+    "last_object": "stgOfflineMetrices",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Facebook",
+    "object_names": ["StgCampaignDaily", "StgCampaignMonthly", "stgOfflineMetrices"],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 3,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 3,
+    "total_planned_pages": 7
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB"],
+      "page_type": "database",
+      "evidence_hash": "sha256:86BBBA4A90EF1C66989EFB3B9746AF88467BE01889393493BBDE0177897E19A4",
+      "evidence_file": "database-stagingdb.evidence.json",
+      "markdown_file": "database-stagingdb.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Facebook",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB", "Facebook"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:A428FA3852EA8D9B9832F65BFEADA700B87B7BC146075619EB1D68CD883BF866",
+      "evidence_file": "schema-stagingdb-facebook.evidence.json",
+      "markdown_file": "schema-stagingdb-facebook.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Facebook.StgCampaignDaily",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Facebook",
+        "StgCampaignDaily"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:FF835DD60E3EBFE445F396A02D7A62D94062C09BB2FC3B1D4ABD7E0A0B764442",
+      "evidence_file": "object-stagingdb-facebook-stgcampaigndaily.evidence.json",
+      "markdown_file": "object-stagingdb-facebook-stgcampaigndaily.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Facebook.StgCampaignMonthly",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Facebook",
+        "StgCampaignMonthly"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9FE04AB5BC8E08D0D02FB867B5C0824CDB029A2A979E195AF8220B9A1DAA051E",
+      "evidence_file": "object-stagingdb-facebook-stgcampaignmonthly.evidence.json",
+      "markdown_file": "object-stagingdb-facebook-stgcampaignmonthly.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.Facebook.stgOfflineMetrices",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Facebook",
+        "stgOfflineMetrices"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E8B6140EB0C7C2697CD6DF7DCABCBD51F3E94312B4A40319A1647579B2D4DDAC",
+      "evidence_file": "object-stagingdb-facebook-stgofflinemetrices.evidence.json",
+      "markdown_file": "object-stagingdb-facebook-stgofflinemetrices.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "StgCampaignDaily",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Facebook",
+        "StgCampaignDaily"
+      ],
+      "canonical_id": "object-stagingdb-facebook-stgcampaigndaily",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/Facebook__StgCampaignDaily.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:FF835DD60E3EBFE445F396A02D7A62D94062C09BB2FC3B1D4ABD7E0A0B764442",
+      "object": {
+        "name": "StgCampaignDaily",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "Facebook",
+        "qualified_name": "StagingDB.Facebook.StgCampaignDaily",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.Facebook.StgCampaignDaily",
+        "Facebook.StgCampaignDaily",
+        "StgCampaignDaily",
+        "stgcampaigndaily"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "AccountID",
+          "AccountName",
+          "CampaignID",
+          "CampaignName",
+          "CampaignObjective",
+          "Date",
+          "LinkClicks",
+          "Clicks",
+          "Cost",
+          "CPC",
+          "CTR",
+          "Impressions",
+          "Reach",
+          "FileDate",
+          "MetaSourceFileName",
+          "MetaFileModifiedDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 16,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Facebook"
+      ],
+      "evidence_file": "object-stagingdb-facebook-stgcampaigndaily.evidence.json",
+      "markdown_file": "object-stagingdb-facebook-stgcampaigndaily.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StgCampaignMonthly",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Facebook",
+        "StgCampaignMonthly"
+      ],
+      "canonical_id": "object-stagingdb-facebook-stgcampaignmonthly",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/Facebook__StgCampaignMonthly.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9FE04AB5BC8E08D0D02FB867B5C0824CDB029A2A979E195AF8220B9A1DAA051E",
+      "object": {
+        "name": "StgCampaignMonthly",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "Facebook",
+        "qualified_name": "StagingDB.Facebook.StgCampaignMonthly",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.Facebook.StgCampaignMonthly",
+        "Facebook.StgCampaignMonthly",
+        "StgCampaignMonthly",
+        "stgcampaignmonthly"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "AccountID",
+          "Accountname",
+          "CampaignID",
+          "CampaignName",
+          "CampaignObjective",
+          "Datadate",
+          "LinkClicks",
+          "Clicks",
+          "Cost",
+          "CPC",
+          "CTR",
+          "Impressions",
+          "Reach",
+          "FileDate",
+          "MetaSourceFileName",
+          "MetaFileModifiedDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 16,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Facebook"
+      ],
+      "evidence_file": "object-stagingdb-facebook-stgcampaignmonthly.evidence.json",
+      "markdown_file": "object-stagingdb-facebook-stgcampaignmonthly.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "stgOfflineMetrices",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "Facebook",
+        "stgOfflineMetrices"
+      ],
+      "canonical_id": "object-stagingdb-facebook-stgofflinemetrices",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/Facebook__stgOfflineMetrices.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E8B6140EB0C7C2697CD6DF7DCABCBD51F3E94312B4A40319A1647579B2D4DDAC",
+      "object": {
+        "name": "stgOfflineMetrices",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "Facebook",
+        "qualified_name": "StagingDB.Facebook.stgOfflineMetrices",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.Facebook.stgOfflineMetrices",
+        "Facebook.stgOfflineMetrices",
+        "stgOfflineMetrices",
+        "stgofflinemetrices"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "AccountID",
+          "AccountName",
+          "AdName",
+          "CampaignID",
+          "CampaignName",
+          "CampaignObjective",
+          "DataDate",
+          "OfflineAddsToCart",
+          "UniqueAddsToWishlist",
+          "OfflinePurchases",
+          "MetaSourceFileName",
+          "MetaFileModifiedDate",
+          "FileDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 13,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / Facebook"
+      ],
+      "evidence_file": "object-stagingdb-facebook-stgofflinemetrices.evidence.json",
+      "markdown_file": "object-stagingdb-facebook-stgofflinemetrices.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-218-stagingdb-facebook-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-218-stagingdb-facebook-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-218-stagingdb-facebook-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

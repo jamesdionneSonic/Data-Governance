@@ -1,0 +1,662 @@
+{
+  "packet_id": "T2B-175",
+  "generated_at": "2026-06-23T19:05:42.749Z",
+  "batch": {
+    "batch_id": "T2B-175",
+    "priority_rank": 175,
+    "platform": "SQL Server",
+    "database": "StagingDB",
+    "schema": "ga",
+    "object_type_scope": "table",
+    "object_count": 4,
+    "high_use_objects": 0,
+    "downstream_uses": 1,
+    "first_object": "Vehicle_User_Clicks",
+    "last_object": "GoogleAnalyticsReportHistorical",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / ga",
+    "object_names": [
+      "Vehicle_User_Clicks",
+      "GoogleAnalyticsReport",
+      "GoogleAnalyticsReport_bk",
+      "GoogleAnalyticsReportHistorical"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "table",
+    "original_object_count": 4,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 4,
+    "total_planned_pages": 8
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB"],
+      "page_type": "database",
+      "evidence_hash": "sha256:86BBBA4A90EF1C66989EFB3B9746AF88467BE01889393493BBDE0177897E19A4",
+      "evidence_file": "database-stagingdb.evidence.json",
+      "markdown_file": "database-stagingdb.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.ga",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "StagingDB", "ga"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:02D5BB3922043A5B0399717A94051F49B85AB025ABCB7EE5B4E470DFBBFFAFF5",
+      "evidence_file": "schema-stagingdb-ga.evidence.json",
+      "markdown_file": "schema-stagingdb-ga.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.ga.GoogleAnalyticsReport",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "ga",
+        "GoogleAnalyticsReport"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9699D557EC5BF3C6313856FB7C91576387A4416C27A2232E651CE012AB55478D",
+      "evidence_file": "object-stagingdb-ga-googleanalyticsreport.evidence.json",
+      "markdown_file": "object-stagingdb-ga-googleanalyticsreport.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.ga.GoogleAnalyticsReport_bk",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "ga",
+        "GoogleAnalyticsReport_bk"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:BD5D6DA36E99F4A2ED533B4F4206E50BD7746F7E47BE682A4CF16D916DEA18C8",
+      "evidence_file": "object-stagingdb-ga-googleanalyticsreport-bk.evidence.json",
+      "markdown_file": "object-stagingdb-ga-googleanalyticsreport-bk.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.ga.GoogleAnalyticsReportHistorical",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "ga",
+        "GoogleAnalyticsReportHistorical"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:0F9BB698721FA64CF608B981E365B76155558CC6DC61D6194879BBCE27E017DB",
+      "evidence_file": "object-stagingdb-ga-googleanalyticsreporthistorical.evidence.json",
+      "markdown_file": "object-stagingdb-ga-googleanalyticsreporthistorical.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "StagingDB.ga.Vehicle_User_Clicks",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "ga",
+        "Vehicle_User_Clicks"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:52C13DDBF4EF0156C30A2945AB41AF8086CABDBD385157F1B9213C7523181B39",
+      "evidence_file": "object-stagingdb-ga-vehicle-user-clicks.evidence.json",
+      "markdown_file": "object-stagingdb-ga-vehicle-user-clicks.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "GoogleAnalyticsReport",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "ga",
+        "GoogleAnalyticsReport"
+      ],
+      "canonical_id": "object-stagingdb-ga-googleanalyticsreport",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/ga__GoogleAnalyticsReport.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9699D557EC5BF3C6313856FB7C91576387A4416C27A2232E651CE012AB55478D",
+      "object": {
+        "name": "GoogleAnalyticsReport",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "ga",
+        "qualified_name": "StagingDB.ga.GoogleAnalyticsReport",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.ga.GoogleAnalyticsReport",
+        "ga.GoogleAnalyticsReport",
+        "GoogleAnalyticsReport",
+        "googleanalyticsreport"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ViewID",
+          "RequestID",
+          "StartDate",
+          "EndDate",
+          "Dimension0Name",
+          "Dimension1Name",
+          "Dimension2Name",
+          "Dimension3Name",
+          "Dimension4Name",
+          "Dimension5Name",
+          "Dimension6Name",
+          "Dimension0Value",
+          "Dimension1Value",
+          "Dimension2Value",
+          "Dimension3Value",
+          "Dimension4Value",
+          "Dimension5Value",
+          "Dimension6Value",
+          "Metric0Name",
+          "Metric1Name"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 55,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / ga"
+      ],
+      "evidence_file": "object-stagingdb-ga-googleanalyticsreport.evidence.json",
+      "markdown_file": "object-stagingdb-ga-googleanalyticsreport.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GoogleAnalyticsReport_bk",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "ga",
+        "GoogleAnalyticsReport_bk"
+      ],
+      "canonical_id": "object-stagingdb-ga-googleanalyticsreport-bk",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/ga__GoogleAnalyticsReport_bk.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:BD5D6DA36E99F4A2ED533B4F4206E50BD7746F7E47BE682A4CF16D916DEA18C8",
+      "object": {
+        "name": "GoogleAnalyticsReport_bk",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "ga",
+        "qualified_name": "StagingDB.ga.GoogleAnalyticsReport_bk",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.ga.GoogleAnalyticsReport_bk",
+        "ga.GoogleAnalyticsReport_bk",
+        "GoogleAnalyticsReport_bk",
+        "GoogleAnalyticsReportbk",
+        "googleanalyticsreportbk"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ViewID",
+          "RequestID",
+          "StartDate",
+          "EndDate",
+          "Dimension0Name",
+          "Dimension1Name",
+          "Dimension2Name",
+          "Dimension3Name",
+          "Dimension4Name",
+          "Dimension5Name",
+          "Dimension6Name",
+          "Dimension0Value",
+          "Dimension1Value",
+          "Dimension2Value",
+          "Dimension3Value",
+          "Dimension4Value",
+          "Dimension5Value",
+          "Dimension6Value",
+          "Metric0Name",
+          "Metric1Name"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 55,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / ga"
+      ],
+      "evidence_file": "object-stagingdb-ga-googleanalyticsreport-bk.evidence.json",
+      "markdown_file": "object-stagingdb-ga-googleanalyticsreport-bk.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "GoogleAnalyticsReportHistorical",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "ga",
+        "GoogleAnalyticsReportHistorical"
+      ],
+      "canonical_id": "object-stagingdb-ga-googleanalyticsreporthistorical",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/ga__GoogleAnalyticsReportHistorical.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:0F9BB698721FA64CF608B981E365B76155558CC6DC61D6194879BBCE27E017DB",
+      "object": {
+        "name": "GoogleAnalyticsReportHistorical",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "ga",
+        "qualified_name": "StagingDB.ga.GoogleAnalyticsReportHistorical",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.ga.GoogleAnalyticsReportHistorical",
+        "ga.GoogleAnalyticsReportHistorical",
+        "GoogleAnalyticsReportHistorical",
+        "googleanalyticsreporthistorical"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ViewID",
+          "RequestID",
+          "StartDate",
+          "EndDate",
+          "Dimension0Name",
+          "Dimension1Name",
+          "Dimension2Name",
+          "Dimension3Name",
+          "Dimension4Name",
+          "Dimension5Name",
+          "Dimension6Name",
+          "Dimension0Value",
+          "Dimension1Value",
+          "Dimension2Value",
+          "Dimension3Value",
+          "Dimension4Value",
+          "Dimension5Value",
+          "Dimension6Value",
+          "Metric0Name",
+          "Metric1Name"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 55,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / ga"
+      ],
+      "evidence_file": "object-stagingdb-ga-googleanalyticsreporthistorical.evidence.json",
+      "markdown_file": "object-stagingdb-ga-googleanalyticsreporthistorical.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Vehicle_User_Clicks",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "StagingDB",
+        "ga",
+        "Vehicle_User_Clicks"
+      ],
+      "canonical_id": "object-stagingdb-ga-vehicle-user-clicks",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/StagingDB/tables/ga__Vehicle_User_Clicks.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:52C13DDBF4EF0156C30A2945AB41AF8086CABDBD385157F1B9213C7523181B39",
+      "object": {
+        "name": "Vehicle_User_Clicks",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "StagingDB",
+        "schema": "ga",
+        "qualified_name": "StagingDB.ga.Vehicle_User_Clicks",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "StagingDB.ga.Vehicle_User_Clicks",
+        "ga.Vehicle_User_Clicks",
+        "Vehicle_User_Clicks",
+        "VehicleUserClicks",
+        "vehicleuserclicks"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "L1-DWASQL-02,12010.StagingDB.ga.uspLoadVehicleUserClicksVendorData"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["VIN", "NearestStore", "views", "ZipCode", "EventDate"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB",
+        "Sonic Data Lineage / Database Catalog / SQL Server / StagingDB / ga"
+      ],
+      "evidence_file": "object-stagingdb-ga-vehicle-user-clicks.evidence.json",
+      "markdown_file": "object-stagingdb-ga-vehicle-user-clicks.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-175-stagingdb-ga-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-175-stagingdb-ga-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-175-stagingdb-ga-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

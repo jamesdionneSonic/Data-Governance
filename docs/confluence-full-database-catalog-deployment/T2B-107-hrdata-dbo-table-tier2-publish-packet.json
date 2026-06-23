@@ -1,0 +1,840 @@
+{
+  "packet_id": "T2B-107",
+  "generated_at": "2026-06-23T18:44:59.070Z",
+  "batch": {
+    "batch_id": "T2B-107",
+    "priority_rank": 107,
+    "platform": "SQL Server",
+    "database": "HRData",
+    "schema": "dbo",
+    "object_type_scope": "table",
+    "object_count": 6,
+    "high_use_objects": 0,
+    "downstream_uses": 16,
+    "first_object": "SmartRecruiterChangeResponse",
+    "last_object": "SmartRecruiterUser",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / HRData / dbo",
+    "object_names": [
+      "SmartRecruiterChangeResponse",
+      "SmartRecruiterActivationResponse",
+      "SmartRecruiterChange",
+      "SmartRecruiterConfiguration",
+      "SmartRecruiterConfigurationResponse",
+      "SmartRecruiterUser"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 6,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 6,
+    "total_planned_pages": 10
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "HRData",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "HRData"],
+      "page_type": "database",
+      "evidence_hash": "sha256:9AF07FD56EC5180200CC0F8297AADFC5C5FEE2FFA2487ECAAE49470DE95437FB",
+      "evidence_file": "database-hrdata.evidence.json",
+      "markdown_file": "database-hrdata.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "HRData.dbo",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "HRData", "dbo"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:1F1689AADC1FA4B60480F6E230563A8DAEAFF466C843C63150AD16A22ED51007",
+      "evidence_file": "schema-hrdata-dbo.evidence.json",
+      "markdown_file": "schema-hrdata-dbo.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "HRData.dbo.SmartRecruiterActivationResponse",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "HRData",
+        "dbo",
+        "SmartRecruiterActivationResponse"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E1415D730F415B7F6B0A3603D72E7F3B4410D5478DF3A49BF710CB2A4E4FB587",
+      "evidence_file": "object-hrdata-dbo-smartrecruiteractivationresponse.evidence.json",
+      "markdown_file": "object-hrdata-dbo-smartrecruiteractivationresponse.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "HRData.dbo.SmartRecruiterChange",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "HRData",
+        "dbo",
+        "SmartRecruiterChange"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:0FB74FED77B648BA35034BD1B8B4029467CEC4FECE7AFD99A77B2D75D773F402",
+      "evidence_file": "object-hrdata-dbo-smartrecruiterchange.evidence.json",
+      "markdown_file": "object-hrdata-dbo-smartrecruiterchange.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "HRData.dbo.SmartRecruiterChangeResponse",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "HRData",
+        "dbo",
+        "SmartRecruiterChangeResponse"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:433520D3768AEB027D1F3F48CC9F9E2CD868DC012E77CFD98339037F8CD141C0",
+      "evidence_file": "object-hrdata-dbo-smartrecruiterchangeresponse.evidence.json",
+      "markdown_file": "object-hrdata-dbo-smartrecruiterchangeresponse.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "HRData.dbo.SmartRecruiterConfiguration",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "HRData",
+        "dbo",
+        "SmartRecruiterConfiguration"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:6C3911F0AE6C4AB471793BB7680BD995F273AE025E9522985DDE2826E9F92EE8",
+      "evidence_file": "object-hrdata-dbo-smartrecruiterconfiguration.evidence.json",
+      "markdown_file": "object-hrdata-dbo-smartrecruiterconfiguration.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "HRData.dbo.SmartRecruiterConfigurationResponse",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "HRData",
+        "dbo",
+        "SmartRecruiterConfigurationResponse"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:8BD775B50BD3ECEB76BAD7FC9956E2A77BD2446EBBED7E165A7FC0B0F9F0B55F",
+      "evidence_file": "object-hrdata-dbo-smartrecruiterconfigurationresponse.evidence.json",
+      "markdown_file": "object-hrdata-dbo-smartrecruiterconfigurationresponse.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "HRData.dbo.SmartRecruiterUser",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "HRData",
+        "dbo",
+        "SmartRecruiterUser"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B8EE9BA84CC73B4280DE26EB28092D976C3FA49DA8CD77A431FB906BBE43BE9B",
+      "evidence_file": "object-hrdata-dbo-smartrecruiteruser.evidence.json",
+      "markdown_file": "object-hrdata-dbo-smartrecruiteruser.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "SmartRecruiterActivationResponse",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "HRData",
+        "dbo",
+        "SmartRecruiterActivationResponse"
+      ],
+      "canonical_id": "object-hrdata-dbo-smartrecruiteractivationresponse",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/HRData/tables/dbo__SmartRecruiterActivationResponse.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E1415D730F415B7F6B0A3603D72E7F3B4410D5478DF3A49BF710CB2A4E4FB587",
+      "object": {
+        "name": "SmartRecruiterActivationResponse",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "HRData",
+        "schema": "dbo",
+        "qualified_name": "HRData.dbo.SmartRecruiterActivationResponse",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "HRData.dbo.SmartRecruiterActivationResponse",
+        "dbo.SmartRecruiterActivationResponse",
+        "SmartRecruiterActivationResponse",
+        "smartrecruiteractivationresponse"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / HRData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / HRData / dbo"
+      ],
+      "evidence_file": "object-hrdata-dbo-smartrecruiteractivationresponse.evidence.json",
+      "markdown_file": "object-hrdata-dbo-smartrecruiteractivationresponse.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "SmartRecruiterChange",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "HRData",
+        "dbo",
+        "SmartRecruiterChange"
+      ],
+      "canonical_id": "object-hrdata-dbo-smartrecruiterchange",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/hrdata/tables/dbo__SmartRecruiterChange.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:0FB74FED77B648BA35034BD1B8B4029467CEC4FECE7AFD99A77B2D75D773F402",
+      "object": {
+        "name": "SmartRecruiterChange",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "HRData",
+        "schema": "dbo",
+        "qualified_name": "HRData.dbo.SmartRecruiterChange",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "HRData.dbo.SmartRecruiterChange",
+        "dbo.SmartRecruiterChange",
+        "SmartRecruiterChange",
+        "smartrecruiterchange"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 19,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / HRData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / HRData / dbo"
+      ],
+      "evidence_file": "object-hrdata-dbo-smartrecruiterchange.evidence.json",
+      "markdown_file": "object-hrdata-dbo-smartrecruiterchange.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "SmartRecruiterChangeResponse",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "HRData",
+        "dbo",
+        "SmartRecruiterChangeResponse"
+      ],
+      "canonical_id": "object-hrdata-dbo-smartrecruiterchangeresponse",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/HRData/tables/dbo__SmartRecruiterChangeResponse.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:433520D3768AEB027D1F3F48CC9F9E2CD868DC012E77CFD98339037F8CD141C0",
+      "object": {
+        "name": "SmartRecruiterChangeResponse",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "HRData",
+        "schema": "dbo",
+        "qualified_name": "HRData.dbo.SmartRecruiterChangeResponse",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "HRData.dbo.SmartRecruiterChangeResponse",
+        "dbo.SmartRecruiterChangeResponse",
+        "SmartRecruiterChangeResponse",
+        "smartrecruiterchangeresponse"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / HRData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / HRData / dbo"
+      ],
+      "evidence_file": "object-hrdata-dbo-smartrecruiterchangeresponse.evidence.json",
+      "markdown_file": "object-hrdata-dbo-smartrecruiterchangeresponse.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "SmartRecruiterConfiguration",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "HRData",
+        "dbo",
+        "SmartRecruiterConfiguration"
+      ],
+      "canonical_id": "object-hrdata-dbo-smartrecruiterconfiguration",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/HRData/tables/dbo__SmartRecruiterConfiguration.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:6C3911F0AE6C4AB471793BB7680BD995F273AE025E9522985DDE2826E9F92EE8",
+      "object": {
+        "name": "SmartRecruiterConfiguration",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "HRData",
+        "schema": "dbo",
+        "qualified_name": "HRData.dbo.SmartRecruiterConfiguration",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "HRData.dbo.SmartRecruiterConfiguration",
+        "dbo.SmartRecruiterConfiguration",
+        "SmartRecruiterConfiguration",
+        "smartrecruiterconfiguration"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / HRData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / HRData / dbo"
+      ],
+      "evidence_file": "object-hrdata-dbo-smartrecruiterconfiguration.evidence.json",
+      "markdown_file": "object-hrdata-dbo-smartrecruiterconfiguration.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "SmartRecruiterConfigurationResponse",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "HRData",
+        "dbo",
+        "SmartRecruiterConfigurationResponse"
+      ],
+      "canonical_id": "object-hrdata-dbo-smartrecruiterconfigurationresponse",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/HRData/tables/dbo__SmartRecruiterConfigurationResponse.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:8BD775B50BD3ECEB76BAD7FC9956E2A77BD2446EBBED7E165A7FC0B0F9F0B55F",
+      "object": {
+        "name": "SmartRecruiterConfigurationResponse",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "HRData",
+        "schema": "dbo",
+        "qualified_name": "HRData.dbo.SmartRecruiterConfigurationResponse",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "HRData.dbo.SmartRecruiterConfigurationResponse",
+        "dbo.SmartRecruiterConfigurationResponse",
+        "SmartRecruiterConfigurationResponse",
+        "smartrecruiterconfigurationresponse"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / HRData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / HRData / dbo"
+      ],
+      "evidence_file": "object-hrdata-dbo-smartrecruiterconfigurationresponse.evidence.json",
+      "markdown_file": "object-hrdata-dbo-smartrecruiterconfigurationresponse.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "SmartRecruiterUser",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "HRData",
+        "dbo",
+        "SmartRecruiterUser"
+      ],
+      "canonical_id": "object-hrdata-dbo-smartrecruiteruser",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/HRData/tables/dbo__SmartRecruiterUser.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B8EE9BA84CC73B4280DE26EB28092D976C3FA49DA8CD77A431FB906BBE43BE9B",
+      "object": {
+        "name": "SmartRecruiterUser",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "HRData",
+        "schema": "dbo",
+        "qualified_name": "HRData.dbo.SmartRecruiterUser",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "HRData.dbo.SmartRecruiterUser",
+        "dbo.SmartRecruiterUser",
+        "SmartRecruiterUser",
+        "smartrecruiteruser"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 16,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / HRData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / HRData / dbo"
+      ],
+      "evidence_file": "object-hrdata-dbo-smartrecruiteruser.evidence.json",
+      "markdown_file": "object-hrdata-dbo-smartrecruiteruser.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-107-hrdata-dbo-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-107-hrdata-dbo-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-107-hrdata-dbo-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

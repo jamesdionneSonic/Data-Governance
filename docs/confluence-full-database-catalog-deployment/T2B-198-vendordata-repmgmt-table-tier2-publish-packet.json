@@ -1,0 +1,533 @@
+{
+  "packet_id": "T2B-198",
+  "generated_at": "2026-06-23T19:09:40.624Z",
+  "batch": {
+    "batch_id": "T2B-198",
+    "priority_rank": 198,
+    "platform": "SQL Server",
+    "database": "VendorData",
+    "schema": "RepMgmt",
+    "object_type_scope": "table",
+    "object_count": 3,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "StoreNames",
+    "last_object": "ReviewMonthly",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / RepMgmt",
+    "object_names": ["StoreNames", "ReviewMetrics", "ReviewMonthly"],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 3,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 3,
+    "total_planned_pages": 7
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData"],
+      "page_type": "database",
+      "evidence_hash": "sha256:C029883539BC166EBDE80488ADFC36CDDDD0E84559188FE128628E553E29DFF1",
+      "evidence_file": "database-vendordata.evidence.json",
+      "markdown_file": "database-vendordata.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.RepMgmt",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "VendorData", "RepMgmt"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:28C3EC95920582E80DEAFC5324A2427E182444890E890750AAE9A50935706A46",
+      "evidence_file": "schema-vendordata-repmgmt.evidence.json",
+      "markdown_file": "schema-vendordata-repmgmt.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.RepMgmt.ReviewMetrics",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "RepMgmt",
+        "ReviewMetrics"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E076E3B00622DEDECAF95F0AACA0761FDEB5919F7EE09BEEFF39AEC5F1F7554E",
+      "evidence_file": "object-vendordata-repmgmt-reviewmetrics.evidence.json",
+      "markdown_file": "object-vendordata-repmgmt-reviewmetrics.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.RepMgmt.ReviewMonthly",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "RepMgmt",
+        "ReviewMonthly"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:DC08103BF0C18DF8D1C478BA816167F08589D270E91CC6F8CC9F30A8C4E540AB",
+      "evidence_file": "object-vendordata-repmgmt-reviewmonthly.evidence.json",
+      "markdown_file": "object-vendordata-repmgmt-reviewmonthly.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "VendorData.RepMgmt.StoreNames",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "RepMgmt",
+        "StoreNames"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E52A72883FE7ECB902772FC5327EC923E757C0D37C018937DE8A67E40C19E8E9",
+      "evidence_file": "object-vendordata-repmgmt-storenames.evidence.json",
+      "markdown_file": "object-vendordata-repmgmt-storenames.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "ReviewMetrics",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "RepMgmt",
+        "ReviewMetrics"
+      ],
+      "canonical_id": "object-vendordata-repmgmt-reviewmetrics",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/RepMgmt__ReviewMetrics.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E076E3B00622DEDECAF95F0AACA0761FDEB5919F7EE09BEEFF39AEC5F1F7554E",
+      "object": {
+        "name": "ReviewMetrics",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "RepMgmt",
+        "qualified_name": "VendorData.RepMgmt.ReviewMetrics",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.RepMgmt.ReviewMetrics",
+        "RepMgmt.ReviewMetrics",
+        "ReviewMetrics",
+        "reviewmetrics"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RMMetricID",
+          "LocationID",
+          "StartDate",
+          "Failures",
+          "Unsubscribes",
+          "Dropped",
+          "Delivered",
+          "Opened",
+          "Received",
+          "UniqueOpened",
+          "Bounced",
+          "Clicked",
+          "Sent",
+          "Unsubscribed",
+          "Spammed",
+          "UniqueClicked",
+          "Deduped",
+          "MetaSourceFileName",
+          "MetaFileModifiedDate",
+          "MetaLoadDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 25,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / RepMgmt"
+      ],
+      "evidence_file": "object-vendordata-repmgmt-reviewmetrics.evidence.json",
+      "markdown_file": "object-vendordata-repmgmt-reviewmetrics.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ReviewMonthly",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "RepMgmt",
+        "ReviewMonthly"
+      ],
+      "canonical_id": "object-vendordata-repmgmt-reviewmonthly",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/RepMgmt__ReviewMonthly.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:DC08103BF0C18DF8D1C478BA816167F08589D270E91CC6F8CC9F30A8C4E540AB",
+      "object": {
+        "name": "ReviewMonthly",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "RepMgmt",
+        "qualified_name": "VendorData.RepMgmt.ReviewMonthly",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.RepMgmt.ReviewMonthly",
+        "RepMgmt.ReviewMonthly",
+        "ReviewMonthly",
+        "reviewmonthly"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RMReviewMonthlyID",
+          "UniqueID",
+          "TenantID",
+          "LocationID",
+          "LocationName",
+          "SourceID",
+          "URL",
+          "ReviewYear",
+          "ReviewMonth",
+          "ReviewDate",
+          "ReviewerName",
+          "Rating",
+          "NormalizedRating",
+          "Sentiment",
+          "CommentTitle",
+          "Comment",
+          "Published",
+          "CanRespond",
+          "HasResponses",
+          "ResponseURL"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 31,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / RepMgmt"
+      ],
+      "evidence_file": "object-vendordata-repmgmt-reviewmonthly.evidence.json",
+      "markdown_file": "object-vendordata-repmgmt-reviewmonthly.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "StoreNames",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "VendorData",
+        "RepMgmt",
+        "StoreNames"
+      ],
+      "canonical_id": "object-vendordata-repmgmt-storenames",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-DWASQL-02,12010/databases/VendorData/tables/RepMgmt__StoreNames.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E52A72883FE7ECB902772FC5327EC923E757C0D37C018937DE8A67E40C19E8E9",
+      "object": {
+        "name": "StoreNames",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-DWASQL-02,12010",
+        "database": "VendorData",
+        "schema": "RepMgmt",
+        "qualified_name": "VendorData.RepMgmt.StoreNames",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "VendorData.RepMgmt.StoreNames",
+        "RepMgmt.StoreNames",
+        "StoreNames",
+        "storenames"
+      ],
+      "lineage": {
+        "upstream_loaders": ["L1-DWASQL-02,12010.VendorData.dbo.uspDimRMStoreNamesLoad"],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "RMStoreID",
+          "LocationID",
+          "InternalID",
+          "InternalName",
+          "OptedOut",
+          "IndustryID",
+          "ParentID",
+          "Company",
+          "Brand",
+          "GSRBrand",
+          "ReviewPhone",
+          "Status",
+          "SocialMediaInstagram",
+          "SocialMediaYouTube",
+          "SocialMediaFacebook",
+          "SocialMediaTwitter",
+          "ExternalName",
+          "UTM",
+          "Description",
+          "ShortDescription"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 65,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData",
+        "Sonic Data Lineage / Database Catalog / SQL Server / VendorData / RepMgmt"
+      ],
+      "evidence_file": "object-vendordata-repmgmt-storenames.evidence.json",
+      "markdown_file": "object-vendordata-repmgmt-storenames.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-198-vendordata-repmgmt-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-198-vendordata-repmgmt-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-198-vendordata-repmgmt-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

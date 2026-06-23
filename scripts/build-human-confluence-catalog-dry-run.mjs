@@ -519,7 +519,14 @@ async function listTier2ObjectNameRows() {
   const filter = parseTier2ObjectNamesFilter();
   if (!filter) return [];
   const rows = await listRuntimeSchemaRows(filter.database, filter.schema);
-  return rows.filter((row) => filter.names.has(String(row.name || '').toLowerCase()));
+  return rows
+    .filter((row) => filter.names.has(String(row.name || '').toLowerCase()))
+    .map((row) => ({
+      ...row,
+      database: filter.database,
+      schema: filter.schema,
+      canonical_page_path: databaseCatalogPath(row.platform || platformForRow(row), filter.database, filter.schema, row.name),
+    }));
 }
 
 async function listRuntimeDatabaseNames() {

@@ -1,0 +1,3421 @@
+{
+  "packet_id": "T2B-041",
+  "generated_at": "2026-06-23T18:03:46.557Z",
+  "batch": {
+    "batch_id": "T2B-041",
+    "priority_rank": 41,
+    "platform": "SQL Server",
+    "database": "SIMS6200Retail",
+    "schema": "dbo",
+    "object_type_scope": "table",
+    "object_count": 27,
+    "high_use_objects": 7,
+    "downstream_uses": 178,
+    "first_object": "Vehicle_Inventory",
+    "last_object": "TitleStatus_staging",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo",
+    "object_names": [
+      "Vehicle_Inventory",
+      "Vehicle",
+      "STATUS",
+      "Book",
+      "Organization",
+      "ADP_DEALERSHIP_MAPPING",
+      "Customer",
+      "Appraisal",
+      "Book_Value_Response",
+      "EXTERNAL_REPORT_ICON",
+      "Vehicle_Status_Log",
+      "Vehicle_Pricing",
+      "External_Vehicle_Data",
+      "Factory_Options",
+      "PhotoImport_VehicleUrls",
+      "Sonic_Appraisal_Center",
+      "Status_Cat",
+      "Status_Rollup",
+      "FIREDealData_New_STG",
+      "Book_Value_Request",
+      "Organization_Address",
+      "Organization_Association",
+      "SSMS",
+      "Vehicle_Source",
+      "FireDealData_New",
+      "TitleStatus",
+      "TitleStatus_staging"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 27,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 27,
+    "total_planned_pages": 31
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "SIMS6200Retail"],
+      "page_type": "database",
+      "evidence_hash": "sha256:0AB9D5AB1ECEA0926E925EC1CB28751F56EDACDE36D4695E84591DD91854919D",
+      "evidence_file": "database-sims6200retail.evidence.json",
+      "markdown_file": "database-sims6200retail.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "SIMS6200Retail", "dbo"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:30DC9FC861E54FD810DC9F4C87F0D223D7A0E662A209C4534A805EB24857C1CA",
+      "evidence_file": "schema-sims6200retail-dbo.evidence.json",
+      "markdown_file": "schema-sims6200retail-dbo.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.ADP_DEALERSHIP_MAPPING",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "ADP_DEALERSHIP_MAPPING"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E19ED434268385369D2316D1E4AC61709E235DF0E4C946AFF9015A7933E2A05E",
+      "evidence_file": "object-sims6200retail-dbo-adp-dealership-mapping.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-adp-dealership-mapping.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.Appraisal",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Appraisal"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:1B094AB1E60131FA045AADC07AA0263721A217F87281C9D6B32538E62345BDCE",
+      "evidence_file": "object-sims6200retail-dbo-appraisal.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-appraisal.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.Book",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Book"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:64821390496224870B3DA394CF4B12D99F1B6A93A2A664901A4D641EBEFC4DDB",
+      "evidence_file": "object-sims6200retail-dbo-book.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-book.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.Book_Value_Request",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Book_Value_Request"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E8E358DF20F0993A00DB564D9CEA1F3CD331BCF8881D7383F89DF33F60F5C8FB",
+      "evidence_file": "object-sims6200retail-dbo-book-value-request.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-book-value-request.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.Book_Value_Response",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Book_Value_Response"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:FED5887FD2D0117AE423FF0E0875D34AD0047229B29C48F45EC1003F1E36EAA0",
+      "evidence_file": "object-sims6200retail-dbo-book-value-response.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-book-value-response.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.Customer",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Customer"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:990C5F11F35C713EA0375CCA8BD59A480610EC59DF0F655387BF80D1DB17BEA3",
+      "evidence_file": "object-sims6200retail-dbo-customer.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-customer.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.EXTERNAL_REPORT_ICON",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "EXTERNAL_REPORT_ICON"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:738E2D6148D55DF3A40B3CE713AC14A42DFB4F4EFA0538EC94C026503526BB6A",
+      "evidence_file": "object-sims6200retail-dbo-external-report-icon.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-external-report-icon.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.External_Vehicle_Data",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "External_Vehicle_Data"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:2E2F96F749ECF9C3AE827B24F162E3CE41F2DB1C8AE50E9FB30C917CE1F12C5C",
+      "evidence_file": "object-sims6200retail-dbo-external-vehicle-data.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-external-vehicle-data.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.Factory_Options",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Factory_Options"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:181E70699F0F79F11DCD5B737180AD4688C65663E3DFCE539D7AE5C6BFB7C3C4",
+      "evidence_file": "object-sims6200retail-dbo-factory-options.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-factory-options.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.FireDealData_New",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "FireDealData_New"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:67B9F85F4D94D081EDC2A737CF7654848C949BE9440FB1AA411D5C4D505AAD40",
+      "evidence_file": "object-sims6200retail-dbo-firedealdata-new.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-firedealdata-new.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.FIREDealData_New_STG",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "FIREDealData_New_STG"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:E60BE13BE1D921FF230FC91F4BF25ECE99C459BDF5AFCA5B7D1BBFDBCCDE4D35",
+      "evidence_file": "object-sims6200retail-dbo-firedealdata-new-stg.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-firedealdata-new-stg.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.Organization",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Organization"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:EB090681C3AAD3BE98CDC060BAEAF54140346577CC09AA9DBBA96412A13C30F8",
+      "evidence_file": "object-sims6200retail-dbo-organization.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-organization.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.Organization_Address",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Organization_Address"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:C5680C7B9BFBD65AC0D4C1015B428AE5244F6921523FB4857EB31604083B7819",
+      "evidence_file": "object-sims6200retail-dbo-organization-address.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-organization-address.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.Organization_Association",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Organization_Association"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9DFCB5BCED136B3BFF7144CC30A925A6869533F9B662728D3F54C885C11DE5D0",
+      "evidence_file": "object-sims6200retail-dbo-organization-association.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-organization-association.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.PhotoImport_VehicleUrls",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "PhotoImport_VehicleUrls"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:3341FEDD926713F7F6193F6A401A23C02108BA01C4BFB49B65A1685654836CCD",
+      "evidence_file": "object-sims6200retail-dbo-photoimport-vehicleurls.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-photoimport-vehicleurls.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.Sonic_Appraisal_Center",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Sonic_Appraisal_Center"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:7F397B74C19A6D951340EAF46CAE953383FA1E829FF4AD46CD265C4EA9F3B7DA",
+      "evidence_file": "object-sims6200retail-dbo-sonic-appraisal-center.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-sonic-appraisal-center.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.SSMS",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "SSMS"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:8E63B38FCD6E19F2A4DE61F29F5D6402064F24EAAE4056571DFB2BCFD4A54CBE",
+      "evidence_file": "object-sims6200retail-dbo-ssms.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-ssms.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.STATUS",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "STATUS"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:F7938A380628EDF8084B8B63E4EE5C66F59DCE1C2B399B4A1515AA21E16EB58B",
+      "evidence_file": "object-sims6200retail-dbo-status.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-status.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.Status_Cat",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Status_Cat"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:AD94EA28B54C98F248E85606FD48836A44E456FDDF3A69517FBBCFB5E4F5D3F5",
+      "evidence_file": "object-sims6200retail-dbo-status-cat.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-status-cat.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.Status_Rollup",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Status_Rollup"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:CCB3666712EFF2099D22D604A0E0E73528682B2CF5631BC8DD52519094AE4B29",
+      "evidence_file": "object-sims6200retail-dbo-status-rollup.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-status-rollup.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.TitleStatus",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "TitleStatus"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:1DF1B64F217D24304C77F4C64D9AB48EDDAC46628DE7D5C7800E34C8D3B7E16A",
+      "evidence_file": "object-sims6200retail-dbo-titlestatus.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-titlestatus.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.TitleStatus_staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "TitleStatus_staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:EA6D257668054DF0F8143932653EB77EAEC24E255AC40822053D6DCABDDB08D5",
+      "evidence_file": "object-sims6200retail-dbo-titlestatus-staging.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-titlestatus-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.Vehicle",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Vehicle"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:B4BA7EA3A32F484B3E4F06B6948375999FA0F7D0BB99B7DAAFF8D98E86656A1E",
+      "evidence_file": "object-sims6200retail-dbo-vehicle.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-vehicle.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.Vehicle_Inventory",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Vehicle_Inventory"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:97414F42D0E617F10E9350A06AD56A8FB68D260D4DA005CC894051495C19F906",
+      "evidence_file": "object-sims6200retail-dbo-vehicle-inventory.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-vehicle-inventory.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.Vehicle_Pricing",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Vehicle_Pricing"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:6E404A8564CD50EB24E8BB6206DE0616ED43CDF1873CBBDF5C3CB0B011CDD1F6",
+      "evidence_file": "object-sims6200retail-dbo-vehicle-pricing.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-vehicle-pricing.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.Vehicle_Source",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Vehicle_Source"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:99E42D8213690416A0D26C1ACFF8C9184972DA9D7548F8DC4A833E9BBDB41DD3",
+      "evidence_file": "object-sims6200retail-dbo-vehicle-source.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-vehicle-source.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SIMS6200Retail.dbo.Vehicle_Status_Log",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Vehicle_Status_Log"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:560475F780ECB61DDFB25E13E0F0E23AB2252297DCBF1EA87B9537E270EFDE76",
+      "evidence_file": "object-sims6200retail-dbo-vehicle-status-log.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-vehicle-status-log.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "ADP_DEALERSHIP_MAPPING",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "ADP_DEALERSHIP_MAPPING"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-adp-dealership-mapping",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__ADP_DEALERSHIP_MAPPING.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E19ED434268385369D2316D1E4AC61709E235DF0E4C946AFF9015A7933E2A05E",
+      "object": {
+        "name": "ADP_DEALERSHIP_MAPPING",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.ADP_DEALERSHIP_MAPPING",
+        "tags": ["high-use", "profiled", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "review-needed"],
+      "tag_reasons": [
+        "high-use: 10 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.ADP_DEALERSHIP_MAPPING",
+        "dbo.ADP_DEALERSHIP_MAPPING",
+        "ADP_DEALERSHIP_MAPPING",
+        "ADPDEALERSHIPMAPPING",
+        "adpdealershipmapping"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 19,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-adp-dealership-mapping.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-adp-dealership-mapping.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Appraisal",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Appraisal"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-appraisal",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__Appraisal.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:1B094AB1E60131FA045AADC07AA0263721A217F87281C9D6B32538E62345BDCE",
+      "object": {
+        "name": "Appraisal",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.Appraisal",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["SIMS6200Retail.dbo.Appraisal", "dbo.Appraisal", "Appraisal", "appraisal"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 13,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-appraisal.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-appraisal.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Book",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Book"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-book",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__Book.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:64821390496224870B3DA394CF4B12D99F1B6A93A2A664901A4D641EBEFC4DDB",
+      "object": {
+        "name": "Book",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.Book",
+        "tags": ["high-use", "profiled", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "review-needed"],
+      "tag_reasons": [
+        "high-use: 12 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["SIMS6200Retail.dbo.Book", "dbo.Book", "Book", "book"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-book.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-book.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Book_Value_Request",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Book_Value_Request"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-book-value-request",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__Book_Value_Request.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E8E358DF20F0993A00DB564D9CEA1F3CD331BCF8881D7383F89DF33F60F5C8FB",
+      "object": {
+        "name": "Book_Value_Request",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.Book_Value_Request",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.Book_Value_Request",
+        "dbo.Book_Value_Request",
+        "Book_Value_Request",
+        "BookValueRequest",
+        "bookvaluerequest"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 23,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-book-value-request.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-book-value-request.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Book_Value_Response",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Book_Value_Response"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-book-value-response",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__Book_Value_Response.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:FED5887FD2D0117AE423FF0E0875D34AD0047229B29C48F45EC1003F1E36EAA0",
+      "object": {
+        "name": "Book_Value_Response",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.Book_Value_Response",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.Book_Value_Response",
+        "dbo.Book_Value_Response",
+        "Book_Value_Response",
+        "BookValueResponse",
+        "bookvalueresponse"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 33,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-book-value-response.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-book-value-response.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Customer",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Customer"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-customer",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__Customer.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:990C5F11F35C713EA0375CCA8BD59A480610EC59DF0F655387BF80D1DB17BEA3",
+      "object": {
+        "name": "Customer",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.Customer",
+        "tags": ["high-use", "profiled", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "review-needed"],
+      "tag_reasons": [
+        "high-use: 10 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["SIMS6200Retail.dbo.Customer", "dbo.Customer", "Customer", "customer"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-customer.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-customer.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "EXTERNAL_REPORT_ICON",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "EXTERNAL_REPORT_ICON"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-external-report-icon",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__EXTERNAL_REPORT_ICON.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:738E2D6148D55DF3A40B3CE713AC14A42DFB4F4EFA0538EC94C026503526BB6A",
+      "object": {
+        "name": "EXTERNAL_REPORT_ICON",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.EXTERNAL_REPORT_ICON",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.EXTERNAL_REPORT_ICON",
+        "dbo.EXTERNAL_REPORT_ICON",
+        "EXTERNAL_REPORT_ICON",
+        "EXTERNALREPORTICON",
+        "externalreporticon"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-external-report-icon.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-external-report-icon.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "External_Vehicle_Data",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "External_Vehicle_Data"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-external-vehicle-data",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__External_Vehicle_Data.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:2E2F96F749ECF9C3AE827B24F162E3CE41F2DB1C8AE50E9FB30C917CE1F12C5C",
+      "object": {
+        "name": "External_Vehicle_Data",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.External_Vehicle_Data",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.External_Vehicle_Data",
+        "dbo.External_Vehicle_Data",
+        "External_Vehicle_Data",
+        "ExternalVehicleData",
+        "externalvehicledata"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 12,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-external-vehicle-data.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-external-vehicle-data.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Factory_Options",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Factory_Options"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-factory-options",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__Factory_Options.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:181E70699F0F79F11DCD5B737180AD4688C65663E3DFCE539D7AE5C6BFB7C3C4",
+      "object": {
+        "name": "Factory_Options",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.Factory_Options",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.Factory_Options",
+        "dbo.Factory_Options",
+        "Factory_Options",
+        "FactoryOptions",
+        "factoryoptions"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 19,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-factory-options.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-factory-options.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "FireDealData_New",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "FireDealData_New"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-firedealdata-new",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__FireDealData_New.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:67B9F85F4D94D081EDC2A737CF7654848C949BE9440FB1AA411D5C4D505AAD40",
+      "object": {
+        "name": "FireDealData_New",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.FireDealData_New",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.FireDealData_New",
+        "dbo.FireDealData_New",
+        "FireDealData_New",
+        "FireDealDataNew",
+        "firedealdatanew"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 33,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-firedealdata-new.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-firedealdata-new.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "FIREDealData_New_STG",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "FIREDealData_New_STG"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-firedealdata-new-stg",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__FIREDealData_New_STG.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:E60BE13BE1D921FF230FC91F4BF25ECE99C459BDF5AFCA5B7D1BBFDBCCDE4D35",
+      "object": {
+        "name": "FIREDealData_New_STG",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.FIREDealData_New_STG",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.FIREDealData_New_STG",
+        "dbo.FIREDealData_New_STG",
+        "FIREDealData_New_STG",
+        "FIREDealDataNewSTG",
+        "firedealdatanewstg"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 33,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-firedealdata-new-stg.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-firedealdata-new-stg.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Organization",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Organization"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-organization",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__Organization.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:EB090681C3AAD3BE98CDC060BAEAF54140346577CC09AA9DBBA96412A13C30F8",
+      "object": {
+        "name": "Organization",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.Organization",
+        "tags": ["high-use", "profiled", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "review-needed"],
+      "tag_reasons": [
+        "high-use: 12 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.Organization",
+        "dbo.Organization",
+        "Organization",
+        "organization"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 15,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-organization.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-organization.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Organization_Address",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Organization_Address"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-organization-address",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__Organization_Address.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:C5680C7B9BFBD65AC0D4C1015B428AE5244F6921523FB4857EB31604083B7819",
+      "object": {
+        "name": "Organization_Address",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.Organization_Address",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.Organization_Address",
+        "dbo.Organization_Address",
+        "Organization_Address",
+        "OrganizationAddress",
+        "organizationaddress"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 16,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-organization-address.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-organization-address.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Organization_Association",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Organization_Association"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-organization-association",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__Organization_Association.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9DFCB5BCED136B3BFF7144CC30A925A6869533F9B662728D3F54C885C11DE5D0",
+      "object": {
+        "name": "Organization_Association",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.Organization_Association",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.Organization_Association",
+        "dbo.Organization_Association",
+        "Organization_Association",
+        "OrganizationAssociation",
+        "organizationassociation"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 9,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-organization-association.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-organization-association.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "PhotoImport_VehicleUrls",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "PhotoImport_VehicleUrls"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-photoimport-vehicleurls",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__PhotoImport_VehicleUrls.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:3341FEDD926713F7F6193F6A401A23C02108BA01C4BFB49B65A1685654836CCD",
+      "object": {
+        "name": "PhotoImport_VehicleUrls",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.PhotoImport_VehicleUrls",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.PhotoImport_VehicleUrls",
+        "dbo.PhotoImport_VehicleUrls",
+        "PhotoImport_VehicleUrls",
+        "PhotoImportVehicleUrls",
+        "photoimportvehicleurls"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 18,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-photoimport-vehicleurls.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-photoimport-vehicleurls.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Sonic_Appraisal_Center",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Sonic_Appraisal_Center"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-sonic-appraisal-center",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__Sonic_Appraisal_Center.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:7F397B74C19A6D951340EAF46CAE953383FA1E829FF4AD46CD265C4EA9F3B7DA",
+      "object": {
+        "name": "Sonic_Appraisal_Center",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.Sonic_Appraisal_Center",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.Sonic_Appraisal_Center",
+        "dbo.Sonic_Appraisal_Center",
+        "Sonic_Appraisal_Center",
+        "SonicAppraisalCenter",
+        "sonicappraisalcenter"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 23,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-sonic-appraisal-center.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-sonic-appraisal-center.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "SSMS",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "SSMS"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-ssms",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__SSMS.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:8E63B38FCD6E19F2A4DE61F29F5D6402064F24EAAE4056571DFB2BCFD4A54CBE",
+      "object": {
+        "name": "SSMS",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.SSMS",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["SIMS6200Retail.dbo.SSMS", "dbo.SSMS", "SSMS", "ssms"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [
+          "V1-SSIS25-01, 11040.SSISDB.SimsInventory.SimsInventory.SIMSImportRTPriceChangeHistory.dtsx"
+        ],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "Price_Change_ID",
+          "Vehicle_ID",
+          "Store_ID",
+          "Invtr_ID",
+          "Price_Type",
+          "Old_Value",
+          "New_Value",
+          "Age",
+          "Group_Age",
+          "Status",
+          "Sgst_Price",
+          "Avg_Exact_Match",
+          "Vehicles_in_Mrkt",
+          "Mrkt_Price",
+          "Avg_Days_to_Sell",
+          "Price_Recom_Usage",
+          "Comments",
+          "Created_By",
+          "Creation_Date",
+          "Modified_By"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 21,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-ssms.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-ssms.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "STATUS",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "STATUS"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-status",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__STATUS.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:F7938A380628EDF8084B8B63E4EE5C66F59DCE1C2B399B4A1515AA21E16EB58B",
+      "object": {
+        "name": "STATUS",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.STATUS",
+        "tags": ["high-use", "profiled", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "review-needed"],
+      "tag_reasons": [
+        "high-use: 12 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["SIMS6200Retail.dbo.STATUS", "dbo.STATUS", "STATUS", "status"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 10,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-status.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-status.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Status_Cat",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Status_Cat"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-status-cat",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__Status_Cat.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:AD94EA28B54C98F248E85606FD48836A44E456FDDF3A69517FBBCFB5E4F5D3F5",
+      "object": {
+        "name": "Status_Cat",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.Status_Cat",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.Status_Cat",
+        "dbo.Status_Cat",
+        "Status_Cat",
+        "StatusCat",
+        "statuscat"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 6,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-status-cat.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-status-cat.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Status_Rollup",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Status_Rollup"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-status-rollup",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__Status_Rollup.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:CCB3666712EFF2099D22D604A0E0E73528682B2CF5631BC8DD52519094AE4B29",
+      "object": {
+        "name": "Status_Rollup",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.Status_Rollup",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.Status_Rollup",
+        "dbo.Status_Rollup",
+        "Status_Rollup",
+        "StatusRollup",
+        "statusrollup"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 3,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-status-rollup.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-status-rollup.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TitleStatus",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "TitleStatus"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-titlestatus",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L2-RTSIMSSQL-04,12011/databases/SIMS6200Retail/tables/dbo__TitleStatus.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:1DF1B64F217D24304C77F4C64D9AB48EDDAC46628DE7D5C7800E34C8D3B7E16A",
+      "object": {
+        "name": "TitleStatus",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L2-RTSIMSSQL-04,12011",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.TitleStatus",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.TitleStatus",
+        "dbo.TitleStatus",
+        "TitleStatus",
+        "titlestatus"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 11,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-titlestatus.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-titlestatus.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "TitleStatus_staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "TitleStatus_staging"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-titlestatus-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L2-RTSIMSSQL-04,12011/databases/SIMS6200Retail/tables/dbo__TitleStatus_staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:EA6D257668054DF0F8143932653EB77EAEC24E255AC40822053D6DCABDDB08D5",
+      "object": {
+        "name": "TitleStatus_staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L2-RTSIMSSQL-04,12011",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.TitleStatus_staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.TitleStatus_staging",
+        "dbo.TitleStatus_staging",
+        "TitleStatus_staging",
+        "TitleStatusstaging",
+        "titlestatusstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 2,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-titlestatus-staging.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-titlestatus-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Vehicle",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Vehicle"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-vehicle",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__Vehicle.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:B4BA7EA3A32F484B3E4F06B6948375999FA0F7D0BB99B7DAAFF8D98E86656A1E",
+      "object": {
+        "name": "Vehicle",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.Vehicle",
+        "tags": ["high-use", "profiled", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "review-needed"],
+      "tag_reasons": [
+        "high-use: 14 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["SIMS6200Retail.dbo.Vehicle", "dbo.Vehicle", "Vehicle", "vehicle"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 22,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-vehicle.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-vehicle.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Vehicle_Inventory",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Vehicle_Inventory"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-vehicle-inventory",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__Vehicle_Inventory.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:97414F42D0E617F10E9350A06AD56A8FB68D260D4DA005CC894051495C19F906",
+      "object": {
+        "name": "Vehicle_Inventory",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.Vehicle_Inventory",
+        "tags": ["high-use", "profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "high-use: 26 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 0 upstream and 26 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.Vehicle_Inventory",
+        "dbo.Vehicle_Inventory",
+        "Vehicle_Inventory",
+        "VehicleInventory",
+        "vehicleinventory"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 134,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-vehicle-inventory.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-vehicle-inventory.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Vehicle_Pricing",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Vehicle_Pricing"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-vehicle-pricing",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__Vehicle_Pricing.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:6E404A8564CD50EB24E8BB6206DE0616ED43CDF1873CBBDF5C3CB0B011CDD1F6",
+      "object": {
+        "name": "Vehicle_Pricing",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.Vehicle_Pricing",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.Vehicle_Pricing",
+        "dbo.Vehicle_Pricing",
+        "Vehicle_Pricing",
+        "VehiclePricing",
+        "vehiclepricing"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 45,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-vehicle-pricing.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-vehicle-pricing.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Vehicle_Source",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Vehicle_Source"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-vehicle-source",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__Vehicle_Source.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:99E42D8213690416A0D26C1ACFF8C9184972DA9D7548F8DC4A833E9BBDB41DD3",
+      "object": {
+        "name": "Vehicle_Source",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.Vehicle_Source",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.Vehicle_Source",
+        "dbo.Vehicle_Source",
+        "Vehicle_Source",
+        "VehicleSource",
+        "vehiclesource"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 6,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-vehicle-source.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-vehicle-source.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Vehicle_Status_Log",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SIMS6200Retail",
+        "dbo",
+        "Vehicle_Status_Log"
+      ],
+      "canonical_id": "object-sims6200retail-dbo-vehicle-status-log",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/V1-SQL-03/databases/SIMS6200Retail/tables/dbo__Vehicle_Status_Log.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:560475F780ECB61DDFB25E13E0F0E23AB2252297DCBF1EA87B9537E270EFDE76",
+      "object": {
+        "name": "Vehicle_Status_Log",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "V1-SQL-03",
+        "database": "SIMS6200Retail",
+        "schema": "dbo",
+        "qualified_name": "SIMS6200Retail.dbo.Vehicle_Status_Log",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SIMS6200Retail.dbo.Vehicle_Status_Log",
+        "dbo.Vehicle_Status_Log",
+        "Vehicle_Status_Log",
+        "VehicleStatusLog",
+        "vehiclestatuslog"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 7,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SIMS6200Retail / dbo"
+      ],
+      "evidence_file": "object-sims6200retail-dbo-vehicle-status-log.evidence.json",
+      "markdown_file": "object-sims6200retail-dbo-vehicle-status-log.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-041-sims6200retail-dbo-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-041-sims6200retail-dbo-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-041-sims6200retail-dbo-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

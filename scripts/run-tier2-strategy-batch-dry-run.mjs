@@ -5,7 +5,10 @@ import { spawnSync } from 'node:child_process';
 const dryRunRoot = path.resolve('data/confluence/human-catalog-dry-run');
 const packetRoot = path.resolve('docs/confluence-full-database-catalog-deployment');
 const strategyPath = path.join(packetRoot, 'T2P-05-tier2-batch-strategy.json');
+const coverageManifestPath = path.join(packetRoot, 'T2P-01-tier2-object-coverage-manifest.jsonl');
 const batchId = process.argv.find((arg) => arg.startsWith('--batch-id='))?.split('=')[1] || 'T2B-001';
+const tableOnly = process.argv.includes('--table-only');
+const publishLive = process.argv.includes('--publish');
 const canonicalRoot = ['Sonic Data Lineage', 'Database Catalog'];
 const databaseSchemaLabels = ['human-lineage-catalog', 'database-catalog', 'database-catalog-tier1', 'database-catalog-link-refresh'];
 const objectLabels = ['human-lineage-catalog', 'database-catalog', 'database-catalog-tier2', 'thin-object-page'];
@@ -24,6 +27,16 @@ async function readJson(file) {
   return JSON.parse(await fs.readFile(file, 'utf8'));
 }
 
+async function readCoverageObjects() {
+  const text = await fs.readFile(coverageManifestPath, 'utf8');
+  return text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => JSON.parse(line))
+    .filter((row) => row.record_type === 'object');
+}
+
 async function writeText(file, text) {
   await fs.mkdir(path.dirname(file), { recursive: true });
   await fs.writeFile(file, `${text.trim()}\n`, 'utf8');
@@ -38,6 +51,10 @@ function slug(value) {
 
 function pagePath(values) {
   return (values || []).filter(Boolean).join(' / ');
+}
+
+function comparableObjectName(value) {
+  return String(value || '').replace(/\s+/g, '');
 }
 
 function mdTable(rows, headers) {
@@ -171,11 +188,17 @@ function validationFailures({ batch, databasePacket, schemaPacket, objectPackets
   if (objectPackets.length !== batch.object_count) failures.push(`Expected ${batch.object_count} object pages, found ${objectPackets.length}.`);
   const expectedNames = new Set(batch.object_names);
   const actualNames = new Set(objectPackets.map((packet) => packet.object?.name).filter(Boolean));
+  const actualComparableNames = new Set([...actualNames].map(comparableObjectName));
   for (const name of expectedNames) {
-    if (!actualNames.has(name)) failures.push(`Expected object was not generated: ${name}`);
+    if (!actualNames.has(name) && !actualComparableNames.has(comparableObjectName(name))) {
+      failures.push(`Expected object was not generated: ${name}`);
+    }
   }
+  const expectedComparableNames = new Set([...expectedNames].map(comparableObjectName));
   for (const name of actualNames) {
-    if (!expectedNames.has(name)) failures.push(`Unexpected object was generated: ${name}`);
+    if (!expectedNames.has(name) && !expectedComparableNames.has(comparableObjectName(name))) {
+      failures.push(`Unexpected object was generated: ${name}`);
+    }
   }
   if (schemaPacket?.catalog_slice?.link_status_summary?.planned_in_packet !== objectPackets.length) {
     failures.push(`Schema link-status summary does not mark ${objectPackets.length} objects as planned in packet.`);
@@ -248,11 +271,14 @@ npm run confluence:full:tier2:${packet.batch.batch_id.toLowerCase()}:publish
 }
 
 function readbackMarkdown(packet) {
-  return `# ${packet.batch.batch_id} Tier 2 Batch Dry-Run Readback
+  const published = packet.scope.publish_mode === 'live publish';
+  return `# ${packet.batch.batch_id} Tier 2 Batch ${published ? 'Publish' : 'Dry-Run'} Readback
 
 Date: 2026-06-23
 
-No live Confluence publish, cleanup, archive, delete, or move action was run.
+${published ? 'Live Confluence publish was run for the packet pages.' : 'No live Confluence publish, cleanup, archive, delete, or move action was run.'}
+
+No cleanup, archive, delete, or move action was run.
 
 ## Result
 
@@ -266,15 +292,44 @@ No live Confluence publish, cleanup, archive, delete, or move action was run.
 ## Command
 
 \`\`\`powershell
-npm run confluence:full:tier2:${packet.batch.batch_id.toLowerCase()}:dry-run
+node scripts/run-tier2-strategy-batch-dry-run.mjs --batch-id=${packet.batch.batch_id}${tableOnly ? ' --table-only' : ''}${published ? ' --publish' : ''}
 \`\`\`
 `;
 }
 
 async function main() {
   const strategy = await readJson(strategyPath);
-  const batch = (strategy.all_batches || strategy.first_20_batches || []).find((item) => item.batch_id === batchId);
-  if (!batch) throw new Error(`Batch not found in strategy: ${batchId}`);
+  const sourceBatch = (strategy.all_batches || strategy.first_20_batches || []).find((item) => item.batch_id === batchId);
+  if (!sourceBatch) throw new Error(`Batch not found in strategy: ${batchId}`);
+  let batch = { ...sourceBatch, object_names: [...(sourceBatch.object_names || [])] };
+  if (tableOnly) {
+    const coverageObjects = await readCoverageObjects();
+    const tableNames = new Set(
+      coverageObjects
+        .filter(
+          (row) =>
+            row.platform === sourceBatch.platform &&
+            row.database === sourceBatch.database &&
+            row.schema === sourceBatch.schema &&
+            row.type === 'table'
+        )
+        .map((row) => row.name)
+    );
+    const objectNames = batch.object_names.filter((name) => tableNames.has(name));
+    batch = {
+      ...batch,
+      object_type_scope: 'table',
+      original_object_type_scope: sourceBatch.object_type_scope,
+      original_object_count: sourceBatch.object_count,
+      object_count: objectNames.length,
+      object_names: objectNames,
+      table_only: true,
+    };
+  }
+  if (batch.object_names.length === 0) {
+    console.log(JSON.stringify({ status: 'skipped', batch_id: batch.batch_id, reason: 'No table objects in batch.' }, null, 2));
+    return;
+  }
   run('node', [
     'scripts/build-human-confluence-catalog-dry-run.mjs',
     '--tier2-object-names',
@@ -284,10 +339,10 @@ async function main() {
   const { databasePacket, schemaPacket, objectPackets } = await loadCurrentPackets(batch);
   const planned = plannedPages({ batch, databasePacket, schemaPacket, objectPackets });
   const failures = validationFailures({ batch, databasePacket, schemaPacket, objectPackets, planned });
-  const packetSlug = `${batch.batch_id}-${slug(batch.database)}-${slug(batch.schema)}-tier2-publish-packet`;
+  const packetSlug = `${batch.batch_id}-${slug(batch.database)}-${slug(batch.schema)}${tableOnly ? '-table' : ''}-tier2-publish-packet`;
   const packetJsonPath = path.join(packetRoot, `${packetSlug}.json`);
   const packetMarkdownPath = path.join(packetRoot, `${packetSlug}.md`);
-  const readbackPath = path.join(packetRoot, `${batch.batch_id}-${slug(batch.database)}-${slug(batch.schema)}-dry-run-readback.md`);
+  const readbackPath = path.join(packetRoot, `${batch.batch_id}-${slug(batch.database)}-${slug(batch.schema)}${tableOnly ? '-table' : ''}-${publishLive ? 'publish' : 'dry-run'}-readback.md`);
   const packet = {
     packet_id: batch.batch_id,
     generated_at: new Date().toISOString(),
@@ -295,9 +350,10 @@ async function main() {
     scope: {
       canonical_root: pagePath(canonicalRoot),
       deployment_tier: 'Tier 2 thin canonical object pages and schema link refresh',
-      publish_mode: 'reviewed publish packet; no live publish performed',
+      publish_mode: publishLive ? 'live publish' : 'reviewed publish packet; no live publish performed',
       cleanup_mode: 'none; cleanup remains separate',
       source_strategy: path.relative(process.cwd(), strategyPath).replaceAll('\\', '/'),
+      object_filter: tableOnly ? 'table-only' : 'strategy batch',
     },
     summary: {
       reference_pages: 2,
@@ -324,7 +380,9 @@ async function main() {
   await writeText(packetJsonPath, JSON.stringify(packet, null, 2));
   await writeText(packetMarkdownPath, markdownPacket(packet));
   await writeText(readbackPath, readbackMarkdown(packet));
-  run('node', ['scripts/publish-human-confluence-catalog-pilot.mjs', '--packet', path.relative(process.cwd(), packetJsonPath)]);
+  const publishArgs = ['scripts/publish-human-confluence-catalog-pilot.mjs', '--packet', path.relative(process.cwd(), packetJsonPath)];
+  if (publishLive) publishArgs.push('--publish');
+  run('node', publishArgs);
   console.log(JSON.stringify({ status: packet.validation.status, summary: packet.summary, artifacts: packet.output_artifacts }, null, 2));
   if (failures.length > 0) process.exitCode = 1;
 }

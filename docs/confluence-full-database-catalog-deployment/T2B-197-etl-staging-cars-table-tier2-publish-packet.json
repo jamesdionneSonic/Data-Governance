@@ -1,0 +1,2194 @@
+{
+  "packet_id": "T2B-197",
+  "generated_at": "2026-06-23T19:09:14.913Z",
+  "batch": {
+    "batch_id": "T2B-197",
+    "priority_rank": 197,
+    "platform": "SQL Server",
+    "database": "ETL_Staging",
+    "schema": "Cars",
+    "object_type_scope": "table",
+    "object_count": 16,
+    "high_use_objects": 0,
+    "downstream_uses": 0,
+    "first_object": "AdPrintDetails_Staging",
+    "last_object": "PhoneSummary_Staging",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Cars",
+    "object_names": [
+      "AdPrintDetails_Staging",
+      "adPrintSummary_Staging",
+      "ChatDetails_Staging",
+      "ChatSummary_Staging",
+      "ClickThruDetails_Staging",
+      "clickThruSummary_Staging",
+      "Config",
+      "ContactSummary_Staging",
+      "DealerContactDetails_Staging",
+      "DealerInventory_Staging",
+      "EmailDetails_Staging",
+      "EmailSummary_Staging",
+      "MapViewDetails_Staging",
+      "mapViewSummary_Staging",
+      "PhoneListing_Staging",
+      "PhoneSummary_Staging"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 16,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 16,
+    "total_planned_pages": 20
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "ETL_Staging"],
+      "page_type": "database",
+      "evidence_hash": "sha256:DAC2D90CB3BE061D63E9E2B32F595CD9386F3A5C44DBCECB3D4790E05ABC3057",
+      "evidence_file": "database-etl-staging.evidence.json",
+      "markdown_file": "database-etl-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Cars",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "ETL_Staging", "Cars"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:22BA66C66B933EF229C12A0DA4BA6962BE421AA0BCB7765A8AC2C9C2410859A2",
+      "evidence_file": "schema-etl-staging-cars.evidence.json",
+      "markdown_file": "schema-etl-staging-cars.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Cars.AdPrintDetails_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "AdPrintDetails_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:1D94727BEBA156863D83E52D983E9985BC0E166291C1B48ACB44978C88A745C6",
+      "evidence_file": "object-etl-staging-cars-adprintdetails-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-adprintdetails-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Cars.adPrintSummary_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "adPrintSummary_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:7ECFC8880CB7918F7EEA33132B1E2860A53D9A7226170632BB70A23CA0E1879E",
+      "evidence_file": "object-etl-staging-cars-adprintsummary-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-adprintsummary-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Cars.ChatDetails_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "ChatDetails_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:394A5B5ED2265C83A8E98E6C686BAC931304CB16E257B2C49219D59660FD9DA5",
+      "evidence_file": "object-etl-staging-cars-chatdetails-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-chatdetails-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Cars.ChatSummary_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "ChatSummary_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:98A0418BA3DB4F31F25DDD7C2FDBEF73A6E5548E5D7FF38C8B7C7F250E9EB961",
+      "evidence_file": "object-etl-staging-cars-chatsummary-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-chatsummary-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Cars.ClickThruDetails_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "ClickThruDetails_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:52144B61B13C15A44EB96A54CC4E6CD7B77945BD9D794EB5B6509654E6AD2D7E",
+      "evidence_file": "object-etl-staging-cars-clickthrudetails-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-clickthrudetails-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Cars.clickThruSummary_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "clickThruSummary_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:0E05357C35F898B67693EFB041E80E03C7B1B2F854F6D13CA2EB0C770D870A87",
+      "evidence_file": "object-etl-staging-cars-clickthrusummary-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-clickthrusummary-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Cars.Config",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "Config"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9815F0D42109856DCA53B583B61F231F5356D4E872666C706ABC62323C69ADC3",
+      "evidence_file": "object-etl-staging-cars-config.evidence.json",
+      "markdown_file": "object-etl-staging-cars-config.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Cars.ContactSummary_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "ContactSummary_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:9184B241D4979EC73B1D06D6EED628A3E4E82D225D7FB53F376C95E67CC0C6FF",
+      "evidence_file": "object-etl-staging-cars-contactsummary-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-contactsummary-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Cars.DealerContactDetails_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "DealerContactDetails_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:CCD58B728CFBF0C8281001BC6569B33BC2FE6DFCCFBBE667058DD99EE7F80191",
+      "evidence_file": "object-etl-staging-cars-dealercontactdetails-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-dealercontactdetails-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Cars.DealerInventory_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "DealerInventory_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:984DC200D920D0008FC75C3521B55B1EBEF056B81939438DFF121CF7309A2BD5",
+      "evidence_file": "object-etl-staging-cars-dealerinventory-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-dealerinventory-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Cars.EmailDetails_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "EmailDetails_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:893E3050A106765C92FF24C504A0811D7199865AAF16D331DDC5AAA1062B69C3",
+      "evidence_file": "object-etl-staging-cars-emaildetails-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-emaildetails-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Cars.EmailSummary_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "EmailSummary_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:66BA6C4EEE5E64B5CCA5C0651215A447E740FFBC6FBD90FA43861827FEA3CCE9",
+      "evidence_file": "object-etl-staging-cars-emailsummary-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-emailsummary-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Cars.MapViewDetails_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "MapViewDetails_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:32901B580C1171E7F0B6AC36E9E4F805E2C57B618D5043B79AA884E12B7E485E",
+      "evidence_file": "object-etl-staging-cars-mapviewdetails-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-mapviewdetails-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Cars.mapViewSummary_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "mapViewSummary_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:8EDF82428D1541D93B62500C28DAAA7EFFDE495D86605C552A20A9516E923D6B",
+      "evidence_file": "object-etl-staging-cars-mapviewsummary-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-mapviewsummary-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Cars.PhoneListing_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "PhoneListing_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:778DED9C1936A222CD7CA5A9E0BB729850E692C0455E4767826AD9ACC005E4A5",
+      "evidence_file": "object-etl-staging-cars-phonelisting-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-phonelisting-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "ETL_Staging.Cars.PhoneSummary_Staging",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "PhoneSummary_Staging"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:CE4C8CF49053709E7663564C75B4D637B3E7283ED0F994F7754B60BC1A8F6717",
+      "evidence_file": "object-etl-staging-cars-phonesummary-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-phonesummary-staging.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "AdPrintDetails_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "AdPrintDetails_Staging"
+      ],
+      "canonical_id": "object-etl-staging-cars-adprintdetails-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Cars__AdPrintDetails_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:1D94727BEBA156863D83E52D983E9985BC0E166291C1B48ACB44978C88A745C6",
+      "object": {
+        "name": "AdPrintDetails_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Cars",
+        "qualified_name": "ETL_Staging.Cars.AdPrintDetails_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Cars.AdPrintDetails_Staging",
+        "Cars.AdPrintDetails_Staging",
+        "AdPrintDetails_Staging",
+        "AdPrintDetailsStaging",
+        "adprintdetailsstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ClassifiedAdId",
+          "StockNumber",
+          "VehicleYear",
+          "VehicleMake",
+          "VehicleModel",
+          "Vin",
+          "StockType",
+          "VehicleStatus",
+          "ListingPrice",
+          "NumberOfPhotos",
+          "CurrentAge",
+          "AdPrintDetail",
+          "TimeZone"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 13,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Cars"
+      ],
+      "evidence_file": "object-etl-staging-cars-adprintdetails-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-adprintdetails-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "adPrintSummary_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "adPrintSummary_Staging"
+      ],
+      "canonical_id": "object-etl-staging-cars-adprintsummary-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Cars__adPrintSummary_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:7ECFC8880CB7918F7EEA33132B1E2860A53D9A7226170632BB70A23CA0E1879E",
+      "object": {
+        "name": "adPrintSummary_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Cars",
+        "qualified_name": "ETL_Staging.Cars.adPrintSummary_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Cars.adPrintSummary_Staging",
+        "Cars.adPrintSummary_Staging",
+        "adPrintSummary_Staging",
+        "adPrintSummaryStaging",
+        "adprintsummarystaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DealerID",
+          "adPrintsOverall",
+          "countNew",
+          "countUsed",
+          "percentNew",
+          "percentUsed"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 6,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Cars"
+      ],
+      "evidence_file": "object-etl-staging-cars-adprintsummary-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-adprintsummary-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ChatDetails_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "ChatDetails_Staging"
+      ],
+      "canonical_id": "object-etl-staging-cars-chatdetails-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Cars__ChatDetails_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:394A5B5ED2265C83A8E98E6C686BAC931304CB16E257B2C49219D59660FD9DA5",
+      "object": {
+        "name": "ChatDetails_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Cars",
+        "qualified_name": "ETL_Staging.Cars.ChatDetails_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Cars.ChatDetails_Staging",
+        "Cars.ChatDetails_Staging",
+        "ChatDetails_Staging",
+        "ChatDetailsStaging",
+        "chatdetailsstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ClassifiedAdId",
+          "StockNumber",
+          "VehicleYear",
+          "VehicleMake",
+          "VehicleModel",
+          "Vin",
+          "StockType",
+          "VehicleStatus",
+          "ListingPrice",
+          "NumberOfPhotos",
+          "CurrentAge",
+          "ChatDetail",
+          "HandledBy",
+          "ChatMessageLength",
+          "TimeZone"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 15,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Cars"
+      ],
+      "evidence_file": "object-etl-staging-cars-chatdetails-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-chatdetails-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ChatSummary_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "ChatSummary_Staging"
+      ],
+      "canonical_id": "object-etl-staging-cars-chatsummary-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Cars__ChatSummary_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:98A0418BA3DB4F31F25DDD7C2FDBEF73A6E5548E5D7FF38C8B7C7F250E9EB961",
+      "object": {
+        "name": "ChatSummary_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Cars",
+        "qualified_name": "ETL_Staging.Cars.ChatSummary_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Cars.ChatSummary_Staging",
+        "Cars.ChatSummary_Staging",
+        "ChatSummary_Staging",
+        "ChatSummaryStaging",
+        "chatsummarystaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["DealerID", "newChatOverall", "usedChatOverall"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 3,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Cars"
+      ],
+      "evidence_file": "object-etl-staging-cars-chatsummary-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-chatsummary-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ClickThruDetails_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "ClickThruDetails_Staging"
+      ],
+      "canonical_id": "object-etl-staging-cars-clickthrudetails-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Cars__ClickThruDetails_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:52144B61B13C15A44EB96A54CC4E6CD7B77945BD9D794EB5B6509654E6AD2D7E",
+      "object": {
+        "name": "ClickThruDetails_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Cars",
+        "qualified_name": "ETL_Staging.Cars.ClickThruDetails_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Cars.ClickThruDetails_Staging",
+        "Cars.ClickThruDetails_Staging",
+        "ClickThruDetails_Staging",
+        "ClickThruDetailsStaging",
+        "clickthrudetailsstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ClassifiedAdId",
+          "StockNumber",
+          "VehicleYear",
+          "VehicleMake",
+          "VehicleModel",
+          "Vin",
+          "StockType",
+          "VehicleStatus",
+          "ListingPrice",
+          "NumberOfPhotos",
+          "CurrentAge",
+          "ClickThruDetail",
+          "TimeZone"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 13,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Cars"
+      ],
+      "evidence_file": "object-etl-staging-cars-clickthrudetails-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-clickthrudetails-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "clickThruSummary_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "clickThruSummary_Staging"
+      ],
+      "canonical_id": "object-etl-staging-cars-clickthrusummary-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Cars__clickThruSummary_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:0E05357C35F898B67693EFB041E80E03C7B1B2F854F6D13CA2EB0C770D870A87",
+      "object": {
+        "name": "clickThruSummary_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Cars",
+        "qualified_name": "ETL_Staging.Cars.clickThruSummary_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Cars.clickThruSummary_Staging",
+        "Cars.clickThruSummary_Staging",
+        "clickThruSummary_Staging",
+        "clickThruSummaryStaging",
+        "clickthrusummarystaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DealerID",
+          "clickThrusOverall",
+          "countNew",
+          "countUsed",
+          "percentNew",
+          "percentUsed"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 6,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Cars"
+      ],
+      "evidence_file": "object-etl-staging-cars-clickthrusummary-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-clickthrusummary-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "Config",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "Config"
+      ],
+      "canonical_id": "object-etl-staging-cars-config",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Cars__Config.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9815F0D42109856DCA53B583B61F231F5356D4E872666C706ABC62323C69ADC3",
+      "object": {
+        "name": "Config",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Cars",
+        "qualified_name": "ETL_Staging.Cars.Config",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": ["ETL_Staging.Cars.Config", "Cars.Config", "Config", "config"],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["ManualRun", "RunDate", "InventoryFileName"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 3,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Cars"
+      ],
+      "evidence_file": "object-etl-staging-cars-config.evidence.json",
+      "markdown_file": "object-etl-staging-cars-config.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "ContactSummary_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "ContactSummary_Staging"
+      ],
+      "canonical_id": "object-etl-staging-cars-contactsummary-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Cars__ContactSummary_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:9184B241D4979EC73B1D06D6EED628A3E4E82D225D7FB53F376C95E67CC0C6FF",
+      "object": {
+        "name": "ContactSummary_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Cars",
+        "qualified_name": "ETL_Staging.Cars.ContactSummary_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Cars.ContactSummary_Staging",
+        "Cars.ContactSummary_Staging",
+        "ContactSummary_Staging",
+        "ContactSummaryStaging",
+        "contactsummarystaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ClassifiedAdId",
+          "StockNumber",
+          "VehicleYear",
+          "VehicleMake",
+          "VehicleModel",
+          "Vin",
+          "StockType",
+          "VehicleStatus",
+          "ListingPrice",
+          "NumberOfPhotos",
+          "CurrentAge",
+          "ConversationRate",
+          "SearchViews",
+          "DetailViews",
+          "TotalContacts",
+          "ETLExecution_ID",
+          "Meta_Src_Sys_ID",
+          "User_ID",
+          "Meta_ComputerName",
+          "Meta_LoadDate"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 24,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Cars"
+      ],
+      "evidence_file": "object-etl-staging-cars-contactsummary-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-contactsummary-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DealerContactDetails_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "DealerContactDetails_Staging"
+      ],
+      "canonical_id": "object-etl-staging-cars-dealercontactdetails-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Cars__DealerContactDetails_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:CCD58B728CFBF0C8281001BC6569B33BC2FE6DFCCFBBE667058DD99EE7F80191",
+      "object": {
+        "name": "DealerContactDetails_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Cars",
+        "qualified_name": "ETL_Staging.Cars.DealerContactDetails_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Cars.DealerContactDetails_Staging",
+        "Cars.DealerContactDetails_Staging",
+        "DealerContactDetails_Staging",
+        "DealerContactDetailsStaging",
+        "dealercontactdetailsstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["DealerID", "dealerDirectorySearches", "srpViews", "vdpViews"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 4,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Cars"
+      ],
+      "evidence_file": "object-etl-staging-cars-dealercontactdetails-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-dealercontactdetails-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "DealerInventory_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "DealerInventory_Staging"
+      ],
+      "canonical_id": "object-etl-staging-cars-dealerinventory-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Cars__DealerInventory_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:984DC200D920D0008FC75C3521B55B1EBEF056B81939438DFF121CF7309A2BD5",
+      "object": {
+        "name": "DealerInventory_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Cars",
+        "qualified_name": "ETL_Staging.Cars.DealerInventory_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Cars.DealerInventory_Staging",
+        "Cars.DealerInventory_Staging",
+        "DealerInventory_Staging",
+        "DealerInventoryStaging",
+        "dealerinventorystaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["DealerID", "ClassifiedAdID", "VINNumber", "StockNumber"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 4,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Cars"
+      ],
+      "evidence_file": "object-etl-staging-cars-dealerinventory-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-dealerinventory-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "EmailDetails_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "EmailDetails_Staging"
+      ],
+      "canonical_id": "object-etl-staging-cars-emaildetails-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Cars__EmailDetails_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:893E3050A106765C92FF24C504A0811D7199865AAF16D331DDC5AAA1062B69C3",
+      "object": {
+        "name": "EmailDetails_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Cars",
+        "qualified_name": "ETL_Staging.Cars.EmailDetails_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Cars.EmailDetails_Staging",
+        "Cars.EmailDetails_Staging",
+        "EmailDetails_Staging",
+        "EmailDetailsStaging",
+        "emaildetailsstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ClassifiedAdId",
+          "StockNumber",
+          "VehicleYear",
+          "VehicleMake",
+          "VehicleModel",
+          "Vin",
+          "StockType",
+          "VehicleStatus",
+          "ListingPrice",
+          "NumberOfPhotos",
+          "CurrentAge",
+          "emailDetail",
+          "CustomerName",
+          "TimeZone"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 14,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Cars"
+      ],
+      "evidence_file": "object-etl-staging-cars-emaildetails-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-emaildetails-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "EmailSummary_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "EmailSummary_Staging"
+      ],
+      "canonical_id": "object-etl-staging-cars-emailsummary-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Cars__EmailSummary_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:66BA6C4EEE5E64B5CCA5C0651215A447E740FFBC6FBD90FA43861827FEA3CCE9",
+      "object": {
+        "name": "EmailSummary_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Cars",
+        "qualified_name": "ETL_Staging.Cars.EmailSummary_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Cars.EmailSummary_Staging",
+        "Cars.EmailSummary_Staging",
+        "EmailSummary_Staging",
+        "EmailSummaryStaging",
+        "emailsummarystaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["DealerID", "newEmailOverall", "usedEmailOverall"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 3,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Cars"
+      ],
+      "evidence_file": "object-etl-staging-cars-emailsummary-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-emailsummary-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "MapViewDetails_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "MapViewDetails_Staging"
+      ],
+      "canonical_id": "object-etl-staging-cars-mapviewdetails-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Cars__MapViewDetails_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:32901B580C1171E7F0B6AC36E9E4F805E2C57B618D5043B79AA884E12B7E485E",
+      "object": {
+        "name": "MapViewDetails_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Cars",
+        "qualified_name": "ETL_Staging.Cars.MapViewDetails_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Cars.MapViewDetails_Staging",
+        "Cars.MapViewDetails_Staging",
+        "MapViewDetails_Staging",
+        "MapViewDetailsStaging",
+        "mapviewdetailsstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "ClassifiedAdId",
+          "StockNumber",
+          "VehicleYear",
+          "VehicleMake",
+          "VehicleModel",
+          "Vin",
+          "StockType",
+          "VehicleStatus",
+          "ListingPrice",
+          "NumberOfPhotos",
+          "CurrentAge",
+          "MapViewDetail",
+          "TimeZone"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 13,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Cars"
+      ],
+      "evidence_file": "object-etl-staging-cars-mapviewdetails-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-mapviewdetails-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "mapViewSummary_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "mapViewSummary_Staging"
+      ],
+      "canonical_id": "object-etl-staging-cars-mapviewsummary-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Cars__mapViewSummary_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:8EDF82428D1541D93B62500C28DAAA7EFFDE495D86605C552A20A9516E923D6B",
+      "object": {
+        "name": "mapViewSummary_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Cars",
+        "qualified_name": "ETL_Staging.Cars.mapViewSummary_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Cars.mapViewSummary_Staging",
+        "Cars.mapViewSummary_Staging",
+        "mapViewSummary_Staging",
+        "mapViewSummaryStaging",
+        "mapviewsummarystaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DealerID",
+          "mapViewsOverall",
+          "countNew",
+          "countUsed",
+          "percentNew",
+          "percentUsed"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 6,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Cars"
+      ],
+      "evidence_file": "object-etl-staging-cars-mapviewsummary-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-mapviewsummary-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "PhoneListing_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "PhoneListing_Staging"
+      ],
+      "canonical_id": "object-etl-staging-cars-phonelisting-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Cars__PhoneListing_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:778DED9C1936A222CD7CA5A9E0BB729850E692C0455E4767826AD9ACC005E4A5",
+      "object": {
+        "name": "PhoneListing_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Cars",
+        "qualified_name": "ETL_Staging.Cars.PhoneListing_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Cars.PhoneListing_Staging",
+        "Cars.PhoneListing_Staging",
+        "PhoneListing_Staging",
+        "PhoneListingStaging",
+        "phonelistingstaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [
+          "DealerID",
+          "phoneType",
+          "dateTimeReceived",
+          "dateTimeReceivedTimeZone",
+          "callersPhone",
+          "callersZip",
+          "callStatus",
+          "callDuration"
+        ],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 8,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Cars"
+      ],
+      "evidence_file": "object-etl-staging-cars-phonelisting-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-phonelisting-staging.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "PhoneSummary_Staging",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "ETL_Staging",
+        "Cars",
+        "PhoneSummary_Staging"
+      ],
+      "canonical_id": "object-etl-staging-cars-phonesummary-staging",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/L1-5FSQL-01/databases/ETL_Staging/tables/Cars__PhoneSummary_Staging.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:CE4C8CF49053709E7663564C75B4D637B3E7283ED0F994F7754B60BC1A8F6717",
+      "object": {
+        "name": "PhoneSummary_Staging",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "L1-5FSQL-01",
+        "database": "ETL_Staging",
+        "schema": "Cars",
+        "qualified_name": "ETL_Staging.Cars.PhoneSummary_Staging",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "medium",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "ETL_Staging.Cars.PhoneSummary_Staging",
+        "Cars.PhoneSummary_Staging",
+        "PhoneSummary_Staging",
+        "PhoneSummaryStaging",
+        "phonesummarystaging"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": ["DealerID", "newPhoneOverall", "usedPhoneOverall"],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 3,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging",
+        "Sonic Data Lineage / Database Catalog / SQL Server / ETL_Staging / Cars"
+      ],
+      "evidence_file": "object-etl-staging-cars-phonesummary-staging.evidence.json",
+      "markdown_file": "object-etl-staging-cars-phonesummary-staging.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-197-etl-staging-cars-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-197-etl-staging-cars-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-197-etl-staging-cars-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}

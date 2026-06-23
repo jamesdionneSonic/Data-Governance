@@ -1,0 +1,1208 @@
+{
+  "packet_id": "T2B-057",
+  "generated_at": "2026-06-23T18:18:33.972Z",
+  "batch": {
+    "batch_id": "T2B-057",
+    "priority_rank": 57,
+    "platform": "SQL Server",
+    "database": "SONICWEBV_VEH",
+    "schema": "dbo",
+    "object_type_scope": "table",
+    "object_count": 9,
+    "high_use_objects": 1,
+    "downstream_uses": 67,
+    "first_object": "veh_inventory",
+    "last_object": "mps_decode_vintrim",
+    "canonical_schema_path": "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH / dbo",
+    "object_names": [
+      "veh_inventory",
+      "mps_decode_vehtype",
+      "mps_decode_vinattribute",
+      "mps_decode_vinbody",
+      "mps_decode_vinbody_stage",
+      "mps_decode_vinmake",
+      "mps_decode_vinmfr",
+      "mps_decode_vinmodel",
+      "mps_decode_vintrim"
+    ],
+    "publish_mode": "dry-run, reviewed packet, explicit live approval, readback",
+    "cleanup_mode": "none; report-only candidates stay separate",
+    "original_object_type_scope": "all",
+    "original_object_count": 9,
+    "table_only": true
+  },
+  "scope": {
+    "canonical_root": "Sonic Data Lineage / Database Catalog",
+    "deployment_tier": "Tier 2 thin canonical object pages and schema link refresh",
+    "publish_mode": "live publish",
+    "cleanup_mode": "none; cleanup remains separate",
+    "source_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json",
+    "object_filter": "table-only"
+  },
+  "summary": {
+    "reference_pages": 2,
+    "link_refresh_pages": 2,
+    "object_pages": 9,
+    "total_planned_pages": 13
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Database Catalog",
+      "treePath": ["Sonic Data Lineage", "Database Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "reference",
+      "title": "SQL Server",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": []
+    },
+    {
+      "kind": "leaf",
+      "title": "SONICWEBV_VEH",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "SONICWEBV_VEH"],
+      "page_type": "database",
+      "evidence_hash": "sha256:4DC61AE2BE5EAB90BA8BC15E4EA81978BC7B181F43BF3C929B91FEAE048C7167",
+      "evidence_file": "database-sonicwebv-veh.evidence.json",
+      "markdown_file": "database-sonicwebv-veh.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "High-Use Objects", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "SONICWEBV_VEH.dbo",
+      "treePath": ["Sonic Data Lineage", "Database Catalog", "SQL Server", "SONICWEBV_VEH", "dbo"],
+      "page_type": "schema",
+      "evidence_hash": "sha256:F41EF3036A3940C1937C99ADF926E0774E1B07E1A24A73954BAF056B557A4ABD",
+      "evidence_file": "schema-sonicwebv-veh-dbo.evidence.json",
+      "markdown_file": "schema-sonicwebv-veh-dbo.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier1",
+        "database-catalog-link-refresh"
+      ],
+      "snippets": ["Plain-English Summary", "Most Used Objects", "Tables", "Technical Evidence"]
+    },
+    {
+      "kind": "leaf",
+      "title": "SONICWEBV_VEH.dbo.mps_decode_vehtype",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SONICWEBV_VEH",
+        "dbo",
+        "mps_decode_vehtype"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:017A5E4EA8A1D67290153C0807180D66B2B2E80AD391507398BF851C08C22FC2",
+      "evidence_file": "object-sonicwebv-veh-dbo-mps-decode-vehtype.evidence.json",
+      "markdown_file": "object-sonicwebv-veh-dbo-mps-decode-vehtype.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SONICWEBV_VEH.dbo.mps_decode_vinattribute",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SONICWEBV_VEH",
+        "dbo",
+        "mps_decode_vinattribute"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:76963FAC11E6A2B499979BE80EDA6A6A224D69486C5D3F0BC0F2342E237C292D",
+      "evidence_file": "object-sonicwebv-veh-dbo-mps-decode-vinattribute.evidence.json",
+      "markdown_file": "object-sonicwebv-veh-dbo-mps-decode-vinattribute.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SONICWEBV_VEH.dbo.mps_decode_vinbody",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SONICWEBV_VEH",
+        "dbo",
+        "mps_decode_vinbody"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:3D5B5ACAAD03DF4EBC73B71F2EEB25E06550640BA9155C26E51C4CEA980202A6",
+      "evidence_file": "object-sonicwebv-veh-dbo-mps-decode-vinbody.evidence.json",
+      "markdown_file": "object-sonicwebv-veh-dbo-mps-decode-vinbody.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SONICWEBV_VEH.dbo.mps_decode_vinbody_stage",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SONICWEBV_VEH",
+        "dbo",
+        "mps_decode_vinbody_stage"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A3D82947FA1C3CC8B80D18CD4E8B62604CBA65878B2431C92432DA57D8DEBEFE",
+      "evidence_file": "object-sonicwebv-veh-dbo-mps-decode-vinbody-stage.evidence.json",
+      "markdown_file": "object-sonicwebv-veh-dbo-mps-decode-vinbody-stage.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SONICWEBV_VEH.dbo.mps_decode_vinmake",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SONICWEBV_VEH",
+        "dbo",
+        "mps_decode_vinmake"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:36360D8EB9FF8B4E2EBD1F143A7C796E2E0F0DDAC761151531AB47486CA829A7",
+      "evidence_file": "object-sonicwebv-veh-dbo-mps-decode-vinmake.evidence.json",
+      "markdown_file": "object-sonicwebv-veh-dbo-mps-decode-vinmake.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SONICWEBV_VEH.dbo.mps_decode_vinmfr",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SONICWEBV_VEH",
+        "dbo",
+        "mps_decode_vinmfr"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:024E64B19C7CF144C7C087D5A99929DFE3E3FD1C62FE7B4F537C29AA291D97F3",
+      "evidence_file": "object-sonicwebv-veh-dbo-mps-decode-vinmfr.evidence.json",
+      "markdown_file": "object-sonicwebv-veh-dbo-mps-decode-vinmfr.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SONICWEBV_VEH.dbo.mps_decode_vinmodel",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SONICWEBV_VEH",
+        "dbo",
+        "mps_decode_vinmodel"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:BEBF4720B9F5E85151FEF8B2FE0E6A66D8E81731E79436D14CBA7BA2E2D19658",
+      "evidence_file": "object-sonicwebv-veh-dbo-mps-decode-vinmodel.evidence.json",
+      "markdown_file": "object-sonicwebv-veh-dbo-mps-decode-vinmodel.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SONICWEBV_VEH.dbo.mps_decode_vintrim",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SONICWEBV_VEH",
+        "dbo",
+        "mps_decode_vintrim"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:A3D841A8E11BC13E86CFB3D656D919164964919766E160D26B356227CEB254EE",
+      "evidence_file": "object-sonicwebv-veh-dbo-mps-decode-vintrim.evidence.json",
+      "markdown_file": "object-sonicwebv-veh-dbo-mps-decode-vintrim.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "SONICWEBV_VEH.dbo.veh_inventory",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SONICWEBV_VEH",
+        "dbo",
+        "veh_inventory"
+      ],
+      "page_type": "object",
+      "evidence_hash": "sha256:EA567C03114DB874F629E95BA0C02EADA233FA849CB7F2BFE38D4DECCAAB612A",
+      "evidence_file": "object-sonicwebv-veh-dbo-veh-inventory.evidence.json",
+      "markdown_file": "object-sonicwebv-veh-dbo-veh-inventory.md",
+      "labels": [
+        "human-lineage-catalog",
+        "database-catalog",
+        "database-catalog-tier2",
+        "thin-object-page"
+      ],
+      "snippets": [
+        "Plain-English Summary",
+        "Business Meaning And Impact",
+        "Known Gaps",
+        "Technical Evidence"
+      ]
+    }
+  ],
+  "object_packets": [
+    {
+      "page_type": "object",
+      "page_title": "mps_decode_vehtype",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SONICWEBV_VEH",
+        "dbo",
+        "mps_decode_vehtype"
+      ],
+      "canonical_id": "object-sonicwebv-veh-dbo-mps-decode-vehtype",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/206.22.183.247/databases/SONICWEBV_VEH/tables/dbo__mps_decode_vehtype.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:017A5E4EA8A1D67290153C0807180D66B2B2E80AD391507398BF851C08C22FC2",
+      "object": {
+        "name": "mps_decode_vehtype",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "206.22.183.247",
+        "database": "SONICWEBV_VEH",
+        "schema": "dbo",
+        "qualified_name": "SONICWEBV_VEH.dbo.mps_decode_vehtype",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SONICWEBV_VEH.dbo.mps_decode_vehtype",
+        "dbo.mps_decode_vehtype",
+        "mps_decode_vehtype",
+        "mpsdecodevehtype"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 4,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH / dbo"
+      ],
+      "evidence_file": "object-sonicwebv-veh-dbo-mps-decode-vehtype.evidence.json",
+      "markdown_file": "object-sonicwebv-veh-dbo-mps-decode-vehtype.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "mps_decode_vinattribute",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SONICWEBV_VEH",
+        "dbo",
+        "mps_decode_vinattribute"
+      ],
+      "canonical_id": "object-sonicwebv-veh-dbo-mps-decode-vinattribute",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/206.22.183.247/databases/SONICWEBV_VEH/tables/dbo__mps_decode_vinattribute.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:76963FAC11E6A2B499979BE80EDA6A6A224D69486C5D3F0BC0F2342E237C292D",
+      "object": {
+        "name": "mps_decode_vinattribute",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "206.22.183.247",
+        "database": "SONICWEBV_VEH",
+        "schema": "dbo",
+        "qualified_name": "SONICWEBV_VEH.dbo.mps_decode_vinattribute",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SONICWEBV_VEH.dbo.mps_decode_vinattribute",
+        "dbo.mps_decode_vinattribute",
+        "mps_decode_vinattribute",
+        "mpsdecodevinattribute"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH / dbo"
+      ],
+      "evidence_file": "object-sonicwebv-veh-dbo-mps-decode-vinattribute.evidence.json",
+      "markdown_file": "object-sonicwebv-veh-dbo-mps-decode-vinattribute.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "mps_decode_vinbody",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SONICWEBV_VEH",
+        "dbo",
+        "mps_decode_vinbody"
+      ],
+      "canonical_id": "object-sonicwebv-veh-dbo-mps-decode-vinbody",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/206.22.183.247/databases/SONICWEBV_VEH/tables/dbo__mps_decode_vinbody.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:3D5B5ACAAD03DF4EBC73B71F2EEB25E06550640BA9155C26E51C4CEA980202A6",
+      "object": {
+        "name": "mps_decode_vinbody",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "206.22.183.247",
+        "database": "SONICWEBV_VEH",
+        "schema": "dbo",
+        "qualified_name": "SONICWEBV_VEH.dbo.mps_decode_vinbody",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SONICWEBV_VEH.dbo.mps_decode_vinbody",
+        "dbo.mps_decode_vinbody",
+        "mps_decode_vinbody",
+        "mpsdecodevinbody"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 4,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH / dbo"
+      ],
+      "evidence_file": "object-sonicwebv-veh-dbo-mps-decode-vinbody.evidence.json",
+      "markdown_file": "object-sonicwebv-veh-dbo-mps-decode-vinbody.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "mps_decode_vinbody_stage",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SONICWEBV_VEH",
+        "dbo",
+        "mps_decode_vinbody_stage"
+      ],
+      "canonical_id": "object-sonicwebv-veh-dbo-mps-decode-vinbody-stage",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/206.22.183.247/databases/SONICWEBV_VEH/tables/dbo__mps_decode_vinbody_stage.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A3D82947FA1C3CC8B80D18CD4E8B62604CBA65878B2431C92432DA57D8DEBEFE",
+      "object": {
+        "name": "mps_decode_vinbody_stage",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "206.22.183.247",
+        "database": "SONICWEBV_VEH",
+        "schema": "dbo",
+        "qualified_name": "SONICWEBV_VEH.dbo.mps_decode_vinbody_stage",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SONICWEBV_VEH.dbo.mps_decode_vinbody_stage",
+        "dbo.mps_decode_vinbody_stage",
+        "mps_decode_vinbody_stage",
+        "mpsdecodevinbodystage"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 4,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH / dbo"
+      ],
+      "evidence_file": "object-sonicwebv-veh-dbo-mps-decode-vinbody-stage.evidence.json",
+      "markdown_file": "object-sonicwebv-veh-dbo-mps-decode-vinbody-stage.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "mps_decode_vinmake",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SONICWEBV_VEH",
+        "dbo",
+        "mps_decode_vinmake"
+      ],
+      "canonical_id": "object-sonicwebv-veh-dbo-mps-decode-vinmake",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/206.22.183.247/databases/SONICWEBV_VEH/tables/dbo__mps_decode_vinmake.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:36360D8EB9FF8B4E2EBD1F143A7C796E2E0F0DDAC761151531AB47486CA829A7",
+      "object": {
+        "name": "mps_decode_vinmake",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "206.22.183.247",
+        "database": "SONICWEBV_VEH",
+        "schema": "dbo",
+        "qualified_name": "SONICWEBV_VEH.dbo.mps_decode_vinmake",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SONICWEBV_VEH.dbo.mps_decode_vinmake",
+        "dbo.mps_decode_vinmake",
+        "mps_decode_vinmake",
+        "mpsdecodevinmake"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 4,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH / dbo"
+      ],
+      "evidence_file": "object-sonicwebv-veh-dbo-mps-decode-vinmake.evidence.json",
+      "markdown_file": "object-sonicwebv-veh-dbo-mps-decode-vinmake.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "mps_decode_vinmfr",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SONICWEBV_VEH",
+        "dbo",
+        "mps_decode_vinmfr"
+      ],
+      "canonical_id": "object-sonicwebv-veh-dbo-mps-decode-vinmfr",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/206.22.183.247/databases/SONICWEBV_VEH/tables/dbo__mps_decode_vinmfr.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:024E64B19C7CF144C7C087D5A99929DFE3E3FD1C62FE7B4F537C29AA291D97F3",
+      "object": {
+        "name": "mps_decode_vinmfr",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "206.22.183.247",
+        "database": "SONICWEBV_VEH",
+        "schema": "dbo",
+        "qualified_name": "SONICWEBV_VEH.dbo.mps_decode_vinmfr",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SONICWEBV_VEH.dbo.mps_decode_vinmfr",
+        "dbo.mps_decode_vinmfr",
+        "mps_decode_vinmfr",
+        "mpsdecodevinmfr"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 8,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH / dbo"
+      ],
+      "evidence_file": "object-sonicwebv-veh-dbo-mps-decode-vinmfr.evidence.json",
+      "markdown_file": "object-sonicwebv-veh-dbo-mps-decode-vinmfr.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "mps_decode_vinmodel",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SONICWEBV_VEH",
+        "dbo",
+        "mps_decode_vinmodel"
+      ],
+      "canonical_id": "object-sonicwebv-veh-dbo-mps-decode-vinmodel",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/206.22.183.247/databases/SONICWEBV_VEH/tables/dbo__mps_decode_vinmodel.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:BEBF4720B9F5E85151FEF8B2FE0E6A66D8E81731E79436D14CBA7BA2E2D19658",
+      "object": {
+        "name": "mps_decode_vinmodel",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "206.22.183.247",
+        "database": "SONICWEBV_VEH",
+        "schema": "dbo",
+        "qualified_name": "SONICWEBV_VEH.dbo.mps_decode_vinmodel",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SONICWEBV_VEH.dbo.mps_decode_vinmodel",
+        "dbo.mps_decode_vinmodel",
+        "mps_decode_vinmodel",
+        "mpsdecodevinmodel"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 5,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH / dbo"
+      ],
+      "evidence_file": "object-sonicwebv-veh-dbo-mps-decode-vinmodel.evidence.json",
+      "markdown_file": "object-sonicwebv-veh-dbo-mps-decode-vinmodel.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "mps_decode_vintrim",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SONICWEBV_VEH",
+        "dbo",
+        "mps_decode_vintrim"
+      ],
+      "canonical_id": "object-sonicwebv-veh-dbo-mps-decode-vintrim",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/206.22.183.247/databases/SONICWEBV_VEH/tables/dbo__mps_decode_vintrim.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:A3D841A8E11BC13E86CFB3D656D919164964919766E160D26B356227CEB254EE",
+      "object": {
+        "name": "mps_decode_vintrim",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "206.22.183.247",
+        "database": "SONICWEBV_VEH",
+        "schema": "dbo",
+        "qualified_name": "SONICWEBV_VEH.dbo.mps_decode_vintrim",
+        "tags": ["profiled", "review-needed"]
+      },
+      "tags": ["profiled", "review-needed"],
+      "tag_reasons": [
+        "profiled: profile evidence is available through runtime profile context.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SONICWEBV_VEH.dbo.mps_decode_vintrim",
+        "dbo.mps_decode_vintrim",
+        "mps_decode_vintrim",
+        "mpsdecodevintrim"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 6,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH / dbo"
+      ],
+      "evidence_file": "object-sonicwebv-veh-dbo-mps-decode-vintrim.evidence.json",
+      "markdown_file": "object-sonicwebv-veh-dbo-mps-decode-vintrim.md"
+    },
+    {
+      "page_type": "object",
+      "page_title": "veh_inventory",
+      "page_tree_path": [
+        "Sonic Data Lineage",
+        "Database Catalog",
+        "SQL Server",
+        "SONICWEBV_VEH",
+        "dbo",
+        "veh_inventory"
+      ],
+      "canonical_id": "object-sonicwebv-veh-dbo-veh-inventory",
+      "page_generation_level": "thin",
+      "rich_promotion": {
+        "rule_version": "dcat-009.2026-06-19",
+        "current_level": "thin",
+        "recommended_next_level": "thin",
+        "eligible_for_rich_page": false,
+        "reasons": ["profile context is surfaced", "high-use object with high lineage confidence"],
+        "blocked_reasons": [
+          "business definition is not surfaced in metadata",
+          "plain-English description confidence is low",
+          "named downstream consumers are not surfaced in metadata"
+        ]
+      },
+      "source_artifact_paths": [
+        "data/markdown/servers/206.22.183.247/databases/SONICWEBV_VEH/tables/dbo__veh_inventory.md",
+        "data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl"
+      ],
+      "generated_at": "2026-06-23",
+      "evidence_hash": "sha256:EA567C03114DB874F629E95BA0C02EADA233FA849CB7F2BFE38D4DECCAAB612A",
+      "object": {
+        "name": "veh_inventory",
+        "type": "table",
+        "platform": "SQL Server",
+        "server": "206.22.183.247",
+        "database": "SONICWEBV_VEH",
+        "schema": "dbo",
+        "qualified_name": "SONICWEBV_VEH.dbo.veh_inventory",
+        "tags": ["high-use", "profiled", "lineage-hotspot", "review-needed"]
+      },
+      "tags": ["high-use", "profiled", "lineage-hotspot", "review-needed"],
+      "tag_reasons": [
+        "high-use: 51 downstream consumer signals meet the threshold of 10.",
+        "profiled: profile evidence is available through runtime profile context.",
+        "lineage-hotspot: 4 upstream and 51 downstream signals indicate high lineage complexity.",
+        "review-needed: generated metadata is missing one or more business/governance facts that require human review."
+      ],
+      "confidence": {
+        "lineage_confidence": "high",
+        "description_confidence": "low",
+        "profile_confidence": "medium",
+        "documentation_confidence": "review-needed"
+      },
+      "not_surfaced_facts": [
+        "business owner",
+        "data steward",
+        "SLA",
+        "live freshness",
+        "lifecycle/status",
+        "business definition",
+        "downstream business report names"
+      ],
+      "aliases": [
+        "SONICWEBV_VEH.dbo.veh_inventory",
+        "dbo.veh_inventory",
+        "veh_inventory",
+        "vehinventory"
+      ],
+      "lineage": {
+        "upstream_loaders": [],
+        "upstream_sources": [],
+        "downstream_consumers": [],
+        "writes_to": []
+      },
+      "technical_signals": {
+        "columns": [],
+        "column_usage": []
+      },
+      "profile_signals": {
+        "profile_available": true,
+        "row_count": null,
+        "column_count": 3,
+        "profile_status": "available",
+        "profile_caveats": [
+          "Profile context is surfaced in runtime evidence, but live operational freshness is not published as a Confluence status."
+        ]
+      },
+      "backlinks": [
+        "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH",
+        "Sonic Data Lineage / Database Catalog / SQL Server / SONICWEBV_VEH / dbo"
+      ],
+      "evidence_file": "object-sonicwebv-veh-dbo-veh-inventory.evidence.json",
+      "markdown_file": "object-sonicwebv-veh-dbo-veh-inventory.md"
+    }
+  ],
+  "source_artifacts": {
+    "dry_run_output": "data/confluence/human-catalog-dry-run",
+    "batch_strategy": "docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json"
+  },
+  "output_artifacts": {
+    "packet_json": "docs/confluence-full-database-catalog-deployment/T2B-057-sonicwebv-veh-dbo-table-tier2-publish-packet.json",
+    "packet_markdown": "docs/confluence-full-database-catalog-deployment/T2B-057-sonicwebv-veh-dbo-table-tier2-publish-packet.md",
+    "readback_markdown": "docs/confluence-full-database-catalog-deployment/T2B-057-sonicwebv-veh-dbo-table-publish-readback.md"
+  },
+  "validation": {
+    "status": "passed",
+    "failures": []
+  }
+}
