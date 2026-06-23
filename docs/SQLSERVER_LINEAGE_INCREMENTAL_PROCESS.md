@@ -1,5 +1,8 @@
 # SQL Server Lineage Incremental Process
 
+This process follows
+`docs/adr/ADR-020-Source-Agnostic-Incremental-Lineage-Ingestion.md`.
+
 ## Default Rule
 
 SQL Server lineage ingestion is incremental by default.
