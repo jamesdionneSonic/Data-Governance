@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-23T10:31:13.697Z",
+  "connector_id": "snowflake-bipslyv-tlb12786",
+  "mode": "incremental",
+  "catalog_repo": "C:/projects/Sonic-data-lineage",
+  "markdown_root": "C:/projects/Data Governence/data/markdown",
+  "visible_database_count": 7,
+  "harvested_database_count": 6,
+  "skipped_databases": [
+    {
+      "database": "SNOWFLAKE",
+      "reason": "snowflake_internal_database"
+    }
+  ],
+  "object_count": 294,
+  "changed_object_count": 0,
+  "unchanged_object_count": 294,
+  "retained_stale_object_count": 0,
+  "errors": [],
+  "note": "Default incremental mode upserts new/changed Snowflake metadata only and does not remove stale Snowflake rows. Use --full-refresh to rewrite/remove the full Snowflake slice."
+}

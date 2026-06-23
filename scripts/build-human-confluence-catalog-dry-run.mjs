@@ -170,6 +170,13 @@ function unique(values) {
   return [...new Set((values || []).filter(Boolean))];
 }
 
+function splitFilterValues(value) {
+  return String(value || '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 function summarizeObjectTrustAndTags(object) {
   const downstream = Number(object.downstream || 0);
   const upstream = Number(object.upstream || 0);
@@ -399,7 +406,6 @@ async function listHighValueObjectRows() {
 }
 
 async function listRuntimeDatabaseNames() {
-  const rows = await readRuntimeRegistryRows();
   const canonical = await getRuntimeDatabaseCanonicalMap();
   return [...canonical.values()].sort((left, right) => left.localeCompare(right));
 }
@@ -615,79 +621,6 @@ ${mdTable(
   await writeText(path.join(outputRoot, `product-${slug}.md`), page);
   currentLeafFiles.push({ evidenceFile: `product-${slug}.evidence.json`, markdownFile: `product-${slug}.md`, treePath: packet.page_tree_path });
   return packet.page_tree_path;
-}
-
-async function listObjectMarkdown(root, schema) {
-  const dirs = {
-    tables: 'table',
-    views: 'view',
-    stored_procedures: 'procedure',
-    functions: 'function',
-    synonyms: 'synonym',
-    triggers: 'trigger',
-  };
-  const rows = [];
-  for (const [dir, fallbackType] of Object.entries(dirs)) {
-    const full = path.join(root, dir);
-    let entries = [];
-    try {
-      entries = await fs.readdir(full);
-    } catch {
-      continue;
-    }
-    for (const entry of entries.filter((name) => name.endsWith('.md'))) {
-      const file = path.join(full, entry);
-      const metadata = frontmatter(await readMarkdown(file));
-      if (String(metadata.schema || '').toLowerCase() !== schema.toLowerCase()) continue;
-      rows.push({
-        file,
-        id: metadata.id || '',
-        name: metadata.name || entry.replace(/\.md$/, ''),
-        type: metadata.type || fallbackType,
-        downstream: (metadata.used_by || []).length,
-        upstream: (metadata.reads_from || metadata.depends_on || []).length,
-        columns: (metadata.columns || []).length || metadata.column_count || 0,
-        confidence: metadata.catalog_confidence?.confidence_label || metadata.lineage_quality?.confidence_label || '',
-      });
-    }
-  }
-  return rows;
-}
-
-async function listDatabaseMarkdown(root) {
-  const dirs = {
-    tables: 'table',
-    views: 'view',
-    stored_procedures: 'procedure',
-    functions: 'function',
-    synonyms: 'synonym',
-    triggers: 'trigger',
-  };
-  const rows = [];
-  for (const [dir, fallbackType] of Object.entries(dirs)) {
-    const full = path.join(root, dir);
-    let entries = [];
-    try {
-      entries = await fs.readdir(full);
-    } catch {
-      continue;
-    }
-    for (const entry of entries.filter((name) => name.endsWith('.md'))) {
-      const file = path.join(full, entry);
-      const metadata = frontmatter(await readMarkdown(file));
-      rows.push({
-        file,
-        id: metadata.id || '',
-        name: metadata.name || entry.replace(/\.md$/, ''),
-        schema: metadata.schema || 'unknown',
-        type: metadata.type || fallbackType,
-        downstream: (metadata.used_by || []).length,
-        upstream: (metadata.reads_from || metadata.depends_on || []).length,
-        confidence: metadata.catalog_confidence?.confidence_label || metadata.lineage_quality?.confidence_label || '',
-      });
-    }
-  }
-  return rows;
 }
 
 async function renderDatabase(database) {
@@ -1395,7 +1328,10 @@ async function main() {
     pageTrees.push(...(await renderHighValueObjectPages()));
   } else {
     if (productFilter) pageTrees.push(await renderProduct(productFilter));
-    if (databaseFilter) pageTrees.push(await renderDatabase(databaseFilter));
+    for (const database of splitFilterValues(databaseFilter)) {
+      // eslint-disable-next-line no-await-in-loop
+      pageTrees.push(await renderDatabase(database));
+    }
     if (schemaFilter) pageTrees.push(await renderSchema(schemaFilter));
     if (objectsFilter) pageTrees.push(await renderObjectPilot(objectsFilter));
   }
