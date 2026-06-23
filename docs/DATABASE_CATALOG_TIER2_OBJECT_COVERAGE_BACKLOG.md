@@ -161,6 +161,8 @@ canonical Tier 2 page.
 
 ### T2OBJ-006: Publish Packet For One Schema
 
+**Status**: Publish packet ready in T2P-04; live publish pending approval.
+
 **Goal**: Prepare a reviewed Confluence publish packet for the first complete
 schema-level Tier 2 slice.
 
@@ -175,7 +177,16 @@ schema-level Tier 2 slice.
 - Packet can be reviewed before live publish.
 - Cleanup remains report-only.
 
+**Completion Evidence**:
+
+- `docs/confluence-full-database-catalog-deployment/T2P-04-eleaddw-dbo-publish-packet-readback.md`
+- `docs/confluence-full-database-catalog-deployment/T2P-04-eleaddw-dbo-tier2-publish-packet.json`
+- `docs/confluence-full-database-catalog-deployment/T2P-04-eleaddw-dbo-tier2-publish-packet.md`
+- `npm run confluence:full:tier2:eleaddw-dbo:publish:dry-run`
+
 ### T2OBJ-007: Live Publish And Readback For One Schema
+
+**Status**: Pending explicit live publish approval.
 
 **Goal**: Publish one approved schema-level Tier 2 slice and verify links.
 

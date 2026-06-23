@@ -159,6 +159,8 @@ current Confluence screenshot. This slice includes high-use objects such as
 
 Backlog items: T2OBJ-006, T2OBJ-007
 
+Status: Publish packet ready; live publish and readback pending explicit approval
+
 Estimated tokens: 80k-150k per schema
 
 ### Goal
@@ -177,6 +179,19 @@ Publish and verify one approved schema-level Tier 2 slice.
 - Object pages exist under the approved parent path.
 - Schema links resolve to object pages.
 - Cleanup candidates are untouched.
+
+### Current Evidence
+
+- Publish packet readback:
+  `docs/confluence-full-database-catalog-deployment/T2P-04-eleaddw-dbo-publish-packet-readback.md`
+- Publish packet JSON:
+  `docs/confluence-full-database-catalog-deployment/T2P-04-eleaddw-dbo-tier2-publish-packet.json`
+- Publish packet markdown:
+  `docs/confluence-full-database-catalog-deployment/T2P-04-eleaddw-dbo-tier2-publish-packet.md`
+- Command passed: `npm run confluence:full:tier2:eleaddw-dbo:publish:dry-run`
+- Summary: 59 planned entries: 2 reference parent pages, 2 database/schema
+  link-refresh pages, and 55 thin object pages. Live publish and post-publish
+  readback are not complete until explicitly approved and run.
 
 ## T2P-05: Repeatable Batch Strategy
 

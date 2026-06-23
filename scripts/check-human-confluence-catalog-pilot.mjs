@@ -112,7 +112,13 @@ async function expectedPagesFromDryRun() {
     const byPath = new Map();
     for (const page of packet.planned_pages) {
       if (page.kind === 'reference') {
-        byPath.set(page.treePath.join(' / '), { treePath: page.treePath, title: page.title, kind: 'reference', snippets: [] });
+        byPath.set(page.treePath.join(' / '), {
+          treePath: page.treePath,
+          title: page.title,
+          kind: 'reference',
+          snippets: [],
+          labels: page.labels || [],
+        });
         continue;
       }
       if (page.kind === 'navigation') {
@@ -125,6 +131,7 @@ async function expectedPagesFromDryRun() {
           title: page.title,
           kind: 'navigation',
           snippets: page.snippets || ['Reviewed Catalog Children', ...childTitles.slice(0, 1)],
+          labels: page.labels || expectedRequiredLabels,
         });
         continue;
       }
@@ -136,6 +143,7 @@ async function expectedPagesFromDryRun() {
           title: page.title,
           kind: 'leaf',
           snippets: page.snippets || leafSnippets(leafPacket),
+          labels: page.labels || expectedRequiredLabels,
         });
       }
     }
@@ -217,7 +225,8 @@ async function main() {
     idsByPath.set(expected.treePath.join(' / '), page.id);
     const labels = pageLabels(page);
     const body = pageBody(page);
-    const missingLabels = expected.kind === 'reference' ? [] : expectedRequiredLabels.filter((label) => !labels.includes(label));
+    const requiredLabels = Array.isArray(expected.labels) && expected.labels.length > 0 ? expected.labels : expectedRequiredLabels;
+    const missingLabels = expected.kind === 'reference' ? [] : requiredLabels.filter((label) => !labels.includes(label));
     const missingSnippets = expected.kind === 'reference' ? [] : expected.snippets.filter((snippet) => !body.includes(snippet));
     if (missingLabels.length > 0) {
       failures.push({ treePath: expected.treePath, id: page.id, message: `Missing labels: ${missingLabels.join(', ')}` });
