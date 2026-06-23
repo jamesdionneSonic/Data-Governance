@@ -202,6 +202,8 @@ schema-level Tier 2 slice.
 
 ### T2OBJ-008: Expand Batch Strategy Across Databases
 
+**Status**: Done in T2P-05.
+
 **Goal**: Turn the one-schema pattern into repeatable database/platform batches.
 
 **Scope**:
@@ -215,6 +217,15 @@ schema-level Tier 2 slice.
 
 - Future batches can run at medium intelligence.
 - Batches do not depend on hard-coded `Sonic_DW.dbo` selection.
+
+**Completion Evidence**:
+
+- `docs/DATABASE_CATALOG_TIER2_BATCH_STRATEGY.md`
+- `docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json`
+- `docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.md`
+- `npm run confluence:full:tier2:batch-strategy`
+- Readback summary: 245 queued batches after the current T2P-04 live publish
+  gate, capped at 75 object pages per batch.
 
 ### T2OBJ-009: Refresh Existing Pilot Tier 2 Pages
 

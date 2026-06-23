@@ -197,6 +197,8 @@ Publish and verify one approved schema-level Tier 2 slice.
 
 Backlog item: T2OBJ-008
 
+Status: Done
+
 Estimated tokens: 50k-100k
 
 ### Goal
@@ -214,6 +216,18 @@ Define repeatable batches for the rest of the catalog.
 
 - Future batches can run without hard-coded `Sonic_DW.dbo`.
 - Each batch is small enough for medium-intelligence execution.
+
+### Completion Evidence
+
+- Strategy doc: `docs/DATABASE_CATALOG_TIER2_BATCH_STRATEGY.md`
+- Machine-readable strategy:
+  `docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.json`
+- Readback:
+  `docs/confluence-full-database-catalog-deployment/T2P-05-tier2-batch-strategy.md`
+- Command passed: `npm run confluence:full:tier2:batch-strategy`
+- Summary: T2P-04 remains the current live publish gate for
+  `SQL Server / eLeadDW / dbo`; after that gate, the strategy queues 245
+  bounded batches capped at 75 object pages each.
 
 ## T2P-06: Pilot Page Refresh
 

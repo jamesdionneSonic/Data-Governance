@@ -68,6 +68,7 @@ Deprecated primary labels: `Command Center`, `Profile Operations`, `Ingestion St
 - [Database Catalog Full Deployment Work Packets](DATABASE_CATALOG_FULL_DEPLOYMENT_WORK_PACKETS.md)
 - [Database Catalog Tier 2 Object Coverage Backlog](DATABASE_CATALOG_TIER2_OBJECT_COVERAGE_BACKLOG.md)
 - [Database Catalog Tier 2 Object Coverage Work Packets](DATABASE_CATALOG_TIER2_OBJECT_COVERAGE_WORK_PACKETS.md)
+- [Database Catalog Tier 2 Batch Strategy](DATABASE_CATALOG_TIER2_BATCH_STRATEGY.md)
 - [UI Workflow Migration Plan](UI_WORKFLOW_MIGRATION_PLAN.md)
 - [Connector Extraction Framework](CONNECTOR_EXTRACTION_FRAMEWORK.md)
 - [Profiling Execution Framework](PROFILING_EXECUTION_FRAMEWORK.md)
