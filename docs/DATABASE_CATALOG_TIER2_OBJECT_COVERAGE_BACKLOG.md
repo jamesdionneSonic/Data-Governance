@@ -82,6 +82,8 @@ or already has a Tier 2 page.
 
 ### T2OBJ-003: Add Link Status To Schema Evidence
 
+**Status**: Done in T2P-02.
+
 **Goal**: Make schema pages know whether each row can link to a Tier 2 page.
 
 **Scope**:
@@ -94,6 +96,14 @@ or already has a Tier 2 page.
 
 - Schema evidence can explain why an object name is linked or pending.
 - No row depends on display-name-only matching.
+
+**Completion Evidence**:
+
+- `docs/confluence-full-database-catalog-deployment/T2P-02-link-status-evidence-readback.md`
+- `npm run confluence:human:dry-run`
+- `npm run confluence:human:check`
+- Readback summary: 5,348 schema object rows and 235 database high-use rows
+  checked with zero missing link-state fields.
 
 ### T2OBJ-004: Generate Thin Object Pages For One Schema
 

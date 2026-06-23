@@ -48,6 +48,7 @@ let runtimeDatabaseCanonicalMap;
 let runtimeSchemaCanonicalMap;
 const currentLeafFiles = [];
 const supersededPageCandidates = [];
+let plannedTier2ObjectPageKeys = new Set();
 
 function valueAfter(flag) {
   const index = process.argv.indexOf(flag);
@@ -318,6 +319,21 @@ function objectPageSlug(row) {
     .replace(/^-+|-+$/g, '');
 }
 
+function objectIdentityKey({ platform, database, schema, name }) {
+  return [platform || 'unknown', database || 'unknown', schema || 'unknown', name || 'unknown']
+    .map((value) => String(value).toLowerCase())
+    .join('|');
+}
+
+function runtimeObjectIdentityKey(row) {
+  return objectIdentityKey({
+    platform: platformForRow(row),
+    database: row.database,
+    schema: row.schema,
+    name: row.object_name || row.name || row.display_name,
+  });
+}
+
 function qualifiedName(row) {
   return `${row.database}.${row.schema}.${row.object_name || row.name}`;
 }
@@ -462,6 +478,12 @@ async function listHighValueObjectRows() {
     Number(right.upstream_count || 0) - Number(left.upstream_count || 0) ||
     String(left.object_id || '').localeCompare(String(right.object_id || ''));
   return candidates.sort(scoreSort).slice(0, canonicalObjectPagePilotLimit);
+}
+
+async function loadPlannedTier2ObjectPageKeys() {
+  const plannedRows = await listHighValueObjectRows();
+  plannedTier2ObjectPageKeys = new Set(plannedRows.map(runtimeObjectIdentityKey));
+  return plannedTier2ObjectPageKeys;
 }
 
 async function listRuntimeDatabaseNames() {
@@ -701,7 +723,8 @@ async function renderDatabase(database) {
   const high = rows
     .sort((left, right) => right.downstream - left.downstream || right.upstream - left.upstream)
     .slice(0, 10);
-  const evidenceHash = hashJson({ platform, database, schemaRows, types, high });
+  const highObjectEvidence = high.map(schemaObjectEvidence);
+  const evidenceHash = hashJson({ platform, database, schemaRows, types, highObjectEvidence });
   const slug = database.toLowerCase().replace(/[^a-z0-9]+/g, '-');
   const packet = {
     page_type: 'database',
@@ -716,7 +739,8 @@ async function renderDatabase(database) {
       database,
       object_counts: { total: rows.length, ...types },
       schemas: schemaRows,
-      high_usage_objects: high,
+      high_usage_objects: highObjectEvidence,
+      link_status_summary: linkStatusSummary(rows),
     },
   };
 
@@ -790,6 +814,14 @@ function objectPurpose(row) {
 }
 
 function schemaObjectEvidence(row) {
+  const plannedInPacket = plannedTier2ObjectPageKeys.has(
+    objectIdentityKey({
+      platform: row.platform,
+      database: row.database,
+      schema: row.schema,
+      name: row.name,
+    })
+  );
   return {
     name: row.name,
     type: row.type,
@@ -807,8 +839,27 @@ function schemaObjectEvidence(row) {
     not_surfaced_facts: row.not_surfaced_facts,
     purpose: objectPurpose(row),
     canonical_page_path: row.canonical_page_path.join(' / '),
+    canonical_page_exists: false,
+    planned_in_packet: plannedInPacket,
+    link_status: 'pending',
+    link_status_reason: plannedInPacket
+      ? 'Tier 2 object page is generated in this dry-run output; link remains pending until a reviewed publish/readback confirms the page exists.'
+      : 'Tier 2 object page is not generated in this dry-run output yet.',
     devops_artifact_path: row.file,
   };
+}
+
+function linkStatusSummary(rows) {
+  const summary = { linked: 0, pending: 0, blocked: 0, planned_in_packet: 0, canonical_page_exists: 0 };
+  for (const row of rows) {
+    const evidence = row.link_status ? row : schemaObjectEvidence(row);
+    if (evidence.link_status === 'linked') summary.linked += 1;
+    else if (evidence.link_status === 'blocked') summary.blocked += 1;
+    else summary.pending += 1;
+    if (evidence.planned_in_packet) summary.planned_in_packet += 1;
+    if (evidence.canonical_page_exists) summary.canonical_page_exists += 1;
+  }
+  return summary;
 }
 
 function schemaObjectMarkdownRows(rows) {
@@ -873,7 +924,8 @@ async function renderSchema(schemaName) {
       schema,
       object_counts: { total: rows.length, ...counts },
       objects: allObjectEvidence,
-      high_usage_objects: high,
+      high_usage_objects: high.map(schemaObjectEvidence),
+      link_status_summary: linkStatusSummary(allObjectEvidence),
       object_tags: allObjectEvidence.map((row) => ({
         object_id: row.object_id,
         full_name: row.full_name,
@@ -881,6 +933,11 @@ async function renderSchema(schemaName) {
         tag_reasons: row.tag_reasons,
         page_confidence: row.page_confidence,
         not_surfaced_facts: row.not_surfaced_facts,
+        canonical_page_path: row.canonical_page_path,
+        link_status: row.link_status,
+        planned_in_packet: row.planned_in_packet,
+        canonical_page_exists: row.canonical_page_exists,
+        link_status_reason: row.link_status_reason,
       })),
       profile_coverage: { status: 'not surfaced in this dry-run packet' },
     },
@@ -1400,6 +1457,7 @@ ${mdTable(
 
 async function main() {
   await resetOutputRoot();
+  await loadPlannedTier2ObjectPageKeys();
   const pageTrees = [];
   if (!productFilter && !databaseFilter && !schemaFilter && !objectsFilter) {
     for (const slug of productCatalogSlugs) {

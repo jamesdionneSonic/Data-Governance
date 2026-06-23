@@ -95,6 +95,26 @@ function isExcludedDatabaseCatalogObject(object) {
   );
 }
 
+function validateObjectLinkStatus(object, label) {
+  const failures = [];
+  const name = object?.full_name || object?.qualified_name || object?.name || label || 'unknown';
+  if (!object?.canonical_page_path) failures.push(`${label} is missing canonical page path: ${name}.`);
+  if (typeof object?.canonical_page_exists !== 'boolean') {
+    failures.push(`${label} is missing canonical_page_exists boolean: ${name}.`);
+  }
+  if (typeof object?.planned_in_packet !== 'boolean') {
+    failures.push(`${label} is missing planned_in_packet boolean: ${name}.`);
+  }
+  if (!['linked', 'pending', 'blocked'].includes(object?.link_status)) {
+    failures.push(`${label} has invalid link_status: ${name}.`);
+  }
+  if (!object?.link_status_reason) failures.push(`${label} is missing link_status_reason: ${name}.`);
+  if (object?.link_status === 'linked' && object?.canonical_page_exists !== true) {
+    failures.push(`${label} cannot be linked until canonical_page_exists is true: ${name}.`);
+  }
+  return failures;
+}
+
 function validatePage({ markdown, packet, markdownPath }) {
   const failures = [];
   if (isExcludedDatabaseCatalogPath(packet)) {
@@ -179,6 +199,16 @@ function validatePage({ markdown, packet, markdownPath }) {
       failures.push('Object rich promotion metadata must include reasons and blocked_reasons arrays.');
     }
   }
+  if (packet.page_type === 'database') {
+    const highUsageObjects = packet.database_slice?.high_usage_objects || [];
+    for (const object of highUsageObjects) {
+      failures.push(...validateObjectLinkStatus(object, 'Database high-use object row'));
+    }
+    const linkSummary = packet.database_slice?.link_status_summary;
+    if (!linkSummary || typeof linkSummary.pending !== 'number') {
+      failures.push('Database evidence packet is missing link_status_summary.');
+    }
+  }
   if (packet.page_type === 'schema') {
     const expectedSchemaPath = [
       'Sonic Data Lineage',
@@ -204,12 +234,17 @@ function validatePage({ markdown, packet, markdownPath }) {
       if (!Array.isArray(taggedObject.tag_reasons)) {
         failures.push(`Schema object tag row is missing tag reasons: ${taggedObject.full_name || 'unknown'}.`);
       }
+      failures.push(...validateObjectLinkStatus(taggedObject, 'Schema object tag row'));
+    }
+    const linkSummary = packet.catalog_slice?.link_status_summary;
+    if (!linkSummary || typeof linkSummary.pending !== 'number') {
+      failures.push('Schema evidence packet is missing link_status_summary.');
     }
     for (const object of objects) {
       if (isExcludedDatabaseCatalogObject(object)) {
         failures.push(`Schema object row is an SSIS package/catalog artifact and must not be in Database Catalog: ${object.full_name || 'unknown'}.`);
       }
-      if (!object.canonical_page_path) failures.push(`Schema object row is missing canonical page path: ${object.full_name || 'unknown'}.`);
+      failures.push(...validateObjectLinkStatus(object, 'Schema object row'));
       if (!Array.isArray(object.aliases)) failures.push(`Schema object row is missing aliases: ${object.full_name || 'unknown'}.`);
       if (!Array.isArray(object.not_surfaced_facts)) {
         failures.push(`Schema object row is missing not_surfaced_facts: ${object.full_name || 'unknown'}.`);

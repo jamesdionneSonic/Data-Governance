@@ -130,6 +130,16 @@ When a Tier 2 object page is generated or confirmed live, refresh every in-scope
 schema/database row that references that object so the object name links to the
 canonical human page.
 
+Every row must carry deterministic link state before hyperlink rendering:
+
+| Field                   | Rule                                                                  |
+| ----------------------- | --------------------------------------------------------------------- |
+| `canonical_page_path`   | Required for every publishable object row.                            |
+| `canonical_page_exists` | `true` only after live readback confirms the human object page.       |
+| `planned_in_packet`     | `true` when the object page is generated in the same reviewed packet. |
+| `link_status`           | One of `linked`, `pending`, or `blocked`.                             |
+| `link_status_reason`    | Required explanation for the current state.                           |
+
 Link from:
 
 - database `Most Used Objects`;

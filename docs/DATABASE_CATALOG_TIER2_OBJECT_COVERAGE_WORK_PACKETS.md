@@ -86,6 +86,8 @@ resolve to.
 
 Backlog item: T2OBJ-003
 
+Status: Done
+
 Estimated tokens: 50k-90k
 
 ### Goal
@@ -102,6 +104,16 @@ Add deterministic link state to schema/database evidence without publishing.
 
 - Schema rows can explain link status.
 - No link is derived from display text alone.
+
+### Completion Evidence
+
+- Readback:
+  `docs/confluence-full-database-catalog-deployment/T2P-02-link-status-evidence-readback.md`
+- Commands passed: `npm run confluence:human:dry-run` and
+  `npm run confluence:human:check`
+- Summary: 5,348 schema object rows and 235 database high-use rows carry
+  `canonical_page_path`, `canonical_page_exists`, `planned_in_packet`,
+  `link_status`, and `link_status_reason`.
 
 ## T2P-03: One-Schema Thin Object Page And Link Dry Run
 
