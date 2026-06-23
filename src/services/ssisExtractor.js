@@ -29,6 +29,7 @@ const COMPONENT_ROLES = {
   'Microsoft.XMLSource': 'SOURCE',
   'Microsoft.CdcSource': 'SOURCE',
   'Microsoft.ODBCSource': 'SOURCE',
+  'Microsoft.SSISODBCSrc': 'SOURCE',
   'Microsoft.SharePointListAdapters.SharePointListSource': 'SOURCE',
   // Destinations
   'Microsoft.OLEDBDestination': 'DESTINATION',
@@ -77,6 +78,11 @@ const EXTERNAL_COMPONENT_TYPE_PATTERNS = [
   /Access/i,
   /Recordset/i,
 ];
+const SNOWFLAKE_SERVER_ID = 'snowflake-bipslyv-tlb12786';
+const KNOWN_SNOWFLAKE_DATABASES = new Set([
+  'CDK_ROADSTER_ELEAD_SONIC',
+  'HYPERNOVA_SONIC_CUSTACCESS',
+]);
 
 // -----------------------------------------------------------------------------
 // Helpers
@@ -461,6 +467,57 @@ function combineConnectionAndTable(connection, tableReference, fallbackServer = 
   const schema = parsed.schemaName || connection?.schemaName || 'dbo';
   const object = parsed.objectName || connection?.tableName || '';
   return buildCanonicalSqlId(server, database, schema, object);
+}
+
+function hasSnowflakeConnectionHint(connection, connectionReference = '') {
+  const connectionText = [
+    connectionReference,
+    connection?.connName,
+    connection?.connType,
+    connection?.id,
+    connection?.refId,
+    connection?.connectionManagerId,
+    connection?.serverName,
+    connection?.databaseName,
+    connection?.rawConnectionString,
+    connection?.filePath,
+  ]
+    .filter(Boolean)
+    .join(' ');
+  return /snowflake|dbsnowflakesource/i.test(connectionText);
+}
+
+function isKnownSnowflakeDatabase(databaseName = '') {
+  return KNOWN_SNOWFLAKE_DATABASES.has(cleanSsisSegment(databaseName).toUpperCase());
+}
+
+function combineConnectionAndSourceTable(
+  connection,
+  tableReference,
+  fallbackServer = '',
+  connectionReference = ''
+) {
+  const parsed = splitSsisTableReference(tableReference);
+  const databaseName = cleanSsisSegment(parsed.databaseName || connection?.databaseName || '');
+  const schemaName = cleanSsisSegment(parsed.schemaName || connection?.schemaName || '');
+  const objectName = cleanSsisSegment(parsed.objectName || connection?.tableName || '');
+
+  if (
+    (hasSnowflakeConnectionHint(connection, connectionReference) ||
+      isKnownSnowflakeDatabase(databaseName)) &&
+    isKnownSnowflakeDatabase(databaseName) &&
+    schemaName &&
+    objectName
+  ) {
+    return buildCanonicalSqlId(
+      SNOWFLAKE_SERVER_ID,
+      databaseName.toUpperCase(),
+      schemaName.toUpperCase(),
+      objectName.toUpperCase()
+    );
+  }
+
+  return combineConnectionAndTable(connection, tableReference, fallbackServer);
 }
 
 function buildSsisReference(connection, schemaName, objectName, fallbackServer = '') {
@@ -2683,29 +2740,49 @@ class SsisMetadataExtractor {
         if (srcExternalId) {
           sourceTables.push(srcExternalId);
         } else if (src.tableName) {
-          sourceTables.push(combineConnectionAndTable(srcConnection, src.tableName, hostServer));
+          sourceTables.push(
+            combineConnectionAndSourceTable(
+              srcConnection,
+              src.tableName,
+              hostServer,
+              src.connectionManagerId
+            )
+          );
         } else if (src.tableDatabaseName && src.tableObjectName) {
           sourceTables.push(
-            qualifyTableReference(
-              srcConnection?.serverName || hostServer,
-              src.tableDatabaseName || srcConnection?.databaseName,
-              src.tableSchemaName,
-              src.tableObjectName
+            combineConnectionAndSourceTable(
+              srcConnection,
+              [
+                src.tableDatabaseName || srcConnection?.databaseName,
+                src.tableSchemaName || 'dbo',
+                src.tableObjectName,
+              ]
+                .filter(Boolean)
+                .join('.'),
+              hostServer,
+              src.connectionManagerId
             )
           );
         } else if (src.tableSchemaName && src.tableObjectName) {
           sourceTables.push(
-            qualifyTableReference(
-              srcConnection?.serverName || hostServer,
-              srcConnection?.databaseName,
-              src.tableSchemaName,
-              src.tableObjectName
+            combineConnectionAndSourceTable(
+              srcConnection,
+              [srcConnection?.databaseName, src.tableSchemaName, src.tableObjectName]
+                .filter(Boolean)
+                .join('.'),
+              hostServer,
+              src.connectionManagerId
             )
           );
         } else if (sourceSql.sql) {
           sourceTables.push(
             ...parsedSourceSql.reads.map((ref) =>
-              combineConnectionAndTable(srcConnection, ref, hostServer)
+              combineConnectionAndSourceTable(
+                srcConnection,
+                ref,
+                hostServer,
+                src.connectionManagerId
+              )
             )
           );
         }

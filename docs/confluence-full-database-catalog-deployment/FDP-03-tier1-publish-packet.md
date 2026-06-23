@@ -17,7 +17,7 @@ Ready for user review. Live Tier 1 publish requires explicit approval. Cleanup i
 | Signal            | Value                                                                 |
 | ----------------- | --------------------------------------------------------------------- |
 | Packet            | `FDP-03`                                                              |
-| Generated at      | 2026-06-23T13:08:08.944Z                                              |
+| Generated at      | 2026-06-23T14:26:58.079Z                                              |
 | Canonical root    | `Sonic Data Lineage / Database Catalog`                               |
 | Publish mode      | `reviewed publish packet; no live publish performed`                  |
 | Cleanup mode      | `report-only; no cleanup authorized`                                  |
