@@ -43,6 +43,29 @@ Status: publish packet ready; live publish pending explicit approval.
 No live Confluence publish, cleanup, archive, delete, or move action was run
 for T2B-001.
 
+## T2B-002 Dry-Run Status
+
+Status: publish packet ready; live publish pending explicit approval.
+
+| Signal                 | Value                                                                                               |
+| ---------------------- | --------------------------------------------------------------------------------------------------- |
+| Platform/Product       | `SQL Server`                                                                                        |
+| Database               | `eLeadDW_SF`                                                                                        |
+| Schema                 | `dbo`                                                                                               |
+| Object pages           | 61                                                                                                  |
+| Link refresh pages     | 2                                                                                                   |
+| Total planned entries  | 65                                                                                                  |
+| Validation status      | `passed`                                                                                            |
+| Canonical path         | `Sonic Data Lineage / Database Catalog / SQL Server / eLeadDW_SF / dbo`                             |
+| Publish packet         | `docs/confluence-full-database-catalog-deployment/T2B-002-eleaddw-sf-dbo-tier2-publish-packet.md`   |
+| Machine publish packet | `docs/confluence-full-database-catalog-deployment/T2B-002-eleaddw-sf-dbo-tier2-publish-packet.json` |
+| Dry-run readback       | `docs/confluence-full-database-catalog-deployment/T2B-002-eleaddw-sf-dbo-dry-run-readback.md`       |
+| Dry-run command        | `npm run confluence:full:tier2:t2b-002:dry-run`                                                     |
+| Live publish command   | `npm run confluence:full:tier2:t2b-002:publish`                                                     |
+
+No live Confluence publish, cleanup, archive, delete, or move action was run
+for T2B-002.
+
 ## Batch Rules
 
 | Rule                       | Value                                                                                                                           |
