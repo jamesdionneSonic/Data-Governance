@@ -119,6 +119,8 @@ Add deterministic link state to schema/database evidence without publishing.
 
 Backlog items: T2OBJ-004, T2OBJ-005
 
+Status: Done
+
 Estimated tokens: 120k-220k per schema
 
 ### Goal
@@ -143,6 +145,15 @@ current Confluence screenshot. This slice includes high-use objects such as
 - Object-page count equals publishable object count for the selected schema.
 - Schema rows link to canonical human object pages.
 - No live publish occurs.
+
+### Completion Evidence
+
+- Readback:
+  `docs/confluence-full-database-catalog-deployment/T2P-03-eleaddw-dbo-thin-object-dry-run-readback.md`
+- Command passed: `npm run confluence:full:tier2:eleaddw-dbo:dry-run`
+- Summary: 57 dry-run pages generated for `SQL Server / eLeadDW / dbo`,
+  including 55 thin object pages for 55 publishable schema objects. The schema
+  page renders canonical links for `Most Used Objects` and grouped object rows.
 
 ## T2P-04: One-Schema Publish And Readback
 

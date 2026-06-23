@@ -8,6 +8,7 @@ const productFilter = valueAfter('--product');
 const databaseFilter = valueAfter('--database');
 const schemaFilter = valueAfter('--schema');
 const objectsFilter = valueAfter('--objects');
+const tier2SchemaFilter = valueAfter('--tier2-schema');
 const productCatalogSlugs = [
   'fire',
   'force',
@@ -288,7 +289,7 @@ function summarizeObjectTrustAndTags(object) {
 }
 
 function registryMarkdownPath(row) {
-  const sourcePath = row.source_markdown_path || '';
+  const sourcePath = row.source_markdown_path || row.file || '';
   if (!sourcePath) return '';
   return sourcePath.startsWith('data/') ? sourcePath : path.join('data/markdown', sourcePath);
 }
@@ -394,16 +395,19 @@ async function objectSummaryFromRuntimeRow(row) {
   const metadata = file ? frontmatter(await readMarkdownIfExists(file)) : {};
   const profileAvailable = Boolean(
     row.answer_cards?.profile_teaser ||
+      row.profile_available === true ||
+      row.profileAvailable === true ||
+      row.profile_status === 'available' ||
       metadata.profile_available === true ||
       (metadata.live_row_count !== null && metadata.live_row_count !== undefined)
   );
   const base = {
     path: file.replaceAll('\\', '/'),
-    id: row.object_id || metadata.id || '',
-    name: row.object_name || metadata.name || row.display_name || '',
-    type: row.object_type || metadata.type || 'object',
+    id: row.object_id || row.id || metadata.id || '',
+    name: row.object_name || row.name || metadata.name || row.display_name || '',
+    type: row.object_type || row.type || metadata.type || 'object',
     platform: platformForRow({ ...row, ...metadata }),
-    server: row.server || metadata.server || row.source_system || '',
+    server: row.server || metadata.server || row.source_system || 'unknown',
     database: row.database || metadata.database || '',
     schema: row.schema || metadata.schema || '',
     reads: metadata.reads_from || metadata.depends_on || [],
@@ -411,18 +415,19 @@ async function objectSummaryFromRuntimeRow(row) {
     createdBy: metadata.created_by || [],
     usedBy: metadata.used_by || [],
     columns: (metadata.columns || []).map((column) => column.name).slice(0, 20),
-    columnCount: Number(row.column_count || (metadata.columns || []).length || metadata.column_count || 0),
+    columnCount: Number(row.column_count || row.columns || (metadata.columns || []).length || metadata.column_count || 0),
     columnUsage: (metadata.column_usage || []).slice(0, 12),
-    downstream: Number(row.downstream_count || 0),
-    upstream: Number(row.upstream_count || 0),
-    confidence: row.confidence_label || metadata.catalog_confidence?.confidence_label || metadata.lineage_quality?.confidence_label || '',
+    downstream: Number(row.downstream_count || row.downstream || 0),
+    upstream: Number(row.upstream_count || row.upstream || 0),
+    confidence:
+      row.confidence_label || row.confidence || metadata.catalog_confidence?.confidence_label || metadata.lineage_quality?.confidence_label || '',
     sensitivity: metadata.sensitivity || 'not surfaced in metadata',
     owner: metadata.owner || 'not surfaced in metadata',
     validatedEdges: metadata.lineage_quality?.validated_edges || 0,
     unresolvedFacts: metadata.lineage_quality?.unresolved_facts || 0,
     profileAvailable,
     profileEvidence: row.answer_cards?.profile_teaser || '',
-    profileStatus: profileAvailable ? 'available' : 'not surfaced in metadata',
+    profileStatus: profileAvailable ? 'available' : row.profile_status || 'not surfaced in metadata',
     aliases: objectAliases(row),
   };
   return {
@@ -482,6 +487,9 @@ async function listHighValueObjectRows() {
 
 async function loadPlannedTier2ObjectPageKeys() {
   const plannedRows = await listHighValueObjectRows();
+  if (tier2SchemaFilter) {
+    plannedRows.push(...(await listRuntimeSchemaRows(...tier2SchemaFilter.split('.'))));
+  }
   plannedTier2ObjectPageKeys = new Set(plannedRows.map(runtimeObjectIdentityKey));
   return plannedTier2ObjectPageKeys;
 }
@@ -783,7 +791,7 @@ ${mdTable(
 
 ${mdTable(
   high.map((row) => ({
-    Object: `\`${row.schema}.${row.name}\``,
+    Object: objectMarkdownLink(row, `${row.schema}.${row.name}`),
     Type: row.type,
     'Downstream Uses': row.downstream,
     'Upstream Inputs': row.upstream,
@@ -862,11 +870,23 @@ function linkStatusSummary(rows) {
   return summary;
 }
 
+function objectMarkdownLink(row, label = row.name) {
+  const plannedInPacket = plannedTier2ObjectPageKeys.has(
+    objectIdentityKey({
+      platform: row.platform,
+      database: row.database,
+      schema: row.schema,
+      name: row.name,
+    })
+  );
+  return plannedInPacket ? `[\`${label}\`](${row.canonical_page_path.join(' / ')})` : `\`${label}\``;
+}
+
 function schemaObjectMarkdownRows(rows) {
   if (rows.length === 0) return 'No cataloged objects surfaced in this section.';
   return mdTable(
     rows.map((row) => ({
-      Object: `\`${row.name}\``,
+      Object: objectMarkdownLink(row),
       Type: row.type,
       Tags: row.tags.join(', ') || 'none',
       Purpose: objectPurpose(row),
@@ -992,7 +1012,7 @@ The highest-use objects in this slice include ${(high.length > 0 ? high : rows)
 
 ${mdTable(
   high.map((row) => ({
-    Object: `\`${row.name}\``,
+    Object: objectMarkdownLink(row),
     Type: row.type,
     Tags: row.tags.join(', ') || 'none',
     'Downstream Uses': row.downstream,
@@ -1389,7 +1409,8 @@ ${listItems(packet.source_artifact_paths)}
 
 async function renderHighValueObjectPages() {
   const pageTrees = [];
-  for (const row of await listHighValueObjectRows()) {
+  const rows = tier2SchemaFilter ? await listRuntimeSchemaRows(...tier2SchemaFilter.split('.')) : await listHighValueObjectRows();
+  for (const row of rows) {
     // eslint-disable-next-line no-await-in-loop
     pageTrees.push(await renderHighValueObjectPage(row));
   }
@@ -1459,7 +1480,7 @@ async function main() {
   await resetOutputRoot();
   await loadPlannedTier2ObjectPageKeys();
   const pageTrees = [];
-  if (!productFilter && !databaseFilter && !schemaFilter && !objectsFilter) {
+  if (!productFilter && !databaseFilter && !schemaFilter && !objectsFilter && !tier2SchemaFilter) {
     for (const slug of productCatalogSlugs) {
       // eslint-disable-next-line no-await-in-loop
       pageTrees.push(await renderProduct(slug));
@@ -1482,6 +1503,12 @@ async function main() {
     }
     if (schemaFilter) pageTrees.push(await renderSchema(schemaFilter));
     if (objectsFilter) pageTrees.push(await renderObjectPilot(objectsFilter));
+    if (tier2SchemaFilter) {
+      const [database] = tier2SchemaFilter.split('.');
+      pageTrees.push(await renderDatabase(database));
+      pageTrees.push(await renderSchema(tier2SchemaFilter));
+      pageTrees.push(...(await renderHighValueObjectPages()));
+    }
   }
 
   const tree = `# Human Catalog Dry-Run Page Tree

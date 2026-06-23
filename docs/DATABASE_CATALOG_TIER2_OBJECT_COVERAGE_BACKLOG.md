@@ -107,6 +107,8 @@ or already has a Tier 2 page.
 
 ### T2OBJ-004: Generate Thin Object Pages For One Schema
 
+**Status**: Done in T2P-03.
+
 **Goal**: Prove complete Tier 2 coverage for one schema, not just top 25.
 
 **Scope**:
@@ -122,7 +124,16 @@ or already has a Tier 2 page.
 - Object pages live under the platform-grouped schema path.
 - Unsupported governance facts are not inferred.
 
+**Completion Evidence**:
+
+- `docs/confluence-full-database-catalog-deployment/T2P-03-eleaddw-dbo-thin-object-dry-run-readback.md`
+- `npm run confluence:full:tier2:eleaddw-dbo:dry-run`
+- Readback summary: 55 thin object pages generated for 55 publishable
+  `SQL Server / eLeadDW / dbo` objects, including `dwFullOpportunity`.
+
 ### T2OBJ-005: Hyperlink One Schema Index
+
+**Status**: Done in T2P-03.
 
 **Goal**: Refresh one schema page so every in-scope object row links to the
 canonical Tier 2 page.
@@ -139,6 +150,14 @@ canonical Tier 2 page.
 - Every generated object page has a schema-row link.
 - No link points to Rovo, old flat paths, or high-value pages.
 - Ambiguous names are resolved by canonical identity.
+
+**Completion Evidence**:
+
+- `docs/confluence-full-database-catalog-deployment/T2P-03-eleaddw-dbo-thin-object-dry-run-readback.md`
+- `npm run confluence:full:tier2:eleaddw-dbo:dry-run`
+- Readback summary: schema `Most Used Objects` and grouped object rows link to
+  canonical object paths under
+  `Database Catalog / SQL Server / eLeadDW / dbo / <Object>`.
 
 ### T2OBJ-006: Publish Packet For One Schema
 
