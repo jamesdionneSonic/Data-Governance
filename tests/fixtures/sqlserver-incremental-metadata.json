@@ -1,0 +1,51 @@
+{
+  "database": "MockDW",
+  "extractedAt": "2026-06-23T00:00:00.000Z",
+  "tables": [
+    {
+      "database": "MockDW",
+      "schema": "dbo",
+      "name": "DimCustomer",
+      "object_name": "DimCustomer",
+      "row_count": 42,
+      "create_date": "2026-01-01T00:00:00.000Z",
+      "modify_date": "2026-06-01T00:00:00.000Z",
+      "columns": [
+        {
+          "name": "CustomerKey",
+          "data_type": "int",
+          "ordinal": 1,
+          "nullable": false
+        },
+        {
+          "name": "CustomerName",
+          "data_type": "nvarchar",
+          "ordinal": 2,
+          "nullable": true,
+          "max_length": 200
+        }
+      ]
+    }
+  ],
+  "views": [
+    {
+      "database": "MockDW",
+      "schema": "dbo",
+      "name": "vwCustomer",
+      "object_name": "vwCustomer",
+      "definition": "select CustomerKey, CustomerName from dbo.DimCustomer",
+      "columns": [
+        {
+          "name": "CustomerKey",
+          "data_type": "int",
+          "ordinal": 1,
+          "nullable": false
+        }
+      ]
+    }
+  ],
+  "storedProcedures": [],
+  "functions": [],
+  "triggers": [],
+  "relationships": []
+}
