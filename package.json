@@ -39,6 +39,7 @@
     "lineage:runtime:sync": "node scripts/sync-lineage-runtime-to-catalog-repo.mjs",
     "lineage:cor-sql:packet": "node scripts/build-cor-sql-linked-server-refresh-packet.mjs",
     "lineage:cor-sql:refresh": "node scripts/live-domain-lineage-refresh.mjs --sql-only --target=Sonic_DW --target=ETL_Staging --target=eLeadDW --target=DMS --target=Speed --target=WebV --target=Sonic_XREF --target=BI_WorkDB",
+    "connector:snowflake:bipslyv:register": "node scripts/register-snowflake-bipslyv-tlb12786-connector.mjs",
     "lineage:runtime:prepare": "npm run catalog:repo:export && npm run catalog:repo:check && npm run lineage:runtime:package && npm run lineage:runtime:check && npm run lineage:answers:check && npm run lineage:runtime:sync",
     "lineage:runtime:publish": "node scripts/publish-lineage-runtime-package.mjs",
     "adf:support:generate": "node scripts/generate-adf-support-pages.mjs",

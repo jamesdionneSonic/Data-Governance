@@ -34,6 +34,10 @@ import {
   upsertConnectorProfileSchedule,
   upsertConnector,
 } from '../../src/services/connectorService.js';
+import {
+  connectorConfigValue,
+  connectorCredentialValue,
+} from '../../src/services/connectorRuntime/runtimeValues.js';
 
 const admin = { id: 'admin-1', email: 'admin@example.com', roles: ['Admin'] };
 const analyst = { id: 'analyst-1', email: 'analyst@example.com', roles: ['Analyst'] };
@@ -46,6 +50,8 @@ describe('connectorService', () => {
     resetConnectorStore();
     delete process.env.PROFILE_SCHEDULER_PERSISTENCE;
     delete process.env.PROFILE_RUNTIME_DIR;
+    delete process.env.SNOWFLAKE_BIPSLYV_TLB12786_DATABASE;
+    delete process.env.SNOWFLAKE_BIPSLYV_TLB12786_PASSWORD;
   });
 
   test('lists industry connector definitions across Azure, AWS, GCP, BI, APIs, and repos', () => {
@@ -1125,6 +1131,55 @@ describe('connectorService', () => {
       resetConnectorStore();
       delete process.env.PROFILE_SCHEDULER_PERSISTENCE;
       delete process.env.PROFILE_RUNTIME_DIR;
+      rmSync(runtimeDir, { recursive: true, force: true });
+    }
+  });
+
+  test('persists Snowflake runtime env references without storing secret values', () => {
+    const runtimeDir = mkdtempSync(path.join(tmpdir(), 'snowflake-connector-'));
+    process.env.PROFILE_SCHEDULER_PERSISTENCE = 'on';
+    process.env.PROFILE_RUNTIME_DIR = runtimeDir;
+    process.env.SNOWFLAKE_BIPSLYV_TLB12786_DATABASE = 'ANALYTICS';
+    process.env.SNOWFLAKE_BIPSLYV_TLB12786_PASSWORD = 'super-secret-password';
+    resetConnectorStore();
+
+    try {
+      upsertConnector(
+        {
+          id: 'snowflake-bipslyv-tlb12786',
+          type: 'snowflake',
+          config: {
+            account: 'bipslyv-tlb12786',
+            runtime_env: {
+              database: 'SNOWFLAKE_BIPSLYV_TLB12786_DATABASE',
+            },
+          },
+          credential: {
+            mode: 'service_account',
+            secret_ref: 'env:snowflake-bipslyv-tlb12786',
+            runtime_env: {
+              password: 'SNOWFLAKE_BIPSLYV_TLB12786_PASSWORD',
+            },
+          },
+        },
+        admin
+      );
+
+      const storeJson = JSON.parse(
+        readFileSync(path.join(runtimeDir, 'profile-scheduler-store.json'), 'utf8')
+      );
+      const persistedConnector = storeJson.connectors.find(
+        (item) => item.id === 'snowflake-bipslyv-tlb12786'
+      );
+
+      expect(connectorConfigValue(persistedConnector, 'database')).toBe('ANALYTICS');
+      expect(connectorCredentialValue(persistedConnector, 'password')).toBe(
+        'super-secret-password'
+      );
+      expect(JSON.stringify(persistedConnector)).toContain('SNOWFLAKE_BIPSLYV_TLB12786_PASSWORD');
+      expect(JSON.stringify(persistedConnector)).not.toContain('super-secret-password');
+      expect(persistedConnector.credential.secret_ref).toBe('stored_reference');
+    } finally {
       rmSync(runtimeDir, { recursive: true, force: true });
     }
   });

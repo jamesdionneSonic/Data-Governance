@@ -8,6 +8,7 @@ import {
   sqlServerCredentialMode,
   sqlServerConnectionRuntimeError,
 } from './sqlServerConnection.js';
+import { connectorConfigValue, connectorCredentialValue } from './runtimeValues.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -21,6 +22,10 @@ const DATABASE_CONNECTORS = new Set([
 ]);
 
 function credentialValue(connector, ...keys) {
+  const resolvedCredential = connectorCredentialValue(connector, ...keys);
+  if (resolvedCredential) return resolvedCredential;
+  const resolvedConfig = connectorConfigValue(connector, ...keys);
+  if (resolvedConfig) return resolvedConfig;
   for (const key of keys) {
     const value = connector.credential?.[key] ?? connector.config?.[key];
     if (value !== undefined && value !== null && value !== '') return value;
@@ -287,13 +292,13 @@ async function runSnowflakeProfile({ connector, action }) {
     );
   }
   const connection = snowflake.createConnection({
-    account: connector.config.account,
+    account: connectorConfigValue(connector, 'account'),
     username: credentialValue(connector, 'username', 'user'),
     password: credentialValue(connector, 'password'),
-    warehouse: connector.config.warehouse,
-    database: connector.config.database,
-    schema: connector.config.schema,
-    role: connector.config.role,
+    warehouse: connectorConfigValue(connector, 'warehouse'),
+    database: connectorConfigValue(connector, 'database'),
+    schema: connectorConfigValue(connector, 'schema'),
+    role: connectorConfigValue(connector, 'role'),
   });
   await new Promise((resolve, reject) =>
     connection.connect((err) => (err ? reject(err) : resolve()))

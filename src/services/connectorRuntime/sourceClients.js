@@ -2,6 +2,7 @@ import { createHash, createHmac } from 'crypto';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 import { ConnectorRuntimeError } from './connectorErrors.js';
+import { connectorConfigValue, connectorCredentialValue } from './runtimeValues.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -1017,7 +1018,8 @@ async function fetchPostgresMetadata({ connector, stream, bridge }) {
 async function fetchSnowflakeMetadata({ connector, stream, bridge }) {
   let snowflake;
   try {
-    snowflake = await import('snowflake-sdk');
+    const snowflakeModule = await import('snowflake-sdk');
+    snowflake = snowflakeModule.default || snowflakeModule;
   } catch {
     throw nativeDependencyError(connector, stream, bridge, {
       packageName: 'snowflake-sdk',
@@ -1027,13 +1029,17 @@ async function fetchSnowflakeMetadata({ connector, stream, bridge }) {
   }
 
   const connection = snowflake.createConnection({
-    account: connector.config.account,
-    username: connector.credential.username || connector.config.username,
-    password: connector.credential.password || connector.config.password,
-    warehouse: connector.config.warehouse,
-    database: connector.config.database,
-    schema: connector.config.schema,
-    role: connector.config.role,
+    account: connectorConfigValue(connector, 'account'),
+    username:
+      connectorCredentialValue(connector, 'username', 'user') ||
+      connectorConfigValue(connector, 'username', 'user'),
+    password:
+      connectorCredentialValue(connector, 'password') ||
+      connectorConfigValue(connector, 'password'),
+    warehouse: connectorConfigValue(connector, 'warehouse'),
+    database: connectorConfigValue(connector, 'database'),
+    schema: connectorConfigValue(connector, 'schema'),
+    role: connectorConfigValue(connector, 'role'),
   });
 
   await new Promise((resolve, reject) =>

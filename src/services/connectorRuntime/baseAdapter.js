@@ -8,6 +8,7 @@ import {
 } from './connectorErrors.js';
 import { CANONICAL_EVENT_TYPES, canonicalEvent, warningEvent } from './canonicalMetadata.js';
 import { fetchSourceMetadata } from './sourceClients.js';
+import { runtimeValue } from './runtimeValues.js';
 import {
   applyMinimumCoverageProfiles,
   buildProfilingPlan,
@@ -663,7 +664,7 @@ export class BaseConnectorAdapter {
 
   validateConfig() {
     const missing = this.requiredConfig.filter((key) => {
-      const value = this.config[key];
+      const value = runtimeValue(this.config, key);
       return value === undefined || value === null || value === '';
     });
     if (missing.length) {
