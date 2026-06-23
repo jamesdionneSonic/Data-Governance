@@ -13,6 +13,7 @@ const requiredLocatorFields = [
   'aliases',
   'quick_context_page',
   'canonical_human_page',
+  'canonical_human_page_status',
   'confidence',
 ];
 const requiredPageTypes = [
@@ -39,6 +40,16 @@ function normalizeLookup(value) {
 function hasForbiddenBranch(treePath) {
   const text = pagePath(treePath);
   return text.includes('Database Catalog') || text.includes('Data Product Catalog') || text.includes('High-Value Assets');
+}
+
+function isOldFlatDatabaseCatalogPath(value) {
+  const text = String(value || '');
+  if (!text.startsWith('Sonic Data Lineage / Database Catalog / ')) return false;
+  return ![
+    'Sonic Data Lineage / Database Catalog / SQL Server',
+    'Sonic Data Lineage / Database Catalog / Snowflake',
+    'not created yet',
+  ].some((prefix) => text.startsWith(prefix));
 }
 
 async function readJson(file) {
@@ -72,6 +83,12 @@ function validateLocatorRows(packet) {
     if (!Array.isArray(row.aliases) || row.aliases.length === 0) {
       failures.push(`Locator row aliases must be a nonempty array: ${row.lookup_key || row.canonical_id || 'unknown'}.`);
     }
+    if (isOldFlatDatabaseCatalogPath(row.canonical_human_page)) {
+      failures.push(`Locator row uses old flat Database Catalog path: ${row.lookup_key || row.canonical_id || 'unknown'}.`);
+    }
+    if (row.canonical_human_page === 'not created yet' && row.canonical_human_page_status !== 'pending') {
+      failures.push(`Locator row with missing human page must be marked pending: ${row.lookup_key || row.canonical_id || 'unknown'}.`);
+    }
   }
   return failures;
 }
@@ -82,6 +99,10 @@ function validateDatabaseContext(packet) {
   if (!context) return ['Database context page has no contexts.'];
   if (context.canonical_id !== 'database:VendorData') failures.push('Database context does not describe VendorData.');
   if (!context.canonical_human_page) failures.push('Database context is missing canonical human page link.');
+  if (isOldFlatDatabaseCatalogPath(context.canonical_human_page)) failures.push('Database context uses old flat Database Catalog path.');
+  if (context.canonical_human_page === 'not created yet' && context.canonical_human_page_status !== 'pending') {
+    failures.push('Database context missing human page must be marked pending.');
+  }
   const missingText = JSON.stringify(context.known_gaps || []).toLowerCase();
   for (const term of ['owner', 'sla', 'lifecycle', 'freshness', 'certification']) {
     if (!missingText.includes(term) || !missingText.includes('not surfaced')) {
@@ -107,6 +128,15 @@ function validateObjectSummary(packet) {
         failures.push(`Object summary missing ${field}: ${object.full_name || object.canonical_id || 'unknown'}.`);
       }
     }
+    if (object.canonical_human_page_status === undefined || object.canonical_human_page_status === null || object.canonical_human_page_status === '') {
+      failures.push(`Object summary missing canonical_human_page_status: ${object.full_name || object.canonical_id || 'unknown'}.`);
+    }
+    if (isOldFlatDatabaseCatalogPath(object.canonical_human_page)) {
+      failures.push(`Object summary uses old flat Database Catalog path: ${object.full_name || object.canonical_id || 'unknown'}.`);
+    }
+    if (object.canonical_human_page === 'not created yet' && object.canonical_human_page_status !== 'pending') {
+      failures.push(`Object summary missing human page must be marked pending: ${object.full_name || object.canonical_id || 'unknown'}.`);
+    }
     const missingText = JSON.stringify(object.missing_facts || []).toLowerCase();
     for (const term of ['owner', 'sla', 'lifecycle', 'freshness', 'certification']) {
       if (!missingText.includes(term) || !missingText.includes('not surfaced')) {
@@ -124,6 +154,10 @@ function validateLineageContext(packet, expectedType) {
     failures.push(`${expectedType} context does not target Sonic_DW.dbo.FactOpportunity.`);
   }
   if (!record.canonical_human_page) failures.push(`${expectedType} context is missing canonical human page link.`);
+  if (isOldFlatDatabaseCatalogPath(record.canonical_human_page)) failures.push(`${expectedType} context uses old flat Database Catalog path.`);
+  if (record.canonical_human_page === 'not created yet' && record.canonical_human_page_status !== 'pending') {
+    failures.push(`${expectedType} context missing human page must be marked pending.`);
+  }
   if (expectedType === 'upstream' && !(record.upstream_sources || []).length && !(record.upstream_loaders || []).length && !(record.orchestrators || []).length) {
     failures.push('Upstream context does not include upstream sources, loaders, or orchestrators.');
   }

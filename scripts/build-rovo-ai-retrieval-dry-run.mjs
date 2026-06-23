@@ -7,6 +7,9 @@ const outputRoot = path.resolve('data/confluence/rovo-ai-retrieval-dry-run');
 const runtimePackageRoot = path.resolve('data/lineage-runtime-package/sonic-data-lineage-runtime');
 const runtimeRegistryPath = path.join(runtimePackageRoot, 'registry', 'canonical-objects.jsonl');
 const humanDryRunManifestPath = path.resolve('data/confluence/human-catalog-dry-run/manifest.json');
+const tier2PilotRefreshPacketPath = path.resolve(
+  'docs/confluence-full-database-catalog-deployment/T2P-06-sonic-dw-dbo-pilot-refresh-packet.json'
+);
 const evaluationPromptPath = path.resolve('docs/rovo-ai-retrieval-pilots/rovo-evaluation-prompts.json');
 const generatedAt = new Date().toISOString();
 const rovoRootPath = ['Sonic Data Lineage', 'AI Retrieval Artifacts'];
@@ -26,6 +29,16 @@ function unique(values) {
 
 function pagePath(values) {
   return values.filter(Boolean).join(' / ');
+}
+
+function isOldFlatDatabaseCatalogPath(value) {
+  const text = String(value || '');
+  if (!text.startsWith('Sonic Data Lineage / Database Catalog / ')) return false;
+  return ![
+    'Sonic Data Lineage / Database Catalog / SQL Server',
+    'Sonic Data Lineage / Database Catalog / Snowflake',
+    'not created yet',
+  ].some((prefix) => text.startsWith(prefix));
 }
 
 function mdTable(rows, headers) {
@@ -74,13 +87,27 @@ async function readRuntimeRows() {
 
 async function humanPagePathIndex() {
   const manifest = await readJson(humanDryRunManifestPath, { pages: [] });
-  const paths = new Set();
+  const pages = new Map();
   for (const page of manifest.pages || []) {
     // eslint-disable-next-line no-await-in-loop
     const packet = await readJson(path.resolve('data/confluence/human-catalog-dry-run', page.evidenceFile));
-    if (packet?.page_tree_path) paths.add(pagePath(packet.page_tree_path));
+    if (packet?.page_tree_path) {
+      pages.set(pagePath(packet.page_tree_path), {
+        status: 'generated_in_current_human_dry_run',
+        source: page.evidenceFile,
+      });
+    }
   }
-  return paths;
+  const tier2PilotRefreshPacket = await readJson(tier2PilotRefreshPacketPath, { planned_pages: [] });
+  for (const page of tier2PilotRefreshPacket.planned_pages || []) {
+    if (page.kind === 'leaf' && page.treePath) {
+      pages.set(pagePath(page.treePath), {
+        status: 'pending_publish_packet',
+        source: path.relative(process.cwd(), tier2PilotRefreshPacketPath).replaceAll('\\', '/'),
+      });
+    }
+  }
+  return pages;
 }
 
 function objectCanonicalId(row) {
@@ -95,19 +122,60 @@ function schemaCanonicalId(database, schema) {
   return `schema:${database}.${schema}`;
 }
 
-function objectHumanPage(row, humanPaths) {
-  const canonical = pagePath(['Sonic Data Lineage', 'Database Catalog', row.database, row.schema, row.object_name]);
-  return humanPaths.has(canonical) ? canonical : 'not created yet';
+function platformForRow(row = {}) {
+  const signal = [
+    row.platform,
+    row.database_product,
+    row.source_type,
+    row.connector_type,
+    row.server,
+    row.source_system,
+    row.source_markdown_path,
+    row.context_pack_path,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+  if (signal.includes('snowflake')) return 'Snowflake';
+  return 'SQL Server';
 }
 
-function databaseHumanPage(database, humanPaths) {
-  const canonical = pagePath(['Sonic Data Lineage', 'Database Catalog', database]);
-  return humanPaths.has(canonical) ? canonical : canonical;
+function humanPageReference(canonical, humanPages) {
+  const page = humanPages.get(canonical);
+  if (page) {
+    return {
+      canonical_human_page: canonical,
+      canonical_human_page_status: page.status,
+      canonical_human_page_source: page.source,
+    };
+  }
+  return {
+    canonical_human_page: 'not created yet',
+    canonical_human_page_status: 'pending',
+    canonical_human_page_source: 'not surfaced in current human dry run or reviewed publish packets',
+  };
 }
 
-function schemaHumanPage(database, schema, humanPaths) {
-  const canonical = pagePath(['Sonic Data Lineage', 'Database Catalog', database, schema]);
-  return humanPaths.has(canonical) ? canonical : canonical;
+function objectHumanPage(row, humanPages) {
+  const canonical = pagePath([
+    'Sonic Data Lineage',
+    'Database Catalog',
+    platformForRow(row),
+    row.database,
+    row.schema,
+    row.object_name,
+  ]);
+  return humanPageReference(canonical, humanPages);
+}
+
+function databaseHumanPage(database, platform, humanPages) {
+  const canonical = pagePath(['Sonic Data Lineage', 'Database Catalog', platform || 'SQL Server', database]);
+  return humanPageReference(canonical, humanPages);
+}
+
+function schemaHumanPage(database, schema, platform, humanPages) {
+  const canonical = pagePath(['Sonic Data Lineage', 'Database Catalog', platform || 'SQL Server', database, schema]);
+  return humanPageReference(canonical, humanPages);
 }
 
 function objectAliases(row) {
@@ -131,8 +199,9 @@ function schemaAliases(database, schema) {
   return unique([`${database}.${schema}`, `${schema}`, normalizeLookup(`${database}.${schema}`)]);
 }
 
-function objectSummary(row, metadata, humanPaths) {
+function objectSummary(row, metadata, humanPages) {
   const aliases = objectAliases(row);
+  const humanPage = objectHumanPage(row, humanPages);
   const tags = [];
   if (Number(row.downstream_count || 0) >= 10) tags.push('high-use');
   if (row.answer_cards?.profile_teaser) tags.push('profiled');
@@ -171,7 +240,9 @@ function objectSummary(row, metadata, humanPaths) {
       'certification not surfaced in metadata',
       'business definition not surfaced in metadata',
     ],
-    canonical_human_page: objectHumanPage(row, humanPaths),
+    canonical_human_page: humanPage.canonical_human_page,
+    canonical_human_page_status: humanPage.canonical_human_page_status,
+    canonical_human_page_source: humanPage.canonical_human_page_source,
     generated_at: generatedAt,
     evidence_hash: `sha256:${hashJson({ row, metadata })}`,
     source_artifact_paths: [row.source_markdown_path, row.context_pack_path, row.compact_context_pack_path].filter(Boolean),
@@ -192,6 +263,7 @@ function locatorRowsForEntity(entity) {
       aliases: entity.aliases,
       quick_context_page: entity.quick_context_page,
       canonical_human_page: entity.canonical_human_page,
+      canonical_human_page_status: entity.canonical_human_page_status,
       confidence: entity.confidence || 'high',
       evidence_hash: entity.evidence_hash,
     });
@@ -223,8 +295,9 @@ function selectTargetRows(rows) {
   return { vendorRows, selectedRows: [...byId.values()] };
 }
 
-function databaseContext(vendorRows, humanPaths) {
+function databaseContext(vendorRows, humanPages) {
   const schemas = [...new Set(vendorRows.map((row) => row.schema).filter(Boolean))].sort();
+  const humanPage = databaseHumanPage('VendorData', 'SQL Server', humanPages);
   const objectCounts = {};
   for (const row of vendorRows) objectCounts[row.object_type || 'object'] = (objectCounts[row.object_type || 'object'] || 0) + 1;
   const taggedObjects = [...vendorRows]
@@ -264,7 +337,9 @@ function databaseContext(vendorRows, humanPaths) {
       description_confidence: 'low',
       caveat: 'Database purpose is inferred from cataloged object and schema names only.',
     },
-    canonical_human_page: databaseHumanPage('VendorData', humanPaths),
+    canonical_human_page: humanPage.canonical_human_page,
+    canonical_human_page_status: humanPage.canonical_human_page_status,
+    canonical_human_page_source: humanPage.canonical_human_page_source,
     generated_at: generatedAt,
   };
   return { ...context, evidence_hash: `sha256:${hashJson(context)}` };
@@ -302,6 +377,8 @@ function lineageContext(objectRecord) {
       'Business owner, SLA, lifecycle/status, live freshness, and certification are not surfaced in metadata.',
     ],
     canonical_human_page: objectRecord.canonical_human_page,
+    canonical_human_page_status: objectRecord.canonical_human_page_status,
+    canonical_human_page_source: objectRecord.canonical_human_page_source,
     source_artifact_paths: objectRecord.source_artifact_paths,
   };
   return { ...base, evidence_hash: `sha256:${hashJson(base)}` };
@@ -326,6 +403,7 @@ function ambiguityGroups(locatorRows) {
         schema: row.schema,
         object: row.object,
         canonical_human_page: row.canonical_human_page,
+        canonical_human_page_status: row.canonical_human_page_status,
         quick_context_page: row.quick_context_page,
       })),
       recommended_disambiguation:
@@ -396,9 +474,10 @@ ${mdTable(
     object: row.object,
     quick_context_page: row.quick_context_page,
     canonical_human_page: row.canonical_human_page,
+    page_status: row.canonical_human_page_status,
     confidence: row.confidence,
   })),
-  ['lookup_key', 'canonical_id', 'type', 'database', 'schema', 'object', 'quick_context_page', 'canonical_human_page', 'confidence']
+  ['lookup_key', 'canonical_id', 'type', 'database', 'schema', 'object', 'quick_context_page', 'canonical_human_page', 'page_status', 'confidence']
 )}
 
 ## Technical Evidence
@@ -421,6 +500,7 @@ ${context.plain_english_summary}
 | Database | \`${context.database}\` |
 | Aliases | ${context.aliases.map((alias) => `\`${alias}\``).join(', ')} |
 | Canonical human page | \`${context.canonical_human_page}\` |
+| Human page status | ${context.canonical_human_page_status} |
 | Inventory confidence | ${context.confidence.inventory_confidence} |
 | Description confidence | ${context.confidence.description_confidence} |
 
@@ -471,8 +551,9 @@ ${mdTable(
     downstream: object.downstream_summary,
     profile: object.profile_status,
     human_page: object.canonical_human_page,
+    page_status: object.canonical_human_page_status,
   })),
-  ['canonical_id', 'full_name', 'type', 'aliases', 'tags', 'columns', 'upstream', 'downstream', 'profile', 'human_page']
+  ['canonical_id', 'full_name', 'type', 'aliases', 'tags', 'columns', 'upstream', 'downstream', 'profile', 'human_page', 'page_status']
 )}
 
 ## Missing Facts
@@ -496,6 +577,7 @@ Use this page for ${direction} lineage questions about \`${packet.record.full_na
 | Canonical id | \`${packet.record.canonical_id}\` |
 | Full name | \`${packet.record.full_name}\` |
 | Canonical human page | \`${packet.record.canonical_human_page}\` |
+| Human page status | ${packet.record.canonical_human_page_status} |
 
 ## ${direction === 'upstream' ? 'Upstream Sources' : 'Downstream Consumers'}
 
@@ -536,8 +618,9 @@ ${mdTable(
     object: option.object,
     quick_context_page: option.quick_context_page,
     human_page: option.canonical_human_page,
+    page_status: option.canonical_human_page_status,
   })),
-  ['canonical_id', 'type', 'database', 'schema', 'object', 'quick_context_page', 'human_page']
+  ['canonical_id', 'type', 'database', 'schema', 'object', 'quick_context_page', 'human_page', 'page_status']
 )}
 
 ${group.recommended_disambiguation}`
@@ -593,25 +676,51 @@ function ensureAcceptance({ locatorRows, ambiguity, databaseRecord, summaryObjec
     failures.push('Unsupported governance facts are not marked as not surfaced.');
   }
   for (const row of locatorRows) {
-    for (const field of ['lookup_key', 'canonical_id', 'type', 'database', 'schema', 'object', 'aliases', 'quick_context_page', 'canonical_human_page', 'confidence']) {
+    for (const field of [
+      'lookup_key',
+      'canonical_id',
+      'type',
+      'database',
+      'schema',
+      'object',
+      'aliases',
+      'quick_context_page',
+      'canonical_human_page',
+      'canonical_human_page_status',
+      'confidence',
+    ]) {
       if (row[field] === undefined) failures.push(`Locator row missing ${field}: ${row.lookup_key || row.canonical_id}`);
     }
+    if (isOldFlatDatabaseCatalogPath(row.canonical_human_page)) {
+      failures.push(`Locator row uses old flat Database Catalog path: ${row.canonical_id}`);
+    }
+    if (row.canonical_human_page === 'not created yet' && row.canonical_human_page_status !== 'pending') {
+      failures.push(`Locator row missing pending status for absent human page: ${row.canonical_id}`);
+    }
+  }
+  for (const object of summaryObjects) {
+    if (isOldFlatDatabaseCatalogPath(object.canonical_human_page)) {
+      failures.push(`Object summary uses old flat Database Catalog path: ${object.full_name}`);
+    }
+  }
+  if (isOldFlatDatabaseCatalogPath(factLineage.canonical_human_page)) {
+    failures.push(`FactOpportunity lineage uses old flat Database Catalog path: ${factLineage.canonical_id}`);
   }
   return failures;
 }
 
 async function main() {
   const rows = await readRuntimeRows();
-  const humanPaths = await humanPagePathIndex();
+  const humanPages = await humanPagePathIndex();
   const { vendorRows, selectedRows } = selectTargetRows(rows);
   const objectRecords = [];
   for (const row of selectedRows) {
     // eslint-disable-next-line no-await-in-loop
     const metadata = await readMarkdownMetadata(row.source_markdown_path);
-    objectRecords.push(objectSummary(row, metadata, humanPaths));
+    objectRecords.push(objectSummary(row, metadata, humanPages));
   }
 
-  const databaseRecord = databaseContext(vendorRows, humanPaths);
+  const databaseRecord = databaseContext(vendorRows, humanPages);
   const schemaEntities = databaseRecord.schemas.map((schema) => ({
     canonical_id: schemaCanonicalId('VendorData', schema),
     type: 'schema',
@@ -620,7 +729,7 @@ async function main() {
     object: 'not applicable',
     aliases: schemaAliases('VendorData', schema),
     quick_context_page: 'Rovo Database Context 001',
-    canonical_human_page: schemaHumanPage('VendorData', schema, humanPaths),
+    ...schemaHumanPage('VendorData', schema, 'SQL Server', humanPages),
     confidence: 'high',
     evidence_hash: databaseRecord.evidence_hash,
   }));
@@ -633,6 +742,7 @@ async function main() {
     aliases: databaseRecord.aliases,
     quick_context_page: 'Rovo Database Context 001',
     canonical_human_page: databaseRecord.canonical_human_page,
+    canonical_human_page_status: databaseRecord.canonical_human_page_status,
     confidence: 'high',
     evidence_hash: databaseRecord.evidence_hash,
   };
@@ -645,6 +755,7 @@ async function main() {
     aliases: record.aliases,
     quick_context_page: 'Rovo Object Summary Context 001',
     canonical_human_page: record.canonical_human_page,
+    canonical_human_page_status: record.canonical_human_page_status,
     confidence: record.confidence.lineage_confidence,
     evidence_hash: record.evidence_hash,
   }));

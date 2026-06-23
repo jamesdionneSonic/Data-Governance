@@ -258,6 +258,9 @@ schema.
 
 ### T2OBJ-010: Rovo Link Alignment After Tier 2 Coverage
 
+**Status**: Dry-run packet ready; live Rovo Confluence publish pending explicit
+approval.
+
 **Goal**: Keep Rovo retrieval links aligned with canonical human pages after
 Tier 2 batches publish.
 
@@ -271,6 +274,16 @@ Tier 2 batches publish.
 
 - Rovo links point to canonical human pages when pages exist.
 - Missing human pages are marked pending rather than invented.
+
+**Completion Evidence**:
+
+- `docs/confluence-full-database-catalog-deployment/T2P-07-rovo-link-alignment-packet.json`
+- `docs/confluence-full-database-catalog-deployment/T2P-07-rovo-link-alignment-packet.md`
+- `docs/confluence-full-database-catalog-deployment/T2P-07-rovo-link-alignment-readback.md`
+- `npm run confluence:full:tier2:rovo-link-align:dry-run`
+- Readback summary: 527 Rovo human-link rows checked, 49 links aligned to the
+  pending T2P-06 publish packet, 478 links explicitly marked pending, and 0 old
+  flat `Database Catalog / <Database>` links remaining.
 
 ### T2OBJ-011: Full Coverage Readiness Gate
 

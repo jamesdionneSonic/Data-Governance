@@ -267,6 +267,9 @@ Refresh existing pilot Tier 2 pages to the platform-grouped objective schema.
 
 Backlog item: T2OBJ-010
 
+Status: Dry-run packet ready; live Rovo Confluence publish pending explicit
+approval.
+
 Estimated tokens: 70k-130k
 
 ### Goal
@@ -283,6 +286,16 @@ Align Rovo retrieval links after Tier 2 object pages are published.
 
 - Rovo pages remain under `AI Retrieval Artifacts`.
 - Rovo links point to canonical human pages when available.
+
+### Completion Evidence
+
+- `docs/confluence-full-database-catalog-deployment/T2P-07-rovo-link-alignment-packet.json`
+- `docs/confluence-full-database-catalog-deployment/T2P-07-rovo-link-alignment-packet.md`
+- `docs/confluence-full-database-catalog-deployment/T2P-07-rovo-link-alignment-readback.md`
+- `npm run confluence:full:tier2:rovo-link-align:dry-run`
+- Result: Rovo artifacts remained under `AI Retrieval Artifacts`; 527
+  canonical human-link rows were checked; 49 links point to pages queued in
+  T2P-06; 478 are explicitly pending; 0 old flat Database Catalog links remain.
 
 ## T2P-08: Full Tier 2 Coverage Readiness Gate
 
