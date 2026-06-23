@@ -1,0 +1,73 @@
+{
+  "extractedAt": "2026-06-23T00:00:00.000Z",
+  "catalog": [
+    {
+      "folderName": "FinanceETL",
+      "projectName": "DailyLoads",
+      "packageName": "LoadVehicle.dtsx",
+      "type": "package"
+    }
+  ],
+  "xmlMetadata": [
+    {
+      "packageId": "FinanceETL/DailyLoads/LoadVehicle.dtsx",
+      "folderName": "FinanceETL",
+      "projectName": "DailyLoads",
+      "packageName": "LoadVehicle.dtsx",
+      "version": "1.0.0",
+      "connectionManagers": [
+        {
+          "name": "SonicDW",
+          "type": "OLEDB"
+        }
+      ],
+      "sqlTasks": [
+        {
+          "taskName": "Load DimVehicle",
+          "sql": "exec dbo.uspLoadDimVehicle"
+        }
+      ],
+      "packageTasks": [
+        {
+          "taskName": "Load VIN Package",
+          "targetPackage": "LoadVin.dtsx"
+        }
+      ],
+      "dataFlowComponents": [
+        {
+          "componentName": "Vehicle Source",
+          "componentType": "OLEDB Source"
+        }
+      ]
+    }
+  ],
+  "parameters": [
+    {
+      "package_id": "FinanceETL/DailyLoads/LoadVehicle.dtsx",
+      "name": "BatchDate",
+      "sensitive": false
+    }
+  ],
+  "environments": {
+    "variables": []
+  },
+  "agentJobs": {
+    "jobs": [
+      {
+        "package_id": "FinanceETL/DailyLoads/LoadVehicle.dtsx",
+        "job_name": "Nightly Vehicle Load"
+      }
+    ],
+    "ssisSteps": []
+  },
+  "lineageEdges": [
+    {
+      "id": "FinanceETL/DailyLoads/LoadVehicle.dtsx->Sonic_DW.dbo.DimVehicle",
+      "from": "FinanceETL/DailyLoads/LoadVehicle.dtsx",
+      "to": "Sonic_DW.dbo.DimVehicle",
+      "edgeType": "ssis_target_write",
+      "confidence": 0.8
+    }
+  ],
+  "warnings": []
+}

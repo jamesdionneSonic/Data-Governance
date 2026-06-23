@@ -42,6 +42,7 @@
     "connector:snowflake:bipslyv:register": "node scripts/register-snowflake-bipslyv-tlb12786-connector.mjs",
     "snowflake:lineage:ingest": "node scripts/ingest-snowflake-lineage-slice.mjs",
     "sqlserver:lineage:ingest": "node scripts/ingest-sqlserver-lineage-incremental.mjs",
+    "ssis:lineage:ingest": "node scripts/ingest-ssis-lineage-incremental.mjs",
     "lineage:runtime:prepare": "npm run catalog:repo:export && npm run catalog:repo:check && npm run lineage:runtime:package && npm run lineage:runtime:check && npm run lineage:answers:check && npm run lineage:runtime:sync",
     "lineage:runtime:publish": "node scripts/publish-lineage-runtime-package.mjs",
     "adf:support:generate": "node scripts/generate-adf-support-pages.mjs",
