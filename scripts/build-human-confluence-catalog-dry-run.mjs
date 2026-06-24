@@ -32,6 +32,9 @@ const humanCatalogDoNotPublishSchemas = [
   { database: 'Sonic_DW', schemaPrefix: 'SONIC\\bheemappa', reason: 'User/account schema; not useful as a human browse page.' },
   { database: 'Sonic_DW', schemaPrefix: 'SONIC\\Murali', reason: 'User/account schema; not useful as a human browse page.' },
   { database: 'Sonic_DW', schemaPrefix: 'SONIC\\rajakumar', reason: 'User/account schema; not useful as a human browse page.' },
+  { database: 'Sonic_DW', schemaPrefix: 'SONIC\\Sudheer', reason: 'User/account schema; not useful as a human browse page.' },
+  { database: 'DMS', schemaPrefix: 'SONIC\\rajakumar', reason: 'User/account schema; not useful as a human browse page.' },
+  { database: 'eLeadDW', schemaPrefix: 'SONIC\\sunil', reason: 'User/account schema; not useful as a human browse page.' },
   { database: 'StagingDB', schemaPrefix: 'SONIC\\bheemappa', reason: 'User/account schema; not useful as a human browse page.' },
 ];
 const humanCatalogExcludedArtifacts = [
@@ -229,6 +232,12 @@ function platformForRows(rows = []) {
 
 function databaseCatalogPath(platform, database, ...children) {
   return ['Sonic Data Lineage', 'Database Catalog', platform || 'SQL Server', database || 'unknown', ...children.filter(Boolean)];
+}
+
+function schemaPageTreeTitle(database, schema) {
+  const key = `${String(database || '').toLowerCase()}.${String(schema || '').toLowerCase()}`;
+  if (['dms.dbo', 'dms.mdp', 'dms.wrk'].includes(key)) return `${database}.${schema}`;
+  return schema;
 }
 
 function splitFilterValues(value) {
@@ -941,6 +950,7 @@ async function renderSchema(schemaName) {
   const root = path.relative(process.cwd(), runtimeRegistryPath).replaceAll('\\', '/');
   const rows = await listRuntimeSchemaRows(database, schema);
   const platform = platformForRows(rows);
+  const pageTreeSchema = schemaPageTreeTitle(database, schema);
   const counts = {};
   for (const row of rows) counts[row.type] = (counts[row.type] || 0) + 1;
   const sortedRows = [...rows].sort(
@@ -964,7 +974,7 @@ async function renderSchema(schemaName) {
   const packet = {
     page_type: 'schema',
     page_title: schema,
-    page_tree_path: databaseCatalogPath(platform, database, schema),
+    page_tree_path: databaseCatalogPath(platform, database, pageTreeSchema),
     canonical_id: `schema-${slug}`,
     source_artifact_paths: [root],
     generated_at: new Date().toISOString().slice(0, 10),

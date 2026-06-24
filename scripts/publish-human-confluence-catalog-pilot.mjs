@@ -253,6 +253,17 @@ const http = axios.create({
 });
 
 async function findChildPage(title, parentPageId) {
+  const childResponse = await confluenceRequest(`list child pages under ${parentPageId}`, () =>
+    http.get(`/rest/api/content/${parentPageId}/child/page`, {
+      params: {
+        expand: 'version,metadata.labels',
+        limit: 200,
+      },
+    })
+  );
+  const directChild = (childResponse.data?.results || []).find((page) => page.title === title && page.status !== 'archived');
+  if (directChild) return directChild;
+
   const cql = `parent=${parentPageId} and type=page and title="${escapeCqlString(title)}"`;
   const response = await confluenceRequest(`find child page "${title}"`, () =>
     http.get('/rest/api/content/search', {
@@ -263,7 +274,7 @@ async function findChildPage(title, parentPageId) {
       },
     })
   );
-  return (response.data?.results || []).find((page) => page.title === title) || null;
+  return (response.data?.results || []).find((page) => page.title === title && page.status !== 'archived') || null;
 }
 
 async function findSpacePageByTitle(title) {
@@ -273,6 +284,7 @@ async function findSpacePageByTitle(title) {
         spaceKey,
         title,
         type: 'page',
+        status: 'current',
         expand: 'version,metadata.labels,ancestors',
         limit: 25,
       },
@@ -313,6 +325,12 @@ async function createPage(page, parentPageId) {
     );
   } catch (error) {
     const message = error.response?.data?.message || error.message;
+    if (/page already exists|same TITLE/i.test(message)) {
+      const existingPage = await findSpacePageByTitle(page.title);
+      if (existingPage) {
+        return updatePage(page, existingPage, parentPageId);
+      }
+    }
     throw new Error(`Failed to create Confluence page "${page.title}" at "${page.treePath.join(' / ')}": ${message}`);
   }
   return {

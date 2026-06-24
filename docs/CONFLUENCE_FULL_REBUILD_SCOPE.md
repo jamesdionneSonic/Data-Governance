@@ -85,13 +85,18 @@ be suppressed from database summaries and schema page generation:
 Sonic_DW.SONIC\bheemappa
 Sonic_DW.SONIC\Murali
 Sonic_DW.SONIC\rajakumar
+Sonic_DW.SONIC\Sudheer
+DMS.SONIC\rajakumar
+eLeadDW.SONIC\sunil
 StagingDB.SONIC\bheemappa
 ```
 
 These entries are prefix rules; for example, they cover published schema names
 such as `Sonic_DW.SONIC\bheemappa.madar`,
 `Sonic_DW.SONIC\Murali.Gutha`, and
-`Sonic_DW.SONIC\rajakumar.jaggani`. The StagingDB rule covers
+`Sonic_DW.SONIC\rajakumar.jaggani`. The DMS, eLeadDW, and Sonic_DW Sudheer
+rules cover the account schemas surfaced by the DMS onboarding refresh. The
+StagingDB rule covers
 `StagingDB.SONIC\bheemappa` and any same-user schema variants surfaced later.
 
 If a blocked schema was already published to Confluence, handle removal through

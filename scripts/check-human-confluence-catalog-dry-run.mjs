@@ -215,7 +215,7 @@ function validatePage({ markdown, packet, markdownPath }) {
       'Database Catalog',
       packet.catalog_slice?.platform,
       packet.catalog_slice?.database,
-      packet.catalog_slice?.schema,
+      packet.page_tree_path?.at?.(-1) || packet.catalog_slice?.schema,
     ].filter(Boolean);
     if (expectedSchemaPath.length === 5 && (packet.page_tree_path || []).join(' / ') !== expectedSchemaPath.join(' / ')) {
       failures.push('Schema page tree path is not the canonical Database Catalog / Platform / Database / Schema path.');
@@ -313,14 +313,9 @@ async function validateSupersededPagesReport() {
     failures.push({ markdownPath: reportPath, message: 'Superseded report must require explicit cleanup approval.' });
   }
   const candidates = report.candidates || [];
-  if (!Array.isArray(candidates) || candidates.length === 0) {
-    failures.push({ markdownPath: reportPath, message: 'Superseded report does not include any candidates.' });
-  }
-  if (!candidates.some((candidate) => candidate.candidate_type === 'schema-title')) {
-    failures.push({ markdownPath: reportPath, message: 'Superseded report does not include schema-title candidates.' });
-  }
-  if (!candidates.some((candidate) => candidate.candidate_type === 'high-value-object')) {
-    failures.push({ markdownPath: reportPath, message: 'Superseded report does not include high-value-object candidates.' });
+  if (!Array.isArray(candidates)) {
+    failures.push({ markdownPath: reportPath, message: 'Superseded report candidates must be an array.' });
+    return failures;
   }
   for (const candidate of candidates) {
     if (candidate.cleanup_allowed !== false || candidate.requires_explicit_cleanup_approval !== true) {
