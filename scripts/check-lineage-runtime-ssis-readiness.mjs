@@ -99,7 +99,7 @@ async function main() {
   }
 
   const ssisReadme = await readText('ssis/README.md');
-  if (!/\| Folder \| Packages \| Supporting Context Records \|/.test(ssisReadme)) {
+  if (!/\| Folder \| Packages \| (Supporting Context Records|Evidence Sidecars) \|/.test(ssisReadme)) {
     addFailure(failures, 'folder-prompt', 'SSIS README does not expose the folder navigation table.');
   }
   if (!/\[FUEL\]\(/.test(ssisReadme) || !/\[FIRE\]\(/.test(ssisReadme)) {
@@ -123,7 +123,7 @@ async function main() {
     addFailure(failures, 'project-prompt', 'No folder-level project README was found under ssis/f/**.');
   } else {
     const text = await readText(folderProjectReadme);
-    if (!/\| Project \| Packages \| Supporting Context Records \|/.test(text)) {
+    if (!/\| Project \| Packages \| (Supporting Context Records|Evidence Sidecars) \|/.test(text)) {
       addFailure(failures, 'project-prompt', `${folderProjectReadme} does not expose a project navigation table.`);
     }
   }

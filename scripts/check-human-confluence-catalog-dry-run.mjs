@@ -95,6 +95,12 @@ function isExcludedDatabaseCatalogObject(object) {
   );
 }
 
+function schemaPageTreeTitle(database, schema) {
+  const key = `${String(database || '').toLowerCase()}.${String(schema || '').toLowerCase()}`;
+  if (['dms.dbo', 'dms.mdp', 'dms.wrk'].includes(key)) return `${database}.${schema}`;
+  return schema;
+}
+
 function validateObjectLinkStatus(object, label) {
   const failures = [];
   const name = object?.full_name || object?.qualified_name || object?.name || label || 'unknown';
@@ -153,7 +159,14 @@ function validatePage({ markdown, packet, markdownPath }) {
     if (isExcludedDatabaseCatalogObject(object)) {
       failures.push('SSIS package/catalog object pages must not be published under Database Catalog; use SSIS support documentation.');
     }
-    const expectedPath = ['Sonic Data Lineage', 'Database Catalog', object.platform, object.database, object.schema, object.name].filter(Boolean);
+    const expectedPath = [
+      'Sonic Data Lineage',
+      'Database Catalog',
+      object.platform,
+      object.database,
+      schemaPageTreeTitle(object.database, object.schema),
+      object.name,
+    ].filter(Boolean);
     if (expectedPath.length === 6 && (packet.page_tree_path || []).join(' / ') !== expectedPath.join(' / ')) {
       failures.push('Object page tree path is not the canonical platform/database/schema/object path.');
     }

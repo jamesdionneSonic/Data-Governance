@@ -1219,7 +1219,12 @@ async function renderHighValueObjectPage(row) {
   const slug = objectPageSlug(row);
   const richPromotion = richPromotionForObject(object);
   const evidenceHash = hashJson({ object, richPromotion });
-  const objectPath = databaseCatalogPath(object.platform, object.database, object.schema, object.name);
+  const objectPath = databaseCatalogPath(
+    object.platform,
+    object.database,
+    schemaPageTreeTitle(object.database, object.schema),
+    object.name
+  );
   const packet = {
     page_type: 'object',
     page_title: object.name,
