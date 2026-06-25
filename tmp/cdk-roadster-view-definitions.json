@@ -1,0 +1,139 @@
+{
+  "summary": [
+    {
+      "table_name": "AGENTS",
+      "definition_length": 0,
+      "has_join": false,
+      "has_group_by": false,
+      "has_qualify": false,
+      "has_window_functions": false,
+      "has_case": false,
+      "has_array_logic": false,
+      "has_where_filter": false,
+      "referenced_fragments": [],
+      "first_500_chars": ""
+    },
+    {
+      "table_name": "COMPANY",
+      "definition_length": 0,
+      "has_join": false,
+      "has_group_by": false,
+      "has_qualify": false,
+      "has_window_functions": false,
+      "has_case": false,
+      "has_array_logic": false,
+      "has_where_filter": false,
+      "referenced_fragments": [],
+      "first_500_chars": ""
+    },
+    {
+      "table_name": "CUSTOMERS",
+      "definition_length": 0,
+      "has_join": false,
+      "has_group_by": false,
+      "has_qualify": false,
+      "has_window_functions": false,
+      "has_case": false,
+      "has_array_logic": false,
+      "has_where_filter": false,
+      "referenced_fragments": [],
+      "first_500_chars": ""
+    },
+    {
+      "table_name": "DEALS",
+      "definition_length": 0,
+      "has_join": false,
+      "has_group_by": false,
+      "has_qualify": false,
+      "has_window_functions": false,
+      "has_case": false,
+      "has_array_logic": false,
+      "has_where_filter": false,
+      "referenced_fragments": [],
+      "first_500_chars": ""
+    },
+    {
+      "table_name": "INVENTORY",
+      "definition_length": 0,
+      "has_join": false,
+      "has_group_by": false,
+      "has_qualify": false,
+      "has_window_functions": false,
+      "has_case": false,
+      "has_array_logic": false,
+      "has_where_filter": false,
+      "referenced_fragments": [],
+      "first_500_chars": ""
+    },
+    {
+      "table_name": "PURCHASES",
+      "definition_length": 0,
+      "has_join": false,
+      "has_group_by": false,
+      "has_qualify": false,
+      "has_window_functions": false,
+      "has_case": false,
+      "has_array_logic": false,
+      "has_where_filter": false,
+      "referenced_fragments": [],
+      "first_500_chars": ""
+    },
+    {
+      "table_name": "TASKS",
+      "definition_length": 0,
+      "has_join": false,
+      "has_group_by": false,
+      "has_qualify": false,
+      "has_window_functions": false,
+      "has_case": false,
+      "has_array_logic": false,
+      "has_where_filter": false,
+      "referenced_fragments": [],
+      "first_500_chars": ""
+    }
+  ],
+  "views": [
+    {
+      "TABLE_CATALOG": "CDK_ROADSTER_ELEAD_SONIC",
+      "TABLE_SCHEMA": "SONIC",
+      "TABLE_NAME": "AGENTS",
+      "VIEW_DEFINITION": null
+    },
+    {
+      "TABLE_CATALOG": "CDK_ROADSTER_ELEAD_SONIC",
+      "TABLE_SCHEMA": "SONIC",
+      "TABLE_NAME": "COMPANY",
+      "VIEW_DEFINITION": null
+    },
+    {
+      "TABLE_CATALOG": "CDK_ROADSTER_ELEAD_SONIC",
+      "TABLE_SCHEMA": "SONIC",
+      "TABLE_NAME": "CUSTOMERS",
+      "VIEW_DEFINITION": null
+    },
+    {
+      "TABLE_CATALOG": "CDK_ROADSTER_ELEAD_SONIC",
+      "TABLE_SCHEMA": "SONIC",
+      "TABLE_NAME": "DEALS",
+      "VIEW_DEFINITION": null
+    },
+    {
+      "TABLE_CATALOG": "CDK_ROADSTER_ELEAD_SONIC",
+      "TABLE_SCHEMA": "SONIC",
+      "TABLE_NAME": "INVENTORY",
+      "VIEW_DEFINITION": null
+    },
+    {
+      "TABLE_CATALOG": "CDK_ROADSTER_ELEAD_SONIC",
+      "TABLE_SCHEMA": "SONIC",
+      "TABLE_NAME": "PURCHASES",
+      "VIEW_DEFINITION": null
+    },
+    {
+      "TABLE_CATALOG": "CDK_ROADSTER_ELEAD_SONIC",
+      "TABLE_SCHEMA": "SONIC",
+      "TABLE_NAME": "TASKS",
+      "VIEW_DEFINITION": null
+    }
+  ]
+}

@@ -1,0 +1,778 @@
+{
+  "snowflakeTables": [
+    {
+      "table_catalog": "CDK_DN_TITAN_FTR_UNMASK_E100030_SHARE",
+      "table_schema": "CONSUMPTION_SHARED_E100030",
+      "table_name": "REPAIR_ORDER_RAW",
+      "row_count": 133112
+    },
+    {
+      "table_catalog": "CDK_DN_TITAN_FTR_UNMASK_E100030_SHARE",
+      "table_schema": "CONSUMPTION_SHARED_E100030",
+      "table_name": "VEHICLE_SALES_RAW",
+      "row_count": 42533
+    }
+  ],
+  "sqlServerTables": [
+    {
+      "database_name": "DMS",
+      "schema_name": "dbo",
+      "table_name": "appointments",
+      "row_count": "6039299"
+    },
+    {
+      "database_name": "DMS",
+      "schema_name": "dbo",
+      "table_name": "servicesalesclosed",
+      "row_count": "22610068"
+    },
+    {
+      "database_name": "DMS",
+      "schema_name": "dbo",
+      "table_name": "servicesalesdetailsclosed",
+      "row_count": "297011156"
+    },
+    {
+      "database_name": "DMS",
+      "schema_name": "dbo",
+      "table_name": "servicesalesopen",
+      "row_count": "5223276"
+    },
+    {
+      "database_name": "DMS",
+      "schema_name": "dbo",
+      "table_name": "vehiclesalescurrent",
+      "row_count": "11523992"
+    }
+  ],
+  "vehicleDealerCounts": {
+    "snowflake": [
+      {
+        "branch": "466D",
+        "row_count": 173,
+        "deals": 173
+      },
+      {
+        "branch": "466S",
+        "row_count": 511,
+        "deals": 511
+      },
+      {
+        "branch": "476D",
+        "row_count": 25,
+        "deals": 25
+      },
+      {
+        "branch": "476S",
+        "row_count": 117,
+        "deals": 117
+      }
+    ],
+    "sqlserver": [
+      {
+        "branch": "466D",
+        "row_count": 173,
+        "deals": 173
+      },
+      {
+        "branch": "466S",
+        "row_count": 509,
+        "deals": 509
+      },
+      {
+        "branch": "476D",
+        "row_count": 25,
+        "deals": 25
+      },
+      {
+        "branch": "476S",
+        "row_count": 117,
+        "deals": 117
+      }
+    ]
+  },
+  "repairDealerCounts": {
+    "snowflake": [
+      {
+        "dealercode": "05179",
+        "row_count": 1871,
+        "repair_orders": 1871
+      },
+      {
+        "dealercode": "R0429",
+        "row_count": 641,
+        "repair_orders": 641
+      }
+    ],
+    "sqlserver": [
+      {
+        "source_table": "servicesalesclosed",
+        "cora_acct_id": 445,
+        "row_count": 1628,
+        "repair_orders": 1628
+      },
+      {
+        "source_table": "servicesalesclosed",
+        "cora_acct_id": 20246,
+        "row_count": 931,
+        "repair_orders": 931
+      },
+      {
+        "source_table": "servicesalesopen",
+        "cora_acct_id": 445,
+        "row_count": 1093,
+        "repair_orders": 1093
+      },
+      {
+        "source_table": "servicesalesopen",
+        "cora_acct_id": 20246,
+        "row_count": 835,
+        "repair_orders": 835
+      }
+    ]
+  },
+  "repairAmountCandidates": {
+    "snowflakeColumns": [
+      {
+        "column_name": "CLOSEDCUSTOMERPAY",
+        "data_type": "TEXT"
+      },
+      {
+        "column_name": "CLOSEDINTERNALPAY",
+        "data_type": "TEXT"
+      },
+      {
+        "column_name": "CLOSEDWARRANTYPAY",
+        "data_type": "TEXT"
+      },
+      {
+        "column_name": "DEPARTMENT",
+        "data_type": "TEXT"
+      },
+      {
+        "column_name": "ESTROLINETOTAL",
+        "data_type": "NUMBER"
+      },
+      {
+        "column_name": "HASCUSTPAYFLAG",
+        "data_type": "TEXT"
+      },
+      {
+        "column_name": "HASINTPAYFLAG",
+        "data_type": "TEXT"
+      },
+      {
+        "column_name": "HASWARRPAYFLAG",
+        "data_type": "TEXT"
+      },
+      {
+        "column_name": "PARTSACCOUNT",
+        "data_type": "TEXT"
+      },
+      {
+        "column_name": "PARTSHOLDDESCRIPTION",
+        "data_type": "TEXT"
+      },
+      {
+        "column_name": "PAYBALANCEDUE",
+        "data_type": "NUMBER"
+      },
+      {
+        "column_name": "PAYCPTOTAL",
+        "data_type": "NUMBER"
+      },
+      {
+        "column_name": "PAYMENTMETHODS",
+        "data_type": "VARIANT"
+      },
+      {
+        "column_name": "PAYMULTIVALUECOUNT",
+        "data_type": "NUMBER"
+      },
+      {
+        "column_name": "PAYPAYMENTSMADE",
+        "data_type": "NUMBER"
+      },
+      {
+        "column_name": "TOTALACTUALLABORHOURS",
+        "data_type": "TEXT"
+      },
+      {
+        "column_name": "TOTALBILLEDLABORHOURS",
+        "data_type": "TEXT"
+      },
+      {
+        "column_name": "TOTALPRICE",
+        "data_type": "VARIANT"
+      },
+      {
+        "column_name": "TOTALTAXPRICE",
+        "data_type": "TEXT"
+      }
+    ],
+    "sqlServerClosedColumns": [
+      {
+        "column_name": "actualhourscustomerpay",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "laborcost",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "laborcostcustomerpay",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "laborcostinternal",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "laborcostwarranty",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "laborsale",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "laborsalecustomerpay",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "laborsaleinternal",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "laborsalewarranty",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "misccost",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "misccostcustomerpay",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "misccostinternal",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "misccostwarranty",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "miscsale",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "miscsalecustomerpay",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "miscsaleinternal",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "miscsalewarranty",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "opcodecountcustomerpay",
+        "data_type": "int"
+      },
+      {
+        "column_name": "partscost",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "partscostcustomerpay",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "partscostinternal",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "partscostwarranty",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "partssale",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "partssalecustomerpay",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "partssaleinternal",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "partssalewarranty",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "rosubletsalecp",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "rosubletsaleip",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "rosubletsalewp",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "shopsuppliessales",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "soldhourscustomerpay",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "timecardhourscustomerpay",
+        "data_type": "numeric"
+      },
+      {
+        "column_name": "wippartsaccount",
+        "data_type": "varchar"
+      }
+    ]
+  },
+  "repairMatchedKeySample": {
+    "snowflake": [
+      {
+        "business_key": "SA476|107008",
+        "dealercode": "R0429",
+        "ronum": "107008",
+        "ro_open_date": "2026-05-11",
+        "ro_close_date": "2026-05-25",
+        "pay_cp_total": 1500,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA476|107095",
+        "dealercode": "R0429",
+        "ronum": "107095",
+        "ro_open_date": "2026-05-13",
+        "ro_close_date": "2026-05-25",
+        "pay_cp_total": 0,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA476|107130",
+        "dealercode": "R0429",
+        "ronum": "107130",
+        "ro_open_date": "2026-05-14",
+        "ro_close_date": "2026-05-25",
+        "pay_cp_total": 1777,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA476|107186",
+        "dealercode": "R0429",
+        "ronum": "107186",
+        "ro_open_date": "2026-05-18",
+        "ro_close_date": "2026-05-25",
+        "pay_cp_total": 0,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA476|107211",
+        "dealercode": "R0429",
+        "ronum": "107211",
+        "ro_open_date": "2026-05-18",
+        "ro_close_date": "2026-05-25",
+        "pay_cp_total": 328,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA476|107235",
+        "dealercode": "R0429",
+        "ronum": "107235",
+        "ro_open_date": "2026-05-19",
+        "ro_close_date": "2026-05-25",
+        "pay_cp_total": 0,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA476|107282",
+        "dealercode": "R0429",
+        "ronum": "107282",
+        "ro_open_date": "2026-05-20",
+        "ro_close_date": "2026-05-25",
+        "pay_cp_total": 11,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA476|107287",
+        "dealercode": "R0429",
+        "ronum": "107287",
+        "ro_open_date": "2026-05-20",
+        "ro_close_date": "2026-05-25",
+        "pay_cp_total": 0,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA476|107297",
+        "dealercode": "R0429",
+        "ronum": "107297",
+        "ro_open_date": "2026-05-21",
+        "ro_close_date": "2026-05-25",
+        "pay_cp_total": 0,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA476|107300",
+        "dealercode": "R0429",
+        "ronum": "107300",
+        "ro_open_date": "2026-05-21",
+        "ro_close_date": "2026-05-25",
+        "pay_cp_total": 317,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA476|107322",
+        "dealercode": "R0429",
+        "ronum": "107322",
+        "ro_open_date": "2026-05-22",
+        "ro_close_date": "2026-05-25",
+        "pay_cp_total": 1130,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA476|105052",
+        "dealercode": "R0429",
+        "ronum": "105052",
+        "ro_open_date": "2026-02-24",
+        "ro_close_date": "2026-05-26",
+        "pay_cp_total": 0,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA466|745990",
+        "dealercode": "05179",
+        "ronum": "745990",
+        "ro_open_date": "2026-03-27",
+        "ro_close_date": "2026-05-26",
+        "pay_cp_total": 5398,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA476|106906",
+        "dealercode": "R0429",
+        "ronum": "106906",
+        "ro_open_date": "2026-05-06",
+        "ro_close_date": "2026-05-26",
+        "pay_cp_total": 0,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA466|747961",
+        "dealercode": "05179",
+        "ronum": "747961",
+        "ro_open_date": "2026-05-07",
+        "ro_close_date": "2026-05-26",
+        "pay_cp_total": 606,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA466|748221",
+        "dealercode": "05179",
+        "ronum": "748221",
+        "ro_open_date": "2026-05-13",
+        "ro_close_date": "2026-05-26",
+        "pay_cp_total": 0,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA466|748303",
+        "dealercode": "05179",
+        "ronum": "748303",
+        "ro_open_date": "2026-05-14",
+        "ro_close_date": "2026-05-26",
+        "pay_cp_total": 0,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA476|107108",
+        "dealercode": "R0429",
+        "ronum": "107108",
+        "ro_open_date": "2026-05-14",
+        "ro_close_date": "2026-05-26",
+        "pay_cp_total": 0,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA466|748314",
+        "dealercode": "05179",
+        "ronum": "748314",
+        "ro_open_date": "2026-05-15",
+        "ro_close_date": "2026-05-26",
+        "pay_cp_total": 0,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      },
+      {
+        "business_key": "SA466|748346",
+        "dealercode": "05179",
+        "ronum": "748346",
+        "ro_open_date": "2026-05-15",
+        "ro_close_date": "2026-05-26",
+        "pay_cp_total": 0,
+        "pay_balance_due": 0,
+        "total_tax_price": null
+      }
+    ],
+    "sqlserver": [
+      {
+        "business_key": "SA466|748737",
+        "cora_acct_id": 445,
+        "ronumber": "748737",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 0,
+        "parts_sale": 0,
+        "misc_sale": 20.64,
+        "current_compare_total": 20.64
+      },
+      {
+        "business_key": "SA466|748742",
+        "cora_acct_id": 445,
+        "ronumber": "748742",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 2894.4,
+        "parts_sale": 5739.62,
+        "misc_sale": 0,
+        "current_compare_total": 8634.02
+      },
+      {
+        "business_key": "SA466|748746",
+        "cora_acct_id": 445,
+        "ronumber": "748746",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 500.04,
+        "parts_sale": 25,
+        "misc_sale": 0,
+        "current_compare_total": 525.04
+      },
+      {
+        "business_key": "SA466|748750",
+        "cora_acct_id": 445,
+        "ronumber": "748750",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 2050.14,
+        "parts_sale": 1270.25,
+        "misc_sale": -297.9,
+        "current_compare_total": 3022.49
+      },
+      {
+        "business_key": "SA466|748751",
+        "cora_acct_id": 445,
+        "ronumber": "748751",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 338.29,
+        "parts_sale": 149.26,
+        "misc_sale": -27.3,
+        "current_compare_total": 460.25
+      },
+      {
+        "business_key": "SA466|748752",
+        "cora_acct_id": 445,
+        "ronumber": "748752",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 0,
+        "parts_sale": 0,
+        "misc_sale": 0,
+        "current_compare_total": 0
+      },
+      {
+        "business_key": "SA466|748754",
+        "cora_acct_id": 445,
+        "ronumber": "748754",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 132.54,
+        "parts_sale": 0,
+        "misc_sale": 0,
+        "current_compare_total": 132.54
+      },
+      {
+        "business_key": "SA466|748757",
+        "cora_acct_id": 445,
+        "ronumber": "748757",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 0,
+        "parts_sale": 25,
+        "misc_sale": 0,
+        "current_compare_total": 25
+      },
+      {
+        "business_key": "SA466|748759",
+        "cora_acct_id": 445,
+        "ronumber": "748759",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 0,
+        "parts_sale": 25,
+        "misc_sale": 0,
+        "current_compare_total": 25
+      },
+      {
+        "business_key": "SA466|748763",
+        "cora_acct_id": 445,
+        "ronumber": "748763",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 309.88,
+        "parts_sale": 228.22,
+        "misc_sale": 0,
+        "current_compare_total": 538.1
+      },
+      {
+        "business_key": "SA466|748764",
+        "cora_acct_id": 445,
+        "ronumber": "748764",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 0,
+        "parts_sale": 80.36,
+        "misc_sale": 24.08,
+        "current_compare_total": 104.44
+      },
+      {
+        "business_key": "SA466|748767",
+        "cora_acct_id": 445,
+        "ronumber": "748767",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 843.93,
+        "parts_sale": 469.49,
+        "misc_sale": -72.9,
+        "current_compare_total": 1240.52
+      },
+      {
+        "business_key": "SA466|748768",
+        "cora_acct_id": 445,
+        "ronumber": "748768",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 2815.36,
+        "parts_sale": 2121.67,
+        "misc_sale": 2.1,
+        "current_compare_total": 4939.13
+      },
+      {
+        "business_key": "SA466|748771",
+        "cora_acct_id": 445,
+        "ronumber": "748771",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 929.82,
+        "parts_sale": 471.32,
+        "misc_sale": 0,
+        "current_compare_total": 1401.14
+      },
+      {
+        "business_key": "SA466|748772",
+        "cora_acct_id": 445,
+        "ronumber": "748772",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 1971.26,
+        "parts_sale": 917.82,
+        "misc_sale": -99.7,
+        "current_compare_total": 2789.38
+      },
+      {
+        "business_key": "SA466|748773",
+        "cora_acct_id": 445,
+        "ronumber": "748773",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 333.36,
+        "parts_sale": 276.13,
+        "misc_sale": 0,
+        "current_compare_total": 609.49
+      },
+      {
+        "business_key": "SA466|748774",
+        "cora_acct_id": 445,
+        "ronumber": "748774",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 1524.88,
+        "parts_sale": 1427.05,
+        "misc_sale": 2.7,
+        "current_compare_total": 2954.63
+      },
+      {
+        "business_key": "SA466|748775",
+        "cora_acct_id": 445,
+        "ronumber": "748775",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 928.64,
+        "parts_sale": 746.29,
+        "misc_sale": 2.1,
+        "current_compare_total": 1677.03
+      },
+      {
+        "business_key": "SA466|748777",
+        "cora_acct_id": 445,
+        "ronumber": "748777",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 584.82,
+        "parts_sale": 674.55,
+        "misc_sale": 9.25,
+        "current_compare_total": 1268.62
+      },
+      {
+        "business_key": "SA466|748778",
+        "cora_acct_id": 445,
+        "ronumber": "748778",
+        "open_date": "2026-05-26",
+        "close_date": null,
+        "labor_sale": 0,
+        "parts_sale": 0,
+        "misc_sale": 0,
+        "current_compare_total": 0
+      }
+    ]
+  },
+  "currentProcessFinding": {
+    "vehicle_sales": "Uses the intended Snowflake VEHICLE_SALES_RAW table and SQL Server dbo.vehiclesalescurrent table. Dealer/date/key choices are plausible for first-pass validation.",
+    "repair_orders": "Uses the intended Snowflake REPAIR_ORDER_RAW table and SQL Server dbo.servicesalesclosed/open header tables, but the amount comparison is not yet proven equivalent and should not be treated as a source data defect."
+  }
+}

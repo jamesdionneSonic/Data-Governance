@@ -1,0 +1,13 @@
+# Keep local validation extracts off the repo by default.
+datasets/*/runs/**
+datasets/*/current/**/*.csv
+datasets/*/current/**/*.json
+datasets/*/current/**/*.log
+datasets/*/current/**/*.xlsx
+datasets/*/excel/*.inspect.ndjson
+datasets/*/excel/*_preview.png
+# Allow contract/sample files.
+!datasets/*/current/**/.gitkeep
+!datasets/*/current/**/*.sample.csv
+!datasets/*/excel/*.xlsx
+datasets/*/excel/~$*.xlsx

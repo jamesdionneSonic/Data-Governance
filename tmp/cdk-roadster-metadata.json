@@ -1,0 +1,1827 @@
+{
+  "context": [
+    {
+      "DB": "CDK_ROADSTER_ELEAD_SONIC",
+      "SCHEMA": "SONIC",
+      "ROLE": "CDK_DATA_ACCESS",
+      "WH": "TESTWH"
+    }
+  ],
+  "tables": [
+    {
+      "TABLE_CATALOG": "CDK_ROADSTER_ELEAD_SONIC",
+      "TABLE_SCHEMA": "SONIC",
+      "TABLE_NAME": "AGENTS",
+      "TABLE_TYPE": "VIEW",
+      "ROW_COUNT": null
+    },
+    {
+      "TABLE_CATALOG": "CDK_ROADSTER_ELEAD_SONIC",
+      "TABLE_SCHEMA": "SONIC",
+      "TABLE_NAME": "COMPANY",
+      "TABLE_TYPE": "VIEW",
+      "ROW_COUNT": null
+    },
+    {
+      "TABLE_CATALOG": "CDK_ROADSTER_ELEAD_SONIC",
+      "TABLE_SCHEMA": "SONIC",
+      "TABLE_NAME": "CUSTOMERS",
+      "TABLE_TYPE": "VIEW",
+      "ROW_COUNT": null
+    },
+    {
+      "TABLE_CATALOG": "CDK_ROADSTER_ELEAD_SONIC",
+      "TABLE_SCHEMA": "SONIC",
+      "TABLE_NAME": "DEALS",
+      "TABLE_TYPE": "VIEW",
+      "ROW_COUNT": null
+    },
+    {
+      "TABLE_CATALOG": "CDK_ROADSTER_ELEAD_SONIC",
+      "TABLE_SCHEMA": "SONIC",
+      "TABLE_NAME": "INVENTORY",
+      "TABLE_TYPE": "VIEW",
+      "ROW_COUNT": null
+    },
+    {
+      "TABLE_CATALOG": "CDK_ROADSTER_ELEAD_SONIC",
+      "TABLE_SCHEMA": "SONIC",
+      "TABLE_NAME": "PURCHASES",
+      "TABLE_TYPE": "VIEW",
+      "ROW_COUNT": null
+    },
+    {
+      "TABLE_CATALOG": "CDK_ROADSTER_ELEAD_SONIC",
+      "TABLE_SCHEMA": "SONIC",
+      "TABLE_NAME": "TASKS",
+      "TABLE_TYPE": "VIEW",
+      "ROW_COUNT": null
+    }
+  ],
+  "columns": [
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "FIRST_NAME",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 1
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "LAST_NAME",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 2
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "COMPANY_NAME",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 3
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "USER_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 4
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "PERSON_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 5
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "COMPANY_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 6
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "ROADSTER_AGENT_IDS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 7
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "DEPARTMENTS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 8
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "DEPARTMENT_GROUPING",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 9
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "POSITIONS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 10
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "HIGHEST_POSITION",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 11
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "DMS_IDS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 12
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "CHILD_COMPANY_IDS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 13
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "CHILD_COMPANY_NAMES",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 14
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "OTHER_USER_IDS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 15
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "OTHER_COMPANIES_ACCESS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 16
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "OTHER_USER_IDS_JSON",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 17
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "IS_ACTIVE",
+      "DATA_TYPE": "BOOLEAN",
+      "ORDINAL_POSITION": 18
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "IS_MANAGER",
+      "DATA_TYPE": "BOOLEAN",
+      "ORDINAL_POSITION": 19
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "IS_LOGIN_ENABLED",
+      "DATA_TYPE": "BOOLEAN",
+      "ORDINAL_POSITION": 20
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "PRIMARY_EMAIL",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 21
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "EMAILS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 22
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "PRIMARY_PHONE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 23
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "PHONE_NUMBERS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 24
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "CREATED_AT_DATE",
+      "DATA_TYPE": "DATE",
+      "ORDINAL_POSITION": 25
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "LAST_LOGIN_DEALERTIME",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 26
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "POD_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 27
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "USER_ID_UNIQUE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 28
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "PERSON_ID_UNIQUE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 29
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "MAX_QLIK_UPDATED_DATETIME_UTC",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 30
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "UPDATED_AT_UTC",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 31
+    },
+    {
+      "TABLE_NAME": "AGENTS",
+      "COLUMN_NAME": "SSO_EMAILS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 32
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "COMPANY_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 1
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "COMPANY_NAME",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 2
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "POD_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 3
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "IS_ACTIVE",
+      "DATA_TYPE": "BOOLEAN",
+      "ORDINAL_POSITION": 4
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "DOMAIN",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 5
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "IS_DEALERSHIP",
+      "DATA_TYPE": "BOOLEAN",
+      "ORDINAL_POSITION": 6
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "IS_CORP_PARENT",
+      "DATA_TYPE": "BOOLEAN",
+      "ORDINAL_POSITION": 7
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "COMPANY_TYPE_DERIVED",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 8
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "PARENT_COMPANY_IDS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 9
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "PARENT_NAMES",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 10
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "MAKES",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 11
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "ADDRESS_1",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 12
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "ADDRESS_2",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 13
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "CITY",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 14
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "STATE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 15
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "ZIP",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 16
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "COUNTRY",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 17
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "TIMEZONE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 18
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "CUSTOMER_SINCE",
+      "DATA_TYPE": "DATE",
+      "ORDINAL_POSITION": 19
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "ROADSTER_DPID_PRIMARY",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 20
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "ALL_ROADSTER_DPIDS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 21
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "FORTELLIS_ENTITY_IDS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 22
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "ROADSTER_FORTELLIS_SUBSCRIPTION_IDS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 23
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "ACTIVE_CMF_NUMBERS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 24
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "NUM_ACTIVE_CMF_NUMBERS",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 25
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "IS_SINGLE_CUSTOMER_DATABASE",
+      "DATA_TYPE": "BOOLEAN",
+      "ORDINAL_POSITION": 26
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "SCD_LEVEL",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 27
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "SCD_SHARED_COMPANYID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 28
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "SCD_SHARED_COMPANY_NAME",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 29
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "UI_BRAND",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 30
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "APPLICATIONS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 31
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "CREDIT_BUREAUS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 32
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "DESKING_TOOLS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 33
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "SALES_TOOLS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 34
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "REPORTS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 35
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "VENDOR_INTEGRATIONS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 36
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "DATA_SERVICES",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 37
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "ALL_ACTIVE_DEALER_PROGRAMS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 38
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "NUM_CONFIGS",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 39
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "CONFIG_DETAILS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 40
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "MAX_QLIK_UPDATED_DATETIME_UTC",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 41
+    },
+    {
+      "TABLE_NAME": "COMPANY",
+      "COLUMN_NAME": "UPDATED_AT_UTC",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 42
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "COMPANY_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 1
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "PERSON_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 2
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "PERSON_ID_UNIQUE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 3
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "FIRST_NAME",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 4
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "COMPANY_NAME",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 5
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "ROADSTER_DPID",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 6
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "ROADSTER_DPIDS_ALL",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 7
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "DPID_MATCH_PROBIBILITY",
+      "DATA_TYPE": "FLOAT",
+      "ORDINAL_POSITION": 8
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "ROADSTER_CUSTOMER_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 9
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "ROADSTER_CUSTOMER_IDS_ALL",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 10
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "CUSTOMER_URL",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 11
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "IS_ACTIVE",
+      "DATA_TYPE": "BOOLEAN",
+      "ORDINAL_POSITION": 12
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "PRIMARY_EMAIL",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 13
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "EMAILS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 14
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "PRIMARY_PHONE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 15
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "PHONE_NUMBERS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 16
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "ADDRESS",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 17
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "CITY",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 18
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "STATE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 19
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "ZIPCODE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 20
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "COUNTRY",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 21
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "EXPECTED_NEXT_PURCHASE_DATE",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 22
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "BIRTHDAY",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 23
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "POD_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 24
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "PERSON_CREATED_AT",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 25
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "PERSON_LAST_EDIT_AT",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 26
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "MAX_QLIK_UPDATED_DATETIME",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 27
+    },
+    {
+      "TABLE_NAME": "CUSTOMERS",
+      "COLUMN_NAME": "UPDATED_AT_UTC",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 28
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "COMPANY_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 1
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "COMPANY_NAME",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 2
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "DEAL_ID_UNIQUE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 3
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "PERSON_ID_UNIQUE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 4
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "UP_TYPE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 5
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "INTERNET_UP_TIER",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 6
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "SOURCE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 7
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "COMPANY_SOURCE_NAME",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 8
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "SUBSOURCE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 9
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "SOURCE_DETAILS",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 10
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "DEAL_STATUS",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 11
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "DEAL_SUBSTATUS",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 12
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "INACTIVE_REASON",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 13
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "TIMESTAMP_ENTRY_DEALERTIME",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 14
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "TIMESTAMP_PROSPECTIN_DEALERTIME",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 15
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "TIMESTAMP_CLOSED_DEALERTIME",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 16
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "IS_BE_BACK",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 17
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "NUM_SHOWROOM_VISITS",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 18
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "NUM_VEHICLES",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 19
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "PRIMARY_VEHICLE_SOUGHT_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 20
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "STOCK_NUMBER",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 21
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "VIN",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 22
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "GRADE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 23
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "MODEL_YEAR",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 24
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "MAKE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 25
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "MODEL",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 26
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "TRIM",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 27
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "NUM_TRADES",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 28
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "TRADE_IN_ID",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 29
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "PRIMARY_SALESPERSON",
+      "DATA_TYPE": "VARIANT",
+      "ORDINAL_POSITION": 30
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "PRIMARY_BDC_AGENT",
+      "DATA_TYPE": "VARIANT",
+      "ORDINAL_POSITION": 31
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "PRIMARY_DESK_MANAGER",
+      "DATA_TYPE": "VARIANT",
+      "ORDINAL_POSITION": 32
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "PRIMARY_FI_MANAGER",
+      "DATA_TYPE": "VARIANT",
+      "ORDINAL_POSITION": 33
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "PRIMARY_SALES_MANAGER",
+      "DATA_TYPE": "VARIANT",
+      "ORDINAL_POSITION": 34
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "ALL_SALESPEOPLE",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 35
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "ALL_BDC_AGENTS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 36
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "ALL_DESK_MANAGERS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 37
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "ALL_FI_MANAGERS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 38
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "ALL_SALES_MANAGERS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 39
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "ALL_OTHER_AGENTS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 40
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "NUM_SALESPEOPLE",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 41
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "NUM_BDCAGENTS",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 42
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "ALL_VEHICLE_SOUGHT_IDS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 43
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "ALL_VINS_SOUGHT",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 44
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "ALL_TRADE_IN_IDS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 45
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "TIMESTAMP_LASTEDIT_DEALERTIME",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 46
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "TIMESTAMP_SUBSTATUSCHANGE_DEALERTIME",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 47
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "ORDERED_AT",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 48
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "DELIVERED_AT",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 49
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "BOOKED_AT",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 50
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "FINALIZED_AT",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 51
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "ACCOUNTING_AT",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 52
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "DEAL_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 53
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "PERSON_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 54
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "POD_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 55
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "MAX_QLIK_UPDATED_DATETIME_UTC",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 56
+    },
+    {
+      "TABLE_NAME": "DEALS",
+      "COLUMN_NAME": "UPDATED_AT_UTC",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 57
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "COMPANY_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 1
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "COMPANY_NAME",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 2
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "INVENTORY_ID_UNIQUE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 3
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "VEHICLE_ID_UNIQUE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 4
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "TIMESTAMP_ENTRY_DEALERTIME",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 5
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "TIMESTAMP_ACQUIRED_DEALERTIME",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 6
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "TIMESTAMP_LASTEDIT_DEALERTIME",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 7
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "TIMESTAMP_DMSSOLD",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 8
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "DAYS_SINCE_ACQUISITION",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 9
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "SOURCE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 10
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "DESK_STATUS",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 11
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "DMS_STATUS",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 12
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "DMS_DELETE_STATUS",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 13
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "STOCK_TYPE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 14
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "INVENTORY_TYPE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 15
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "VEHICLE_CLASS",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 16
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "NEW_USED_FLAG",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 17
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "MAKE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 18
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "MODEL",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 19
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "YEAR",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 20
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "STOCK_NUMBER",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 21
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "VIN",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 22
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "INTERIOR_COLOR",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 23
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "EXTERIOR_COLOR",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 24
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "MILEAGE",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 25
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "MSRP",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 26
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "PRICE",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 27
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "INTERNET_PRICE",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 28
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "COST",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 29
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "PACK",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 30
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "MRM",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 31
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "HOLD_BACK",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 32
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "DMS_HOLD_BACK",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 33
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "GENERAL_LEDGER_BALANCE",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 34
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "ACTUAL_CASH_VALUE",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 35
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "DEALER_ACCESSORY_RETAIL",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 36
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "DEALER_ACCESSORY_COST",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 37
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "OUTSTANDING_RO",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 38
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "WINDOW_STICKER_URL",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 39
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "LAST_INV_FEED_PHOTO_DATE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 40
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "TIMESTAMP_GROUP_ACQUIRED",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 41
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "LOCATION",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 42
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "COMMENTS",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 43
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "MEMO1",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 44
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "MEMO2",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 45
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "INVENTORY_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 46
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "VEHICLE_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 47
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "MAX_QLIK_UPDATED_DATETIME_UTC",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 48
+    },
+    {
+      "TABLE_NAME": "INVENTORY",
+      "COLUMN_NAME": "UPDATED_AT_UTC",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 49
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "PURCHASE_ID_UNIQUE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 1
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "DEAL_ID_UNIQUE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 2
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "DMS_DEAL_ID",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 3
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "COMPANY_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 4
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "COMPANY_NAME",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 5
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "SOLD_TIMESTAMP",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 6
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "SOLD_DATE",
+      "DATA_TYPE": "DATE",
+      "ORDINAL_POSITION": 7
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "PERSON_ID_UNIQUE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 8
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "COBUYERS_UNIQUE",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 9
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "VEHICLE_ID_UNIQUE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 10
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "MAKE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 11
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "MODEL",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 12
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "YEAR",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 13
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "GRADE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 14
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "MILEAGE",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 15
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "VIN",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 16
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "LEASE_PURCHASE_FLAG",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 17
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "DEAL_TYPE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 18
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "PURCHASE_PRICE",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 19
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "DEALER_PROFIT",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 20
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "FRONT_GROSS",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 21
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "BACK_GROSS",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 22
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "REBATES",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 23
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "DOWN_PAYMENT",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 24
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "FINANCE_AMOUNT",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 25
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "INTEREST_RATE",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 26
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "MONTHLY_PAYMENT",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 27
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "TERM",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 28
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "LENDER",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 29
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "ALLOWED_LEASE_MILES",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 30
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "FIRST_PAYMENT_DATE",
+      "DATA_TYPE": "DATE",
+      "ORDINAL_POSITION": 31
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "LAST_PAYMENT_DATE",
+      "DATA_TYPE": "DATE",
+      "ORDINAL_POSITION": 32
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "AH_PREMIUM",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 33
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "LIFE_PREMIUM",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 34
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "WE_OWE_PREMIUM",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 35
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "NUM_WARRANTIES",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 36
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "WARRANTY_PRICE",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 37
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "WARRANTY_COST",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 38
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "WARRANTY_NAMES",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 39
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "IS_DELIVERED",
+      "DATA_TYPE": "BOOLEAN",
+      "ORDINAL_POSITION": 40
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "DATA_SOURCE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 41
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "POST_TIMESTAMP",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 42
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "PURCHASE_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 43
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "DEAL_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 44
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "PERSON_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 45
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "COBUYERS",
+      "DATA_TYPE": "ARRAY",
+      "ORDINAL_POSITION": 46
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "VEHICLE_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 47
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "POD_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 48
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "MAX_QLIK_UPDATED_DATETIME_UTC",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 49
+    },
+    {
+      "TABLE_NAME": "PURCHASES",
+      "COLUMN_NAME": "UPDATED_AT_UTC",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 50
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "COMPANY_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 1
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "COMPANY_NAME",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 2
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "TASK_ID_UNIQUE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 3
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "DEAL_ID_UNIQUE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 4
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "PERSON_ID_UNIQUE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 5
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "COMPLETED_STATUS",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 6
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "TIMESTAMP_DUE_DEALERTIME",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 7
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "TIMESTAMP_COMPLETED_DEALERTIME",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 8
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "DATE_COMPLETED_DEALERTIME",
+      "DATA_TYPE": "DATE",
+      "ORDINAL_POSITION": 9
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "TASK_TYPE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 10
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "TASK_NAME",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 11
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "TASK_COMMENTS",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 12
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "TASK_OUTCOME",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 13
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "APPOINTMENT_OUTCOME",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 14
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "USER_ID_COMPLETED_TASK",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 15
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "TASK_ITEMS",
+      "DATA_TYPE": "OBJECT",
+      "ORDINAL_POSITION": 16
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "WORKFLOW_NAME",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 17
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "TRIGGERING_EVENT",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 18
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "ACTOR",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 19
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "EXECUTION_TYPE",
+      "DATA_TYPE": "TEXT",
+      "ORDINAL_POSITION": 20
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "TIMESTAMP_ENTRY_DEALERTIME",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 21
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "TIMESTAMP_ACTIVE_DEALERTIME",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 22
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "USER_ID_CREATED_TASK",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 23
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "USER_ID_CURRENT_OWNER",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 24
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "WORKFLOW_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 25
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "TASK_TYPE_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 26
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "TASK_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 27
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "DEAL_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 28
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "PERSON_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 29
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "LE_TEMPLATE_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 30
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "CURRENT_VEHICLE_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 31
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "VEHICLE_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 32
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "DEALER_PROMOTION_PUSH_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 33
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "POD_ID",
+      "DATA_TYPE": "NUMBER",
+      "ORDINAL_POSITION": 34
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "MAX_QLIK_UPDATED_DATETIME_UTC",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 35
+    },
+    {
+      "TABLE_NAME": "TASKS",
+      "COLUMN_NAME": "UPDATED_AT_UTC",
+      "DATA_TYPE": "TIMESTAMP_NTZ",
+      "ORDINAL_POSITION": 36
+    }
+  ]
+}

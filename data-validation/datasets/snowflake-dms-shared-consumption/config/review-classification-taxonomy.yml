@@ -1,0 +1,142 @@
+version: 1
+dataset_id: snowflake-dms-shared-consumption
+purpose: >
+  Defines the reviewer-facing classifications used to separate raw scoped
+  comparison exceptions from vendor/actionable validation findings.
+
+classification_groups:
+  coverage:
+    description: Record presence and source-feed coverage.
+  mapping:
+    description: Dealer, store, account, or source-context mapping.
+  timing:
+    description: Refresh cadence, late arrival, or restatement timing.
+  key_grain:
+    description: Business-key formatting, duplicate, or grain mismatch.
+  date_status:
+    description: Business-date or lifecycle-status mismatch.
+  amount:
+    description: Material amount reconciliation and definition issues.
+  unexplained:
+    description: Differences with no confirmed explanation yet.
+
+classifications:
+  - name: true_missing_from_snowflake
+    group: coverage
+    meaning: DMS has the record and a broad Snowflake search cannot find it.
+    first_check: Confirm business key, date window, and broad Snowflake search.
+    vendor_handoff: Ask vendor/source owner to confirm whether the record should be in the shared feed.
+
+  - name: true_snowflake_only
+    group: coverage
+    meaning: Snowflake has the record and DMS cannot find it anywhere in scope.
+    first_check: Check whether Snowflake is fresher or DMS source window is lagging.
+    vendor_handoff: Provide Snowflake source fields and ask whether the record is expected before DMS.
+
+  - name: timing_candidate
+    group: timing
+    meaning: The difference may resolve after a later refresh or source restatement.
+    first_check: Compare source update timestamps and whether the exception resolves on the next run.
+    vendor_handoff: Provide run id, business date, and source timestamps.
+
+  - name: outside_validation_scope
+    group: coverage
+    meaning: The record exists but should not be in this comparison population.
+    first_check: Check status, date, dealer/account, and lifecycle inclusion rules.
+    vendor_handoff: Confirm scope rules before treating the row as a defect.
+
+  - name: found_in_snowflake_wrong_dealer_context
+    group: mapping
+    meaning: The record exists in Snowflake but not under the expected dealer/store/account context.
+    first_check: Compare DMS cora_acct_code to Snowflake DEALERCODE, STORENUMBER, EIS_STORE_ID, and ACCOUNTINGACCOUNT.
+    vendor_handoff: Provide cora_acct_code, RO/deal key, and Snowflake source dealer/account fields.
+
+  - name: blank_primary_dealer_with_secondary_match
+    group: mapping
+    meaning: Snowflake primary dealer field is blank, but secondary fields point to the expected account context.
+    first_check: Check DEALERCODE against EIS_STORE_ID and ACCOUNTINGACCOUNT.
+    vendor_handoff: Ask vendor which field should drive dealer/account mapping.
+
+  - name: ambiguous_dealer_context
+    group: mapping
+    meaning: The same business record appears under multiple possible dealer/store/account values.
+    first_check: Inspect all broad-source matches before choosing a mapping rule.
+    vendor_handoff: Provide all candidate dealer/account contexts and ask which one is authoritative.
+
+  - name: mapping_rule_gap
+    group: mapping
+    meaning: Repeated evidence shows the validation needs a deterministic mapping rule.
+    first_check: Confirm the pattern repeats enough to be a rule, not a one-off exception.
+    vendor_handoff: Validate the proposed mapping rule with the vendor/source owner.
+
+  - name: business_key_format_mismatch
+    group: key_grain
+    meaning: Same record appears to exist but key formatting differs.
+    first_check: Check leading zeros, suffixes, prefixes, casing, trimming, and punctuation.
+    vendor_handoff: Ask source owner for canonical key formatting rules.
+
+  - name: duplicate_source_record
+    group: key_grain
+    meaning: One source has multiple rows for the same business key.
+    first_check: Identify whether duplicates are true duplicates, lifecycle rows, or detail grain.
+    vendor_handoff: Provide duplicate examples and ask which row should be authoritative.
+
+  - name: grain_mismatch
+    group: key_grain
+    meaning: One side is header-level and the other is detail/event/transaction-level.
+    first_check: Confirm comparison grain before judging counts or amounts.
+    vendor_handoff: Confirm whether the shared feed is header, line, event, or transaction grain.
+
+  - name: business_date_mismatch
+    group: date_status
+    meaning: Same record exists but the selected business date differs.
+    first_check: Compare open, close, sale, contract, post, and update dates.
+    vendor_handoff: Ask which date represents the vendor's business event date.
+
+  - name: status_lifecycle_mismatch
+    group: date_status
+    meaning: Same record exists but status/lifecycle state differs.
+    first_check: Compare open, closed, posted, voided, reversed, cancelled, or pending states.
+    vendor_handoff: Ask when each lifecycle status should appear in the feed.
+
+  - name: late_update_or_restatement
+    group: timing
+    meaning: Same record exists but one side has a later update timestamp or restated value.
+    first_check: Compare latest update/load timestamps and prior-run history.
+    vendor_handoff: Ask whether the source republishes corrected historical records.
+
+  - name: amount_match
+    group: amount
+    meaning: Business key matches and material amount is within tolerance.
+    first_check: Confirm tolerance and source amount field definitions.
+    vendor_handoff: Usually no handoff required.
+
+  - name: amount_rounding_difference
+    group: amount
+    meaning: Amount difference is below agreed tolerance.
+    first_check: Confirm decimal precision and rounding rules.
+    vendor_handoff: Ask for rounding rules only if differences are systematic.
+
+  - name: amount_component_gap
+    group: amount
+    meaning: Amount differs because one side includes or excludes components.
+    first_check: Compare tax, fees, shop supplies, sublet, discounts, warranty, customer-pay, and internal-pay components.
+    vendor_handoff: Ask for the exact formula behind the vendor amount field.
+
+  - name: amount_sign_or_credit_mismatch
+    group: amount
+    meaning: Same amount family exists, but sign or credit/debit treatment differs.
+    first_check: Check reversals, credits, adjustments, and negative values.
+    vendor_handoff: Ask how credits and reversals should be represented.
+
+  - name: amount_null_vs_zero_mismatch
+    group: amount
+    meaning: One source treats absence as null while the other treats it as zero.
+    first_check: Compare null, blank, zero, and missing-field behavior.
+    vendor_handoff: Ask whether blank means unknown, not applicable, or zero.
+
+  - name: material_amount_mismatch_unexplained
+    group: unexplained
+    meaning: Amount differs beyond tolerance and no cause has been confirmed.
+    first_check: Rule out timing, component, status, sign, and null-vs-zero issues.
+    vendor_handoff: Provide source values and ask for field-definition review.

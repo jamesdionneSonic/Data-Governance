@@ -1,0 +1,208 @@
+sources:
+  snowflake_shared_consumption:
+    connector: snowflake-bipslyv-tlb12786
+    database: CDK_DN_TITAN_FTR_UNMASK_E100030_SHARE
+    schema: CONSUMPTION_SHARED_E100030
+    objects:
+      vehicle_sales:
+        table: VEHICLE_SALES_RAW
+        selected_business_key:
+          expression: cora_acct_code + DEALNUMBER
+          status: selected
+          evidence_run_id: 20260624T181040Z
+          rationale: source dealer fields are mapped to DMS cora_acct_code for comparison, and dealer plus deal number had zero null deal numbers and zero duplicate dealer/deal keys in the live profile output.
+        rejected_business_keys:
+          - expression: BRANCH + INVVIN + INVSTOCKNUM + SALESDATE
+            rationale: live profile showed duplicate dealer/VIN/stock/sales-date combinations; use as supporting context only.
+        dealer_identifier_candidates:
+          - BRANCH
+          - EIS_STORE_ID
+          - ACCOUNTINGACCOUNT
+        candidate_business_keys:
+          - BRANCH + DEALNUMBER
+          - EIS_STORE_ID + DEALNUMBER
+          - BRANCH + INVVIN + INVSTOCKNUM + SALESDATE
+        business_date_candidates:
+          - SALESDATE
+          - CONTRACTDATE
+          - DEALSTATUSDATE
+          - DELIVERYDATE
+        selected_business_date:
+          expression: SALESDATE with CONTRACTDATE carried as a secondary field
+          status: caveated
+          rationale: Snowflake CONTRACTDATE is more populated, but DMS CONTRACTDATE includes future dates; SALESDATE is the first daily comparison date, with CONTRACTDATE retained for timing analysis.
+        load_timestamp_candidates:
+          - LANDING_TIME
+        material_value_candidates:
+          - VEHICLESALEPRICE
+          - GROSSPROFIT
+          - TOTALGROSSPROFIT
+          - TOTALTAX
+          - TOTALTRADESACV
+      repair_orders:
+        table: REPAIR_ORDER_RAW
+        selected_business_key:
+          expression: cora_acct_code + RONUM
+          status: selected
+          evidence_run_id: 20260624T181040Z
+          rationale: Snowflake DEALERCODE is mapped to DMS cora_acct_code for comparison, and dealer plus RO number had zero null RO numbers and zero duplicate dealer/RO keys in the live profile output.
+        supporting_business_key:
+          expression: DEALERCODE + RONUM + VEHID
+          rationale: also unique in profile output; keep VEHID as a tie-breaker/detail check rather than the primary RO key.
+        dealer_identifier_candidates:
+          - DEALERCODE
+          - STORENUMBER
+          - EIS_STORE_ID
+          - ACCOUNTINGACCOUNT
+        candidate_business_keys:
+          - DEALERCODE + RONUM
+          - STORENUMBER + RONUM
+          - EIS_STORE_ID + RONUM
+          - DEALERCODE + RONUM + VEHID
+        business_date_candidates:
+          - ROCLOSEDATE
+          - ROOPENDATE
+          - APPOINTMENTDATE
+          - INVOICEPOSTDATE
+          - PROMISEDATE
+        selected_business_date:
+          expression: ROCLOSEDATE for closed ROs, ROOPENDATE for open ROs
+          status: selected
+          rationale: ROCLOSEDATE is populated for closed activity; open ROs require ROOPENDATE because close date is intentionally absent.
+        load_timestamp_candidates:
+          - LANDING_TIME
+        material_value_candidates:
+          - PAYCPTOTAL
+          - PAYBALANCEDUE
+          - PAYPAYMENTSMADE
+          - ESTROLINETOTAL
+          - TOTALACTUALLABORHOURS
+          - TOTALBILLEDLABORHOURS
+          - TOTALTAXPRICE
+        selected_material_value:
+          expression: PAYCPTOTAL
+          status: selected
+          evidence_run_id: 20260624T212852Z
+          rationale: Live repair readback showed Snowflake PAYCPTOTAL aligns best to DMS customer-pay core after DMS open/closed deduplication.
+
+  sqlserver_dms:
+    connector: sqlserver-l1-dwasql-02-12010-dms
+    server: L1-DWASQL-02,12010
+    database: DMS
+    objects:
+      vehicle_sales:
+        candidates:
+          - dbo.vehiclesales
+          - dbo.vehiclesalescurrent
+          - dbo.vehiclesalescurrent_bkp15022024
+          - dbo.VSC_NWMS580Archive
+          - dbo.vsc_fiproducts_union_stage
+        dealer_identifier_candidates:
+          - cora_acct_id
+          - branch
+          - Meta_ADPGroup
+          - Meta_StageGroupNumber
+        selected_business_key:
+          expression: cora_acct_code + dealno
+          status: selected
+          evidence_run_id: 20260624T181040Z
+          rationale: branch is mapped to DMS cora_acct_code for comparison, and branch plus deal number matched the Snowflake key pattern with zero duplicates for the 466/476 dealer branches.
+        rejected_business_keys:
+          - expression: branch + vin + stockno + salesdate
+            rationale: live profile showed duplicate VIN/stock/date combinations; use as a supporting field group only.
+        candidate_business_keys:
+          - branch + dealno
+          - cora_acct_id + dealno
+          - branch + vin + stockno + salesdate
+        business_date_candidates:
+          - salesdate
+          - contractdate
+          - accountingdate
+        selected_business_date:
+          expression: salesdate with contractdate carried as a secondary field
+          status: caveated
+          rationale: salesdate is bounded to the current comparison window; contractdate is valuable but profile output includes future dates.
+        load_timestamp_candidates:
+          - rowlastupdated
+          - Meta_LoadDate
+        material_value_candidates:
+          - grossprofit
+          - totalgross
+          - cashprice
+          - financeamt
+      repair_orders:
+        candidates:
+          - dbo.servicesalesclosed
+          - dbo.servicesalesopen
+          - dbo.servicesalesdetailsclosed
+          - dbo.servicesalesdetailsclosed_new
+          - dbo.appointments
+          - dbo.appointments_staging
+          - dbo.vw_FactServiceDetail_staging
+          - dbo.vw_FactServiceOpen_staging_18082015
+          - dbo.vw_FactService_staging_18082015
+          - dbo.vw_FactServiceDetailSlim_staging
+        dealer_identifier_candidates:
+          - cora_acct_id
+          - Meta_ADPGroup
+          - Meta_StageGroupNumber
+        selected_business_key:
+          expression: cora_acct_code + ronumber
+          status: selected
+          evidence_run_id: 20260624T181040Z
+          rationale: servicesalesclosed and servicesalesopen identify the same RO population, and the repaired validation now deduplicates open/closed overlap and keeps one row per cora_acct_code plus RO number.
+        selected_comparison_grain:
+          expression: closed-preferred one row per cora_acct_code + ronumber
+          status: selected
+          evidence_run_id: 20260624T212422Z
+          rationale: Live repair run produced 2,970 DMS repair rows, 2,970 unique business keys, and 0 duplicate business keys after collapsing 1,517 open/closed overlap rows.
+        supporting_business_key:
+          expression: cora_acct_id + ronumber + vehid
+          rationale: also unique in the header profile output; keep VEHID as a detail check.
+        rejected_comparison_grains:
+          - object: dbo.servicesalesdetailsclosed
+            rationale: line/detail grain; profile output showed repeated RO keys and should not be the RO-level comparison base.
+          - object: dbo.appointments
+            rationale: appointment grain with null RO numbers in profile output; useful only for appointment timing context.
+        candidate_business_keys:
+          - cora_acct_id + ronumber
+          - cora_acct_id + ronumber + vehid
+          - cora_acct_id + apptid
+        business_date_candidates:
+          - closedate
+          - opendate
+          - appointmentdate
+          - apptopendate
+          - promisedate
+          - rowlastupdated
+          - Meta_LoadDate
+        selected_business_date:
+          expression: closedate for dbo.servicesalesclosed, opendate for dbo.servicesalesopen
+          status: selected
+          rationale: aligns to Snowflake ROCLOSEDATE/ROOPENDATE and separates closed from open RO timing.
+        load_timestamp_candidates:
+          - rowlastupdated
+          - Meta_LoadDate
+        material_value_candidates:
+          - laborsale
+          - partssale
+          - miscsale
+          - laborsalecustomerpay
+          - partssalecustomerpay
+          - miscsalecustomerpay
+          - rosubletsalecp
+          - actualhours
+          - soldhours
+        selected_material_value:
+          expression: laborsalecustomerpay + partssalecustomerpay + miscsalecustomerpay
+          status: selected
+          evidence_run_id: 20260624T212852Z
+          rationale: Live readback showed customer-pay core matched Snowflake PAYCPTOTAL within $1 on 1,806 of 2,454 matched repair keys; the old all-sale total matched within $1 on only 223.
+
+notes:
+  - WP-DVL-002 populated candidate fields from Snowflake and SQL Server metadata.
+  - WP-DVL-004 selected initial business keys from live profile outputs.
+  - ROL-001 repaired SQL Server DMS repair-order validation grain by preferring closed rows over open rows when the same RO exists in both servicesalesclosed and servicesalesopen.
+  - ROL-003 classified remaining repair changed values as field-definition or fee-component candidates, DMS-present/Snowflake-missing rows as feed coverage or filter candidates, and Snowflake-present/DMS-missing rows as timing candidates.
+  - Business-facing validation outputs use source-native cora_acct_code instead of invented dealer-family aliases.
+  - DMS remains source of record during validation.

@@ -1,0 +1,286 @@
+{
+  "generated_at": "2026-06-24T21:32:27.777Z",
+  "basis": "30-day live read-only repair-order validation logic audit",
+  "open_closed_overlap": [
+    {
+      "cora_acct_id": 445,
+      "closed_keys": 1628,
+      "open_keys": 1093,
+      "overlapping_keys": 890
+    },
+    {
+      "cora_acct_id": 20246,
+      "closed_keys": 931,
+      "open_keys": 835,
+      "overlapping_keys": 627
+    }
+  ],
+  "row_counts_after_dms_dedup": {
+    "dms_unique_rows": 2970,
+    "snowflake_rows": 2512,
+    "matched_keys": 2454,
+    "dms_missing_from_snowflake": 516,
+    "snowflake_missing_from_dms": 58,
+    "dms_source_priority_mix": {
+      "closed": 2559,
+      "open": 411
+    }
+  },
+  "date_alignment_on_matched_keys": {
+    "same": 2428,
+    "different": 26
+  },
+  "amount_candidate_scores_against_snowflake_pay_cp_total": [
+    {
+      "candidate": "all_sale_total",
+      "matched_keys": 2454,
+      "exact": 182,
+      "within_one": 223,
+      "diff_ge_one": 2231,
+      "average_abs_diff": 777.75,
+      "examples": [
+        {
+          "business_key": "SA466|741265",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-30T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-30",
+          "dms_value": 83743.98,
+          "snowflake_pay_cp_total": 0,
+          "difference": -83743.98
+        },
+        {
+          "business_key": "SA466|742046",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-30T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-30",
+          "dms_value": 4911,
+          "snowflake_pay_cp_total": 0,
+          "difference": -4911
+        },
+        {
+          "business_key": "SA466|744341C",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-30T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-30",
+          "dms_value": 4377.56,
+          "snowflake_pay_cp_total": 432,
+          "difference": -3945.56
+        },
+        {
+          "business_key": "SA466|745078",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-30T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-30",
+          "dms_value": 32579.28,
+          "snowflake_pay_cp_total": 0,
+          "difference": -32579.28
+        },
+        {
+          "business_key": "SA466|745078C",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-06-18T00:00:00.000Z",
+          "snowflake_business_date": "2026-06-18",
+          "dms_value": 8985.22,
+          "snowflake_pay_cp_total": 9261,
+          "difference": 275.78
+        },
+        {
+          "business_key": "SA466|745990",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-26T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-26",
+          "dms_value": 5334.44,
+          "snowflake_pay_cp_total": 5398,
+          "difference": 63.56
+        },
+        {
+          "business_key": "SA466|746299",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-28T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-28",
+          "dms_value": 5038.98,
+          "snowflake_pay_cp_total": 0,
+          "difference": -5038.98
+        },
+        {
+          "business_key": "SA466|746931",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-27T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-27",
+          "dms_value": 5756.53,
+          "snowflake_pay_cp_total": 0,
+          "difference": -5756.53
+        }
+      ]
+    },
+    {
+      "candidate": "cp_core_total",
+      "matched_keys": 2454,
+      "exact": 1734,
+      "within_one": 1806,
+      "diff_ge_one": 648,
+      "average_abs_diff": 20.92,
+      "examples": [
+        {
+          "business_key": "SA466|744341C",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-30T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-30",
+          "dms_value": 398.34,
+          "snowflake_pay_cp_total": 432,
+          "difference": 33.66
+        },
+        {
+          "business_key": "SA466|745078C",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-06-18T00:00:00.000Z",
+          "snowflake_business_date": "2026-06-18",
+          "dms_value": 8985.22,
+          "snowflake_pay_cp_total": 9261,
+          "difference": 275.78
+        },
+        {
+          "business_key": "SA466|745990",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-26T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-26",
+          "dms_value": 5272.44,
+          "snowflake_pay_cp_total": 5398,
+          "difference": 125.56
+        },
+        {
+          "business_key": "SA466|747050",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-06-09T00:00:00.000Z",
+          "snowflake_business_date": "2026-06-09",
+          "dms_value": 503.16,
+          "snowflake_pay_cp_total": 517,
+          "difference": 13.84
+        },
+        {
+          "business_key": "SA466|747850",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-30T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-30",
+          "dms_value": 6610.19,
+          "snowflake_pay_cp_total": 7008,
+          "difference": 397.81
+        },
+        {
+          "business_key": "SA466|747961",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-26T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-26",
+          "dms_value": 561,
+          "snowflake_pay_cp_total": 606,
+          "difference": 45
+        },
+        {
+          "business_key": "SA466|747996",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-27T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-27",
+          "dms_value": 1261.35,
+          "snowflake_pay_cp_total": 1296,
+          "difference": 34.65
+        },
+        {
+          "business_key": "SA466|748131",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-29T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-29",
+          "dms_value": 632.57,
+          "snowflake_pay_cp_total": 645,
+          "difference": 12.43
+        }
+      ]
+    },
+    {
+      "candidate": "cp_with_sublet_total",
+      "matched_keys": 2454,
+      "exact": 1717,
+      "within_one": 1788,
+      "diff_ge_one": 666,
+      "average_abs_diff": 27.56,
+      "examples": [
+        {
+          "business_key": "SA466|744341C",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-30T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-30",
+          "dms_value": 398.34,
+          "snowflake_pay_cp_total": 432,
+          "difference": 33.66
+        },
+        {
+          "business_key": "SA466|745078C",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-06-18T00:00:00.000Z",
+          "snowflake_business_date": "2026-06-18",
+          "dms_value": 8985.22,
+          "snowflake_pay_cp_total": 9261,
+          "difference": 275.78
+        },
+        {
+          "business_key": "SA466|745990",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-26T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-26",
+          "dms_value": 5272.44,
+          "snowflake_pay_cp_total": 5398,
+          "difference": 125.56
+        },
+        {
+          "business_key": "SA466|747050",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-06-09T00:00:00.000Z",
+          "snowflake_business_date": "2026-06-09",
+          "dms_value": 503.16,
+          "snowflake_pay_cp_total": 517,
+          "difference": 13.84
+        },
+        {
+          "business_key": "SA466|747850",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-30T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-30",
+          "dms_value": 6610.19,
+          "snowflake_pay_cp_total": 7008,
+          "difference": 397.81
+        },
+        {
+          "business_key": "SA466|747961",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-26T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-26",
+          "dms_value": 561,
+          "snowflake_pay_cp_total": 606,
+          "difference": 45
+        },
+        {
+          "business_key": "SA466|747996",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-27T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-27",
+          "dms_value": 1261.35,
+          "snowflake_pay_cp_total": 1296,
+          "difference": 34.65
+        },
+        {
+          "business_key": "SA466|748131",
+          "dms_source_table": "closed",
+          "dms_business_date": "2026-05-29T00:00:00.000Z",
+          "snowflake_business_date": "2026-05-29",
+          "dms_value": 632.57,
+          "snowflake_pay_cp_total": 645,
+          "difference": 12.43
+        }
+      ]
+    }
+  ],
+  "recommended_logic": {
+    "dms_repair_order_grain": "one row per dealer plus RO number after combining open and closed; prefer closed row when present, otherwise open row",
+    "repair_amount_candidate": "replace current all-sale amount with a customer-pay DMS candidate; live scores identify the best available candidate but business confirmation is still required",
+    "repair_changed_value_status": "do not treat changed_value repair-order output as source-quality evidence until amount mapping is corrected"
+  }
+}

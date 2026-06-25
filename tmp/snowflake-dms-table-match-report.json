@@ -1,0 +1,5606 @@
+{
+  "generated_at": "2026-06-24T16:41:45.806Z",
+  "snowflake": {
+    "database": "CDK_DN_TITAN_FTR_UNMASK_E100030_SHARE",
+    "schema": "CONSUMPTION_SHARED_E100030",
+    "metadata_source": "live_snowflake_connector",
+    "table_count": 2,
+    "column_count": 640
+  },
+  "sql_server": {
+    "connector_id": "sqlserver-l1-dwasql-02-12010-dms",
+    "server": "L1-DWASQL-02,12010",
+    "database": "DMS",
+    "metadata_source": "live_sql_server_connector",
+    "live_error": null,
+    "object_count": 568,
+    "column_count": 19145
+  },
+  "matches": {
+    "REPAIR_ORDER_RAW": {
+      "snowflake_table": {
+        "TABLE_NAME": "REPAIR_ORDER_RAW",
+        "TABLE_TYPE": "BASE TABLE",
+        "ROW_COUNT": 133037,
+        "BYTES": 207793664,
+        "CREATED": "2026-06-24 07:50:20.370 -0700",
+        "LAST_ALTERED": "2026-06-24 09:00:32.831 -0700"
+      },
+      "snowflake_column_count": 195,
+      "snowflake_columns": [
+        {
+          "ordinal": 1,
+          "name": "ACCOUNTINGACCOUNT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 2,
+          "name": "ADDITIONALWORK",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 3,
+          "name": "ADDONFLAG",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 4,
+          "name": "APPOINTMENTCREATEDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 5,
+          "name": "APPOINTMENTCREATETIME",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 6,
+          "name": "APPOINTMENTDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 7,
+          "name": "APPOINTMENTFLAG",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 8,
+          "name": "APPOINTMENTTIME",
+          "type": "TIME",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 9,
+          "name": "AWRMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 10,
+          "name": "BLOCKAUTOMSG",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 11,
+          "name": "BOOKERNO",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 12,
+          "name": "CASHIER",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 13,
+          "name": "CCPROMPTONCP",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 14,
+          "name": "CCPROMPTONIP",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 15,
+          "name": "CCPROMPTONWP",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 16,
+          "name": "CLOSEDCUSTOMERPAY",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 17,
+          "name": "CLOSEDINTERNALPAY",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 18,
+          "name": "CLOSEDWARRANTYPAY",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 19,
+          "name": "COMEBACKFLAG",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 20,
+          "name": "COMMENTS",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 21,
+          "name": "CONCERNABBR",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 22,
+          "name": "CONCERNLABEL",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 23,
+          "name": "CONTACTEDBYEMAIL",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 24,
+          "name": "CONTACTEDBYPHONE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 25,
+          "name": "CONTACTEDMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 26,
+          "name": "CONTACTEXT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 27,
+          "name": "CUSTCOMMENT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 28,
+          "name": "CUSTOMER",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 29,
+          "name": "CUSTOMERCONTACTEDREASON",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 30,
+          "name": "CUSTOMERSHOPCHARGE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 31,
+          "name": "CUSTOMERSUPPLEMENTALTAX1",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 32,
+          "name": "CUSTOMERSUPPLEMENTALTAX2",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 33,
+          "name": "CUSTOMERSUPPLEMENTALTAX3",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 34,
+          "name": "CUSTOMERSUPPLEMENTALTAX4",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 35,
+          "name": "CUSTSTTAX",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 36,
+          "name": "DAMAGEREPORTFLAG",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 37,
+          "name": "DAMAGEREPORTID",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 38,
+          "name": "DEALERCODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 39,
+          "name": "DEBUG_INFO",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 40,
+          "name": "DEDMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 41,
+          "name": "DEDUCTIBLES",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 42,
+          "name": "DELETEDATAFLAGRAW",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 43,
+          "name": "DELETEPIIDATA",
+          "type": "BOOLEAN",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 44,
+          "name": "DEPARTMENT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 45,
+          "name": "DEPT_ID",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 46,
+          "name": "DEPT_NAME",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 47,
+          "name": "DISMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 48,
+          "name": "DMGFLAG",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 49,
+          "name": "DMGRPTEMAIL",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 50,
+          "name": "DMSEVENTTYPE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 51,
+          "name": "DONOTSHAREPIIDATA",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 52,
+          "name": "DWKMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 53,
+          "name": "EIS_STORE_ID",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 54,
+          "name": "EMAILMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 55,
+          "name": "ERRMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 56,
+          "name": "ERRORS",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 57,
+          "name": "ESTIMATEAMT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 58,
+          "name": "ESTIMATEDATE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 59,
+          "name": "ESTIMATEDCOMPLETIONDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 60,
+          "name": "ESTIMATEROCHANGEREASON",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 61,
+          "name": "ESTIMATETIME",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 62,
+          "name": "ESTLINEMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 63,
+          "name": "ESTROLINETOTAL",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 64,
+          "name": "ESTROMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 65,
+          "name": "ESTROOVERRIDEFLAG",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 66,
+          "name": "EXCEPTIONS",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 67,
+          "name": "EXCMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 68,
+          "name": "EXECUTIONTIME",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 69,
+          "name": "EXTENDEDSERVICECONTRACTS",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 70,
+          "name": "FEEMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 71,
+          "name": "FILLER1",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 72,
+          "name": "FILLER2",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 73,
+          "name": "FILLER3",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 74,
+          "name": "HASCUSTPAYFLAG",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 75,
+          "name": "HASINTPAYFLAG",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 76,
+          "name": "HASWARRPAYFLAG",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 77,
+          "name": "HISTORYMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 78,
+          "name": "HISTORYRONUMBER",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 79,
+          "name": "HOSTITEMID",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 80,
+          "name": "HRSMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 81,
+          "name": "INSURANCE1FLAG",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 82,
+          "name": "INSURANCE2FLAG",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 83,
+          "name": "INSURANCE3FLAG",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 84,
+          "name": "INSURANCEAMOUNT1",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 85,
+          "name": "INSURANCEAMOUNT2",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 86,
+          "name": "INSURANCEAMOUNT3",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 87,
+          "name": "INTERNALSHOPCHARGE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 88,
+          "name": "INTERNALSUPPLEMENTALTAX1",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 89,
+          "name": "INTERNALSUPPLEMENTALTAX2",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 90,
+          "name": "INTERNALSUPPLEMENTALTAX3",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 91,
+          "name": "INTERNALSUPPLEMENTALTAX4",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 92,
+          "name": "INTSTTAX",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 93,
+          "name": "INVOICEPOSTDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 94,
+          "name": "INVOICEPRINTTIME",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 95,
+          "name": "ISCUSTOMERWAITING",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 96,
+          "name": "LANGPREF",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 97,
+          "name": "LASTSERVICEDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 98,
+          "name": "LBRMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 99,
+          "name": "LBRSPSOVERRIDECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 100,
+          "name": "LIMITSPIUSE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 101,
+          "name": "LINEESTIMATE",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 102,
+          "name": "LINMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 103,
+          "name": "MANUFACTURERWARRANTYEXPIRATIONDATE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 104,
+          "name": "MFRHISTORYMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 105,
+          "name": "MFRHISTORYRONUMBER",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 106,
+          "name": "MLSMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 107,
+          "name": "NORMAL_PRIORITY",
+          "type": "BOOLEAN",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 108,
+          "name": "ODOMETERIN",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 109,
+          "name": "ODOMETEROUT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 110,
+          "name": "OPERATIONS",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 111,
+          "name": "OPTOUT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 112,
+          "name": "OPTOUTPIIFLAGRAW",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 113,
+          "name": "OPTOUTSELLINGPIIDATA",
+          "type": "BOOLEAN",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 114,
+          "name": "ORIGINALPROMISEDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 115,
+          "name": "ORIGINALPROMISETIME",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 116,
+          "name": "ORIGINAPPL",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 117,
+          "name": "ORIGINCODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 118,
+          "name": "ORIGWAITERFLAG",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 119,
+          "name": "PACODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 120,
+          "name": "PACODESOURCE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 121,
+          "name": "PARTSACCOUNT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 122,
+          "name": "PARTSHOLDDESCRIPTION",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 123,
+          "name": "PAYBALANCEDUE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 124,
+          "name": "PAYCPTOTAL",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 125,
+          "name": "PAYMENTMETHODS",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 126,
+          "name": "PAYMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 127,
+          "name": "PAYPAYMENTSMADE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 128,
+          "name": "PHONEMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 129,
+          "name": "PREASSIGNED",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 130,
+          "name": "PREMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 131,
+          "name": "PRIORITYOVERRIDEFLAG",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 132,
+          "name": "PRIORITYVALUE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 133,
+          "name": "PRODUCTIONDATE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 134,
+          "name": "PROMISEDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 135,
+          "name": "PROMISETIME",
+          "type": "TIME",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 136,
+          "name": "PRTMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 137,
+          "name": "PUNMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 138,
+          "name": "PURCHASEORDERNUM",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 139,
+          "name": "RAPAPPTID",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 140,
+          "name": "RAPMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 141,
+          "name": "RENTALFLAG",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 142,
+          "name": "REVISEDCOMPLDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 143,
+          "name": "REVISEDCOMPLTIME",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 144,
+          "name": "ROBOOKEDDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 145,
+          "name": "ROBOOKEDTIME",
+          "type": "TIME",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 146,
+          "name": "ROCLOSEDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 147,
+          "name": "ROCLOSETIME",
+          "type": "TIME",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 148,
+          "name": "ROESTIMATE",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 149,
+          "name": "ROLEVELAMOUNT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 150,
+          "name": "RONUM",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 151,
+          "name": "ROOPENDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 152,
+          "name": "ROOPENTIME",
+          "type": "TIME",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 153,
+          "name": "SERVICEACCOUNT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 154,
+          "name": "SERVICEADVISOR",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 155,
+          "name": "SERVICECOMPONENTBLOCK",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 156,
+          "name": "SERVICEPRICINGOVERRIDE",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 157,
+          "name": "SORMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 158,
+          "name": "SORNUMBER",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 159,
+          "name": "SOURCEFILE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 160,
+          "name": "STATUSCODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 161,
+          "name": "STATUSDESC",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 162,
+          "name": "STOCKNUM",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 163,
+          "name": "STORENUMBER",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 164,
+          "name": "SUBLETBLOCK",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 165,
+          "name": "SUBLETCLAIM",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 166,
+          "name": "SYSTEMTYPE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 167,
+          "name": "TAGNO",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 168,
+          "name": "TECHCOMMENT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 169,
+          "name": "TECHS",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 170,
+          "name": "TOTALACTUALLABORHOURS",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 171,
+          "name": "TOTALBILLEDLABORHOURS",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 172,
+          "name": "TOTALPRICE",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 173,
+          "name": "TOTALTAXPRICE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 174,
+          "name": "TOTMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 175,
+          "name": "TRANSTYPE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 176,
+          "name": "TRANSTYPEDESC",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 177,
+          "name": "VEHICLE",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 178,
+          "name": "VEHICLEINSPECTION",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 179,
+          "name": "VEHICLEPICKUPDATE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 180,
+          "name": "VEHID",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 181,
+          "name": "VERIFICATIONFLAG",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 182,
+          "name": "VISITEMMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 183,
+          "name": "VOIDEDDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 184,
+          "name": "WARMULTIVALUECOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 185,
+          "name": "WARRANTYCLAIMLINES",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 186,
+          "name": "WARRANTYCLAIMNUM",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 187,
+          "name": "WARRANTYSHOPCHARGE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 188,
+          "name": "WARRANTYSUPPLEMENTALTAX1",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 189,
+          "name": "WARRANTYSUPPLEMENTALTAX2",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 190,
+          "name": "WARRANTYSUPPLEMENTALTAX3",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 191,
+          "name": "WARRANTYSUPPLEMENTALTAX4",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 192,
+          "name": "WARRSTTAX",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 193,
+          "name": "WRITEUPREMARKS",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 194,
+          "name": "LANDING_TIME",
+          "type": "TIMESTAMP_TZ",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 195,
+          "name": "SOFT_DELETE",
+          "type": "TEXT",
+          "nullable": "YES"
+        }
+      ],
+      "likely_matches": [
+        {
+          "schema": "dbo",
+          "object": "coraacct_hostitemid_tbl",
+          "type": "table",
+          "score": 0.0771,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0051,
+          "sql_column_coverage": 0.5,
+          "overlapping_columns_count": 1,
+          "overlapping_columns": ["hostitemid"],
+          "sql_column_count": 2,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__coraacct_hostitemid_tbl.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "LoadGldetailIntoArc",
+          "type": "table",
+          "score": 0.0771,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0051,
+          "sql_column_coverage": 0.5,
+          "overlapping_columns_count": 1,
+          "overlapping_columns": ["hostitemid"],
+          "sql_column_count": 2,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__LoadGldetailIntoArc.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "LoadGldetailIntoCur",
+          "type": "table",
+          "score": 0.0771,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0051,
+          "sql_column_coverage": 0.5,
+          "overlapping_columns_count": 1,
+          "overlapping_columns": ["hostitemid"],
+          "sql_column_count": 2,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__LoadGldetailIntoCur.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "DupVins",
+          "type": "view",
+          "score": 0.0521,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0051,
+          "sql_column_coverage": 0.3333,
+          "overlapping_columns_count": 1,
+          "overlapping_columns": ["accountingaccount"],
+          "sql_column_count": 3,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__DupVins.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "SalesDetail_New_Columns",
+          "type": "table",
+          "score": 0.0472,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.041,
+          "sql_column_coverage": 0.2051,
+          "overlapping_columns_count": 8,
+          "overlapping_columns": [
+            "addonflag",
+            "ccpromptoncp",
+            "ccpromptonip",
+            "ccpromptonwp",
+            "hostitemid",
+            "originappl",
+            "origincode",
+            "vehid"
+          ],
+          "sql_column_count": 39,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__SalesDetail_New_Columns.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "ErrVehicleNoMatch",
+          "type": "table",
+          "score": 0.047,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0103,
+          "sql_column_coverage": 0.2857,
+          "overlapping_columns_count": 2,
+          "overlapping_columns": ["accountingaccount", "hostitemid"],
+          "sql_column_count": 7,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__ErrVehicleNoMatch.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_FactServiceDetail_staging",
+          "type": "view",
+          "score": 0.0362,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0359,
+          "sql_column_coverage": 0.1458,
+          "overlapping_columns_count": 7,
+          "overlapping_columns": [
+            "accountingaccount",
+            "lastservicedate",
+            "originappl",
+            "origincode",
+            "serviceaccount",
+            "serviceadvisor",
+            "vehid"
+          ],
+          "sql_column_count": 48,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_FactServiceDetail_staging.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "appointments",
+          "type": "table",
+          "score": 0.0358,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.041,
+          "sql_column_coverage": 0.129,
+          "overlapping_columns_count": 8,
+          "overlapping_columns": [
+            "appointmentdate",
+            "appointmenttime",
+            "comments",
+            "hostitemid",
+            "promisedate",
+            "promisetime",
+            "transtype",
+            "vehid"
+          ],
+          "sql_column_count": 62,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__appointments.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "appointments_staging",
+          "type": "table",
+          "score": 0.0358,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.041,
+          "sql_column_coverage": 0.129,
+          "overlapping_columns_count": 8,
+          "overlapping_columns": [
+            "appointmentdate",
+            "appointmenttime",
+            "comments",
+            "hostitemid",
+            "promisedate",
+            "promisetime",
+            "transtype",
+            "vehid"
+          ],
+          "sql_column_count": 62,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__appointments_staging.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "servicesalesdetailsclosed",
+          "type": "table",
+          "score": 0.0351,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0462,
+          "sql_column_coverage": 0.1111,
+          "overlapping_columns_count": 9,
+          "overlapping_columns": [
+            "addonflag",
+            "bookerno",
+            "ccpromptoncp",
+            "ccpromptonip",
+            "ccpromptonwp",
+            "hostitemid",
+            "originappl",
+            "origincode",
+            "vehid"
+          ],
+          "sql_column_count": 81,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__servicesalesdetailsclosed.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "servicesalesdetailsclosed_new",
+          "type": "table",
+          "score": 0.0351,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0462,
+          "sql_column_coverage": 0.1111,
+          "overlapping_columns_count": 9,
+          "overlapping_columns": [
+            "addonflag",
+            "bookerno",
+            "ccpromptoncp",
+            "ccpromptonip",
+            "ccpromptonwp",
+            "hostitemid",
+            "originappl",
+            "origincode",
+            "vehid"
+          ],
+          "sql_column_count": 81,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__servicesalesdetailsclosed_new.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_FactServiceOpen_staging_18082015",
+          "type": "view",
+          "score": 0.0337,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0256,
+          "sql_column_coverage": 0.1563,
+          "overlapping_columns_count": 5,
+          "overlapping_columns": [
+            "accountingaccount",
+            "lastservicedate",
+            "serviceaccount",
+            "serviceadvisor",
+            "vehid"
+          ],
+          "sql_column_count": 32,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_FactServiceOpen_staging_18082015.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_FactService_staging_18082015",
+          "type": "view",
+          "score": 0.0323,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0256,
+          "sql_column_coverage": 0.1471,
+          "overlapping_columns_count": 5,
+          "overlapping_columns": [
+            "accountingaccount",
+            "lastservicedate",
+            "serviceaccount",
+            "serviceadvisor",
+            "vehid"
+          ],
+          "sql_column_count": 34,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_FactService_staging_18082015.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_FactServiceDetailSlim_staging",
+          "type": "view",
+          "score": 0.0323,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0256,
+          "sql_column_coverage": 0.1471,
+          "overlapping_columns_count": 5,
+          "overlapping_columns": [
+            "accountingaccount",
+            "originappl",
+            "origincode",
+            "serviceaccount",
+            "vehid"
+          ],
+          "sql_column_count": 34,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_FactServiceDetailSlim_staging.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "CaseDupeVehid",
+          "type": "table",
+          "score": 0.0321,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0051,
+          "sql_column_coverage": 0.2,
+          "overlapping_columns_count": 1,
+          "overlapping_columns": ["vehid"],
+          "sql_column_count": 5,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__CaseDupeVehid.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "Load Staging Table for Processing",
+          "type": "table",
+          "score": 0.0321,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0051,
+          "sql_column_coverage": 0.2,
+          "overlapping_columns_count": 1,
+          "overlapping_columns": ["hostitemid"],
+          "sql_column_count": 5,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__Load Staging Table for Processing.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "pricinggridsheader_pg",
+          "type": "table",
+          "score": 0.0321,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0051,
+          "sql_column_coverage": 0.2,
+          "overlapping_columns_count": 1,
+          "overlapping_columns": ["hostitemid"],
+          "sql_column_count": 5,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__pricinggridsheader_pg.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "ServiceSalesHdr_CustKeys",
+          "type": "table",
+          "score": 0.0321,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0051,
+          "sql_column_coverage": 0.2,
+          "overlapping_columns_count": 1,
+          "overlapping_columns": ["vehid"],
+          "sql_column_count": 5,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__ServiceSalesHdr_CustKeys.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_servicesales",
+          "type": "view",
+          "score": 0.0321,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0051,
+          "sql_column_coverage": 0.2,
+          "overlapping_columns_count": 1,
+          "overlapping_columns": ["accountingaccount"],
+          "sql_column_count": 5,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_servicesales.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "servicesalesclosed",
+          "type": "table",
+          "score": 0.0318,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0462,
+          "sql_column_coverage": 0.0891,
+          "overlapping_columns_count": 9,
+          "overlapping_columns": [
+            "accountingaccount",
+            "comebackflag",
+            "hostitemid",
+            "lastservicedate",
+            "originalpromisedate",
+            "originalpromisetime",
+            "serviceadvisor",
+            "transtype",
+            "vehid"
+          ],
+          "sql_column_count": 101,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__servicesalesclosed.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_FactServiceOpen_staging",
+          "type": "view",
+          "score": 0.03,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0256,
+          "sql_column_coverage": 0.1316,
+          "overlapping_columns_count": 5,
+          "overlapping_columns": [
+            "accountingaccount",
+            "lastservicedate",
+            "serviceaccount",
+            "serviceadvisor",
+            "vehid"
+          ],
+          "sql_column_count": 38,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_FactServiceOpen_staging.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_FactService_staging",
+          "type": "view",
+          "score": 0.029,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0256,
+          "sql_column_coverage": 0.125,
+          "overlapping_columns_count": 5,
+          "overlapping_columns": [
+            "accountingaccount",
+            "lastservicedate",
+            "serviceaccount",
+            "serviceadvisor",
+            "vehid"
+          ],
+          "sql_column_count": 40,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_FactService_staging.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_RO_APr2012Test",
+          "type": "view",
+          "score": 0.0285,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0256,
+          "sql_column_coverage": 0.122,
+          "overlapping_columns_count": 5,
+          "overlapping_columns": [
+            "accountingaccount",
+            "lastservicedate",
+            "serviceaccount",
+            "serviceadvisor",
+            "vehid"
+          ],
+          "sql_column_count": 41,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_RO_APr2012Test.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_RO_APrTest",
+          "type": "view",
+          "score": 0.0285,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0256,
+          "sql_column_coverage": 0.122,
+          "overlapping_columns_count": 5,
+          "overlapping_columns": [
+            "accountingaccount",
+            "lastservicedate",
+            "serviceaccount",
+            "serviceadvisor",
+            "vehid"
+          ],
+          "sql_column_count": 41,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_RO_APrTest.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "servicevehiclesummary",
+          "type": "table",
+          "score": 0.0272,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.0103,
+          "sql_column_coverage": 0.1538,
+          "overlapping_columns_count": 2,
+          "overlapping_columns": ["accountingaccount", "vehid"],
+          "sql_column_count": 13,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__servicevehiclesummary.md"
+        }
+      ]
+    },
+    "VEHICLE_SALES_RAW": {
+      "snowflake_table": {
+        "TABLE_NAME": "VEHICLE_SALES_RAW",
+        "TABLE_TYPE": "BASE TABLE",
+        "ROW_COUNT": 42530,
+        "BYTES": 14871552,
+        "CREATED": "2026-06-24 07:49:47.410 -0700",
+        "LAST_ALTERED": "2026-06-24 09:00:26.099 -0700"
+      },
+      "snowflake_column_count": 445,
+      "snowflake_columns": [
+        {
+          "ordinal": 1,
+          "name": "ACCESSCODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 2,
+          "name": "ACCOUNTINGACCOUNT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 3,
+          "name": "ACXIOMID",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 4,
+          "name": "ADDLCUSTOMERREBATE1",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 5,
+          "name": "ADDONRATE1",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 6,
+          "name": "ADJUSTEDCOSTOFVEHICLE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 7,
+          "name": "ADJUSTMENTSDEALERDEFINED",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 8,
+          "name": "ADJUSTMENTSROPO",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 9,
+          "name": "ADJUSTMENTSSTANDARD",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 10,
+          "name": "AFTERMARKETRESERVE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 11,
+          "name": "AFTERMARKETS",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 12,
+          "name": "AGE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 13,
+          "name": "AHMONTHLYMAXAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 14,
+          "name": "APR",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 15,
+          "name": "ASSNSLSPERSON",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 16,
+          "name": "AUXWIP",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 17,
+          "name": "BACKENDGROSSCOSTADJUSTMENT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 18,
+          "name": "BACKENDGROSSPROFIT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 19,
+          "name": "BACKENDWEOWEDLRGROSSCOMM",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 20,
+          "name": "BACKENDWEOWETOTALCOST",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 21,
+          "name": "BACKENDWEOWETOTALSALE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 22,
+          "name": "BACKGROSS",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 23,
+          "name": "BACKGROSSPRODUCTS",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 24,
+          "name": "BALLOONPAYMENT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 25,
+          "name": "BALLOONRATE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 26,
+          "name": "BANKFEE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 27,
+          "name": "BASEMSRP",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 28,
+          "name": "BASERENTALAMOUNT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 29,
+          "name": "BASERESIDUAL",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 30,
+          "name": "BILLINGCLERK",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 31,
+          "name": "BONUSSP1",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 32,
+          "name": "BONUSSP2",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 33,
+          "name": "BONUSSP3",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 34,
+          "name": "BRANCH",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 35,
+          "name": "BUFFEROVERFLOW",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 36,
+          "name": "BUYERDELETEDATAFLAG",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 37,
+          "name": "BUYERDONOTSHAREPIIDATA",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 38,
+          "name": "BUYERLIMITSPIUSE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 39,
+          "name": "BUYEROPTOUTFLAG",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 40,
+          "name": "BUYERS",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 41,
+          "name": "BUYRATE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 42,
+          "name": "BUYRATEADDON",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 43,
+          "name": "BUYRATELFM",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 44,
+          "name": "BUYRATELMF",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 45,
+          "name": "CALCMETHOD",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 46,
+          "name": "CAPCOSTREDUCTIONTAX2AMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 47,
+          "name": "CAPCOSTS",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 48,
+          "name": "CASHDOWN",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 49,
+          "name": "CLINSURANCETYPE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 50,
+          "name": "CLMONTLYMAXAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 51,
+          "name": "CLOSINGMGR",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 52,
+          "name": "COBUYERDELETEDATAFLAG",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 53,
+          "name": "COBUYERDONOTSHAREPIIDATA",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 54,
+          "name": "COBUYERLIMITSPIUSE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 55,
+          "name": "COBUYEROPTOUTFLAG",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 56,
+          "name": "COMMENTS",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 57,
+          "name": "COMMISSIONGROSS",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 58,
+          "name": "COMMISSIONSP1",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 59,
+          "name": "COMMISSIONSP2",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 60,
+          "name": "COMMISSIONSP3",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 61,
+          "name": "COMMONSALEDLR",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 62,
+          "name": "COMPCODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 63,
+          "name": "CONT1DATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 64,
+          "name": "CONT1REASON",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 65,
+          "name": "CONT2DATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 66,
+          "name": "CONT2REASON",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 67,
+          "name": "CONTRACTDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 68,
+          "name": "CONTRACTTERM",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 69,
+          "name": "CONTRACTTYPE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 70,
+          "name": "CRM",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 71,
+          "name": "CUSTOMERREBATEAMT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 72,
+          "name": "CUSTORCOMPANYCODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 73,
+          "name": "DAYSTOFIRSTPAYMENT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 74,
+          "name": "DEALERDEFINED1",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 75,
+          "name": "DEALERDEFINED2",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 76,
+          "name": "DEALERDEFINED3",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 77,
+          "name": "DEALERDEFINED4",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 78,
+          "name": "DEALERDEFINED5",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 79,
+          "name": "DEALERDEFINED6",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 80,
+          "name": "DEALERDEFINED7",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 81,
+          "name": "DEALERDEFINED8",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 82,
+          "name": "DEALEVENT1",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 83,
+          "name": "DEALEVENT10",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 84,
+          "name": "DEALEVENT10DATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 85,
+          "name": "DEALEVENT1DATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 86,
+          "name": "DEALEVENT2",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 87,
+          "name": "DEALEVENT2DATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 88,
+          "name": "DEALEVENT3",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 89,
+          "name": "DEALEVENT3DATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 90,
+          "name": "DEALEVENT4",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 91,
+          "name": "DEALEVENT4DATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 92,
+          "name": "DEALEVENT5",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 93,
+          "name": "DEALEVENT5DATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 94,
+          "name": "DEALEVENT6",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 95,
+          "name": "DEALEVENT6DATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 96,
+          "name": "DEALEVENT7",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 97,
+          "name": "DEALEVENT7DATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 98,
+          "name": "DEALEVENT8",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 99,
+          "name": "DEALEVENT8DATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 100,
+          "name": "DEALEVENT9",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 101,
+          "name": "DEALEVENT9DATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 102,
+          "name": "DEALNUMBER",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 103,
+          "name": "DEALSOURCE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 104,
+          "name": "DEALSTATUS",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 105,
+          "name": "DEALSTATUSDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 106,
+          "name": "DEALTYPE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 107,
+          "name": "DEBUG_INFO",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 108,
+          "name": "DELETEPIIDATA",
+          "type": "BOOLEAN",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 109,
+          "name": "DELIVERYCOORD",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 110,
+          "name": "DELIVERYDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 111,
+          "name": "DELIVERYODOMETER",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 112,
+          "name": "DEPOSITAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 113,
+          "name": "DEPOSITTYPE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 114,
+          "name": "DEPT_ID",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 115,
+          "name": "DEPT_NAME",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 116,
+          "name": "DMVROSNUMBER",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 117,
+          "name": "DUEONDELIVERY",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 118,
+          "name": "EIS_STORE_ID",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 119,
+          "name": "ELECTRONICSIGNATURECONSENT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 120,
+          "name": "ELECTRONICSIGNATUREDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 121,
+          "name": "ELECTRONICSIGNATURETIME",
+          "type": "TIME",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 122,
+          "name": "ELECTRONICSIGNATUREUSERID",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 123,
+          "name": "ELECTRONICSIGNATUREUSERNAME",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 124,
+          "name": "EMPLOYER",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 125,
+          "name": "EXISTINGMILES",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 126,
+          "name": "EXISTINGMILESADJUSTMENT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 127,
+          "name": "EXISTINGMILESRATE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 128,
+          "name": "EXTWARRANTYEXPMILESLEASE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 129,
+          "name": "EXTWARRANTYTERMLEASE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 130,
+          "name": "FEDERALTAXID",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 131,
+          "name": "FEEOPTIONSGROSSPROFIT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 132,
+          "name": "FEES",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 133,
+          "name": "FILLER1",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 134,
+          "name": "FILLER2",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 135,
+          "name": "FILLER3",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 136,
+          "name": "FIMGR1",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 137,
+          "name": "FIMGR2",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 138,
+          "name": "FINANCECHARGE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 139,
+          "name": "FINANCECOMPANYCODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 140,
+          "name": "FINANCECOMPANYNAME",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 141,
+          "name": "FINANCEFLATFEE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 142,
+          "name": "FINANCERESERVE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 143,
+          "name": "FINANCERESERVEDERIVED",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 144,
+          "name": "FINANCINGGROSSPROFIT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 145,
+          "name": "FININSTITUTECODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 146,
+          "name": "FIRSTPAYMENTDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 147,
+          "name": "FRONTENDGROSSPROFIT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 148,
+          "name": "FRONTENDWEOWETOTALSALE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 149,
+          "name": "FRONTGROSS",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 150,
+          "name": "FRONTGROSSOTHER",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 151,
+          "name": "FRONTGROSSPROFITESTIMATE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 152,
+          "name": "FRONTWEOWES",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 153,
+          "name": "FRONTWEOWESALESPERSON1",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 154,
+          "name": "FRONTWEOWESALESPERSON2",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 155,
+          "name": "FRONTWEOWESALESPERSON3",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 156,
+          "name": "FRONTWEOWESGROSSCOST",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 157,
+          "name": "FRONTWEOWESGROSSSALES",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 158,
+          "name": "GENERALLEDGERACCOUNT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 159,
+          "name": "GLVEHICLECOST",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 160,
+          "name": "GROSSCAPITALIZEDCOST",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 161,
+          "name": "GROSSPROFIT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 162,
+          "name": "GROSSPROFITCOMMISSIONCOST",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 163,
+          "name": "GROSSPROFITCOMPBASE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 164,
+          "name": "HOMEFAX",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 165,
+          "name": "HOSTITEMID",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 166,
+          "name": "INCENTIVE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 167,
+          "name": "INCENTIVEDEALER",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 168,
+          "name": "INCENTIVEPROGRAM",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 169,
+          "name": "INSLOEFLAG",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 170,
+          "name": "INSURANCEGROSSPROFIT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 171,
+          "name": "INSURANCES",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 172,
+          "name": "INSURANCETYPECODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 173,
+          "name": "INTCALCADDITIONALRESIDUAL",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 174,
+          "name": "INTCALCBASEMSRP",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 175,
+          "name": "INVACODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 176,
+          "name": "INVBODYDESCRIPTION",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 177,
+          "name": "INVBODYDOORS",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 178,
+          "name": "INVCOST",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 179,
+          "name": "INVCYLINDERS",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 180,
+          "name": "INVDAYSININVENTORY",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 181,
+          "name": "INVDRIVETRAINDESCRIPTION",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 182,
+          "name": "INVENGINEASPIRATION",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 183,
+          "name": "INVENGINEDESCRIPTION",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 184,
+          "name": "INVENGINEFUELTYPE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 185,
+          "name": "INVEXTCOLORDESCRIPTION",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 186,
+          "name": "INVEXTERIORCOLORCODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 187,
+          "name": "INVFEATUREDELIMCATEGORY",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 188,
+          "name": "INVFEATUREDELIMCODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 189,
+          "name": "INVFEATUREDELIMDESCRIPTION",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 190,
+          "name": "INVFEATUREDELIMTYPE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 191,
+          "name": "INVFEATURES",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 192,
+          "name": "INVFILLER1",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 193,
+          "name": "INVFILLER2",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 194,
+          "name": "INVFILLER3",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 195,
+          "name": "INVHOLDBACKAMT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 196,
+          "name": "INVINTERIORCOLOR",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 197,
+          "name": "INVINTERIORCOLORCODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 198,
+          "name": "INVINTERIORDESCRIPTION",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 199,
+          "name": "INVINTERIORFABRIC",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 200,
+          "name": "INVINTERIORSEATTYPE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 201,
+          "name": "INVINVENTORYDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 202,
+          "name": "INVINVOICEPRICE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 203,
+          "name": "INVISCERTIFIED",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 204,
+          "name": "INVLICENSEPLATENUMBER",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 205,
+          "name": "INVLISTPRICE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 206,
+          "name": "INVMAKE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 207,
+          "name": "INVMODEL",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 208,
+          "name": "INVMODELCODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 209,
+          "name": "INVMODELYEAR",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 210,
+          "name": "INVMSRP",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 211,
+          "name": "INVODOMETER",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 212,
+          "name": "INVOPTIONPACKAGES",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 213,
+          "name": "INVOPTPACKAGEDELIMCODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 214,
+          "name": "INVPACKAMT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 215,
+          "name": "INVPAYLOADCAPACITY",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 216,
+          "name": "INVRECONDITIONCOST",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 217,
+          "name": "INVREGISTRATIONAUTHORITY",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 218,
+          "name": "INVREGISTRATIONEXPDATE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 219,
+          "name": "INVSEATINGCAPACITY",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 220,
+          "name": "INVSTOCKNUM",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 221,
+          "name": "INVSUBTRIMLEVEL",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 222,
+          "name": "INVTRANSMISSIONDESCRIPTION",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 223,
+          "name": "INVTRANSMISSIONGEARS",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 224,
+          "name": "INVTRANSMISSIONTYPE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 225,
+          "name": "INVTRIMLEVEL",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 226,
+          "name": "INVTYPE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 227,
+          "name": "INVVEHICLEFILLER1",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 228,
+          "name": "INVVEHICLEFILLER2",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 229,
+          "name": "INVVEHICLEFILLER3",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 230,
+          "name": "INVVEHICLETYPECODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 231,
+          "name": "INVVIN",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 232,
+          "name": "INVWHEELBASE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 233,
+          "name": "LASTPAYAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 234,
+          "name": "LASTPAYDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 235,
+          "name": "LEASEENDPERCENTAGERATE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 236,
+          "name": "LEASEFLEXIBLETAX1AMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 237,
+          "name": "LEASEFLEXIBLETAX2AMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 238,
+          "name": "LEASEMILEAGEALLOWANCE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 239,
+          "name": "LEASEPAYMENT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 240,
+          "name": "LEASETYPE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 241,
+          "name": "LEVELIZEDLIFEAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 242,
+          "name": "LEVELIZEDLIFECOST",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 243,
+          "name": "LEVELIZEDLIFEDEALERCOMM",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 244,
+          "name": "LEVELIZEDLIFEINCOME",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 245,
+          "name": "LICENSENUMBERFEE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 246,
+          "name": "LICENSEREGISTRATIONFEE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 247,
+          "name": "LIENHOLDERADDRESS",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 248,
+          "name": "LIENHOLDERCITY",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 249,
+          "name": "LIENHOLDERNAME2",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 250,
+          "name": "LIENHOLDERPHONE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 251,
+          "name": "LIENHOLDERSTATE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 252,
+          "name": "LIENHOLDERZIP",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 253,
+          "name": "LSTGSTAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 254,
+          "name": "LSTGSTRATE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 255,
+          "name": "LSTGSTRATEFLAT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 256,
+          "name": "LSTGSTTYPE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 257,
+          "name": "LUXURYTAX",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 258,
+          "name": "LUXURYTAXAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 259,
+          "name": "LUXURYTAXFINANCEDAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 260,
+          "name": "LUXURYTAXMONTHLYAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 261,
+          "name": "LUXURYTAXTOTALMONTHLYAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 262,
+          "name": "LUXURYTAXUPFRONTAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 263,
+          "name": "MAKENAME",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 264,
+          "name": "MANUFACTURERREBATE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 265,
+          "name": "MARITALSTATUS",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 266,
+          "name": "MILEAGEEXPECTED",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 267,
+          "name": "MILEAGEEXPECTEDFLAG",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 268,
+          "name": "MILEAGEPENALTYAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 269,
+          "name": "MILEAGEPENALTYRATE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 270,
+          "name": "MISCELLANEOUS1",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 271,
+          "name": "MISCELLANEOUS10",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 272,
+          "name": "MISCELLANEOUS2",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 273,
+          "name": "MISCELLANEOUS3",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 274,
+          "name": "MISCELLANEOUS4",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 275,
+          "name": "MISCELLANEOUS5",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 276,
+          "name": "MISCELLANEOUS6",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 277,
+          "name": "MISCELLANEOUS7",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 278,
+          "name": "MISCELLANEOUS8",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 279,
+          "name": "MISCELLANEOUS9",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 280,
+          "name": "MODEL",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 281,
+          "name": "MONTHLYPAYMENT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 282,
+          "name": "NETCAPITALIZEDCOST",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 283,
+          "name": "NETCAPREDUCTION",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 284,
+          "name": "NORMAL_PRIORITY",
+          "type": "BOOLEAN",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 285,
+          "name": "ODOMOTERUNITOFMEASURE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 286,
+          "name": "ONEPAYAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 287,
+          "name": "OPTIONSCOMMDLR",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 288,
+          "name": "OPTOUT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 289,
+          "name": "OPTOUTSELLINGPIIDATA",
+          "type": "BOOLEAN",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 290,
+          "name": "OUTTHEDOORPRICE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 291,
+          "name": "PAGER",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 292,
+          "name": "PAYMENTFREQUENCY",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 293,
+          "name": "PAYMENTS",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 294,
+          "name": "PAYMENTSTYLE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 295,
+          "name": "PICKUPDATE1",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 296,
+          "name": "PICKUPDATE2",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 297,
+          "name": "PICKUPDATE3",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 298,
+          "name": "PICKUPPAYMENTS",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 299,
+          "name": "PRORATADOLLARAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 300,
+          "name": "PRORATATAXAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 301,
+          "name": "PURCHASEFLEXIBLETAX1AMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 302,
+          "name": "PURCHASEFLEXIBLETAX1BASE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 303,
+          "name": "PURCHASEFLEXIBLETAX1MAX",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 304,
+          "name": "PURCHASEFLEXIBLETAX1MAXCODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 305,
+          "name": "PURCHASEFLEXIBLETAX1NAME",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 306,
+          "name": "PURCHASEFLEXIBLETAX1RATE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 307,
+          "name": "PURCHASEFLEXIBLETAX2AMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 308,
+          "name": "PURCHASEFLEXIBLETAX2BASE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 309,
+          "name": "PURCHASEFLEXIBLETAX2MAX",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 310,
+          "name": "PURCHASEFLEXIBLETAX2MAXCODE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 311,
+          "name": "PURCHASEFLEXIBLETAX2NAME",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 312,
+          "name": "PURCHASEFLEXIBLETAX2RATE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 313,
+          "name": "PURCHASEMBICOST",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 314,
+          "name": "PURCHASEMBISP2COMMAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 315,
+          "name": "PURCHASEORDERDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 316,
+          "name": "RAWFEES",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 317,
+          "name": "REBATE",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 318,
+          "name": "RESIDUALAMT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 319,
+          "name": "REVERSALDATE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 320,
+          "name": "SALECONTACT",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 321,
+          "name": "SALECREDITSP1",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 322,
+          "name": "SALECREDITSP2",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 323,
+          "name": "SALECREDITSP3",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 324,
+          "name": "SALEPRICEWITHWEOWES",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 325,
+          "name": "SALESACCOUNT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 326,
+          "name": "SALESDATE",
+          "type": "DATE",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 327,
+          "name": "SALESMANAGEMENTDEALTYPE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 328,
+          "name": "SALESMGR",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 329,
+          "name": "SALESPERSON1",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 330,
+          "name": "SALESPERSON1SURPLUSCASH",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 331,
+          "name": "SALESPERSON2",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 332,
+          "name": "SALESPERSON2SURPLUSCASH",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 333,
+          "name": "SALESPERSON3",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 334,
+          "name": "SALESPERSON3SURPLUSCASH",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 335,
+          "name": "SALESTAXFINANCEAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 336,
+          "name": "SALESTAXMONTHLYAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 337,
+          "name": "SALESTAXPRICE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 338,
+          "name": "SALESTAXTOTALMONTHLYAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 339,
+          "name": "SALESTAXUPFRONTAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 340,
+          "name": "SALETYPE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 341,
+          "name": "SALETYPEDESCRIPTION",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 342,
+          "name": "SECURITYDEPOSIT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 343,
+          "name": "SELLRATE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 344,
+          "name": "SELLRATEADDON",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 345,
+          "name": "SELLRATEAPR",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 346,
+          "name": "SELLRATELMF",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 347,
+          "name": "SERVICETAXAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 348,
+          "name": "SLSDEALTYPE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 349,
+          "name": "SURPLUSCASH",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 350,
+          "name": "SURPLUSCASHCOMMBASEFORGPCOMP",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 351,
+          "name": "SYSTEMTYPE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 352,
+          "name": "TAX1AMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 353,
+          "name": "TAX1BASE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 354,
+          "name": "TAX1NAME",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 355,
+          "name": "TAX1RATE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 356,
+          "name": "TAX2AMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 357,
+          "name": "TAX2NAME",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 358,
+          "name": "TAX2RATE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 359,
+          "name": "TAX3AMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 360,
+          "name": "TAX3NAME",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 361,
+          "name": "TAX3RATE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 362,
+          "name": "TAX4AMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 363,
+          "name": "TAX4AMOUNT1",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 364,
+          "name": "TAX4NAME",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 365,
+          "name": "TAX4RATE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 366,
+          "name": "TAXABILITY",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 367,
+          "name": "TEXASGAPINSURANCEAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 368,
+          "name": "TEXASGAPINSURANCECOST",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 369,
+          "name": "TEXASGAPINSURANCEDEALERCOMMISSIONBASE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 370,
+          "name": "TOTALACCESSORIES",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 371,
+          "name": "TOTALANNFEES",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 372,
+          "name": "TOTALBACKENDSALESCOMMISSION",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 373,
+          "name": "TOTALBASEPRICE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 374,
+          "name": "TOTALBASEPRICEDMV",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 375,
+          "name": "TOTALCAPREDUCTION",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 376,
+          "name": "TOTALCASHDOWNAMT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 377,
+          "name": "TOTALCASHSURPLUS",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 378,
+          "name": "TOTALCOMMISSION",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 379,
+          "name": "TOTALCOMMISSIONSP1",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 380,
+          "name": "TOTALCOMMISSIONSP2",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 381,
+          "name": "TOTALDMVLICENSEFEECALIFORNIA",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 382,
+          "name": "TOTALDRIVEOFFAMT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 383,
+          "name": "TOTALESTIMATEDMILES",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 384,
+          "name": "TOTALFEEACCESSORIES",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 385,
+          "name": "TOTALFINANCEAMT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 386,
+          "name": "TOTALFINANCEDFEEOPTIONS",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 387,
+          "name": "TOTALFINANCERESERVE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 388,
+          "name": "TOTALFRONTENDSALESCOMMISSION",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 389,
+          "name": "TOTALGROSSPROFIT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 390,
+          "name": "TOTALINCENTIVES",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 391,
+          "name": "TOTALINITFEES",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 392,
+          "name": "TOTALINSURANCE1THRU3",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 393,
+          "name": "TOTALINSURANCECOMMISSION",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 394,
+          "name": "TOTALINSURANCEPREMIUMS",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 395,
+          "name": "TOTALINSURANCERESERVE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 396,
+          "name": "TOTALMILEAGELIMIT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 397,
+          "name": "TOTALNETTRADESAMT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 398,
+          "name": "TOTALOFPAYMENTS",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 399,
+          "name": "TOTALOPTIONSGROSS",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 400,
+          "name": "TOTALPICKUPPAYMENT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 401,
+          "name": "TOTALSALECREDITS",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 402,
+          "name": "TOTALSALESCOMMISION",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 403,
+          "name": "TOTALTAX",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 404,
+          "name": "TOTALTAXABLEFEES",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 405,
+          "name": "TOTALTAXRATE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 406,
+          "name": "TOTALTERMDEPRECIATIONAMT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 407,
+          "name": "TOTALTRADESACV",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 408,
+          "name": "TOTALTRADESALLOWANCEAMT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 409,
+          "name": "TOTALTRADESNET",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 410,
+          "name": "TOTALTRADESOVER",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 411,
+          "name": "TOTALTRADESPAYOFFAMT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 412,
+          "name": "TRADE1ALLOWLESSRETAINEDEQUITY",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 413,
+          "name": "TRADE1LIENHOLDER",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 414,
+          "name": "TRADE1OPTIONS",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 415,
+          "name": "TRADE1RETAINEQUITY",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 416,
+          "name": "TRADE2ALLOWLESSRETAINEDEQUITY",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 417,
+          "name": "TRADE2LIENHOLDER",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 418,
+          "name": "TRADE2OPTIONS",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 419,
+          "name": "TRADE2RETAINEQUITY",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 420,
+          "name": "TRADES",
+          "type": "VARIANT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 421,
+          "name": "UNPAIDBALANCE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 422,
+          "name": "UPFRONTGST",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 423,
+          "name": "UPFRONTPST",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 424,
+          "name": "USERDEFINEDFIELDS",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 425,
+          "name": "USLUXURYEXCISETAXAMOUNT",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 426,
+          "name": "VEHICLEINVENTORYACCOUNT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 427,
+          "name": "VEHICLEPAYOFFDATE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 428,
+          "name": "VEHICLESALEPRICE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 429,
+          "name": "VEHICLESALESACCOUNT",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 430,
+          "name": "VEHINVENTORYCOMPANY",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 431,
+          "name": "VEHSALECOMPANY",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 432,
+          "name": "WAQNUMBER",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 433,
+          "name": "WARRANTYFEE",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 434,
+          "name": "WEOWE",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 435,
+          "name": "WEOWECOSTTOTAL",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 436,
+          "name": "WEOWEFRONTGROSSSALES",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 437,
+          "name": "WEOWEFRONTSALETOTAL",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 438,
+          "name": "WEOWERESIDUALTABLETOTAL",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 439,
+          "name": "WEOWERESIDUALTOTAL",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 440,
+          "name": "WEOWESALEHARDTOTAL",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 441,
+          "name": "WEOWESALESOFTTOTAL",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 442,
+          "name": "WEOWESALETOTAL",
+          "type": "NUMBER",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 443,
+          "name": "WORKFAX",
+          "type": "TEXT",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 444,
+          "name": "LANDING_TIME",
+          "type": "TIMESTAMP_TZ",
+          "nullable": "YES"
+        },
+        {
+          "ordinal": 445,
+          "name": "SOFT_DELETE",
+          "type": "TEXT",
+          "nullable": "YES"
+        }
+      ],
+      "likely_matches": [
+        {
+          "schema": "dbo",
+          "object": "vehiclesales",
+          "type": "table",
+          "score": 0.566,
+          "name_score": 1,
+          "snowflake_column_coverage": 0.1348,
+          "sql_column_coverage": 0.4138,
+          "overlapping_columns_count": 60,
+          "overlapping_columns": [
+            "accountingaccount",
+            "age",
+            "assnslsperson",
+            "billingclerk",
+            "bonussp1",
+            "bonussp2",
+            "bonussp3",
+            "branch",
+            "buyrateaddon",
+            "buyratelmf",
+            "calcmethod",
+            "cashdown",
+            "closingmgr",
+            "commissionsp1",
+            "commissionsp2",
+            "commissionsp3",
+            "cont1date",
+            "cont1reason",
+            "cont2date",
+            "cont2reason",
+            "contractdate",
+            "dealerdefined1",
+            "dealerdefined2",
+            "dealerdefined3",
+            "dealerdefined4",
+            "dealerdefined5",
+            "dealerdefined6",
+            "dealtype",
+            "deliverycoord",
+            "fimgr1",
+            "fimgr2",
+            "grossprofit",
+            "hostitemid",
+            "lastpaydate",
+            "leasetype",
+            "makename",
+            "model",
+            "payments",
+            "paymentstyle",
+            "pickupdate1",
+            "pickupdate2",
+            "pickupdate3",
+            "salecreditsp1",
+            "salecreditsp2",
+            "salecreditsp3",
+            "salesaccount",
+            "salesdate",
+            "salesmgr",
+            "salesperson1",
+            "salesperson2",
+            "salesperson3",
+            "sellrateaddon",
+            "sellrateapr",
+            "sellratelmf",
+            "weowefrontgrosssales",
+            "weoweresidualtabletotal",
+            "weoweresidualtotal",
+            "weowesalehardtotal",
+            "weowesalesofttotal",
+            "weowesaletotal"
+          ],
+          "sql_column_count": 145,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__vehiclesales.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vehicle",
+          "type": "table",
+          "score": 0.258,
+          "name_score": 0.5,
+          "snowflake_column_coverage": 0.0382,
+          "sql_column_coverage": 0.1181,
+          "overlapping_columns_count": 17,
+          "overlapping_columns": [
+            "accountingaccount",
+            "dealerdefined1",
+            "dealerdefined2",
+            "dealerdefined3",
+            "dealerdefined4",
+            "dealerdefined5",
+            "dealerdefined6",
+            "dealerdefined7",
+            "dealerdefined8",
+            "dealtype",
+            "deliverydate",
+            "hostitemid",
+            "makename",
+            "model",
+            "monthlypayment",
+            "salesperson1",
+            "salesperson2"
+          ],
+          "sql_column_count": 144,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__vehicle.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vehiclesalescurrent_bkp15022024",
+          "type": "table",
+          "score": 0.1941,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.2876,
+          "sql_column_coverage": 0.5267,
+          "overlapping_columns_count": 128,
+          "overlapping_columns": [
+            "accountingaccount",
+            "adjustedcostofvehicle",
+            "adjustmentsdealerdefined",
+            "adjustmentsropo",
+            "adjustmentsstandard",
+            "age",
+            "apr",
+            "assnslsperson",
+            "backgross",
+            "bankfee",
+            "billingclerk",
+            "bonussp1",
+            "bonussp2",
+            "bonussp3",
+            "branch",
+            "buyrateaddon",
+            "buyratelfm",
+            "buyratelmf",
+            "calcmethod",
+            "cashdown",
+            "closingmgr",
+            "commissionsp1",
+            "commissionsp2",
+            "commissionsp3",
+            "commonsaledlr",
+            "cont1date",
+            "cont1reason",
+            "cont2date",
+            "cont2reason",
+            "contractdate",
+            "dealerdefined1",
+            "dealerdefined2",
+            "dealerdefined3",
+            "dealerdefined4",
+            "dealerdefined5",
+            "dealerdefined6",
+            "dealerdefined7",
+            "dealerdefined8",
+            "dealevent1",
+            "dealevent10",
+            "dealevent10date",
+            "dealevent1date",
+            "dealevent2",
+            "dealevent2date",
+            "dealevent3",
+            "dealevent3date",
+            "dealevent4",
+            "dealevent4date",
+            "dealevent5",
+            "dealevent5date",
+            "dealevent6",
+            "dealevent6date",
+            "dealevent7",
+            "dealevent7date",
+            "dealevent8",
+            "dealevent8date",
+            "dealevent9",
+            "dealevent9date",
+            "dealtype",
+            "deliverycoord"
+          ],
+          "sql_column_count": 243,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__vehiclesalescurrent_bkp15022024.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "VSC_NWMS580Archive",
+          "type": "table",
+          "score": 0.1941,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.2876,
+          "sql_column_coverage": 0.5267,
+          "overlapping_columns_count": 128,
+          "overlapping_columns": [
+            "accountingaccount",
+            "adjustedcostofvehicle",
+            "adjustmentsdealerdefined",
+            "adjustmentsropo",
+            "adjustmentsstandard",
+            "age",
+            "apr",
+            "assnslsperson",
+            "backgross",
+            "bankfee",
+            "billingclerk",
+            "bonussp1",
+            "bonussp2",
+            "bonussp3",
+            "branch",
+            "buyrateaddon",
+            "buyratelfm",
+            "buyratelmf",
+            "calcmethod",
+            "cashdown",
+            "closingmgr",
+            "commissionsp1",
+            "commissionsp2",
+            "commissionsp3",
+            "commonsaledlr",
+            "cont1date",
+            "cont1reason",
+            "cont2date",
+            "cont2reason",
+            "contractdate",
+            "dealerdefined1",
+            "dealerdefined2",
+            "dealerdefined3",
+            "dealerdefined4",
+            "dealerdefined5",
+            "dealerdefined6",
+            "dealerdefined7",
+            "dealerdefined8",
+            "dealevent1",
+            "dealevent10",
+            "dealevent10date",
+            "dealevent1date",
+            "dealevent2",
+            "dealevent2date",
+            "dealevent3",
+            "dealevent3date",
+            "dealevent4",
+            "dealevent4date",
+            "dealevent5",
+            "dealevent5date",
+            "dealevent6",
+            "dealevent6date",
+            "dealevent7",
+            "dealevent7date",
+            "dealevent8",
+            "dealevent8date",
+            "dealevent9",
+            "dealevent9date",
+            "dealtype",
+            "deliverycoord"
+          ],
+          "sql_column_count": 243,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__VSC_NWMS580Archive.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vehiclesalescurrent",
+          "type": "table",
+          "score": 0.1937,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.2876,
+          "sql_column_coverage": 0.5246,
+          "overlapping_columns_count": 128,
+          "overlapping_columns": [
+            "accountingaccount",
+            "adjustedcostofvehicle",
+            "adjustmentsdealerdefined",
+            "adjustmentsropo",
+            "adjustmentsstandard",
+            "age",
+            "apr",
+            "assnslsperson",
+            "backgross",
+            "bankfee",
+            "billingclerk",
+            "bonussp1",
+            "bonussp2",
+            "bonussp3",
+            "branch",
+            "buyrateaddon",
+            "buyratelfm",
+            "buyratelmf",
+            "calcmethod",
+            "cashdown",
+            "closingmgr",
+            "commissionsp1",
+            "commissionsp2",
+            "commissionsp3",
+            "commonsaledlr",
+            "cont1date",
+            "cont1reason",
+            "cont2date",
+            "cont2reason",
+            "contractdate",
+            "dealerdefined1",
+            "dealerdefined2",
+            "dealerdefined3",
+            "dealerdefined4",
+            "dealerdefined5",
+            "dealerdefined6",
+            "dealerdefined7",
+            "dealerdefined8",
+            "dealevent1",
+            "dealevent10",
+            "dealevent10date",
+            "dealevent1date",
+            "dealevent2",
+            "dealevent2date",
+            "dealevent3",
+            "dealevent3date",
+            "dealevent4",
+            "dealevent4date",
+            "dealevent5",
+            "dealevent5date",
+            "dealevent6",
+            "dealevent6date",
+            "dealevent7",
+            "dealevent7date",
+            "dealevent8",
+            "dealevent8date",
+            "dealevent9",
+            "dealevent9date",
+            "dealtype",
+            "deliverycoord"
+          ],
+          "sql_column_count": 244,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__vehiclesalescurrent.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_NewVehicleSalesDetail",
+          "type": "view",
+          "score": 0.1916,
+          "name_score": 0.4,
+          "snowflake_column_coverage": 0.0022,
+          "sql_column_coverage": 0.0714,
+          "overlapping_columns_count": 1,
+          "overlapping_columns": ["hostitemid"],
+          "sql_column_count": 14,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_NewVehicleSalesDetail.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_UsedVehicleSalesDetail",
+          "type": "view",
+          "score": 0.1916,
+          "name_score": 0.4,
+          "snowflake_column_coverage": 0.0022,
+          "sql_column_coverage": 0.0714,
+          "overlapping_columns_count": 1,
+          "overlapping_columns": ["hostitemid"],
+          "sql_column_count": 14,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_UsedVehicleSalesDetail.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vsc_fiproducts_union_stage",
+          "type": "table",
+          "score": 0.1811,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.2584,
+          "sql_column_coverage": 0.518,
+          "overlapping_columns_count": 115,
+          "overlapping_columns": [
+            "accountingaccount",
+            "adjustedcostofvehicle",
+            "adjustmentsdealerdefined",
+            "adjustmentsropo",
+            "adjustmentsstandard",
+            "age",
+            "apr",
+            "assnslsperson",
+            "backgross",
+            "bankfee",
+            "billingclerk",
+            "bonussp1",
+            "bonussp2",
+            "bonussp3",
+            "branch",
+            "buyrateaddon",
+            "buyratelmf",
+            "calcmethod",
+            "cashdown",
+            "closingmgr",
+            "commissionsp1",
+            "commissionsp2",
+            "commissionsp3",
+            "commonsaledlr",
+            "cont1date",
+            "cont1reason",
+            "cont2date",
+            "cont2reason",
+            "contractdate",
+            "dealerdefined1",
+            "dealerdefined2",
+            "dealerdefined3",
+            "dealerdefined4",
+            "dealerdefined5",
+            "dealerdefined6",
+            "dealerdefined7",
+            "dealerdefined8",
+            "dealevent1",
+            "dealevent1date",
+            "dealevent2",
+            "dealevent2date",
+            "dealevent3",
+            "dealevent3date",
+            "dealevent4",
+            "dealevent4date",
+            "dealtype",
+            "deliverycoord",
+            "extwarrantyexpmileslease",
+            "extwarrantytermlease",
+            "fimgr1",
+            "fimgr2",
+            "financecharge",
+            "fininstitutecode",
+            "frontgross",
+            "frontweowes",
+            "frontweowesgrosscost",
+            "frontweowesgrosssales",
+            "glvehiclecost",
+            "grossprofit",
+            "hostitemid"
+          ],
+          "sql_column_count": 222,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__vsc_fiproducts_union_stage.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_cte_vscBookStage_old_03152016",
+          "type": "view",
+          "score": 0.1806,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.2607,
+          "sql_column_coverage": 0.5088,
+          "overlapping_columns_count": 116,
+          "overlapping_columns": [
+            "accountingaccount",
+            "adjustedcostofvehicle",
+            "adjustmentsdealerdefined",
+            "adjustmentsropo",
+            "adjustmentsstandard",
+            "age",
+            "apr",
+            "assnslsperson",
+            "backgross",
+            "bankfee",
+            "billingclerk",
+            "bonussp1",
+            "bonussp2",
+            "bonussp3",
+            "branch",
+            "buyrateaddon",
+            "buyratelfm",
+            "buyratelmf",
+            "calcmethod",
+            "cashdown",
+            "closingmgr",
+            "commissionsp1",
+            "commissionsp2",
+            "commissionsp3",
+            "commonsaledlr",
+            "cont1date",
+            "cont1reason",
+            "cont2date",
+            "cont2reason",
+            "contractdate",
+            "dealerdefined1",
+            "dealerdefined2",
+            "dealerdefined3",
+            "dealerdefined4",
+            "dealerdefined5",
+            "dealerdefined6",
+            "dealerdefined7",
+            "dealerdefined8",
+            "dealevent1",
+            "dealevent1date",
+            "dealevent2",
+            "dealevent2date",
+            "dealevent3",
+            "dealevent3date",
+            "dealevent4",
+            "dealevent4date",
+            "dealtype",
+            "deliverycoord",
+            "extwarrantyexpmileslease",
+            "extwarrantytermlease",
+            "fimgr1",
+            "fimgr2",
+            "financecharge",
+            "fininstitutecode",
+            "frontgross",
+            "frontweowes",
+            "frontweowesgrosscost",
+            "frontweowesgrosssales",
+            "glvehiclecost",
+            "grossprofit"
+          ],
+          "sql_column_count": 228,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_cte_vscBookStage_old_03152016.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_cte_vscBookStage_Test",
+          "type": "view",
+          "score": 0.1806,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.2607,
+          "sql_column_coverage": 0.5088,
+          "overlapping_columns_count": 116,
+          "overlapping_columns": [
+            "accountingaccount",
+            "adjustedcostofvehicle",
+            "adjustmentsdealerdefined",
+            "adjustmentsropo",
+            "adjustmentsstandard",
+            "age",
+            "apr",
+            "assnslsperson",
+            "backgross",
+            "bankfee",
+            "billingclerk",
+            "bonussp1",
+            "bonussp2",
+            "bonussp3",
+            "branch",
+            "buyrateaddon",
+            "buyratelfm",
+            "buyratelmf",
+            "calcmethod",
+            "cashdown",
+            "closingmgr",
+            "commissionsp1",
+            "commissionsp2",
+            "commissionsp3",
+            "commonsaledlr",
+            "cont1date",
+            "cont1reason",
+            "cont2date",
+            "cont2reason",
+            "contractdate",
+            "dealerdefined1",
+            "dealerdefined2",
+            "dealerdefined3",
+            "dealerdefined4",
+            "dealerdefined5",
+            "dealerdefined6",
+            "dealerdefined7",
+            "dealerdefined8",
+            "dealevent1",
+            "dealevent1date",
+            "dealevent2",
+            "dealevent2date",
+            "dealevent3",
+            "dealevent3date",
+            "dealevent4",
+            "dealevent4date",
+            "dealtype",
+            "deliverycoord",
+            "extwarrantyexpmileslease",
+            "extwarrantytermlease",
+            "fimgr1",
+            "fimgr2",
+            "financecharge",
+            "fininstitutecode",
+            "frontgross",
+            "frontweowes",
+            "frontweowesgrosscost",
+            "frontweowesgrosssales",
+            "glvehiclecost",
+            "grossprofit"
+          ],
+          "sql_column_count": 228,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_cte_vscBookStage_Test.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_cte_vscBookStage_Wholesale_test",
+          "type": "view",
+          "score": 0.1806,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.2607,
+          "sql_column_coverage": 0.5088,
+          "overlapping_columns_count": 116,
+          "overlapping_columns": [
+            "accountingaccount",
+            "adjustedcostofvehicle",
+            "adjustmentsdealerdefined",
+            "adjustmentsropo",
+            "adjustmentsstandard",
+            "age",
+            "apr",
+            "assnslsperson",
+            "backgross",
+            "bankfee",
+            "billingclerk",
+            "bonussp1",
+            "bonussp2",
+            "bonussp3",
+            "branch",
+            "buyrateaddon",
+            "buyratelfm",
+            "buyratelmf",
+            "calcmethod",
+            "cashdown",
+            "closingmgr",
+            "commissionsp1",
+            "commissionsp2",
+            "commissionsp3",
+            "commonsaledlr",
+            "cont1date",
+            "cont1reason",
+            "cont2date",
+            "cont2reason",
+            "contractdate",
+            "dealerdefined1",
+            "dealerdefined2",
+            "dealerdefined3",
+            "dealerdefined4",
+            "dealerdefined5",
+            "dealerdefined6",
+            "dealerdefined7",
+            "dealerdefined8",
+            "dealevent1",
+            "dealevent1date",
+            "dealevent2",
+            "dealevent2date",
+            "dealevent3",
+            "dealevent3date",
+            "dealevent4",
+            "dealevent4date",
+            "dealtype",
+            "deliverycoord",
+            "extwarrantyexpmileslease",
+            "extwarrantytermlease",
+            "fimgr1",
+            "fimgr2",
+            "financecharge",
+            "fininstitutecode",
+            "frontgross",
+            "frontweowes",
+            "frontweowesgrosscost",
+            "frontweowesgrosssales",
+            "glvehiclecost",
+            "grossprofit"
+          ],
+          "sql_column_count": 228,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_cte_vscBookStage_Wholesale_test.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_cte_vscBookStage_Wholesale",
+          "type": "view",
+          "score": 0.1803,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.2607,
+          "sql_column_coverage": 0.5066,
+          "overlapping_columns_count": 116,
+          "overlapping_columns": [
+            "accountingaccount",
+            "adjustedcostofvehicle",
+            "adjustmentsdealerdefined",
+            "adjustmentsropo",
+            "adjustmentsstandard",
+            "age",
+            "apr",
+            "assnslsperson",
+            "backgross",
+            "bankfee",
+            "billingclerk",
+            "bonussp1",
+            "bonussp2",
+            "bonussp3",
+            "branch",
+            "buyrateaddon",
+            "buyratelfm",
+            "buyratelmf",
+            "calcmethod",
+            "cashdown",
+            "closingmgr",
+            "commissionsp1",
+            "commissionsp2",
+            "commissionsp3",
+            "commonsaledlr",
+            "cont1date",
+            "cont1reason",
+            "cont2date",
+            "cont2reason",
+            "contractdate",
+            "dealerdefined1",
+            "dealerdefined2",
+            "dealerdefined3",
+            "dealerdefined4",
+            "dealerdefined5",
+            "dealerdefined6",
+            "dealerdefined7",
+            "dealerdefined8",
+            "dealevent1",
+            "dealevent1date",
+            "dealevent2",
+            "dealevent2date",
+            "dealevent3",
+            "dealevent3date",
+            "dealevent4",
+            "dealevent4date",
+            "dealtype",
+            "deliverycoord",
+            "extwarrantyexpmileslease",
+            "extwarrantytermlease",
+            "fimgr1",
+            "fimgr2",
+            "financecharge",
+            "fininstitutecode",
+            "frontgross",
+            "frontweowes",
+            "frontweowesgrosscost",
+            "frontweowesgrosssales",
+            "glvehiclecost",
+            "grossprofit"
+          ],
+          "sql_column_count": 229,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_cte_vscBookStage_Wholesale.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_cte_vscBookStage_Wholesale_2019",
+          "type": "view",
+          "score": 0.1803,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.2607,
+          "sql_column_coverage": 0.5066,
+          "overlapping_columns_count": 116,
+          "overlapping_columns": [
+            "accountingaccount",
+            "adjustedcostofvehicle",
+            "adjustmentsdealerdefined",
+            "adjustmentsropo",
+            "adjustmentsstandard",
+            "age",
+            "apr",
+            "assnslsperson",
+            "backgross",
+            "bankfee",
+            "billingclerk",
+            "bonussp1",
+            "bonussp2",
+            "bonussp3",
+            "branch",
+            "buyrateaddon",
+            "buyratelfm",
+            "buyratelmf",
+            "calcmethod",
+            "cashdown",
+            "closingmgr",
+            "commissionsp1",
+            "commissionsp2",
+            "commissionsp3",
+            "commonsaledlr",
+            "cont1date",
+            "cont1reason",
+            "cont2date",
+            "cont2reason",
+            "contractdate",
+            "dealerdefined1",
+            "dealerdefined2",
+            "dealerdefined3",
+            "dealerdefined4",
+            "dealerdefined5",
+            "dealerdefined6",
+            "dealerdefined7",
+            "dealerdefined8",
+            "dealevent1",
+            "dealevent1date",
+            "dealevent2",
+            "dealevent2date",
+            "dealevent3",
+            "dealevent3date",
+            "dealevent4",
+            "dealevent4date",
+            "dealtype",
+            "deliverycoord",
+            "extwarrantyexpmileslease",
+            "extwarrantytermlease",
+            "fimgr1",
+            "fimgr2",
+            "financecharge",
+            "fininstitutecode",
+            "frontgross",
+            "frontweowes",
+            "frontweowesgrosscost",
+            "frontweowesgrosssales",
+            "glvehiclecost",
+            "grossprofit"
+          ],
+          "sql_column_count": 229,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_cte_vscBookStage_Wholesale_2019.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_Dim_Sales_Vehicle_Staging",
+          "type": "view",
+          "score": 0.18,
+          "name_score": 0.4,
+          "snowflake_column_coverage": 0,
+          "sql_column_coverage": 0,
+          "overlapping_columns_count": 0,
+          "overlapping_columns": [],
+          "sql_column_count": 32,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_Dim_Sales_Vehicle_Staging.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_cte_vscBookStage",
+          "type": "view",
+          "score": 0.179,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.2584,
+          "sql_column_coverage": 0.5044,
+          "overlapping_columns_count": 115,
+          "overlapping_columns": [
+            "accountingaccount",
+            "adjustedcostofvehicle",
+            "adjustmentsdealerdefined",
+            "adjustmentsropo",
+            "adjustmentsstandard",
+            "age",
+            "apr",
+            "assnslsperson",
+            "backgross",
+            "bankfee",
+            "billingclerk",
+            "bonussp1",
+            "bonussp2",
+            "bonussp3",
+            "branch",
+            "buyrateaddon",
+            "buyratelmf",
+            "calcmethod",
+            "cashdown",
+            "closingmgr",
+            "commissionsp1",
+            "commissionsp2",
+            "commissionsp3",
+            "commonsaledlr",
+            "cont1date",
+            "cont1reason",
+            "cont2date",
+            "cont2reason",
+            "contractdate",
+            "dealerdefined1",
+            "dealerdefined2",
+            "dealerdefined3",
+            "dealerdefined4",
+            "dealerdefined5",
+            "dealerdefined6",
+            "dealerdefined7",
+            "dealerdefined8",
+            "dealevent1",
+            "dealevent1date",
+            "dealevent2",
+            "dealevent2date",
+            "dealevent3",
+            "dealevent3date",
+            "dealevent4",
+            "dealevent4date",
+            "dealtype",
+            "deliverycoord",
+            "extwarrantyexpmileslease",
+            "extwarrantytermlease",
+            "fimgr1",
+            "fimgr2",
+            "financecharge",
+            "fininstitutecode",
+            "frontgross",
+            "frontweowes",
+            "frontweowesgrosscost",
+            "frontweowesgrosssales",
+            "glvehiclecost",
+            "grossprofit",
+            "hostitemid"
+          ],
+          "sql_column_count": 228,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_cte_vscBookStage.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_cte_vscBookStage_2019",
+          "type": "view",
+          "score": 0.179,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.2584,
+          "sql_column_coverage": 0.5044,
+          "overlapping_columns_count": 115,
+          "overlapping_columns": [
+            "accountingaccount",
+            "adjustedcostofvehicle",
+            "adjustmentsdealerdefined",
+            "adjustmentsropo",
+            "adjustmentsstandard",
+            "age",
+            "apr",
+            "assnslsperson",
+            "backgross",
+            "bankfee",
+            "billingclerk",
+            "bonussp1",
+            "bonussp2",
+            "bonussp3",
+            "branch",
+            "buyrateaddon",
+            "buyratelmf",
+            "calcmethod",
+            "cashdown",
+            "closingmgr",
+            "commissionsp1",
+            "commissionsp2",
+            "commissionsp3",
+            "commonsaledlr",
+            "cont1date",
+            "cont1reason",
+            "cont2date",
+            "cont2reason",
+            "contractdate",
+            "dealerdefined1",
+            "dealerdefined2",
+            "dealerdefined3",
+            "dealerdefined4",
+            "dealerdefined5",
+            "dealerdefined6",
+            "dealerdefined7",
+            "dealerdefined8",
+            "dealevent1",
+            "dealevent1date",
+            "dealevent2",
+            "dealevent2date",
+            "dealevent3",
+            "dealevent3date",
+            "dealevent4",
+            "dealevent4date",
+            "dealtype",
+            "deliverycoord",
+            "extwarrantyexpmileslease",
+            "extwarrantytermlease",
+            "fimgr1",
+            "fimgr2",
+            "financecharge",
+            "fininstitutecode",
+            "frontgross",
+            "frontweowes",
+            "frontweowesgrosscost",
+            "frontweowesgrosssales",
+            "glvehiclecost",
+            "grossprofit",
+            "hostitemid"
+          ],
+          "sql_column_count": 228,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_cte_vscBookStage_2019.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_vsc_fiproducts_union",
+          "type": "view",
+          "score": 0.179,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.2584,
+          "sql_column_coverage": 0.5044,
+          "overlapping_columns_count": 115,
+          "overlapping_columns": [
+            "accountingaccount",
+            "adjustedcostofvehicle",
+            "adjustmentsdealerdefined",
+            "adjustmentsropo",
+            "adjustmentsstandard",
+            "age",
+            "apr",
+            "assnslsperson",
+            "backgross",
+            "bankfee",
+            "billingclerk",
+            "bonussp1",
+            "bonussp2",
+            "bonussp3",
+            "branch",
+            "buyrateaddon",
+            "buyratelmf",
+            "calcmethod",
+            "cashdown",
+            "closingmgr",
+            "commissionsp1",
+            "commissionsp2",
+            "commissionsp3",
+            "commonsaledlr",
+            "cont1date",
+            "cont1reason",
+            "cont2date",
+            "cont2reason",
+            "contractdate",
+            "dealerdefined1",
+            "dealerdefined2",
+            "dealerdefined3",
+            "dealerdefined4",
+            "dealerdefined5",
+            "dealerdefined6",
+            "dealerdefined7",
+            "dealerdefined8",
+            "dealevent1",
+            "dealevent1date",
+            "dealevent2",
+            "dealevent2date",
+            "dealevent3",
+            "dealevent3date",
+            "dealevent4",
+            "dealevent4date",
+            "dealtype",
+            "deliverycoord",
+            "extwarrantyexpmileslease",
+            "extwarrantytermlease",
+            "fimgr1",
+            "fimgr2",
+            "financecharge",
+            "fininstitutecode",
+            "frontgross",
+            "frontweowes",
+            "frontweowesgrosscost",
+            "frontweowesgrosssales",
+            "glvehiclecost",
+            "grossprofit",
+            "hostitemid"
+          ],
+          "sql_column_count": 228,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_vsc_fiproducts_union.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_vsc_fiproducts_union_2019",
+          "type": "view",
+          "score": 0.179,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.2584,
+          "sql_column_coverage": 0.5044,
+          "overlapping_columns_count": 115,
+          "overlapping_columns": [
+            "accountingaccount",
+            "adjustedcostofvehicle",
+            "adjustmentsdealerdefined",
+            "adjustmentsropo",
+            "adjustmentsstandard",
+            "age",
+            "apr",
+            "assnslsperson",
+            "backgross",
+            "bankfee",
+            "billingclerk",
+            "bonussp1",
+            "bonussp2",
+            "bonussp3",
+            "branch",
+            "buyrateaddon",
+            "buyratelmf",
+            "calcmethod",
+            "cashdown",
+            "closingmgr",
+            "commissionsp1",
+            "commissionsp2",
+            "commissionsp3",
+            "commonsaledlr",
+            "cont1date",
+            "cont1reason",
+            "cont2date",
+            "cont2reason",
+            "contractdate",
+            "dealerdefined1",
+            "dealerdefined2",
+            "dealerdefined3",
+            "dealerdefined4",
+            "dealerdefined5",
+            "dealerdefined6",
+            "dealerdefined7",
+            "dealerdefined8",
+            "dealevent1",
+            "dealevent1date",
+            "dealevent2",
+            "dealevent2date",
+            "dealevent3",
+            "dealevent3date",
+            "dealevent4",
+            "dealevent4date",
+            "dealtype",
+            "deliverycoord",
+            "extwarrantyexpmileslease",
+            "extwarrantytermlease",
+            "fimgr1",
+            "fimgr2",
+            "financecharge",
+            "fininstitutecode",
+            "frontgross",
+            "frontweowes",
+            "frontweowesgrosscost",
+            "frontweowesgrosssales",
+            "glvehiclecost",
+            "grossprofit",
+            "hostitemid"
+          ],
+          "sql_column_count": 228,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_vsc_fiproducts_union_2019.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "fiproducts31315",
+          "type": "table",
+          "score": 0.1784,
+          "name_score": 0,
+          "snowflake_column_coverage": 0.2584,
+          "sql_column_coverage": 0.5,
+          "overlapping_columns_count": 115,
+          "overlapping_columns": [
+            "accountingaccount",
+            "adjustedcostofvehicle",
+            "adjustmentsdealerdefined",
+            "adjustmentsropo",
+            "adjustmentsstandard",
+            "age",
+            "apr",
+            "assnslsperson",
+            "backgross",
+            "bankfee",
+            "billingclerk",
+            "bonussp1",
+            "bonussp2",
+            "bonussp3",
+            "branch",
+            "buyrateaddon",
+            "buyratelmf",
+            "calcmethod",
+            "cashdown",
+            "closingmgr",
+            "commissionsp1",
+            "commissionsp2",
+            "commissionsp3",
+            "commonsaledlr",
+            "cont1date",
+            "cont1reason",
+            "cont2date",
+            "cont2reason",
+            "contractdate",
+            "dealerdefined1",
+            "dealerdefined2",
+            "dealerdefined3",
+            "dealerdefined4",
+            "dealerdefined5",
+            "dealerdefined6",
+            "dealerdefined7",
+            "dealerdefined8",
+            "dealevent1",
+            "dealevent1date",
+            "dealevent2",
+            "dealevent2date",
+            "dealevent3",
+            "dealevent3date",
+            "dealevent4",
+            "dealevent4date",
+            "dealtype",
+            "deliverycoord",
+            "extwarrantyexpmileslease",
+            "extwarrantytermlease",
+            "fimgr1",
+            "fimgr2",
+            "financecharge",
+            "fininstitutecode",
+            "frontgross",
+            "frontweowes",
+            "frontweowesgrosscost",
+            "frontweowesgrosssales",
+            "glvehiclecost",
+            "grossprofit",
+            "hostitemid"
+          ],
+          "sql_column_count": 230,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__fiproducts31315.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "SalesData",
+          "type": "table",
+          "score": 0.1715,
+          "name_score": 0.3333,
+          "snowflake_column_coverage": 0.0135,
+          "sql_column_coverage": 0.1071,
+          "overlapping_columns_count": 6,
+          "overlapping_columns": [
+            "contractdate",
+            "dealnumber",
+            "dealstatus",
+            "dealtype",
+            "model",
+            "saletype"
+          ],
+          "sql_column_count": 56,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__SalesData.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_Dim_Sales_Vehicle_Staging_hist",
+          "type": "view",
+          "score": 0.15,
+          "name_score": 0.3333,
+          "snowflake_column_coverage": 0,
+          "sql_column_coverage": 0,
+          "overlapping_columns_count": 0,
+          "overlapping_columns": [],
+          "sql_column_count": 32,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_Dim_Sales_Vehicle_Staging_hist.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_Dim_Sales_Vehicle_Staging_inc",
+          "type": "view",
+          "score": 0.15,
+          "name_score": 0.3333,
+          "snowflake_column_coverage": 0,
+          "sql_column_coverage": 0,
+          "overlapping_columns_count": 0,
+          "overlapping_columns": [],
+          "sql_column_count": 32,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_Dim_Sales_Vehicle_Staging_inc.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vw_Dim_Sales_Vehicle_Staging_old",
+          "type": "view",
+          "score": 0.15,
+          "name_score": 0.3333,
+          "snowflake_column_coverage": 0,
+          "sql_column_coverage": 0,
+          "overlapping_columns_count": 0,
+          "overlapping_columns": [],
+          "sql_column_count": 32,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\views\\dbo__vw_Dim_Sales_Vehicle_Staging_old.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "vehicle_bkp_20231204",
+          "type": "table",
+          "score": 0.1455,
+          "name_score": 0.25,
+          "snowflake_column_coverage": 0.0382,
+          "sql_column_coverage": 0.1181,
+          "overlapping_columns_count": 17,
+          "overlapping_columns": [
+            "accountingaccount",
+            "dealerdefined1",
+            "dealerdefined2",
+            "dealerdefined3",
+            "dealerdefined4",
+            "dealerdefined5",
+            "dealerdefined6",
+            "dealerdefined7",
+            "dealerdefined8",
+            "dealtype",
+            "deliverydate",
+            "hostitemid",
+            "makename",
+            "model",
+            "monthlypayment",
+            "salesperson1",
+            "salesperson2"
+          ],
+          "sql_column_count": 144,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__vehicle_bkp_20231204.md"
+        },
+        {
+          "schema": "dbo",
+          "object": "ErrVehicleNoMatch",
+          "type": "table",
+          "score": 0.1347,
+          "name_score": 0.2,
+          "snowflake_column_coverage": 0.0045,
+          "sql_column_coverage": 0.2857,
+          "overlapping_columns_count": 2,
+          "overlapping_columns": ["accountingaccount", "hostitemid"],
+          "sql_column_count": 7,
+          "source_file": "data\\markdown\\servers\\L1-DWASQL-02,12010\\databases\\DMS\\tables\\dbo__ErrVehicleNoMatch.md"
+        }
+      ]
+    }
+  }
+}

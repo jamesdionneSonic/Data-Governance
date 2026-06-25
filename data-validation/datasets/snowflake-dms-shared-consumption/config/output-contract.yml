@@ -1,0 +1,103 @@
+outputs:
+  summaries:
+    vehicle_sales_daily_compare.csv:
+      columns:
+        - business_date
+        - cora_acct_code
+        - dms_record_count
+        - snowflake_record_count
+        - count_difference
+        - dms_amount_total
+        - snowflake_amount_total
+        - amount_difference
+        - dms_latest_update_timestamp
+        - snowflake_latest_update_timestamp
+        - classification
+    repair_order_daily_compare.csv:
+      columns:
+        - business_date
+        - cora_acct_code
+        - dms_record_count
+        - snowflake_record_count
+        - count_difference
+        - dms_labor_amount
+        - snowflake_labor_amount
+        - dms_parts_amount
+        - snowflake_parts_amount
+        - dms_total_amount
+        - snowflake_total_amount
+        - dms_latest_update_timestamp
+        - snowflake_latest_update_timestamp
+        - classification
+
+  exceptions:
+    vehicle_sales_missing_from_snowflake.csv: &exception_columns
+      columns:
+        - exception_id
+        - run_id
+        - subject_area
+        - cora_acct_code
+        - business_date
+        - business_key
+        - exception_type
+        - raw_exception_type
+        - review_classification
+        - classification_group
+        - classification_reason
+        - snowflake_found_elsewhere
+        - snowflake_dealercode
+        - snowflake_storenumber
+        - snowflake_eis_store_id
+        - snowflake_accountingaccount
+        - accuracy_check_status
+        - dms_seen
+        - snowflake_seen
+        - first_seen_run
+        - last_seen_run
+        - days_open
+        - status
+        - review_notes
+    vehicle_sales_missing_from_dms.csv: *exception_columns
+    repair_orders_missing_from_snowflake.csv: *exception_columns
+    repair_orders_missing_from_dms.csv: *exception_columns
+    changed_records.csv:
+      columns:
+        - exception_id
+        - run_id
+        - subject_area
+        - cora_acct_code
+        - business_date
+        - business_key
+        - field_name
+        - dms_value
+        - snowflake_value
+        - difference
+        - raw_exception_type
+        - review_classification
+        - classification_group
+        - classification_reason
+        - snowflake_found_elsewhere
+        - snowflake_dealercode
+        - snowflake_storenumber
+        - snowflake_eis_store_id
+        - snowflake_accountingaccount
+        - accuracy_check_status
+        - status
+        - review_notes
+    open_exceptions.csv: *exception_columns
+    resolved_since_last_run.csv: *exception_columns
+
+  audit:
+    run_status.csv:
+      columns:
+        - run_id
+        - started_at
+        - completed_at
+        - status
+        - mode
+        - dataset_id
+        - snowflake_status
+        - sqlserver_status
+        - warning_count
+        - error_count
+        - notes

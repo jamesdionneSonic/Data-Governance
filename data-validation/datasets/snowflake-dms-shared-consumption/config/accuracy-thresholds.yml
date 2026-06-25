@@ -1,0 +1,21 @@
+version: 1
+dataset_id: snowflake-dms-shared-consumption
+purpose: >
+  Documents the active materiality thresholds used by the validation runner for
+  amount exception classification.
+
+amount_tolerance:
+  default_abs: 1.00
+  vehicle_sales_abs: 1.00
+  repair_orders_abs: 1.00
+  note: >
+    The current runner uses a one-dollar absolute threshold before writing a
+    changed-value exception. Differences below this threshold are treated as
+    rounding-level differences if surfaced by a future lower-threshold output.
+
+amount_classification_order:
+  - amount_rounding_difference
+  - amount_null_vs_zero_mismatch
+  - amount_sign_or_credit_mismatch
+  - amount_component_gap
+  - material_amount_mismatch_unexplained
