@@ -120,6 +120,8 @@ async function loadPilotPages() {
     const markdown = await fs.readFile(path.join(publishOutputRoot, markdownFile), 'utf8');
     pages.push({
       title: packet.page_title,
+      legacyTitle: packet.page_type === 'object' ? packet.object?.name || '' : '',
+      allowGlobalTitleLookup: packet.page_type === 'object',
       treePath: packet.page_tree_path,
       markdownFile,
       markdown,
@@ -156,6 +158,8 @@ async function loadPacketPlan(file) {
       pages.push({
         kind: 'leaf',
         title: page.title,
+        legacyTitle: evidence.page_type === 'object' ? evidence.object?.name || '' : '',
+        allowGlobalTitleLookup: evidence.page_type === 'object',
         treePath: evidence.page_tree_path,
         markdownFile: page.markdown_file,
         markdown,
@@ -209,12 +213,14 @@ function plannedPages(leafPages) {
     return pages;
   }
   const byPath = new Map();
-  const addPage = (treePath, markdown, kind, evidenceHash = '', pageLabels = defaultLabels) => {
+  const addPage = (treePath, markdown, kind, evidenceHash = '', pageLabels = defaultLabels, options = {}) => {
     const key = treePath.join(' / ');
     if (!byPath.has(key)) {
       byPath.set(key, {
         kind,
         title: treePath.at(-1),
+        legacyTitle: options.legacyTitle || '',
+        allowGlobalTitleLookup: Boolean(options.allowGlobalTitleLookup),
         treePath,
         markdown,
         labels: pageLabels,
@@ -228,7 +234,10 @@ function plannedPages(leafPages) {
       const treePath = page.treePath.slice(0, index + 1);
       if (index < page.treePath.length - 1) addPage(treePath, '', 'navigation', '', page.labels);
     }
-    addPage(page.treePath, page.markdown, 'leaf', page.evidenceHash, page.labels);
+    addPage(page.treePath, page.markdown, 'leaf', page.evidenceHash, page.labels, {
+      legacyTitle: page.legacyTitle,
+      allowGlobalTitleLookup: page.allowGlobalTitleLookup,
+    });
   }
 
   const pages = [...byPath.values()].sort(
@@ -291,7 +300,19 @@ async function findSpacePageByTitle(title) {
     })
   );
   const matches = (response.data?.results || []).filter((page) => page.title === title);
-  return matches[0] || null;
+  if (matches[0]) return matches[0];
+
+  const cql = `space="${escapeCqlString(spaceKey)}" and type=page and title="${escapeCqlString(title)}"`;
+  const cqlResponse = await confluenceRequest(`find space page by cql "${title}"`, () =>
+    http.get('/rest/api/content/search', {
+      params: {
+        cql,
+        expand: 'version,metadata.labels,ancestors',
+        limit: 25,
+      },
+    })
+  );
+  return (cqlResponse.data?.results || []).find((page) => page.title === title && page.status !== 'archived') || null;
 }
 
 async function addLabels(pageId, pageLabels) {
@@ -326,7 +347,10 @@ async function createPage(page, parentPageId) {
   } catch (error) {
     const message = error.response?.data?.message || error.message;
     if (/page already exists|same TITLE/i.test(message)) {
-      const existingPage = await findSpacePageByTitle(page.title);
+      const existingPage =
+        (await findChildPage(page.title, parentPageId)) ||
+        (page.legacyTitle && page.legacyTitle !== page.title ? await findChildPage(page.legacyTitle, parentPageId) : null) ||
+        (page.allowGlobalTitleLookup ? await findSpacePageByTitle(page.title) : null);
       if (existingPage) {
         return updatePage(page, existingPage, parentPageId);
       }
@@ -382,7 +406,10 @@ async function publishPlan(pages) {
       throw new Error(`Missing parent page id for ${fullPath}`);
     }
 
-    const existingPage = (await findChildPage(page.title, parentPageId)) || (await findSpacePageByTitle(page.title));
+    const existingPage =
+      (await findChildPage(page.title, parentPageId)) ||
+      (page.legacyTitle && page.legacyTitle !== page.title ? await findChildPage(page.legacyTitle, parentPageId) : null) ||
+      (page.allowGlobalTitleLookup ? await findSpacePageByTitle(page.title) : null);
     if (!resumeReached && fullPath !== resumeAtPath) {
       if (!existingPage) throw new Error(`Resume could not resolve existing page before resume point: ${fullPath}`);
       pageIdsByPath.set(fullPath, existingPage.id);

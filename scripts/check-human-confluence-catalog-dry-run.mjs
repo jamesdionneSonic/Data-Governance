@@ -101,6 +101,24 @@ function schemaPageTreeTitle(database, schema) {
   return schema;
 }
 
+function objectTypeBucketTitle(type) {
+  const normalized = String(type || '').trim().toLowerCase();
+  if (normalized === 'table') return 'Tables';
+  if (normalized === 'view') return 'Views';
+  if (normalized === 'procedure') return 'Stored Procedures';
+  if (normalized === 'function') return 'Functions';
+  if (normalized === 'synonym') return 'Synonyms';
+  return 'Other Objects';
+}
+
+function objectTypeBucketTreeTitle(database, schema, type) {
+  return `${schemaPageTreeTitle(database, schema)} ${objectTypeBucketTitle(type)}`;
+}
+
+function objectPageTreeTitle(database, schema, name) {
+  return `${database}.${schema}.${name || 'unknown'}`;
+}
+
 function validateObjectLinkStatus(object, label) {
   const failures = [];
   const name = object?.full_name || object?.qualified_name || object?.name || label || 'unknown';
@@ -165,10 +183,11 @@ function validatePage({ markdown, packet, markdownPath }) {
       object.platform,
       object.database,
       schemaPageTreeTitle(object.database, object.schema),
-      object.name,
+      objectTypeBucketTreeTitle(object.database, object.schema, object.type),
+      objectPageTreeTitle(object.database, object.schema, object.name),
     ].filter(Boolean);
-    if (expectedPath.length === 6 && (packet.page_tree_path || []).join(' / ') !== expectedPath.join(' / ')) {
-      failures.push('Object page tree path is not the canonical platform/database/schema/object path.');
+    if (expectedPath.length === 7 && (packet.page_tree_path || []).join(' / ') !== expectedPath.join(' / ')) {
+      failures.push('Object page tree path is not the canonical platform/database/schema/type/object path.');
     }
     if (!packet.confidence || typeof packet.confidence !== 'object') {
       failures.push('Object evidence packet does not include page-level confidence.');
@@ -380,8 +399,9 @@ function runSmokeChecks() {
       platform: 'SQL Server',
       database: 'Sonic_DW',
       schema: 'dbo',
+      type: 'table',
     },
-    page_tree_path: ['Sonic Data Lineage', 'Database Catalog', 'SQL Server', 'Sonic_DW', 'dbo', 'DimVehicle'],
+    page_tree_path: ['Sonic Data Lineage', 'Database Catalog', 'SQL Server', 'Sonic_DW', 'dbo', 'dbo Tables', 'Sonic_DW.dbo.DimVehicle'],
     tags: ['high-use', 'profiled'],
     tag_reasons: ['high-use: 12 downstream consumer signals meet the threshold of 10.'],
     confidence: {
@@ -480,7 +500,7 @@ FIRE represents retail sales and finance reporting. It is loaded by \`FIRE.Summa
       objects: [
         {
           full_name: 'Sonic_DW.dbo.DimVehicle',
-          canonical_page_path: 'Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / DimVehicle',
+          canonical_page_path: 'Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / dbo Tables / Sonic_DW.dbo.DimVehicle',
           aliases: ['DimVehicle'],
           not_surfaced_facts: ['business definition'],
         },

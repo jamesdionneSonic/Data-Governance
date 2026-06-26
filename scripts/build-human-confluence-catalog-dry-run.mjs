@@ -9,6 +9,7 @@ const databaseFilter = valueAfter('--database');
 const schemaFilter = valueAfter('--schema');
 const objectsFilter = valueAfter('--objects');
 const tier2SchemaFilter = valueAfter('--tier2-schema');
+const tier2DatabaseFilter = valueAfter('--tier2-database');
 const tier2ObjectNamesFilter = valueAfter('--tier2-object-names');
 const productCatalogSlugs = [
   'fire',
@@ -170,10 +171,11 @@ function runtimeObjectRow(row) {
     not_surfaced_facts: summary.not_surfaced_facts,
     profile_status: summary.profile_status,
     aliases,
-    canonical_page_path: databaseCatalogPath(
+    canonical_page_path: canonicalObjectPagePath(
       platformForRow(row),
       row.database || 'unknown',
       row.schema || 'unknown',
+      row.object_type || 'object',
       row.object_name || row.display_name || 'unknown'
     ),
   };
@@ -238,6 +240,32 @@ function schemaPageTreeTitle(database, schema) {
   const key = `${String(database || '').toLowerCase()}.${String(schema || '').toLowerCase()}`;
   if (['dms.dbo', 'dms.mdp', 'dms.wrk'].includes(key)) return `${database}.${schema}`;
   return schema;
+}
+
+function objectTypeBucketTitle(type) {
+  const normalized = String(type || '').trim().toLowerCase();
+  if (normalized === 'table') return 'Tables';
+  if (normalized === 'view') return 'Views';
+  if (normalized === 'procedure') return 'Stored Procedures';
+  if (normalized === 'function') return 'Functions';
+  if (normalized === 'synonym') return 'Synonyms';
+  return 'Other Objects';
+}
+
+function objectTypeBucketTreeTitle(database, schema, type) {
+  return `${schemaPageTreeTitle(database, schema)} ${objectTypeBucketTitle(type)}`;
+}
+
+function schemaObjectTypeBucketPath(platform, database, schema, type) {
+  return databaseCatalogPath(platform, database, schemaPageTreeTitle(database, schema), objectTypeBucketTreeTitle(database, schema, type));
+}
+
+function objectPageTreeTitle(database, schema, name) {
+  return `${database}.${schema}.${name || 'unknown'}`;
+}
+
+function canonicalObjectPagePath(platform, database, schema, type, name) {
+  return [...schemaObjectTypeBucketPath(platform, database, schema, type), objectPageTreeTitle(database, schema, name)];
 }
 
 function splitFilterValues(value) {
@@ -511,8 +539,14 @@ async function listHighValueObjectRows() {
 
 async function loadPlannedTier2ObjectPageKeys() {
   const plannedRows = [];
-  if (!tier2ObjectNamesFilter && !tier2SchemaFilter) {
+  if (!tier2ObjectNamesFilter && !tier2SchemaFilter && !tier2DatabaseFilter) {
     plannedRows.push(...(await listHighValueObjectRows()));
+  }
+  if (tier2DatabaseFilter) {
+    for (const database of splitFilterValues(tier2DatabaseFilter)) {
+      // eslint-disable-next-line no-await-in-loop
+      plannedRows.push(...(await listRuntimeDatabaseObjectRows(database)));
+    }
   }
   if (tier2ObjectNamesFilter) {
     plannedRows.push(...(await listTier2ObjectNameRows()));
@@ -522,6 +556,25 @@ async function loadPlannedTier2ObjectPageKeys() {
   }
   plannedTier2ObjectPageKeys = new Set(plannedRows.map(runtimeObjectIdentityKey));
   return plannedTier2ObjectPageKeys;
+}
+
+async function listRuntimeDatabaseObjectRows(database) {
+  const rows = await readRuntimeRegistryRows();
+  return rows
+    .map(runtimeObjectRow)
+    .filter((row) => String(row.database || '').toLowerCase() === String(database || '').toLowerCase())
+    .filter((row) => !isDoNotPublishHumanCatalogSchema(row.database, row.schema))
+    .sort(
+      (left, right) =>
+        String(left.schema || '').localeCompare(String(right.schema || '')) ||
+        String(left.type || '').localeCompare(String(right.type || '')) ||
+        String(left.name || '').localeCompare(String(right.name || ''))
+    );
+}
+
+async function listRuntimeDatabaseSchemaNames(database) {
+  const rows = await listRuntimeDatabaseObjectRows(database);
+  return [...new Set(rows.map((row) => `${row.database}.${row.schema}`))].sort((left, right) => left.localeCompare(right));
 }
 
 async function listTier2ObjectNameRows() {
@@ -534,7 +587,13 @@ async function listTier2ObjectNameRows() {
       ...row,
       database: filter.database,
       schema: filter.schema,
-      canonical_page_path: databaseCatalogPath(row.platform || platformForRow(row), filter.database, filter.schema, row.name),
+      canonical_page_path: canonicalObjectPagePath(
+        row.platform || platformForRow(row),
+        filter.database,
+        filter.schema,
+        row.type || row.object_type || 'object',
+        row.name
+      ),
     }));
 }
 
@@ -944,6 +1003,89 @@ function schemaObjectMarkdownRows(rows) {
   );
 }
 
+async function renderObjectTypeIndexPage({ platform, database, schema, type, rows, schemaEvidencePath }) {
+  if (rows.length === 0) return null;
+  const bucketTitle = objectTypeBucketTitle(type);
+  const bucketTreeTitle = objectTypeBucketTreeTitle(database, schema, type);
+  const pageTreeSchema = schemaPageTreeTitle(database, schema);
+  const typePath = databaseCatalogPath(platform, database, pageTreeSchema, bucketTreeTitle);
+  const slug = `${database}-${schema}-${bucketTreeTitle}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const objects = rows.map(schemaObjectEvidence);
+  const evidenceHash = hashJson({ platform, database, schema, bucketTitle, objects });
+  const packet = {
+    page_type: 'object-type-index',
+    page_title: bucketTreeTitle,
+    page_tree_path: typePath,
+    canonical_id: `object-type-index-${slug}`,
+    source_artifact_paths: [schemaEvidencePath, path.relative(process.cwd(), runtimeRegistryPath).replaceAll('\\', '/')].filter(Boolean),
+    generated_at: new Date().toISOString().slice(0, 10),
+    evidence_hash: `sha256:${evidenceHash}`,
+    catalog_slice: {
+      platform,
+      database,
+      schema,
+      object_type_bucket: bucketTitle,
+      object_type_bucket_title: bucketTreeTitle,
+      object_count: rows.length,
+      objects,
+      link_status_summary: linkStatusSummary(objects),
+    },
+    confidence: {
+      label: 'strong catalog evidence',
+      caveats: ['This index page groups existing catalog objects by type; business definitions remain evidence-bound on object pages.'],
+    },
+  };
+  const page = `# ${bucketTreeTitle}
+
+## Plain-English Summary
+
+\`${database}.${schema}\` has ${rows.length} cataloged ${bucketTitle.toLowerCase()} in this section. Use this page to browse the ${bucketTitle.toLowerCase()} separately from tables, views, functions, and other objects.
+
+## At A Glance
+
+| Signal | Value |
+| --- | --- |
+| Platform/Product | \`${platform}\` |
+| Database | \`${database}\` |
+| Schema | \`${schema}\` |
+| Object group | ${bucketTitle} |
+| Objects in group | ${rows.length} |
+| Evidence hash | \`sha256:${evidenceHash}\` |
+
+## ${bucketTitle}
+
+${schemaObjectMarkdownRows(rows)}
+
+## Known Gaps And Confidence
+
+| Item | Status |
+| --- | --- |
+| Business owner | Not surfaced at object-group level. |
+| Live freshness | Not surfaced at object-group level. |
+| Business definitions | Evidence-bound on each object page when surfaced; otherwise marked as not surfaced in metadata. |
+| Confidence | Strong catalog evidence for inventory and links. |
+
+## Technical Evidence
+
+<details>
+<summary>Evidence Packet</summary>
+
+- Evidence packet: \`data/confluence/human-catalog-dry-run/object-type-index-${slug}.evidence.json\`
+- Schema evidence packet: \`${schemaEvidencePath}\`
+- Evidence hash: \`sha256:${evidenceHash}\`
+
+</details>`;
+
+  await writeText(path.join(outputRoot, `object-type-index-${slug}.evidence.json`), JSON.stringify(packet, null, 2));
+  await writeText(path.join(outputRoot, `object-type-index-${slug}.md`), page);
+  currentLeafFiles.push({
+    evidenceFile: `object-type-index-${slug}.evidence.json`,
+    markdownFile: `object-type-index-${slug}.md`,
+    treePath: packet.page_tree_path,
+  });
+  return packet.page_tree_path;
+}
+
 async function renderSchema(schemaName) {
   const [database, schema] = schemaName.split('.');
   if (!database || !schema) throw new Error('--schema must be in Database.Schema format.');
@@ -968,7 +1110,9 @@ async function renderSchema(schemaName) {
   const tables = sortedRows.filter((row) => row.type === 'table');
   const views = sortedRows.filter((row) => row.type === 'view');
   const procedures = sortedRows.filter((row) => row.type === 'procedure');
-  const otherObjects = sortedRows.filter((row) => !['table', 'view', 'procedure'].includes(row.type));
+  const functions = sortedRows.filter((row) => row.type === 'function');
+  const synonyms = sortedRows.filter((row) => row.type === 'synonym');
+  const otherObjects = sortedRows.filter((row) => !['table', 'view', 'procedure', 'function', 'synonym'].includes(row.type));
   const profiledObjects = sortedRows.filter((row) => row.tags.includes('profiled'));
   const reviewObjects = sortedRows.filter((row) => row.tags.includes('review-needed'));
   const packet = {
@@ -1079,6 +1223,14 @@ ${schemaObjectMarkdownRows(views)}
 
 ${schemaObjectMarkdownRows(procedures)}
 
+## Functions
+
+${schemaObjectMarkdownRows(functions)}
+
+## Synonyms
+
+${schemaObjectMarkdownRows(synonyms)}
+
 ## Other Objects
 
 ${schemaObjectMarkdownRows(otherObjects)}
@@ -1118,6 +1270,13 @@ Profile coverage was not surfaced in this dry-run packet.
   await writeText(path.join(outputRoot, `schema-${slug}.evidence.json`), JSON.stringify(packet, null, 2));
   await writeText(path.join(outputRoot, `schema-${slug}.md`), page);
   currentLeafFiles.push({ evidenceFile: `schema-${slug}.evidence.json`, markdownFile: `schema-${slug}.md`, treePath: packet.page_tree_path });
+  const schemaEvidencePath = `data/confluence/human-catalog-dry-run/schema-${slug}.evidence.json`;
+  await renderObjectTypeIndexPage({ platform, database, schema, type: 'table', rows: tables, schemaEvidencePath });
+  await renderObjectTypeIndexPage({ platform, database, schema, type: 'view', rows: views, schemaEvidencePath });
+  await renderObjectTypeIndexPage({ platform, database, schema, type: 'procedure', rows: procedures, schemaEvidencePath });
+  await renderObjectTypeIndexPage({ platform, database, schema, type: 'function', rows: functions, schemaEvidencePath });
+  await renderObjectTypeIndexPage({ platform, database, schema, type: 'synonym', rows: synonyms, schemaEvidencePath });
+  await renderObjectTypeIndexPage({ platform, database, schema, type: 'object', rows: otherObjects, schemaEvidencePath });
   return packet.page_tree_path;
 }
 
@@ -1219,15 +1378,16 @@ async function renderHighValueObjectPage(row) {
   const slug = objectPageSlug(row);
   const richPromotion = richPromotionForObject(object);
   const evidenceHash = hashJson({ object, richPromotion });
-  const objectPath = databaseCatalogPath(
+  const objectPath = canonicalObjectPagePath(
     object.platform,
     object.database,
-    schemaPageTreeTitle(object.database, object.schema),
+    object.schema,
+    object.type,
     object.name
   );
   const packet = {
     page_type: 'object',
-    page_title: object.name,
+    page_title: objectPageTreeTitle(object.database, object.schema, object.name),
     page_tree_path: objectPath,
     canonical_id: `object-${slug}`,
     page_generation_level: 'thin',
@@ -1271,7 +1431,8 @@ async function renderHighValueObjectPage(row) {
     },
     backlinks: [
       databaseCatalogPath(object.platform, object.database).join(' / '),
-      databaseCatalogPath(object.platform, object.database, object.schema).join(' / '),
+      databaseCatalogPath(object.platform, object.database, schemaPageTreeTitle(object.database, object.schema)).join(' / '),
+      schemaObjectTypeBucketPath(object.platform, object.database, object.schema, object.type).join(' / '),
     ],
   };
   addSupersededPageCandidate({
@@ -1461,6 +1622,10 @@ async function renderHighValueObjectPages() {
   const pageTrees = [];
   const rows = tier2ObjectNamesFilter
     ? await listTier2ObjectNameRows()
+    : tier2DatabaseFilter
+      ? (
+          await Promise.all(splitFilterValues(tier2DatabaseFilter).map((database) => listRuntimeDatabaseObjectRows(database)))
+        ).flat()
     : tier2SchemaFilter
       ? await listRuntimeSchemaRows(...tier2SchemaFilter.split('.'))
       : await listHighValueObjectRows();
@@ -1534,7 +1699,15 @@ async function main() {
   await resetOutputRoot();
   await loadPlannedTier2ObjectPageKeys();
   const pageTrees = [];
-  if (!productFilter && !databaseFilter && !schemaFilter && !objectsFilter && !tier2SchemaFilter && !tier2ObjectNamesFilter) {
+  if (
+    !productFilter &&
+    !databaseFilter &&
+    !schemaFilter &&
+    !objectsFilter &&
+    !tier2SchemaFilter &&
+    !tier2DatabaseFilter &&
+    !tier2ObjectNamesFilter
+  ) {
     for (const slug of productCatalogSlugs) {
       // eslint-disable-next-line no-await-in-loop
       pageTrees.push(await renderProduct(slug));
@@ -1567,6 +1740,17 @@ async function main() {
       const [database] = tier2SchemaFilter.split('.');
       pageTrees.push(await renderDatabase(database));
       pageTrees.push(await renderSchema(tier2SchemaFilter));
+      pageTrees.push(...(await renderHighValueObjectPages()));
+    }
+    if (tier2DatabaseFilter) {
+      for (const database of splitFilterValues(tier2DatabaseFilter)) {
+        // eslint-disable-next-line no-await-in-loop
+        pageTrees.push(await renderDatabase(database));
+        for (const schema of await listRuntimeDatabaseSchemaNames(database)) {
+          // eslint-disable-next-line no-await-in-loop
+          pageTrees.push(await renderSchema(schema));
+        }
+      }
       pageTrees.push(...(await renderHighValueObjectPages()));
     }
   }
