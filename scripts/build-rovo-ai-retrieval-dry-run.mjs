@@ -82,7 +82,29 @@ async function readRuntimeRows() {
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter(Boolean)
-    .map((line) => JSON.parse(line));
+    .map((line) => JSON.parse(line))
+    .filter((row) => !isHumanCatalogExcludedObject(row));
+}
+
+function humanCatalogObjectExclusionReason(row) {
+  const type = String(row.object_type || row.type || '').trim().toLowerCase();
+  if (type !== 'table') return null;
+  const name = String(row.object_name || row.name || row.display_name || '').trim();
+  if (!name) return null;
+  const normalized = name.toLowerCase();
+  const tokenized = normalized.replace(/[^a-z0-9]+/g, '_');
+  const obviousRetiredToken =
+    /(^|_)(bak|bk|bkp|backup|back_up|old|obsolete|deprecated|delete|deleted|drop|remove|retire|retired|scratch|tmp|temp)(_|$|[0-9])/i;
+  const obviousPrefix = /^(zzz+|delete_|deleted_|drop_|tmp_|temp_|bak_|bk_|bkp_|backup_|old_)/i;
+  const obviousSuffix = /(_bak|_bk|_bkp|_backup|_old|_obsolete|_deprecated|_delete|_deleted|_drop|_remove|_retired|_scratch|_tmp|_temp)$/i;
+  if (obviousRetiredToken.test(tokenized) || obviousPrefix.test(normalized) || obviousSuffix.test(normalized)) {
+    return 'obvious backup/temp/delete table marker';
+  }
+  return null;
+}
+
+function isHumanCatalogExcludedObject(row) {
+  return Boolean(humanCatalogObjectExclusionReason(row));
 }
 
 async function humanPagePathIndex() {
@@ -140,6 +162,31 @@ function platformForRow(row = {}) {
   return 'SQL Server';
 }
 
+function schemaPageTreeTitle(database, schema) {
+  const databaseName = String(database || 'unknown').trim() || 'unknown';
+  const schemaName = String(schema || 'unknown').trim() || 'unknown';
+  if (schemaName.toLowerCase().startsWith(`${databaseName.toLowerCase()}.`)) return schemaName;
+  return `${databaseName}.${schemaName}`;
+}
+
+function objectTypeBucketTitle(type) {
+  const normalized = String(type || '').trim().toLowerCase();
+  if (normalized === 'table') return 'Tables';
+  if (normalized === 'view') return 'Views';
+  if (normalized === 'procedure') return 'Stored Procedures';
+  if (normalized === 'function') return 'Functions';
+  if (normalized === 'synonym') return 'Synonyms';
+  return 'Other Objects';
+}
+
+function objectTypeBucketTreeTitle(database, schema, type) {
+  return `${schemaPageTreeTitle(database, schema)} ${objectTypeBucketTitle(type)}`;
+}
+
+function objectPageTreeTitle(database, schema, object) {
+  return `${database}.${schema}.${object || 'unknown'}`;
+}
+
 function humanPageReference(canonical, humanPages) {
   const page = humanPages.get(canonical);
   if (page) {
@@ -162,8 +209,9 @@ function objectHumanPage(row, humanPages) {
     'Database Catalog',
     platformForRow(row),
     row.database,
-    row.schema,
-    row.object_name,
+    schemaPageTreeTitle(row.database, row.schema),
+    objectTypeBucketTreeTitle(row.database, row.schema, row.object_type),
+    objectPageTreeTitle(row.database, row.schema, row.object_name),
   ]);
   return humanPageReference(canonical, humanPages);
 }
@@ -174,7 +222,7 @@ function databaseHumanPage(database, platform, humanPages) {
 }
 
 function schemaHumanPage(database, schema, platform, humanPages) {
-  const canonical = pagePath(['Sonic Data Lineage', 'Database Catalog', platform || 'SQL Server', database, schema]);
+  const canonical = pagePath(['Sonic Data Lineage', 'Database Catalog', platform || 'SQL Server', database, schemaPageTreeTitle(database, schema)]);
   return humanPageReference(canonical, humanPages);
 }
 

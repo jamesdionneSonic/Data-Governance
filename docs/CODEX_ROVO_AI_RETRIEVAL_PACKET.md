@@ -81,6 +81,11 @@ Not allowed without separate approval:
   strings;
 - deleting, archiving, or moving Confluence pages.
 
+Rovo output must not reintroduce human-catalog-suppressed objects. Exclude
+obvious backup (`bak`, `bk`, `bkp`, or `backup`), temporary, old, deprecated, delete/drop/remove, retired,
+scratch, `tmp`, `temp`, or `zzz` table names from locator rows and context
+pages unless a reviewed exception says the table is a valid business asset.
+
 ## Required Locator Evidence
 
 Every locator row must include:

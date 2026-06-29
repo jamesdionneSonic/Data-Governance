@@ -34,7 +34,7 @@ Deploy the final human Database Catalog pattern across all included cataloged
 databases:
 
 ```text
-Database Catalog / <Platform/Product> / <Database> / <Schema> / <Object>
+Database Catalog / <Platform/Product> / <Database> / <Database.Schema> / <Database.Schema> <Object Type Bucket> / <Database.Schema.Object>
 ```
 
 The deployment must make the catalog complete enough for humans to browse and
@@ -77,8 +77,9 @@ Sonic Data Lineage
   Database Catalog
     <Platform/Product>
       <Database>
-        <Schema>
-          <Object>
+        <Database.Schema>
+          <Database.Schema Object Type Bucket>
+            <Database.Schema.Object>
 ```
 
 Do not publish new pages under:
@@ -87,6 +88,12 @@ Do not publish new pages under:
 Database Catalog / <Database> / Schema - <Database>.<Schema>
 High-Value Assets / <Object>
 ```
+
+Parent paths are authoritative. Do not treat a space-wide page-title match as
+published unless each parent in the canonical tree resolves exactly. If a
+same-title page exists in an old branch, move it into the canonical parent path
+or fail the publish/check. A published schema page with direct object children
+is a failed deployment even when the typed bucket pages also exist.
 
 ## Deployment Tiers
 
@@ -98,6 +105,7 @@ Deliver:
 
 - database pages for every included database;
 - schema pages for every included schema;
+- typed object bucket pages for each non-empty object type group;
 - complete object rows grouped by type;
 - page counts and inventory reconciliation;
 - duplicate/superseded-page report.
@@ -189,7 +197,11 @@ Dry-run validation fails when:
   instead of SSIS support documentation;
 - a schema page title uses `Schema - <Database>.<Schema>`;
 - a schema page omits cataloged objects from its complete inventory;
-- object pages are generated outside the canonical database/schema path;
+- object pages are generated outside the canonical database/schema/type-bucket path;
+- a published schema page contains direct object children instead of only typed
+  bucket/navigation children;
+- obvious backup (`bak`, `bk`, `bkp`, or `backup`)/temp/delete/old/deprecated/drop/remove/retired/scratch tables
+  appear in human catalog or Rovo retrieval output;
 - high-value appears as a separate object hierarchy instead of a tag;
 - page counts do not reconcile to the deployment manifest;
 - unsupported owner, status, SLA, live freshness, or certification is inferred;

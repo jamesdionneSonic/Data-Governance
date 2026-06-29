@@ -61,6 +61,13 @@ Data Product Catalog
 High-Value Assets
 ```
 
+Rovo artifacts must use the same object suppression rules as the human catalog.
+Obvious backup (`bak`, `bk`, `bkp`, or `backup`), temporary, old, deprecated, delete/drop/remove, retired,
+scratch, `tmp`, `temp`, or `zzz` table names are not locator/context targets
+unless a human explicitly reclassifies the object as a valid business asset.
+Those objects remain available in the DevOps lineage runtime package for
+machine-readable evidence.
+
 ## Rovo Start Here
 
 `Rovo Start Here` should be short. It tells the agent which pages to search

@@ -3,7 +3,11 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import yaml from 'yaml';
 
-const outputRoot = path.resolve('data/confluence/human-catalog-dry-run');
+const outputRootArgIndex = process.argv.indexOf('--output-root');
+const outputRoot =
+  outputRootArgIndex >= 0
+    ? path.resolve(process.argv[outputRootArgIndex + 1] || '')
+    : path.resolve('data/confluence/human-catalog-dry-run');
 const productFilter = valueAfter('--product');
 const databaseFilter = valueAfter('--database');
 const schemaFilter = valueAfter('--schema');
@@ -49,6 +53,7 @@ const humanCatalogExcludedArtifacts = [
     reason: 'SSIS package/catalog artifact; documented in SSIS support documentation, not as a Database Catalog object.',
   },
 ];
+const excludedObjectCandidates = [];
 let runtimeRegistryRows;
 let runtimeDatabaseCanonicalMap;
 let runtimeSchemaCanonicalMap;
@@ -126,13 +131,41 @@ async function readMarkdownIfExists(file) {
 async function readRuntimeRegistryRows() {
   if (runtimeRegistryRows) return runtimeRegistryRows;
   const text = await fs.readFile(runtimeRegistryPath, 'utf8');
-  runtimeRegistryRows = text
+  const rows = text
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter(Boolean)
     .map((line) => JSON.parse(line))
     .filter((row) => row.database && row.schema && row.object_name)
     .filter((row) => !isDatabaseCatalogExcludedArtifact(row));
+  runtimeRegistryRows = rows.filter((row) => !isHumanCatalogExcludedObject(row));
+  excludedObjectCandidates.length = 0;
+  for (const row of rows) {
+    const exclusion = humanCatalogObjectExclusionReason(row);
+    if (!exclusion) continue;
+    const platform = platformForRow(row);
+    const database = row.database || 'unknown';
+    const schema = row.schema || 'unknown';
+    const objectName = row.object_name || row.display_name || 'unknown';
+    const canonicalPath = canonicalObjectPagePath(platform, database, schema, row.object_type || 'object', objectName);
+    excludedObjectCandidates.push({
+      candidate_type: 'excluded-obvious-retired-table',
+      noncanonical_title: objectPageTreeTitle(database, schema, objectName),
+      noncanonical_path: pagePath(canonicalPath),
+      canonical_title: '',
+      canonical_path: '',
+      recommended_action: 'archive candidate after confirming no manual comments, attachments, or child pages',
+      reason: exclusion.reason,
+      object: {
+        platform,
+        database,
+        schema,
+        name: objectName,
+        type: row.object_type || 'object',
+        object_id: row.object_id || '',
+      },
+    });
+  }
   return runtimeRegistryRows;
 }
 
@@ -237,9 +270,10 @@ function databaseCatalogPath(platform, database, ...children) {
 }
 
 function schemaPageTreeTitle(database, schema) {
-  const key = `${String(database || '').toLowerCase()}.${String(schema || '').toLowerCase()}`;
-  if (['dms.dbo', 'dms.mdp', 'dms.wrk'].includes(key)) return `${database}.${schema}`;
-  return schema;
+  const databaseName = String(database || 'unknown').trim() || 'unknown';
+  const schemaName = String(schema || 'unknown').trim() || 'unknown';
+  if (schemaName.toLowerCase().startsWith(`${databaseName.toLowerCase()}.`)) return schemaName;
+  return `${databaseName}.${schemaName}`;
 }
 
 function objectTypeBucketTitle(type) {
@@ -363,6 +397,31 @@ function isDatabaseCatalogExcludedArtifact(row) {
       database === rule.database.toLowerCase() &&
       (!Array.isArray(rule.objectTypes) || rule.objectTypes.map((value) => value.toLowerCase()).includes(type))
   );
+}
+
+function humanCatalogObjectExclusionReason(row) {
+  const type = String(row.object_type || row.type || '').trim().toLowerCase();
+  if (type !== 'table') return null;
+  const name = String(row.object_name || row.name || row.display_name || '').trim();
+  if (!name) return null;
+  const normalized = name.toLowerCase();
+  const tokenized = normalized.replace(/[^a-z0-9]+/g, '_');
+  const obviousRetiredToken =
+    /(^|_)(bak|bk|bkp|backup|back_up|old|obsolete|deprecated|delete|deleted|drop|remove|retire|retired|scratch|tmp|temp)(_|$|[0-9])/i;
+  const obviousPrefix = /^(zzz+|delete_|deleted_|drop_|tmp_|temp_|bak_|bk_|bkp_|backup_|old_)/i;
+  const obviousSuffix = /(_bak|_bk|_bkp|_backup|_old|_obsolete|_deprecated|_delete|_deleted|_drop|_remove|_retired|_scratch|_tmp|_temp)$/i;
+  if (obviousRetiredToken.test(tokenized) || obviousPrefix.test(normalized) || obviousSuffix.test(normalized)) {
+    return {
+      rule: 'human-catalog-obvious-retired-table-v1',
+      reason:
+        'Table name contains an obvious backup, temporary, old, deprecated, delete, drop, remove, retired, scratch, tmp, or temp marker; excluded from human/Rovo catalog browsing while retained in machine lineage artifacts.',
+    };
+  }
+  return null;
+}
+
+function isHumanCatalogExcludedObject(row) {
+  return Boolean(humanCatalogObjectExclusionReason(row));
 }
 
 function objectPageSlug(row) {
@@ -1117,7 +1176,7 @@ async function renderSchema(schemaName) {
   const reviewObjects = sortedRows.filter((row) => row.tags.includes('review-needed'));
   const packet = {
     page_type: 'schema',
-    page_title: schema,
+    page_title: pageTreeSchema,
     page_tree_path: databaseCatalogPath(platform, database, pageTreeSchema),
     canonical_id: `schema-${slug}`,
     source_artifact_paths: [root],
@@ -1637,6 +1696,7 @@ async function renderHighValueObjectPages() {
 }
 
 async function writeSupersededPagesReport() {
+  for (const candidate of excludedObjectCandidates) addSupersededPageCandidate(candidate);
   const candidates = supersededPageCandidates.sort((left, right) =>
     `${left.candidate_type}:${left.noncanonical_path}`.localeCompare(`${right.candidate_type}:${right.noncanonical_path}`)
   );
@@ -1651,6 +1711,9 @@ async function writeSupersededPagesReport() {
       schema_parent_candidates: candidates.filter((candidate) => candidate.candidate_type === 'schema-parent').length,
       high_value_object_candidates: candidates.filter((candidate) => candidate.candidate_type === 'high-value-object').length,
       object_parent_candidates: candidates.filter((candidate) => candidate.candidate_type === 'object-parent').length,
+      excluded_obvious_retired_table_candidates: candidates.filter(
+        (candidate) => candidate.candidate_type === 'excluded-obvious-retired-table'
+      ).length,
     },
     candidates,
   };
@@ -1667,6 +1730,7 @@ This report is advisory only. It does not publish, move, archive, or delete Conf
 | Schema parent candidates | ${report.summary.schema_parent_candidates} |
 | High-value object candidates | ${report.summary.high_value_object_candidates} |
 | Object parent candidates | ${report.summary.object_parent_candidates} |
+| Obvious retired-table candidates | ${report.summary.excluded_obvious_retired_table_candidates} |
 | Cleanup allowed | No |
 | Explicit cleanup approval required | Yes |
 

@@ -1,7 +1,11 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-const outputRoot = path.resolve('data/confluence/human-catalog-dry-run');
+const outputRootArgIndex = process.argv.indexOf('--output-root');
+const outputRoot =
+  outputRootArgIndex >= 0
+    ? path.resolve(process.argv[outputRootArgIndex + 1] || '')
+    : path.resolve('data/confluence/human-catalog-dry-run');
 const missingPhrase = 'not surfaced in metadata';
 const bannedGenericSummaries = [
   'handles data movement',
@@ -95,10 +99,28 @@ function isExcludedDatabaseCatalogObject(object) {
   );
 }
 
+function humanCatalogObjectExclusionReason(object) {
+  const type = String(object?.type || object?.object_type || '').trim().toLowerCase();
+  if (type !== 'table') return null;
+  const name = String(object?.name || object?.object_name || object?.display_name || '').trim();
+  if (!name) return null;
+  const normalized = name.toLowerCase();
+  const tokenized = normalized.replace(/[^a-z0-9]+/g, '_');
+  const obviousRetiredToken =
+    /(^|_)(bak|bk|bkp|backup|back_up|old|obsolete|deprecated|delete|deleted|drop|remove|retire|retired|scratch|tmp|temp)(_|$|[0-9])/i;
+  const obviousPrefix = /^(zzz+|delete_|deleted_|drop_|tmp_|temp_|bak_|bk_|bkp_|backup_|old_)/i;
+  const obviousSuffix = /(_bak|_bk|_bkp|_backup|_old|_obsolete|_deprecated|_delete|_deleted|_drop|_remove|_retired|_scratch|_tmp|_temp)$/i;
+  if (obviousRetiredToken.test(tokenized) || obviousPrefix.test(normalized) || obviousSuffix.test(normalized)) {
+    return 'obvious backup/temp/delete table marker';
+  }
+  return null;
+}
+
 function schemaPageTreeTitle(database, schema) {
-  const key = `${String(database || '').toLowerCase()}.${String(schema || '').toLowerCase()}`;
-  if (['dms.dbo', 'dms.mdp', 'dms.wrk'].includes(key)) return `${database}.${schema}`;
-  return schema;
+  const databaseName = String(database || 'unknown').trim() || 'unknown';
+  const schemaName = String(schema || 'unknown').trim() || 'unknown';
+  if (schemaName.toLowerCase().startsWith(`${databaseName.toLowerCase()}.`)) return schemaName;
+  return `${databaseName}.${schemaName}`;
 }
 
 function objectTypeBucketTitle(type) {
@@ -276,6 +298,10 @@ function validatePage({ markdown, packet, markdownPath }) {
       if (isExcludedDatabaseCatalogObject(object)) {
         failures.push(`Schema object row is an SSIS package/catalog artifact and must not be in Database Catalog: ${object.full_name || 'unknown'}.`);
       }
+      const objectExclusionReason = humanCatalogObjectExclusionReason(object);
+      if (objectExclusionReason) {
+        failures.push(`Schema object row is an obvious retired/backup table and must not be in Database Catalog: ${object.full_name || object.name || 'unknown'} (${objectExclusionReason}).`);
+      }
       failures.push(...validateObjectLinkStatus(object, 'Schema object row'));
       if (!Array.isArray(object.aliases)) failures.push(`Schema object row is missing aliases: ${object.full_name || 'unknown'}.`);
       if (!Array.isArray(object.not_surfaced_facts)) {
@@ -350,11 +376,24 @@ async function validateSupersededPagesReport() {
     return failures;
   }
   for (const candidate of candidates) {
+    const candidateType = String(candidate.candidate_type || '').trim();
     if (candidate.cleanup_allowed !== false || candidate.requires_explicit_cleanup_approval !== true) {
       failures.push({ markdownPath: reportPath, message: `Superseded candidate is missing cleanup guardrails: ${candidate.noncanonical_title}` });
     }
     if (String(candidate.canonical_path || '').includes('High-Value Assets')) {
       failures.push({ markdownPath: reportPath, message: `Superseded candidate canonical path still points to High-Value Assets: ${candidate.noncanonical_title}` });
+    }
+    if (candidateType === 'excluded-obvious-retired-table') {
+      if (!candidate.noncanonical_title || !candidate.noncanonical_path || !candidate.recommended_action || !candidate.reason) {
+        failures.push({ markdownPath: reportPath, message: `Excluded retired-table candidate is incomplete: ${candidate.noncanonical_title || 'unknown'}` });
+      }
+      if (candidate.canonical_title || candidate.canonical_path) {
+        failures.push({
+          markdownPath: reportPath,
+          message: `Excluded retired-table candidate must not claim a canonical replacement path: ${candidate.noncanonical_title || 'unknown'}`,
+        });
+      }
+      continue;
     }
     if (!candidate.noncanonical_title || !candidate.canonical_path || !candidate.recommended_action) {
       failures.push({ markdownPath: reportPath, message: `Superseded candidate is incomplete: ${candidate.noncanonical_title || 'unknown'}` });
@@ -401,7 +440,15 @@ function runSmokeChecks() {
       schema: 'dbo',
       type: 'table',
     },
-    page_tree_path: ['Sonic Data Lineage', 'Database Catalog', 'SQL Server', 'Sonic_DW', 'dbo', 'dbo Tables', 'Sonic_DW.dbo.DimVehicle'],
+    page_tree_path: [
+      'Sonic Data Lineage',
+      'Database Catalog',
+      'SQL Server',
+      'Sonic_DW',
+      'Sonic_DW.dbo',
+      'Sonic_DW.dbo Tables',
+      'Sonic_DW.dbo.DimVehicle',
+    ],
     tags: ['high-use', 'profiled'],
     tag_reasons: ['high-use: 12 downstream consumer signals meet the threshold of 10.'],
     confidence: {
@@ -414,7 +461,7 @@ function runSmokeChecks() {
     aliases: ['Sonic_DW.dbo.DimVehicle', 'dbo.DimVehicle', 'DimVehicle', 'dimvehicle'],
     backlinks: [
       'Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW',
-      'Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo',
+      'Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / Sonic_DW.dbo',
     ],
     page_generation_level: 'thin',
     rich_promotion: {
@@ -500,7 +547,8 @@ FIRE represents retail sales and finance reporting. It is loaded by \`FIRE.Summa
       objects: [
         {
           full_name: 'Sonic_DW.dbo.DimVehicle',
-          canonical_page_path: 'Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / dbo / dbo Tables / Sonic_DW.dbo.DimVehicle',
+          canonical_page_path:
+            'Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / Sonic_DW.dbo / Sonic_DW.dbo Tables / Sonic_DW.dbo.DimVehicle',
           aliases: ['DimVehicle'],
           not_surfaced_facts: ['business definition'],
         },
@@ -568,6 +616,56 @@ FIRE represents retail sales and finance reporting. It is loaded by \`FIRE.Summa
     packet: badSsisCatalogPacket,
     markdownPath: 'smoke/bad-ssis-database-catalog.md',
   });
+  const badBackupTablePacket = {
+    page_type: 'schema',
+    evidence_hash: 'sha256:BACKUP',
+    source_artifact_paths: ['data/lineage-runtime-package/registry/canonical-objects.jsonl'],
+    page_tree_path: ['Sonic Data Lineage', 'Database Catalog', 'SQL Server', 'Sonic_DW', 'Sonic_DW.dbo'],
+    catalog_slice: {
+      platform: 'SQL Server',
+      database: 'Sonic_DW',
+      schema: 'dbo',
+      object_counts: { total: 1 },
+      objects: [
+        {
+          database: 'Sonic_DW',
+          schema: 'dbo',
+          name: 'Dim_DMSCustomer_temp',
+          type: 'table',
+          full_name: 'Sonic_DW.dbo.Dim_DMSCustomer_temp',
+          canonical_page_path:
+            'Sonic Data Lineage / Database Catalog / SQL Server / Sonic_DW / Sonic_DW.dbo / Sonic_DW.dbo Tables / Sonic_DW.dbo.Dim_DMSCustomer_temp',
+          aliases: ['Dim_DMSCustomer_temp'],
+          not_surfaced_facts: ['business definition'],
+          canonical_page_exists: false,
+          planned_in_packet: false,
+          link_status: 'pending',
+          link_status_reason: 'smoke test',
+        },
+      ],
+      object_tags: [],
+      link_status_summary: { pending: 1 },
+    },
+  };
+  const badBackupTablePage = `# Sonic_DW.dbo
+
+## Plain-English Summary
+
+\`Sonic_DW.dbo\` is a cataloged schema with concrete warehouse objects; this smoke check intentionally includes a temporary table that should be excluded from human catalog browsing.
+
+## Technical Evidence
+
+<details>
+<summary>Evidence Packet</summary>
+
+- Evidence hash: \`sha256:BACKUP\`
+
+</details>`;
+  const badBackupTableFailures = validatePage({
+    markdown: badBackupTablePage,
+    packet: badBackupTablePacket,
+    markdownPath: 'smoke/bad-backup-table.md',
+  });
   const failures = [...strongFailures, ...weakFailures, ...objectFailures];
   if (!badWeakFailures.some((failure) => failure.message.includes(missingPhrase))) {
     failures.push({
@@ -591,6 +689,12 @@ FIRE represents retail sales and finance reporting. It is loaded by \`FIRE.Summa
     failures.push({
       markdownPath: 'smoke/bad-ssis-database-catalog.md',
       message: 'Smoke check failed to reject SSIS package/catalog artifacts under Database Catalog.',
+    });
+  }
+  if (!badBackupTableFailures.some((failure) => failure.message.includes('obvious retired/backup table'))) {
+    failures.push({
+      markdownPath: 'smoke/bad-backup-table.md',
+      message: 'Smoke check failed to reject obvious backup/temp/delete tables from Database Catalog.',
     });
   }
   return failures;

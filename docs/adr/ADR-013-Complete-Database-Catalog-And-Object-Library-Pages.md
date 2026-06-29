@@ -54,8 +54,9 @@ Sonic Data Lineage
   Database Catalog
     <Platform/Product>
       <Database>
-        <Schema>
-          <Object page when promoted>
+        <Database.Schema>
+          <Object type bucket>
+            <Object page when promoted>
 ```
 
 Examples:
@@ -65,32 +66,46 @@ Sonic Data Lineage
   Database Catalog
     SQL Server
       Sonic_DW
-        dbo
-          DimVehicle
-          factFIRE
-          vwFactFIRESummaryReport
-          usp_DOC_Booked
+        Sonic_DW.dbo
+          Sonic_DW.dbo Tables
+            Sonic_DW.dbo.DimVehicle
+            Sonic_DW.dbo.factFIRE
+          Sonic_DW.dbo Views
+            Sonic_DW.dbo.vwFactFIRESummaryReport
+          Sonic_DW.dbo Stored Procedures
+            Sonic_DW.dbo.usp_DOC_Booked
 ```
 
 Page titles should be short in the tree:
 
-| Page type | Tree title   | Full identity shown inside page |
-| --------- | ------------ | ------------------------------- |
-| Platform  | `SQL Server` | `SQL Server`                    |
-| Database  | `Sonic_DW`   | `Sonic_DW`                      |
-| Schema    | `dbo`        | `Sonic_DW.dbo`                  |
-| Object    | `DimVehicle` | `Sonic_DW.dbo.DimVehicle`       |
+| Page type   | Tree title                                                                                                                          | Full identity shown inside page |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| Platform    | `SQL Server`                                                                                                                        | `SQL Server`                    |
+| Database    | `Sonic_DW`                                                                                                                          | `Sonic_DW`                      |
+| Schema      | `<Database>.<Schema>`                                                                                                               | `Sonic_DW.dbo`                  |
+| Type bucket | `<Database>.<Schema> Tables`, `<Database>.<Schema> Views`, `<Database>.<Schema> Stored Procedures`, `<Database>.<Schema> Functions` | object type grouping            |
+| Object      | `<Database>.<Schema>.<ObjectName>`                                                                                                  | `Sonic_DW.dbo.DimVehicle`       |
 
-If a page-title collision occurs under the same parent, append the minimum
-necessary qualifier, such as `DimVehicle (view)` or
-`DimVehicle - Sonic_DW.dbo`, and record the collision in the evidence packet.
+Schema, bucket, and object pages use fully qualified technical titles to avoid
+Confluence space-wide title collisions when the same schema or object name
+appears in multiple databases. The short schema and object names remain visible
+in the page body, aliases, and index rows.
+
+Canonical placement is parent-path based, not title based. The publisher and
+published checks must verify each parent in
+`Database Catalog / <Platform/Product> / <Database> / <Database.Schema> /
+<Database.Schema Object Type Bucket> / <Database.Schema.ObjectName>`. If an
+older same-title page exists elsewhere in the Confluence space, it must be
+explicitly moved to the intended parent or rejected; a space-wide title match
+must not silently satisfy the canonical path.
 
 Schema pages must be complete indexes. Object pages are canonical destinations.
 This means:
 
-- every table, view, procedure, and supported object type appears on its schema
-  page;
+- every table, view, procedure, function, synonym, and supported object type
+  appears on its schema page and its typed bucket page;
 - every object has one canonical destination under its database and schema;
+- schema pages have no direct object-page children after publish;
 - objects may carry tags such as `high-value`, `high-use`,
   `product-critical`, `support-critical`, `profiled`, `review-needed`, or
   `lineage-hotspot`;
@@ -187,20 +202,25 @@ metadata`.
 
 - `Schema - <Database>.<Schema>` is not a canonical title under the database
   page.
-- `<Schema>` is the canonical schema title when it is already under
+- `<Database>.<Schema>` is the canonical schema title under
   `<Platform/Product> / <Database>`.
 - `High-Value Assets` is not a canonical home for object pages.
 - `high-value` is an object tag, not a top-level page tree.
 - Existing `High-Value Object - <qualified name>` pages should be treated as
   superseded by canonical object pages under
-  `Database Catalog / <Platform/Product> / <Database> / <Schema> /
-<ObjectName>`.
+  `Database Catalog / <Platform/Product> / <Database> / <Database.Schema> /
+<Database.Schema Object Type Bucket> / <Database.Schema.ObjectName>`.
 - Before live publish, the dry run must report pages that would be superseded
   by canonical titles.
 - Duplicate cleanup requires explicit approval and should be handled as a
   separate operation from content generation.
 - The generator must write stable canonical ids into evidence packets so a page
   can be matched even if the display title changes later.
+- Obvious backup (`bak`, `bk`, `bkp`, or `backup`), temporary, old, deprecated, delete/drop/remove, retired,
+  scratch, `tmp`, `temp`, or `zzz` table names are suppressed from the human
+  catalog and Rovo retrieval artifacts as retired-table candidates. They remain
+  available in DevOps lineage/runtime artifacts unless a separate ingestion
+  cleanup is approved.
 
 ## Medium-Intelligence Work Contract
 

@@ -52,22 +52,69 @@ const http = axios.create({
   },
 });
 
+async function withRetry(label, operation, attempts = 5) {
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      return await operation();
+    } catch (err) {
+      lastError = err;
+      const status = err.response?.status;
+      const retryable =
+        status === 429 ||
+        status >= 500 ||
+        ['ECONNRESET', 'ETIMEDOUT', 'ECONNABORTED', 'EAI_AGAIN'].includes(err.code);
+      if (!retryable || attempt === attempts) break;
+      const waitMs = Math.min(30000, 1000 * 2 ** (attempt - 1));
+      console.warn(`${label} hit a retryable Confluence error; retrying in ${Math.round(waitMs / 1000)}s (${attempt}/${attempts}).`);
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise((resolve) => setTimeout(resolve, waitMs));
+    }
+  }
+  throw new Error(`${label} failed after retry attempts: ${lastError?.response?.status || lastError?.code || lastError?.message}`);
+}
+
 async function findChildPage(title, parentPageId) {
   let start = 0;
   const limit = 100;
   while (true) {
     // eslint-disable-next-line no-await-in-loop
-    const response = await http.get(`/rest/api/content/${parentPageId}/child/page`, {
-      params: {
-        start,
-        limit,
-        expand: 'version,metadata.labels,body.storage',
-      },
-    });
+    const response = await withRetry(`find child page under ${parentPageId}`, () =>
+      http.get(`/rest/api/content/${parentPageId}/child/page`, {
+        params: {
+          start,
+          limit,
+          expand: 'version,metadata.labels,body.storage',
+        },
+      })
+    );
     const results = response.data?.results || [];
     const match = results.find((page) => page.title === title);
     if (match) return match;
     if (results.length < limit) return null;
+    start += limit;
+  }
+}
+
+async function listChildPages(parentPageId) {
+  const pages = [];
+  let start = 0;
+  const limit = 100;
+  while (true) {
+    // eslint-disable-next-line no-await-in-loop
+    const response = await withRetry(`list child pages under ${parentPageId}`, () =>
+      http.get(`/rest/api/content/${parentPageId}/child/page`, {
+        params: {
+          start,
+          limit,
+          expand: 'version,metadata.labels',
+        },
+      })
+    );
+    const results = response.data?.results || [];
+    pages.push(...results);
+    if (results.length < limit) return pages;
     start += limit;
   }
 }
@@ -78,6 +125,11 @@ function pageLabels(page) {
 
 function pageBody(page) {
   return String(page?.body?.storage?.value || '');
+}
+
+async function writeText(file, value) {
+  await fs.mkdir(path.dirname(file), { recursive: true });
+  await fs.writeFile(file, value, 'utf8');
 }
 
 async function readJson(file) {
@@ -163,9 +215,9 @@ async function expectedPagesFromDryRun() {
   }
 
   const byPath = new Map();
-  const addExpected = (treePath, snippets) => {
+  const addExpected = (treePath, snippets, overwrite = false) => {
     const key = treePath.join(' / ');
-    if (!byPath.has(key)) byPath.set(key, { treePath, snippets });
+    if (overwrite || !byPath.has(key)) byPath.set(key, { treePath, snippets });
   };
 
   for (const packet of leafPackets) {
@@ -176,7 +228,7 @@ async function expectedPagesFromDryRun() {
         addExpected(treePath, ['Reviewed Catalog Children', childTitle]);
       }
     }
-    addExpected(packet.page_tree_path, leafSnippets(packet));
+    addExpected(packet.page_tree_path, leafSnippets(packet), true);
   }
 
   return [...byPath.values()].sort(
@@ -243,14 +295,71 @@ async function main() {
     });
   }
 
+  const schemaChecks = checks.filter((check) => {
+    const path = check.treePath || [];
+    return path.length === 5 && path[1] === 'Database Catalog' && String(path[4] || '').startsWith(`${path[3]}.`);
+  });
+  for (const schemaCheck of schemaChecks) {
+    const [database, schema] = String(schemaCheck.treePath[4] || '').split(/\.(.+)/).filter(Boolean);
+    if (!database || !schema) continue;
+    // eslint-disable-next-line no-await-in-loop
+    const children = await listChildPages(schemaCheck.id);
+    const directObjectChildren = children.filter((child) => {
+      const title = String(child.title || '');
+      if (!title.startsWith(`${database}.${schema}.`)) return false;
+      return !/\s(Tables|Views|Stored Procedures|Functions|Synonyms|Other Objects)$/.test(title);
+    });
+    for (const child of directObjectChildren) {
+      failures.push({
+        treePath: [...schemaCheck.treePath, child.title],
+        id: child.id,
+        message: 'Object page is a direct child of the schema page instead of its typed object bucket.',
+      });
+    }
+  }
+
+  const result = {
+    status: failures.length > 0 ? 'failed' : 'passed',
+    rootPageId,
+    checkedPages: checks.length,
+    checks,
+    failures,
+  };
+  const readbackJsonPath = path.join(publishOutputRoot, 'published-check-readback.json');
+  const readbackMarkdownPath = path.join(publishOutputRoot, 'published-check-readback.md');
+  await writeText(readbackJsonPath, `${JSON.stringify(result, null, 2)}\n`);
+  await writeText(
+    readbackMarkdownPath,
+    `# Human Catalog Published Check Readback
+
+Generated: ${new Date().toISOString()}
+
+Status: \`${result.status}\`
+
+Checked pages: ${checks.length}
+
+Failures: ${failures.length}
+
+| Tree Path | Page ID | Message |
+| --- | --- | --- |
+${failures
+  .slice(0, 500)
+  .map((failure) => `| \`${(failure.treePath || []).join(' / ')}\` | \`${failure.id || ''}\` | ${failure.message} |`)
+  .join('\n') || '| none |  |  |'}
+
+Full check detail is in \`${readbackJsonPath.replaceAll('\\', '/')}\`.
+`
+  );
+
   console.log(
     JSON.stringify(
       {
-        status: failures.length > 0 ? 'failed' : 'passed',
+        status: result.status,
         rootPageId,
         checkedPages: checks.length,
-        checks,
-        failures,
+        failureCount: failures.length,
+        failures: failures.slice(0, 20),
+        readback: readbackMarkdownPath,
       },
       null,
       2
@@ -260,4 +369,18 @@ async function main() {
   if (failures.length > 0) process.exitCode = 1;
 }
 
-await main();
+try {
+  await main();
+} catch (err) {
+  console.error(
+    JSON.stringify(
+      {
+        status: 'failed',
+        message: err.message,
+      },
+      null,
+      2
+    )
+  );
+  process.exitCode = 1;
+}

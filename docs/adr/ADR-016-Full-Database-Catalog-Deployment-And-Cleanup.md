@@ -38,19 +38,21 @@ cataloged database that is in scope for the human catalog:
 ```text
 Sonic Data Lineage
   Database Catalog
-    <Database>
-      <Schema>
-        <Table, view, procedure, function, synonym, or supported object>
+    <Platform/Product>
+      <Database>
+        <Database.Schema>
+          <Database.Schema object type bucket>
+            <Table, view, procedure, function, synonym, or supported object>
 ```
 
 Examples:
 
 ```text
-Database Catalog / SQL Server / Sonic_DW / dbo / Dim_Vehicle
-Database Catalog / SQL Server / Sonic_DW / dq / vw_Fact_DQValidation
-Database Catalog / SQL Server / BI_WorkDB / dbo / <Object>
-Database Catalog / SQL Server / CBS / dbo / <Object>
-Database Catalog / SQL Server / VendorData / dbo / <Object>
+Database Catalog / SQL Server / Sonic_DW / Sonic_DW.dbo / Sonic_DW.dbo Tables / Sonic_DW.dbo.Dim_Vehicle
+Database Catalog / SQL Server / Sonic_DW / Sonic_DW.dq / Sonic_DW.dq Views / Sonic_DW.dq.vw_Fact_DQValidation
+Database Catalog / SQL Server / BI_WorkDB / BI_WorkDB.dbo / BI_WorkDB.dbo Stored Procedures / BI_WorkDB.dbo.<Procedure>
+Database Catalog / SQL Server / CBS / CBS.dbo / CBS.dbo Tables / CBS.dbo.<Object>
+Database Catalog / SQL Server / VendorData / VendorData.dbo / VendorData.dbo Tables / VendorData.dbo.<Object>
 ```
 
 The full deployment must:
@@ -62,11 +64,12 @@ The full deployment must:
   Catalog tree because those packages are documented in the SSIS support
   documentation tree;
 - create or update database pages for every included database;
-- create or update clean schema pages titled only by schema name under each
-  database page;
+- create or update clean schema pages titled by database-qualified schema name
+  under each database page;
 - expose every cataloged object on its schema page;
-- create canonical object pages under the database/schema path according to the
-  deployment tier for that run;
+- create typed object bucket pages under each database/schema and canonical
+  object pages under the correct bucket according to the deployment tier for
+  that run;
 - keep `high-value`, `high-use`, `profiled`, `product-critical`,
   `support-critical`, `review-needed`, and `lineage-hotspot` as tags rather
   than separate object homes;
@@ -111,11 +114,30 @@ verified. A broad publish approval is not cleanup approval.
 
 Database page titles are database names.
 
-Schema page titles are schema names under the database page. The full database
-and schema identity belongs inside the page body.
+Schema page titles are database-qualified schema names under the database page.
+Confluence page titles are unique across the whole space, so bare schema titles
+such as `dbo` are not safe for full-catalog publishing.
 
-Object page titles are object names unless a sibling collision requires a short
-qualifier.
+Object type bucket pages are schema-qualified bucket titles such as
+`Sonic_DW.dbo Tables`, `Sonic_DW.dbo Views`,
+`Sonic_DW.dbo Stored Procedures`, `Sonic_DW.dbo Functions`,
+`Sonic_DW.dbo Synonyms`, or `Sonic_DW.dbo Other Objects`. Object page titles
+use `<Database>.<Schema>.<Object>` so Confluence can publish duplicate object
+names from different schemas without title collisions.
+
+Publish and verification are parent-path authoritative. A page found by title
+elsewhere in the Confluence space is not canonical unless its parent chain
+matches the generated path. If a same-title page already exists in an old
+location, the publisher must move it under the intended parent or fail the run.
+Published verification must fail when a schema page has direct object children
+instead of typed bucket children.
+
+The human catalog and Rovo retrieval layer suppress obvious retired table names
+from browse/search output. This applies only to table objects with explicit
+backup (`bak`, `bk`, `bkp`, or `backup`), temporary, old, deprecated, delete/drop/remove, retired, scratch, `tmp`,
+`temp`, or `zzz` markers in the table name. These objects remain in the
+machine-readable DevOps runtime package unless a separate data-retention or
+ingestion cleanup is approved.
 
 The publisher must treat these as noncanonical under a database page:
 
@@ -123,6 +145,10 @@ The publisher must treat these as noncanonical under a database page:
 - `Schema Catalog - <Database>.<Schema>`;
 - `High-Value Object - <QualifiedObject>`;
 - any object page under a top-level `High-Value Assets` branch.
+- any object page that is a direct child of a schema page rather than a typed
+  bucket page;
+- any obvious retired-table page that was suppressed from the current generated
+  catalog.
 
 ## AI And LLM Rules
 

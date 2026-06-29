@@ -21,6 +21,8 @@ const publishOutputRoot =
     : outputRoot;
 const resumeAtIndex = process.argv.indexOf('--resume-at');
 const resumeAtPath = resumeAtIndex >= 0 ? String(process.argv[resumeAtIndex + 1] || '').trim() : '';
+const resumeFromProgress = process.argv.includes('--resume-from-progress');
+const progressPath = path.join(publishOutputRoot, 'publish-progress.json');
 const baseUrl = trimTrailingSlash(process.env.CONFLUENCE_BASE_URL || CONFLUENCE_SPACE.baseUrl);
 const spaceKey = process.env.CONFLUENCE_SPACE_KEY || CONFLUENCE_SPACE.spaceKey;
 const rootPageId = String(
@@ -54,6 +56,10 @@ function escapeCqlString(value) {
     .replace(/"/g, '\\"');
 }
 
+function titleMatches(left, right) {
+  return String(left || '').trim().toLowerCase() === String(right || '').trim().toLowerCase();
+}
+
 function pageStorageFromMarkdown(markdown) {
   return marked.parse(markdown || '');
 }
@@ -81,10 +87,12 @@ async function confluenceRequest(label, fn) {
       return await fn();
     } catch (error) {
       const status = error.response?.status;
-      if (status !== 429 || attempt === maxAttempts) throw error;
+      const retryableNetwork = ['ECONNRESET', 'ETIMEDOUT', 'ECONNABORTED', 'ENOTFOUND', 'EAI_AGAIN'].includes(error.code);
+      const retryableStatus = status === 429 || status === 502 || status === 503 || status === 504;
+      if ((!retryableNetwork && !retryableStatus) || attempt === maxAttempts) throw error;
       const retryAfter = Number(error.response?.headers?.['retry-after'] || 0);
-      const delayMs = Math.max(retryAfter * 1000, attempt * 30000);
-      console.warn(`${label} hit Confluence rate limit; retrying in ${Math.round(delayMs / 1000)}s (${attempt}/${maxAttempts}).`);
+      const delayMs = Math.max(retryAfter * 1000, status === 429 ? attempt * 30000 : attempt * 5000);
+      console.warn(`${label} hit a retryable Confluence error; retrying in ${Math.round(delayMs / 1000)}s (${attempt}/${maxAttempts}).`);
       // eslint-disable-next-line no-await-in-loop
       await sleep(delayMs);
     }
@@ -107,6 +115,20 @@ function requirePublishConfig() {
 
 async function readJson(file) {
   return JSON.parse(await fs.readFile(file, 'utf8'));
+}
+
+async function readJsonIfExists(file) {
+  try {
+    return await readJson(file);
+  } catch (error) {
+    if (error?.code === 'ENOENT') return null;
+    throw error;
+  }
+}
+
+async function writeJson(file, value) {
+  await fs.mkdir(path.dirname(file), { recursive: true });
+  await fs.writeFile(file, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
 }
 
 async function loadPilotPages() {
@@ -265,25 +287,31 @@ async function findChildPage(title, parentPageId) {
   const childResponse = await confluenceRequest(`list child pages under ${parentPageId}`, () =>
     http.get(`/rest/api/content/${parentPageId}/child/page`, {
       params: {
-        expand: 'version,metadata.labels',
+        expand: 'version,metadata.labels,ancestors',
         limit: 200,
       },
     })
   );
-  const directChild = (childResponse.data?.results || []).find((page) => page.title === title && page.status !== 'archived');
+  const directChild = (childResponse.data?.results || []).find((page) => titleMatches(page.title, title) && page.status !== 'archived');
   if (directChild) return directChild;
 
   const cql = `parent=${parentPageId} and type=page and title="${escapeCqlString(title)}"`;
-  const response = await confluenceRequest(`find child page "${title}"`, () =>
-    http.get('/rest/api/content/search', {
-      params: {
-        cql,
-        expand: 'version,metadata.labels',
-        limit: 25,
-      },
-    })
-  );
-  return (response.data?.results || []).find((page) => page.title === title && page.status !== 'archived') || null;
+  let response;
+  try {
+    response = await confluenceRequest(`find child page "${title}"`, () =>
+      http.get('/rest/api/content/search', {
+        params: {
+          cql,
+          expand: 'version,metadata.labels,ancestors',
+          limit: 25,
+        },
+      })
+    );
+  } catch (error) {
+    if (error.response?.status === 400) return null;
+    throw error;
+  }
+  return (response.data?.results || []).find((page) => titleMatches(page.title, title) && page.status !== 'archived') || null;
 }
 
 async function findSpacePageByTitle(title) {
@@ -299,20 +327,37 @@ async function findSpacePageByTitle(title) {
       },
     })
   );
-  const matches = (response.data?.results || []).filter((page) => page.title === title);
+  const matches = (response.data?.results || []).filter((page) => titleMatches(page.title, title));
+  const lineageMatch = matches.find((page) => pageHasAncestor(page, rootPageId));
+  if (lineageMatch) return lineageMatch;
   if (matches[0]) return matches[0];
 
   const cql = `space="${escapeCqlString(spaceKey)}" and type=page and title="${escapeCqlString(title)}"`;
-  const cqlResponse = await confluenceRequest(`find space page by cql "${title}"`, () =>
-    http.get('/rest/api/content/search', {
-      params: {
-        cql,
-        expand: 'version,metadata.labels,ancestors',
-        limit: 25,
-      },
-    })
-  );
-  return (cqlResponse.data?.results || []).find((page) => page.title === title && page.status !== 'archived') || null;
+  let cqlResponse;
+  try {
+    cqlResponse = await confluenceRequest(`find space page by cql "${title}"`, () =>
+      http.get('/rest/api/content/search', {
+        params: {
+          cql,
+          expand: 'version,metadata.labels,ancestors',
+          limit: 25,
+        },
+      })
+    );
+  } catch (error) {
+    if (error.response?.status === 400) return null;
+    throw error;
+  }
+  const cqlMatches = (cqlResponse.data?.results || []).filter((page) => titleMatches(page.title, title) && page.status !== 'archived');
+  return cqlMatches.find((page) => pageHasAncestor(page, rootPageId)) || cqlMatches[0] || null;
+}
+
+function pageHasAncestor(page, ancestorId) {
+  return (page?.ancestors || []).some((ancestor) => String(ancestor.id) === String(ancestorId));
+}
+
+function currentParentId(page) {
+  return page?.ancestors?.at?.(-1)?.id ? String(page.ancestors.at(-1).id) : '';
 }
 
 async function addLabels(pageId, pageLabels) {
@@ -350,7 +395,7 @@ async function createPage(page, parentPageId) {
       const existingPage =
         (await findChildPage(page.title, parentPageId)) ||
         (page.legacyTitle && page.legacyTitle !== page.title ? await findChildPage(page.legacyTitle, parentPageId) : null) ||
-        (page.allowGlobalTitleLookup ? await findSpacePageByTitle(page.title) : null);
+        (await findSpacePageByTitle(page.title));
       if (existingPage) {
         return updatePage(page, existingPage, parentPageId);
       }
@@ -364,43 +409,108 @@ async function createPage(page, parentPageId) {
   };
 }
 
-async function updatePage(page, existingPage, parentPageId) {
-  const nextVersion = Number(existingPage.version?.number || 1) + 1;
-  const response = await confluenceRequest(`update page "${page.title}"`, () =>
-    http.put(`/rest/api/content/${existingPage.id}`, {
-      id: existingPage.id,
-      type: 'page',
-      title: page.title,
-      ancestors: [{ id: parentPageId }],
-      version: {
-        number: nextVersion,
-        message: `Human lineage catalog sync ${new Date().toISOString()}`,
-      },
-      body: {
-        storage: {
-          value: pageStorageFromMarkdown(page.markdown),
-          representation: 'storage',
-        },
+async function movePageToParent(existingPage, parentPageId) {
+  if (currentParentId(existingPage) === String(parentPageId)) return { moved: false, page: existingPage };
+  await confluenceRequest(`move page "${existingPage.title}" under ${parentPageId}`, () =>
+    http.put(`/rest/api/content/${existingPage.id}/move/append/${parentPageId}`)
+  );
+  const refreshed = await confluenceRequest(`refresh moved page "${existingPage.title}"`, () =>
+    http.get(`/rest/api/content/${existingPage.id}`, {
+      params: {
+        expand: 'version,metadata.labels,ancestors',
       },
     })
   );
-  await addLabels(existingPage.id, page.labels);
+  if (currentParentId(refreshed.data) !== String(parentPageId)) {
+    throw new Error(`Confluence move did not place "${existingPage.title}" under expected parent ${parentPageId}.`);
+  }
+  return { moved: true, page: refreshed.data };
+}
+
+async function updatePage(page, existingPage, parentPageId) {
+  let response;
+  const moveResult = await movePageToParent(existingPage, parentPageId);
+  const pageToUpdate = moveResult.page;
+  let nextVersion = Number(pageToUpdate.version?.number || 1) + 1;
+  for (let attempt = 1; attempt <= 5; attempt += 1) {
+    try {
+      response = await confluenceRequest(`update page "${page.title}"`, () =>
+        http.put(`/rest/api/content/${pageToUpdate.id}`, {
+          id: pageToUpdate.id,
+          type: 'page',
+          title: page.title,
+          ancestors: [{ id: parentPageId }],
+          version: {
+            number: nextVersion,
+            message: `Human lineage catalog sync ${new Date().toISOString()}`,
+          },
+          body: {
+            storage: {
+              value: pageStorageFromMarkdown(page.markdown),
+              representation: 'storage',
+            },
+          },
+        })
+      );
+      break;
+    } catch (error) {
+      const message = error.response?.data?.message || error.message || '';
+      if (!/Version must be incremented|ConflictException|StaleStateException|unexpected row count/i.test(message) || attempt === 5) {
+        throw error;
+      }
+      await sleep(attempt * 2000);
+      const refreshed = await confluenceRequest(`refresh page version "${page.title}"`, () =>
+        http.get(`/rest/api/content/${pageToUpdate.id}`, {
+          params: {
+            expand: 'version,metadata.labels,ancestors',
+          },
+        })
+      );
+      nextVersion = Number(refreshed.data?.version?.number || nextVersion) + 1;
+    }
+  }
+  await addLabels(pageToUpdate.id, page.labels);
   return {
-    action: 'updated',
-    id: response.data?.id || existingPage.id,
+    action: moveResult.moved ? 'moved-updated' : 'updated',
+    id: response.data?.id || pageToUpdate.id,
     title: page.title,
-    version: nextVersion,
+    version: response.data?.version?.number || nextVersion,
   };
 }
 
 async function publishPlan(pages) {
   const pageIdsByPath = new Map([['Sonic Data Lineage', rootPageId]]);
   const results = [];
-  let resumeReached = !resumeAtPath;
+  const existingProgress = resumeFromProgress ? await readJsonIfExists(progressPath) : null;
+  const effectiveResumeAtPath = resumeAtPath || existingProgress?.nextTreePath || '';
+  let resumeReached = !effectiveResumeAtPath;
 
-  for (const page of pages) {
+  async function ensurePathResolved(treePath) {
+    for (let depth = 2; depth <= treePath.length; depth += 1) {
+      const currentPath = treePath.slice(0, depth).join(' / ');
+      if (pageIdsByPath.has(currentPath)) continue;
+      const parentPath = treePath.slice(0, depth - 1).join(' / ');
+      const parentId = pageIdsByPath.get(parentPath);
+      if (!parentId) throw new Error(`Could not resolve parent while resuming: ${parentPath}`);
+      const title = treePath[depth - 1];
+      const existingPage = (await findChildPage(title, parentId)) || (await findSpacePageByTitle(title));
+      if (!existingPage) throw new Error(`Could not resolve existing page while resuming: ${currentPath}`);
+      pageIdsByPath.set(currentPath, existingPage.id);
+    }
+  }
+
+  for (let index = 0; index < pages.length; index += 1) {
+    const page = pages[index];
     const fullPath = page.treePath.join(' / ');
     const parentPath = page.treePath.slice(0, -1).join(' / ');
+    if (!resumeReached && fullPath !== effectiveResumeAtPath) continue;
+    if (!resumeReached && fullPath === effectiveResumeAtPath) {
+      await ensurePathResolved(page.treePath.slice(0, -1));
+      resumeReached = true;
+    }
+    if (resumeReached && !pageIdsByPath.has(parentPath)) {
+      await ensurePathResolved(page.treePath.slice(0, -1));
+    }
     const parentPageId = pageIdsByPath.get(parentPath);
     if (!parentPageId) {
       throw new Error(`Missing parent page id for ${fullPath}`);
@@ -409,21 +519,7 @@ async function publishPlan(pages) {
     const existingPage =
       (await findChildPage(page.title, parentPageId)) ||
       (page.legacyTitle && page.legacyTitle !== page.title ? await findChildPage(page.legacyTitle, parentPageId) : null) ||
-      (page.allowGlobalTitleLookup ? await findSpacePageByTitle(page.title) : null);
-    if (!resumeReached && fullPath !== resumeAtPath) {
-      if (!existingPage) throw new Error(`Resume could not resolve existing page before resume point: ${fullPath}`);
-      pageIdsByPath.set(fullPath, existingPage.id);
-      results.push({
-        action: 'resume-skipped',
-        id: existingPage.id,
-        title: page.title,
-        kind: page.kind,
-        treePath: page.treePath,
-        evidenceHash: page.evidenceHash || null,
-      });
-      continue;
-    }
-    if (!resumeReached && fullPath === resumeAtPath) resumeReached = true;
+      (await findSpacePageByTitle(page.title));
     if (page.kind === 'reference') {
       if (!existingPage) {
         throw new Error(`Required reference page was not found under expected parent: ${fullPath}`);
@@ -442,6 +538,20 @@ async function publishPlan(pages) {
 
     const result = existingPage ? await updatePage(page, existingPage, parentPageId) : await createPage(page, parentPageId);
     pageIdsByPath.set(fullPath, result.id);
+    const nextTreePath = pages[index + 1]?.treePath?.join(' / ') || null;
+    await writeJson(progressPath, {
+      status: nextTreePath ? 'in_progress' : 'complete',
+      generatedAt: new Date().toISOString(),
+      processedCount: index + 1,
+      totalCount: pages.length,
+      lastTreePath: fullPath,
+      nextTreePath,
+      lastAction: result.action,
+      lastPageId: result.id,
+    });
+    if ((index + 1) % 50 === 0 || !nextTreePath) {
+      console.warn(`published ${index + 1}/${pages.length}: ${fullPath}`);
+    }
     results.push({
       ...result,
       kind: page.kind,
@@ -449,7 +559,7 @@ async function publishPlan(pages) {
       evidenceHash: page.evidenceHash || null,
     });
   }
-  if (resumeAtPath && !resumeReached) throw new Error(`Resume path was not found in publish plan: ${resumeAtPath}`);
+  if (effectiveResumeAtPath && !resumeReached) throw new Error(`Resume path was not found in publish plan: ${effectiveResumeAtPath}`);
 
   return results;
 }
@@ -507,4 +617,10 @@ async function main() {
   );
 }
 
-await main();
+try {
+  await main();
+} catch (error) {
+  const message = error.response?.data?.message || error.message || 'Unknown publish error';
+  console.error(JSON.stringify({ status: 'failed', message }, null, 2));
+  process.exitCode = 1;
+}

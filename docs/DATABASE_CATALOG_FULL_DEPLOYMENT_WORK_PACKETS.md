@@ -8,15 +8,19 @@ Live publish and cleanup still require explicit user approval.
 
 ## Token Budget Summary
 
-| Packet | Backlog Items                              |    Estimated Tokens | Approval Needed               |
-| ------ | ------------------------------------------ | ------------------: | ----------------------------- |
-| FDP-01 | FDCAT-001, FDCAT-002                       |            70k-120k | No live approval              |
-| FDP-02 | FDCAT-003, FDCAT-004, FDCAT-005, FDCAT-006 |           180k-300k | No live approval              |
-| FDP-03 | FDCAT-007, FDCAT-008                       |            80k-140k | Live publish approval         |
-| FDP-04 | FDCAT-009, FDCAT-010, FDCAT-011            | 170k-280k per batch | Live publish approval         |
-| FDP-05 | FDCAT-012, FDCAT-013, FDCAT-014            | 160k-260k per batch | Live publish approval         |
-| FDP-06 | FDCAT-015                                  |           110k-190k | Rovo publish approval if live |
-| FDP-07 | FDCAT-016, FDCAT-017, FDCAT-018            |           100k-180k | Cleanup approval              |
+| Packet | Backlog Items                              |    Estimated Tokens | Approval Needed                |
+| ------ | ------------------------------------------ | ------------------: | ------------------------------ |
+| FDP-01 | FDCAT-001, FDCAT-002                       |            70k-120k | No live approval               |
+| FDP-02 | FDCAT-003, FDCAT-004, FDCAT-005, FDCAT-006 |           180k-300k | No live approval               |
+| FDP-03 | FDCAT-007, FDCAT-008                       |            80k-140k | Live publish approval          |
+| FDP-04 | FDCAT-009, FDCAT-010, FDCAT-011            | 170k-280k per batch | Live publish approval          |
+| FDP-05 | FDCAT-012, FDCAT-013, FDCAT-014            | 160k-260k per batch | Live publish approval          |
+| FDP-06 | FDCAT-015                                  |           110k-190k | Rovo publish approval if live  |
+| FDP-07 | FDCAT-016, FDCAT-017, FDCAT-018            |           100k-180k | Cleanup approval               |
+| FDP-08 | FDCAT-019                                  |           140k-260k | Live connector/runtime publish |
+| FDP-09 | FDCAT-020                                  |           300k-600k | Broad Confluence publish       |
+| FDP-10 | FDCAT-021                                  |           160k-300k | DevOps/Rovo publish            |
+| FDP-11 | FDCAT-022                                  |           180k-320k | Move/archive approval          |
 
 Expected full deployment planning and first broad rollout: 870k-1.47M tokens,
 plus additional Tier 2/Tier 3 batches as needed for page volume.
@@ -49,6 +53,10 @@ plus additional Tier 2/Tier 3 batches as needed for page volume.
 - Do not publish secrets, credentials, connection strings, raw rows, or sample
   values.
 - Keep Rovo retrieval artifacts outside the human catalog tree.
+- Verify canonical parent paths, not just same-title page matches.
+- Treat direct object children under schema pages as publish/check failures.
+- Suppress obvious backup (`bak`, `bk`, `bkp`, or `backup`)/temp/delete/old/deprecated/drop/remove/retired/scratch
+  tables from human and Rovo output unless a reviewed exception exists.
 
 ## FDP-01: Full Inventory And Manifest
 
@@ -143,7 +151,7 @@ Roll out thin canonical object pages in safe batches.
 ### Acceptance Criteria
 
 - Object pages live under
-  `Database Catalog / <Platform/Product> / <Database> / <Schema>`.
+  `Database Catalog / <Platform/Product> / <Database> / <Database.Schema> / <Database.Schema> <Object Type Bucket>`.
 - Pages include identity, tags, aliases, columns, lineage counts, profile
   signals, confidence, backlinks, related pages, evidence, and missing facts.
 - Schema/database object rows are linked to canonical object pages when those
@@ -230,6 +238,108 @@ Clean up approved superseded pages and document final deployment state.
 5. FDP-05: rich priority object batches.
 6. FDP-06: Rovo link refresh.
 7. FDP-07: approved cleanup and final readback.
+8. FDP-08: VehicleMart live SQL and SSIS lineage refresh.
+9. FDP-09: all-database typed bucket republish.
+10. FDP-10: DevOps and Rovo dataset refresh.
+11. FDP-11: parent repair and retired-table cleanup.
+
+## FDP-08: VehicleMart Live SQL And SSIS Lineage Refresh
+
+Backlog item: FDCAT-019
+
+Estimated tokens: 140k-260k
+
+### Goal
+
+Refresh VehicleMart from the saved SQL Server connector and verify fresh SSISDB
+metadata before publishing docs.
+
+### Deliverables
+
+- VehicleMart SQL connector ingest report.
+- SSISDB connector ingest report with VehicleMart package evidence.
+- Runtime package rebuild/check/readback.
+- SSIS edge readiness summary.
+
+### Acceptance Criteria
+
+- VehicleMart SQL objects are refreshed from live metadata.
+- VehicleMart/DimVehicle SSIS package edges exist before publish.
+- DevOps/runtime artifacts reflect the refreshed lineage.
+
+## FDP-09: All-Database Typed Bucket Republish
+
+Backlog item: FDCAT-020
+
+Estimated tokens: 300k-600k
+
+### Goal
+
+Rebuild and publish every included database with the DMS-style typed bucket
+hierarchy.
+
+### Deliverables
+
+- Full typed human catalog dry run.
+- Live Confluence publish.
+- Published check report.
+
+### Acceptance Criteria
+
+- Every included database has database, schema, bucket, and object pages.
+- Object leaf pages use fully qualified technical titles.
+- Published check passes with no missing pages.
+
+## FDP-10: DevOps And Rovo Dataset Refresh
+
+Backlog item: FDCAT-021
+
+Estimated tokens: 160k-300k
+
+### Goal
+
+Push the refreshed machine-readable lineage and Rovo retrieval dataset after
+the human catalog is live.
+
+### Deliverables
+
+- DevOps catalog/runtime sync and publish summary.
+- Rovo retrieval dry run, publish packet, live publish, and check.
+- Rovo link alignment readback.
+
+### Acceptance Criteria
+
+- DevOps runtime package is published/synced.
+- Rovo artifacts remain under `AI Retrieval Artifacts`.
+- Rovo canonical human links use typed bucket paths.
+
+## FDP-11: Canonical Parent Repair And Retired-Table Cleanup
+
+Backlog item: FDCAT-022
+
+Estimated tokens: 180k-320k
+
+### Goal
+
+Repair live Confluence hierarchy placement and remove obvious retired-table
+pages from the human/Rovo catalog surface.
+
+### Deliverables
+
+- Publisher/checker hardening for parent-path verification.
+- Full human catalog rebuild with suppressed retired-table candidates.
+- Live move/update publish for canonical object bucket placement.
+- Retired-table cleanup readback.
+- Rovo rebuild/publish with suppressed retired-table locator/context rows.
+
+### Acceptance Criteria
+
+- Schema pages do not have direct object-page children.
+- Object pages live under typed buckets.
+- Obvious backup (`bak`, `bk`, `bkp`, or `backup`)/temp/delete/old/deprecated/drop/remove/retired/scratch tables
+  are absent from human and Rovo outputs.
+- Cleanup archive actions are skipped for any page with child pages,
+  attachments, or comments.
 
 ## Medium-Intelligence Handoff Prompt
 
@@ -240,6 +350,6 @@ We are deploying the Sonic Data Lineage Database Catalog across every included
 cataloged database using ADR-016. Read the required packet docs, stay in dry-run
 mode unless I explicitly approve live publish or cleanup, and complete
 <packet id>. The final tree is Database Catalog / <Platform/Product> /
-<Database> / <Schema> / <Object>. Old Schema - <Database>.<Schema> pages are
+<Database> / <Database.Schema> / <Database.Schema> <Object Type Bucket> / <Database.Schema.Object>. Old Schema - <Database>.<Schema> pages are
 cleanup candidates only.
 ```

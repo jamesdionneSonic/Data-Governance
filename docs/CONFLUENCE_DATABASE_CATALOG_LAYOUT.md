@@ -50,8 +50,9 @@ Sonic Data Lineage
   Database Catalog
     <Platform/Product>
       <Database>
-        <Schema>
-          <Object>
+        <Database.Schema>
+          <Database.Schema Object Type Bucket>
+            <Database.Schema.Object>
 ```
 
 Supported platform/product titles include `SQL Server` and `Snowflake`. The
@@ -70,6 +71,11 @@ The full technical identity belongs inside the page:
 Full name: Sonic_DW.dbo
 ```
 
+Because Confluence page titles must be unique across the whole space, schema
+and bucket titles are database-qualified even though they sit under a database
+page. Use `Sonic_DW.dbo`, not bare `dbo`, and `Sonic_DW.dbo Tables`, not bare
+`dbo Tables`.
+
 Examples:
 
 ```text
@@ -77,9 +83,17 @@ Sonic Data Lineage
   Database Catalog
     SQL Server
       Sonic_DW
-        dbo
+        Sonic_DW.dbo
+          Sonic_DW.dbo Tables
+            Sonic_DW.dbo.DimVehicle
+          Sonic_DW.dbo Views
+            Sonic_DW.dbo.vwFactFIRESummaryReport
+          Sonic_DW.dbo Stored Procedures
+            Sonic_DW.dbo.usp_DOC_Booked
       eLeadDW_SF
-        dbo
+        eLeadDW_SF.dbo
+          eLeadDW_SF.dbo Tables
+            eLeadDW_SF.dbo.CustomerMatchLookup
     Snowflake
       HYPERNOVA_SONIC_CUSTACCESS
         PUBLIC
@@ -115,11 +129,13 @@ Required sections:
 4. `Tables`
 5. `Views`
 6. `Procedures`
-7. `Other Objects`
-8. `Objects With Profile Data`
-9. `Objects Needing Review`
-10. `Known Gaps And Confidence`
-11. `Technical Evidence`
+7. `Functions`
+8. `Synonyms`
+9. `Other Objects`
+10. `Objects With Profile Data`
+11. `Objects Needing Review`
+12. `Known Gaps And Confidence`
+13. `Technical Evidence`
 
 The schema page must expose every cataloged object in the schema. It may use
 collapsible sections for long lists, but it must not hide total counts or make
@@ -141,8 +157,18 @@ Object rows should include:
 
 ## Object Pages
 
-Object pages are canonical pages under their database/schema. They may start as
-thin pages and become richer as evidence or review priority increases.
+Object pages are canonical pages under their database/schema/type bucket. They
+may start as thin pages and become richer as evidence or review priority
+increases. Bucket page titles are database/schema-qualified, for example
+`Sonic_DW.dbo Tables`, `Sonic_DW.dbo Views`,
+`Sonic_DW.dbo Stored Procedures`, `Sonic_DW.dbo Functions`, and
+`Sonic_DW.dbo Synonyms`.
+Object page titles use the full technical identity
+`<Database>.<Schema>.<Object>` to avoid Confluence space-wide title collisions.
+The publisher must verify and, when explicitly approved, move pages by their
+full parent path. A same-title lookup elsewhere in the Confluence space is not
+proof that the page is correctly placed. After publish, a schema page must not
+have direct object children; object pages must live under their typed bucket.
 
 Every publishable object should have a Tier 2 thin object page. A top-used or
 top-25 pilot batch is not complete coverage. Schema pages may be published
@@ -227,6 +253,23 @@ Do not auto-assign `high-value` from dependency count alone. Use `high-use` or
 `lineage-hotspot` for technical dependency signals. Reserve `high-value` for
 human-reviewed or explicitly business-significant objects.
 
+## Obvious Retired Tables
+
+The human catalog and Rovo retrieval artifacts should not publish obvious
+backup, temporary, old, deprecated, delete/drop/remove, retired, scratch, `tmp`,
+or `temp` tables as normal browseable business assets. These rows remain in the
+machine-readable DevOps lineage/runtime artifacts for evidence and impact
+analysis, but they are suppressed from the Confluence human catalog and Rovo
+locator/context pages.
+
+The exclusion is table-only and name-based. It is intentionally conservative:
+it applies when the table name contains or starts/ends with explicit markers
+such as `bak`, `bk`, `bkp`, `backup`, `old`, `obsolete`, `deprecated`, `delete`,
+`deleted`, `drop`, `remove`, `retired`, `scratch`, `tmp`, `temp`, or `zzz`.
+Suppressed live pages are cleanup/archive candidates and must be removed only
+through the approved cleanup script after checking for child pages, attachments,
+and comments.
+
 ## Evidence Signals, Not Unsupported Status
 
 Generated pages must not pretend Confluence is a live operational monitor.
@@ -281,11 +324,11 @@ that differ only by generated prefixes.
 
 Examples:
 
-| Noncanonical                                   | Canonical                                                                                   |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `Schema - Sonic_DW.dbo`                        | `SQL Server / Sonic_DW / dbo`                                                               |
-| `Schema Catalog - Sonic_DW.dbo`                | page heading only, not tree title                                                           |
-| `High-Value Object - Sonic_DW.dbo.Dim_Vehicle` | `SQL Server / Sonic_DW / dbo / Dim_Vehicle` with a `high-value` tag if evidence supports it |
+| Noncanonical                                   | Canonical                                                                                                         |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `Schema - Sonic_DW.dbo`                        | `SQL Server / Sonic_DW / Sonic_DW.dbo`                                                                            |
+| `Schema Catalog - Sonic_DW.dbo`                | page heading only, not tree title                                                                                 |
+| `High-Value Object - Sonic_DW.dbo.Dim_Vehicle` | `SQL Server / Sonic_DW / Sonic_DW.dbo / Sonic_DW.dbo.Dim_Vehicle` with a `high-value` tag if evidence supports it |
 
 Do not delete or archive duplicate pages during generation. Cleanup requires a
 separate explicit approval.
@@ -293,7 +336,7 @@ separate explicit approval.
 During full deployment, old schema pages such as
 `Schema - Sonic_DW.dbo`, `Schema - Sonic_DW.dq`, and equivalent pages for any
 other database are superseded cleanup candidates after their clean
-`<Platform/Product> / <Database> / <Schema>` replacements are verified. Existing
+`<Platform/Product> / <Database> / <Database.Schema>` replacements are verified. Existing
 pages already published under `Database Catalog / <Database> / <Schema>` are
 also superseded by the platform-grouped path after review.
 
@@ -302,7 +345,7 @@ also superseded by the platform-grouped path after review.
 Use these link priorities:
 
 1. canonical object page under
-   `Database Catalog / <Platform/Product> / <Database> / <Schema>`;
+   `Database Catalog / <Platform/Product> / <Database> / <Database.Schema> / <Database.Schema> <Object Type Bucket>`;
 2. DevOps answer card or compact context pack;
 3. Rovo AI Retrieval Artifact page only when a human page does not exist or
    when documenting the Rovo answer path;
@@ -336,6 +379,10 @@ A database catalog dry run fails when:
 - schema page titles use `Schema - <Database>.<Schema>` under a database page;
 - object pages are generated under `High-Value Assets` instead of their
   canonical schema location;
+- object pages are direct children of schema pages instead of typed bucket
+  pages;
+- obvious backup/temp/delete tables appear as human catalog or Rovo retrieval
+  objects;
 - object rows do not show type and lineage/profile signals where available;
 - a plain-English purpose is generic or unsupported;
 - object pages omit page-level confidence or missing-facts sections;

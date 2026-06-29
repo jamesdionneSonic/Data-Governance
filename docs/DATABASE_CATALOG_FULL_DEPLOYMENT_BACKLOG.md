@@ -16,7 +16,7 @@ explicitly approves a reviewed packet.
 
 - Full deployment means every included cataloged database, not just `Sonic_DW`.
 - The final tree is
-  `Database Catalog / <Platform/Product> / <Database> / <Schema> / <Object>`.
+  `Database Catalog / <Platform/Product> / <Database> / <Database.Schema> / <Database.Schema> <Object Type Bucket> / <Database.Schema.Object>`.
 - Old pages such as `Schema - Sonic_DW.dbo` are superseded cleanup candidates.
 - Schema pages must expose every cataloged object after blocked-schema rules.
 - Thin object pages are enough for broad coverage; rich pages are priority-led.
@@ -25,6 +25,11 @@ explicitly approves a reviewed packet.
 - Cleanup is separate from generation and publish.
 - Rovo retrieval artifacts must link to canonical human pages but remain in the
   separated `AI Retrieval Artifacts` tree.
+- Published checks must reject direct object children under schema pages and
+  must verify canonical parent paths, not just page titles.
+- Obvious backup (`bak`, `bk`, `bkp`, or `backup`)/temp/delete/old/deprecated/drop/remove/retired/scratch tables
+  are suppressed from human and Rovo catalog output and handled as cleanup
+  candidates.
 
 ## Backlog
 
@@ -82,7 +87,7 @@ databases.
 
 **Scope**:
 
-- Schema title is `<Schema>` under its database page.
+- Schema title is `<Database>.<Schema>` under its database page.
 - List all cataloged objects grouped by type.
 - Include tags, purpose, columns, upstream/downstream counts, profile, and
   confidence.
@@ -188,11 +193,86 @@ databases.
 **Acceptance Criteria**:
 
 - Object pages live under
-  `Database Catalog / <Platform/Product> / <Database> / <Schema>`.
+  `Database Catalog / <Platform/Product> / <Database> / <Database.Schema> / <Database.Schema> <Object Type Bucket>`.
 - Unsupported owner, SLA, lifecycle/status, live freshness, and certification
   are `not surfaced in metadata`.
 - In-scope schema/database rows can link to canonical object pages or explain
   why the link remains pending.
+
+### FDCAT-019: VehicleMart Live SQL And SSIS Lineage Refresh
+
+**Goal**: Refresh VehicleMart from the saved SQL Server connector and fresh
+live SSISDB metadata before publishing human or Rovo pages.
+
+**Scope**:
+
+- Run the saved VehicleMart SQL connector.
+- Run the saved SSISDB connector and review VehicleMart/DimVehicle package
+  metadata for package, task, and column-mapping edges.
+- Rebuild catalog indexes and the runtime package.
+- Confirm VehicleMart SQL objects and SSIS package edges reconcile in the
+  DevOps runtime artifacts.
+
+**Acceptance Criteria**:
+
+- VehicleMart object counts are captured from live SQL metadata.
+- SSIS VehicleMart package edges are present before Confluence/Rovo publish.
+- Runtime checks and SSIS readiness checks pass.
+
+### FDCAT-020: All-Database Typed Bucket Republish
+
+**Goal**: Rebuild every included database to match the DMS typed page layout.
+
+**Scope**:
+
+- Generate database pages, schema pages, typed bucket pages, and thin object
+  pages for every included non-SSISDB database.
+- Publish the full human catalog packet.
+- Verify every expected page under its exact parent.
+
+**Acceptance Criteria**:
+
+- Every included database uses the DMS-style typed buckets.
+- Object leaf titles are fully qualified technical names.
+- Live published check passes with no missing pages.
+
+### FDCAT-021: Rovo And DevOps Dataset Refresh
+
+**Goal**: Publish machine-readable artifacts after the typed human catalog is
+live.
+
+**Scope**:
+
+- Export/sync DevOps lineage artifacts and runtime package.
+- Build and publish Rovo retrieval artifacts.
+- Confirm Rovo links point to typed canonical human pages.
+
+**Acceptance Criteria**:
+
+- DevOps runtime package is published/synced.
+- Rovo validation and live published check pass.
+- Rovo canonical human page links include the typed bucket path.
+
+### FDCAT-022: Canonical Parent Repair And Retired-Table Cleanup
+
+**Goal**: Repair live Confluence pages that were left directly under schema
+pages and archive obvious retired-table catalog pages.
+
+**Scope**:
+
+- Move same-title existing pages only after resolving the intended canonical
+  parent path.
+- Verify schema pages have typed bucket children, not direct object children.
+- Suppress obvious backup (`bak`, `bk`, `bkp`, or `backup`)/temp/delete/old/deprecated/drop/remove/retired/scratch
+  tables from generated human and Rovo output.
+- Archive suppressed live pages only when they have no child pages,
+  attachments, or comments.
+
+**Acceptance Criteria**:
+
+- Published check fails on direct schema object children.
+- Human and Rovo dry-run checks reject obvious retired tables.
+- Cleanup readback records archived/skipped pages and risk reasons.
 
 ### FDCAT-011: Tier 2 Publish Packet And Verification
 

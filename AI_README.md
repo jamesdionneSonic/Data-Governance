@@ -26,8 +26,16 @@ Medium-safe means:
 - do not expose secrets, linked-service connection strings, raw activity output,
   or unrestricted business data.
 
-The current saved ADF connector is
-`azure-data-factory-adf-dw-marketing-prod`.
+The original saved ADF connector is
+`azure-data-factory-adf-dw-marketing-prod`. Additional readable production ADF
+factories in the same subscription are registered through
+`scripts/register-production-adf-connectors.mjs` and summarized in
+`docs/ADF_PRODUCTION_FACTORY_ACCESS_INVENTORY.md`.
+
+Before ingesting newly registered ADF factories, use
+`docs/ADF_MULTI_FACTORY_INGESTION_BACKLOG.md`. Do not start ADF ingestion while
+another source ingestion is running. `adf-XTime-D1` and `adf-GoogleSearch-D1`
+are legacy ADFs documented in `docs/ADF_LEGACY_FACTORY_INVENTORY.md`.
 
 ## Shared Runtime Rule
 
@@ -70,7 +78,11 @@ object-library strategy:
   object;
 - database pages summarize schemas;
 - schema pages list every cataloged object in grouped sections;
-- canonical object pages live under their database/schema path;
+- canonical object pages live under their database/schema/type-bucket path;
+- schema pages must not have direct object children; publish/readback checks
+  must fail when a page such as `Sonic_DW.dbo.SomeTable` is directly under
+  `Sonic_DW.dbo` instead of `Sonic_DW.dbo Tables`, `Sonic_DW.dbo Views`,
+  `Sonic_DW.dbo Stored Procedures`, or `Sonic_DW.dbo Functions`;
 - every publishable object must eventually have a thin Tier 2 object page;
 - schema/database object rows must hyperlink to canonical object pages when the
   object page exists or is included in the same reviewed publish packet;
@@ -115,6 +127,15 @@ Do not infer owner, data steward, lifecycle/status, live freshness, or
 certification unless an approved evidence source explicitly surfaces it. Use
 page-level confidence, aliases, backlinks, missing-facts sections, and
 evidence-backed object tags to keep generated pages honest.
+
+Obvious retired, backup, temp, delete/drop/remove, old/deprecated, scratch, or
+`zzz` table names are excluded from human catalog and Rovo retrieval generation.
+They remain in the machine-readable lineage runtime until source metadata
+confirms they should be removed there too. After a broad publish, run the
+published hierarchy check; if it reports stale direct schema object children,
+use `scripts/repair-direct-schema-object-pages.mjs` to move the only live page
+into the typed bucket or archive a direct duplicate only when the canonical
+bucketed page exists.
 
 ## eLeadDW Low-Intelligence Onboarding Rule
 
