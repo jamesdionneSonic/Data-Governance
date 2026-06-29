@@ -8,25 +8,18 @@ Plan the ingestion, lineage extraction, DevOps packaging, and support
 documentation refresh for newly registered production Azure Data Factory
 connectors.
 
-## Hard Stop
+## Completion Status
 
-Do not start ADF ingestion now.
+Status: complete as of 2026-06-29.
 
-Current blocker:
+The ADF multi-factory backlog is closed. Metadata ingestion, local support
+documentation, Confluence publication, DevOps catalog export, and Azure
+Artifacts runtime package publication were completed for the approved ADF scope.
 
-- Another source ingestion is already running.
-
-Required clearance before work package `ADF-MF-02`:
-
-- the current non-ADF ingestion is complete or explicitly paused;
-- the user confirms which ADF connector or connector batch should run first;
-- the user explicitly approves the ADF ingestion packet;
-- the run plan names the exact connector ids, streams, output locations, and
-  validation commands.
-
-This backlog authorizes planning only. It does not authorize pipeline starts,
-trigger changes, linked-service changes, credential changes, live DevOps writes,
-or Confluence publication.
+Do not move forward with `azure-data-factory-adf-dw-postgres-prod` lineage work
+from this backlog. It has one surfaced pipeline and zero deterministic lineage
+edges, so it remains documented as inventory/support context only and must not
+be represented as a lineage-complete ADF source.
 
 ## Scope
 
@@ -58,23 +51,23 @@ Out of scope:
 
 Lower-risk first:
 
-| Priority | Connector id                                 | Factory                   | Notes                             |
-| -------: | -------------------------------------------- | ------------------------- | --------------------------------- |
-|        1 | `azure-data-factory-adf-admin-d1`            | `adf-Admin-D1`            | readable; zero pipelines/triggers |
-|        2 | `azure-data-factory-adf-dw-caroffer-prod`    | `adf-dw-caroffer-prod`    | readable; zero pipelines/triggers |
-|        3 | `azure-data-factory-adf-dw-lightspeed-prod`  | `adf-dw-lightspeed-prod`  | readable; zero pipelines/triggers |
-|        4 | `azure-data-factory-adf-dw-postgres-prod`    | `adf-dw-postgres-prod`    | readable; zero pipelines/triggers |
-|        5 | `azure-data-factory-adf-googlesearch-d1`     | `adf-GoogleSearch-D1`     | legacy; no active triggers        |
-|        6 | `azure-data-factory-adf-xtime-d1`            | `adf-XTime-D1`            | legacy; no active triggers        |
-|        7 | `azure-data-factory-adf-vehiclemart-prod`    | `ADF-VehicleMart-Prod`    | readable; no active triggers      |
-|        8 | `azure-data-factory-adf-reputationmgmt-d1`   | `adf-ReputationMgmt-D1`   | active trigger                    |
-|        9 | `azure-data-factory-adf-facebookads-d1`      | `adf-FacebookAds-D1`      | active triggers                   |
-|       10 | `azure-data-factory-adf-reconpro-d1`         | `adf-ReconPro-D1`         | active triggers                   |
-|       11 | `azure-data-factory-adf-mci-d1`              | `adf-MCI-D1`              | active triggers                   |
-|       12 | `azure-data-factory-adf-ganalytics-d1`       | `adf-GAnalytics-D1`       | active triggers                   |
-|       13 | `azure-data-factory-adf-elead-d1`            | `adf-eLead-D1`            | active triggers                   |
-|       14 | `azure-data-factory-adf-inbounddataetl-prod` | `ADF-InboundDataETL-Prod` | active triggers; larger factory   |
-|       15 | `azure-data-factory-adf-pricefx-d1`          | `adf-PriceFx-D1`          | active triggers; larger factory   |
+| Priority | Connector id                                 | Factory                   | Notes                                                 |
+| -------: | -------------------------------------------- | ------------------------- | ----------------------------------------------------- |
+|        1 | `azure-data-factory-adf-admin-d1`            | `adf-Admin-D1`            | readable; zero pipelines/triggers                     |
+|        2 | `azure-data-factory-adf-dw-caroffer-prod`    | `adf-dw-caroffer-prod`    | readable; zero pipelines/triggers                     |
+|        3 | `azure-data-factory-adf-dw-lightspeed-prod`  | `adf-dw-lightspeed-prod`  | readable; zero pipelines/triggers                     |
+|        4 | `azure-data-factory-adf-dw-postgres-prod`    | `adf-dw-postgres-prod`    | inventory-only; no usable deterministic lineage edges |
+|        5 | `azure-data-factory-adf-googlesearch-d1`     | `adf-GoogleSearch-D1`     | legacy; no active triggers                            |
+|        6 | `azure-data-factory-adf-xtime-d1`            | `adf-XTime-D1`            | legacy; no active triggers                            |
+|        7 | `azure-data-factory-adf-vehiclemart-prod`    | `ADF-VehicleMart-Prod`    | readable; no active triggers                          |
+|        8 | `azure-data-factory-adf-reputationmgmt-d1`   | `adf-ReputationMgmt-D1`   | active trigger                                        |
+|        9 | `azure-data-factory-adf-facebookads-d1`      | `adf-FacebookAds-D1`      | active triggers                                       |
+|       10 | `azure-data-factory-adf-reconpro-d1`         | `adf-ReconPro-D1`         | active triggers                                       |
+|       11 | `azure-data-factory-adf-mci-d1`              | `adf-MCI-D1`              | active triggers                                       |
+|       12 | `azure-data-factory-adf-ganalytics-d1`       | `adf-GAnalytics-D1`       | active triggers                                       |
+|       13 | `azure-data-factory-adf-elead-d1`            | `adf-eLead-D1`            | active triggers                                       |
+|       14 | `azure-data-factory-adf-inbounddataetl-prod` | `ADF-InboundDataETL-Prod` | active triggers; larger factory                       |
+|       15 | `azure-data-factory-adf-pricefx-d1`          | `adf-PriceFx-D1`          | active triggers; larger factory                       |
 
 `azure-data-factory-adf-dw-marketing-prod` remains the existing baseline and is
 not part of the newly registered connector backlog unless a reconciliation task
@@ -84,7 +77,7 @@ is explicitly approved.
 
 ### ADF-MF-01: Freeze Scope And Connector Readiness
 
-Status: ready to start; planning/readiness only
+Status: complete
 
 Goal:
 
@@ -108,7 +101,7 @@ Acceptance criteria:
 
 ### ADF-MF-02: Low-Risk Metadata Ingestion Pilot
 
-Status: blocked until active source ingestion is complete and user approves
+Status: complete
 
 Goal:
 
@@ -141,7 +134,7 @@ Acceptance criteria:
 
 ### ADF-MF-03: Lineage Extraction And Edge Review
 
-Status: blocked by `ADF-MF-02`
+Status: complete
 
 Goal:
 
@@ -162,10 +155,12 @@ Acceptance criteria:
 - Lineage edges are deterministic and tied to source connector/profile artifacts.
 - Ambiguous edges are marked review-needed, not guessed.
 - Readback report is stored under the lineage-runtime readback path.
+- `azure-data-factory-adf-dw-postgres-prod` is closed as inventory-only because
+  no deterministic lineage edges were surfaced.
 
 ### ADF-MF-04: Active-Trigger Factory Ingestion
 
-Status: blocked by `ADF-MF-02`, `ADF-MF-03`, and user approval
+Status: complete
 
 Goal:
 
@@ -198,7 +193,7 @@ Acceptance criteria:
 
 ### ADF-MF-05: Local Support Documentation Generation
 
-Status: blocked by lineage/profile artifacts
+Status: complete
 
 Goal:
 
@@ -221,7 +216,7 @@ Acceptance criteria:
 
 ### ADF-MF-06: DevOps Runtime Package And Catalog Export
 
-Status: blocked by local documentation review
+Status: complete
 
 Goal:
 
@@ -243,7 +238,7 @@ Acceptance criteria:
 
 ### ADF-MF-07: Confluence Dry Run
 
-Status: blocked by DevOps/runtime validation
+Status: complete
 
 Goal:
 
@@ -265,7 +260,7 @@ Acceptance criteria:
 
 ### ADF-MF-08: Live Publish
 
-Status: hard stop; requires explicit approval after dry-run review
+Status: complete
 
 Goal:
 
@@ -283,10 +278,19 @@ Acceptance criteria:
 - Publication matches the reviewed dry-run scope.
 - Post-publish check passes.
 
+Published results:
+
+- Confluence root page id: `2322792450`
+- Confluence page count: 403
+- Runtime package: `sonic-data-lineage-runtime` version `2026.6.29-1`
+- Runtime content hash:
+  `1a06a3fd1e33fa0c40811eb875a5c3ddc77c8c7a64ad3b38f2db6d980dcfda78`
+- App repo commit: `25eeab402`
+- Machine-readable lineage repo commit: `e4cfaeb1e2`
+
 ## Next Architecture Backlog After ADF
 
-After `ADF-MF-08` is complete or the ADF backlog is formally paused, start the
-source metadata delta-first backlog:
+After `ADF-MF-08` is complete, start the source metadata delta-first backlog:
 
 - `docs/SOURCE_METADATA_DELTA_BACKLOG.md`
 - `docs/SOURCE_METADATA_DELTA_WORK_PACKAGES.md`
@@ -298,8 +302,9 @@ work runs. AI summarization, DevOps updates, runtime package object updates,
 Rovo retrieval artifacts, Confluence dry-runs, and live publication must then
 process only new or changed metadata plus directly impacted index/shard pages.
 
-Do not start this follow-on backlog while ADF ingestion/publication work is
-active unless the user explicitly reorders the work.
+ADF ingestion/publication work is complete. The Postgres ADF exception above
+must remain inventory-only unless a future source change surfaces deterministic
+lineage edges.
 
 ## Minimum Validation Commands
 
@@ -318,4 +323,4 @@ npm run adf:support:generate
 npm run adf:support:dry-run
 ```
 
-Do not run live publish commands until `ADF-MF-08` is explicitly approved.
+Live publish was explicitly approved and completed for `ADF-MF-08`.

@@ -23,6 +23,7 @@ const DEFAULT_CONNECTORS = [
   'azure-data-factory-adf-inbounddataetl-prod',
   'azure-data-factory-adf-pricefx-d1',
 ];
+const INVENTORY_ONLY_CONNECTORS = new Set(['azure-data-factory-adf-dw-postgres-prod']);
 
 function argValue(name, fallback = '') {
   const index = process.argv.indexOf(`--${name}`);
@@ -147,6 +148,14 @@ function supportImpact(assetName) {
   return `If ${assetName} fails or becomes stale, dependent ADF loads, files, datasets, or downstream reporting may be incomplete until the failed run is diagnosed and rerun through the approved parent path.`;
 }
 
+function isInventoryOnly(connectorId, profile) {
+  return (
+    INVENTORY_ONLY_CONNECTORS.has(connectorId) &&
+    (profile.pipelines || []).length > 0 &&
+    (profile.lineage_edges || []).length === 0
+  );
+}
+
 function firstCheck(pipeline, role) {
   if (role === 'orchestrator') return `Check the latest ${pipeline.name} parent run and identify the first failed child activity.`;
   if (role === 'child pipeline') return `Check the parent pipeline that called ${pipeline.name}; do not start the child with blank operational parameters.`;
@@ -173,6 +182,23 @@ function factoryMarkdown({ connectorId, profile, sourceArtifact }) {
   const datasets = profile.datasets || [];
   const connections = profile.connections || [];
   const activeTriggers = triggers.filter((trigger) => prop(trigger).runtimeState === 'Started');
+  const inventoryOnly = isInventoryOnly(connectorId, profile);
+  const summary = inventoryOnly
+    ? `${name} is an Azure Data Factory captured by the saved connector runtime. It contains ${pipelines.length} surfaced pipeline-like object(s), ${triggers.length} trigger(s), ${datasets.length} dataset(s), ${connections.length} linked-service connection record(s), and 0 deterministic lineage edges. This factory is complete for inventory/support documentation and is not a forward lineage target unless future source metadata surfaces real tasks, datasets, connections, schedules, or lineage edges.`
+    : `${name} is an Azure Data Factory captured by the saved connector runtime. It contains ${pipelines.length} pipeline(s), ${triggers.length} trigger(s), ${datasets.length} dataset(s), and ${connections.length} linked-service connection record(s). ${supportImpact(name)} Start troubleshooting by checking active triggers, then the latest root or orchestrator pipeline run.`;
+  const businessUse = inventoryOnly
+    ? `Use this page as the support inventory entry point for ${name}. The available metadata does not expose actionable ADF lineage, source/target datasets, linked services, activities, or schedules.`
+    : `Use this page as the support entry point for ${name}. Pipeline pages below explain orchestrators, child loads, source/target datasets, linked service boundaries, and concrete first checks.`;
+  const supportChecks = inventoryOnly
+    ? `1. Treat this factory as inventory-only unless a future metadata refresh surfaces deterministic ADF lineage edges.
+2. If operations are requested, confirm the live Azure factory state before taking action.
+3. Do not infer source datasets, target datasets, linked services, or business process from the current profile.
+4. Do not change triggers, schedules, retries, linked services, or credentials from documentation work.`
+    : `1. Confirm whether an active trigger should have started the pipeline.
+2. Check the latest parent or orchestrator pipeline run.
+3. Identify the first failed activity or child pipeline.
+4. Confirm source datasets, target datasets, and linked-service availability.
+5. Do not change triggers, schedules, retries, linked services, or credentials from documentation work.`;
   return `# ${name}
 
 Generated: ${new Date().toISOString()}
@@ -181,7 +207,7 @@ Source profile artifact: ${code(path.relative(root, sourceArtifact).replaceAll('
 
 ## Plain-English Summary
 
-${name} is an Azure Data Factory captured by the saved connector runtime. It contains ${pipelines.length} pipeline(s), ${triggers.length} trigger(s), ${datasets.length} dataset(s), and ${connections.length} linked-service connection record(s). ${supportImpact(name)} Start troubleshooting by checking active triggers, then the latest root or orchestrator pipeline run.
+${summary}
 
 ## At a Glance
 
@@ -193,23 +219,19 @@ ${name} is an Azure Data Factory captured by the saved connector runtime. It con
 | Support role | Factory / support section root |
 | Business process | ${md(name)} ADF data movement and orchestration |
 | Primary source | ${md(datasets.slice(0, 5).map((item) => item.name).join(', '))} |
-| Primary target/output | ${md('not fully surfaced in metadata; inspect pipeline pages')} |
+| Primary target/output | ${md(inventoryOnly ? 'not surfaced in metadata' : 'not fully surfaced in metadata; inspect pipeline pages')} |
 | Schedule or trigger | ${md(activeTriggers.map((item) => item.name).join(', ') || 'no active triggers surfaced')} |
 | Runtime/usage signal | Metadata profiled at ${md(profile.generated_at)} |
-| Status signal | ${activeTriggers.length ? 'active trigger surfaced' : 'metadata available'} |
+| Status signal | ${inventoryOnly ? 'inventory-only; no usable deterministic lineage edges' : activeTriggers.length ? 'active trigger surfaced' : 'metadata available'} |
 | Evidence | ${code(path.relative(root, sourceArtifact).replaceAll('\\', '/'))} |
 
 ## Business Use
 
-Use this page as the support entry point for ${name}. Pipeline pages below explain orchestrators, child loads, source/target datasets, linked service boundaries, and concrete first checks.
+${businessUse}
 
 ## Support Checks
 
-1. Confirm whether an active trigger should have started the pipeline.
-2. Check the latest parent or orchestrator pipeline run.
-3. Identify the first failed activity or child pipeline.
-4. Confirm source datasets, target datasets, and linked-service availability.
-5. Do not change triggers, schedules, retries, linked services, or credentials from documentation work.
+${supportChecks}
 
 ## Lineage And Dependencies
 
@@ -240,6 +262,7 @@ ${pipelines
 - Generated from saved ADF connector metadata.
 - Raw activity output, sample rows, secrets, tokens, and connection strings are not published.
 - Missing facts are marked as not surfaced in metadata.
+${inventoryOnly ? '- Closed as inventory-only because no usable deterministic lineage edges were surfaced.' : ''}
 `;
 }
 
@@ -252,7 +275,21 @@ function pipelineMarkdown({ connectorId, profile, pipeline, parentMap, sourceArt
   const targets = targetDatasets(pipeline);
   const procedures = storedProcedures(pipeline);
   const params = pipelineParameters(pipeline);
-  const role = pipelineRole(pipeline, parentMap);
+  const inventoryOnly = isInventoryOnly(connectorId, profile);
+  const role = inventoryOnly ? 'inventory-only pipeline-like object' : pipelineRole(pipeline, parentMap);
+  const summary = inventoryOnly
+    ? `${pipeline.name} is the only surfaced pipeline-like object in ${factory}. The available profile shows no activities, child pipeline calls, source datasets, target datasets, schedules, linked services, or deterministic lineage edges, so this page is inventory/support context only.`
+    : `${pipeline.name} is an ADF ${role} in ${factory}. ${supportImpact(pipeline.name)} Start troubleshooting by ${firstCheck(pipeline, role).replace(/^Check/i, 'checking').replace(/\.$/, '')}.`;
+  const supportChecks = inventoryOnly
+    ? `1. Treat this object as inventory-only unless a future metadata refresh surfaces deterministic ADF lineage edges.
+2. If operations are requested, confirm the live Azure factory state before taking action.
+3. Do not infer parameters, source datasets, target datasets, or stored procedures from the current profile.
+4. Do not change triggers, schedules, retries, linked services, or credentials from documentation work.`
+    : `1. ${firstCheck(pipeline, role)}
+2. Confirm parameters are supplied by the parent, trigger, or documented default path: ${md(params.join(', '))}.
+3. Confirm source datasets are available: ${md(sources.join(', '))}.
+4. Confirm target datasets or child pipelines completed: ${md(targets.join(', ') || calls.join(', '))}.
+5. If stored procedures are involved, validate process/audit logs before rerunning.`;
   return `# ${pageTitle || pipeline.name}
 
 Generated: ${new Date().toISOString()}
@@ -262,7 +299,7 @@ Source profile artifact: ${code(path.relative(root, sourceArtifact).replaceAll('
 
 ## Plain-English Summary
 
-${pipeline.name} is an ADF ${role} in ${factory}. ${supportImpact(pipeline.name)} Start troubleshooting by ${firstCheck(pipeline, role).replace(/^Check/i, 'checking').replace(/\.$/, '')}.
+${summary}
 
 ## At a Glance
 
@@ -277,20 +314,16 @@ ${pipeline.name} is an ADF ${role} in ${factory}. ${supportImpact(pipeline.name)
 | Primary target/output | ${md(targets.slice(0, 8).join(', ') || calls.slice(0, 8).join(', '))} |
 | Schedule or trigger | ${md(triggers.map((item) => item.name).join(', ') || 'not directly triggered')} |
 | Runtime/usage signal | Metadata profiled at ${md(profile.generated_at)} |
-| Status signal | ${triggers.length ? 'triggered pipeline' : 'metadata available'} |
+| Status signal | ${inventoryOnly ? 'inventory-only; no usable deterministic lineage edges' : triggers.length ? 'triggered pipeline' : 'metadata available'} |
 | Evidence | ${code(path.relative(root, sourceArtifact).replaceAll('\\', '/'))} |
 
 ## Business Use
 
-This pipeline supports the ${factory} ADF process. Its available metadata shows ${activities(pipeline).length} activity step(s), ${calls.length} child pipeline call(s), ${sources.length} source dataset reference(s), and ${targets.length} target dataset reference(s).
+${inventoryOnly ? `This object is retained so operators can see that ${factory} was profiled. Its available metadata shows ${activities(pipeline).length} activity steps, ${calls.length} child pipeline calls, ${sources.length} source dataset references, and ${targets.length} target dataset references.` : `This pipeline supports the ${factory} ADF process. Its available metadata shows ${activities(pipeline).length} activity step(s), ${calls.length} child pipeline call(s), ${sources.length} source dataset reference(s), and ${targets.length} target dataset reference(s).`}
 
 ## Support Checks
 
-1. ${firstCheck(pipeline, role)}
-2. Confirm parameters are supplied by the parent, trigger, or documented default path: ${md(params.join(', '))}.
-3. Confirm source datasets are available: ${md(sources.join(', '))}.
-4. Confirm target datasets or child pipelines completed: ${md(targets.join(', ') || calls.join(', '))}.
-5. If stored procedures are involved, validate process/audit logs before rerunning.
+${supportChecks}
 
 ## Lineage And Dependencies
 
@@ -319,6 +352,7 @@ ${activities(pipeline)
 - Generated from saved ADF connector metadata.
 - Linked-service secret details and raw activity output are intentionally not published.
 - Missing source or target detail means the value was not surfaced in metadata, not that no dependency exists.
+${inventoryOnly ? '- Closed as inventory-only because no usable deterministic lineage edges were surfaced.' : ''}
 `;
 }
 

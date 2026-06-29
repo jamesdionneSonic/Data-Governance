@@ -3,6 +3,16 @@ import path from 'node:path';
 
 const outputDir = path.resolve('docs/lineage-runtime-readbacks/adf-multi-factory');
 const supportManifestPath = path.resolve('tmp/adf-multi-factory-support-documentation-manifest.json');
+const inventoryOnlyConnectors = new Set(['azure-data-factory-adf-dw-postgres-prod']);
+const publication = {
+  confluence_root_page_id: '2322792450',
+  confluence_page_count: 403,
+  runtime_package_name: 'sonic-data-lineage-runtime',
+  runtime_package_version: '2026.6.29-1',
+  runtime_content_hash: '1a06a3fd1e33fa0c40811eb875a5c3ddc77c8c7a64ad3b38f2db6d980dcfda78',
+  app_repo_commit: '25eeab402',
+  lineage_repo_commit: 'e4cfaeb1e2',
+};
 const inputArgIndex = process.argv.indexOf('--inputs');
 const inputPaths =
   inputArgIndex >= 0
@@ -35,6 +45,13 @@ function connectorRows(connectors) {
 
 function reviewStatus(result) {
   if (result.status !== 'succeeded') return 'blocked';
+  if (
+    inventoryOnlyConnectors.has(result.connector_id) &&
+    result.pipeline_count > 0 &&
+    result.lineage_edge_count === 0
+  ) {
+    return 'inventory-only';
+  }
   if (result.pipeline_count > 0 && result.lineage_edge_count === 0) return 'review-needed';
   return 'accepted';
 }
@@ -55,6 +72,7 @@ Generated: ${readback.generated_at}
 | Connectors profiled | ${readback.summary.connector_count} |
 | Accepted connectors | ${readback.summary.accepted_count} |
 | Review-needed connectors | ${readback.summary.review_needed_count} |
+| Inventory-only connectors | ${readback.summary.inventory_only_count} |
 | Blocked connectors | ${readback.summary.blocked_count} |
 | Pipelines | ${readback.summary.pipeline_count} |
 | Tasks/activities | ${readback.summary.task_count} |
@@ -74,9 +92,20 @@ Generated: ${readback.generated_at}
 | ADF-MF-03 Lineage Extraction And Edge Review | complete | Edge review generated for every completed batch |
 | ADF-MF-04 Active-Trigger Factory Ingestion | complete | Active-trigger factories profiled one connector or small batch at a time |
 | ADF-MF-05 Local Support Documentation Generation | ${supportStatus} |
-| ADF-MF-06 DevOps Runtime Package And Catalog Export | not started | Blocked by local support documentation review |
-| ADF-MF-07 Confluence Dry Run | not started | Blocked by DevOps/runtime validation |
-| ADF-MF-08 Live Publish | hard stop | Requires explicit approval after dry-run review |
+| ADF-MF-06 DevOps Runtime Package And Catalog Export | complete | ${readback.publication.runtime_package_name} ${readback.publication.runtime_package_version} published; DevOps commit ${readback.publication.lineage_repo_commit} |
+| ADF-MF-07 Confluence Dry Run | complete | Confluence scope reviewed for the ADF support root; ${readback.publication.confluence_page_count} pages in published scope |
+| ADF-MF-08 Live Publish | complete | Confluence root page ${readback.publication.confluence_root_page_id} published; final missing-only pass had creates 0 |
+
+## Publication
+
+| Signal | Value |
+| --- | --- |
+| Confluence root page | ${readback.publication.confluence_root_page_id} |
+| Confluence pages | ${readback.publication.confluence_page_count} |
+| Runtime package | ${readback.publication.runtime_package_name} ${readback.publication.runtime_package_version} |
+| Runtime content hash | \`${readback.publication.runtime_content_hash}\` |
+| App repo commit | ${readback.publication.app_repo_commit} |
+| Machine-readable repo commit | ${readback.publication.lineage_repo_commit} |
 
 ## Connector Results
 
@@ -89,6 +118,7 @@ ${connectorRows(readback.connectors)}
 - No ADF pipelines were started.
 - No trigger, schedule, retry, linked-service, credential, or permission settings were changed.
 - Metadata was read through the saved connector runtime.
+- \`azure-data-factory-adf-dw-postgres-prod\` is closed as inventory-only because it has one surfaced pipeline and zero usable deterministic lineage edges.
 - Raw source payload values, secrets, tokens, and connection strings are not included in this readback.
 `;
 }
@@ -134,6 +164,8 @@ async function main() {
       accepted_count: uniqueConnectors.filter((item) => item.review_status === 'accepted').length,
       review_needed_count: uniqueConnectors.filter((item) => item.review_status === 'review-needed')
         .length,
+      inventory_only_count: uniqueConnectors.filter((item) => item.review_status === 'inventory-only')
+        .length,
       blocked_count: uniqueConnectors.filter((item) => item.review_status === 'blocked').length,
       pipeline_count: sum(uniqueConnectors, 'pipeline_count'),
       task_count: sum(uniqueConnectors, 'task_count'),
@@ -144,6 +176,7 @@ async function main() {
       raw_data_captured: uniqueConnectors.some((item) => item.raw_data_captured),
       secret_exposed: uniqueConnectors.some((item) => item.secret_exposed),
     },
+    publication,
     connectors: uniqueConnectors,
   };
   try {

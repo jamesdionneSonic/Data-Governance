@@ -25,10 +25,11 @@ registered as individual saved connectors by
 resource groups, pipeline visibility, trigger visibility, and active-trigger
 inventory.
 
-Before ingesting newly registered ADF factories for metadata, lineage, DevOps
-artifacts, or support documentation, use
-`docs/ADF_MULTI_FACTORY_INGESTION_BACKLOG.md`. That backlog has a hard stop:
-do not start ADF ingestion while another source ingestion is already running.
+ADF multi-factory metadata ingestion, support documentation, DevOps runtime
+publication, and Confluence publication were completed under
+`docs/ADF_MULTI_FACTORY_INGESTION_BACKLOG.md`. The
+`azure-data-factory-adf-dw-postgres-prod` connector is closed as inventory-only
+because it surfaced no usable deterministic lineage edges.
 
 ADF metadata and lineage must stay in the shared connector runtime. Direct Azure
 Management API calls are allowed only for operational actions that the connector

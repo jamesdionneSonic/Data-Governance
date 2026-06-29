@@ -22,7 +22,7 @@ starting pipelines. Operational starts still follow
 | `adf-dw-caroffer-prod`    | `azure-data-factory-adf-dw-caroffer-prod`    | `rg-data-warehouse-prod`      |                 0 |                0 | None                                                                                                                                                                                                                                                                                                                                                                                              |
 | `adf-dw-lightspeed-prod`  | `azure-data-factory-adf-dw-lightspeed-prod`  | `rg-data-warehouse-prod`      |                 0 |                0 | None                                                                                                                                                                                                                                                                                                                                                                                              |
 | `adf-dw-marketing-prod`   | `azure-data-factory-adf-dw-marketing-prod`   | `rg-data-warehouse-prod`      |                16 |                2 | `trigger_dailyload`, `trigger_sunday`                                                                                                                                                                                                                                                                                                                                                             |
-| `adf-dw-postgres-prod`    | `azure-data-factory-adf-dw-postgres-prod`    | `rg-data-warehouse-prod`      |                 0 |                0 | None                                                                                                                                                                                                                                                                                                                                                                                              |
+| `adf-dw-postgres-prod`    | `azure-data-factory-adf-dw-postgres-prod`    | `rg-data-warehouse-prod`      |                 1 |                0 | Inventory-only; no usable deterministic lineage edges                                                                                                                                                                                                                                                                                                                                             |
 | `adf-eLead-D1`            | `azure-data-factory-adf-elead-d1`            | `rg-data-warehouse-prod`      |                23 |                7 | `Elead_StoreRegionMapping`, `Elead_Data_Validation`, `Elead_Daily`, `Elead_Mkt_Campaign_Monthly`, `Elead_Copy_Files_To_Amplify`                                                                                                                                                                                                                                                                   |
 | `adf-FacebookAds-D1`      | `azure-data-factory-adf-facebookads-d1`      | `rg-data-warehouse-prod`      |                10 |                4 | `FacebookAdsDaily`, `FacebookAdsMonthly`                                                                                                                                                                                                                                                                                                                                                          |
 | `adf-GAnalytics-D1`       | `azure-data-factory-adf-ganalytics-d1`       | `rg-data-warehouse-prod`      |                 8 |                4 | `TGR_LoadViewsToTables_Daily`, `copyDimEntityTables`, `TGR_LoadViewsToTables_FirstRun_Daily`, `TGR_LoadViewsToTables_LastRun_Daily`                                                                                                                                                                                                                                                               |
@@ -46,9 +46,11 @@ connector registration pass:
 
 ## Notes
 
-- `adf-Admin-D1`, `adf-dw-caroffer-prod`, `adf-dw-lightspeed-prod`, and
-  `adf-dw-postgres-prod` were readable but currently returned zero pipelines and
-  zero triggers.
+- `adf-Admin-D1`, `adf-dw-caroffer-prod`, and `adf-dw-lightspeed-prod` were
+  readable but currently returned zero pipelines and zero triggers.
+- `adf-dw-postgres-prod` is readable and surfaced one pipeline-like object in
+  the final profile, but no tasks, datasets, connections, schedules, or
+  deterministic lineage edges. It is closed as inventory/support context only.
 - `adf-GoogleSearch-D1` and `adf-XTime-D1` are documented as legacy ADFs in
   `docs/ADF_LEGACY_FACTORY_INVENTORY.md`.
 - A factory with active triggers should be treated as production-operational.
@@ -56,7 +58,6 @@ connector registration pass:
   packet and explicit user approval.
 - Permanent saved connectors are registered by
   `scripts/register-production-adf-connectors.mjs`.
-- Multi-factory ingestion, lineage extraction, DevOps packaging, and
-  documentation work is planned in
-  `docs/ADF_MULTI_FACTORY_INGESTION_BACKLOG.md`; do not start it while another
-  source ingestion is running.
+- Multi-factory ingestion, lineage extraction, DevOps packaging, Confluence
+  publication, and support documentation work is complete in
+  `docs/ADF_MULTI_FACTORY_INGESTION_BACKLOG.md`.

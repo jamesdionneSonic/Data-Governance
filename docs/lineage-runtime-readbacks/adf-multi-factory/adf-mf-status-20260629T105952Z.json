@@ -13,7 +13,8 @@
   "summary": {
     "connector_count": 15,
     "accepted_count": 14,
-    "review_needed_count": 1,
+    "review_needed_count": 0,
+    "inventory_only_count": 1,
     "blocked_count": 0,
     "pipeline_count": 330,
     "task_count": 1832,
@@ -23,6 +24,15 @@
     "lineage_edge_count": 6355,
     "raw_data_captured": false,
     "secret_exposed": false
+  },
+  "publication": {
+    "confluence_root_page_id": "2322792450",
+    "confluence_page_count": 403,
+    "runtime_package_name": "sonic-data-lineage-runtime",
+    "runtime_package_version": "2026.6.29-1",
+    "runtime_content_hash": "1a06a3fd1e33fa0c40811eb875a5c3ddc77c8c7a64ad3b38f2db6d980dcfda78",
+    "app_repo_commit": "25eeab402",
+    "lineage_repo_commit": "e4cfaeb1e2"
   },
   "connectors": [
     {
@@ -79,7 +89,8 @@
       "lineage_edge_count": 0,
       "raw_data_captured": false,
       "secret_exposed": false,
-      "review_status": "review-needed"
+      "review_status": "inventory-only",
+      "lineage_decision": "do_not_advance_inventory_only_no_deterministic_edges"
     },
     {
       "connector_id": "azure-data-factory-adf-elead-d1",
