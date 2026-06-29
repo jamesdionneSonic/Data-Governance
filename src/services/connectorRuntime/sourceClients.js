@@ -59,6 +59,14 @@ const SOURCE_PATHS = {
     buckets: () => '/',
     objects: ({ config }) => `/${encodeURIComponent(config.bucket || '')}`,
   },
+  aws_athena: {
+    workgroups: () => '/',
+    data_catalogs: () => '/',
+    databases: () => '/',
+    tables: () => '/',
+    named_queries: () => '/',
+    query_executions: () => '/',
+  },
   aws_redshift: {
     schemas: () => '/',
     tables: () => '/',
@@ -313,6 +321,7 @@ const SOURCE_BASE_URL = {
     config.account ? `https://${config.account}.blob.core.windows.net` : null,
   aws_glue: (config) => `https://glue.${config.region || 'us-east-1'}.amazonaws.com`,
   aws_s3: (config) => `https://s3.${config.region || 'us-east-1'}.amazonaws.com`,
+  aws_athena: (config) => `https://athena.${config.region || 'us-east-1'}.amazonaws.com`,
   aws_redshift: (config) => `https://redshift-data.${config.region || 'us-east-1'}.amazonaws.com`,
   quicksight: (config) => `https://quicksight.${config.region || 'us-east-1'}.amazonaws.com`,
 };
@@ -334,6 +343,10 @@ export async function fetchSourceMetadata({
 
   if (['postgresql', 'snowflake', 'ssas_on_prem'].includes(connector.type)) {
     return fetchNativeMetadata({ connector, stream, bridge });
+  }
+
+  if (usesAwsCliProfile(connector)) {
+    return fetchAwsCliMetadata({ connector, stream, options });
   }
 
   if (connector.type === 'azure_data_factory') {
@@ -1404,6 +1417,713 @@ function gitRepositoryApiUrl(config = {}, mode = 'items') {
   return config.repository_api_url || null;
 }
 
+function usesAwsCliProfile(connector = {}) {
+  const mode = String(connector.credential?.mode || connector.credential?.kind || '').toLowerCase();
+  return (
+    (connector.type?.startsWith('aws_') || connector.type === 'quicksight') &&
+    (mode === 'aws_cli_profile' ||
+      Boolean(awsCliProfileName(connector)) ||
+      connector.config?.use_aws_cli === true)
+  );
+}
+
+function awsCliProfileName(connector = {}) {
+  return (
+    connectorCredentialValue(connector, 'aws_profile', 'awsProfile', 'profile') ||
+    connectorConfigValue(connector, 'aws_profile', 'awsProfile', 'profile') ||
+    process.env.AWS_PROFILE ||
+    null
+  );
+}
+
+function awsCliRegion(connector = {}) {
+  return connectorConfigValue(connector, 'region', 'aws_region', 'awsRegion') || 'us-east-1';
+}
+
+function awsCliSampleLimit(connector = {}, options = {}) {
+  const requested = Number(
+    options.max_sample_items ||
+      options.maxSampleItems ||
+      connector.config?.max_sample_items ||
+      connector.config?.maxSampleItems ||
+      5
+  );
+  if (!Number.isFinite(requested) || requested <= 0) return 5;
+  return Math.min(50, Math.max(1, Math.trunc(requested)));
+}
+
+function awsCliFullMetadata(connector = {}, options = {}) {
+  const requested =
+    options.full_metadata ??
+    options.fullMetadata ??
+    options.all_metadata ??
+    options.allMetadata ??
+    connector.config?.full_metadata ??
+    connector.config?.fullMetadata ??
+    process.env.AWS_METADATA_FULL;
+  return (
+    requested === true ||
+    ['1', 'true', 'yes', 'all', 'full'].includes(String(requested || '').toLowerCase())
+  );
+}
+
+function limitedAwsItems(items, limit, fullMetadata) {
+  const values = toArray(items);
+  return fullMetadata ? values : values.slice(0, limit);
+}
+
+function awsMaxResultsArgs(limit, fullMetadata) {
+  return fullMetadata ? [] : ['--max-results', String(limit)];
+}
+
+function awsMaxItemsArgs(limit, fullMetadata) {
+  return fullMetadata ? [] : ['--max-items', String(limit)];
+}
+
+function chunkArray(values = [], chunkSize = 50) {
+  const chunks = [];
+  for (let index = 0; index < values.length; index += chunkSize) {
+    chunks.push(values.slice(index, index + chunkSize));
+  }
+  return chunks;
+}
+
+async function runAwsCliJson({ connector, stream, args }) {
+  const profile = awsCliProfileName(connector);
+  if (!profile) {
+    throw new ConnectorRuntimeError(
+      `${connector.type} live extraction needs an AWS CLI profile for stream '${stream?.name}'.`,
+      {
+        connector_id: connector.id,
+        connector_type: connector.type,
+        stream: stream?.name,
+        remediation:
+          'Set credential.mode=aws_cli_profile and credential.aws_profile to a saved AWS SSO profile.',
+        details: {
+          accepted_profile_fields: [
+            'credential.aws_profile',
+            'credential.profile',
+            'config.aws_profile',
+          ],
+        },
+      }
+    );
+  }
+
+  const executable =
+    connectorConfigValue(connector, 'aws_cli_path', 'awsCliPath') ||
+    process.env.AWS_CLI_PATH ||
+    'aws';
+  const region = awsCliRegion(connector);
+  const commandArgs = [
+    ...args,
+    '--profile',
+    profile,
+    '--region',
+    region,
+    '--no-cli-pager',
+    '--output',
+    'json',
+  ];
+
+  try {
+    const { stdout } = await execFileAsync(executable, commandArgs, {
+      windowsHide: true,
+      timeout: Number(
+        process.env.AWS_CLI_TIMEOUT_MS ||
+          connector.config?.aws_cli_timeout_ms ||
+          connector.config?.awsCliTimeoutMs ||
+          30000
+      ),
+      maxBuffer: Number(
+        process.env.AWS_CLI_MAX_BUFFER ||
+          connector.config?.aws_cli_max_buffer ||
+          connector.config?.awsCliMaxBuffer ||
+          10 * 1024 * 1024
+      ),
+    });
+    const text = String(stdout || '').trim();
+    return text ? JSON.parse(text) : {};
+  } catch (err) {
+    const message = [err.stderr, err.stdout, err.message]
+      .filter(Boolean)
+      .map((item) => String(item).trim())
+      .find(Boolean);
+    throw new ConnectorRuntimeError(
+      `${connector.type} AWS CLI metadata probe failed for stream '${stream?.name}'.`,
+      {
+        connector_id: connector.id,
+        connector_type: connector.type,
+        stream: stream?.name,
+        remediation:
+          'Run aws sso login for the configured profile, verify the account role has read-only metadata permissions, and retry the saved connector run.',
+        details: {
+          aws_profile: profile,
+          region,
+          command: ['aws', ...args].join(' '),
+          exit_code: err.code ?? null,
+          error: message || 'AWS CLI command failed.',
+        },
+      }
+    );
+  }
+}
+
+async function fetchAwsCliMetadata({ connector, stream, options = {} }) {
+  const streamName = stream?.name;
+  if (connector.type === 'aws_s3') {
+    return fetchAwsS3CliMetadata({ connector, stream, options, streamName });
+  }
+  if (connector.type === 'aws_glue') {
+    return fetchAwsGlueCliMetadata({ connector, stream, options, streamName });
+  }
+  if (connector.type === 'aws_athena') {
+    return fetchAwsAthenaCliMetadata({ connector, stream, options, streamName });
+  }
+  if (connector.type === 'quicksight') {
+    return fetchQuickSightCliMetadata({ connector, stream, options, streamName });
+  }
+  return fetchAwsRedshiftCliMetadata({ connector, stream, options, streamName });
+}
+
+async function fetchAwsS3CliMetadata({ connector, stream, options, streamName }) {
+  const limit = awsCliSampleLimit(connector, options);
+  const fullMetadata = awsCliFullMetadata(connector, options);
+  if (streamName === 'objects') {
+    const bucket = connector.config?.bucket;
+    if (!bucket) return awsCliPayload(connector, streamName, []);
+    const json = await runAwsCliJson({
+      connector,
+      stream,
+      args: [
+        's3api',
+        'list-objects-v2',
+        '--bucket',
+        bucket,
+        ...awsMaxItemsArgs(limit, fullMetadata),
+      ],
+    });
+    return awsCliPayload(
+      connector,
+      streamName,
+      limitedAwsItems(json.Contents, limit, fullMetadata).map((item) => ({
+        id: `s3://${bucket}/${item.Key}`,
+        name: item.Key,
+        path: item.Key,
+        bucket,
+        object_type: 's3_object',
+        size: item.Size ?? null,
+        last_modified: item.LastModified || null,
+      }))
+    );
+  }
+  const json = await runAwsCliJson({ connector, stream, args: ['s3api', 'list-buckets'] });
+  return awsCliPayload(
+    connector,
+    streamName,
+    limitedAwsItems(json.Buckets, limit, fullMetadata).map((bucket) => ({
+      id: bucket.Name,
+      name: bucket.Name,
+      object_type: 's3_bucket',
+      created_at: bucket.CreationDate || null,
+    }))
+  );
+}
+
+async function fetchAwsGlueCliMetadata({ connector, stream, options, streamName }) {
+  const limit = awsCliSampleLimit(connector, options);
+  const fullMetadata = awsCliFullMetadata(connector, options);
+  if (streamName === 'jobs') {
+    const json = await runAwsCliJson({
+      connector,
+      stream,
+      args: ['glue', 'get-jobs', ...awsMaxResultsArgs(limit, fullMetadata)],
+    });
+    return awsCliPayload(
+      connector,
+      streamName,
+      limitedAwsItems(json.Jobs, limit, fullMetadata).map((job) => ({
+        id: job.Name,
+        name: job.Name,
+        object_type: 'glue_job',
+        role: job.Role || null,
+        command_name: job.Command?.Name || null,
+        created_at: job.CreatedOn || null,
+        modified_at: job.LastModifiedOn || null,
+      }))
+    );
+  }
+
+  const configuredDatabaseName =
+    connector.config?.database_name ||
+    connector.config?.databaseName ||
+    connector.config?.database ||
+    '';
+  const databaseNames =
+    fullMetadata && !configuredDatabaseName && (streamName === 'tables' || streamName === 'columns')
+      ? (await listGlueDatabases({ connector, stream, limit, fullMetadata })).map(
+          (database) => database.Name
+        )
+      : [configuredDatabaseName || (await firstGlueDatabase(connector, stream, limit))].filter(
+          Boolean
+        );
+
+  if (streamName === 'tables' || streamName === 'columns') {
+    const tableBatches = await Promise.all(
+      databaseNames.map(async (databaseName) =>
+        (await listGlueTables({ connector, stream, databaseName, limit, fullMetadata })).map(
+          (table) => ({
+            databaseName,
+            table,
+          })
+        )
+      )
+    );
+    const tableRows = tableBatches.flat();
+    if (streamName === 'columns') {
+      return awsCliPayload(
+        connector,
+        streamName,
+        tableRows.flatMap(({ databaseName, table }) =>
+          toArray(table.StorageDescriptor?.Columns).map((column, index) => ({
+            id: `${databaseName}.${table.Name}.${column.Name}`,
+            name: column.Name,
+            column_name: column.Name,
+            object_type: 'glue_column',
+            parent_id: `${databaseName}.${table.Name}`,
+            database_name: databaseName,
+            table_name: table.Name,
+            data_type: column.Type || 'unknown',
+            ordinal_position: index + 1,
+            comment: column.Comment || null,
+          }))
+        )
+      );
+    }
+    return awsCliPayload(
+      connector,
+      streamName,
+      tableRows.map(({ databaseName, table }) => ({
+        id: `${databaseName}.${table.Name}`,
+        name: table.Name,
+        table_name: table.Name,
+        object_type: 'glue_table',
+        parent_id: databaseName,
+        database_name: databaseName,
+        table_type: table.TableType || null,
+        column_count: toArray(table.StorageDescriptor?.Columns).length,
+        location: table.StorageDescriptor?.Location || null,
+        location_uri: table.StorageDescriptor?.Location || null,
+        storage_location: table.StorageDescriptor?.Location || null,
+        input_format: table.StorageDescriptor?.InputFormat || null,
+        output_format: table.StorageDescriptor?.OutputFormat || null,
+        serde_library: table.StorageDescriptor?.SerdeInfo?.SerializationLibrary || null,
+        created_at: table.CreateTime || null,
+        updated_at: table.UpdateTime || null,
+      }))
+    );
+  }
+
+  const databases = await listGlueDatabases({ connector, stream, limit, fullMetadata });
+  return awsCliPayload(
+    connector,
+    streamName,
+    databases.map((database) => ({
+      id: database.Name,
+      name: database.Name,
+      object_type: 'glue_database',
+      description: database.Description || null,
+      location_uri: database.LocationUri || null,
+      created_at: database.CreateTime || null,
+    }))
+  );
+}
+
+async function listGlueDatabases({ connector, stream, limit, fullMetadata }) {
+  const json = await runAwsCliJson({
+    connector,
+    stream,
+    args: ['glue', 'get-databases', ...awsMaxResultsArgs(limit, fullMetadata)],
+  });
+  return limitedAwsItems(json.DatabaseList, limit, fullMetadata);
+}
+
+async function listGlueTables({ connector, stream, databaseName, limit, fullMetadata }) {
+  const json = await runAwsCliJson({
+    connector,
+    stream,
+    args: [
+      'glue',
+      'get-tables',
+      '--database-name',
+      databaseName,
+      ...awsMaxResultsArgs(limit, fullMetadata),
+    ],
+  });
+  return limitedAwsItems(json.TableList, limit, fullMetadata);
+}
+
+async function firstGlueDatabase(connector, stream, limit) {
+  const databases = await listGlueDatabases({
+    connector,
+    stream,
+    limit,
+    fullMetadata: false,
+  });
+  return databases[0]?.Name || null;
+}
+
+async function fetchAwsAthenaCliMetadata({ connector, stream, options, streamName }) {
+  const limit = awsCliSampleLimit(connector, options);
+  const fullMetadata = awsCliFullMetadata(connector, options);
+  const catalogName =
+    connector.config?.catalog_name || connector.config?.catalogName || 'AwsDataCatalog';
+
+  if (streamName === 'workgroups') {
+    const json = await runAwsCliJson({
+      connector,
+      stream,
+      args: ['athena', 'list-work-groups', ...awsMaxResultsArgs(limit, fullMetadata)],
+    });
+    return awsCliPayload(
+      connector,
+      streamName,
+      limitedAwsItems(json.WorkGroups, limit, fullMetadata).map((item) => ({
+        id: item.Name,
+        name: item.Name,
+        object_type: 'athena_workgroup',
+        state: item.State || null,
+      }))
+    );
+  }
+
+  if (streamName === 'data_catalogs') {
+    const json = await runAwsCliJson({
+      connector,
+      stream,
+      args: ['athena', 'list-data-catalogs', ...awsMaxResultsArgs(limit, fullMetadata)],
+    });
+    return awsCliPayload(
+      connector,
+      streamName,
+      limitedAwsItems(json.DataCatalogsSummary, limit, fullMetadata).map((item) => ({
+        id: item.CatalogName,
+        name: item.CatalogName,
+        object_type: 'athena_data_catalog',
+        type: item.Type || null,
+      }))
+    );
+  }
+
+  if (streamName === 'named_queries') {
+    const json = await runAwsCliJson({
+      connector,
+      stream,
+      args: ['athena', 'list-named-queries', ...awsMaxResultsArgs(limit, fullMetadata)],
+    });
+    const ids = limitedAwsItems(json.NamedQueryIds, limit, fullMetadata);
+    if (!ids.length) return awsCliPayload(connector, streamName, []);
+    const detailBatches = await Promise.all(
+      chunkArray(ids, 50).map((batch) =>
+        runAwsCliJson({
+          connector,
+          stream,
+          args: ['athena', 'batch-get-named-query', '--named-query-ids', ...batch],
+        })
+      )
+    );
+    return awsCliPayload(
+      connector,
+      streamName,
+      detailBatches.flatMap((details) =>
+        toArray(details.NamedQueries).map((query) => {
+          const queryString = query.QueryString || '';
+          return {
+            id: query.NamedQueryId,
+            name: query.Name || query.NamedQueryId,
+            object_type: 'athena_named_query',
+            parent_id: query.Database || null,
+            database_name: query.Database || null,
+            description: query.Description || null,
+            query_hash: queryString ? hashSourceText(queryString) : null,
+            referenced_tables: extractSqlTableReferences(queryString, {
+              catalog_name: catalogName,
+              database_name: query.Database,
+            }),
+          };
+        })
+      )
+    );
+  }
+
+  if (streamName === 'query_executions') {
+    const json = await runAwsCliJson({
+      connector,
+      stream,
+      args: ['athena', 'list-query-executions', ...awsMaxResultsArgs(limit, fullMetadata)],
+    });
+    return awsCliPayload(
+      connector,
+      streamName,
+      limitedAwsItems(json.QueryExecutionIds, limit, fullMetadata).map((id) => ({
+        id,
+        name: id,
+        object_type: 'athena_query_execution',
+      }))
+    );
+  }
+
+  const configuredDatabaseName =
+    connector.config?.database_name ||
+    connector.config?.databaseName ||
+    connector.config?.database ||
+    '';
+  const databaseNames =
+    fullMetadata && !configuredDatabaseName && streamName === 'tables'
+      ? (await listAthenaDatabases({ connector, stream, catalogName, limit, fullMetadata })).map(
+          (database) => database.Name
+        )
+      : [
+          configuredDatabaseName ||
+            (await firstAthenaDatabase(connector, stream, catalogName, limit)),
+        ].filter(Boolean);
+
+  if (streamName === 'tables') {
+    const tableBatches = await Promise.all(
+      databaseNames.map(async (databaseName) =>
+        (
+          await listAthenaTables({
+            connector,
+            stream,
+            catalogName,
+            databaseName,
+            limit,
+            fullMetadata,
+          })
+        ).map((table) => ({ databaseName, table }))
+      )
+    );
+    return awsCliPayload(
+      connector,
+      streamName,
+      tableBatches.flat().map(({ databaseName, table }) => ({
+        id: `${catalogName}.${databaseName}.${table.Name}`,
+        name: table.Name,
+        table_name: table.Name,
+        object_type: 'athena_table',
+        parent_id: `${catalogName}.${databaseName}`,
+        catalog_name: catalogName,
+        database_name: databaseName,
+        table_type: table.TableType || null,
+        column_count: toArray(table.Columns).length,
+        columns: toArray(table.Columns).map((column) => ({
+          name: column.Name,
+          type: column.Type || 'unknown',
+          comment: column.Comment || null,
+        })),
+      }))
+    );
+  }
+
+  const databases = await listAthenaDatabases({
+    connector,
+    stream,
+    catalogName,
+    limit,
+    fullMetadata,
+  });
+  return awsCliPayload(
+    connector,
+    streamName,
+    databases.map((database) => ({
+      id: `${catalogName}.${database.Name}`,
+      name: database.Name,
+      object_type: 'athena_database',
+      parent_id: catalogName,
+      catalog_name: catalogName,
+    }))
+  );
+}
+
+async function listAthenaDatabases({ connector, stream, catalogName, limit, fullMetadata }) {
+  const json = await runAwsCliJson({
+    connector,
+    stream,
+    args: [
+      'athena',
+      'list-databases',
+      '--catalog-name',
+      catalogName,
+      ...awsMaxResultsArgs(limit, fullMetadata),
+    ],
+  });
+  return limitedAwsItems(json.DatabaseList, limit, fullMetadata);
+}
+
+async function listAthenaTables({
+  connector,
+  stream,
+  catalogName,
+  databaseName,
+  limit,
+  fullMetadata,
+}) {
+  const json = await runAwsCliJson({
+    connector,
+    stream,
+    args: [
+      'athena',
+      'list-table-metadata',
+      '--catalog-name',
+      catalogName,
+      '--database-name',
+      databaseName,
+      ...awsMaxResultsArgs(limit, fullMetadata),
+    ],
+  });
+  return limitedAwsItems(json.TableMetadataList, limit, fullMetadata);
+}
+
+async function firstAthenaDatabase(connector, stream, catalogName, limit) {
+  const databases = await listAthenaDatabases({
+    connector,
+    stream,
+    catalogName,
+    limit,
+    fullMetadata: false,
+  });
+  return databases[0]?.Name || null;
+}
+
+async function fetchQuickSightCliMetadata({ connector, stream, options, streamName }) {
+  const limit = awsCliSampleLimit(connector, options);
+  const fullMetadata = awsCliFullMetadata(connector, options);
+  const accountId = connector.config?.aws_account_id || connector.config?.account_id;
+  const operationByStream = {
+    analyses: 'list-analyses',
+    dashboards: 'list-dashboards',
+    datasets: 'list-data-sets',
+    data_sources: 'list-data-sources',
+    metrics: 'list-analyses',
+    lineage: 'list-analyses',
+  };
+  const outputKeyByStream = {
+    analyses: 'AnalysisSummaryList',
+    dashboards: 'DashboardSummaryList',
+    datasets: 'DataSetSummaries',
+    data_sources: 'DataSources',
+    metrics: 'AnalysisSummaryList',
+    lineage: 'AnalysisSummaryList',
+  };
+  if (!accountId) return awsCliPayload(connector, streamName, []);
+  const json = await runAwsCliJson({
+    connector,
+    stream,
+    args: [
+      'quicksight',
+      operationByStream[streamName] || 'list-dashboards',
+      '--aws-account-id',
+      accountId,
+      ...awsMaxResultsArgs(limit, fullMetadata),
+    ],
+  });
+  const key = outputKeyByStream[streamName] || 'DashboardSummaryList';
+  return awsCliPayload(
+    connector,
+    streamName,
+    limitedAwsItems(json[key], limit, fullMetadata).map((item) => ({
+      id: item.Arn || item.DashboardId || item.AnalysisId || item.DataSetId || item.DataSourceId,
+      name: item.Name || item.DashboardId || item.AnalysisId || item.DataSetId || item.DataSourceId,
+      object_type: `quicksight_${streamName.replace(/s$/, '')}`,
+      arn: item.Arn || null,
+      created_at: item.CreatedTime || null,
+      updated_at: item.LastUpdatedTime || null,
+    }))
+  );
+}
+
+async function fetchAwsRedshiftCliMetadata({ connector, stream, options, streamName }) {
+  const limit = awsCliSampleLimit(connector, options);
+  const fullMetadata = awsCliFullMetadata(connector, options);
+  const json = await runAwsCliJson({
+    connector,
+    stream,
+    args: ['redshift', 'describe-clusters', ...awsMaxResultsArgs(limit, fullMetadata)],
+  });
+  return awsCliPayload(
+    connector,
+    streamName,
+    limitedAwsItems(json.Clusters, limit, fullMetadata).map((cluster) => ({
+      id: cluster.ClusterIdentifier,
+      name: cluster.ClusterIdentifier,
+      object_type: 'redshift_cluster',
+      database_name: cluster.DBName || null,
+      status: cluster.ClusterStatus || null,
+      endpoint: cluster.Endpoint?.Address || null,
+    }))
+  );
+}
+
+function awsCliPayload(connector, streamName, items) {
+  return {
+    extracted_at: new Date().toISOString(),
+    source: 'aws_cli_profile',
+    connector_type: connector.type,
+    aws_profile: awsCliProfileName(connector),
+    account_id: connector.config?.account_id || connector.config?.aws_account_id || null,
+    region: awsCliRegion(connector),
+    [streamName]: items,
+  };
+}
+
+function hashSourceText(value) {
+  return createHash('sha256')
+    .update(String(value || ''))
+    .digest('hex')
+    .slice(0, 24);
+}
+
+function extractSqlTableReferences(sql, defaults = {}) {
+  const text = stripSqlComments(sql);
+  const identifier = '(?:"[^"]+"|`[^`]+`|\\[[^\\]]+\\]|[A-Za-z0-9_$-]+)';
+  const pattern = new RegExp(
+    `\\b(?:from|join)\\s+(${identifier}(?:\\s*\\.\\s*${identifier}){0,2})`,
+    'gi'
+  );
+  const refs = new Map();
+  for (const match of text.matchAll(pattern)) {
+    const parts = match[1].split('.').map(cleanSqlIdentifier).filter(Boolean);
+    if (!parts.length) continue;
+    let catalog = defaults.catalog_name || defaults.catalogName || 'AwsDataCatalog';
+    let database = defaults.database_name || defaults.databaseName || '';
+    let table = '';
+    if (parts.length === 3) [catalog, database, table] = parts;
+    if (parts.length === 2) [database, table] = parts;
+    if (parts.length === 1) [table] = parts;
+    if (!database || !table) continue;
+    const key = `${catalog}.${database}.${table}`.toLowerCase();
+    refs.set(key, { catalog, database, table });
+  }
+  return [...refs.values()].sort((left, right) =>
+    `${left.catalog}.${left.database}.${left.table}`.localeCompare(
+      `${right.catalog}.${right.database}.${right.table}`
+    )
+  );
+}
+
+function stripSqlComments(sql) {
+  return String(sql || '')
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')
+    .replace(/--.*$/gm, ' ');
+}
+
+function cleanSqlIdentifier(value) {
+  return String(value || '')
+    .trim()
+    .replace(/^\[|\]$/g, '')
+    .replace(/^["`]|["`]$/g, '');
+}
+
 function signAwsHeaders({ connector, stream, url, headers }) {
   const config = connector.config || {};
   const credential = connector.credential || {};
@@ -1483,6 +2203,7 @@ function signAwsHeaders({ connector, stream, url, headers }) {
 
 function awsServiceForType(type) {
   if (type === 'aws_s3') return 's3';
+  if (type === 'aws_athena') return 'athena';
   if (type === 'aws_redshift') return 'redshift-data';
   if (type === 'quicksight') return 'quicksight';
   return 'glue';

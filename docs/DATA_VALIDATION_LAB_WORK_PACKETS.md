@@ -572,3 +572,191 @@ Completion note:
 - Open exceptions with blank review classification moved from `1` to `0`.
 - Generated verified packet workbook:
   `excel/Snowflake_DMS_Shared_Consumption_Validation_CLA001G.xlsx`.
+
+### WP-DVL-019 - Accuracy Metric Contract And Thresholds
+
+Goal: define the accuracy dashboard before implementing code or workbook
+changes.
+
+Status: completed
+
+Scope:
+
+- define scorecard metric names and denominator rules;
+- document decision status values;
+- add conservative threshold defaults;
+- map existing review classifications to accuracy categories.
+
+Acceptance:
+
+- metric contract matches ADR-025 and ADR-026;
+- thresholds are explicit and tunable;
+- source-native labels such as `cora_acct_code` remain required;
+- the packet does not run source queries or rebuild the workbook.
+
+Completion note:
+
+- Executed on 2026-06-26.
+- Added
+  `data-validation/datasets/snowflake-dms-shared-consumption/ACCURACY_METRIC_CONTRACT.md`.
+- Added
+  `data-validation/datasets/snowflake-dms-shared-consumption/config/accuracy-dashboard-thresholds.yml`.
+- Expanded the accuracy dashboard contract with denominators, metric formulas,
+  and classification-to-accuracy mappings.
+- Did not query source systems or rebuild the workbook.
+
+### WP-DVL-020 - Accuracy CSV Builder
+
+Goal: produce deterministic accuracy CSVs from existing validation outputs.
+
+Status: completed
+
+Scope:
+
+- read current summary and exception CSVs;
+- calculate key match, value match, readiness, blockers, and candidate defects;
+- write `current/accuracy/` files;
+- archive the same files under the active run id.
+
+Acceptance:
+
+- `accuracy_scorecard.csv` exists for vehicle sales and repair orders;
+- metric definitions and blockers are generated;
+- formula-definition gaps are not counted as certified Snowflake defects;
+- daily audit records the generated accuracy paths.
+
+Completion note:
+
+- Executed on 2026-06-26.
+- Added accuracy CSV generation to the validation runner.
+- Live run `20260626T111348Z` succeeded and generated:
+  - `current/accuracy/accuracy_scorecard.csv`;
+  - `current/accuracy/accuracy_metric_definitions.csv`;
+  - `current/accuracy/accuracy_blockers.csv`;
+  - `current/accuracy/accuracy_review_samples_manifest.csv`.
+- The generated files were also archived under
+  `runs/20260626T111348Z/accuracy/`.
+- Current decision statuses are `review_needed` for vehicle sales and
+  `not_ready` for repair orders.
+
+### WP-DVL-021 - Workbook Accuracy Dashboard Tab
+
+Goal: make the accuracy answer visible in the Excel workbook.
+
+Status: completed
+
+Scope:
+
+- add an `Accuracy Dashboard` worksheet;
+- show the run banner, subject-area scorecards, rates, blockers, and next
+  review actions;
+- preserve existing exception and classification worksheets.
+
+Acceptance:
+
+- workbook opens cleanly;
+- dashboard can be understood without reading code;
+- the view separates key match, value match, and readiness;
+- caveats are visible before any migration-readiness conclusion.
+
+Completion note:
+
+- Executed on 2026-06-26.
+- Added an `Accuracy Dashboard` worksheet as the first tab in the workbook.
+- Added raw accuracy CSV tabs for scorecard, blockers, metric definitions, and
+  sample manifest.
+- Rebuilt
+  `data-validation/datasets/snowflake-dms-shared-consumption/excel/Snowflake_DMS_Shared_Consumption_Validation.xlsx`.
+- Rendered and reviewed
+  `data-validation/datasets/snowflake-dms-shared-consumption/excel/previews/accuracy_dashboard.png`.
+
+### WP-DVL-022 - Bounded Accuracy Drilldowns
+
+Goal: provide the row samples needed to research the dashboard blockers.
+
+Status: completed
+
+Scope:
+
+- generate bounded samples for true missing rows, wrong dealer context, blank
+  primary dealer with secondary match, timing candidates, amount component gaps,
+  and unexplained material amount mismatches;
+- generate a manifest for the workbook.
+
+Acceptance:
+
+- sample files use source-native identifiers;
+- samples are bounded and local;
+- the manifest tells reviewers where to start.
+
+Completion note:
+
+- Executed on 2026-06-26.
+- Added bounded sample generation to the validation runner.
+- Live run `20260626T112257Z` generated:
+  - `current/accuracy/samples/accuracy_mapping_review_sample.csv`;
+  - `current/accuracy/samples/accuracy_amount_component_gap_sample.csv`;
+  - `current/accuracy/samples/accuracy_unexplained_amount_mismatch_sample.csv`;
+  - `current/accuracy/samples/accuracy_true_missing_from_snowflake_sample.csv`;
+  - `current/accuracy/samples/accuracy_timing_review_sample.csv`.
+- Rebuilt the workbook so the accuracy dashboard includes the updated sample
+  manifest.
+
+### WP-DVL-023 - Accuracy Daily Readback
+
+Goal: prove the accuracy dashboard lines up with the current live validation
+reality.
+
+Status: completed
+
+Scope:
+
+- run the daily validation command;
+- verify accuracy CSVs and workbook;
+- summarize whether Snowflake looks accurate, blocked by definitions, or
+  genuinely suspicious.
+
+Acceptance:
+
+- daily run succeeds;
+- workbook is rebuilt;
+- readback identifies blockers and suspicious items;
+- remaining gaps are added to backlog.
+
+Completion note:
+
+- Executed on 2026-06-26.
+- First daily attempt failed during Snowflake connection setup; rerun succeeded.
+- Successful daily run id: `20260626T112910Z`.
+- Workbook rebuild succeeded.
+- Added
+  `data-validation/datasets/snowflake-dms-shared-consumption/ACCURACY_DAILY_READBACK_FINDINGS.md`.
+- Current accuracy readback: vehicle sales is `review_needed`; repair orders is
+  `not_ready`; overall dashboard status is `not_ready`.
+
+### WP-DVL-024 - Vendor Accuracy Handoff Packet
+
+Goal: prepare a concise packet for vendor/source-system follow-up.
+
+Status: completed
+
+Scope:
+
+- summarize accuracy blockers by question type;
+- include bounded sample references;
+- keep language aligned to vendor/source-native fields.
+
+Acceptance:
+
+- packet separates formula, dealer-context, timing, and candidate-defect
+  questions;
+- packet avoids internal implementation details;
+- packet is suitable for business or vendor research.
+
+Completion note:
+
+- Executed on 2026-06-26.
+- Added
+  `data-validation/datasets/snowflake-dms-shared-consumption/VENDOR_ACCURACY_HANDOFF_PACKET.md`.
+- Packet references bounded accuracy samples and separates questions for
+  formula, dealer-context, timing, and candidate-defect review.

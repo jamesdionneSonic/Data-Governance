@@ -1,0 +1,79 @@
+version: 1
+dataset_id: snowflake-dms-shared-consumption
+purpose: >
+  Defines the conservative decision thresholds used by the accuracy dashboard.
+  These thresholds score migration readiness, not raw amount materiality.
+
+score_precision:
+  decimal_places: 4
+  display_percent_decimals: 2
+
+statuses:
+  candidate_ready:
+    minimum_key_match_rate: 0.995
+    minimum_raw_value_match_rate: 0.995
+    minimum_classification_adjusted_readiness_rate: 0.995
+    maximum_candidate_defect_records: 0
+    maximum_migration_blocker_count: 0
+    minimum_confidence: high
+    plain_english: >
+      Snowflake is a candidate for trust in this subject area because keys,
+      values, and blockers are all inside conservative thresholds.
+
+  review_needed:
+    minimum_key_match_rate: 0.950
+    minimum_classification_adjusted_readiness_rate: 0.950
+    maximum_candidate_defect_records: 25
+    allow_mapping_review: true
+    allow_timing_review: true
+    allow_formula_definition_review: true
+    plain_english: >
+      Snowflake is directionally useful, but open review buckets still prevent a
+      replacement-readiness claim.
+
+  not_ready:
+    applies_when: >
+      Candidate defects, key coverage, value agreement, confidence, or migration
+      blockers are outside the review-needed thresholds.
+    plain_english: >
+      Snowflake is not ready to trust for this subject area without correction
+      or stronger supporting evidence.
+
+  not_scored:
+    applies_when: >
+      Required denominator, key, or value evidence is missing or unsupported.
+    plain_english: >
+      The current run does not have enough evidence to score this subject area.
+
+aging_thresholds:
+  timing_candidate_max_open_days_before_blocker: 2
+  snowflake_only_max_open_days_before_blocker: 2
+  mapping_review_max_open_days_before_blocker: 0
+  formula_review_max_open_days_before_blocker: 0
+
+blocker_policy:
+  always_blocking_classifications:
+    - true_missing_from_snowflake
+    - material_amount_mismatch_unexplained
+    - found_in_snowflake_wrong_dealer_context
+    - blank_primary_dealer_with_secondary_match
+    - ambiguous_dealer_context
+    - mapping_rule_gap
+    - amount_component_gap
+    - duplicate_source_record
+    - grain_mismatch
+  aging_blocking_classifications:
+    - timing_candidate
+    - true_snowflake_only
+
+confidence_order:
+  - low
+  - medium
+  - high
+  - very_high
+
+notes:
+  - DMS remains the source of record until migration approval.
+  - Repair-order amount rows classified as amount_component_gap block final
+    value accuracy until the Snowflake PAYCPTOTAL formula is confirmed.
+  - Thresholds are intentionally conservative for the first accuracy dashboard.

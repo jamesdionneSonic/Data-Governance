@@ -1,0 +1,684 @@
+{
+  "schema_version": "1.0",
+  "source_family": "aws",
+  "platform": "AWS",
+  "generated_at": "2026-06-29T13:45:54.801Z",
+  "connector_id": "aws-account-499876093606-us-east-1",
+  "source_scope": "aws-account:499876093606:us-east-1",
+  "source_connector_ids": [
+    "aws-athena-sonic-dev-mdp",
+    "aws-glue-sonic-dev-mdp",
+    "aws-s3-sonic-dev-mdp"
+  ],
+  "product_areas": {
+    "MDP": 4
+  },
+  "primary_product_area": "MDP",
+  "human_catalog_roots": [
+    "Sonic Data Lineage / Data Product Catalog / MDP / MDP AWS Lineage Context"
+  ],
+  "summary": {
+    "object_count": 4,
+    "edge_count": 3,
+    "gap_count": 0,
+    "product_areas": {
+      "MDP": 4
+    },
+    "objects_by_type": {
+      "aws_account": 1,
+      "aws_athena_service": 1,
+      "aws_glue_service": 1,
+      "aws_s3_service": 1
+    },
+    "edges_by_type": {
+      "contains": 3
+    }
+  },
+  "objects": [
+    {
+      "canonical_id": "aws://499876093606/us-east-1/account/499876093606",
+      "display_name": "svc_dev_mdp",
+      "name": "svc_dev_mdp",
+      "object_type": "aws_account",
+      "platform": "AWS",
+      "product_area": "MDP",
+      "business_domain": "Marketing Data Platform",
+      "product_route_id": "mdp-aws-lineage-context",
+      "human_catalog_root": "Sonic Data Lineage / Data Product Catalog / MDP / MDP AWS Lineage Context",
+      "ownership_boundary": {
+        "system_owner": "MDP team",
+        "data_team_role": "feed contributor and lineage consumer",
+        "ownership_note": "Current registered AWS accounts are MDP-specific. Future AWS connectors must declare their own product_area instead of inheriting MDP by default."
+      },
+      "lineage_tags": ["aws", "mdp", "product:MDP"],
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "account",
+      "database": "",
+      "schema": "",
+      "object_name": "svc_dev_mdp",
+      "native_id": "499876093606",
+      "parent_id": null,
+      "attributes": {
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "aws_profile": "sonic-dev-mdp",
+        "role_name": "SonicDeveloperAccess"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": [
+          "aws-athena-sonic-dev-mdp",
+          "aws-glue-sonic-dev-mdp",
+          "aws-s3-sonic-dev-mdp"
+        ],
+        "source_connector_types": ["aws_athena", "aws_glue", "aws_s3"],
+        "streams": []
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 3,
+      "upstream_count": 0,
+      "downstream_count": 3
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/service",
+      "display_name": "Amazon Athena - svc_dev_mdp",
+      "name": "athena",
+      "object_type": "aws_athena_service",
+      "platform": "AWS",
+      "product_area": "MDP",
+      "business_domain": "Marketing Data Platform",
+      "product_route_id": "mdp-aws-lineage-context",
+      "human_catalog_root": "Sonic Data Lineage / Data Product Catalog / MDP / MDP AWS Lineage Context",
+      "ownership_boundary": {
+        "system_owner": "MDP team",
+        "data_team_role": "feed contributor and lineage consumer",
+        "ownership_note": "Current registered AWS accounts are MDP-specific. Future AWS connectors must declare their own product_area instead of inheriting MDP by default."
+      },
+      "lineage_tags": ["aws", "mdp", "product:MDP"],
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "database": "",
+      "schema": "athena",
+      "object_name": "athena",
+      "native_id": "athena",
+      "parent_id": null,
+      "attributes": {
+        "account_id": "499876093606",
+        "region": "us-east-1",
+        "service": "athena"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": []
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/service",
+      "display_name": "AWS Glue Data Catalog - svc_dev_mdp",
+      "name": "glue",
+      "object_type": "aws_glue_service",
+      "platform": "AWS",
+      "product_area": "MDP",
+      "business_domain": "Marketing Data Platform",
+      "product_route_id": "mdp-aws-lineage-context",
+      "human_catalog_root": "Sonic Data Lineage / Data Product Catalog / MDP / MDP AWS Lineage Context",
+      "ownership_boundary": {
+        "system_owner": "MDP team",
+        "data_team_role": "feed contributor and lineage consumer",
+        "ownership_note": "Current registered AWS accounts are MDP-specific. Future AWS connectors must declare their own product_area instead of inheriting MDP by default."
+      },
+      "lineage_tags": ["aws", "mdp", "product:MDP"],
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "glue",
+      "database": "",
+      "schema": "glue",
+      "object_name": "glue",
+      "native_id": "glue",
+      "parent_id": null,
+      "attributes": {
+        "account_id": "499876093606",
+        "region": "us-east-1",
+        "service": "glue"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-glue-sonic-dev-mdp"],
+        "source_connector_types": ["aws_glue"],
+        "streams": []
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/service",
+      "display_name": "Amazon S3 - svc_dev_mdp",
+      "name": "s3",
+      "object_type": "aws_s3_service",
+      "platform": "AWS",
+      "product_area": "MDP",
+      "business_domain": "Marketing Data Platform",
+      "product_route_id": "mdp-aws-lineage-context",
+      "human_catalog_root": "Sonic Data Lineage / Data Product Catalog / MDP / MDP AWS Lineage Context",
+      "ownership_boundary": {
+        "system_owner": "MDP team",
+        "data_team_role": "feed contributor and lineage consumer",
+        "ownership_note": "Current registered AWS accounts are MDP-specific. Future AWS connectors must declare their own product_area instead of inheriting MDP by default."
+      },
+      "lineage_tags": ["aws", "mdp", "product:MDP"],
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "s3",
+      "database": "",
+      "schema": "s3",
+      "object_name": "s3",
+      "native_id": "s3",
+      "parent_id": null,
+      "attributes": {
+        "account_id": "499876093606",
+        "region": "us-east-1",
+        "service": "s3"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+        "source_connector_types": ["aws_s3"],
+        "streams": []
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:aws:10eb334a14465ed083a55c87",
+      "from": "aws://499876093606/us-east-1/account/499876093606",
+      "to": "aws://499876093606/us-east-1/s3/service",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.95,
+      "evidence": {
+        "reason": "Saved connector binds this AWS service to the account scope.",
+        "source_connector_ids": ["aws-s3-sonic-dev-mdp"]
+      },
+      "from_display": "svc_dev_mdp",
+      "to_display": "Amazon S3 - svc_dev_mdp"
+    },
+    {
+      "id": "edge:aws:228bb64f741ab34b10731d0d",
+      "from": "aws://499876093606/us-east-1/account/499876093606",
+      "to": "aws://499876093606/us-east-1/glue/service",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.95,
+      "evidence": {
+        "reason": "Saved connector binds this AWS service to the account scope.",
+        "source_connector_ids": ["aws-glue-sonic-dev-mdp"]
+      },
+      "from_display": "svc_dev_mdp",
+      "to_display": "AWS Glue Data Catalog - svc_dev_mdp"
+    },
+    {
+      "id": "edge:aws:79a6b3a4d652244560f63f5c",
+      "from": "aws://499876093606/us-east-1/account/499876093606",
+      "to": "aws://499876093606/us-east-1/athena/service",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.95,
+      "evidence": {
+        "reason": "Saved connector binds this AWS service to the account scope.",
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"]
+      },
+      "from_display": "svc_dev_mdp",
+      "to_display": "Amazon Athena - svc_dev_mdp"
+    }
+  ],
+  "metadata_objects": [
+    {
+      "canonical_id": "aws://499876093606/us-east-1/account/499876093606",
+      "display_name": "svc_dev_mdp",
+      "object_type": "aws_account",
+      "database": "",
+      "schema": "",
+      "object_name": "svc_dev_mdp",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "product_area": "MDP",
+      "metadata": {
+        "platform": "AWS",
+        "product_area": "MDP",
+        "business_domain": "Marketing Data Platform",
+        "product_route_id": "mdp-aws-lineage-context",
+        "human_catalog_root": "Sonic Data Lineage / Data Product Catalog / MDP / MDP AWS Lineage Context",
+        "ownership_boundary": {
+          "system_owner": "MDP team",
+          "data_team_role": "feed contributor and lineage consumer",
+          "ownership_note": "Current registered AWS accounts are MDP-specific. Future AWS connectors must declare their own product_area instead of inheriting MDP by default."
+        },
+        "lineage_tags": ["aws", "mdp", "product:MDP"],
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "account",
+        "native_id": "499876093606",
+        "parent_id": null,
+        "attributes": {
+          "account_id": "499876093606",
+          "account_name": "svc_dev_mdp",
+          "aws_profile": "sonic-dev-mdp",
+          "role_name": "SonicDeveloperAccess"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/s3/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/glue/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/athena/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": [
+            "aws-athena-sonic-dev-mdp",
+            "aws-glue-sonic-dev-mdp",
+            "aws-s3-sonic-dev-mdp"
+          ],
+          "source_connector_types": ["aws_athena", "aws_glue", "aws_s3"],
+          "streams": []
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/service",
+      "display_name": "Amazon Athena - svc_dev_mdp",
+      "object_type": "aws_athena_service",
+      "database": "",
+      "schema": "athena",
+      "object_name": "athena",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "product_area": "MDP",
+      "metadata": {
+        "platform": "AWS",
+        "product_area": "MDP",
+        "business_domain": "Marketing Data Platform",
+        "product_route_id": "mdp-aws-lineage-context",
+        "human_catalog_root": "Sonic Data Lineage / Data Product Catalog / MDP / MDP AWS Lineage Context",
+        "ownership_boundary": {
+          "system_owner": "MDP team",
+          "data_team_role": "feed contributor and lineage consumer",
+          "ownership_note": "Current registered AWS accounts are MDP-specific. Future AWS connectors must declare their own product_area instead of inheriting MDP by default."
+        },
+        "lineage_tags": ["aws", "mdp", "product:MDP"],
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "athena",
+        "native_id": "athena",
+        "parent_id": null,
+        "attributes": {
+          "account_id": "499876093606",
+          "region": "us-east-1",
+          "service": "athena"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/athena/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+          "source_connector_types": ["aws_athena"],
+          "streams": []
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/service",
+      "display_name": "AWS Glue Data Catalog - svc_dev_mdp",
+      "object_type": "aws_glue_service",
+      "database": "",
+      "schema": "glue",
+      "object_name": "glue",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "product_area": "MDP",
+      "metadata": {
+        "platform": "AWS",
+        "product_area": "MDP",
+        "business_domain": "Marketing Data Platform",
+        "product_route_id": "mdp-aws-lineage-context",
+        "human_catalog_root": "Sonic Data Lineage / Data Product Catalog / MDP / MDP AWS Lineage Context",
+        "ownership_boundary": {
+          "system_owner": "MDP team",
+          "data_team_role": "feed contributor and lineage consumer",
+          "ownership_note": "Current registered AWS accounts are MDP-specific. Future AWS connectors must declare their own product_area instead of inheriting MDP by default."
+        },
+        "lineage_tags": ["aws", "mdp", "product:MDP"],
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "glue",
+        "native_id": "glue",
+        "parent_id": null,
+        "attributes": {
+          "account_id": "499876093606",
+          "region": "us-east-1",
+          "service": "glue"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/glue/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-glue-sonic-dev-mdp"],
+          "source_connector_types": ["aws_glue"],
+          "streams": []
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/service",
+      "display_name": "Amazon S3 - svc_dev_mdp",
+      "object_type": "aws_s3_service",
+      "database": "",
+      "schema": "s3",
+      "object_name": "s3",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "product_area": "MDP",
+      "metadata": {
+        "platform": "AWS",
+        "product_area": "MDP",
+        "business_domain": "Marketing Data Platform",
+        "product_route_id": "mdp-aws-lineage-context",
+        "human_catalog_root": "Sonic Data Lineage / Data Product Catalog / MDP / MDP AWS Lineage Context",
+        "ownership_boundary": {
+          "system_owner": "MDP team",
+          "data_team_role": "feed contributor and lineage consumer",
+          "ownership_note": "Current registered AWS accounts are MDP-specific. Future AWS connectors must declare their own product_area instead of inheriting MDP by default."
+        },
+        "lineage_tags": ["aws", "mdp", "product:MDP"],
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "s3",
+        "native_id": "s3",
+        "parent_id": null,
+        "attributes": {
+          "account_id": "499876093606",
+          "region": "us-east-1",
+          "service": "s3"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/s3/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+          "source_connector_types": ["aws_s3"],
+          "streams": []
+        }
+      }
+    }
+  ],
+  "ai_evidence_packets": [
+    {
+      "canonical_id": "aws://499876093606/us-east-1/account/499876093606",
+      "display_name": "svc_dev_mdp",
+      "object_type": "aws_account",
+      "platform": "AWS",
+      "product_area": "MDP",
+      "business_domain": "Marketing Data Platform",
+      "product_route_id": "mdp-aws-lineage-context",
+      "human_catalog_root": "Sonic Data Lineage / Data Product Catalog / MDP / MDP AWS Lineage Context",
+      "ownership_boundary": {
+        "system_owner": "MDP team",
+        "data_team_role": "feed contributor and lineage consumer",
+        "ownership_note": "Current registered AWS accounts are MDP-specific. Future AWS connectors must declare their own product_area instead of inheriting MDP by default."
+      },
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "account",
+      "bounded_evidence": {
+        "native_id": "499876093606",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "account_id": "499876093606",
+          "account_name": "svc_dev_mdp",
+          "aws_profile": "sonic-dev-mdp",
+          "role_name": "SonicDeveloperAccess"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/s3/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/glue/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/athena/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          }
+        ],
+        "missing_facts": [],
+        "lineage_tags": ["aws", "mdp", "product:MDP"]
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/service",
+      "display_name": "Amazon Athena - svc_dev_mdp",
+      "object_type": "aws_athena_service",
+      "platform": "AWS",
+      "product_area": "MDP",
+      "business_domain": "Marketing Data Platform",
+      "product_route_id": "mdp-aws-lineage-context",
+      "human_catalog_root": "Sonic Data Lineage / Data Product Catalog / MDP / MDP AWS Lineage Context",
+      "ownership_boundary": {
+        "system_owner": "MDP team",
+        "data_team_role": "feed contributor and lineage consumer",
+        "ownership_note": "Current registered AWS accounts are MDP-specific. Future AWS connectors must declare their own product_area instead of inheriting MDP by default."
+      },
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "bounded_evidence": {
+        "native_id": "athena",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "account_id": "499876093606",
+          "region": "us-east-1",
+          "service": "athena"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/athena/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          }
+        ],
+        "missing_facts": [],
+        "lineage_tags": ["aws", "mdp", "product:MDP"]
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/service",
+      "display_name": "AWS Glue Data Catalog - svc_dev_mdp",
+      "object_type": "aws_glue_service",
+      "platform": "AWS",
+      "product_area": "MDP",
+      "business_domain": "Marketing Data Platform",
+      "product_route_id": "mdp-aws-lineage-context",
+      "human_catalog_root": "Sonic Data Lineage / Data Product Catalog / MDP / MDP AWS Lineage Context",
+      "ownership_boundary": {
+        "system_owner": "MDP team",
+        "data_team_role": "feed contributor and lineage consumer",
+        "ownership_note": "Current registered AWS accounts are MDP-specific. Future AWS connectors must declare their own product_area instead of inheriting MDP by default."
+      },
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "glue",
+      "bounded_evidence": {
+        "native_id": "glue",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "account_id": "499876093606",
+          "region": "us-east-1",
+          "service": "glue"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/glue/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          }
+        ],
+        "missing_facts": [],
+        "lineage_tags": ["aws", "mdp", "product:MDP"]
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/service",
+      "display_name": "Amazon S3 - svc_dev_mdp",
+      "object_type": "aws_s3_service",
+      "platform": "AWS",
+      "product_area": "MDP",
+      "business_domain": "Marketing Data Platform",
+      "product_route_id": "mdp-aws-lineage-context",
+      "human_catalog_root": "Sonic Data Lineage / Data Product Catalog / MDP / MDP AWS Lineage Context",
+      "ownership_boundary": {
+        "system_owner": "MDP team",
+        "data_team_role": "feed contributor and lineage consumer",
+        "ownership_note": "Current registered AWS accounts are MDP-specific. Future AWS connectors must declare their own product_area instead of inheriting MDP by default."
+      },
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "s3",
+      "bounded_evidence": {
+        "native_id": "s3",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "account_id": "499876093606",
+          "region": "us-east-1",
+          "service": "s3"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/s3/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          }
+        ],
+        "missing_facts": [],
+        "lineage_tags": ["aws", "mdp", "product:MDP"]
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    }
+  ],
+  "gaps": [],
+  "failures": []
+}

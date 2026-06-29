@@ -439,3 +439,138 @@ Completion note:
 - The current Snowflake-only row `SA466-S|237319` moved from unclassified to
   timing.
 - Open exceptions with blank review classification moved from `1` to `0`.
+
+### DVL-019 - Accuracy Metric Contract And Thresholds
+
+Status: completed
+
+Define the metric contract for the accuracy dashboard, including denominator
+rules, status values, and conservative thresholds.
+
+Acceptance:
+
+- scorecard fields match the accuracy ADRs;
+- threshold defaults are documented;
+- `cora_acct_code` remains the dealer/account label;
+- no source database objects are created.
+
+Completion note:
+
+- Executed as `WP-DVL-019` on 2026-06-26.
+- Added the dataset accuracy metric contract and dashboard-threshold config.
+- Expanded the machine-readable accuracy dashboard contract with denominators,
+  metric formulas, and classification mappings.
+- No source queries were run.
+
+### DVL-020 - Accuracy CSV Builder
+
+Status: completed
+
+Build deterministic accuracy CSV outputs from the current validation outputs.
+
+Acceptance:
+
+- writes `current/accuracy/accuracy_scorecard.csv`;
+- writes metric definitions, blockers, and sample manifest CSVs;
+- archives the same files under `runs/<run-id>/accuracy/`;
+- distinguishes mapping, timing, formula-definition, and candidate-defect
+  records.
+
+Completion note:
+
+- Executed as `WP-DVL-020` on 2026-06-26.
+- Accuracy CSV generation now runs as part of detail exception mode.
+- Live validation run `20260626T111348Z` generated two scorecard rows, five
+  metric definition rows, five blocker rows, and one review-sample manifest row.
+- Current scorecard status is `review_needed` for vehicle sales and `not_ready`
+  for repair orders.
+
+### DVL-021 - Workbook Accuracy Dashboard Tab
+
+Status: completed
+
+Add an `Accuracy Dashboard` worksheet to the Excel workbook.
+
+Acceptance:
+
+- plain-English decision readout is visible;
+- key match, raw value match, and classification-adjusted readiness are shown
+  separately;
+- blockers and caveats are visible before reviewer conclusions;
+- existing classification and exception tabs remain available.
+
+Completion note:
+
+- Executed as `WP-DVL-021` on 2026-06-26.
+- The Excel workbook now opens with an `Accuracy Dashboard` tab sourced from
+  `current/accuracy/` CSVs.
+- The canonical workbook and preview image were rebuilt successfully.
+- The dashboard preserves the existing triage dashboard and classification
+  definitions tabs.
+
+### DVL-022 - Bounded Accuracy Drilldowns
+
+Status: completed
+
+Generate bounded sample outputs for the rows most useful to vendor and business
+research.
+
+Acceptance:
+
+- samples include source-native identifiers;
+- unrestricted raw data is not committed or published;
+- sample manifest links each sample to the classification it supports.
+
+Completion note:
+
+- Executed as `WP-DVL-022` on 2026-06-26.
+- Added bounded accuracy samples for mapping review, amount component gap,
+  unexplained amount mismatch, true missing from Snowflake, and timing review.
+- Live validation run `20260626T112257Z` generated all five sample files and
+  updated the accuracy review samples manifest.
+- The canonical workbook was rebuilt to show the expanded sample manifest.
+
+### DVL-023 - Accuracy Daily Readback
+
+Status: completed
+
+Run the daily workflow after dashboard implementation and document whether the
+accuracy scorecard lines up with the known current reality.
+
+Acceptance:
+
+- daily run succeeds;
+- workbook rebuild succeeds;
+- readback explains whether Snowflake appears accurate, blocked, or suspicious;
+- new gaps become backlog items.
+
+Completion note:
+
+- Executed as `WP-DVL-023` on 2026-06-26.
+- Successful daily run id: `20260626T112910Z`.
+- Accuracy outputs and workbook rebuild succeeded.
+- Added dataset readback findings in
+  `ACCURACY_DAILY_READBACK_FINDINGS.md`.
+- No new implementation gaps were found.
+
+### DVL-024 - Vendor Accuracy Handoff Packet
+
+Status: completed
+
+Prepare a vendor-facing accuracy research packet from the bounded samples and
+blocker list.
+
+Acceptance:
+
+- packet separates formula questions, dealer-context questions, timing
+  questions, and true candidate defects;
+- packet avoids internal implementation noise;
+- packet uses source-native field names understood by the vendor.
+
+Completion note:
+
+- Executed as `WP-DVL-024` on 2026-06-26.
+- Added the vendor/source-owner handoff packet in
+  `VENDOR_ACCURACY_HANDOFF_PACKET.md`.
+- Packet is organized by amount accuracy, `PAYCPTOTAL` formula,
+  dealer/account mapping, true missing candidate, and timing candidate.

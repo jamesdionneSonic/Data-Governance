@@ -38,12 +38,18 @@ Sonic Data Lineage
     DOC
     TRAC
     TURBO
-    HyperCards
-    EchoPark Platform
-    MCI
-    MDP
-  Database Catalog
-    <Database>
+        HyperCards
+        EchoPark Platform
+        MCI
+        MDP
+          MDP AWS Lineage Context
+            Data Team Feed Summary
+            AWS Accounts And Services
+            S3 Glue Athena Lineage
+            Known Gaps And Ownership
+            Technical Evidence And Readbacks
+      Database Catalog
+        <Database>
       <Schema>
         <Canonical Object Page>
   Confidence And Known Gaps
@@ -76,6 +82,19 @@ Include:
 - support checks
 - links to database/schema/object pages
 - confidence and known gaps
+
+For the current AWS connector set, publish human-facing context under:
+
+```text
+Sonic Data Lineage / Data Product Catalog / MDP AWS Lineage Context
+```
+
+This branch is MDP-specific because the current saved AWS connector records are
+MDP-specific. It is not the default location for all future AWS metadata. Future
+AWS connectors must declare an explicit product route before they are placed
+under any data product. Keep Rovo lookup/context artifacts for AWS under
+`AI Retrieval Artifacts`, and keep DevOps JSON/JSONL files as the
+machine-readable source of truth.
 
 ### Database And Schema Pages
 

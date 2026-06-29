@@ -1,12 +1,43 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { createDeltaScope } from '../engines/connectors/metadata-delta/index.js';
+
 const root = process.cwd();
 const profileRoot = path.join(root, 'data', 'markdown', '_runtime', 'profile-runs');
 const connectorId = process.env.ADF_CONNECTOR_ID || 'azure-data-factory-adf-dw-marketing-prod';
 const docsRoot = path.join(root, 'docs', 'adf-support-documentation');
 const htmlRoot = path.join(root, 'tmp', 'adf-confluence-html');
 const manifestPath = path.join(root, 'tmp', 'adf-support-documentation-manifest.json');
+
+function argValue(name, fallback = '') {
+  const index = process.argv.indexOf(`--${name}`);
+  return index >= 0 ? process.argv[index + 1] || fallback : fallback;
+}
+
+function loadDeltaScope() {
+  const deltaManifestPath = argValue('delta-manifest');
+  if (!deltaManifestPath) return createDeltaScope(null);
+  const manifest = JSON.parse(fs.readFileSync(path.resolve(deltaManifestPath), 'utf8'));
+  if (manifest.schema_version !== '1.0') {
+    throw new Error(`Unsupported source metadata delta schema_version '${manifest.schema_version}'.`);
+  }
+  return createDeltaScope(manifest);
+}
+
+function adfCandidateIds(assetType, name) {
+  const cleanName = String(name || '').trim();
+  return [
+    connectorId,
+    cleanName,
+    `${connectorId}:${cleanName}`,
+    `${connectorId}:${assetType}:${cleanName}`,
+    `adf:${connectorId}:${assetType}:${cleanName}`,
+    `azure-data-factory:${connectorId}:${assetType}:${cleanName}`,
+  ].filter(Boolean);
+}
+
+const deltaScope = loadDeltaScope();
 
 function cleanGeneratedDirectory(dir) {
   if (!fs.existsSync(dir)) return;
@@ -449,6 +480,12 @@ const pipelines = (Array.isArray(profile.pipelines) ? profile.pipelines : [])
 const triggers = Array.isArray(profile.schedules) ? profile.schedules : [];
 const datasets = Array.isArray(profile.datasets) ? profile.datasets : [];
 const connections = Array.isArray(profile.connections) ? profile.connections : [];
+const scopedPipelines = deltaScope.active
+  ? pipelines.filter((pipeline) => deltaScope.includesAny(adfCandidateIds('pipeline', pipeline.name)))
+  : pipelines;
+const scopedTriggers = deltaScope.active
+  ? triggers.filter((trigger) => deltaScope.includesAny(adfCandidateIds('trigger', trigger.name)))
+  : triggers;
 
 const parentMap = new Map();
 for (const pipeline of pipelines) {
@@ -483,16 +520,39 @@ function writePage(title, markdown) {
   });
 }
 
-writePage('adf-dw-marketing-prod', overviewMarkdown({ profile, pipelines, triggers, datasets, connections, sourceArtifact }));
-for (const trigger of triggers) writePage(trigger.name, triggerMarkdown(trigger, sourceArtifact));
-for (const pipeline of pipelines.sort((a, b) => a.name.localeCompare(b.name))) {
-  writePage(pipeline.name, pipelineMarkdown(pipeline, parentMap, triggerMap, sourceArtifact));
+const factoryChanged = deltaScope.includesAny(adfCandidateIds('factory', 'adf-dw-marketing-prod'));
+const shouldWriteOverview = !deltaScope.active || factoryChanged || scopedTriggers.length > 0 || scopedPipelines.length > 0;
+if (shouldWriteOverview) {
+  writePage('adf-dw-marketing-prod', overviewMarkdown({ profile, pipelines, triggers, datasets, connections, sourceArtifact }));
+  for (const changedId of deltaScope.changed_object_ids) {
+    if (deltaScope.active) {
+      deltaScope.recordTargetArtifact(changedId, 'support-docs', 'docs/adf-support-documentation/adf-dw-marketing-prod.md');
+    }
+  }
+  for (const trigger of scopedTriggers) {
+    writePage(trigger.name, triggerMarkdown(trigger, sourceArtifact));
+    for (const candidateId of adfCandidateIds('trigger', trigger.name)) {
+      if (deltaScope.changed_object_ids.has(candidateId)) {
+        deltaScope.recordTargetArtifact(candidateId, 'support-docs', `docs/adf-support-documentation/${slug(trigger.name)}.md`);
+      }
+    }
+  }
+  for (const pipeline of scopedPipelines.sort((a, b) => a.name.localeCompare(b.name))) {
+    writePage(pipeline.name, pipelineMarkdown(pipeline, parentMap, triggerMap, sourceArtifact));
+    for (const candidateId of adfCandidateIds('pipeline', pipeline.name)) {
+      if (deltaScope.changed_object_ids.has(candidateId)) {
+        deltaScope.recordTargetArtifact(candidateId, 'support-docs', `docs/adf-support-documentation/${slug(pipeline.name)}.md`);
+      }
+    }
+  }
 }
 
 fs.writeFileSync(manifestPath, JSON.stringify({
   generatedAt: new Date().toISOString(),
   connectorId,
   sourceArtifact: path.relative(root, sourceArtifact).replaceAll('\\', '/'),
+  deltaScope: deltaScope.summary(),
+  deltaTargetArtifacts: deltaScope.manifest?.target_artifacts || [],
   pageCount: manifest.length,
   pages: manifest,
 }, null, 2));

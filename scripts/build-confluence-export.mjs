@@ -9,9 +9,15 @@ function numberArg(name, fallback) {
   return Number.isFinite(value) ? value : fallback;
 }
 
+function valueArg(name) {
+  const index = process.argv.indexOf(name);
+  return index >= 0 ? process.argv[index + 1] || '' : '';
+}
+
 const result = await buildConfluenceExport({
   shardObjectLimit: numberArg('--shard-object-limit', undefined),
   cleanOutput: !process.argv.includes('--no-clean'),
+  deltaManifestPath: valueArg('--delta-manifest'),
 });
 
 console.log(

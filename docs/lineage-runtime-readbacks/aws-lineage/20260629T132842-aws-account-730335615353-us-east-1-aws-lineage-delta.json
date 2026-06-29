@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0",
+  "connector_id": "aws-account-730335615353-us-east-1",
+  "source_family": "aws",
+  "source_scope": "aws-account:730335615353:us-east-1",
+  "baseline": "devops-lineage-repo",
+  "baseline_registry_path": "C:/projects/Sonic-data-lineage/registry/object-registry.jsonl",
+  "generated_at": "2026-06-29T13:28:42.756Z",
+  "mode": "plan_only",
+  "full_refresh_reason": "",
+  "counts": {
+    "new": 4,
+    "changed": 0,
+    "unchanged": 0,
+    "retained_stale": 0,
+    "removed_stale": 0
+  },
+  "changed_object_ids": [
+    "aws://730335615353/us-east-1/account/730335615353",
+    "aws://730335615353/us-east-1/athena/service",
+    "aws://730335615353/us-east-1/glue/service",
+    "aws://730335615353/us-east-1/s3/service"
+  ],
+  "objects": [
+    {
+      "canonical_id": "aws://730335615353/us-east-1/account/730335615353",
+      "display_name": "SVC_Sandbox_MDP",
+      "object_type": "aws_account",
+      "database": "",
+      "schema": "",
+      "object_name": "SVC_Sandbox_MDP",
+      "status": "new",
+      "prior_signature": null,
+      "next_signature": "9e1e2fc4d57f94cf1c1f78a9",
+      "affected_targets": ["devops", "runtime", "rovo", "confluence", "support_docs", "ai_summary"]
+    },
+    {
+      "canonical_id": "aws://730335615353/us-east-1/athena/service",
+      "display_name": "Amazon Athena - SVC_Sandbox_MDP",
+      "object_type": "aws_athena_service",
+      "database": "",
+      "schema": "athena",
+      "object_name": "athena",
+      "status": "new",
+      "prior_signature": null,
+      "next_signature": "564a9db6ef7497ef91897532",
+      "affected_targets": ["devops", "runtime", "rovo", "confluence", "support_docs", "ai_summary"]
+    },
+    {
+      "canonical_id": "aws://730335615353/us-east-1/glue/service",
+      "display_name": "AWS Glue Data Catalog - SVC_Sandbox_MDP",
+      "object_type": "aws_glue_service",
+      "database": "",
+      "schema": "glue",
+      "object_name": "glue",
+      "status": "new",
+      "prior_signature": null,
+      "next_signature": "cef21098bc9ba2ed81ee05eb",
+      "affected_targets": ["devops", "runtime", "rovo", "confluence", "support_docs", "ai_summary"]
+    },
+    {
+      "canonical_id": "aws://730335615353/us-east-1/s3/service",
+      "display_name": "Amazon S3 - SVC_Sandbox_MDP",
+      "object_type": "aws_s3_service",
+      "database": "",
+      "schema": "s3",
+      "object_name": "s3",
+      "status": "new",
+      "prior_signature": null,
+      "next_signature": "0262ec80f4ee1ffab9e18886",
+      "affected_targets": ["devops", "runtime", "rovo", "confluence", "support_docs", "ai_summary"]
+    }
+  ]
+}

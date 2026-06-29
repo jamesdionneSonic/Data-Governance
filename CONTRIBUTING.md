@@ -11,6 +11,7 @@ Thanks for contributing to Data Governance.
 - Validate all incoming/outgoing contracts.
 - Reuse the shared connector/runtime engine for source connections, tests, ingestion, profiling, and schedules; do not create a second SQL/SSIS connection path.
 - Do not run ad-hoc SQL Server, ODBC, `mssql`, `msnodesqlv8`, `sqlcmd`, or SSIS probes outside the shared connector runtime; add guarded diagnostics inside the runtime instead.
+- For AWS/non-database lineage, keep native platform identity, use saved connectors for acquisition, do not persist raw cloud object data, and do not invent edges from names alone. Current AWS connectors are explicitly MDP-routed through `config/aws-lineage-product-routing.json`; future AWS connectors must declare their own product route before downstream packaging. Follow `docs/adr/ADR-029-AWS-And-Non-Database-Lineage-Ingestion.md`.
 - Follow `docs/UI_WORKFLOW_SPEC.md` and `docs/adr/ADR-005-Workflow-Led-UI-Surfaces.md` before adding cards, tables, tabs, buttons, or navigation entries.
 
 ## Branching

@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-29T14:12:46.931Z",
+  "page_type": "mdp-aws-rovo-page",
+  "page_title": "MDP AWS Rovo Object Summary Context 001",
+  "page_tree_path": [
+    "Sonic Data Lineage",
+    "AI Retrieval Artifacts",
+    "MDP AWS Rovo Object Summary Context 001"
+  ],
+  "route_id": "mdp-aws-lineage-context",
+  "product_area": "MDP",
+  "business_domain": "Marketing Data Platform",
+  "human_root_path": "Sonic Data Lineage / Data Product Catalog / MDP AWS Lineage Context",
+  "rovo_root_path": "Sonic Data Lineage / AI Retrieval Artifacts",
+  "summary": {
+    "source_package_count": 6,
+    "object_count": 6471,
+    "edge_count": 6933,
+    "human_page_count": 6,
+    "rovo_page_count": 4
+  },
+  "evidence_hash": "sha256:8424922B1540B4C9909A30268DA36AB3004EE2DCA3B573E8B9E9CF4DE81D3FFC"
+}

@@ -46,6 +46,53 @@ shared connector runtime instead. See:
 - `docs/CONNECTOR_EXTRACTION_FRAMEWORK.md`
 - `docs/CONNECTOR_METADATA_PROFILE_FRAMEWORK.md`
 
+## AWS And Non-Database Lineage Rule
+
+AWS lineage uses the saved connector runtime for metadata acquisition, then the
+AWS lineage engine for native asset identity and edge creation. Do not model AWS
+assets as fake SQL schemas just because downstream catalog tools have
+database-shaped fields.
+
+Use these documents before changing AWS or non-database lineage behavior:
+
+1. `docs/adr/ADR-029-AWS-And-Non-Database-Lineage-Ingestion.md`
+2. `docs/AWS_LINEAGE_INGESTION.md`
+3. `docs/CODEX_AWS_LINEAGE_INGESTION_PACKET.md`
+4. `docs/AWS_LINEAGE_BACKLOG.md`
+5. `docs/AWS_LINEAGE_WORK_PACKETS.md`
+6. `config/aws-lineage-product-routing.json`
+7. `docs/adr/ADR-020-Source-Agnostic-Incremental-Lineage-Ingestion.md`
+8. `docs/adr/ADR-028-Delta-First-Metadata-Processing-And-Publication.md`
+
+The safe command is:
+
+```powershell
+npm run aws:lineage:ingest -- --max-sample-items 10
+```
+
+The current registered AWS connector set is explicitly routed to MDP:
+
+```text
+Sonic Data Lineage / Data Product Catalog / MDP AWS Lineage Context
+```
+
+Build the local MDP downstream package with:
+
+```powershell
+npm run aws:mdp:lineage:package
+```
+
+Do not treat MDP as the default for future AWS. Future AWS connectors must
+declare `product_area`, `product_route_id`, and `human_catalog_root`; missing
+product routing is a lineage gap.
+
+JavaScript owns AWS metadata acquisition, canonical ids, deterministic
+S3/Glue/Athena edges, QuickSight gap reporting, and delta manifests. AI may write
+human-friendly descriptions only from `ai_evidence_packets`. AI must say `not
+surfaced in metadata` for unsupported purpose, owner, steward, SLA, freshness,
+certification, or business process. Do not infer business meaning from an AWS
+bucket, Glue table, Athena query, or QuickSight asset name alone.
+
 ## Engine Foldering Rule
 
 Batch documentation, catalog, connector, and lineage-runtime engines belong

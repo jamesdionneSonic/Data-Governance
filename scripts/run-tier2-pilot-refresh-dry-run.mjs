@@ -9,6 +9,8 @@ const oldReadbackPath = path.join(packetRoot, 'FDP-04-tier2-batch01-live-publish
 const packetJsonPath = path.join(packetRoot, 'T2P-06-sonic-dw-dbo-pilot-refresh-packet.json');
 const packetMarkdownPath = path.join(packetRoot, 'T2P-06-sonic-dw-dbo-pilot-refresh-packet.md');
 const readbackPath = path.join(packetRoot, 'T2P-06-sonic-dw-dbo-pilot-refresh-readback.md');
+const deltaManifestIndex = process.argv.indexOf('--delta-manifest');
+const deltaManifestPath = deltaManifestIndex >= 0 ? process.argv[deltaManifestIndex + 1] || '' : '';
 const scope = {
   platform: 'SQL Server',
   database: 'Sonic_DW',
@@ -308,6 +310,7 @@ async function buildPacket() {
   const readbackText = await fs.readFile(oldReadbackPath, 'utf8');
   const pageIds = parsePublishedPageIds(readbackText);
   const { databasePacket, schemaPacket, objectPackets } = await loadCurrentPackets();
+  const dryRunManifest = await readJson(path.join(dryRunRoot, 'manifest.json'));
   const planned = plannedPages({ databasePacket, schemaPacket, objectPackets });
   const complianceRows = buildComplianceRows({ oldPages, objectPackets, pageIds });
   const failures = validate({ oldPages, databasePacket, schemaPacket, objectPackets, complianceRows });
@@ -351,6 +354,7 @@ async function buildPacket() {
       status: failures.length === 0 ? 'passed' : 'failed',
       failures,
     },
+    delta_scope: dryRunManifest.delta_scope || null,
   };
 
   await writeText(packetJsonPath, JSON.stringify(packet, null, 2));
@@ -367,6 +371,8 @@ async function main() {
     'scripts/build-human-confluence-catalog-dry-run.mjs',
     '--tier2-object-names',
     `${scope.database}.${scope.schema}:${names.join(',')}`,
+    '--delta-manifest',
+    deltaManifestPath,
   ]);
   run('node', ['scripts/check-human-confluence-catalog-dry-run.mjs']);
   const packet = await buildPacket();

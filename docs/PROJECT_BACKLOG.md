@@ -4320,6 +4320,124 @@ This capability turns column metadata, column lineage, transformation evidence, 
 
 ---
 
+## Phase 7t: Source Metadata Delta-First Processing
+
+### Objectives
+
+- Make every future connector metadata capture compare fresh source metadata
+  against the DevOps lineage baseline before downstream work runs.
+- Process only new or changed metadata through AI summarization, generated
+  documentation, DevOps exports, Rovo retrieval artifacts, Confluence dry-runs,
+  and live publication.
+- Keep Rovo and Confluence as downstream projections, not as metadata-change
+  baselines.
+- Queue this work after the current ADF multi-factory work packages are
+  complete or formally paused.
+
+### Execution Entry Point
+
+Start with:
+
+1. `docs/adr/ADR-028-Delta-First-Metadata-Processing-And-Publication.md`
+2. `docs/SOURCE_METADATA_DELTA_BACKLOG.md`
+3. `docs/SOURCE_METADATA_DELTA_WORK_PACKAGES.md`
+4. `docs/adr/ADR-020-Source-Agnostic-Incremental-Lineage-Ingestion.md`
+5. `docs/ADF_MULTI_FACTORY_INGESTION_BACKLOG.md`
+
+### User Stories
+
+#### PHASE7T-001: Delta Contract And Engine Placement
+
+**Story**: Define the reusable JavaScript delta engine contract so all source
+families use the same source-capture, compare, and delta-manifest workflow.
+**Points**: 3
+**Priority**: HIGH
+**Status**: Backlog - starts after ADF-MF-08
+
+**Acceptance Criteria**:
+
+- [ ] Delta engine location and wrapper pattern are documented.
+- [ ] DevOps lineage repo is documented as the comparison baseline.
+- [ ] Rovo and Confluence are explicitly excluded as baselines.
+- [ ] Delta manifest schema covers new, changed, unchanged, retained-stale, and
+      removed-stale objects.
+- [ ] Plan-only and full-refresh behavior are defined.
+
+#### PHASE7T-002: Baseline Reader, Signatures, And Manifest
+
+**Story**: Build deterministic comparison logic that reads the existing DevOps
+baseline, computes stable metadata signatures, and emits a reviewable delta
+manifest.
+**Points**: 5
+**Priority**: HIGH
+**Status**: Backlog - blocked by PHASE7T-001
+
+**Acceptance Criteria**:
+
+- [ ] First-run fixture marks all scoped objects as new.
+- [ ] Repeat fixture marks unchanged objects as unchanged.
+- [ ] Changed fixture marks only modified objects as changed.
+- [ ] Volatile run ids, extraction timestamps, local timestamps, and raw order
+      noise are excluded from signatures.
+- [ ] Plan-only emits manifest/readback without target writes.
+
+#### PHASE7T-003: Source-Family Integration
+
+**Story**: Integrate the shared delta workflow into SQL Server, SSIS,
+Snowflake, ADF, and generic connector metadata-profile paths while preserving
+existing command names.
+**Points**: 8
+**Priority**: HIGH
+**Status**: Backlog - blocked by PHASE7T-002 and ADF-MF-08
+
+**Acceptance Criteria**:
+
+- [ ] Existing SQL Server, SSIS, and Snowflake incremental behavior is
+      preserved.
+- [ ] Future ADF refreshes use the same delta manifest contract after the ADF
+      backlog is complete or paused.
+- [ ] Generic connector publication cannot proceed without a delta manifest.
+- [ ] Full-refresh remains scoped and explicit.
+
+#### PHASE7T-004: Downstream Changed-Only Processing
+
+**Story**: Make AI summaries, DevOps writes, runtime package updates, Rovo
+artifacts, support docs, and Confluence dry-runs/live publishes consume the
+delta manifest.
+**Points**: 8
+**Priority**: HIGH
+**Status**: Backlog - blocked by PHASE7T-003
+
+**Acceptance Criteria**:
+
+- [ ] AI summarization runs only for new or changed bounded evidence packets.
+- [ ] DevOps writes include only new/changed object artifacts and required
+      indexes/manifests.
+- [ ] Rovo dry-run updates only impacted locator/context/evaluation shards.
+- [ ] Confluence dry-run includes only affected pages and directly impacted
+      indexes.
+- [ ] Unchanged-only run produces no AI requests and no Confluence publish
+      candidates.
+
+#### PHASE7T-005: Guardrails And Low/Medium-Intelligence Packets
+
+**Story**: Update execution packets, validation, and documentation so future
+Codex runs can execute delta-first metadata workflows safely.
+**Points**: 5
+**Priority**: HIGH
+**Status**: Backlog - blocked by PHASE7T-004
+
+**Acceptance Criteria**:
+
+- [ ] Work packets require source capture, delta review, then downstream
+      generation.
+- [ ] Publication is blocked when a delta manifest is missing.
+- [ ] Full-refresh requires explicit reason, scope, dry-run, and approval.
+- [ ] Readiness documentation explains how to answer "what changed" and "why
+      did this publish."
+
+---
+
 ## Phase 8: Azure Cloud Epic
 
 ### Objectives

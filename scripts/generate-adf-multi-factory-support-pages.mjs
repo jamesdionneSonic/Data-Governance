@@ -1,6 +1,8 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+import { createDeltaScope, loadDeltaManifest } from '../engines/connectors/metadata-delta/index.js';
+
 const root = process.cwd();
 const profileRoot = path.join(root, 'data', 'markdown', '_runtime', 'profile-runs');
 const docsRoot = path.join(root, 'docs', 'adf-support-documentation-multi-factory');
@@ -30,10 +32,24 @@ function argValue(name, fallback = '') {
   return index >= 0 ? process.argv[index + 1] || fallback : fallback;
 }
 
-const connectorIds = String(argValue('connectors', DEFAULT_CONNECTORS.join(',')))
+const deltaManifestPath = argValue('delta-manifest');
+const requestedConnectorIds = String(argValue('connectors', DEFAULT_CONNECTORS.join(',')))
   .split(',')
   .map((item) => item.trim())
   .filter(Boolean);
+let connectorIds = requestedConnectorIds;
+
+function adfCandidateIds(connectorId, assetType, name) {
+  const cleanName = String(name || '').trim();
+  return [
+    connectorId,
+    cleanName,
+    `${connectorId}:${cleanName}`,
+    `${connectorId}:${assetType}:${cleanName}`,
+    `adf:${connectorId}:${assetType}:${cleanName}`,
+    `azure-data-factory:${connectorId}:${assetType}:${cleanName}`,
+  ].filter(Boolean);
+}
 
 function clean(value) {
   return String(value ?? '').replace(/\r\n/g, '\n').trim();
@@ -428,13 +444,20 @@ async function writePage({ connectorId, title, body, fileTitle = title }) {
   return path.relative(root, file).replaceAll('\\', '/');
 }
 
+const deltaScope = createDeltaScope(await loadDeltaManifest(deltaManifestPath));
+if (deltaScope.active && deltaScope.manifest?.connector_id) {
+  connectorIds = connectorIds.filter((connectorId) => connectorId === deltaScope.manifest.connector_id);
+}
+
 await resetDir(docsRoot);
 await fs.mkdir(path.dirname(manifestPath), { recursive: true });
 
 const manifest = {
   generated_at: new Date().toISOString(),
-  connector_count: connectorIds.length,
+  connector_count: 0,
   page_count: 0,
+  delta_scope: deltaScope.summary(),
+  delta_target_artifacts: [],
   connectors: [],
   pages: [],
 };
@@ -445,6 +468,15 @@ for (const connectorId of connectorIds) {
   const profile = profileFromArtifact(artifact);
   const pipelines = Array.isArray(profile.pipelines) ? profile.pipelines : [];
   const triggers = Array.isArray(profile.schedules) ? profile.schedules : [];
+  const scopedPipelines = deltaScope.active
+    ? pipelines.filter((pipeline) => deltaScope.includesAny(adfCandidateIds(connectorId, 'pipeline', pipeline.name)))
+    : pipelines;
+  const scopedTriggers = deltaScope.active
+    ? triggers.filter((trigger) => deltaScope.includesAny(adfCandidateIds(connectorId, 'trigger', trigger.name)))
+    : triggers;
+  if (deltaScope.active && !scopedPipelines.length && !scopedTriggers.length && !deltaScope.includesAny(adfCandidateIds(connectorId, 'factory', factoryName(profile, connectorId)))) {
+    continue;
+  }
   const pipelineTitleCounts = pipelines.reduce((counts, pipeline) => {
     counts.set(pipeline.name, (counts.get(pipeline.name) || 0) + 1);
     return counts;
@@ -464,15 +496,21 @@ for (const connectorId of connectorIds) {
     body: factoryMarkdown({ connectorId, profile, sourceArtifact }),
   });
   manifest.pages.push({ connector_id: connectorId, title: factoryTitle, asset_type: 'factory', markdown_file: factoryFile });
-  for (const trigger of triggers) {
+  for (const changedId of deltaScope.changed_object_ids) {
+    if (deltaScope.active) deltaScope.recordTargetArtifact(changedId, 'support-docs', factoryFile);
+  }
+  for (const trigger of scopedTriggers) {
     const file = await writePage({
       connectorId,
       title: trigger.name,
       body: triggerMarkdown({ connectorId, profile, trigger, sourceArtifact }),
     });
     manifest.pages.push({ connector_id: connectorId, title: trigger.name, asset_type: 'trigger', markdown_file: file });
+    for (const candidateId of adfCandidateIds(connectorId, 'trigger', trigger.name)) {
+      if (deltaScope.changed_object_ids.has(candidateId)) deltaScope.recordTargetArtifact(candidateId, 'support-docs', file);
+    }
   }
-  for (const pipeline of pipelines.slice().sort((a, b) => a.name.localeCompare(b.name))) {
+  for (const pipeline of scopedPipelines.slice().sort((a, b) => a.name.localeCompare(b.name))) {
     const duplicatePipelineName = (pipelineTitleCounts.get(pipeline.name) || 0) > 1;
     const duplicateIndex = (duplicateTitleSeen.get(pipeline.name) || 0) + 1;
     duplicateTitleSeen.set(pipeline.name, duplicateIndex);
@@ -493,19 +531,25 @@ for (const connectorId of connectorIds) {
       }),
     });
     manifest.pages.push({ connector_id: connectorId, title: pipelineTitle, asset_type: 'pipeline', markdown_file: file });
+    for (const candidateId of adfCandidateIds(connectorId, 'pipeline', pipeline.name)) {
+      if (deltaScope.changed_object_ids.has(candidateId)) deltaScope.recordTargetArtifact(candidateId, 'support-docs', file);
+    }
   }
   manifest.connectors.push({
     connector_id: connectorId,
     factory: factoryTitle,
     source_artifact: path.relative(root, sourceArtifact).replaceAll('\\', '/'),
     factory_pages: 1,
-    trigger_pages: triggers.length,
-    pipeline_pages: pipelines.length,
-    total_pages: 1 + triggers.length + pipelines.length,
+    trigger_pages: scopedTriggers.length,
+    pipeline_pages: scopedPipelines.length,
+    total_pages: 1 + scopedTriggers.length + scopedPipelines.length,
   });
 }
 
+manifest.connector_count = manifest.connectors.length;
 manifest.page_count = manifest.pages.length;
+manifest.delta_scope = deltaScope.summary();
+manifest.delta_target_artifacts = deltaScope.manifest?.target_artifacts || [];
 await fs.writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
 
 console.log(

@@ -17,6 +17,7 @@ import {
 } from './constants.js';
 import { sha256Text } from './provenance.js';
 import { appendRuleProposals, buildRuleProposals, loadLineageBrainRules } from './rulesStore.js';
+import { requireDeltaScopeForAiSync } from '../../../engines/connectors/metadata-delta/index.js';
 
 function buildDraftPath(record, draftRoot, lane) {
   if (!draftRoot) return null;
@@ -39,6 +40,36 @@ function matchesTarget(record, target) {
     record.kind,
   ].filter(Boolean);
   return values.some((value) => String(value).toLowerCase().includes(needle));
+}
+
+function recordDeltaCandidateIds(record = {}) {
+  const metadata = record.metadata || {};
+  return [
+    record.markdownPath,
+    record.rawPath,
+    record.rawSqlPath,
+    record.rawXmlPath,
+    record.objectName,
+    record.displayName,
+    record.packageName,
+    record.objectType,
+    record.kind,
+    metadata.id,
+    metadata.object_id,
+    metadata.objectId,
+    metadata.canonical_id,
+    metadata.name,
+    metadata.package_name,
+    metadata.qualified_name,
+    metadata.full_name,
+  ]
+    .filter(Boolean)
+    .map(String);
+}
+
+function matchesDeltaScope(record, deltaScope) {
+  if (!deltaScope?.active) return false;
+  return deltaScope.includesAny(recordDeltaCandidateIds(record));
 }
 
 function applyLimit(items, limit) {
@@ -118,9 +149,9 @@ function writeLiveCorrections(results, { applyCorrections, confirmLiveWrite, max
 }
 
 function runSsis(options = {}) {
-  const records = extractSsisEvidence({ target: options.target }).filter((record) =>
-    matchesTarget(record, options.target)
-  );
+  const records = extractSsisEvidence({ target: options.target })
+    .filter((record) => matchesTarget(record, options.target))
+    .filter((record) => matchesDeltaScope(record, options.deltaScope));
   const { baseline, anomalies } = classifySsisRecords(records, options.rules);
   const selectedAnomalies = applyLimit(
     anomalies
@@ -169,9 +200,9 @@ function runSsis(options = {}) {
 }
 
 function runTable(options = {}) {
-  const records = extractTableEvidence({ target: options.target }).filter((record) =>
-    matchesTarget(record, options.target)
-  );
+  const records = extractTableEvidence({ target: options.target })
+    .filter((record) => matchesTarget(record, options.target))
+    .filter((record) => matchesDeltaScope(record, options.deltaScope));
   const { baseline, anomalies } = classifyTableRecords(records, options.rules);
   const selectedAnomalies = applyLimit(
     anomalies
@@ -221,6 +252,9 @@ function runTable(options = {}) {
 
 export function runLineageBrain(mode = 'both', options = {}) {
   const selected = String(mode || 'both').toLowerCase();
+  const deltaScope =
+    options.deltaScope ||
+    requireDeltaScopeForAiSync(options.deltaManifestPath, 'Lineage Brain LLM prompt generation');
   const rulesPath = options.rulesPath || ACTIVE_RULES_PATH;
   const rules = options.rules || loadLineageBrainRules(rulesPath);
   const results = [];
@@ -234,6 +268,7 @@ export function runLineageBrain(mode = 'both', options = {}) {
       target: options.target || null,
       maxChanges,
       rules,
+      deltaScope,
     });
     results.push(...ssisRun.results);
     reportSections.push(ssisRun.reportLines.join('\n'));
@@ -245,6 +280,7 @@ export function runLineageBrain(mode = 'both', options = {}) {
       target: options.target || null,
       maxChanges,
       rules,
+      deltaScope,
     });
     results.push(...tableRun.results);
     reportSections.push(tableRun.reportLines.join('\n'));
@@ -295,6 +331,7 @@ export function runLineageBrain(mode = 'both', options = {}) {
     proposals,
     proposalWrite,
     stability,
+    deltaScope: deltaScope.summary(),
   });
   if (options.reportFile !== false) {
     writeTextFile(

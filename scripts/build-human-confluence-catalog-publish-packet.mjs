@@ -254,6 +254,9 @@ async function main() {
     return canonicalPath === pilotPath || canonicalPath.startsWith(`${pilotPath} / `);
   });
   const failures = validationFailures({ leafPackets, planned, schemaPacket, supersededCandidates });
+  if (manifest.delta_scope?.active !== true) {
+    failures.push('Human catalog dry-run manifest is not delta-scoped. Run the dry run with --delta-manifest before preparing a publish packet.');
+  }
   const packet = {
     packet_id: 'WP-04',
     generated_at: new Date().toISOString(),
@@ -286,6 +289,7 @@ async function main() {
       status: failures.length === 0 ? 'passed' : 'failed',
       failures,
     },
+    delta_scope: manifest.delta_scope || null,
   };
 
   await writeText(path.join(packetRoot, `${packetSlug}.json`), JSON.stringify(packet, null, 2));

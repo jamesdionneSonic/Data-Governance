@@ -30,6 +30,10 @@ const folderFilter = valueAfter('--folder');
 const limit = numberAfter('--limit', Infinity);
 const offset = numberAfter('--offset', 0);
 
+if (publish) {
+  throw new Error('SSIS support live publish is blocked until it is delta-scoped. Refusing broad support-doc publication into AI-indexed Confluence.');
+}
+
 if (publish && (!email || !apiToken)) {
   throw new Error('CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN are required for --publish.');
 }

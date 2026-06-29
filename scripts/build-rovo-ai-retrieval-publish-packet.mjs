@@ -91,6 +91,9 @@ async function main() {
   const failures = [];
   if (manifest.acceptance?.status !== 'passed') failures.push('Rovo dry-run manifest acceptance did not pass.');
   if (!Array.isArray(manifest.pages) || manifest.pages.length === 0) failures.push('Rovo dry-run manifest has no pages.');
+  if (manifest.delta_scope?.active !== true) {
+    failures.push('Rovo dry-run manifest is not delta-scoped. Run the dry run with --delta-manifest before preparing a publish packet.');
+  }
 
   const planned = [
     {
@@ -152,6 +155,7 @@ async function main() {
       rovo_dry_run_manifest: 'data/confluence/rovo-ai-retrieval-dry-run/manifest.json',
       rovo_dry_run_output: 'data/confluence/rovo-ai-retrieval-dry-run',
     },
+    delta_scope: manifest.delta_scope || null,
     output_artifacts: {
       packet_json: `docs/confluence-full-database-catalog-deployment/${packetSlug}.json`,
       packet_markdown: `docs/confluence-full-database-catalog-deployment/${packetSlug}.md`,

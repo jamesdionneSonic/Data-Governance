@@ -53,6 +53,12 @@ Rovo will:
 - avoid inventing owners, SLAs, lifecycle/status, freshness, certification,
   source systems, or business processes not surfaced in metadata.
 
+For AWS and other non-database sources, Rovo/AI descriptions must also preserve
+native platform language. An S3 bucket, Glue table, Athena workgroup, or
+QuickSight dashboard name is not enough evidence to infer business purpose,
+owner, steward, SLA, freshness, certification, or process. Unsupported facts
+must be written as `not surfaced in metadata`.
+
 Weak evidence will not receive Rovo-authored business prose automatically. It
 will use deterministic direct support language and be tagged for later
 correction if users identify gaps.
@@ -216,5 +222,7 @@ The pilot must prove:
 - `docs/ORGANIZATION_DATABASE_ROVO_PILOT_WORK_PACKETS.md`
 - `docs/adr/ADR-015-Rovo-Optimized-AI-Retrieval-Artifacts.md`
 - `docs/adr/ADR-016-Full-Database-Catalog-Deployment-And-Cleanup.md`
+- `docs/adr/ADR-029-AWS-And-Non-Database-Lineage-Ingestion.md`
+- `docs/AWS_LINEAGE_INGESTION.md`
 - `docs/CONFLUENCE_HUMAN_LINEAGE_PAGE_CONTRACT.md`
 - `docs/ROVO_AI_RETRIEVAL_ARTIFACTS_CONTRACT.md`

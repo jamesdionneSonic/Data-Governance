@@ -691,6 +691,7 @@ export class BaseConnectorAdapter {
       mode === 'iam_role' ||
       mode === 'workload_identity' ||
       mode === 'azure_cli' ||
+      mode === 'aws_cli_profile' ||
       mode === 'delegated_oauth' ||
       mode === 'windows_integrated';
     if (!hasSecretReference) {

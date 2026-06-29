@@ -20,6 +20,7 @@ import {
   CONFLUENCE_GENERATED_ROOT_PAGE_IDS,
   CONFLUENCE_SPACE,
 } from '../config/confluencePageMap.js';
+import { requireDeltaScopeForAi } from '../../engines/connectors/metadata-delta/index.js';
 
 const DEFAULT_MARKDOWN_ROOT = './data/markdown';
 const DEFAULT_EXPORT_ROOT = './data/confluence/export';
@@ -1736,6 +1737,12 @@ async function mapWithConcurrency(items, limit, mapper) {
 }
 
 export async function buildConfluenceExport(options = {}) {
+  const deltaScope =
+    options.deltaScope ||
+    (await requireDeltaScopeForAi(
+      options.deltaManifestPath || process.env.SOURCE_METADATA_DELTA_MANIFEST,
+      'Confluence/Rovo corpus export'
+    ));
   const markdownRoot = path.resolve(
     process.cwd(),
     options.markdownRoot || process.env.MARKDOWN_DATA_PATH || DEFAULT_MARKDOWN_ROOT
@@ -1790,7 +1797,9 @@ export async function buildConfluenceExport(options = {}) {
   const runtimeCatalog = await loadRuntimeCatalog(markdownRoot, { autoRebuild: true });
   const { objects } = runtimeCatalog;
   const graph = runtimeCatalog.lineageGraph;
-  const objectEntries = sortedObjectEntries(objects);
+  const objectEntries = sortedObjectEntries(objects).filter(([objectId]) =>
+    deltaScope.includesObjectId(objectId)
+  );
   const shardDefinitions = buildShardDefinitions(objectEntries, {
     artifactRoot,
     graph,
@@ -1855,6 +1864,7 @@ export async function buildConfluenceExport(options = {}) {
   const manifest = {
     generated_at: generatedAt,
     generator: 'src/services/confluenceExportService.js',
+    delta_scope: deltaScope.summary(),
     source_markdown_root: normalizePathForManifest(markdownRoot),
     artifact_root: normalizePathForManifest(artifactRoot),
     confluence: {
@@ -1870,7 +1880,7 @@ export async function buildConfluenceExport(options = {}) {
     object_pages: [],
     attachments: [],
     stats: {
-      objects: objects.size,
+      objects: objectEntries.length,
       shard_object_limit: Math.max(25, Number(shardObjectLimit) || DEFAULT_SHARD_OBJECT_LIMIT),
       shard_max_bytes: Math.max(50_000, Number(shardMaxBytes) || DEFAULT_SHARD_MAX_BYTES),
       quick_context_object_limit: Math.max(

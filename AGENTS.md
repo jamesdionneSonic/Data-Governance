@@ -49,6 +49,23 @@ Human-facing Confluence lineage work should follow
 `docs/adr/ADR-009-Human-Centered-Confluence-Lineage-Catalog.md` and
 `docs/CONFLUENCE_LINEAGE_REPOSITORY.md`.
 
+AWS and non-database lineage ingestion should follow
+`docs/adr/ADR-029-AWS-And-Non-Database-Lineage-Ingestion.md`,
+`docs/AWS_LINEAGE_INGESTION.md`, and
+`docs/CODEX_AWS_LINEAGE_INGESTION_PACKET.md`. Use saved connectors through the
+shared runtime for metadata acquisition, preserve native platform identity such
+as `aws://...`, create only deterministic evidence-backed edges, and keep AI
+plain-English descriptions bounded to evidence packets. Do not persist raw cloud
+object data, credentials, tokens, raw source payloads, or guessed business
+meaning.
+
+The current AWS connector set is MDP-specific and must remain explicitly routed
+through `config/aws-lineage-product-routing.json` to
+`Sonic Data Lineage / Data Product Catalog / MDP AWS Lineage Context`.
+Do not treat AWS itself as MDP. Future AWS connectors must declare their own
+`product_area`, `product_route_id`, and `human_catalog_root`; missing product
+routing is a lineage gap and should not be placed into a product tree.
+
 Database Catalog work should also follow
 `docs/adr/ADR-013-Complete-Database-Catalog-And-Object-Library-Pages.md`,
 `docs/adr/ADR-014-Canonical-Object-Catalog-Trust-Signals-And-Medium-Backlog.md`,

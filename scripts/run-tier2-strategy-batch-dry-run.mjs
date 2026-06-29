@@ -9,6 +9,8 @@ const coverageManifestPath = path.join(packetRoot, 'T2P-01-tier2-object-coverage
 const batchId = process.argv.find((arg) => arg.startsWith('--batch-id='))?.split('=')[1] || 'T2B-001';
 const tableOnly = process.argv.includes('--table-only');
 const publishLive = process.argv.includes('--publish');
+const deltaManifestIndex = process.argv.indexOf('--delta-manifest');
+const deltaManifestPath = deltaManifestIndex >= 0 ? process.argv[deltaManifestIndex + 1] || '' : '';
 const canonicalRoot = ['Sonic Data Lineage', 'Database Catalog'];
 const databaseSchemaLabels = ['human-lineage-catalog', 'database-catalog', 'database-catalog-tier1', 'database-catalog-link-refresh'];
 const objectLabels = ['human-lineage-catalog', 'database-catalog', 'database-catalog-tier2', 'thin-object-page'];
@@ -334,9 +336,12 @@ async function main() {
     'scripts/build-human-confluence-catalog-dry-run.mjs',
     '--tier2-object-names',
     `${batch.database}.${batch.schema}:${batch.object_names.join(',')}`,
+    '--delta-manifest',
+    deltaManifestPath,
   ]);
   run('node', ['scripts/check-human-confluence-catalog-dry-run.mjs']);
   const { databasePacket, schemaPacket, objectPackets } = await loadCurrentPackets(batch);
+  const dryRunManifest = await readJson(path.join(dryRunRoot, 'manifest.json'));
   const planned = plannedPages({ batch, databasePacket, schemaPacket, objectPackets });
   const failures = validationFailures({ batch, databasePacket, schemaPacket, objectPackets, planned });
   const packetSlug = `${batch.batch_id}-${slug(batch.database)}-${slug(batch.schema)}${tableOnly ? '-table' : ''}-tier2-publish-packet`;
@@ -376,6 +381,7 @@ async function main() {
       status: failures.length === 0 ? 'passed' : 'failed',
       failures,
     },
+    delta_scope: dryRunManifest.delta_scope || null,
   };
   await writeText(packetJsonPath, JSON.stringify(packet, null, 2));
   await writeText(packetMarkdownPath, markdownPacket(packet));

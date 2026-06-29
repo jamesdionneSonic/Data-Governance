@@ -1,0 +1,1736 @@
+{
+  "schema_version": "1.0",
+  "source_family": "aws",
+  "platform": "AWS",
+  "generated_at": "2026-06-29T12:57:57.478Z",
+  "connector_id": "aws-account-120126178335-us-east-1",
+  "source_scope": "aws-account:120126178335:us-east-1",
+  "source_connector_ids": [
+    "aws-athena-northwest-motorsport-prod",
+    "aws-glue-northwest-motorsport-prod",
+    "aws-quicksight-northwest-motorsport-prod",
+    "aws-s3-northwest-motorsport-prod"
+  ],
+  "summary": {
+    "object_count": 12,
+    "edge_count": 12,
+    "gap_count": 0,
+    "objects_by_type": {
+      "aws_account": 1,
+      "athena_data_catalog": 1,
+      "aws_athena_service": 1,
+      "athena_workgroup": 1,
+      "aws_glue_service": 1,
+      "aws_quicksight_service": 1,
+      "s3_bucket": 5,
+      "aws_s3_service": 1
+    },
+    "edges_by_type": {
+      "contains": 11,
+      "metadata_catalog_used_by_athena": 1
+    }
+  },
+  "objects": [
+    {
+      "canonical_id": "aws://120126178335/us-east-1/account/120126178335",
+      "display_name": "Northwest Motorsport - Production",
+      "name": "Northwest Motorsport - Production",
+      "object_type": "aws_account",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "account",
+      "database": "",
+      "schema": "",
+      "object_name": "Northwest Motorsport - Production",
+      "native_id": "120126178335",
+      "parent_id": null,
+      "attributes": {
+        "account_id": "120126178335",
+        "account_name": "Northwest Motorsport - Production",
+        "aws_profile": "northwest-motorsport-prod",
+        "role_name": "AWSAdministratorAccess"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": [
+          "aws-athena-northwest-motorsport-prod",
+          "aws-glue-northwest-motorsport-prod",
+          "aws-quicksight-northwest-motorsport-prod",
+          "aws-s3-northwest-motorsport-prod"
+        ],
+        "source_connector_types": ["aws_athena", "aws_glue", "aws_s3", "quicksight"],
+        "streams": []
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 4,
+      "upstream_count": 0,
+      "downstream_count": 4
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/athena/catalog/AwsDataCatalog",
+      "display_name": "AwsDataCatalog",
+      "name": "AwsDataCatalog",
+      "object_type": "athena_data_catalog",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "athena",
+      "database": "",
+      "schema": "catalogs",
+      "object_name": "AwsDataCatalog",
+      "native_id": "AwsDataCatalog",
+      "parent_id": null,
+      "attributes": {
+        "type": "GLUE"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-athena-northwest-motorsport-prod"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["data_catalogs"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+          "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 2,
+      "upstream_count": 2,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/athena/service",
+      "display_name": "Amazon Athena - Northwest Motorsport - Production",
+      "name": "athena",
+      "object_type": "aws_athena_service",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "athena",
+      "database": "",
+      "schema": "athena",
+      "object_name": "athena",
+      "native_id": "athena",
+      "parent_id": null,
+      "attributes": {
+        "account_id": "120126178335",
+        "region": "us-east-1",
+        "service": "athena"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-athena-northwest-motorsport-prod"],
+        "source_connector_types": ["aws_athena"],
+        "streams": []
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 3,
+      "upstream_count": 1,
+      "downstream_count": 2
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/athena/workgroup/primary",
+      "display_name": "primary",
+      "name": "primary",
+      "object_type": "athena_workgroup",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "athena",
+      "database": "",
+      "schema": "workgroups",
+      "object_name": "primary",
+      "native_id": "primary",
+      "parent_id": null,
+      "attributes": {
+        "state": "ENABLED"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-athena-northwest-motorsport-prod"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["workgroups"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+          "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/glue/service",
+      "display_name": "AWS Glue Data Catalog - Northwest Motorsport - Production",
+      "name": "glue",
+      "object_type": "aws_glue_service",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "glue",
+      "database": "",
+      "schema": "glue",
+      "object_name": "glue",
+      "native_id": "glue",
+      "parent_id": null,
+      "attributes": {
+        "account_id": "120126178335",
+        "region": "us-east-1",
+        "service": "glue"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": [
+          "aws-athena-northwest-motorsport-prod",
+          "aws-glue-northwest-motorsport-prod"
+        ],
+        "source_connector_types": ["aws_glue"],
+        "streams": []
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 2,
+      "upstream_count": 1,
+      "downstream_count": 1
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/quicksight/service",
+      "display_name": "Amazon QuickSight - Northwest Motorsport - Production",
+      "name": "quicksight",
+      "object_type": "aws_quicksight_service",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "quicksight",
+      "database": "",
+      "schema": "quicksight",
+      "object_name": "quicksight",
+      "native_id": "quicksight",
+      "parent_id": null,
+      "attributes": {
+        "account_id": "120126178335",
+        "region": "us-east-1",
+        "service": "quicksight"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-quicksight-northwest-motorsport-prod"],
+        "source_connector_types": ["quicksight"],
+        "streams": []
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/bucket/ami.nwmsrocks.com",
+      "display_name": "ami.nwmsrocks.com",
+      "name": "ami.nwmsrocks.com",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "s3",
+      "database": "",
+      "schema": "",
+      "object_name": "ami.nwmsrocks.com",
+      "native_id": "ami.nwmsrocks.com",
+      "parent_id": null,
+      "attributes": {
+        "created_at": "2019-12-06T00:40:04+00:00"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-s3-northwest-motorsport-prod"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/bucket/aws-glue-assets-120126178335-us-west-2",
+      "display_name": "aws-glue-assets-120126178335-us-west-2",
+      "name": "aws-glue-assets-120126178335-us-west-2",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "s3",
+      "database": "",
+      "schema": "",
+      "object_name": "aws-glue-assets-120126178335-us-west-2",
+      "native_id": "aws-glue-assets-120126178335-us-west-2",
+      "parent_id": null,
+      "attributes": {
+        "created_at": "2026-01-06T02:45:33+00:00"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-s3-northwest-motorsport-prod"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/bucket/beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl",
+      "display_name": "beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl",
+      "name": "beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "s3",
+      "database": "",
+      "schema": "",
+      "object_name": "beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl",
+      "native_id": "beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl",
+      "parent_id": null,
+      "attributes": {
+        "created_at": "2019-04-08T20:46:11+00:00"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-s3-northwest-motorsport-prod"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/bucket/blog.nwmsrocks.com",
+      "display_name": "blog.nwmsrocks.com",
+      "name": "blog.nwmsrocks.com",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "s3",
+      "database": "",
+      "schema": "",
+      "object_name": "blog.nwmsrocks.com",
+      "native_id": "blog.nwmsrocks.com",
+      "parent_id": null,
+      "attributes": {
+        "created_at": "2017-10-22T00:25:54+00:00"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-s3-northwest-motorsport-prod"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/bucket/build-inventory-before.nwmsrocks.com",
+      "display_name": "build-inventory-before.nwmsrocks.com",
+      "name": "build-inventory-before.nwmsrocks.com",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "s3",
+      "database": "",
+      "schema": "",
+      "object_name": "build-inventory-before.nwmsrocks.com",
+      "native_id": "build-inventory-before.nwmsrocks.com",
+      "parent_id": null,
+      "attributes": {
+        "created_at": "2017-09-06T18:17:05+00:00"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-s3-northwest-motorsport-prod"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/service",
+      "display_name": "Amazon S3 - Northwest Motorsport - Production",
+      "name": "s3",
+      "object_type": "aws_s3_service",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "s3",
+      "database": "",
+      "schema": "s3",
+      "object_name": "s3",
+      "native_id": "s3",
+      "parent_id": null,
+      "attributes": {
+        "account_id": "120126178335",
+        "region": "us-east-1",
+        "service": "s3"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-s3-northwest-motorsport-prod"],
+        "source_connector_types": ["aws_s3"],
+        "streams": []
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 6,
+      "upstream_count": 1,
+      "downstream_count": 5
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:aws:1093515a0803697d5d2a719c",
+      "from": "aws://120126178335/us-east-1/s3/service",
+      "to": "aws://120126178335/us-east-1/s3/bucket/ami.nwmsrocks.com",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-s3-northwest-motorsport-prod"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"]
+      },
+      "from_display": "Amazon S3 - Northwest Motorsport - Production",
+      "to_display": "ami.nwmsrocks.com"
+    },
+    {
+      "id": "edge:aws:1b8cb0d3664ecbb4af547cc9",
+      "from": "aws://120126178335/us-east-1/s3/service",
+      "to": "aws://120126178335/us-east-1/s3/bucket/build-inventory-before.nwmsrocks.com",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-s3-northwest-motorsport-prod"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"]
+      },
+      "from_display": "Amazon S3 - Northwest Motorsport - Production",
+      "to_display": "build-inventory-before.nwmsrocks.com"
+    },
+    {
+      "id": "edge:aws:241de7a3c9c5d85f26cd698f",
+      "from": "aws://120126178335/us-east-1/athena/service",
+      "to": "aws://120126178335/us-east-1/athena/catalog/AwsDataCatalog",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-athena-northwest-motorsport-prod"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["data_catalogs"]
+      },
+      "from_display": "Amazon Athena - Northwest Motorsport - Production",
+      "to_display": "AwsDataCatalog"
+    },
+    {
+      "id": "edge:aws:26b83a9bb7eea3a1456297ba",
+      "from": "aws://120126178335/us-east-1/account/120126178335",
+      "to": "aws://120126178335/us-east-1/s3/service",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.95,
+      "evidence": {
+        "reason": "Saved connector binds this AWS service to the account scope.",
+        "source_connector_ids": ["aws-s3-northwest-motorsport-prod"]
+      },
+      "from_display": "Northwest Motorsport - Production",
+      "to_display": "Amazon S3 - Northwest Motorsport - Production"
+    },
+    {
+      "id": "edge:aws:2cd03fce4461e268edc1ae57",
+      "from": "aws://120126178335/us-east-1/account/120126178335",
+      "to": "aws://120126178335/us-east-1/quicksight/service",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.95,
+      "evidence": {
+        "reason": "Saved connector binds this AWS service to the account scope.",
+        "source_connector_ids": ["aws-quicksight-northwest-motorsport-prod"]
+      },
+      "from_display": "Northwest Motorsport - Production",
+      "to_display": "Amazon QuickSight - Northwest Motorsport - Production"
+    },
+    {
+      "id": "edge:aws:49cb47f3056caa66edd74263",
+      "from": "aws://120126178335/us-east-1/glue/service",
+      "to": "aws://120126178335/us-east-1/athena/catalog/AwsDataCatalog",
+      "relationship_type": "metadata_catalog_used_by_athena",
+      "type": "metadata_catalog_used_by_athena",
+      "confidence": 0.72,
+      "evidence": {
+        "reason": "Athena AwsDataCatalog uses the AWS Glue Data Catalog as its metadata catalog in the same account and region.",
+        "source": "aws_lineage_inference"
+      },
+      "from_display": "AWS Glue Data Catalog - Northwest Motorsport - Production",
+      "to_display": "AwsDataCatalog"
+    },
+    {
+      "id": "edge:aws:5fd2e0a2152175c8ad44ba69",
+      "from": "aws://120126178335/us-east-1/athena/service",
+      "to": "aws://120126178335/us-east-1/athena/workgroup/primary",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-athena-northwest-motorsport-prod"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["workgroups"]
+      },
+      "from_display": "Amazon Athena - Northwest Motorsport - Production",
+      "to_display": "primary"
+    },
+    {
+      "id": "edge:aws:7d18b43e76b1fa84e50c222e",
+      "from": "aws://120126178335/us-east-1/s3/service",
+      "to": "aws://120126178335/us-east-1/s3/bucket/blog.nwmsrocks.com",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-s3-northwest-motorsport-prod"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"]
+      },
+      "from_display": "Amazon S3 - Northwest Motorsport - Production",
+      "to_display": "blog.nwmsrocks.com"
+    },
+    {
+      "id": "edge:aws:9e5924f370605543d2e5967b",
+      "from": "aws://120126178335/us-east-1/s3/service",
+      "to": "aws://120126178335/us-east-1/s3/bucket/aws-glue-assets-120126178335-us-west-2",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-s3-northwest-motorsport-prod"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"]
+      },
+      "from_display": "Amazon S3 - Northwest Motorsport - Production",
+      "to_display": "aws-glue-assets-120126178335-us-west-2"
+    },
+    {
+      "id": "edge:aws:ac87a84fd45a8286b3c8c587",
+      "from": "aws://120126178335/us-east-1/account/120126178335",
+      "to": "aws://120126178335/us-east-1/glue/service",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.95,
+      "evidence": {
+        "reason": "Saved connector binds this AWS service to the account scope.",
+        "source_connector_ids": ["aws-glue-northwest-motorsport-prod"]
+      },
+      "from_display": "Northwest Motorsport - Production",
+      "to_display": "AWS Glue Data Catalog - Northwest Motorsport - Production"
+    },
+    {
+      "id": "edge:aws:cc5530a36bcf6527472a94df",
+      "from": "aws://120126178335/us-east-1/s3/service",
+      "to": "aws://120126178335/us-east-1/s3/bucket/beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-s3-northwest-motorsport-prod"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"]
+      },
+      "from_display": "Amazon S3 - Northwest Motorsport - Production",
+      "to_display": "beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl"
+    },
+    {
+      "id": "edge:aws:d64332cddbed28348781e97c",
+      "from": "aws://120126178335/us-east-1/account/120126178335",
+      "to": "aws://120126178335/us-east-1/athena/service",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.95,
+      "evidence": {
+        "reason": "Saved connector binds this AWS service to the account scope.",
+        "source_connector_ids": ["aws-athena-northwest-motorsport-prod"]
+      },
+      "from_display": "Northwest Motorsport - Production",
+      "to_display": "Amazon Athena - Northwest Motorsport - Production"
+    }
+  ],
+  "metadata_objects": [
+    {
+      "canonical_id": "aws://120126178335/us-east-1/account/120126178335",
+      "display_name": "Northwest Motorsport - Production",
+      "object_type": "aws_account",
+      "database": "",
+      "schema": "",
+      "object_name": "Northwest Motorsport - Production",
+      "source_family": "aws",
+      "source_system": "aws-account-120126178335-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "120126178335",
+        "account_name": "Northwest Motorsport - Production",
+        "region": "us-east-1",
+        "service": "account",
+        "native_id": "120126178335",
+        "parent_id": null,
+        "attributes": {
+          "account_id": "120126178335",
+          "account_name": "Northwest Motorsport - Production",
+          "aws_profile": "northwest-motorsport-prod",
+          "role_name": "AWSAdministratorAccess"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/account/120126178335",
+            "to": "aws://120126178335/us-east-1/s3/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/account/120126178335",
+            "to": "aws://120126178335/us-east-1/quicksight/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/account/120126178335",
+            "to": "aws://120126178335/us-east-1/glue/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/account/120126178335",
+            "to": "aws://120126178335/us-east-1/athena/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": [
+            "aws-athena-northwest-motorsport-prod",
+            "aws-glue-northwest-motorsport-prod",
+            "aws-quicksight-northwest-motorsport-prod",
+            "aws-s3-northwest-motorsport-prod"
+          ],
+          "source_connector_types": ["aws_athena", "aws_glue", "aws_s3", "quicksight"],
+          "streams": []
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/athena/catalog/AwsDataCatalog",
+      "display_name": "AwsDataCatalog",
+      "object_type": "athena_data_catalog",
+      "database": "",
+      "schema": "catalogs",
+      "object_name": "AwsDataCatalog",
+      "source_family": "aws",
+      "source_system": "aws-account-120126178335-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "120126178335",
+        "account_name": "Northwest Motorsport - Production",
+        "region": "us-east-1",
+        "service": "athena",
+        "native_id": "AwsDataCatalog",
+        "parent_id": null,
+        "attributes": {
+          "type": "GLUE"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/athena/service",
+            "to": "aws://120126178335/us-east-1/athena/catalog/AwsDataCatalog",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/glue/service",
+            "to": "aws://120126178335/us-east-1/athena/catalog/AwsDataCatalog",
+            "relationship_type": "metadata_catalog_used_by_athena",
+            "confidence": 0.72,
+            "reason": "Athena AwsDataCatalog uses the AWS Glue Data Catalog as its metadata catalog in the same account and region."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-athena-northwest-motorsport-prod"],
+          "source_connector_types": ["aws_athena"],
+          "streams": ["data_catalogs"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+            "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/athena/service",
+      "display_name": "Amazon Athena - Northwest Motorsport - Production",
+      "object_type": "aws_athena_service",
+      "database": "",
+      "schema": "athena",
+      "object_name": "athena",
+      "source_family": "aws",
+      "source_system": "aws-account-120126178335-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "120126178335",
+        "account_name": "Northwest Motorsport - Production",
+        "region": "us-east-1",
+        "service": "athena",
+        "native_id": "athena",
+        "parent_id": null,
+        "attributes": {
+          "account_id": "120126178335",
+          "region": "us-east-1",
+          "service": "athena"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/athena/service",
+            "to": "aws://120126178335/us-east-1/athena/catalog/AwsDataCatalog",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/athena/service",
+            "to": "aws://120126178335/us-east-1/athena/workgroup/primary",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/account/120126178335",
+            "to": "aws://120126178335/us-east-1/athena/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-athena-northwest-motorsport-prod"],
+          "source_connector_types": ["aws_athena"],
+          "streams": []
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/athena/workgroup/primary",
+      "display_name": "primary",
+      "object_type": "athena_workgroup",
+      "database": "",
+      "schema": "workgroups",
+      "object_name": "primary",
+      "source_family": "aws",
+      "source_system": "aws-account-120126178335-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "120126178335",
+        "account_name": "Northwest Motorsport - Production",
+        "region": "us-east-1",
+        "service": "athena",
+        "native_id": "primary",
+        "parent_id": null,
+        "attributes": {
+          "state": "ENABLED"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/athena/service",
+            "to": "aws://120126178335/us-east-1/athena/workgroup/primary",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-athena-northwest-motorsport-prod"],
+          "source_connector_types": ["aws_athena"],
+          "streams": ["workgroups"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+            "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/glue/service",
+      "display_name": "AWS Glue Data Catalog - Northwest Motorsport - Production",
+      "object_type": "aws_glue_service",
+      "database": "",
+      "schema": "glue",
+      "object_name": "glue",
+      "source_family": "aws",
+      "source_system": "aws-account-120126178335-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "120126178335",
+        "account_name": "Northwest Motorsport - Production",
+        "region": "us-east-1",
+        "service": "glue",
+        "native_id": "glue",
+        "parent_id": null,
+        "attributes": {
+          "account_id": "120126178335",
+          "region": "us-east-1",
+          "service": "glue"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/glue/service",
+            "to": "aws://120126178335/us-east-1/athena/catalog/AwsDataCatalog",
+            "relationship_type": "metadata_catalog_used_by_athena",
+            "confidence": 0.72,
+            "reason": "Athena AwsDataCatalog uses the AWS Glue Data Catalog as its metadata catalog in the same account and region."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/account/120126178335",
+            "to": "aws://120126178335/us-east-1/glue/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": [
+            "aws-athena-northwest-motorsport-prod",
+            "aws-glue-northwest-motorsport-prod"
+          ],
+          "source_connector_types": ["aws_glue"],
+          "streams": []
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/quicksight/service",
+      "display_name": "Amazon QuickSight - Northwest Motorsport - Production",
+      "object_type": "aws_quicksight_service",
+      "database": "",
+      "schema": "quicksight",
+      "object_name": "quicksight",
+      "source_family": "aws",
+      "source_system": "aws-account-120126178335-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "120126178335",
+        "account_name": "Northwest Motorsport - Production",
+        "region": "us-east-1",
+        "service": "quicksight",
+        "native_id": "quicksight",
+        "parent_id": null,
+        "attributes": {
+          "account_id": "120126178335",
+          "region": "us-east-1",
+          "service": "quicksight"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/account/120126178335",
+            "to": "aws://120126178335/us-east-1/quicksight/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-quicksight-northwest-motorsport-prod"],
+          "source_connector_types": ["quicksight"],
+          "streams": []
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/bucket/ami.nwmsrocks.com",
+      "display_name": "ami.nwmsrocks.com",
+      "object_type": "s3_bucket",
+      "database": "",
+      "schema": "",
+      "object_name": "ami.nwmsrocks.com",
+      "source_family": "aws",
+      "source_system": "aws-account-120126178335-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "120126178335",
+        "account_name": "Northwest Motorsport - Production",
+        "region": "us-east-1",
+        "service": "s3",
+        "native_id": "ami.nwmsrocks.com",
+        "parent_id": null,
+        "attributes": {
+          "created_at": "2019-12-06T00:40:04+00:00"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/ami.nwmsrocks.com",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-s3-northwest-motorsport-prod"],
+          "source_connector_types": ["aws_s3"],
+          "streams": ["buckets"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/bucket/aws-glue-assets-120126178335-us-west-2",
+      "display_name": "aws-glue-assets-120126178335-us-west-2",
+      "object_type": "s3_bucket",
+      "database": "",
+      "schema": "",
+      "object_name": "aws-glue-assets-120126178335-us-west-2",
+      "source_family": "aws",
+      "source_system": "aws-account-120126178335-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "120126178335",
+        "account_name": "Northwest Motorsport - Production",
+        "region": "us-east-1",
+        "service": "s3",
+        "native_id": "aws-glue-assets-120126178335-us-west-2",
+        "parent_id": null,
+        "attributes": {
+          "created_at": "2026-01-06T02:45:33+00:00"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/aws-glue-assets-120126178335-us-west-2",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-s3-northwest-motorsport-prod"],
+          "source_connector_types": ["aws_s3"],
+          "streams": ["buckets"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/bucket/beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl",
+      "display_name": "beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl",
+      "object_type": "s3_bucket",
+      "database": "",
+      "schema": "",
+      "object_name": "beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl",
+      "source_family": "aws",
+      "source_system": "aws-account-120126178335-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "120126178335",
+        "account_name": "Northwest Motorsport - Production",
+        "region": "us-east-1",
+        "service": "s3",
+        "native_id": "beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl",
+        "parent_id": null,
+        "attributes": {
+          "created_at": "2019-04-08T20:46:11+00:00"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-s3-northwest-motorsport-prod"],
+          "source_connector_types": ["aws_s3"],
+          "streams": ["buckets"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/bucket/blog.nwmsrocks.com",
+      "display_name": "blog.nwmsrocks.com",
+      "object_type": "s3_bucket",
+      "database": "",
+      "schema": "",
+      "object_name": "blog.nwmsrocks.com",
+      "source_family": "aws",
+      "source_system": "aws-account-120126178335-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "120126178335",
+        "account_name": "Northwest Motorsport - Production",
+        "region": "us-east-1",
+        "service": "s3",
+        "native_id": "blog.nwmsrocks.com",
+        "parent_id": null,
+        "attributes": {
+          "created_at": "2017-10-22T00:25:54+00:00"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/blog.nwmsrocks.com",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-s3-northwest-motorsport-prod"],
+          "source_connector_types": ["aws_s3"],
+          "streams": ["buckets"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/bucket/build-inventory-before.nwmsrocks.com",
+      "display_name": "build-inventory-before.nwmsrocks.com",
+      "object_type": "s3_bucket",
+      "database": "",
+      "schema": "",
+      "object_name": "build-inventory-before.nwmsrocks.com",
+      "source_family": "aws",
+      "source_system": "aws-account-120126178335-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "120126178335",
+        "account_name": "Northwest Motorsport - Production",
+        "region": "us-east-1",
+        "service": "s3",
+        "native_id": "build-inventory-before.nwmsrocks.com",
+        "parent_id": null,
+        "attributes": {
+          "created_at": "2017-09-06T18:17:05+00:00"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/build-inventory-before.nwmsrocks.com",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-s3-northwest-motorsport-prod"],
+          "source_connector_types": ["aws_s3"],
+          "streams": ["buckets"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/service",
+      "display_name": "Amazon S3 - Northwest Motorsport - Production",
+      "object_type": "aws_s3_service",
+      "database": "",
+      "schema": "s3",
+      "object_name": "s3",
+      "source_family": "aws",
+      "source_system": "aws-account-120126178335-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "120126178335",
+        "account_name": "Northwest Motorsport - Production",
+        "region": "us-east-1",
+        "service": "s3",
+        "native_id": "s3",
+        "parent_id": null,
+        "attributes": {
+          "account_id": "120126178335",
+          "region": "us-east-1",
+          "service": "s3"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/ami.nwmsrocks.com",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/build-inventory-before.nwmsrocks.com",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/account/120126178335",
+            "to": "aws://120126178335/us-east-1/s3/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/blog.nwmsrocks.com",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/aws-glue-assets-120126178335-us-west-2",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-s3-northwest-motorsport-prod"],
+          "source_connector_types": ["aws_s3"],
+          "streams": []
+        }
+      }
+    }
+  ],
+  "ai_evidence_packets": [
+    {
+      "canonical_id": "aws://120126178335/us-east-1/account/120126178335",
+      "display_name": "Northwest Motorsport - Production",
+      "object_type": "aws_account",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "account",
+      "bounded_evidence": {
+        "native_id": "120126178335",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "account_id": "120126178335",
+          "account_name": "Northwest Motorsport - Production",
+          "aws_profile": "northwest-motorsport-prod",
+          "role_name": "AWSAdministratorAccess"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/account/120126178335",
+            "to": "aws://120126178335/us-east-1/s3/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/account/120126178335",
+            "to": "aws://120126178335/us-east-1/quicksight/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/account/120126178335",
+            "to": "aws://120126178335/us-east-1/glue/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/account/120126178335",
+            "to": "aws://120126178335/us-east-1/athena/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/athena/catalog/AwsDataCatalog",
+      "display_name": "AwsDataCatalog",
+      "object_type": "athena_data_catalog",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "athena",
+      "bounded_evidence": {
+        "native_id": "AwsDataCatalog",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "type": "GLUE"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/athena/service",
+            "to": "aws://120126178335/us-east-1/athena/catalog/AwsDataCatalog",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/glue/service",
+            "to": "aws://120126178335/us-east-1/athena/catalog/AwsDataCatalog",
+            "relationship_type": "metadata_catalog_used_by_athena",
+            "confidence": 0.72,
+            "reason": "Athena AwsDataCatalog uses the AWS Glue Data Catalog as its metadata catalog in the same account and region."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/athena/service",
+      "display_name": "Amazon Athena - Northwest Motorsport - Production",
+      "object_type": "aws_athena_service",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "athena",
+      "bounded_evidence": {
+        "native_id": "athena",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "account_id": "120126178335",
+          "region": "us-east-1",
+          "service": "athena"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/athena/service",
+            "to": "aws://120126178335/us-east-1/athena/catalog/AwsDataCatalog",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/athena/service",
+            "to": "aws://120126178335/us-east-1/athena/workgroup/primary",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/account/120126178335",
+            "to": "aws://120126178335/us-east-1/athena/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/athena/workgroup/primary",
+      "display_name": "primary",
+      "object_type": "athena_workgroup",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "athena",
+      "bounded_evidence": {
+        "native_id": "primary",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "state": "ENABLED"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/athena/service",
+            "to": "aws://120126178335/us-east-1/athena/workgroup/primary",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/glue/service",
+      "display_name": "AWS Glue Data Catalog - Northwest Motorsport - Production",
+      "object_type": "aws_glue_service",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "glue",
+      "bounded_evidence": {
+        "native_id": "glue",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "account_id": "120126178335",
+          "region": "us-east-1",
+          "service": "glue"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/glue/service",
+            "to": "aws://120126178335/us-east-1/athena/catalog/AwsDataCatalog",
+            "relationship_type": "metadata_catalog_used_by_athena",
+            "confidence": 0.72,
+            "reason": "Athena AwsDataCatalog uses the AWS Glue Data Catalog as its metadata catalog in the same account and region."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/account/120126178335",
+            "to": "aws://120126178335/us-east-1/glue/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/quicksight/service",
+      "display_name": "Amazon QuickSight - Northwest Motorsport - Production",
+      "object_type": "aws_quicksight_service",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "quicksight",
+      "bounded_evidence": {
+        "native_id": "quicksight",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "account_id": "120126178335",
+          "region": "us-east-1",
+          "service": "quicksight"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/account/120126178335",
+            "to": "aws://120126178335/us-east-1/quicksight/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/bucket/ami.nwmsrocks.com",
+      "display_name": "ami.nwmsrocks.com",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "s3",
+      "bounded_evidence": {
+        "native_id": "ami.nwmsrocks.com",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "created_at": "2019-12-06T00:40:04+00:00"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/ami.nwmsrocks.com",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/bucket/aws-glue-assets-120126178335-us-west-2",
+      "display_name": "aws-glue-assets-120126178335-us-west-2",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "s3",
+      "bounded_evidence": {
+        "native_id": "aws-glue-assets-120126178335-us-west-2",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "created_at": "2026-01-06T02:45:33+00:00"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/aws-glue-assets-120126178335-us-west-2",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/bucket/beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl",
+      "display_name": "beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "s3",
+      "bounded_evidence": {
+        "native_id": "beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "created_at": "2019-04-08T20:46:11+00:00"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/bucket/blog.nwmsrocks.com",
+      "display_name": "blog.nwmsrocks.com",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "s3",
+      "bounded_evidence": {
+        "native_id": "blog.nwmsrocks.com",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "created_at": "2017-10-22T00:25:54+00:00"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/blog.nwmsrocks.com",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/bucket/build-inventory-before.nwmsrocks.com",
+      "display_name": "build-inventory-before.nwmsrocks.com",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "s3",
+      "bounded_evidence": {
+        "native_id": "build-inventory-before.nwmsrocks.com",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "created_at": "2017-09-06T18:17:05+00:00"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/build-inventory-before.nwmsrocks.com",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/service",
+      "display_name": "Amazon S3 - Northwest Motorsport - Production",
+      "object_type": "aws_s3_service",
+      "platform": "AWS",
+      "account_id": "120126178335",
+      "account_name": "Northwest Motorsport - Production",
+      "region": "us-east-1",
+      "service": "s3",
+      "bounded_evidence": {
+        "native_id": "s3",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "account_id": "120126178335",
+          "region": "us-east-1",
+          "service": "s3"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/ami.nwmsrocks.com",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/build-inventory-before.nwmsrocks.com",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/account/120126178335",
+            "to": "aws://120126178335/us-east-1/s3/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/blog.nwmsrocks.com",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/aws-glue-assets-120126178335-us-west-2",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://120126178335/us-east-1/s3/service",
+            "to": "aws://120126178335/us-east-1/s3/bucket/beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    }
+  ],
+  "gaps": [],
+  "failures": []
+}

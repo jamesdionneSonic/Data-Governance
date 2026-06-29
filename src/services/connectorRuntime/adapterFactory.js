@@ -2955,6 +2955,32 @@ const DOCUMENTED_BRIDGES = {
       stream('lineage', STREAM.lineage, 'bucket/prefix dataset links', { metadata: ['lineage'] }),
     ],
   }),
+  aws_athena: documentedBridge({
+    requiredConfig: ['region'],
+    docs: [
+      'https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html',
+      'https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html',
+    ],
+    streams: [
+      stream('workgroups', STREAM.object, 'Athena ListWorkGroups', {
+        metadata: ['workgroups'],
+      }),
+      stream('data_catalogs', STREAM.dataSource, 'Athena ListDataCatalogs', {
+        metadata: ['data catalogs'],
+      }),
+      stream('databases', STREAM.object, 'Athena ListDatabases', { metadata: ['databases'] }),
+      stream('tables', STREAM.dataset, 'Athena ListTableMetadata', { metadata: ['tables'] }),
+      stream('named_queries', STREAM.object, 'Athena ListNamedQueries', {
+        metadata: ['saved queries'],
+      }),
+      stream('query_executions', STREAM.usage, 'Athena ListQueryExecutions', {
+        metadata: ['query execution ids'],
+      }),
+      stream('lineage', STREAM.lineage, 'Athena query/catalog dependencies', {
+        metadata: ['query-to-catalog dependencies'],
+      }),
+    ],
+  }),
   aws_redshift: documentedBridge({
     requiredConfig: ['cluster', 'database'],
     docs: ['https://docs.aws.amazon.com/redshift/latest/dg/c_intro_catalog_views.html'],

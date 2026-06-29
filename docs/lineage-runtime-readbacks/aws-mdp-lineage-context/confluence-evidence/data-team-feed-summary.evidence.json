@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-29T14:12:46.931Z",
+  "page_type": "mdp-aws-human-page",
+  "page_title": "Data Team Feed Summary",
+  "page_tree_path": [
+    "Sonic Data Lineage",
+    "Data Product Catalog",
+    "MDP AWS Lineage Context",
+    "Data Team Feed Summary"
+  ],
+  "route_id": "mdp-aws-lineage-context",
+  "product_area": "MDP",
+  "business_domain": "Marketing Data Platform",
+  "human_root_path": "Sonic Data Lineage / Data Product Catalog / MDP AWS Lineage Context",
+  "rovo_root_path": "Sonic Data Lineage / AI Retrieval Artifacts",
+  "summary": {
+    "source_package_count": 6,
+    "object_count": 6471,
+    "edge_count": 6933,
+    "human_page_count": 6,
+    "rovo_page_count": 4
+  },
+  "evidence_hash": "sha256:3C7744AC6EC3CB947C10F13B21DE759CD4677CE4A52BD8DD5EC6DDEE85C734A4"
+}

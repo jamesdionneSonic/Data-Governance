@@ -282,6 +282,49 @@ async function readCsvIfExists(file) {
   }
 }
 
+function numberValue(value, fallback = 0) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function rate(numerator, denominator) {
+  if (!denominator) return '';
+  return (numerator / denominator).toFixed(4);
+}
+
+function uniqueValues(rows, field) {
+  return [...new Set(rows.map((row) => row?.[field]).filter(Boolean))].sort();
+}
+
+function groupCount(rows, field) {
+  const counts = new Map();
+  for (const row of rows) {
+    const key = row?.[field] || 'unclassified';
+    counts.set(key, (counts.get(key) || 0) + 1);
+  }
+  return counts;
+}
+
+function businessKeySet(rows) {
+  return new Set(rows.map((row) => row.business_key).filter(Boolean));
+}
+
+function countIntersection(leftSet, rightSet) {
+  let count = 0;
+  for (const value of leftSet) {
+    if (rightSet.has(value)) count += 1;
+  }
+  return count;
+}
+
+function minMaxBusinessDate(rows) {
+  const dates = uniqueValues(rows, 'business_date');
+  return {
+    min: dates[0] || '',
+    max: dates[dates.length - 1] || '',
+  };
+}
+
 function stripSqlComments(sqlText) {
   return String(sqlText || '')
     .replace(/\/\*[\s\S]*?\*\//g, ' ')
@@ -948,6 +991,32 @@ function buildMappingResearchSample(rows, sampleSize = 50) {
   }));
 }
 
+function sampleRows(rows, sampleSize = 50) {
+  return [...(rows || [])]
+    .sort((a, b) =>
+      String(a.cora_acct_code || '').localeCompare(String(b.cora_acct_code || '')) ||
+      String(a.business_date || '').localeCompare(String(b.business_date || '')) ||
+      String(a.business_key || '').localeCompare(String(b.business_key || '')) ||
+      String(a.exception_id || '').localeCompare(String(b.exception_id || ''))
+    )
+    .slice(0, sampleSize);
+}
+
+function accuracySampleFileName(sampleName) {
+  return `accuracy/samples/${sampleName}.csv`;
+}
+
+function accuracySampleManifestRow({ runId, sampleName, rows, classification, description }) {
+  return {
+    run_id: runId,
+    sample_name: sampleName,
+    path: `current/${accuracySampleFileName(sampleName)}`,
+    classification,
+    row_count: rows.length,
+    description,
+  };
+}
+
 function compareDetailExceptions({ runId, subjectArea, dmsRows, snowflakeRows, rowLimit }) {
   const dms = indexByBusinessKey(dmsRows);
   const snowflake = indexByBusinessKey(snowflakeRows);
@@ -1143,6 +1212,284 @@ async function writeDetailExceptions({ currentDir, runDir, runId, extractResults
   ];
 }
 
+function accuracyDecision({
+  keyMatchRate,
+  rawValueMatchRate,
+  readinessRate,
+  candidateDefects,
+  migrationBlockers,
+  eligibleRecords,
+}) {
+  if (!eligibleRecords) return 'not_scored';
+  if (
+    keyMatchRate >= 0.995 &&
+    rawValueMatchRate >= 0.995 &&
+    readinessRate >= 0.995 &&
+    candidateDefects === 0 &&
+    migrationBlockers === 0
+  ) {
+    return 'candidate_ready';
+  }
+  if (
+    keyMatchRate >= 0.950 &&
+    readinessRate >= 0.950 &&
+    candidateDefects <= 25
+  ) {
+    return 'review_needed';
+  }
+  return 'not_ready';
+}
+
+function accuracyReadout(subjectArea, decisionStatus, facts) {
+  const label = subjectArea === 'vehicle_sales' ? 'Vehicle sales' : 'Repair orders';
+  if (decisionStatus === 'candidate_ready') {
+    return `${label} is inside conservative trust thresholds for this run.`;
+  }
+  if (decisionStatus === 'review_needed') {
+    return `${label} is directionally useful, but ${facts.migrationBlockers} blocker row(s) or question(s) still need review before Snowflake can be treated as trusted.`;
+  }
+  if (decisionStatus === 'not_scored') {
+    return `${label} could not be scored because required denominator evidence is missing.`;
+  }
+  return `${label} is not ready for a Snowflake trust claim because key coverage, candidate defects, or blockers are outside the conservative thresholds.`;
+}
+
+function metricDefinitionRows() {
+  return [
+    {
+      metric_name: 'key_match_rate',
+      metric_type: 'key_coverage',
+      denominator: 'eligible_records',
+      plain_english: 'How much of the DMS scoped population has a matching Snowflake business key.',
+      caveat: 'This proves record identity coverage, not amount accuracy.',
+    },
+    {
+      metric_name: 'raw_value_match_rate',
+      metric_type: 'value_accuracy',
+      denominator: 'value_scored_records',
+      plain_english: 'Of records safe to compare by value, how many material values match within tolerance.',
+      caveat: 'Repair-order amount component gaps are excluded until PAYCPTOTAL is confirmed.',
+    },
+    {
+      metric_name: 'classification_adjusted_readiness_rate',
+      metric_type: 'readiness',
+      denominator: 'eligible_records',
+      plain_english: 'How much of the population is either matching or has a known review path.',
+      caveat: 'This is not final accuracy certification.',
+    },
+    {
+      metric_name: 'candidate_defect_records',
+      metric_type: 'risk',
+      denominator: 'none',
+      plain_english: 'Rows that still look like true gaps or unexplained material value problems.',
+      caveat: 'These should be researched before a trust decision.',
+    },
+    {
+      metric_name: 'migration_blocker_count',
+      metric_type: 'risk',
+      denominator: 'none',
+      plain_english: 'Open rows or questions that block a stronger Snowflake readiness statement.',
+      caveat: 'Includes formula and mapping blockers, not only proven source defects.',
+    },
+  ];
+}
+
+function blockerRows({ runId, subjectArea, openRows }) {
+  const blockingClasses = new Set([
+    'true_missing_from_snowflake',
+    'material_amount_mismatch_unexplained',
+    'found_in_snowflake_wrong_dealer_context',
+    'blank_primary_dealer_with_secondary_match',
+    'ambiguous_dealer_context',
+    'mapping_rule_gap',
+    'amount_component_gap',
+    'duplicate_source_record',
+    'grain_mismatch',
+  ]);
+  const grouped = groupCount(
+    openRows.filter((row) => blockingClasses.has(row.review_classification)),
+    'review_classification'
+  );
+  return [...grouped.entries()].sort().map(([classification, count]) => ({
+    run_id: runId,
+    subject_area: subjectArea,
+    blocker_type: classification,
+    blocker_count: count,
+    severity: classification === 'true_missing_from_snowflake' || classification === 'material_amount_mismatch_unexplained'
+      ? 'high'
+      : 'medium',
+    first_action: classification === 'amount_component_gap'
+      ? 'Confirm the Snowflake PAYCPTOTAL formula against DMS customer-pay components.'
+      : classification.includes('dealer') || classification.includes('mapping') || classification.includes('primary')
+        ? 'Confirm the authoritative dealer/account mapping fields with the vendor.'
+        : 'Research the bounded exception sample and confirm whether the row is a source defect.',
+  }));
+}
+
+async function writeAccuracyOutputs({ currentDir, runDir, runId, extractResults }) {
+  const rowsById = new Map(extractResults.map((result) => [result.job_id, result.rows || []]));
+  const openRows = await readCsvIfExists(path.join(currentDir, 'exceptions/open_exceptions.csv'));
+  const changedRows = await readCsvIfExists(path.join(currentDir, 'exceptions/changed_records.csv'));
+  const subjects = [
+    {
+      id: 'vehicle_sales',
+      dmsJob: 'sqlserver_dms_vehicle_sales_detail',
+      snowflakeJob: 'snowflake_vehicle_sales_detail',
+    },
+    {
+      id: 'repair_orders',
+      dmsJob: 'sqlserver_dms_repair_order_detail',
+      snowflakeJob: 'snowflake_repair_order_detail',
+    },
+  ];
+  const scorecardRows = [];
+  const allBlockerRows = [];
+
+  for (const subject of subjects) {
+    const dmsRows = rowsById.get(subject.dmsJob) || [];
+    const snowflakeRows = rowsById.get(subject.snowflakeJob) || [];
+    const subjectOpenRows = openRows.filter((row) => row.subject_area === subject.id && row.status !== 'resolved');
+    const subjectChangedRows = changedRows.filter((row) => row.subject_area === subject.id && row.status !== 'resolved');
+    const dmsKeys = businessKeySet(dmsRows);
+    const snowflakeKeys = businessKeySet(snowflakeRows);
+    const matchedKeyRecords = countIntersection(dmsKeys, snowflakeKeys);
+    const eligibleRecords = dmsKeys.size;
+    const classificationCounts = groupCount(subjectOpenRows, 'review_classification');
+    const mappingReviewRecords = subjectOpenRows.filter((row) => row.classification_group === 'mapping').length;
+    const timingReviewRecords = subjectOpenRows.filter((row) => row.classification_group === 'timing').length;
+    const formulaDefinitionReviewRecords = numberValue(classificationCounts.get('amount_component_gap'));
+    const candidateDefectRecords =
+      numberValue(classificationCounts.get('true_missing_from_snowflake')) +
+      numberValue(classificationCounts.get('material_amount_mismatch_unexplained'));
+    const notScoredRecords = subjectOpenRows.filter((row) => ['key_grain', 'date_status'].includes(row.classification_group)).length;
+    const valueScoredRecords = Math.max(matchedKeyRecords - formulaDefinitionReviewRecords - notScoredRecords, 0);
+    const valueDefectRows = subjectChangedRows.filter((row) => row.review_classification === 'material_amount_mismatch_unexplained').length;
+    const validatedValueMatches = Math.max(valueScoredRecords - valueDefectRows, 0);
+    const keyMatch = eligibleRecords ? matchedKeyRecords / eligibleRecords : 0;
+    const rawValueMatch = valueScoredRecords ? validatedValueMatches / valueScoredRecords : 0;
+    const readinessRows = Math.max(eligibleRecords - candidateDefectRecords - notScoredRecords, 0);
+    const readiness = eligibleRecords ? readinessRows / eligibleRecords : 0;
+    const blockers = blockerRows({ runId, subjectArea: subject.id, openRows: subjectOpenRows });
+    allBlockerRows.push(...blockers);
+    const migrationBlockers = blockers.reduce((sum, row) => sum + numberValue(row.blocker_count), 0);
+    const combinedDateRange = minMaxBusinessDate([...dmsRows, ...snowflakeRows]);
+    const decisionStatus = accuracyDecision({
+      keyMatchRate: keyMatch,
+      rawValueMatchRate: rawValueMatch,
+      readinessRate: readiness,
+      candidateDefects: candidateDefectRecords,
+      migrationBlockers,
+      eligibleRecords,
+    });
+    const confidence = formulaDefinitionReviewRecords || mappingReviewRecords || notScoredRecords
+      ? 'medium'
+      : eligibleRecords
+        ? 'high'
+        : 'low';
+
+    scorecardRows.push({
+      run_id: runId,
+      subject_area: subject.id,
+      business_date_start: combinedDateRange.min,
+      business_date_end: combinedDateRange.max,
+      cora_acct_code_scope: uniqueValues([...dmsRows, ...snowflakeRows], 'cora_acct_code').join('|'),
+      dms_scoped_records: dmsRows.length,
+      snowflake_scoped_records: snowflakeRows.length,
+      eligible_records: eligibleRecords,
+      matched_key_records: matchedKeyRecords,
+      validated_value_matches: validatedValueMatches,
+      missing_from_snowflake: subjectOpenRows.filter((row) => String(row.raw_exception_type || '').includes('missing_from_snowflake')).length,
+      snowflake_only: subjectOpenRows.filter((row) => row.raw_exception_type === 'missing_from_dms').length,
+      mapping_review_records: mappingReviewRecords,
+      timing_review_records: timingReviewRecords,
+      formula_definition_review_records: formulaDefinitionReviewRecords,
+      candidate_defect_records: candidateDefectRecords,
+      not_scored_records: notScoredRecords,
+      key_match_rate: rate(matchedKeyRecords, eligibleRecords),
+      raw_value_match_rate: rate(validatedValueMatches, valueScoredRecords),
+      classification_adjusted_readiness_rate: rate(readinessRows, eligibleRecords),
+      migration_blocker_count: migrationBlockers,
+      decision_status: decisionStatus,
+      confidence,
+      plain_english_readout: accuracyReadout(subject.id, decisionStatus, { migrationBlockers }),
+    });
+  }
+
+  const sampleDefinitions = [
+    {
+      sampleName: 'accuracy_mapping_review_sample',
+      classification: 'blank_primary_dealer_with_secondary_match|found_in_snowflake_wrong_dealer_context|ambiguous_dealer_context|mapping_rule_gap',
+      description: 'Bounded rows where the business key is found in Snowflake, but dealer/account context needs review.',
+      rows: sampleRows(openRows.filter((row) => row.classification_group === 'mapping')),
+    },
+    {
+      sampleName: 'accuracy_amount_component_gap_sample',
+      classification: 'amount_component_gap',
+      description: 'Bounded matched-key repair-order rows where DMS customer-pay components do not equal Snowflake PAYCPTOTAL.',
+      rows: sampleRows(changedRows.filter((row) => row.review_classification === 'amount_component_gap')),
+    },
+    {
+      sampleName: 'accuracy_unexplained_amount_mismatch_sample',
+      classification: 'material_amount_mismatch_unexplained',
+      description: 'Bounded matched-key rows with material amount differences that do not yet have a confirmed explanation.',
+      rows: sampleRows(changedRows.filter((row) => row.review_classification === 'material_amount_mismatch_unexplained')),
+    },
+    {
+      sampleName: 'accuracy_true_missing_from_snowflake_sample',
+      classification: 'true_missing_from_snowflake',
+      description: 'Bounded DMS source-of-record rows not found in Snowflake even after the current broad presence checks.',
+      rows: sampleRows(openRows.filter((row) => row.review_classification === 'true_missing_from_snowflake')),
+    },
+    {
+      sampleName: 'accuracy_timing_review_sample',
+      classification: 'timing_candidate|true_snowflake_only',
+      description: 'Bounded rows that may be explained by refresh timing, freshness, or scope review.',
+      rows: sampleRows(openRows.filter((row) => row.classification_group === 'timing' || row.review_classification === 'true_snowflake_only')),
+    },
+  ];
+  const sampleOutputs = sampleDefinitions.map((sample) => ({
+    file: accuracySampleFileName(sample.sampleName),
+    rows: sample.rows,
+  }));
+  const sampleManifestRows = sampleDefinitions.map((sample) => accuracySampleManifestRow({
+    runId,
+    sampleName: sample.sampleName,
+    rows: sample.rows,
+    classification: sample.classification,
+    description: sample.description,
+  }));
+
+  const outputsToWrite = [
+    {
+      file: 'accuracy/accuracy_scorecard.csv',
+      rows: scorecardRows,
+    },
+    {
+      file: 'accuracy/accuracy_metric_definitions.csv',
+      rows: metricDefinitionRows(),
+    },
+    {
+      file: 'accuracy/accuracy_blockers.csv',
+      rows: allBlockerRows,
+    },
+    {
+      file: 'accuracy/accuracy_review_samples_manifest.csv',
+      rows: sampleManifestRows,
+    },
+    ...sampleOutputs,
+  ];
+  for (const output of outputsToWrite) {
+    const currentFile = path.join(currentDir, output.file);
+    const archiveFile = path.join(runDir, output.file);
+    await writeCsv(currentFile, output.rows);
+    await copyIfExists(currentFile, archiveFile);
+  }
+  return outputsToWrite.map((output) => ({
+    output: output.file,
+    row_count: output.rows.length,
+  }));
+}
+
 async function openPools(connectors) {
   const snowflake = await connectSnowflake(connectors.snowflake);
   const credentialMode = sqlServerCredentialMode(connectors.sqlserver);
@@ -1270,6 +1617,13 @@ async function main() {
           pools,
         });
         outputs.push(...exceptionOutputs);
+        const accuracyOutputs = await writeAccuracyOutputs({
+          currentDir,
+          runDir,
+          runId,
+          extractResults,
+        });
+        outputs.push(...accuracyOutputs);
       }
     }
   } catch (err) {

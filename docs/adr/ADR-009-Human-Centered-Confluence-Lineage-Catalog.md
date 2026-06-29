@@ -42,9 +42,11 @@ Sonic Data Lineage
     MCI
     MDP
   Database Catalog
-    <Database>
-      <Schema>
-        <Canonical Object Page>
+    <Platform/Product>
+      <Database>
+        <Database.Schema>
+          <Database.Schema Object Type Bucket>
+            <Canonical Object Page>
   Confidence And Known Gaps
   Operating Guides
   AI Retrieval Artifacts
@@ -82,6 +84,12 @@ Rovo-specific retrieval artifacts are governed by
 table-first lookup and context pages that help Rovo answer database, object, and
 lineage questions while linking back to the canonical human catalog.
 
+Human Confluence generation must also follow ADR-028. New or refreshed source
+metadata is not a reason to regenerate the whole human catalog. The generator
+must consume the reviewed delta manifest and update only new or changed object,
+database/schema, product, support, and directly impacted index pages unless a
+scoped full-refresh packet is explicitly approved.
+
 ## Page Types
 
 ### Product Page
@@ -104,7 +112,13 @@ Each product page should include:
 ### Database And Schema Pages
 
 Database and schema pages are browse pages. They should help a technical user
-find objects without scanning shards.
+find objects without scanning shards. Under each schema, objects are separated
+into typed bucket pages such as `Tables`, `Views`, `Stored Procedures`,
+`Functions`, `Synonyms`, and `Other Objects` before the canonical object page.
+For collision-safe Confluence publishing, schema pages use
+`<Database>.<Schema>`, bucket pages use `<Database>.<Schema> <Object Type>`,
+and object leaf titles use the full `<Database>.<Schema>.<Object>` technical
+identity.
 
 Each database/schema page should include:
 
@@ -162,6 +176,11 @@ so reviewers can explain why the summary says what it says.
 If evidence is missing, the prose must say `not surfaced in metadata` or an
 equivalent caveat. It must not fill gaps from object names alone.
 
+LLM generation must be delta-bound. Run it only for new or changed bounded
+evidence packets or for directly impacted parent/index pages that need revised
+counts, links, or summaries. Do not run an LLM across unchanged objects during a
+routine refresh.
+
 Prefer deterministic templates before LLM generation:
 
 - staging object: prepares data for later load or comparison
@@ -213,6 +232,8 @@ Medium-safe work must not:
 - change ingestion engines, extractors, parsers, or rebuild scripts without a
   separate maintainer-approved packet
 - publish a broad live Confluence tree without dry-run review
+- regenerate unchanged pages or run AI summaries for unchanged objects during a
+  routine metadata refresh
 - create one page per object across the full catalog in the first pass
 - use Confluence as a machine-readable source for the Sonic lineage skill
 - let an LLM invent unsupported business descriptions
@@ -235,6 +256,8 @@ Stop and request a stronger setting or explicit approval before:
   does not depend on Confluence.
 - Rovo can use scoped Confluence retrieval pages without making the human
   catalog dense or machine-first.
+- Routine source refreshes update only affected human pages and directly
+  impacted indexes, reducing publication churn.
 - Confluence becomes a curated support and governance portal instead of a raw
   filesystem mirror.
 - Generator quality gates become more important because human prose can create

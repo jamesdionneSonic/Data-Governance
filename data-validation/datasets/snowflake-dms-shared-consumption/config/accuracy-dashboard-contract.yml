@@ -1,0 +1,178 @@
+contract: accuracy_dashboard
+version: 1
+status: metric_contract_ready
+
+purpose: >
+  Provide a deterministic scorecard for whether Snowflake shared-consumption
+  data is accurate enough to trust against SQL Server DMS, the current source of
+  record.
+
+source_of_record: DMS
+candidate_source: Snowflake
+
+output_files:
+  scorecard: current/accuracy/accuracy_scorecard.csv
+  metric_definitions: current/accuracy/accuracy_metric_definitions.csv
+  blockers: current/accuracy/accuracy_blockers.csv
+  review_samples_manifest: current/accuracy/accuracy_review_samples_manifest.csv
+
+threshold_config: config/accuracy-dashboard-thresholds.yml
+metric_contract_doc: ACCURACY_METRIC_CONTRACT.md
+
+scorecard_columns:
+  - run_id
+  - subject_area
+  - business_date_start
+  - business_date_end
+  - cora_acct_code_scope
+  - dms_scoped_records
+  - snowflake_scoped_records
+  - eligible_records
+  - matched_key_records
+  - validated_value_matches
+  - missing_from_snowflake
+  - snowflake_only
+  - mapping_review_records
+  - timing_review_records
+  - formula_definition_review_records
+  - candidate_defect_records
+  - not_scored_records
+  - key_match_rate
+  - raw_value_match_rate
+  - classification_adjusted_readiness_rate
+  - migration_blocker_count
+  - decision_status
+  - confidence
+  - plain_english_readout
+
+decision_statuses:
+  candidate_ready:
+    meaning: >
+      Strong key and value agreement with no material open blockers.
+  review_needed:
+    meaning: >
+      Evidence is useful, but mapping, timing, formula, or unexplained
+      differences still need review.
+  not_ready:
+    meaning: >
+      Material candidate defects or unsupported evidence prevent a
+      migration-readiness claim.
+  not_scored:
+    meaning: >
+      Insufficient evidence or out-of-scope data prevents scoring.
+
+denominators:
+  scoped_population:
+    meaning: >
+      Records returned by the current validation extracts after date,
+      dealer/account, and subject-area filters.
+  eligible_records:
+    meaning: >
+      Scoped records with enough key and date evidence to participate in
+      validation.
+  matched_key_records:
+    meaning: >
+      Eligible records where the normalized business key exists on both sides.
+  value_scored_records:
+    meaning: >
+      Matched-key records where the material value formula is certified enough
+      to score.
+  excluded_records:
+    meaning: >
+      Records held out of final value scoring because timing, mapping, grain, or
+      formula-definition evidence is not certified.
+  candidate_defect_records:
+    meaning: >
+      Records that remain true gaps or unexplained material differences after
+      classification.
+
+metrics:
+  key_match_rate:
+    formula: matched_key_records / eligible_records
+    denominator: eligible_records
+    meaning: >
+      Measures record identity and coverage agreement.
+  raw_value_match_rate:
+    formula: validated_value_matches / value_scored_records
+    denominator: value_scored_records
+    meaning: >
+      Measures material value agreement only for records safe to value-score.
+  classification_adjusted_readiness_rate:
+    formula: >
+      (validated_matches + approved_or_reviewable_non_defect_rows) /
+      eligible_records
+    denominator: eligible_records
+    meaning: >
+      Measures readiness after separating candidate defects from explainable or
+      reviewable differences. This is not a final accuracy certification.
+  candidate_defect_count:
+    formula: count(candidate_defect_records)
+    denominator: none
+    meaning: >
+      Counts rows likely requiring source/vendor correction or deeper research.
+  migration_blocker_count:
+    formula: count(open_blocking_records_or_questions)
+    denominator: none
+    meaning: >
+      Counts issues that prevent a stronger Snowflake readiness statement.
+
+classification_mapping:
+  amount_match:
+    contributes_to:
+      - validated_value_matches
+  amount_rounding_difference:
+    contributes_to:
+      - validated_value_matches
+  validated_match:
+    contributes_to:
+      - matched_key_records
+      - validated_value_matches
+  blank_primary_dealer_with_secondary_match:
+    contributes_to:
+      - mapping_review_records
+      - migration_blocker_count
+  found_in_snowflake_wrong_dealer_context:
+    contributes_to:
+      - mapping_review_records
+      - migration_blocker_count
+  amount_component_gap:
+    contributes_to:
+      - formula_definition_review_records
+      - migration_blocker_count
+  timing_candidate:
+    contributes_to:
+      - timing_review_records
+  true_snowflake_only:
+    contributes_to:
+      - timing_review_records
+  duplicate_source_record:
+    contributes_to:
+      - not_scored_records
+      - migration_blocker_count
+  grain_mismatch:
+    contributes_to:
+      - not_scored_records
+      - migration_blocker_count
+  ambiguous_dealer_context:
+    contributes_to:
+      - mapping_review_records
+      - migration_blocker_count
+  mapping_rule_gap:
+    contributes_to:
+      - mapping_review_records
+      - migration_blocker_count
+  material_amount_mismatch_unexplained:
+    contributes_to:
+      - candidate_defect_records
+      - migration_blocker_count
+  true_missing_from_snowflake:
+    contributes_to:
+      - candidate_defect_records
+      - migration_blocker_count
+
+guardrails:
+  - Do not create or modify source database objects.
+  - Do not commit CSV files containing business row data.
+  - Do not hide source-native identifiers such as cora_acct_code.
+  - Do not certify repair-order value accuracy until the Snowflake PAYCPTOTAL
+    formula is confirmed against DMS components.

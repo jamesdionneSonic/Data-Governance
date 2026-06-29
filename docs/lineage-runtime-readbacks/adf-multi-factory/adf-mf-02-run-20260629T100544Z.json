@@ -1,0 +1,754 @@
+{
+  "status": "succeeded",
+  "generated_at": "2026-06-29T10:05:44.206Z",
+  "started_at": "2026-06-29T10:05:44.083Z",
+  "mode": "run",
+  "connector_count": 6,
+  "success_count": 6,
+  "failure_count": 0,
+  "raw_data_captured": false,
+  "secret_exposed": false,
+  "lookback_days": 7,
+  "connectors": [
+    "azure-data-factory-adf-admin-d1",
+    "azure-data-factory-adf-dw-caroffer-prod",
+    "azure-data-factory-adf-dw-lightspeed-prod",
+    "azure-data-factory-adf-dw-postgres-prod",
+    "azure-data-factory-adf-googlesearch-d1",
+    "azure-data-factory-adf-xtime-d1"
+  ],
+  "results": [
+    {
+      "connector_id": "azure-data-factory-adf-admin-d1",
+      "run_id": "cc42df7c-3dd4-4a57-9b5a-cd93a0b87543",
+      "status": "partial_failure",
+      "mode": "connector_metadata_profile",
+      "started_at": "2026-06-29T10:05:44.085Z",
+      "completed_at": "2026-06-29T10:05:44.098Z",
+      "artifact_path": null,
+      "inventory_count": 0,
+      "pipeline_count": 0,
+      "task_count": 0,
+      "dataset_count": 0,
+      "connection_count": 0,
+      "schedule_count": 0,
+      "lineage_edge_count": 0,
+      "warning_count": 14,
+      "error_count": 14,
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "errors": [
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'factory'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'tasks'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'datasets'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'connections'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'schedules'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'dataflows'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'integration_runtimes'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'trigger_runs'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        }
+      ],
+      "warnings": [
+        "azure_data_factory could not get an Azure CLI access token for stream 'factory'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'tasks'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'datasets'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'connections'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'schedules'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'dataflows'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'integration_runtimes'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'trigger_runs'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'."
+      ]
+    },
+    {
+      "connector_id": "azure-data-factory-adf-dw-caroffer-prod",
+      "run_id": "4f5f95c9-d6df-4849-a350-629702d46590",
+      "status": "partial_failure",
+      "mode": "connector_metadata_profile",
+      "started_at": "2026-06-29T10:05:44.115Z",
+      "completed_at": "2026-06-29T10:05:44.124Z",
+      "artifact_path": null,
+      "inventory_count": 0,
+      "pipeline_count": 0,
+      "task_count": 0,
+      "dataset_count": 0,
+      "connection_count": 0,
+      "schedule_count": 0,
+      "lineage_edge_count": 0,
+      "warning_count": 14,
+      "error_count": 14,
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "errors": [
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'factory'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'tasks'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'datasets'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'connections'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'schedules'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'dataflows'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'integration_runtimes'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'trigger_runs'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        }
+      ],
+      "warnings": [
+        "azure_data_factory could not get an Azure CLI access token for stream 'factory'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'tasks'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'datasets'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'connections'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'schedules'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'dataflows'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'integration_runtimes'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'trigger_runs'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'."
+      ]
+    },
+    {
+      "connector_id": "azure-data-factory-adf-dw-lightspeed-prod",
+      "run_id": "338d1cc0-658c-473f-b599-58b48a234177",
+      "status": "partial_failure",
+      "mode": "connector_metadata_profile",
+      "started_at": "2026-06-29T10:05:44.135Z",
+      "completed_at": "2026-06-29T10:05:44.143Z",
+      "artifact_path": null,
+      "inventory_count": 0,
+      "pipeline_count": 0,
+      "task_count": 0,
+      "dataset_count": 0,
+      "connection_count": 0,
+      "schedule_count": 0,
+      "lineage_edge_count": 0,
+      "warning_count": 14,
+      "error_count": 14,
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "errors": [
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'factory'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'tasks'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'datasets'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'connections'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'schedules'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'dataflows'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'integration_runtimes'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'trigger_runs'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        }
+      ],
+      "warnings": [
+        "azure_data_factory could not get an Azure CLI access token for stream 'factory'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'tasks'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'datasets'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'connections'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'schedules'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'dataflows'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'integration_runtimes'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'trigger_runs'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'."
+      ]
+    },
+    {
+      "connector_id": "azure-data-factory-adf-dw-postgres-prod",
+      "run_id": "0124ecc6-481b-48bf-81f7-f7b01bb2ef4a",
+      "status": "partial_failure",
+      "mode": "connector_metadata_profile",
+      "started_at": "2026-06-29T10:05:44.154Z",
+      "completed_at": "2026-06-29T10:05:44.161Z",
+      "artifact_path": null,
+      "inventory_count": 0,
+      "pipeline_count": 0,
+      "task_count": 0,
+      "dataset_count": 0,
+      "connection_count": 0,
+      "schedule_count": 0,
+      "lineage_edge_count": 0,
+      "warning_count": 14,
+      "error_count": 14,
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "errors": [
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'factory'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'tasks'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'datasets'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'connections'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'schedules'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'dataflows'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'integration_runtimes'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'trigger_runs'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        }
+      ],
+      "warnings": [
+        "azure_data_factory could not get an Azure CLI access token for stream 'factory'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'tasks'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'datasets'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'connections'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'schedules'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'dataflows'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'integration_runtimes'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'trigger_runs'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'."
+      ]
+    },
+    {
+      "connector_id": "azure-data-factory-adf-googlesearch-d1",
+      "run_id": "2c9b930d-398d-47b6-b279-830df725f228",
+      "status": "partial_failure",
+      "mode": "connector_metadata_profile",
+      "started_at": "2026-06-29T10:05:44.171Z",
+      "completed_at": "2026-06-29T10:05:44.179Z",
+      "artifact_path": null,
+      "inventory_count": 0,
+      "pipeline_count": 0,
+      "task_count": 0,
+      "dataset_count": 0,
+      "connection_count": 0,
+      "schedule_count": 0,
+      "lineage_edge_count": 0,
+      "warning_count": 14,
+      "error_count": 14,
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "errors": [
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'factory'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'tasks'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'datasets'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'connections'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'schedules'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'dataflows'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'integration_runtimes'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'trigger_runs'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        }
+      ],
+      "warnings": [
+        "azure_data_factory could not get an Azure CLI access token for stream 'factory'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'tasks'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'datasets'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'connections'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'schedules'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'dataflows'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'integration_runtimes'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'trigger_runs'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'."
+      ]
+    },
+    {
+      "connector_id": "azure-data-factory-adf-xtime-d1",
+      "run_id": "4460d50f-1cd1-4a08-a6bd-4fc688933e2d",
+      "status": "partial_failure",
+      "mode": "connector_metadata_profile",
+      "started_at": "2026-06-29T10:05:44.188Z",
+      "completed_at": "2026-06-29T10:05:44.196Z",
+      "artifact_path": null,
+      "inventory_count": 0,
+      "pipeline_count": 0,
+      "task_count": 0,
+      "dataset_count": 0,
+      "connection_count": 0,
+      "schedule_count": 0,
+      "lineage_edge_count": 0,
+      "warning_count": 14,
+      "error_count": 14,
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "errors": [
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'factory'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'tasks'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'datasets'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'connections'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'schedules'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'dataflows'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'integration_runtimes'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'trigger_runs'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        },
+        {
+          "code": "CONNECTOR_RUNTIME_ERROR",
+          "message": "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'.",
+          "phase": "execution",
+          "remediation": "Run az login for the Sonic tenant, verify az account has access to the subscription, and retry the saved connector run."
+        }
+      ],
+      "warnings": [
+        "azure_data_factory could not get an Azure CLI access token for stream 'factory'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'tasks'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'datasets'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'connections'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'schedules'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'dataflows'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'integration_runtimes'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'managed_virtual_networks'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'trigger_runs'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipeline_runs'.",
+        "azure_data_factory could not get an Azure CLI access token for stream 'pipelines'."
+      ]
+    }
+  ]
+}

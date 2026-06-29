@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0",
+  "connector_id": "aws-account-118570350539-us-east-1",
+  "source_family": "aws",
+  "source_scope": "aws-account:118570350539:us-east-1",
+  "baseline": "devops-lineage-repo",
+  "baseline_registry_path": "C:/projects/Sonic-data-lineage/registry/object-registry.jsonl",
+  "generated_at": "2026-06-29T13:45:54.801Z",
+  "mode": "full_refresh",
+  "full_refresh_reason": "MDP production AWS full ingestion and publication requested 2026-06-29",
+  "counts": {
+    "new": 4,
+    "changed": 0,
+    "unchanged": 0,
+    "retained_stale": 0,
+    "removed_stale": 0
+  },
+  "changed_object_ids": [
+    "aws://118570350539/us-east-1/account/118570350539",
+    "aws://118570350539/us-east-1/athena/service",
+    "aws://118570350539/us-east-1/glue/service",
+    "aws://118570350539/us-east-1/s3/service"
+  ],
+  "objects": [
+    {
+      "canonical_id": "aws://118570350539/us-east-1/account/118570350539",
+      "display_name": "svc_prd_mdp",
+      "object_type": "aws_account",
+      "database": "",
+      "schema": "",
+      "object_name": "svc_prd_mdp",
+      "status": "new",
+      "prior_signature": null,
+      "next_signature": "924724909714acf8da6dc36e",
+      "affected_targets": ["devops", "runtime", "rovo", "confluence", "support_docs", "ai_summary"]
+    },
+    {
+      "canonical_id": "aws://118570350539/us-east-1/athena/service",
+      "display_name": "Amazon Athena - svc_prd_mdp",
+      "object_type": "aws_athena_service",
+      "database": "",
+      "schema": "athena",
+      "object_name": "athena",
+      "status": "new",
+      "prior_signature": null,
+      "next_signature": "46d90255196e7b872b852c4d",
+      "affected_targets": ["devops", "runtime", "rovo", "confluence", "support_docs", "ai_summary"]
+    },
+    {
+      "canonical_id": "aws://118570350539/us-east-1/glue/service",
+      "display_name": "AWS Glue Data Catalog - svc_prd_mdp",
+      "object_type": "aws_glue_service",
+      "database": "",
+      "schema": "glue",
+      "object_name": "glue",
+      "status": "new",
+      "prior_signature": null,
+      "next_signature": "0d9ae4fc7282d53133ba52fb",
+      "affected_targets": ["devops", "runtime", "rovo", "confluence", "support_docs", "ai_summary"]
+    },
+    {
+      "canonical_id": "aws://118570350539/us-east-1/s3/service",
+      "display_name": "Amazon S3 - svc_prd_mdp",
+      "object_type": "aws_s3_service",
+      "database": "",
+      "schema": "s3",
+      "object_name": "s3",
+      "status": "new",
+      "prior_signature": null,
+      "next_signature": "76606f1a74a763b5f4018732",
+      "affected_targets": ["devops", "runtime", "rovo", "confluence", "support_docs", "ai_summary"]
+    }
+  ]
+}

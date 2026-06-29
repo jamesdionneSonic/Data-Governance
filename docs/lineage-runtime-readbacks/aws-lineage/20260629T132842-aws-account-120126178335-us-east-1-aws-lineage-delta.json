@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "connector_id": "aws-account-120126178335-us-east-1",
+  "source_family": "aws",
+  "source_scope": "aws-account:120126178335:us-east-1",
+  "baseline": "devops-lineage-repo",
+  "baseline_registry_path": "C:/projects/Sonic-data-lineage/registry/object-registry.jsonl",
+  "generated_at": "2026-06-29T13:28:42.756Z",
+  "mode": "plan_only",
+  "full_refresh_reason": "",
+  "counts": {
+    "new": 5,
+    "changed": 0,
+    "unchanged": 0,
+    "retained_stale": 0,
+    "removed_stale": 0
+  },
+  "changed_object_ids": [
+    "aws://120126178335/us-east-1/account/120126178335",
+    "aws://120126178335/us-east-1/athena/service",
+    "aws://120126178335/us-east-1/glue/service",
+    "aws://120126178335/us-east-1/quicksight/service",
+    "aws://120126178335/us-east-1/s3/service"
+  ],
+  "objects": [
+    {
+      "canonical_id": "aws://120126178335/us-east-1/account/120126178335",
+      "display_name": "Northwest Motorsport - Production",
+      "object_type": "aws_account",
+      "database": "",
+      "schema": "",
+      "object_name": "Northwest Motorsport - Production",
+      "status": "new",
+      "prior_signature": null,
+      "next_signature": "0ffeef2dfd97d6dd53ab1645",
+      "affected_targets": ["devops", "runtime", "rovo", "confluence", "support_docs", "ai_summary"]
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/athena/service",
+      "display_name": "Amazon Athena - Northwest Motorsport - Production",
+      "object_type": "aws_athena_service",
+      "database": "",
+      "schema": "athena",
+      "object_name": "athena",
+      "status": "new",
+      "prior_signature": null,
+      "next_signature": "85bc47ed0c6608341a63f5d5",
+      "affected_targets": ["devops", "runtime", "rovo", "confluence", "support_docs", "ai_summary"]
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/glue/service",
+      "display_name": "AWS Glue Data Catalog - Northwest Motorsport - Production",
+      "object_type": "aws_glue_service",
+      "database": "",
+      "schema": "glue",
+      "object_name": "glue",
+      "status": "new",
+      "prior_signature": null,
+      "next_signature": "be14361fc5a78d85af6a2b2d",
+      "affected_targets": ["devops", "runtime", "rovo", "confluence", "support_docs", "ai_summary"]
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/quicksight/service",
+      "display_name": "Amazon QuickSight - Northwest Motorsport - Production",
+      "object_type": "aws_quicksight_service",
+      "database": "",
+      "schema": "quicksight",
+      "object_name": "quicksight",
+      "status": "new",
+      "prior_signature": null,
+      "next_signature": "69635ccb32de4009672ee862",
+      "affected_targets": ["devops", "runtime", "rovo", "confluence", "support_docs", "ai_summary"]
+    },
+    {
+      "canonical_id": "aws://120126178335/us-east-1/s3/service",
+      "display_name": "Amazon S3 - Northwest Motorsport - Production",
+      "object_type": "aws_s3_service",
+      "database": "",
+      "schema": "s3",
+      "object_name": "s3",
+      "status": "new",
+      "prior_signature": null,
+      "next_signature": "bc9e3c6e968aef96d7c54956",
+      "affected_targets": ["devops", "runtime", "rovo", "confluence", "support_docs", "ai_summary"]
+    }
+  ]
+}

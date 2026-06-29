@@ -8,6 +8,10 @@ import { spawn } from 'child_process';
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 import {
+  buildDeltaManifest,
+  writeDeltaOutputs,
+} from '../../engines/connectors/metadata-delta/index.js';
+import {
   buildAdapterCoverage,
   executeConnectorBiProfile,
   executeConnectorExtraction,
@@ -166,6 +170,8 @@ const AUTH_MODE_HELP = Object.freeze({
   api_token_reference: 'Store the API token in a secret reference or provide it one time.',
   api_key_reference: 'Store the API key in a secret reference or provide it one time.',
   bearer_token_reference: 'Store the bearer token in a secret reference or provide it one time.',
+  aws_cli_profile:
+    'Use a local AWS CLI profile backed by IAM Identity Center/SSO. No AWS keys are stored in the connector.',
   pat: 'Use a personal access token directly or through a secret reference.',
   pat_reference: 'Store the personal access token in a secret reference.',
   key_pair: 'Use a username plus a private key or key reference.',
@@ -792,7 +798,7 @@ export const CONNECTOR_TYPES = Object.freeze({
     category: CONNECTOR_CATEGORIES.CLOUD_PLATFORM,
     cloud: 'aws',
     metadata: ['databases', 'tables', 'columns', 'partitions', 'crawlers', 'jobs'],
-    credentialKinds: ['iam_role', 'access_key_reference'],
+    credentialKinds: ['aws_cli_profile', 'iam_role', 'access_key_reference'],
   },
   AWS_S3: {
     type: 'aws_s3',
@@ -801,7 +807,23 @@ export const CONNECTOR_TYPES = Object.freeze({
     category: CONNECTOR_CATEGORIES.CLOUD_STORAGE,
     cloud: 'aws',
     metadata: ['buckets', 'prefixes', 'objects', 'file formats', 'classifications'],
-    credentialKinds: ['iam_role', 'access_key_reference'],
+    credentialKinds: ['aws_cli_profile', 'iam_role', 'access_key_reference'],
+  },
+  AWS_ATHENA: {
+    type: 'aws_athena',
+    label: 'Amazon Athena',
+    provider: 'AWS',
+    category: CONNECTOR_CATEGORIES.CLOUD_PLATFORM,
+    cloud: 'aws',
+    metadata: [
+      'workgroups',
+      'data catalogs',
+      'databases',
+      'tables',
+      'named queries',
+      'query execution metadata',
+    ],
+    credentialKinds: ['aws_cli_profile', 'iam_role', 'access_key_reference'],
   },
   AWS_REDSHIFT: {
     type: 'aws_redshift',
@@ -810,7 +832,7 @@ export const CONNECTOR_TYPES = Object.freeze({
     category: CONNECTOR_CATEGORIES.WAREHOUSE,
     cloud: 'aws',
     metadata: ['databases', 'schemas', 'tables', 'views', 'columns', 'query usage'],
-    credentialKinds: ['iam_role', 'secret_reference'],
+    credentialKinds: ['aws_cli_profile', 'iam_role', 'secret_reference'],
   },
   GCP_DATAPLEX: {
     type: 'gcp_dataplex',
@@ -1026,7 +1048,7 @@ export const CONNECTOR_TYPES = Object.freeze({
     category: CONNECTOR_CATEGORIES.BI,
     cloud: 'aws',
     metadata: ['analyses', 'dashboards', 'datasets', 'data sources', 'calculated fields', 'themes'],
-    credentialKinds: ['iam_role', 'access_key_reference'],
+    credentialKinds: ['aws_cli_profile', 'iam_role', 'access_key_reference'],
   },
   GRAFANA: {
     type: 'grafana',
@@ -1496,6 +1518,10 @@ function profileMarkdownDir() {
     process.env.PROFILE_MARKDOWN_DIR ||
     path.join(process.cwd(), 'data', 'markdown', '_runtime', 'profile-runs')
   );
+}
+
+function metadataDeltaArtifactDir() {
+  return path.join(profileRuntimeDir(), 'metadata-delta');
 }
 
 function profilePublicationQueuePath() {
@@ -3158,6 +3184,69 @@ export async function planConnectorMetadataProfiling(id, options = {}, user = {}
   return planConnectorMetadataProfile({ connector, definition, options });
 }
 
+function metadataProfileDeltaObjects(profile = {}, connector = {}) {
+  const edges = profile.lineage_edges || [];
+  return (profile.inventory || [])
+    .map((item) => {
+      const id = item.id || item.external_id || item.name;
+      if (!id) return null;
+      const relatedEdges = edges.filter((edge) =>
+        [edge.from, edge.to, edge.source, edge.target]
+          .filter(Boolean)
+          .some((value) => value === item.id || value === item.external_id || value === item.name)
+      );
+      return {
+        canonical_id: String(id),
+        display_name: item.name || item.display_name || String(id),
+        object_type: item.object_type || item.role || item.type || 'metadata_object',
+        database: item.database || item.catalog || item.container || '',
+        schema: item.schema || item.folder || item.namespace || '',
+        object_name: item.name || item.object_name || String(id),
+        source_family: connector.type,
+        source_system: connector.id,
+        metadata: {
+          inventory_item: item,
+          lineage_edges: relatedEdges,
+        },
+      };
+    })
+    .filter(Boolean);
+}
+
+async function buildMetadataProfileDelta({ connector, profileResult, options, generatedAt }) {
+  const profile = profileResult.profile || {};
+  const currentObjects = metadataProfileDeltaObjects(profile, connector);
+  const mode = options.full_refresh
+    ? 'full_refresh'
+    : options.dry_run === false
+      ? 'incremental'
+      : 'plan_only';
+  const manifest = await buildDeltaManifest({
+    catalogRoot: path.resolve(process.env.CATALOG_REPO_PATH || '../Sonic-data-lineage'),
+    connectorId: connector.id,
+    sourceFamily: connector.type,
+    sourceScope: connector.id,
+    currentObjects,
+    mode,
+    fullRefreshReason: options.full_refresh
+      ? options.full_refresh_reason ||
+        'Connector metadata profile full refresh requested by operator.'
+      : '',
+    generatedAt,
+    scope: {
+      connector_id: connector.id,
+      source_system: connector.id,
+      source_family: connector.type,
+    },
+  });
+  const outputs = await writeDeltaOutputs({
+    manifest,
+    outputDir: metadataDeltaArtifactDir(),
+    basename: `${generatedAt.replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z')}-${connector.id}-metadata-profile-delta`,
+  });
+  return { manifest, outputs };
+}
+
 export async function runConnectorMetadataProfiling(id, options = {}, user = {}) {
   hydrateRuntimeStore();
   const connector = connectorStore.get(id);
@@ -3172,6 +3261,13 @@ export async function runConnectorMetadataProfiling(id, options = {}, user = {})
   const started = nowIso();
   const definition = normalizeConnectorType(connector.type);
   const profileResult = await executeConnectorMetadataProfile({ connector, definition, options });
+  const completedAt = nowIso();
+  const metadataDelta = await buildMetadataProfileDelta({
+    connector,
+    profileResult,
+    options,
+    generatedAt: completedAt,
+  });
   const run = {
     id: randomUUID(),
     connector_id: id,
@@ -3180,7 +3276,7 @@ export async function runConnectorMetadataProfiling(id, options = {}, user = {})
     status: profileResult.status,
     mode: options.dry_run === false ? 'connector_metadata_profile' : 'metadata_profile_dry_run',
     started_at: started,
-    completed_at: nowIso(),
+    completed_at: completedAt,
     summary: {
       ...(profileResult.profile?.summary || {}),
       secret_exposed: false,
@@ -3188,8 +3284,15 @@ export async function runConnectorMetadataProfiling(id, options = {}, user = {})
       raw_payload_values_captured: false,
       profile_run: true,
       metadata_profile_run: true,
+      metadata_delta_counts: metadataDelta.manifest.counts,
+      metadata_delta_manifest_path: metadataDelta.outputs.manifest_path,
+      metadata_delta_readback_path: metadataDelta.outputs.readback_path,
     },
     profile: profileResult,
+    metadata_delta: {
+      manifest: metadataDelta.manifest,
+      outputs: metadataDelta.outputs,
+    },
     errors: profileResult.errors || [],
     warnings: [
       ...(options.dry_run === false

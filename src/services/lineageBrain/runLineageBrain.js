@@ -31,6 +31,9 @@ function parseArgs(argv) {
     } else if (current === '--rules-file' && argv[i + 1]) {
       args.set('rulesPath', argv[i + 1]);
       i += 1;
+    } else if (current === '--delta-manifest' && argv[i + 1]) {
+      args.set('deltaManifestPath', argv[i + 1]);
+      i += 1;
     } else if (current === '--proposed-rules-file' && argv[i + 1]) {
       args.set('proposedRulesPath', argv[i + 1]);
       i += 1;
@@ -60,6 +63,7 @@ function parseArgs(argv) {
     target: args.get('target') || null,
     reportFile: args.get('reportFile') || undefined,
     rulesPath: args.get('rulesPath') || undefined,
+    deltaManifestPath: args.get('deltaManifestPath') || undefined,
     proposedRulesPath: args.get('proposedRulesPath') || undefined,
     rejectedRulesPath: args.get('rejectedRulesPath') || undefined,
     maxChanges: args.get('maxChanges') ? Number(args.get('maxChanges')) : null,
@@ -80,6 +84,7 @@ const {
   target,
   reportFile,
   rulesPath,
+  deltaManifestPath,
   proposedRulesPath,
   rejectedRulesPath,
   maxChanges,
@@ -96,6 +101,7 @@ const results = runLineageBrain(mode, {
   target,
   reportFile,
   rulesPath,
+  deltaManifestPath,
   proposedRulesPath,
   rejectedRulesPath,
   maxChanges,

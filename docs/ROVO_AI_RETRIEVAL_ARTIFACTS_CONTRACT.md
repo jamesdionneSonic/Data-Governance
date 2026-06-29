@@ -16,10 +16,17 @@ Rovo should be able to answer:
 - `Tell me about the database VendorData.`
 - `Tell me about the DimVehicle table.`
 - `Show me the lineage of the FactOpportunity table.`
+- `Tell me about the AWS Glue table repair_order_raw.`
+- `What S3 prefix backs this Athena table?`
 
 The retrieval artifacts exist to help Rovo find the right database or object
 quickly, read a compact context page, and link to the canonical human catalog
 page for deeper support documentation.
+
+For AWS and other non-database sources, retrieval artifacts must preserve native
+platform identity such as `aws://...`. Do not require `database.schema.object`
+when the source object is an S3 bucket, S3 prefix, Glue database/table/column,
+Athena catalog/database/table/workgroup/named query, or QuickSight asset.
 
 ## Boundary
 
@@ -33,6 +40,12 @@ Use this boundary:
 | DevOps lineage runtime package | Authoritative machine-readable lineage facts.           |
 | Human Confluence catalog       | Plain-English support and governance documentation.     |
 | Rovo AI retrieval artifacts    | Compact Confluence retrieval surfaces for Rovo answers. |
+
+Rovo artifact generation must be delta-first. Source metadata changes are
+detected by comparing fresh normalized metadata against the DevOps
+machine-readable baseline, not by comparing Rovo pages. Routine Rovo updates
+must process only the new or changed objects and directly impacted
+locator/context/evaluation shards named by the delta manifest.
 
 ## Confluence Tree
 
@@ -111,6 +124,14 @@ Required columns:
 
 Locator rows must include database-level entries, not just objects. This is
 what lets Rovo answer database prompts such as `tell me about VendorData`.
+For AWS locator rows, `database` and `schema` may be `not applicable` or a
+compatibility value, but `canonical_id`, `type`, account, region, service, and
+human/context links must carry the actual identity.
+
+Current AWS retrieval artifacts for the MDP route should use names such as
+`MDP AWS Rovo Object Locator 001`, `MDP AWS Rovo Object Summary Context 001`,
+and `MDP AWS Rovo Lineage Context 001`. They still belong under
+`AI Retrieval Artifacts`, not under `Data Product Catalog / MDP`.
 
 ## Database Context Pages
 
@@ -244,6 +265,10 @@ A Rovo retrieval dry run fails when:
   are exposed;
 - page size exceeds configured limits without a split recommendation;
 - evaluation prompts are missing for the changed artifact family.
+- a refreshed metadata run lacks a delta manifest and is not an explicitly
+  approved full refresh.
+- unchanged objects are regenerated or sent to an LLM during a routine delta
+  refresh.
 
 ## Medium-Safe Change Pattern
 
@@ -254,6 +279,7 @@ Keep work bounded:
 - one database/schema slice;
 - one evaluation prompt file;
 - dry-run only unless live publish is explicitly approved.
+- one reviewed delta manifest and the impacted Rovo shards named by it.
 
 Use `docs/CODEX_ROVO_AI_RETRIEVAL_PACKET.md` before changing Rovo artifact
 generation.

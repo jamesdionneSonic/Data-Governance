@@ -1,0 +1,2556 @@
+{
+  "generated_at": "2026-06-29T10:58:57.420Z",
+  "connector_count": 15,
+  "page_count": 402,
+  "connectors": [
+    {
+      "connector_id": "azure-data-factory-adf-admin-d1",
+      "factory": "adf-admin-d1",
+      "source_artifact": "data/markdown/_runtime/profile-runs/azure-data-factory-adf-admin-d1/2026-06-29T10-11-48-578Z-11741f90-76f8-47ce-ab4c-f5d6fa3faf27.json",
+      "factory_pages": 1,
+      "trigger_pages": 0,
+      "pipeline_pages": 0,
+      "total_pages": 1
+    },
+    {
+      "connector_id": "azure-data-factory-adf-dw-caroffer-prod",
+      "factory": "adf-dw-caroffer-prod",
+      "source_artifact": "data/markdown/_runtime/profile-runs/azure-data-factory-adf-dw-caroffer-prod/2026-06-29T10-12-08-135Z-f1bf09ab-b68c-44bf-96d6-9743f092ebcf.json",
+      "factory_pages": 1,
+      "trigger_pages": 0,
+      "pipeline_pages": 0,
+      "total_pages": 1
+    },
+    {
+      "connector_id": "azure-data-factory-adf-dw-lightspeed-prod",
+      "factory": "adf-dw-lightspeed-prod",
+      "source_artifact": "data/markdown/_runtime/profile-runs/azure-data-factory-adf-dw-lightspeed-prod/2026-06-29T10-12-27-404Z-1fc50dd7-9106-46e8-af4f-0ffd856bbbbc.json",
+      "factory_pages": 1,
+      "trigger_pages": 0,
+      "pipeline_pages": 0,
+      "total_pages": 1
+    },
+    {
+      "connector_id": "azure-data-factory-adf-dw-postgres-prod",
+      "factory": "adf-dw-postgres-prod",
+      "source_artifact": "data/markdown/_runtime/profile-runs/azure-data-factory-adf-dw-postgres-prod/2026-06-29T10-12-47-462Z-144774c9-f3bd-41e5-9a48-caa004b8682a.json",
+      "factory_pages": 1,
+      "trigger_pages": 0,
+      "pipeline_pages": 1,
+      "total_pages": 2
+    },
+    {
+      "connector_id": "azure-data-factory-adf-googlesearch-d1",
+      "factory": "adf-googlesearch-d1",
+      "source_artifact": "data/markdown/_runtime/profile-runs/azure-data-factory-adf-googlesearch-d1/2026-06-29T10-13-07-708Z-7a609b5f-65c7-491c-bb59-b36c758eb21b.json",
+      "factory_pages": 1,
+      "trigger_pages": 2,
+      "pipeline_pages": 8,
+      "total_pages": 11
+    },
+    {
+      "connector_id": "azure-data-factory-adf-xtime-d1",
+      "factory": "adf-xtime-d1",
+      "source_artifact": "data/markdown/_runtime/profile-runs/azure-data-factory-adf-xtime-d1/2026-06-29T10-13-27-065Z-22cec896-d7e0-42fe-b489-d705857e7fcf.json",
+      "factory_pages": 1,
+      "trigger_pages": 1,
+      "pipeline_pages": 2,
+      "total_pages": 4
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "factory": "adf-vehiclemart-prod",
+      "source_artifact": "data/markdown/_runtime/profile-runs/azure-data-factory-adf-vehiclemart-prod/2026-06-29T10-50-13-472Z-a59436b0-d570-4f84-beb9-99db50a52663.json",
+      "factory_pages": 1,
+      "trigger_pages": 6,
+      "pipeline_pages": 19,
+      "total_pages": 26
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reputationmgmt-d1",
+      "factory": "adf-reputationmgmt-d1",
+      "source_artifact": "data/markdown/_runtime/profile-runs/azure-data-factory-adf-reputationmgmt-d1/2026-06-29T10-16-34-166Z-e6bc6e30-cbf6-451f-bf23-2f2942845302.json",
+      "factory_pages": 1,
+      "trigger_pages": 2,
+      "pipeline_pages": 12,
+      "total_pages": 15
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "factory": "adf-facebookads-d1",
+      "source_artifact": "data/markdown/_runtime/profile-runs/azure-data-factory-adf-facebookads-d1/2026-06-29T10-33-50-098Z-594847ac-c07a-4c43-9ce6-d0688eb80812.json",
+      "factory_pages": 1,
+      "trigger_pages": 4,
+      "pipeline_pages": 13,
+      "total_pages": 18
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "factory": "adf-reconpro-d1",
+      "source_artifact": "data/markdown/_runtime/profile-runs/azure-data-factory-adf-reconpro-d1/2026-06-29T10-36-22-878Z-99482e31-df3e-4e9d-a5f0-9226a03807f7.json",
+      "factory_pages": 1,
+      "trigger_pages": 3,
+      "pipeline_pages": 26,
+      "total_pages": 30
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "factory": "adf-mci-d1",
+      "source_artifact": "data/markdown/_runtime/profile-runs/azure-data-factory-adf-mci-d1/2026-06-29T10-38-55-091Z-34f3170a-d1ea-4186-b53f-3f09641fbeae.json",
+      "factory_pages": 1,
+      "trigger_pages": 4,
+      "pipeline_pages": 18,
+      "total_pages": 23
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "factory": "adf-ganalytics-d1",
+      "source_artifact": "data/markdown/_runtime/profile-runs/azure-data-factory-adf-ganalytics-d1/2026-06-29T10-42-03-682Z-594902fe-3591-404d-b693-88159eebfa46.json",
+      "factory_pages": 1,
+      "trigger_pages": 4,
+      "pipeline_pages": 17,
+      "total_pages": 22
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "factory": "adf-elead-d1",
+      "source_artifact": "data/markdown/_runtime/profile-runs/azure-data-factory-adf-elead-d1/2026-06-29T10-44-01-752Z-338405aa-fbbd-4157-a7ed-ad8c0fb8bdc3.json",
+      "factory_pages": 1,
+      "trigger_pages": 6,
+      "pipeline_pages": 34,
+      "total_pages": 41
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "factory": "adf-inbounddataetl-prod",
+      "source_artifact": "data/markdown/_runtime/profile-runs/azure-data-factory-adf-inbounddataetl-prod/2026-06-29T10-46-28-895Z-0c8e98f2-1277-45d8-864a-42cd5d44bb03.json",
+      "factory_pages": 1,
+      "trigger_pages": 8,
+      "pipeline_pages": 82,
+      "total_pages": 91
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "factory": "adf-pricefx-d1",
+      "source_artifact": "data/markdown/_runtime/profile-runs/azure-data-factory-adf-pricefx-d1/2026-06-29T10-49-10-481Z-ea190808-2542-4272-b648-bcc818870f5e.json",
+      "factory_pages": 1,
+      "trigger_pages": 17,
+      "pipeline_pages": 98,
+      "total_pages": 116
+    }
+  ],
+  "pages": [
+    {
+      "connector_id": "azure-data-factory-adf-admin-d1",
+      "title": "adf-admin-d1",
+      "asset_type": "factory",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-admin-d1/adf-admin-d1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-dw-caroffer-prod",
+      "title": "adf-dw-caroffer-prod",
+      "asset_type": "factory",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-dw-caroffer-prod/adf-dw-caroffer-prod.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-dw-lightspeed-prod",
+      "title": "adf-dw-lightspeed-prod",
+      "asset_type": "factory",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-dw-lightspeed-prod/adf-dw-lightspeed-prod.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-dw-postgres-prod",
+      "title": "adf-dw-postgres-prod",
+      "asset_type": "factory",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-dw-postgres-prod/adf-dw-postgres-prod.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-dw-postgres-prod",
+      "title": "SharedIR-D1-SSIS-01",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-dw-postgres-prod/SharedIR-D1-SSIS-01.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-googlesearch-d1",
+      "title": "adf-googlesearch-d1",
+      "asset_type": "factory",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-googlesearch-d1/adf-googlesearch-d1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-googlesearch-d1",
+      "title": "Trigger_Adhoc",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-googlesearch-d1/Trigger_Adhoc.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-googlesearch-d1",
+      "title": "Google_Search_Console_Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-googlesearch-d1/Google_Search_Console_Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-googlesearch-d1",
+      "title": "ACT_FAIL_PipelineDisabled",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-googlesearch-d1/ACT_FAIL_PipelineDisabled.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-googlesearch-d1",
+      "title": "ACT_IF_IsPipelineEnabled",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-googlesearch-d1/ACT_IF_IsPipelineEnabled.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-googlesearch-d1",
+      "title": "ACT_SCR_UpdateMetaPackageLoadDateSync",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-googlesearch-d1/ACT_SCR_UpdateMetaPackageLoadDateSync.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-googlesearch-d1",
+      "title": "GoogleSearchConsole_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-googlesearch-d1/GoogleSearchConsole_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-googlesearch-d1",
+      "title": "GSC_Incremental_Load",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-googlesearch-d1/GSC_Incremental_Load.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-googlesearch-d1",
+      "title": "GSC_Load_Phase2DimensionTables",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-googlesearch-d1/GSC_Load_Phase2DimensionTables.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-googlesearch-d1",
+      "title": "GSC_Load_Phase2FactTables",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-googlesearch-d1/GSC_Load_Phase2FactTables.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-googlesearch-d1",
+      "title": "SelfHosted-IR-D1-SSIS-02",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-googlesearch-d1/SelfHosted-IR-D1-SSIS-02.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-xtime-d1",
+      "title": "adf-xtime-d1",
+      "asset_type": "factory",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-xtime-d1/adf-xtime-d1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-xtime-d1",
+      "title": "Tr_xTime_Monthly",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-xtime-d1/Tr_xTime_Monthly.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-xtime-d1",
+      "title": "PL_Xtime_Incremental_Load",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-xtime-d1/PL_Xtime_Incremental_Load.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-xtime-d1",
+      "title": "PL_Xtime_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-xtime-d1/PL_Xtime_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "adf-vehiclemart-prod",
+      "asset_type": "factory",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/adf-vehiclemart-prod.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "Autotrader_Manual_Evry15min",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/Autotrader_Manual_Evry15min.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "Facebook Supermetric Monthly",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/Facebook Supermetric Monthly.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "Facebook Supermetric Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/Facebook Supermetric Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "trigger_6am",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/trigger_6am.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "trigger_11pm",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/trigger_11pm.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "trigger_1015pm",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/trigger_1015pm.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "activityMonitor",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/activityMonitor.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "activityMonitor_all_list",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/activityMonitor_all_list.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "AT_Auto_Trigger_ManualRun",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/AT_Auto_Trigger_ManualRun.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "Check Pipeline Status",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/Check Pipeline Status.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "check_elead_sp",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/check_elead_sp.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "Exec AT Manual Pipeline",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/Exec AT Manual Pipeline.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "FB_SM_Ads_DailyLoad_v1_2",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/FB_SM_Ads_DailyLoad_v1_2.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "FB_SM_Ads_Master_v1_2",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/FB_SM_Ads_Master_v1_2.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "FB_SM_Ads_MonthlyLoad_v1_2",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/FB_SM_Ads_MonthlyLoad_v1_2.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "HistoricalData_Movement",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/HistoricalData_Movement.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "Mail From Prod",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/Mail From Prod.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "MailFromDServer",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/MailFromDServer.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "SharedSelfHostedIR-D1-SSIS-01",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/SharedSelfHostedIR-D1-SSIS-01.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "SharedSelfHostedIR-D1-SSIS-02",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/SharedSelfHostedIR-D1-SSIS-02.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "SSIS_AuditTable",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/SSIS_AuditTable.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "Update Pipeline Status (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/Update Pipeline Status (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "Update Pipeline Status (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/Update Pipeline Status (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "Update Pipeline Status (3)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/Update Pipeline Status (3).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "title": "Update Pipeline Status (4)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-vehiclemart-prod/Update Pipeline Status (4).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reputationmgmt-d1",
+      "title": "adf-reputationmgmt-d1",
+      "asset_type": "factory",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reputationmgmt-d1/adf-reputationmgmt-d1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reputationmgmt-d1",
+      "title": "RMLoadDaily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reputationmgmt-d1/RMLoadDaily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reputationmgmt-d1",
+      "title": "TRG_ADHOC",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reputationmgmt-d1/TRG_ADHOC.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reputationmgmt-d1",
+      "title": "IsPipelineEnabled",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reputationmgmt-d1/IsPipelineEnabled.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reputationmgmt-d1",
+      "title": "PipelineDisabled",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reputationmgmt-d1/PipelineDisabled.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reputationmgmt-d1",
+      "title": "PipelineEnabled",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reputationmgmt-d1/PipelineEnabled.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reputationmgmt-d1",
+      "title": "RepMgmt_IncrementalLoad",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reputationmgmt-d1/RepMgmt_IncrementalLoad.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reputationmgmt-d1",
+      "title": "RepMgmt_Load_Phase2Dimension",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reputationmgmt-d1/RepMgmt_Load_Phase2Dimension.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reputationmgmt-d1",
+      "title": "RepMgmt_Load_Phase2Fact",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reputationmgmt-d1/RepMgmt_Load_Phase2Fact.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reputationmgmt-d1",
+      "title": "ReputationManagement_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reputationmgmt-d1/ReputationManagement_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reputationmgmt-d1",
+      "title": "UpdatePackageLoadDateSyncMetrics (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reputationmgmt-d1/UpdatePackageLoadDateSyncMetrics (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reputationmgmt-d1",
+      "title": "UpdatePackageLoadDateSyncMetrics (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reputationmgmt-d1/UpdatePackageLoadDateSyncMetrics (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reputationmgmt-d1",
+      "title": "UpdatePackageLoadDateSyncMonthly",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reputationmgmt-d1/UpdatePackageLoadDateSyncMonthly.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reputationmgmt-d1",
+      "title": "UpdatePackageLoadDateSyncReviews",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reputationmgmt-d1/UpdatePackageLoadDateSyncReviews.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reputationmgmt-d1",
+      "title": "UpdatePackageLoadDateSyncStores",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reputationmgmt-d1/UpdatePackageLoadDateSyncStores.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "title": "adf-facebookads-d1",
+      "asset_type": "factory",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-facebookads-d1/adf-facebookads-d1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "title": "FacebookAdsDaily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-facebookads-d1/FacebookAdsDaily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "title": "monthly_adhoc",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-facebookads-d1/monthly_adhoc.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "title": "FacebookAdsMonthly",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-facebookads-d1/FacebookAdsMonthly.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "title": "FacebookAdsOfflineMetrices",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-facebookads-d1/FacebookAdsOfflineMetrices.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "title": "ACT_FAIL_PipelineDisabled (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-facebookads-d1/ACT_FAIL_PipelineDisabled (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "title": "ACT_FAIL_PipelineDisabled (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-facebookads-d1/ACT_FAIL_PipelineDisabled (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "title": "ACT_IF_IsPipelineEnabled (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-facebookads-d1/ACT_IF_IsPipelineEnabled (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "title": "ACT_IF_IsPipelineEnabled (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-facebookads-d1/ACT_IF_IsPipelineEnabled (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "title": "ACT_WAIT_PipelineEnabled (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-facebookads-d1/ACT_WAIT_PipelineEnabled (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "title": "ACT_WAIT_PipelineEnabled (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-facebookads-d1/ACT_WAIT_PipelineEnabled (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "title": "PL_FacebookAds_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-facebookads-d1/PL_FacebookAds_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "title": "PL_FBAds_IncrementalLoad",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-facebookads-d1/PL_FBAds_IncrementalLoad.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "title": "PL_FBAds_Load_Phase2DailyData",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-facebookads-d1/PL_FBAds_Load_Phase2DailyData.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "title": "PL_FBAds_Load_Phase2MonthlyData",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-facebookads-d1/PL_FBAds_Load_Phase2MonthlyData.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "title": "PL_FBAds_OfflineMetrices_IncrementalLoad",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-facebookads-d1/PL_FBAds_OfflineMetrices_IncrementalLoad.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "title": "PL_FBAds_OfflineMetrices_Load_Phase2DailyData",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-facebookads-d1/PL_FBAds_OfflineMetrices_Load_Phase2DailyData.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "title": "PL_FBAds_OfflineMetrices_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-facebookads-d1/PL_FBAds_OfflineMetrices_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "adf-reconpro-d1",
+      "asset_type": "factory",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/adf-reconpro-d1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "TRG_StoreLocationHours",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/TRG_StoreLocationHours.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "TRG_ReconPro",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/TRG_ReconPro.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "TRG_ReconPro_AdHoc",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/TRG_ReconPro_AdHoc.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "ACT_LKP_PackageLoadDateSync (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/ACT_LKP_PackageLoadDateSync (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "ACT_LKP_PackageLoadDateSync (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/ACT_LKP_PackageLoadDateSync (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "ACT_LKP_PackageLoadDateSync (3)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/ACT_LKP_PackageLoadDateSync (3).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "ACT_LKP_PackageLoadDateSync (4)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/ACT_LKP_PackageLoadDateSync (4).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "ACT_LKP_PackageLoadDateSync (5)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/ACT_LKP_PackageLoadDateSync (5).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "Hist_Vendordata tables",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/Hist_Vendordata tables.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_Inspections",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_Inspections.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_Inspections_old",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_Inspections_old.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_Meta_InsertLogs",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_Meta_InsertLogs.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_Meta_InsertLogs_copy1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_Meta_InsertLogs_copy1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_Orders",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_Orders.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_Orders_copy1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_Orders_copy1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_Orders_old",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_Orders_old.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_Recon_DirtReportWIP",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_Recon_DirtReportWIP.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_Recon_DirtReportWIP2",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_Recon_DirtReportWIP2.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_Recon_DirtReportWIP21",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_Recon_DirtReportWIP21.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_ReconPro_Child",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_ReconPro_Child.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_ReconPro_Child_copy1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_ReconPro_Child_copy1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_ReconPro_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_ReconPro_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_ReconPro_Master_copy1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_ReconPro_Master_copy1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_Services",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_Services.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_Services_old",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_Services_old.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_SSISTables",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_SSISTables.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_StoreWorkingHours_Child",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_StoreWorkingHours_Child.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "PL_StoreWorkingHours_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/PL_StoreWorkingHours_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "title": "VendorData_Tables",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-reconpro-d1/VendorData_Tables.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "adf-mci-d1",
+      "asset_type": "factory",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/adf-mci-d1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "Tr_LeadSale_Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/Tr_LeadSale_Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "Tr_CallSource_Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/Tr_CallSource_Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "Tr_CarGurusDaily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/Tr_CarGurusDaily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "Tr_Acquisition_Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/Tr_Acquisition_Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "PL_MCI_Acquisition",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/PL_MCI_Acquisition.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "PL_MCI_Acquisition_Incremental",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/PL_MCI_Acquisition_Incremental.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "PL_MCI_Acquisition_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/PL_MCI_Acquisition_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "PL_MCI_CarGurus",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/PL_MCI_CarGurus.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "PL_MCI_CarGurus_Incremental",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/PL_MCI_CarGurus_Incremental.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "PL_MCI_CarGurus_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/PL_MCI_CarGurus_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "PL_MCI_EPCallSource",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/PL_MCI_EPCallSource.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "PL_MCI_EPCallSource_Incremental",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/PL_MCI_EPCallSource_Incremental.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "PL_MCI_EPCallSource_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/PL_MCI_EPCallSource_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "PL_MCI_EPLeadSale",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/PL_MCI_EPLeadSale.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "PL_MCI_EPLeadSale_Incremental",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/PL_MCI_EPLeadSale_Incremental.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "PL_MCI_EPLeadSale_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/PL_MCI_EPLeadSale_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "PL_MCI_EPTrafficLeadSale",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/PL_MCI_EPTrafficLeadSale.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "PL_MCI_EPTrafficLeadSale_Incremental",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/PL_MCI_EPTrafficLeadSale_Incremental.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "PL_MCI_EPTrafficLeadSale_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/PL_MCI_EPTrafficLeadSale_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "PL_MCI_NWMSTrafficLeadSale",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/PL_MCI_NWMSTrafficLeadSale.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "PL_MCI_NWMSTrafficLeadSale_Incremental",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/PL_MCI_NWMSTrafficLeadSale_Incremental.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "title": "PL_MCI_NWMSTrafficLeadSale_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-mci-d1/PL_MCI_NWMSTrafficLeadSale_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "adf-ganalytics-d1",
+      "asset_type": "factory",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/adf-ganalytics-d1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "TGR_LoadViewsToTables_Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/TGR_LoadViewsToTables_Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "copyDimEntityTables",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/copyDimEntityTables.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "TGR_LoadViewsToTables_FirstRun_Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/TGR_LoadViewsToTables_FirstRun_Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "TGR_LoadViewsToTables_LastRun_Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/TGR_LoadViewsToTables_LastRun_Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "ACT_IF_IsPipelineEnabled (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/ACT_IF_IsPipelineEnabled (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "ACT_IF_IsPipelineEnabled (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/ACT_IF_IsPipelineEnabled (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "ACT_IF_IsPipelineEnabled (3)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/ACT_IF_IsPipelineEnabled (3).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "Load_AQ_Adhoc",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/Load_AQ_Adhoc.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "PipelineDisabled (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/PipelineDisabled (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "PipelineDisabled (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/PipelineDisabled (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "PipelineDisabled (3)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/PipelineDisabled (3).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "PipelineEnabled (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/PipelineEnabled (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "PipelineEnabled (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/PipelineEnabled (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "PipelineEnabled (3)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/PipelineEnabled (3).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "PL_Copy_DimEntity_Child",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/PL_Copy_DimEntity_Child.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "PL_Copy_DimEntity_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/PL_Copy_DimEntity_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "PL_Load_AdvertisingQueries_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/PL_Load_AdvertisingQueries_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "PL_LoadAQ_CheckParentProcesses",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/PL_LoadAQ_CheckParentProcesses.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "PL_LoadAQ_Full",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/PL_LoadAQ_Full.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "PL_LoadAQ_RefreshMSTRCubes",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/PL_LoadAQ_RefreshMSTRCubes.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "title": "PL_LoadAQ_ViewsToTables",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-ganalytics-d1/PL_LoadAQ_ViewsToTables.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "adf-elead-d1",
+      "asset_type": "factory",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/adf-elead-d1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "Elead_Adhoc",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/Elead_Adhoc.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "Elead_Historical_Load",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/Elead_Historical_Load.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "Elead_StoreRegionMapping",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/Elead_StoreRegionMapping.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "Elead_Data_Validation",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/Elead_Data_Validation.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "Elead_Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/Elead_Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "Elead_Mkt_Campaign_Monthly",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/Elead_Mkt_Campaign_Monthly.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "ACT_IF_IsPipelineEnabled",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/ACT_IF_IsPipelineEnabled.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "ACT_LKP_UpdatePackageLoadDateSync",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/ACT_LKP_UpdatePackageLoadDateSync.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PackageLoadDateSync (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PackageLoadDateSync (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PackageLoadDateSync (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PackageLoadDateSync (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PackageLoadDateSync (3)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PackageLoadDateSync (3).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PackageLoadDateSync (4)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PackageLoadDateSync (4).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PackageLoadDateSync (5)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PackageLoadDateSync (5).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PL_Adhoc_UpdatePackageLoadDateSync",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PL_Adhoc_UpdatePackageLoadDateSync.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PL_Adhoc_UpdatePackageLoadDateSync_copy1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PL_Adhoc_UpdatePackageLoadDateSync_copy1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PL_Elead_Data_Validation_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PL_Elead_Data_Validation_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PL_Elead_GEC_Active_Stores_Review",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PL_Elead_GEC_Active_Stores_Review.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PL_Elead_Historical_Load",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PL_Elead_Historical_Load.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PL_Elead_Incremental_Load",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PL_Elead_Incremental_Load.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PL_Elead_Insert_Logs",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PL_Elead_Insert_Logs.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PL_Elead_LoadDimStoreRegionMapping",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PL_Elead_LoadDimStoreRegionMapping.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PL_Elead_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PL_Elead_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PL_Elead_Mkt_Campaign_Historical_Support",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PL_Elead_Mkt_Campaign_Historical_Support.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PL_Elead_Mkt_Campaign_Incremental",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PL_Elead_Mkt_Campaign_Incremental.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PL_Elead_Mkt_Campaign_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PL_Elead_Mkt_Campaign_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PL_Elead_MTD_Leads_Comparison",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PL_Elead_MTD_Leads_Comparison.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PL_Elead_RegionMappingMaster",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PL_Elead_RegionMappingMaster.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PL_Elead_Report_Generator",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PL_Elead_Report_Generator.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PL_Elead_Summary_Report_Generator",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PL_Elead_Summary_Report_Generator.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PL_Meta_InsertLogs",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PL_Meta_InsertLogs.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "PL_Mkt_Campaign_Insert_Logs",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/PL_Mkt_Campaign_Insert_Logs.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "SelfHosted-IR-D1-SSIS-02",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/SelfHosted-IR-D1-SSIS-02.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "Update PackageLoadDateSync (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/Update PackageLoadDateSync (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "Update PackageLoadDateSync (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/Update PackageLoadDateSync (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "Update PackageLoadDateSync (3)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/Update PackageLoadDateSync (3).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "Update_PackageLoadDateSync (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/Update_PackageLoadDateSync (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "Update_PackageLoadDateSync (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/Update_PackageLoadDateSync (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "UpdatePackageLoadDateSync (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/UpdatePackageLoadDateSync (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "UpdatePackageLoadDateSync (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/UpdatePackageLoadDateSync (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "title": "UpsertLogsPackageLoadDateSync",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-elead-d1/UpsertLogsPackageLoadDateSync.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "adf-inbounddataetl-prod",
+      "asset_type": "factory",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/adf-inbounddataetl-prod.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "trGoogleAdsDataLoad",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/trGoogleAdsDataLoad.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "trGoogleAdsDataLoadConversion",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/trGoogleAdsDataLoadConversion.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "trMktCarNow",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/trMktCarNow.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "trverint",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/trverint.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus Trigger",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus Trigger.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "IBEXMaster",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/IBEXMaster.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "LoadEstimatedSpend_MktBudget",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/LoadEstimatedSpend_MktBudget.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Tr_xTime_Monthly",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Tr_xTime_Monthly.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_Data_Transfer",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_Data_Transfer.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_Delivered_VendorData",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_Delivered_VendorData.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_Delivered_VendorData1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_Delivered_VendorData1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_Delivered_VendorData2",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_Delivered_VendorData2.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_Delivered_VendorData3",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_Delivered_VendorData3.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_Delivered_VendorData4",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_Delivered_VendorData4.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_Delivery",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_Delivery.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_Delivery1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_Delivery1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_Delivery2",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_Delivery2.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_EnRoute",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_EnRoute.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_EnRoute1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_EnRoute1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_EP_InRoute_VendorData",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_EP_InRoute_VendorData.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_EP_InRoute_VendorData1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_EP_InRoute_VendorData1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_EP_InRoute_VendorData2",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_EP_InRoute_VendorData2.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_EP_InRoute_VendorData3",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_EP_InRoute_VendorData3.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_Orders",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_Orders.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_Orders_VendorData",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_Orders_VendorData.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_Orders_VendorData1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_Orders_VendorData1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_Orders_VendorData2",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_Orders_VendorData2.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Acertus_Orders1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Acertus_Orders1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Check if Pipeline Disabled (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Check if Pipeline Disabled (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Check if Pipeline Disabled (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Check if Pipeline Disabled (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Check if Pipeline Disabled (3)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Check if Pipeline Disabled (3).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Check if Pipeline Disabled (4)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Check if Pipeline Disabled (4).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Check if pipeline enabled or not (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Check if pipeline enabled or not (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Check if pipeline enabled or not (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Check if pipeline enabled or not (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Check if pipeline enabled or not (3)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Check if pipeline enabled or not (3).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Check if pipeline enabled or not (4)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Check if pipeline enabled or not (4).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "GoogleAds_STG_DataLoad",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/GoogleAds_STG_DataLoad.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "GoogleAds_STG_DataLoad_old",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/GoogleAds_STG_DataLoad_old.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "GoogleAds_STG_DataLoad_old1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/GoogleAds_STG_DataLoad_old1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "GoogleAds_STG_DataLoadConversion",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/GoogleAds_STG_DataLoadConversion.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "GoogleAds_STG_DataLoadConversion_old",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/GoogleAds_STG_DataLoadConversion_old.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "IBEX_DimSurveyAudit",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/IBEX_DimSurveyAudit.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "IBEX_DimSurveyAudit1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/IBEX_DimSurveyAudit1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "IBEX_DimSurveyQuestion",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/IBEX_DimSurveyQuestion.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "IBEX_DimSurveyQuestion1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/IBEX_DimSurveyQuestion1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "IBEX_FactSurveyAuditDetail",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/IBEX_FactSurveyAuditDetail.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "IBEX_FactSurveyAuditDetail1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/IBEX_FactSurveyAuditDetail1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "IBEX_SurveyMaster",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/IBEX_SurveyMaster.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "LoadAgentAdherenceToVendorData",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/LoadAgentAdherenceToVendorData.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "LoadAgentAdherenceToVendorData1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/LoadAgentAdherenceToVendorData1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "LoadAgentStatusToVendorData",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/LoadAgentStatusToVendorData.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "LoadAgentStatusToVendorData1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/LoadAgentStatusToVendorData1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "LoadStandardRosterToVendorData",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/LoadStandardRosterToVendorData.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "LoadStandardRosterToVendorData1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/LoadStandardRosterToVendorData1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "LoadTardyEarlyOutT0VendorData",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/LoadTardyEarlyOutT0VendorData.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "LoadTardyEarlyOutT0VendorData1",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/LoadTardyEarlyOutT0VendorData1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "mktcarnow_ADLS_to_Archive",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/mktcarnow_ADLS_to_Archive.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Pipeline Disabled (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Pipeline Disabled (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Pipeline Disabled (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Pipeline Disabled (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Pipeline Disabled (3)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Pipeline Disabled (3).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Pipeline Disabled (4)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Pipeline Disabled (4).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Pipeline Enabled (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Pipeline Enabled (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Pipeline Enabled (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Pipeline Enabled (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Pipeline Enabled (3)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Pipeline Enabled (3).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Pipeline Enabled (4)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Pipeline Enabled (4).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Pipeline is disabled (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Pipeline is disabled (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Pipeline is disabled (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Pipeline is disabled (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Pipeline is disabled (3)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Pipeline is disabled (3).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Pipeline is disabled (4)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Pipeline is disabled (4).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "pl_dms2adlsparquet",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/pl_dms2adlsparquet.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "pl_elead_VOI_parquet",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/pl_elead_VOI_parquet.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "pl_eleadactivity2adls",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/pl_eleadactivity2adls.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "PL_GoogleAds_Campaign_IncrementalLoad",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/PL_GoogleAds_Campaign_IncrementalLoad.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "PL_GoogleAds_Campaign_IncrementalLoad_old",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/PL_GoogleAds_Campaign_IncrementalLoad_old.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "PL_GoogleAds_Campaign_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/PL_GoogleAds_Campaign_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "PL_GoogleAds_Campaign_Master_old",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/PL_GoogleAds_Campaign_Master_old.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "PL_GoogleAds_Conversion_IncrementalLoad",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/PL_GoogleAds_Conversion_IncrementalLoad.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "PL_GoogleAds_Conversion_IncrementalLoad_old",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/PL_GoogleAds_Conversion_IncrementalLoad_old.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "PL_GoogleAds_Conversion_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/PL_GoogleAds_Conversion_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "PL_GoogleAds_Conversion_Master_old",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/PL_GoogleAds_Conversion_Master_old.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "pl_mdp2adlsparquet",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/pl_mdp2adlsparquet.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "pl_MDPSample_Individual_eLead2adls",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/pl_MDPSample_Individual_eLead2adls.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "pl_MktBudget_EstimatedSpend",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/pl_MktBudget_EstimatedSpend.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "pl_XTime_Adhoc",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/pl_XTime_Adhoc.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "PL_Xtime_Incremental_Load",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/PL_Xtime_Incremental_Load.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "PL_Xtime_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/PL_Xtime_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "SelfHostedIR-V1-SSIS-01",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/SelfHostedIR-V1-SSIS-01.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "SharedIR-D1-SSIS-01",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/SharedIR-D1-SSIS-01.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "SharedIR-U1-SSIS-01",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/SharedIR-U1-SSIS-01.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "title": "Verint_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-inbounddataetl-prod/Verint_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "adf-pricefx-d1",
+      "asset_type": "factory",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/adf-pricefx-d1.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Tr_Elead_Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Tr_Elead_Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Tr_SalesTransactions_Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Tr_SalesTransactions_Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Tr_VDP_Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Tr_VDP_Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Tr_CarGurus_Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Tr_CarGurus_Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Tr_MarketDetails_Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Tr_MarketDetails_Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Tr_VehicleDetails_Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Tr_VehicleDetails_Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Store_Details_Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Store_Details_Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Tr_AggregationFields",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Tr_AggregationFields.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "EP_Sales_Tracker_Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/EP_Sales_Tracker_Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Tr_Inventory_Details_Accounting_Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Tr_Inventory_Details_Accounting_Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Tr_Inv_FMV_Daily",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Tr_Inv_FMV_Daily.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Tr_DMACluster",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Tr_DMACluster.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Tr_ChromeException",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Tr_ChromeException.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Tr_DecodeMapping",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Tr_DecodeMapping.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Tr_AuctionData",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Tr_AuctionData.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Tr_Inventory",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Tr_Inventory.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Tr_Lag_Data_Weekly",
+      "asset_type": "trigger",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Tr_Lag_Data_Weekly.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master Pipeline (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master Pipeline (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master Pipeline (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master Pipeline (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master Pipeline (3)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master Pipeline (3).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master Pipeline (4)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master Pipeline (4).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master Pipeline (5)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master Pipeline (5).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master pipeline process (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master pipeline process (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master pipeline process (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master pipeline process (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master pipeline process (3)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master pipeline process (3).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master pipeline process (4)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master pipeline process (4).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master pipeline process (5)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master pipeline process (5).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master pipeline process (6)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master pipeline process (6).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master pipeline process (7)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master pipeline process (7).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master pipeline process (8)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master pipeline process (8).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master pipeline process (9)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master pipeline process (9).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master pipeline process (10)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master pipeline process (10).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master pipeline process (11)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master pipeline process (11).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master pipeline process (12)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master pipeline process (12).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master pipeline process (13)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master pipeline process (13).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Close out master pipeline process (14)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Close out master pipeline process (14).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "cp_pricefx_vehicle_details_DAGroup",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/cp_pricefx_vehicle_details_DAGroup.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Ep_Sales_PriceFxDB",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Ep_Sales_PriceFxDB.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Ep_salesTracker_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Ep_salesTracker_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Ep_salesTracker_PriceFx",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Ep_salesTracker_PriceFx.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Execute Pipeline",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Execute Pipeline.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Inventory_FMV_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Inventory_FMV_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Inventory_FMV_PriceFx",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Inventory_FMV_PriceFx.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Inventory_FMV_PriceFxDB",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Inventory_FMV_PriceFxDB.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_AggregationFields_Getdata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_AggregationFields_Getdata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_AggregationFields_Senddata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_AggregationFields_Senddata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_AuctionData_Getdata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_AuctionData_Getdata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_AuctionData_Senddata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_AuctionData_Senddata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_CarGurus_Getdata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_CarGurus_Getdata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_CarGurus_Senddata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_CarGurus_Senddata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_ChromeException_Getdata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_ChromeException_Getdata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_ChromeException_Senddata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_ChromeException_Senddata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_DecodeMapping_Getdata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_DecodeMapping_Getdata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_DecodeMapping_Senddata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_DecodeMapping_Senddata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_DMACluster_Getdata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_DMACluster_Getdata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_DMACluster_Senddata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_DMACluster_Senddata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_ELead_Appointment_Activities_Getdata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_ELead_Appointment_Activities_Getdata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_ELead_Appointment_Activities_Senddata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_ELead_Appointment_Activities_Senddata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_ELead_Opportunity_Getdata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_ELead_Opportunity_Getdata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_ELead_Opportunity_Senddata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_ELead_Opportunity_Senddata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_ELead_Vehicle_Getdata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_ELead_Vehicle_Getdata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_ELead_Vehicle_Senddata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_ELead_Vehicle_Senddata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_Inventory_Details_Accounting_Getdata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_Inventory_Details_Accounting_Getdata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_Inventory_Details_Accounting_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_Inventory_Details_Accounting_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_Inventory_Details_Accounting_Senddata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_Inventory_Details_Accounting_Senddata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_Inventory_Equipment_Options_Getdata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_Inventory_Equipment_Options_Getdata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_Inventory_Equipment_Options_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_Inventory_Equipment_Options_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_Inventory_Equipment_Options_Senddata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_Inventory_Equipment_Options_Senddata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_MarketDetails_Getdata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_MarketDetails_Getdata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_MarketDetails_Senddata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_MarketDetails_Senddata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_PriceFx_AggregationFields_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_PriceFx_AggregationFields_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_PriceFx_AuctionData_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_PriceFx_AuctionData_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_PriceFx_CarGurus_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_PriceFx_CarGurus_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_PriceFx_ChromeException_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_PriceFx_ChromeException_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_PriceFx_DecodeMapping_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_PriceFx_DecodeMapping_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_PriceFx_DMACluster_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_PriceFx_DMACluster_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_PriceFx_ELead_Appointment_Activities_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_PriceFx_ELead_Appointment_Activities_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_PriceFx_ELead_Opportunity_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_PriceFx_ELead_Opportunity_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_PriceFx_ELead_Vehicle_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_PriceFx_ELead_Vehicle_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_PriceFx_LagData_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_PriceFx_LagData_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_PriceFx_LagData_Weekly_Check",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_PriceFx_LagData_Weekly_Check.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_PriceFx_MarketDetails_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_PriceFx_MarketDetails_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_PriceFx_SalesTransactions_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_PriceFx_SalesTransactions_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_PriceFx_VDP_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_PriceFx_VDP_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_SalesTransactions_Getdata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_SalesTransactions_Getdata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_SalesTransactions_Senddata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_SalesTransactions_Senddata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_VDP_Getdata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_VDP_Getdata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_VDP_Senddata",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_VDP_Senddata.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_VehicleDetails_GetData",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_VehicleDetails_GetData.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "PL_VehicleDetails_Master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/PL_VehicleDetails_Master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (1)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (1).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (2)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (2).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (3)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (3).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (4)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (4).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (5)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (5).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (6)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (6).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (7)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (7).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (8)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (8).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (9)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (9).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (10)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (10).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (11)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (11).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (12)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (12).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (13)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (13).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (14)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (14).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (15)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (15).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (16)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (16).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (17)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (17).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (18)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (18).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Set Master Pipeline Metrics (19)",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Set Master Pipeline Metrics (19).md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Store_Details_PriceFx",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Store_Details_PriceFx.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Store_Details_PriceFxDB",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Store_Details_PriceFxDB.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "Store_master",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/Store_master.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "update failure information DAGrp Params",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/update failure information DAGrp Params.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "update failure information DAGrp Vw",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/update failure information DAGrp Vw.md"
+    },
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "title": "update failure information tmp_dagrp",
+      "asset_type": "pipeline",
+      "markdown_file": "docs/adf-support-documentation-multi-factory/azure-data-factory-adf-pricefx-d1/update failure information tmp_dagrp.md"
+    }
+  ]
+}

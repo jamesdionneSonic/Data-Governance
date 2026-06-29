@@ -1,0 +1,211 @@
+{
+  "generated_at": "2026-06-29T14:12:46.931Z",
+  "scope": {
+    "root_path": "Sonic Data Lineage / Data Product Catalog / MDP AWS Lineage Context",
+    "route_id": "mdp-aws-lineage-context",
+    "product_area": "MDP",
+    "publish_mode": "reviewed explicit MDP AWS publish packet",
+    "cleanup_mode": "none"
+  },
+  "delta_scope": {
+    "active": true,
+    "source_family": "aws",
+    "product_area": "MDP",
+    "route_id": "mdp-aws-lineage-context"
+  },
+  "required_labels": ["human-lineage-catalog", "aws-lineage", "mdp"],
+  "validation": {
+    "status": "passed",
+    "failures": []
+  },
+  "summary": {
+    "source_package_count": 6,
+    "object_count": 6471,
+    "edge_count": 6933,
+    "human_page_count": 6,
+    "rovo_page_count": 4
+  },
+  "planned_pages": [
+    {
+      "kind": "reference",
+      "title": "Data Product Catalog",
+      "treePath": ["Sonic Data Lineage", "Data Product Catalog"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": ["human-lineage-catalog", "lineage-product-catalog"]
+    },
+    {
+      "kind": "reference",
+      "title": "AI Retrieval Artifacts",
+      "treePath": ["Sonic Data Lineage", "AI Retrieval Artifacts"],
+      "page_type": "reference",
+      "evidence_hash": null,
+      "evidence_file": null,
+      "markdown_file": null,
+      "labels": ["human-lineage-catalog", "rovo-ai-retrieval", "ai-retrieval-artifact"]
+    },
+    {
+      "kind": "leaf",
+      "title": "MDP AWS Lineage Context",
+      "treePath": ["Sonic Data Lineage", "Data Product Catalog", "MDP AWS Lineage Context"],
+      "page_type": "mdp-aws-human-page",
+      "evidence_hash": "sha256:BC38C1A36C9CAD78A2AC95E46A7C4AEA045CCA0471F13298899503CE43991AC4",
+      "evidence_file": "confluence-evidence/mdp-aws-lineage-context.evidence.json",
+      "markdown_file": "confluence-human/mdp-aws-lineage-context.md",
+      "labels": ["human-lineage-catalog", "lineage-product-catalog", "aws-lineage", "mdp"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Data Team Feed Summary",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Data Product Catalog",
+        "MDP AWS Lineage Context",
+        "Data Team Feed Summary"
+      ],
+      "page_type": "mdp-aws-human-page",
+      "evidence_hash": "sha256:3C7744AC6EC3CB947C10F13B21DE759CD4677CE4A52BD8DD5EC6DDEE85C734A4",
+      "evidence_file": "confluence-evidence/data-team-feed-summary.evidence.json",
+      "markdown_file": "confluence-human/data-team-feed-summary.md",
+      "labels": ["human-lineage-catalog", "lineage-product-catalog", "aws-lineage", "mdp"]
+    },
+    {
+      "kind": "leaf",
+      "title": "AWS Accounts And Services",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Data Product Catalog",
+        "MDP AWS Lineage Context",
+        "AWS Accounts And Services"
+      ],
+      "page_type": "mdp-aws-human-page",
+      "evidence_hash": "sha256:A85BF54EE89B31122C5971EAAED52B0933496345DCFA6F94A968978ED454E9BD",
+      "evidence_file": "confluence-evidence/aws-accounts-and-services.evidence.json",
+      "markdown_file": "confluence-human/aws-accounts-and-services.md",
+      "labels": ["human-lineage-catalog", "lineage-product-catalog", "aws-lineage", "mdp"]
+    },
+    {
+      "kind": "leaf",
+      "title": "S3 Glue Athena Lineage",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Data Product Catalog",
+        "MDP AWS Lineage Context",
+        "S3 Glue Athena Lineage"
+      ],
+      "page_type": "mdp-aws-human-page",
+      "evidence_hash": "sha256:81BDBF4C1A45AD20764EF132FBAB81CED5132C167535E236F7C44B1E568895B3",
+      "evidence_file": "confluence-evidence/s3-glue-athena-lineage.evidence.json",
+      "markdown_file": "confluence-human/s3-glue-athena-lineage.md",
+      "labels": ["human-lineage-catalog", "lineage-product-catalog", "aws-lineage", "mdp"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Known Gaps And Ownership",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Data Product Catalog",
+        "MDP AWS Lineage Context",
+        "Known Gaps And Ownership"
+      ],
+      "page_type": "mdp-aws-human-page",
+      "evidence_hash": "sha256:B849DC31DB9D4EF14588D6D052409436922200EFA4A2E767EF4C34D6345DAA55",
+      "evidence_file": "confluence-evidence/known-gaps-and-ownership.evidence.json",
+      "markdown_file": "confluence-human/known-gaps-and-ownership.md",
+      "labels": ["human-lineage-catalog", "lineage-product-catalog", "aws-lineage", "mdp"]
+    },
+    {
+      "kind": "leaf",
+      "title": "Technical Evidence And Readbacks",
+      "treePath": [
+        "Sonic Data Lineage",
+        "Data Product Catalog",
+        "MDP AWS Lineage Context",
+        "Technical Evidence And Readbacks"
+      ],
+      "page_type": "mdp-aws-human-page",
+      "evidence_hash": "sha256:5C7EEF827CD45DB02A5D38E0B17BA37FED3FD879E23150B02F6ABA1C11077A05",
+      "evidence_file": "confluence-evidence/technical-evidence-and-readbacks.evidence.json",
+      "markdown_file": "confluence-human/technical-evidence-and-readbacks.md",
+      "labels": ["human-lineage-catalog", "lineage-product-catalog", "aws-lineage", "mdp"]
+    },
+    {
+      "kind": "leaf",
+      "title": "MDP AWS Rovo Start Here",
+      "treePath": ["Sonic Data Lineage", "AI Retrieval Artifacts", "MDP AWS Rovo Start Here"],
+      "page_type": "mdp-aws-rovo-page",
+      "evidence_hash": "sha256:24BED75D406C9E32FA55EBB1FBCA9E6506C6E56EF48D2DAA549AA91D843B009C",
+      "evidence_file": "confluence-evidence/mdp-aws-rovo-start-here.evidence.json",
+      "markdown_file": "confluence-rovo/mdp-aws-rovo-start-here.md",
+      "labels": [
+        "human-lineage-catalog",
+        "rovo-ai-retrieval",
+        "ai-retrieval-artifact",
+        "aws-lineage",
+        "mdp"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "MDP AWS Rovo Object Locator 001",
+      "treePath": [
+        "Sonic Data Lineage",
+        "AI Retrieval Artifacts",
+        "MDP AWS Rovo Object Locator 001"
+      ],
+      "page_type": "mdp-aws-rovo-page",
+      "evidence_hash": "sha256:7C328E3BD560383158D37B38BFC9749B1405DF7E7AEECE6275663F2A1FAC58D3",
+      "evidence_file": "confluence-evidence/mdp-aws-rovo-object-locator-001.evidence.json",
+      "markdown_file": "confluence-rovo/mdp-aws-rovo-object-locator-001.md",
+      "labels": [
+        "human-lineage-catalog",
+        "rovo-ai-retrieval",
+        "ai-retrieval-artifact",
+        "aws-lineage",
+        "mdp"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "MDP AWS Rovo Object Summary Context 001",
+      "treePath": [
+        "Sonic Data Lineage",
+        "AI Retrieval Artifacts",
+        "MDP AWS Rovo Object Summary Context 001"
+      ],
+      "page_type": "mdp-aws-rovo-page",
+      "evidence_hash": "sha256:8424922B1540B4C9909A30268DA36AB3004EE2DCA3B573E8B9E9CF4DE81D3FFC",
+      "evidence_file": "confluence-evidence/mdp-aws-rovo-object-summary-context-001.evidence.json",
+      "markdown_file": "confluence-rovo/mdp-aws-rovo-object-summary-context-001.md",
+      "labels": [
+        "human-lineage-catalog",
+        "rovo-ai-retrieval",
+        "ai-retrieval-artifact",
+        "aws-lineage",
+        "mdp"
+      ]
+    },
+    {
+      "kind": "leaf",
+      "title": "MDP AWS Rovo Lineage Context 001",
+      "treePath": [
+        "Sonic Data Lineage",
+        "AI Retrieval Artifacts",
+        "MDP AWS Rovo Lineage Context 001"
+      ],
+      "page_type": "mdp-aws-rovo-page",
+      "evidence_hash": "sha256:1A8A3937D88A795CE9C8AF0801721CB40107BAE765A3142BA60D2216601DFAC7",
+      "evidence_file": "confluence-evidence/mdp-aws-rovo-lineage-context-001.evidence.json",
+      "markdown_file": "confluence-rovo/mdp-aws-rovo-lineage-context-001.md",
+      "labels": [
+        "human-lineage-catalog",
+        "rovo-ai-retrieval",
+        "ai-retrieval-artifact",
+        "aws-lineage",
+        "mdp"
+      ]
+    }
+  ]
+}

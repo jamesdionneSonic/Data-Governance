@@ -229,6 +229,9 @@ function publishedChildTitle(connector, page) {
 
 try {
   const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
+  if (publish && manifest.delta_scope?.active !== true) {
+    throw new Error('ADF multi-factory support publish requires a delta-scoped manifest. Run support generation with --delta-manifest first.');
+  }
   await getPage(parentPageId);
 
   let supportRoot = await findChildPage(parentPageId, rootTitle);

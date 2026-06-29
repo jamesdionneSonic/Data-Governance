@@ -15,6 +15,7 @@ import { isExpectedHighFanoutTable } from './anomalyRules.js';
 import { renderLineageMarkdownTemplate } from './markdownTemplateRenderer.js';
 import { writeCorrectedMarkdown } from './markdownCorrectionWriter.js';
 import { templateValuesFromRecord } from './provenance.js';
+import { requireDeltaScopeForAiSync } from '../../../engines/connectors/metadata-delta/index.js';
 
 function listMarkdownFiles(rootDir) {
   const files = [];
@@ -61,6 +62,9 @@ function buildSnippet(sqlText, objectName) {
 
 export function generateTablePrompts(outputFile = 'generated_table_llm_prompts.txt', options = {}) {
   const { writeCorrection = false, correctionOutputPath = null } = options;
+  const deltaScope =
+    options.deltaScope ||
+    requireDeltaScopeForAiSync(options.deltaManifestPath, 'Table lineage LLM prompt generation');
   const files = listMarkdownFiles(TABLE_CURATED_ROOT).filter((filePath) =>
     filePath.replace(/\\/g, '/').includes('/databases/')
   );
@@ -82,7 +86,29 @@ export function generateTablePrompts(outputFile = 'generated_table_llm_prompts.t
     };
   });
 
-  const anomalies = records.filter((record) => {
+  const scopedRecords = records.filter((record) =>
+    deltaScope.includesAny([
+      record.markdownPath,
+      record.rawSqlPath,
+      record.objectName,
+      record.objectType,
+      record.metadata?.id,
+      record.metadata?.object_id,
+      record.metadata?.canonical_id,
+      record.metadata?.qualified_name,
+      record.metadata?.full_name,
+      record.metadata?.name,
+    ])
+  );
+  if (deltaScope.active && scopedRecords.length === 0) {
+    writeTextFile(
+      outputFile,
+      '=== TABLE ANOMALY DETECTOR REPORT ===\n[EMPTY] No changed table records matched the delta manifest; AI prompt generation skipped.\n'
+    );
+    return { outputFile, baseline: null, anomaly: null, anomalies: [], correctionMarkdown: '' };
+  }
+
+  const anomalies = scopedRecords.filter((record) => {
     if (record.refCount === 0) return true;
     if (record.refCount <= DEFAULT_EDGE_OVERPOPULATED_THRESHOLD) return false;
     if (
@@ -95,9 +121,10 @@ export function generateTablePrompts(outputFile = 'generated_table_llm_prompts.t
   });
 
   const baseline =
-    records.find((record) => record.objectName.toLowerCase().includes('bt_checklistrecord')) ||
-    records[0];
-  const anomaly = anomalies.sort((a, b) => b.refCount - a.refCount)[0] || records[0];
+    scopedRecords.find((record) =>
+      record.objectName.toLowerCase().includes('bt_checklistrecord')
+    ) || scopedRecords[0];
+  const anomaly = anomalies.sort((a, b) => b.refCount - a.refCount)[0] || scopedRecords[0];
 
   const baselineSnippet = buildSnippet(baseline.sqlText, baseline.objectName);
   const anomalySnippet = buildSnippet(anomaly.sqlText, anomaly.objectName);

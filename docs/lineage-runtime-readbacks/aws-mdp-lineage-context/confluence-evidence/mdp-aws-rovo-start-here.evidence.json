@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-29T14:12:46.931Z",
+  "page_type": "mdp-aws-rovo-page",
+  "page_title": "MDP AWS Rovo Start Here",
+  "page_tree_path": ["Sonic Data Lineage", "AI Retrieval Artifacts", "MDP AWS Rovo Start Here"],
+  "route_id": "mdp-aws-lineage-context",
+  "product_area": "MDP",
+  "business_domain": "Marketing Data Platform",
+  "human_root_path": "Sonic Data Lineage / Data Product Catalog / MDP AWS Lineage Context",
+  "rovo_root_path": "Sonic Data Lineage / AI Retrieval Artifacts",
+  "summary": {
+    "source_package_count": 6,
+    "object_count": 6471,
+    "edge_count": 6933,
+    "human_page_count": 6,
+    "rovo_page_count": 4
+  },
+  "evidence_hash": "sha256:24BED75D406C9E32FA55EBB1FBCA9E6506C6E56EF48D2DAA549AA91D843B009C"
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-29T14:12:46.931Z",
+  "page_type": "mdp-aws-human-page",
+  "page_title": "S3 Glue Athena Lineage",
+  "page_tree_path": [
+    "Sonic Data Lineage",
+    "Data Product Catalog",
+    "MDP AWS Lineage Context",
+    "S3 Glue Athena Lineage"
+  ],
+  "route_id": "mdp-aws-lineage-context",
+  "product_area": "MDP",
+  "business_domain": "Marketing Data Platform",
+  "human_root_path": "Sonic Data Lineage / Data Product Catalog / MDP AWS Lineage Context",
+  "rovo_root_path": "Sonic Data Lineage / AI Retrieval Artifacts",
+  "summary": {
+    "source_package_count": 6,
+    "object_count": 6471,
+    "edge_count": 6933,
+    "human_page_count": 6,
+    "rovo_page_count": 4
+  },
+  "evidence_hash": "sha256:81BDBF4C1A45AD20764EF132FBAB81CED5132C167535E236F7C44B1E568895B3"
+}

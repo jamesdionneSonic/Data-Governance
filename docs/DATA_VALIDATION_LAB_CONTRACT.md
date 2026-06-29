@@ -222,3 +222,35 @@ prepare review summaries.
 
 Daily execution must not require AI. Once implemented, a low-intelligence run
 should execute the same deterministic workflow.
+
+## Accuracy Dashboard Contract
+
+Validation datasets may add an accuracy dashboard when the comparison has enough
+evidence to support decision scoring.
+
+The accuracy dashboard is separate from exception triage. Exception triage
+explains what is different. Accuracy scoring explains whether the candidate
+source is trustworthy enough for business use or migration review.
+
+Accuracy outputs must be generated from local CSVs and written to:
+
+```text
+current/accuracy/
+runs/<run-id>/accuracy/
+```
+
+Required files:
+
+- `accuracy_scorecard.csv`;
+- `accuracy_metric_definitions.csv`;
+- `accuracy_blockers.csv`;
+- `accuracy_review_samples_manifest.csv`.
+
+The dashboard must label denominator rules and decision status clearly. It must
+separate key match, value match, classification-adjusted readiness, candidate
+defects, and blockers. It must not use one unlabeled score to imply more
+certainty than the evidence supports.
+
+Source-native identifiers remain required in accuracy outputs. For the DMS
+shared-consumption validation, reviewer-facing scorecards and samples must keep
+`cora_acct_code` visible.

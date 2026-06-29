@@ -14,15 +14,20 @@ Read these first:
 
 1. `docs/adr/ADR-011-Unified-Support-Documentation-Refresh-Contract.md`
 2. `docs/SUPPORT_DOCUMENTATION_DATASET_CONTRACT.md`
-3. `AI_README.md`
-4. `AGENTS.md`
+3. `docs/adr/ADR-028-Delta-First-Metadata-Processing-And-Publication.md`
+4. `docs/SOURCE_METADATA_DELTA_BACKLOG.md`
+5. `AI_README.md`
+6. `AGENTS.md`
 
 Read these for ADF:
 
 1. `docs/adr/ADR-010-ADF-Operations-Through-Saved-Connector.md`
 2. `docs/ADF_PIPELINE_OPERATIONS.md`
-3. `docs/ADF_MARKETING_AWS_EXPORT_METADATA.md`
-4. `.agents/skills/adf-operations/SKILL.md`
+3. `docs/ADF_MULTI_FACTORY_INGESTION_BACKLOG.md`
+4. `docs/ADF_PRODUCTION_FACTORY_ACCESS_INVENTORY.md`
+5. `docs/ADF_LEGACY_FACTORY_INVENTORY.md`
+6. `docs/ADF_MARKETING_AWS_EXPORT_METADATA.md`
+7. `.agents/skills/adf-operations/SKILL.md`
 
 Read these for SSIS:
 
@@ -61,6 +66,8 @@ Stop and ask for stronger review before:
   permissions;
 - changing production ADF triggers, schedules, retry behavior, or parallel run
   behavior;
+- starting ADF multi-factory ingestion while another source ingestion is
+  running;
 - modifying parser/extractor internals, semantic lineage scoring, or edge
   promotion rules;
 - publishing live to DevOps or Confluence before a reviewed dry run;
@@ -69,6 +76,9 @@ Stop and ask for stronger review before:
 - refreshing Sonic Data Lineage Confluence pages;
 - using an LLM over unrestricted raw artifacts instead of bounded evidence
   packets;
+- running AI summaries, generated support-page updates, DevOps writes, Rovo
+  updates, or Confluence dry-runs/live publishes without a reviewed delta
+  manifest unless a scoped full-refresh packet has been approved;
 - publishing raw activity output, raw SSISDB messages, report result rows,
   connection strings with credentials, tokens, or secret values.
 
@@ -104,6 +114,13 @@ Choose one:
 - Do not make manual edits to generated markdown as the durable fix.
 
 ### Source Inputs
+
+Delta manifest:
+
+- manifest path:
+- mode:
+- counts new/changed/unchanged/retained stale/removed stale:
+- approved full-refresh reason, if applicable:
 
 ADF:
 
@@ -183,6 +200,10 @@ Confluence live publish, approval required:
 
 Counts:
 
+- delta new objects:
+- delta changed objects:
+- delta unchanged objects:
+- skipped unchanged pages:
 - ADF pages to create:
 - ADF pages to update:
 - SSIS pages to create:
@@ -212,6 +233,9 @@ Spot checks:
 - DevOps/runtime validation passes before publish.
 - Confluence dry run is reviewed before live publish.
 - Sonic Data Lineage Confluence human catalog is untouched.
+- AI summarization and generated support-page updates are limited to the delta
+  object set unless a scoped full refresh is approved.
+- Unchanged-only delta produces no Confluence publish candidates.
 
 ### Validation
 
@@ -219,6 +243,7 @@ Minimum:
 
 ```powershell
 git diff --check
+npm run metadata:delta:check -- --manifest <manifest.json>
 npm run lineage:runtime:check
 ```
 

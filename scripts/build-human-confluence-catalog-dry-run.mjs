@@ -3,6 +3,8 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import yaml from 'yaml';
 
+import { createDeltaScope, requireDeltaScopeForAi } from '../engines/connectors/metadata-delta/index.js';
+
 const outputRootArgIndex = process.argv.indexOf('--output-root');
 const outputRoot =
   outputRootArgIndex >= 0
@@ -12,6 +14,7 @@ const productFilter = valueAfter('--product');
 const databaseFilter = valueAfter('--database');
 const schemaFilter = valueAfter('--schema');
 const objectsFilter = valueAfter('--objects');
+const deltaManifestPath = valueAfter('--delta-manifest');
 const tier2SchemaFilter = valueAfter('--tier2-schema');
 const tier2DatabaseFilter = valueAfter('--tier2-database');
 const tier2ObjectNamesFilter = valueAfter('--tier2-object-names');
@@ -57,6 +60,7 @@ const excludedObjectCandidates = [];
 let runtimeRegistryRows;
 let runtimeDatabaseCanonicalMap;
 let runtimeSchemaCanonicalMap;
+let runtimeDeltaScope = createDeltaScope(null);
 const currentLeafFiles = [];
 const supersededPageCandidates = [];
 let plannedTier2ObjectPageKeys = new Set();
@@ -128,6 +132,10 @@ async function readMarkdownIfExists(file) {
   }
 }
 
+async function readJson(file) {
+  return JSON.parse(await fs.readFile(file, 'utf8'));
+}
+
 async function readRuntimeRegistryRows() {
   if (runtimeRegistryRows) return runtimeRegistryRows;
   const text = await fs.readFile(runtimeRegistryPath, 'utf8');
@@ -138,9 +146,10 @@ async function readRuntimeRegistryRows() {
     .map((line) => JSON.parse(line))
     .filter((row) => row.database && row.schema && row.object_name)
     .filter((row) => !isDatabaseCatalogExcludedArtifact(row));
-  runtimeRegistryRows = rows.filter((row) => !isHumanCatalogExcludedObject(row));
+  const scopedRows = runtimeDeltaScope.active ? runtimeDeltaScope.filterRows(rows, (row) => row.object_id) : rows;
+  runtimeRegistryRows = scopedRows.filter((row) => !isHumanCatalogExcludedObject(row));
   excludedObjectCandidates.length = 0;
-  for (const row of rows) {
+  for (const row of scopedRows) {
     const exclusion = humanCatalogObjectExclusionReason(row);
     if (!exclusion) continue;
     const platform = platformForRow(row);
@@ -1759,7 +1768,33 @@ ${mdTable(
   return report;
 }
 
+async function recordHumanCatalogDeltaArtifacts() {
+  if (!runtimeDeltaScope.active) return;
+  for (const page of currentLeafFiles) {
+    // eslint-disable-next-line no-await-in-loop
+    const packet = await readJson(path.join(outputRoot, page.evidenceFile));
+    const candidateIds = [
+      packet.canonical_id,
+      ...(packet.catalog_slice?.objects || []).map((object) => object.id || object.object_id || object.canonical_id),
+    ].filter(Boolean);
+    for (const candidateId of candidateIds) {
+      if (!runtimeDeltaScope.changed_object_ids.has(String(candidateId))) continue;
+      runtimeDeltaScope.recordTargetArtifact(
+        candidateId,
+        'confluence-human-dry-run',
+        path.join('data/confluence/human-catalog-dry-run', page.markdownFile)
+      );
+      runtimeDeltaScope.recordTargetArtifact(
+        candidateId,
+        'confluence-human-dry-run',
+        path.join('data/confluence/human-catalog-dry-run', page.evidenceFile)
+      );
+    }
+  }
+}
+
 async function main() {
+  runtimeDeltaScope = await requireDeltaScopeForAi(deltaManifestPath, 'Human/Rovo-facing Confluence catalog dry run');
   await resetOutputRoot();
   await loadPlannedTier2ObjectPageKeys();
   const pageTrees = [];
@@ -1772,9 +1807,11 @@ async function main() {
     !tier2DatabaseFilter &&
     !tier2ObjectNamesFilter
   ) {
-    for (const slug of productCatalogSlugs) {
-      // eslint-disable-next-line no-await-in-loop
-      pageTrees.push(await renderProduct(slug));
+    if (!runtimeDeltaScope.active) {
+      for (const slug of productCatalogSlugs) {
+        // eslint-disable-next-line no-await-in-loop
+        pageTrees.push(await renderProduct(slug));
+      }
     }
     for (const database of await listRuntimeDatabaseNames()) {
       // eslint-disable-next-line no-await-in-loop
@@ -1829,6 +1866,7 @@ ${pageTrees.map((treePath) => treePath.join(' / ')).join('\n')}
   `;
   await writeText(path.join(outputRoot, 'page-tree.md'), tree);
   const supersededPagesReport = await writeSupersededPagesReport();
+  await recordHumanCatalogDeltaArtifacts();
   await writeText(
     path.join(outputRoot, 'manifest.json'),
     JSON.stringify(
@@ -1840,6 +1878,8 @@ ${pageTrees.map((treePath) => treePath.join(' / ')).join('\n')}
           total_candidates: supersededPagesReport.summary.total_candidates,
           cleanup_allowed: false,
         },
+        delta_scope: runtimeDeltaScope.summary(),
+        delta_target_artifacts: runtimeDeltaScope.manifest?.target_artifacts || [],
         pages: currentLeafFiles.sort((left, right) => left.treePath.join('/').localeCompare(right.treePath.join('/'))),
       },
       null,
@@ -1853,6 +1893,7 @@ ${pageTrees.map((treePath) => treePath.join(' / ')).join('\n')}
         outputRoot: outputRoot.replaceAll('\\', '/'),
         pages: pageTrees.length,
         supersededPageCandidates: supersededPagesReport.summary.total_candidates,
+        deltaScope: runtimeDeltaScope.summary(),
         pageTrees,
       },
       null,

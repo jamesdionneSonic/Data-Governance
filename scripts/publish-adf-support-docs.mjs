@@ -162,6 +162,9 @@ function parentBody(manifest) {
 
 try {
   const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
+  if (publish && manifest.deltaScope?.active !== true) {
+    throw new Error('ADF support publish requires a delta-scoped manifest. Run support generation with --delta-manifest first.');
+  }
   await getPage(parentPageId);
   let adfRoot = await findChildPage(parentPageId, rootTitle);
   const rootPlan = adfRoot

@@ -4,6 +4,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+import { buildDeltaManifest, writeDeltaOutputs } from '../engines/connectors/metadata-delta/index.js';
 import { getConnector } from '../src/services/connectorService.js';
 import { executeConnectorExtraction } from '../src/services/connectorRuntime/extractionKernel.js';
 
@@ -572,6 +573,7 @@ async function main() {
   const generatedAt = new Date().toISOString();
   const fullRefresh = hasFlag('--full-refresh');
   const planOnly = hasFlag('--plan-only') || hasFlag('--dry-run');
+  const ingestMode = fullRefresh ? 'full_refresh' : planOnly ? 'plan_only' : 'incremental';
   const catalogRoot = path.resolve(argValue('--catalog-repo', process.env.CATALOG_REPO_PATH || DEFAULT_CATALOG_REPO));
   const markdownRoot = path.resolve(argValue('--markdown-root', process.env.SSIS_MARKDOWN_ROOT || DEFAULT_MARKDOWN_ROOT));
   const connector = await resolveConnector();
@@ -582,20 +584,41 @@ async function main() {
   const existingRows = await readJsonl(path.join(catalogRoot, 'registry', 'object-registry.jsonl'));
   const nonTargetRows = existingRows.filter((row) => !rowBelongsToConnector(row, connectorId, serverId));
   const priorTargetRows = existingRows.filter((row) => rowBelongsToConnector(row, connectorId, serverId));
-  const priorRowsById = new Map(priorTargetRows.map((row) => [row.object_id, row]));
+  const deltaManifest = await buildDeltaManifest({
+    catalogRoot,
+    connectorId,
+    sourceFamily: 'ssis',
+    sourceScope: `${serverId}:SSISDB`,
+    currentObjects: objects.map((object) => ({
+      canonical_id: object.id,
+      display_name: object.name,
+      object_type: 'package',
+      database: object.database,
+      schema: object.schema,
+      object_name: object.name,
+      source_family: 'ssis',
+      source_system: serverId,
+      metadata_signature: packageSignature(object),
+    })),
+    mode: ingestMode,
+    fullRefreshReason: fullRefresh ? argValue('--full-refresh-reason', 'SSIS full refresh requested by operator.') : '',
+    generatedAt,
+    scope: {
+      server: serverId,
+    },
+  });
+  const deltaById = new Map(deltaManifest.objects.map((object) => [object.canonical_id, object]));
   const rows = [];
   const results = [];
 
   await Promise.all(
     objects.map(async (object) => {
       const row = registryRow(object);
-      const nextSignature = packageSignature(object);
-      const priorRow = priorRowsById.get(object.id);
-      const priorSignature = await priorMetadataSignature(catalogRoot, priorRow);
-      const changed = fullRefresh || !priorRow || priorSignature !== nextSignature;
+      const delta = deltaById.get(object.id);
+      const changed = delta?.status === 'new' || delta?.status === 'changed';
       const writes = await writeObjectArtifacts({ catalogRoot, markdownRoot, object, row, changed, connectorId, planOnly });
       rows.push(row);
-      results.push({ object_id: object.id, status: priorRow ? (changed ? 'changed' : 'unchanged') : 'new', changed, ...writes });
+      results.push({ object_id: object.id, status: delta?.status || 'new', changed, ...writes });
     })
   );
 
@@ -615,12 +638,26 @@ async function main() {
     await writeJsonl(path.join(catalogRoot, 'registry', 'canonical-objects.jsonl'), mergedRows);
     await writeSsisReadmes(catalogRoot, mergedRows);
   }
+  const deltaCatalogOutputs = planOnly
+    ? {}
+    : await writeDeltaOutputs({
+        manifest: deltaManifest,
+        outputDir: path.join(catalogRoot, 'reports', 'source-metadata-delta'),
+        basename: `${connectorId}-ssis-metadata-delta`,
+      });
+  const deltaReadbackOutputs = hasFlag('--no-readback')
+    ? {}
+    : await writeDeltaOutputs({
+        manifest: deltaManifest,
+        outputDir: path.join('docs', 'lineage-runtime-readbacks', 'source-metadata-delta'),
+        basename: `${new Date().toISOString().slice(0, 10)}-${connectorId}-ssis-metadata-delta`,
+      });
 
   const report = {
     schema_version: 1,
     generated_at: generatedAt,
     connector_id: connectorId,
-    mode: fullRefresh ? 'full_refresh' : 'incremental',
+    mode: ingestMode,
     plan_only: planOnly,
     catalog_repo: normalizePath(catalogRoot),
     markdown_root: normalizePath(markdownRoot),
@@ -631,6 +668,13 @@ async function main() {
     unchanged_package_count: results.filter((item) => item.status === 'unchanged').length,
     retained_stale_package_count: fullRefresh ? 0 : staleRows.length,
     removed_stale_package_count: fullRefresh ? staleRows.length : 0,
+    delta_manifest: {
+      counts: deltaManifest.counts,
+      changed_object_ids: deltaManifest.changed_object_ids.slice(0, 200),
+      catalog_manifest_path: deltaCatalogOutputs.manifest_path || '',
+      readback_manifest_path: deltaReadbackOutputs.manifest_path || '',
+      readback_path: deltaReadbackOutputs.readback_path || '',
+    },
     extraction_status: extraction.status,
     extraction_errors: extraction.errors || [],
     stream_results: extraction.stream_results || [],

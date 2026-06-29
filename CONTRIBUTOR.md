@@ -293,11 +293,14 @@ For SQL Server and SSIS, all connection behavior must flow through the shared co
 
 AI agents and human troubleshooters must not run ad-hoc SQL Server, ODBC, `mssql`, `msnodesqlv8`, `sqlcmd`, or SSIS connection probes that bypass the shared runtime. If deeper diagnostics are needed, add a guarded diagnostic mode inside `src/services/connectorRuntime/` or call an existing exported connector service method, with hard timeout behavior and structured diagnostics.
 
+For AWS and other non-database sources, saved connectors still own metadata acquisition. Source-family engines may interpret connector events into native assets and edges, but they must not create alternate authentication paths, persist raw cloud object data, or force cloud assets into fake SQL database/schema identities. Current AWS connector records are explicitly MDP-routed through `config/aws-lineage-product-routing.json`; future AWS connectors must declare their own product route before downstream Confluence, Rovo, or DevOps packaging. Follow `docs/adr/ADR-029-AWS-And-Non-Database-Lineage-Ingestion.md` and `docs/AWS_LINEAGE_INGESTION.md`.
+
 ### Shared Responsibilities
 
 The shared runtime owns:
 
 - credential mode handling, including Windows integrated auth behavior
+- cloud credential mode handling, including AWS CLI SSO profile behavior
 - server, instance, port, encryption, and certificate/trust options
 - connection probes and test-only diagnostics
 - runtime identity reporting

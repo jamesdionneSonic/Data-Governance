@@ -12,12 +12,13 @@ Before making changes, read:
 
 1. `docs/adr/ADR-015-Rovo-Optimized-AI-Retrieval-Artifacts.md`
 2. `docs/ROVO_AI_RETRIEVAL_ARTIFACTS_CONTRACT.md`
-3. `docs/CONFLUENCE_LINEAGE_REPOSITORY.md`
-4. `docs/CONFLUENCE_FULL_REBUILD_SCOPE.md`
-5. `docs/CONFLUENCE_DATABASE_CATALOG_LAYOUT.md`
-6. `docs/DATABASE_CATALOG_MEDIUM_BACKLOG.md`
-7. `AI_README.md`
-8. `AGENTS.md`
+3. `docs/adr/ADR-028-Delta-First-Metadata-Processing-And-Publication.md`
+4. `docs/CONFLUENCE_LINEAGE_REPOSITORY.md`
+5. `docs/CONFLUENCE_FULL_REBUILD_SCOPE.md`
+6. `docs/CONFLUENCE_DATABASE_CATALOG_LAYOUT.md`
+7. `docs/DATABASE_CATALOG_MEDIUM_BACKLOG.md`
+8. `AI_README.md`
+9. `AGENTS.md`
 
 ## Goal
 
@@ -70,11 +71,14 @@ Allowed:
 - add ambiguity groups;
 - add evaluation prompts;
 - update validators.
+- update only the Rovo locator/context/evaluation shards impacted by a reviewed
+  source metadata delta manifest.
 
 Not allowed without separate approval:
 
 - live Confluence publish;
 - broad full-catalog page generation;
+- broad Rovo corpus regeneration when a smaller source metadata delta exists;
 - changing ingestion, parser, extractor, or semantic-lineage scoring behavior;
 - using unrestricted raw markdown as LLM input;
 - publishing secrets, credentials, raw rows, sample values, or connection
@@ -105,6 +109,24 @@ Every locator row must include:
   "evidence_hash": ""
 }
 ```
+
+## Required Delta Evidence
+
+Before generating or publishing Rovo artifacts from refreshed metadata, record:
+
+```json
+{
+  "delta_manifest_path": "",
+  "delta_mode": "plan_only|incremental|full_refresh",
+  "new_objects": 0,
+  "changed_objects": 0,
+  "unchanged_objects": 0,
+  "impacted_rovo_artifacts": []
+}
+```
+
+Do not run LLM summary generation across unchanged Rovo records during a routine
+refresh.
 
 ## Required Database Context Evidence
 
@@ -239,6 +261,7 @@ Before live publish, answer:
 8. Are raw rows, samples, secrets, and credentials absent?
 9. Is there an evaluation prompt for each changed behavior?
 10. Did the run avoid live publish unless explicitly approved?
+11. Did the run use the reviewed delta manifest and skip unchanged objects?
 
 ## Suggested Commands
 
@@ -246,6 +269,7 @@ Use the current wrapper commands until ADR-012 migration moves implementation
 under `engines/`:
 
 ```powershell
+npm run metadata:delta:check -- --manifest <manifest.json>
 npm run confluence:export
 npm run confluence:check
 npm run confluence:dry-run

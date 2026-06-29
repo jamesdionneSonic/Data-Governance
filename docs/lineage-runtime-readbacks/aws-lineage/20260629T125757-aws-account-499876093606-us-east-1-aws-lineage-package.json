@@ -1,0 +1,3580 @@
+{
+  "schema_version": "1.0",
+  "source_family": "aws",
+  "platform": "AWS",
+  "generated_at": "2026-06-29T12:57:57.478Z",
+  "connector_id": "aws-account-499876093606-us-east-1",
+  "source_scope": "aws-account:499876093606:us-east-1",
+  "source_connector_ids": [
+    "aws-athena-sonic-dev-mdp",
+    "aws-glue-sonic-dev-mdp",
+    "aws-s3-sonic-dev-mdp"
+  ],
+  "summary": {
+    "object_count": 25,
+    "edge_count": 25,
+    "gap_count": 0,
+    "objects_by_type": {
+      "aws_account": 1,
+      "athena_data_catalog": 1,
+      "athena_database": 5,
+      "aws_athena_service": 1,
+      "athena_workgroup": 5,
+      "glue_database": 5,
+      "aws_glue_service": 1,
+      "s3_bucket": 5,
+      "aws_s3_service": 1
+    },
+    "edges_by_type": {
+      "contains": 24,
+      "metadata_catalog_used_by_athena": 1
+    }
+  },
+  "objects": [
+    {
+      "canonical_id": "aws://499876093606/us-east-1/account/499876093606",
+      "display_name": "svc_dev_mdp",
+      "name": "svc_dev_mdp",
+      "object_type": "aws_account",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "account",
+      "database": "",
+      "schema": "",
+      "object_name": "svc_dev_mdp",
+      "native_id": "499876093606",
+      "parent_id": null,
+      "attributes": {
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "aws_profile": "sonic-dev-mdp",
+        "role_name": "SonicDeveloperAccess"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": [
+          "aws-athena-sonic-dev-mdp",
+          "aws-glue-sonic-dev-mdp",
+          "aws-s3-sonic-dev-mdp"
+        ],
+        "source_connector_types": ["aws_athena", "aws_glue", "aws_s3"],
+        "streams": []
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 3,
+      "upstream_count": 0,
+      "downstream_count": 3
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+      "display_name": "AwsDataCatalog",
+      "name": "AwsDataCatalog",
+      "object_type": "athena_data_catalog",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "database": "",
+      "schema": "catalogs",
+      "object_name": "AwsDataCatalog",
+      "native_id": "AwsDataCatalog",
+      "parent_id": null,
+      "attributes": {
+        "type": "GLUE"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["data_catalogs", "databases"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+          "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 7,
+      "upstream_count": 2,
+      "downstream_count": 5
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/default",
+      "display_name": "AwsDataCatalog.default",
+      "name": "default",
+      "object_type": "athena_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "database": "default",
+      "schema": "AwsDataCatalog",
+      "object_name": "default",
+      "native_id": "AwsDataCatalog.default",
+      "parent_id": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+      "attributes": {
+        "catalog_name": "AwsDataCatalog"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["databases"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+          "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ankur",
+      "display_name": "AwsDataCatalog.sonic_mdp_athena_query_db_ankur",
+      "name": "sonic_mdp_athena_query_db_ankur",
+      "object_type": "athena_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "database": "sonic_mdp_athena_query_db_ankur",
+      "schema": "AwsDataCatalog",
+      "object_name": "sonic_mdp_athena_query_db_ankur",
+      "native_id": "AwsDataCatalog.sonic_mdp_athena_query_db_ankur",
+      "parent_id": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+      "attributes": {
+        "catalog_name": "AwsDataCatalog"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["databases"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+          "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ashish",
+      "display_name": "AwsDataCatalog.sonic_mdp_athena_query_db_ashish",
+      "name": "sonic_mdp_athena_query_db_ashish",
+      "object_type": "athena_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "database": "sonic_mdp_athena_query_db_ashish",
+      "schema": "AwsDataCatalog",
+      "object_name": "sonic_mdp_athena_query_db_ashish",
+      "native_id": "AwsDataCatalog.sonic_mdp_athena_query_db_ashish",
+      "parent_id": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+      "attributes": {
+        "catalog_name": "AwsDataCatalog"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["databases"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+          "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ciarangg",
+      "display_name": "AwsDataCatalog.sonic_mdp_athena_query_db_ciarangg",
+      "name": "sonic_mdp_athena_query_db_ciarangg",
+      "object_type": "athena_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "database": "sonic_mdp_athena_query_db_ciarangg",
+      "schema": "AwsDataCatalog",
+      "object_name": "sonic_mdp_athena_query_db_ciarangg",
+      "native_id": "AwsDataCatalog.sonic_mdp_athena_query_db_ciarangg",
+      "parent_id": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+      "attributes": {
+        "catalog_name": "AwsDataCatalog"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["databases"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+          "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_corynivens",
+      "display_name": "AwsDataCatalog.sonic_mdp_athena_query_db_corynivens",
+      "name": "sonic_mdp_athena_query_db_corynivens",
+      "object_type": "athena_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "database": "sonic_mdp_athena_query_db_corynivens",
+      "schema": "AwsDataCatalog",
+      "object_name": "sonic_mdp_athena_query_db_corynivens",
+      "native_id": "AwsDataCatalog.sonic_mdp_athena_query_db_corynivens",
+      "parent_id": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+      "attributes": {
+        "catalog_name": "AwsDataCatalog"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["databases"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+          "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/service",
+      "display_name": "Amazon Athena - svc_dev_mdp",
+      "name": "athena",
+      "object_type": "aws_athena_service",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "database": "",
+      "schema": "athena",
+      "object_name": "athena",
+      "native_id": "athena",
+      "parent_id": null,
+      "attributes": {
+        "account_id": "499876093606",
+        "region": "us-east-1",
+        "service": "athena"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": []
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 7,
+      "upstream_count": 1,
+      "downstream_count": 6
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/workgroup/primary",
+      "display_name": "primary",
+      "name": "primary",
+      "object_type": "athena_workgroup",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "database": "",
+      "schema": "workgroups",
+      "object_name": "primary",
+      "native_id": "primary",
+      "parent_id": null,
+      "attributes": {
+        "state": "ENABLED"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["workgroups"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+          "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ankur",
+      "display_name": "sonic-mdp-workgroup-ankur",
+      "name": "sonic-mdp-workgroup-ankur",
+      "object_type": "athena_workgroup",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "database": "",
+      "schema": "workgroups",
+      "object_name": "sonic-mdp-workgroup-ankur",
+      "native_id": "sonic-mdp-workgroup-ankur",
+      "parent_id": null,
+      "attributes": {
+        "state": "ENABLED"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["workgroups"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+          "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ashish",
+      "display_name": "sonic-mdp-workgroup-ashish",
+      "name": "sonic-mdp-workgroup-ashish",
+      "object_type": "athena_workgroup",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "database": "",
+      "schema": "workgroups",
+      "object_name": "sonic-mdp-workgroup-ashish",
+      "native_id": "sonic-mdp-workgroup-ashish",
+      "parent_id": null,
+      "attributes": {
+        "state": "ENABLED"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["workgroups"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+          "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ciarangg",
+      "display_name": "sonic-mdp-workgroup-ciarangg",
+      "name": "sonic-mdp-workgroup-ciarangg",
+      "object_type": "athena_workgroup",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "database": "",
+      "schema": "workgroups",
+      "object_name": "sonic-mdp-workgroup-ciarangg",
+      "native_id": "sonic-mdp-workgroup-ciarangg",
+      "parent_id": null,
+      "attributes": {
+        "state": "ENABLED"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["workgroups"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+          "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-corynivens",
+      "display_name": "sonic-mdp-workgroup-corynivens",
+      "name": "sonic-mdp-workgroup-corynivens",
+      "object_type": "athena_workgroup",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "database": "",
+      "schema": "workgroups",
+      "object_name": "sonic-mdp-workgroup-corynivens",
+      "native_id": "sonic-mdp-workgroup-corynivens",
+      "parent_id": null,
+      "attributes": {
+        "state": "ENABLED"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["workgroups"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+          "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/database/default",
+      "display_name": "default",
+      "name": "default",
+      "object_type": "glue_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "glue",
+      "database": "default",
+      "schema": "glue",
+      "object_name": "default",
+      "native_id": "default",
+      "parent_id": null,
+      "attributes": {
+        "created_at": "2023-04-17T20:31:44-04:00"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-glue-sonic-dev-mdp"],
+        "source_connector_types": ["aws_glue"],
+        "streams": ["databases"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-databases.html",
+          "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-tables.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ankur",
+      "display_name": "sonic_mdp_athena_query_db_ankur",
+      "name": "sonic_mdp_athena_query_db_ankur",
+      "object_type": "glue_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "glue",
+      "database": "sonic_mdp_athena_query_db_ankur",
+      "schema": "glue",
+      "object_name": "sonic_mdp_athena_query_db_ankur",
+      "native_id": "sonic_mdp_athena_query_db_ankur",
+      "parent_id": null,
+      "attributes": {
+        "created_at": "2023-07-05T11:28:08-04:00"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-glue-sonic-dev-mdp"],
+        "source_connector_types": ["aws_glue"],
+        "streams": ["databases"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-databases.html",
+          "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-tables.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ashish",
+      "display_name": "sonic_mdp_athena_query_db_ashish",
+      "name": "sonic_mdp_athena_query_db_ashish",
+      "object_type": "glue_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "glue",
+      "database": "sonic_mdp_athena_query_db_ashish",
+      "schema": "glue",
+      "object_name": "sonic_mdp_athena_query_db_ashish",
+      "native_id": "sonic_mdp_athena_query_db_ashish",
+      "parent_id": null,
+      "attributes": {
+        "created_at": "2025-02-24T12:43:09-05:00"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-glue-sonic-dev-mdp"],
+        "source_connector_types": ["aws_glue"],
+        "streams": ["databases"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-databases.html",
+          "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-tables.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ciarangg",
+      "display_name": "sonic_mdp_athena_query_db_ciarangg",
+      "name": "sonic_mdp_athena_query_db_ciarangg",
+      "object_type": "glue_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "glue",
+      "database": "sonic_mdp_athena_query_db_ciarangg",
+      "schema": "glue",
+      "object_name": "sonic_mdp_athena_query_db_ciarangg",
+      "native_id": "sonic_mdp_athena_query_db_ciarangg",
+      "parent_id": null,
+      "attributes": {
+        "created_at": "2025-08-12T11:28:05-04:00"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-glue-sonic-dev-mdp"],
+        "source_connector_types": ["aws_glue"],
+        "streams": ["databases"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-databases.html",
+          "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-tables.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_corynivens",
+      "display_name": "sonic_mdp_athena_query_db_corynivens",
+      "name": "sonic_mdp_athena_query_db_corynivens",
+      "object_type": "glue_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "glue",
+      "database": "sonic_mdp_athena_query_db_corynivens",
+      "schema": "glue",
+      "object_name": "sonic_mdp_athena_query_db_corynivens",
+      "native_id": "sonic_mdp_athena_query_db_corynivens",
+      "parent_id": null,
+      "attributes": {
+        "created_at": "2023-10-19T11:30:52-04:00"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-glue-sonic-dev-mdp"],
+        "source_connector_types": ["aws_glue"],
+        "streams": ["databases"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-databases.html",
+          "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-tables.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/service",
+      "display_name": "AWS Glue Data Catalog - svc_dev_mdp",
+      "name": "glue",
+      "object_type": "aws_glue_service",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "glue",
+      "database": "",
+      "schema": "glue",
+      "object_name": "glue",
+      "native_id": "glue",
+      "parent_id": null,
+      "attributes": {
+        "account_id": "499876093606",
+        "region": "us-east-1",
+        "service": "glue"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp", "aws-glue-sonic-dev-mdp"],
+        "source_connector_types": ["aws_glue"],
+        "streams": []
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 7,
+      "upstream_count": 1,
+      "downstream_count": 6
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/bucket/cf-templates-fnbje2phr39m-us-east-1",
+      "display_name": "cf-templates-fnbje2phr39m-us-east-1",
+      "name": "cf-templates-fnbje2phr39m-us-east-1",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "s3",
+      "database": "",
+      "schema": "",
+      "object_name": "cf-templates-fnbje2phr39m-us-east-1",
+      "native_id": "cf-templates-fnbje2phr39m-us-east-1",
+      "parent_id": null,
+      "attributes": {
+        "created_at": "2022-12-19T15:57:06+00:00"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/bucket/dealership-ui-dev-499876093606",
+      "display_name": "dealership-ui-dev-499876093606",
+      "name": "dealership-ui-dev-499876093606",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "s3",
+      "database": "",
+      "schema": "",
+      "object_name": "dealership-ui-dev-499876093606",
+      "native_id": "dealership-ui-dev-499876093606",
+      "parent_id": null,
+      "attributes": {
+        "created_at": "2026-05-25T16:06:47+00:00"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/bucket/mulesoft-adesa-listings-bucket-test1",
+      "display_name": "mulesoft-adesa-listings-bucket-test1",
+      "name": "mulesoft-adesa-listings-bucket-test1",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "s3",
+      "database": "",
+      "schema": "",
+      "object_name": "mulesoft-adesa-listings-bucket-test1",
+      "native_id": "mulesoft-adesa-listings-bucket-test1",
+      "parent_id": null,
+      "attributes": {
+        "created_at": "2026-03-24T20:31:21+00:00"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/bucket/photo-review-viewer-dev-499876093606",
+      "display_name": "photo-review-viewer-dev-499876093606",
+      "name": "photo-review-viewer-dev-499876093606",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "s3",
+      "database": "",
+      "schema": "",
+      "object_name": "photo-review-viewer-dev-499876093606",
+      "native_id": "photo-review-viewer-dev-499876093606",
+      "parent_id": null,
+      "attributes": {
+        "created_at": "2026-02-26T12:26:29+00:00"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/bucket/sat2-prowlerfindingsbucket-umcnbti60w6d",
+      "display_name": "sat2-prowlerfindingsbucket-umcnbti60w6d",
+      "name": "sat2-prowlerfindingsbucket-umcnbti60w6d",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "s3",
+      "database": "",
+      "schema": "",
+      "object_name": "sat2-prowlerfindingsbucket-umcnbti60w6d",
+      "native_id": "sat2-prowlerfindingsbucket-umcnbti60w6d",
+      "parent_id": null,
+      "attributes": {
+        "created_at": "2024-03-18T19:09:10+00:00"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"],
+        "bridge_kind": "documented_metadata_bridge",
+        "docs": [
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+          "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+        ]
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 1,
+      "upstream_count": 1,
+      "downstream_count": 0
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/service",
+      "display_name": "Amazon S3 - svc_dev_mdp",
+      "name": "s3",
+      "object_type": "aws_s3_service",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "s3",
+      "database": "",
+      "schema": "s3",
+      "object_name": "s3",
+      "native_id": "s3",
+      "parent_id": null,
+      "attributes": {
+        "account_id": "499876093606",
+        "region": "us-east-1",
+        "service": "s3"
+      },
+      "columns": [],
+      "evidence": {
+        "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+        "source_connector_types": ["aws_s3"],
+        "streams": []
+      },
+      "missing_facts": [],
+      "confidence": 0.8,
+      "relationship_count": 6,
+      "upstream_count": 1,
+      "downstream_count": 5
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:aws:0629e71f950d1a5693f0fd06",
+      "from": "aws://499876093606/us-east-1/glue/service",
+      "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ankur",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-glue-sonic-dev-mdp"],
+        "source_connector_types": ["aws_glue"],
+        "streams": ["databases"]
+      },
+      "from_display": "AWS Glue Data Catalog - svc_dev_mdp",
+      "to_display": "sonic_mdp_athena_query_db_ankur"
+    },
+    {
+      "id": "edge:aws:10eb334a14465ed083a55c87",
+      "from": "aws://499876093606/us-east-1/account/499876093606",
+      "to": "aws://499876093606/us-east-1/s3/service",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.95,
+      "evidence": {
+        "reason": "Saved connector binds this AWS service to the account scope.",
+        "source_connector_ids": ["aws-s3-sonic-dev-mdp"]
+      },
+      "from_display": "svc_dev_mdp",
+      "to_display": "Amazon S3 - svc_dev_mdp"
+    },
+    {
+      "id": "edge:aws:14e26e377202259a001b5298",
+      "from": "aws://499876093606/us-east-1/athena/service",
+      "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ankur",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["workgroups"]
+      },
+      "from_display": "Amazon Athena - svc_dev_mdp",
+      "to_display": "sonic-mdp-workgroup-ankur"
+    },
+    {
+      "id": "edge:aws:228bb64f741ab34b10731d0d",
+      "from": "aws://499876093606/us-east-1/account/499876093606",
+      "to": "aws://499876093606/us-east-1/glue/service",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.95,
+      "evidence": {
+        "reason": "Saved connector binds this AWS service to the account scope.",
+        "source_connector_ids": ["aws-glue-sonic-dev-mdp"]
+      },
+      "from_display": "svc_dev_mdp",
+      "to_display": "AWS Glue Data Catalog - svc_dev_mdp"
+    },
+    {
+      "id": "edge:aws:252e4aee7759f530cd953f4f",
+      "from": "aws://499876093606/us-east-1/athena/service",
+      "to": "aws://499876093606/us-east-1/athena/workgroup/primary",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["workgroups"]
+      },
+      "from_display": "Amazon Athena - svc_dev_mdp",
+      "to_display": "primary"
+    },
+    {
+      "id": "edge:aws:2d81ac03be29502eccb01c22",
+      "from": "aws://499876093606/us-east-1/glue/service",
+      "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ciarangg",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-glue-sonic-dev-mdp"],
+        "source_connector_types": ["aws_glue"],
+        "streams": ["databases"]
+      },
+      "from_display": "AWS Glue Data Catalog - svc_dev_mdp",
+      "to_display": "sonic_mdp_athena_query_db_ciarangg"
+    },
+    {
+      "id": "edge:aws:3e2e80dfd1ed47b966ac74a4",
+      "from": "aws://499876093606/us-east-1/athena/service",
+      "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-corynivens",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["workgroups"]
+      },
+      "from_display": "Amazon Athena - svc_dev_mdp",
+      "to_display": "sonic-mdp-workgroup-corynivens"
+    },
+    {
+      "id": "edge:aws:42c6668ea4d05c0bd8d67d07",
+      "from": "aws://499876093606/us-east-1/glue/service",
+      "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ashish",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-glue-sonic-dev-mdp"],
+        "source_connector_types": ["aws_glue"],
+        "streams": ["databases"]
+      },
+      "from_display": "AWS Glue Data Catalog - svc_dev_mdp",
+      "to_display": "sonic_mdp_athena_query_db_ashish"
+    },
+    {
+      "id": "edge:aws:47e78226833719a3ffe04e5a",
+      "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+      "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/default",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["databases"]
+      },
+      "from_display": "AwsDataCatalog",
+      "to_display": "AwsDataCatalog.default"
+    },
+    {
+      "id": "edge:aws:570aa6219bfebeb2672c1418",
+      "from": "aws://499876093606/us-east-1/athena/service",
+      "to": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["databases"]
+      },
+      "from_display": "Amazon Athena - svc_dev_mdp",
+      "to_display": "AwsDataCatalog"
+    },
+    {
+      "id": "edge:aws:642036411ce65702f5b2d084",
+      "from": "aws://499876093606/us-east-1/glue/service",
+      "to": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+      "relationship_type": "metadata_catalog_used_by_athena",
+      "type": "metadata_catalog_used_by_athena",
+      "confidence": 0.72,
+      "evidence": {
+        "reason": "Athena AwsDataCatalog uses the AWS Glue Data Catalog as its metadata catalog in the same account and region.",
+        "source": "aws_lineage_inference"
+      },
+      "from_display": "AWS Glue Data Catalog - svc_dev_mdp",
+      "to_display": "AwsDataCatalog"
+    },
+    {
+      "id": "edge:aws:79a6b3a4d652244560f63f5c",
+      "from": "aws://499876093606/us-east-1/account/499876093606",
+      "to": "aws://499876093606/us-east-1/athena/service",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.95,
+      "evidence": {
+        "reason": "Saved connector binds this AWS service to the account scope.",
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"]
+      },
+      "from_display": "svc_dev_mdp",
+      "to_display": "Amazon Athena - svc_dev_mdp"
+    },
+    {
+      "id": "edge:aws:a4a75e862062ca1e234e7546",
+      "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+      "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ankur",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["databases"]
+      },
+      "from_display": "AwsDataCatalog",
+      "to_display": "AwsDataCatalog.sonic_mdp_athena_query_db_ankur"
+    },
+    {
+      "id": "edge:aws:a518bcf6c86049186269cadd",
+      "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+      "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ashish",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["databases"]
+      },
+      "from_display": "AwsDataCatalog",
+      "to_display": "AwsDataCatalog.sonic_mdp_athena_query_db_ashish"
+    },
+    {
+      "id": "edge:aws:ca5d368953c41d1a972d2009",
+      "from": "aws://499876093606/us-east-1/s3/service",
+      "to": "aws://499876093606/us-east-1/s3/bucket/dealership-ui-dev-499876093606",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"]
+      },
+      "from_display": "Amazon S3 - svc_dev_mdp",
+      "to_display": "dealership-ui-dev-499876093606"
+    },
+    {
+      "id": "edge:aws:d0a3a3982bc9ab211dfc23c8",
+      "from": "aws://499876093606/us-east-1/s3/service",
+      "to": "aws://499876093606/us-east-1/s3/bucket/photo-review-viewer-dev-499876093606",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"]
+      },
+      "from_display": "Amazon S3 - svc_dev_mdp",
+      "to_display": "photo-review-viewer-dev-499876093606"
+    },
+    {
+      "id": "edge:aws:d801932235895bc5953b28a8",
+      "from": "aws://499876093606/us-east-1/s3/service",
+      "to": "aws://499876093606/us-east-1/s3/bucket/cf-templates-fnbje2phr39m-us-east-1",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"]
+      },
+      "from_display": "Amazon S3 - svc_dev_mdp",
+      "to_display": "cf-templates-fnbje2phr39m-us-east-1"
+    },
+    {
+      "id": "edge:aws:d80d70dd4a3e7207cad7568e",
+      "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+      "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ciarangg",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["databases"]
+      },
+      "from_display": "AwsDataCatalog",
+      "to_display": "AwsDataCatalog.sonic_mdp_athena_query_db_ciarangg"
+    },
+    {
+      "id": "edge:aws:daa7f9dd04bb48a27bb66d5d",
+      "from": "aws://499876093606/us-east-1/s3/service",
+      "to": "aws://499876093606/us-east-1/s3/bucket/sat2-prowlerfindingsbucket-umcnbti60w6d",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"]
+      },
+      "from_display": "Amazon S3 - svc_dev_mdp",
+      "to_display": "sat2-prowlerfindingsbucket-umcnbti60w6d"
+    },
+    {
+      "id": "edge:aws:db355f35a8d28a9bdbda2bbe",
+      "from": "aws://499876093606/us-east-1/athena/service",
+      "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ciarangg",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["workgroups"]
+      },
+      "from_display": "Amazon Athena - svc_dev_mdp",
+      "to_display": "sonic-mdp-workgroup-ciarangg"
+    },
+    {
+      "id": "edge:aws:df6c073345862d2d99f9fd2f",
+      "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+      "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_corynivens",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["databases"]
+      },
+      "from_display": "AwsDataCatalog",
+      "to_display": "AwsDataCatalog.sonic_mdp_athena_query_db_corynivens"
+    },
+    {
+      "id": "edge:aws:e0953d3dc1fe77ed24757892",
+      "from": "aws://499876093606/us-east-1/glue/service",
+      "to": "aws://499876093606/us-east-1/glue/database/default",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-glue-sonic-dev-mdp"],
+        "source_connector_types": ["aws_glue"],
+        "streams": ["databases"]
+      },
+      "from_display": "AWS Glue Data Catalog - svc_dev_mdp",
+      "to_display": "default"
+    },
+    {
+      "id": "edge:aws:e5942d757d64c0f08a7a46fa",
+      "from": "aws://499876093606/us-east-1/s3/service",
+      "to": "aws://499876093606/us-east-1/s3/bucket/mulesoft-adesa-listings-bucket-test1",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+        "source_connector_types": ["aws_s3"],
+        "streams": ["buckets"]
+      },
+      "from_display": "Amazon S3 - svc_dev_mdp",
+      "to_display": "mulesoft-adesa-listings-bucket-test1"
+    },
+    {
+      "id": "edge:aws:f211cd8d3de2b37f799f3d38",
+      "from": "aws://499876093606/us-east-1/glue/service",
+      "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_corynivens",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-glue-sonic-dev-mdp"],
+        "source_connector_types": ["aws_glue"],
+        "streams": ["databases"]
+      },
+      "from_display": "AWS Glue Data Catalog - svc_dev_mdp",
+      "to_display": "sonic_mdp_athena_query_db_corynivens"
+    },
+    {
+      "id": "edge:aws:f37f8189830d808d95b91f53",
+      "from": "aws://499876093606/us-east-1/athena/service",
+      "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ashish",
+      "relationship_type": "contains",
+      "type": "contains",
+      "confidence": 0.78,
+      "evidence": {
+        "reason": "Parent-child relationship surfaced by AWS metadata.",
+        "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+        "source_connector_types": ["aws_athena"],
+        "streams": ["workgroups"]
+      },
+      "from_display": "Amazon Athena - svc_dev_mdp",
+      "to_display": "sonic-mdp-workgroup-ashish"
+    }
+  ],
+  "metadata_objects": [
+    {
+      "canonical_id": "aws://499876093606/us-east-1/account/499876093606",
+      "display_name": "svc_dev_mdp",
+      "object_type": "aws_account",
+      "database": "",
+      "schema": "",
+      "object_name": "svc_dev_mdp",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "account",
+        "native_id": "499876093606",
+        "parent_id": null,
+        "attributes": {
+          "account_id": "499876093606",
+          "account_name": "svc_dev_mdp",
+          "aws_profile": "sonic-dev-mdp",
+          "role_name": "SonicDeveloperAccess"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/s3/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/glue/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/athena/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": [
+            "aws-athena-sonic-dev-mdp",
+            "aws-glue-sonic-dev-mdp",
+            "aws-s3-sonic-dev-mdp"
+          ],
+          "source_connector_types": ["aws_athena", "aws_glue", "aws_s3"],
+          "streams": []
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+      "display_name": "AwsDataCatalog",
+      "object_type": "athena_data_catalog",
+      "database": "",
+      "schema": "catalogs",
+      "object_name": "AwsDataCatalog",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "athena",
+        "native_id": "AwsDataCatalog",
+        "parent_id": null,
+        "attributes": {
+          "type": "GLUE"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/default",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "relationship_type": "metadata_catalog_used_by_athena",
+            "confidence": 0.72,
+            "reason": "Athena AwsDataCatalog uses the AWS Glue Data Catalog as its metadata catalog in the same account and region."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ankur",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ashish",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ciarangg",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_corynivens",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+          "source_connector_types": ["aws_athena"],
+          "streams": ["data_catalogs", "databases"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+            "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/default",
+      "display_name": "AwsDataCatalog.default",
+      "object_type": "athena_database",
+      "database": "default",
+      "schema": "AwsDataCatalog",
+      "object_name": "default",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "athena",
+        "native_id": "AwsDataCatalog.default",
+        "parent_id": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+        "attributes": {
+          "catalog_name": "AwsDataCatalog"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/default",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+          "source_connector_types": ["aws_athena"],
+          "streams": ["databases"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+            "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ankur",
+      "display_name": "AwsDataCatalog.sonic_mdp_athena_query_db_ankur",
+      "object_type": "athena_database",
+      "database": "sonic_mdp_athena_query_db_ankur",
+      "schema": "AwsDataCatalog",
+      "object_name": "sonic_mdp_athena_query_db_ankur",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "athena",
+        "native_id": "AwsDataCatalog.sonic_mdp_athena_query_db_ankur",
+        "parent_id": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+        "attributes": {
+          "catalog_name": "AwsDataCatalog"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ankur",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+          "source_connector_types": ["aws_athena"],
+          "streams": ["databases"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+            "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ashish",
+      "display_name": "AwsDataCatalog.sonic_mdp_athena_query_db_ashish",
+      "object_type": "athena_database",
+      "database": "sonic_mdp_athena_query_db_ashish",
+      "schema": "AwsDataCatalog",
+      "object_name": "sonic_mdp_athena_query_db_ashish",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "athena",
+        "native_id": "AwsDataCatalog.sonic_mdp_athena_query_db_ashish",
+        "parent_id": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+        "attributes": {
+          "catalog_name": "AwsDataCatalog"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ashish",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+          "source_connector_types": ["aws_athena"],
+          "streams": ["databases"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+            "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ciarangg",
+      "display_name": "AwsDataCatalog.sonic_mdp_athena_query_db_ciarangg",
+      "object_type": "athena_database",
+      "database": "sonic_mdp_athena_query_db_ciarangg",
+      "schema": "AwsDataCatalog",
+      "object_name": "sonic_mdp_athena_query_db_ciarangg",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "athena",
+        "native_id": "AwsDataCatalog.sonic_mdp_athena_query_db_ciarangg",
+        "parent_id": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+        "attributes": {
+          "catalog_name": "AwsDataCatalog"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ciarangg",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+          "source_connector_types": ["aws_athena"],
+          "streams": ["databases"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+            "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_corynivens",
+      "display_name": "AwsDataCatalog.sonic_mdp_athena_query_db_corynivens",
+      "object_type": "athena_database",
+      "database": "sonic_mdp_athena_query_db_corynivens",
+      "schema": "AwsDataCatalog",
+      "object_name": "sonic_mdp_athena_query_db_corynivens",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "athena",
+        "native_id": "AwsDataCatalog.sonic_mdp_athena_query_db_corynivens",
+        "parent_id": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+        "attributes": {
+          "catalog_name": "AwsDataCatalog"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_corynivens",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+          "source_connector_types": ["aws_athena"],
+          "streams": ["databases"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+            "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/service",
+      "display_name": "Amazon Athena - svc_dev_mdp",
+      "object_type": "aws_athena_service",
+      "database": "",
+      "schema": "athena",
+      "object_name": "athena",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "athena",
+        "native_id": "athena",
+        "parent_id": null,
+        "attributes": {
+          "account_id": "499876093606",
+          "region": "us-east-1",
+          "service": "athena"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ankur",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/primary",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-corynivens",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/athena/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ciarangg",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ashish",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+          "source_connector_types": ["aws_athena"],
+          "streams": []
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/workgroup/primary",
+      "display_name": "primary",
+      "object_type": "athena_workgroup",
+      "database": "",
+      "schema": "workgroups",
+      "object_name": "primary",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "athena",
+        "native_id": "primary",
+        "parent_id": null,
+        "attributes": {
+          "state": "ENABLED"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/primary",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+          "source_connector_types": ["aws_athena"],
+          "streams": ["workgroups"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+            "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ankur",
+      "display_name": "sonic-mdp-workgroup-ankur",
+      "object_type": "athena_workgroup",
+      "database": "",
+      "schema": "workgroups",
+      "object_name": "sonic-mdp-workgroup-ankur",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "athena",
+        "native_id": "sonic-mdp-workgroup-ankur",
+        "parent_id": null,
+        "attributes": {
+          "state": "ENABLED"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ankur",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+          "source_connector_types": ["aws_athena"],
+          "streams": ["workgroups"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+            "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ashish",
+      "display_name": "sonic-mdp-workgroup-ashish",
+      "object_type": "athena_workgroup",
+      "database": "",
+      "schema": "workgroups",
+      "object_name": "sonic-mdp-workgroup-ashish",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "athena",
+        "native_id": "sonic-mdp-workgroup-ashish",
+        "parent_id": null,
+        "attributes": {
+          "state": "ENABLED"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ashish",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+          "source_connector_types": ["aws_athena"],
+          "streams": ["workgroups"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+            "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ciarangg",
+      "display_name": "sonic-mdp-workgroup-ciarangg",
+      "object_type": "athena_workgroup",
+      "database": "",
+      "schema": "workgroups",
+      "object_name": "sonic-mdp-workgroup-ciarangg",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "athena",
+        "native_id": "sonic-mdp-workgroup-ciarangg",
+        "parent_id": null,
+        "attributes": {
+          "state": "ENABLED"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ciarangg",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+          "source_connector_types": ["aws_athena"],
+          "streams": ["workgroups"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+            "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-corynivens",
+      "display_name": "sonic-mdp-workgroup-corynivens",
+      "object_type": "athena_workgroup",
+      "database": "",
+      "schema": "workgroups",
+      "object_name": "sonic-mdp-workgroup-corynivens",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "athena",
+        "native_id": "sonic-mdp-workgroup-corynivens",
+        "parent_id": null,
+        "attributes": {
+          "state": "ENABLED"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-corynivens",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-athena-sonic-dev-mdp"],
+          "source_connector_types": ["aws_athena"],
+          "streams": ["workgroups"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/athena/latest/APIReference/Welcome.html",
+            "https://docs.aws.amazon.com/athena/latest/ug/querying-glue-catalog.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/database/default",
+      "display_name": "default",
+      "object_type": "glue_database",
+      "database": "default",
+      "schema": "glue",
+      "object_name": "default",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "glue",
+        "native_id": "default",
+        "parent_id": null,
+        "attributes": {
+          "created_at": "2023-04-17T20:31:44-04:00"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/default",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-glue-sonic-dev-mdp"],
+          "source_connector_types": ["aws_glue"],
+          "streams": ["databases"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-databases.html",
+            "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-tables.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ankur",
+      "display_name": "sonic_mdp_athena_query_db_ankur",
+      "object_type": "glue_database",
+      "database": "sonic_mdp_athena_query_db_ankur",
+      "schema": "glue",
+      "object_name": "sonic_mdp_athena_query_db_ankur",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "glue",
+        "native_id": "sonic_mdp_athena_query_db_ankur",
+        "parent_id": null,
+        "attributes": {
+          "created_at": "2023-07-05T11:28:08-04:00"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ankur",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-glue-sonic-dev-mdp"],
+          "source_connector_types": ["aws_glue"],
+          "streams": ["databases"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-databases.html",
+            "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-tables.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ashish",
+      "display_name": "sonic_mdp_athena_query_db_ashish",
+      "object_type": "glue_database",
+      "database": "sonic_mdp_athena_query_db_ashish",
+      "schema": "glue",
+      "object_name": "sonic_mdp_athena_query_db_ashish",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "glue",
+        "native_id": "sonic_mdp_athena_query_db_ashish",
+        "parent_id": null,
+        "attributes": {
+          "created_at": "2025-02-24T12:43:09-05:00"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ashish",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-glue-sonic-dev-mdp"],
+          "source_connector_types": ["aws_glue"],
+          "streams": ["databases"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-databases.html",
+            "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-tables.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ciarangg",
+      "display_name": "sonic_mdp_athena_query_db_ciarangg",
+      "object_type": "glue_database",
+      "database": "sonic_mdp_athena_query_db_ciarangg",
+      "schema": "glue",
+      "object_name": "sonic_mdp_athena_query_db_ciarangg",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "glue",
+        "native_id": "sonic_mdp_athena_query_db_ciarangg",
+        "parent_id": null,
+        "attributes": {
+          "created_at": "2025-08-12T11:28:05-04:00"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ciarangg",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-glue-sonic-dev-mdp"],
+          "source_connector_types": ["aws_glue"],
+          "streams": ["databases"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-databases.html",
+            "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-tables.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_corynivens",
+      "display_name": "sonic_mdp_athena_query_db_corynivens",
+      "object_type": "glue_database",
+      "database": "sonic_mdp_athena_query_db_corynivens",
+      "schema": "glue",
+      "object_name": "sonic_mdp_athena_query_db_corynivens",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "glue",
+        "native_id": "sonic_mdp_athena_query_db_corynivens",
+        "parent_id": null,
+        "attributes": {
+          "created_at": "2023-10-19T11:30:52-04:00"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_corynivens",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-glue-sonic-dev-mdp"],
+          "source_connector_types": ["aws_glue"],
+          "streams": ["databases"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-databases.html",
+            "https://docs.aws.amazon.com/glue/latest/dg/aws-glue-api-catalog-tables.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/service",
+      "display_name": "AWS Glue Data Catalog - svc_dev_mdp",
+      "object_type": "aws_glue_service",
+      "database": "",
+      "schema": "glue",
+      "object_name": "glue",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "glue",
+        "native_id": "glue",
+        "parent_id": null,
+        "attributes": {
+          "account_id": "499876093606",
+          "region": "us-east-1",
+          "service": "glue"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ankur",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/glue/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ciarangg",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ashish",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "relationship_type": "metadata_catalog_used_by_athena",
+            "confidence": 0.72,
+            "reason": "Athena AwsDataCatalog uses the AWS Glue Data Catalog as its metadata catalog in the same account and region."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/default",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_corynivens",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-athena-sonic-dev-mdp", "aws-glue-sonic-dev-mdp"],
+          "source_connector_types": ["aws_glue"],
+          "streams": []
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/bucket/cf-templates-fnbje2phr39m-us-east-1",
+      "display_name": "cf-templates-fnbje2phr39m-us-east-1",
+      "object_type": "s3_bucket",
+      "database": "",
+      "schema": "",
+      "object_name": "cf-templates-fnbje2phr39m-us-east-1",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "s3",
+        "native_id": "cf-templates-fnbje2phr39m-us-east-1",
+        "parent_id": null,
+        "attributes": {
+          "created_at": "2022-12-19T15:57:06+00:00"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/cf-templates-fnbje2phr39m-us-east-1",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+          "source_connector_types": ["aws_s3"],
+          "streams": ["buckets"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/bucket/dealership-ui-dev-499876093606",
+      "display_name": "dealership-ui-dev-499876093606",
+      "object_type": "s3_bucket",
+      "database": "",
+      "schema": "",
+      "object_name": "dealership-ui-dev-499876093606",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "s3",
+        "native_id": "dealership-ui-dev-499876093606",
+        "parent_id": null,
+        "attributes": {
+          "created_at": "2026-05-25T16:06:47+00:00"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/dealership-ui-dev-499876093606",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+          "source_connector_types": ["aws_s3"],
+          "streams": ["buckets"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/bucket/mulesoft-adesa-listings-bucket-test1",
+      "display_name": "mulesoft-adesa-listings-bucket-test1",
+      "object_type": "s3_bucket",
+      "database": "",
+      "schema": "",
+      "object_name": "mulesoft-adesa-listings-bucket-test1",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "s3",
+        "native_id": "mulesoft-adesa-listings-bucket-test1",
+        "parent_id": null,
+        "attributes": {
+          "created_at": "2026-03-24T20:31:21+00:00"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/mulesoft-adesa-listings-bucket-test1",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+          "source_connector_types": ["aws_s3"],
+          "streams": ["buckets"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/bucket/photo-review-viewer-dev-499876093606",
+      "display_name": "photo-review-viewer-dev-499876093606",
+      "object_type": "s3_bucket",
+      "database": "",
+      "schema": "",
+      "object_name": "photo-review-viewer-dev-499876093606",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "s3",
+        "native_id": "photo-review-viewer-dev-499876093606",
+        "parent_id": null,
+        "attributes": {
+          "created_at": "2026-02-26T12:26:29+00:00"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/photo-review-viewer-dev-499876093606",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+          "source_connector_types": ["aws_s3"],
+          "streams": ["buckets"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/bucket/sat2-prowlerfindingsbucket-umcnbti60w6d",
+      "display_name": "sat2-prowlerfindingsbucket-umcnbti60w6d",
+      "object_type": "s3_bucket",
+      "database": "",
+      "schema": "",
+      "object_name": "sat2-prowlerfindingsbucket-umcnbti60w6d",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "s3",
+        "native_id": "sat2-prowlerfindingsbucket-umcnbti60w6d",
+        "parent_id": null,
+        "attributes": {
+          "created_at": "2024-03-18T19:09:10+00:00"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/sat2-prowlerfindingsbucket-umcnbti60w6d",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+          "source_connector_types": ["aws_s3"],
+          "streams": ["buckets"],
+          "bridge_kind": "documented_metadata_bridge",
+          "docs": [
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html",
+            "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html"
+          ]
+        }
+      }
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/service",
+      "display_name": "Amazon S3 - svc_dev_mdp",
+      "object_type": "aws_s3_service",
+      "database": "",
+      "schema": "s3",
+      "object_name": "s3",
+      "source_family": "aws",
+      "source_system": "aws-account-499876093606-us-east-1",
+      "metadata": {
+        "platform": "AWS",
+        "account_id": "499876093606",
+        "account_name": "svc_dev_mdp",
+        "region": "us-east-1",
+        "service": "s3",
+        "native_id": "s3",
+        "parent_id": null,
+        "attributes": {
+          "account_id": "499876093606",
+          "region": "us-east-1",
+          "service": "s3"
+        },
+        "columns": [],
+        "missing_facts": [],
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/s3/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/dealership-ui-dev-499876093606",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/photo-review-viewer-dev-499876093606",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/cf-templates-fnbje2phr39m-us-east-1",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/sat2-prowlerfindingsbucket-umcnbti60w6d",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/mulesoft-adesa-listings-bucket-test1",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "evidence": {
+          "source_connector_ids": ["aws-s3-sonic-dev-mdp"],
+          "source_connector_types": ["aws_s3"],
+          "streams": []
+        }
+      }
+    }
+  ],
+  "ai_evidence_packets": [
+    {
+      "canonical_id": "aws://499876093606/us-east-1/account/499876093606",
+      "display_name": "svc_dev_mdp",
+      "object_type": "aws_account",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "account",
+      "bounded_evidence": {
+        "native_id": "499876093606",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "account_id": "499876093606",
+          "account_name": "svc_dev_mdp",
+          "aws_profile": "sonic-dev-mdp",
+          "role_name": "SonicDeveloperAccess"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/s3/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/glue/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/athena/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+      "display_name": "AwsDataCatalog",
+      "object_type": "athena_data_catalog",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "bounded_evidence": {
+        "native_id": "AwsDataCatalog",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "type": "GLUE"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/default",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "relationship_type": "metadata_catalog_used_by_athena",
+            "confidence": 0.72,
+            "reason": "Athena AwsDataCatalog uses the AWS Glue Data Catalog as its metadata catalog in the same account and region."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ankur",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ashish",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ciarangg",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_corynivens",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/default",
+      "display_name": "AwsDataCatalog.default",
+      "object_type": "athena_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "bounded_evidence": {
+        "native_id": "AwsDataCatalog.default",
+        "parent_id": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+        "columns": [],
+        "attributes": {
+          "catalog_name": "AwsDataCatalog"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/default",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ankur",
+      "display_name": "AwsDataCatalog.sonic_mdp_athena_query_db_ankur",
+      "object_type": "athena_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "bounded_evidence": {
+        "native_id": "AwsDataCatalog.sonic_mdp_athena_query_db_ankur",
+        "parent_id": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+        "columns": [],
+        "attributes": {
+          "catalog_name": "AwsDataCatalog"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ankur",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ashish",
+      "display_name": "AwsDataCatalog.sonic_mdp_athena_query_db_ashish",
+      "object_type": "athena_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "bounded_evidence": {
+        "native_id": "AwsDataCatalog.sonic_mdp_athena_query_db_ashish",
+        "parent_id": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+        "columns": [],
+        "attributes": {
+          "catalog_name": "AwsDataCatalog"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ashish",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ciarangg",
+      "display_name": "AwsDataCatalog.sonic_mdp_athena_query_db_ciarangg",
+      "object_type": "athena_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "bounded_evidence": {
+        "native_id": "AwsDataCatalog.sonic_mdp_athena_query_db_ciarangg",
+        "parent_id": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+        "columns": [],
+        "attributes": {
+          "catalog_name": "AwsDataCatalog"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_ciarangg",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_corynivens",
+      "display_name": "AwsDataCatalog.sonic_mdp_athena_query_db_corynivens",
+      "object_type": "athena_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "bounded_evidence": {
+        "native_id": "AwsDataCatalog.sonic_mdp_athena_query_db_corynivens",
+        "parent_id": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+        "columns": [],
+        "attributes": {
+          "catalog_name": "AwsDataCatalog"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "to": "aws://499876093606/us-east-1/athena/database/AwsDataCatalog/sonic_mdp_athena_query_db_corynivens",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/service",
+      "display_name": "Amazon Athena - svc_dev_mdp",
+      "object_type": "aws_athena_service",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "bounded_evidence": {
+        "native_id": "athena",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "account_id": "499876093606",
+          "region": "us-east-1",
+          "service": "athena"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ankur",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/primary",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-corynivens",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/athena/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ciarangg",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ashish",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/workgroup/primary",
+      "display_name": "primary",
+      "object_type": "athena_workgroup",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "bounded_evidence": {
+        "native_id": "primary",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "state": "ENABLED"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/primary",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ankur",
+      "display_name": "sonic-mdp-workgroup-ankur",
+      "object_type": "athena_workgroup",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "bounded_evidence": {
+        "native_id": "sonic-mdp-workgroup-ankur",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "state": "ENABLED"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ankur",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ashish",
+      "display_name": "sonic-mdp-workgroup-ashish",
+      "object_type": "athena_workgroup",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "bounded_evidence": {
+        "native_id": "sonic-mdp-workgroup-ashish",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "state": "ENABLED"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ashish",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ciarangg",
+      "display_name": "sonic-mdp-workgroup-ciarangg",
+      "object_type": "athena_workgroup",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "bounded_evidence": {
+        "native_id": "sonic-mdp-workgroup-ciarangg",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "state": "ENABLED"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-ciarangg",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-corynivens",
+      "display_name": "sonic-mdp-workgroup-corynivens",
+      "object_type": "athena_workgroup",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "athena",
+      "bounded_evidence": {
+        "native_id": "sonic-mdp-workgroup-corynivens",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "state": "ENABLED"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/athena/service",
+            "to": "aws://499876093606/us-east-1/athena/workgroup/sonic-mdp-workgroup-corynivens",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/database/default",
+      "display_name": "default",
+      "object_type": "glue_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "glue",
+      "bounded_evidence": {
+        "native_id": "default",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "created_at": "2023-04-17T20:31:44-04:00"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/default",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ankur",
+      "display_name": "sonic_mdp_athena_query_db_ankur",
+      "object_type": "glue_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "glue",
+      "bounded_evidence": {
+        "native_id": "sonic_mdp_athena_query_db_ankur",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "created_at": "2023-07-05T11:28:08-04:00"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ankur",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ashish",
+      "display_name": "sonic_mdp_athena_query_db_ashish",
+      "object_type": "glue_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "glue",
+      "bounded_evidence": {
+        "native_id": "sonic_mdp_athena_query_db_ashish",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "created_at": "2025-02-24T12:43:09-05:00"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ashish",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ciarangg",
+      "display_name": "sonic_mdp_athena_query_db_ciarangg",
+      "object_type": "glue_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "glue",
+      "bounded_evidence": {
+        "native_id": "sonic_mdp_athena_query_db_ciarangg",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "created_at": "2025-08-12T11:28:05-04:00"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ciarangg",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_corynivens",
+      "display_name": "sonic_mdp_athena_query_db_corynivens",
+      "object_type": "glue_database",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "glue",
+      "bounded_evidence": {
+        "native_id": "sonic_mdp_athena_query_db_corynivens",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "created_at": "2023-10-19T11:30:52-04:00"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_corynivens",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/glue/service",
+      "display_name": "AWS Glue Data Catalog - svc_dev_mdp",
+      "object_type": "aws_glue_service",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "glue",
+      "bounded_evidence": {
+        "native_id": "glue",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "account_id": "499876093606",
+          "region": "us-east-1",
+          "service": "glue"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ankur",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/glue/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ciarangg",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_ashish",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/athena/catalog/AwsDataCatalog",
+            "relationship_type": "metadata_catalog_used_by_athena",
+            "confidence": 0.72,
+            "reason": "Athena AwsDataCatalog uses the AWS Glue Data Catalog as its metadata catalog in the same account and region."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/default",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/glue/service",
+            "to": "aws://499876093606/us-east-1/glue/database/sonic_mdp_athena_query_db_corynivens",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/bucket/cf-templates-fnbje2phr39m-us-east-1",
+      "display_name": "cf-templates-fnbje2phr39m-us-east-1",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "s3",
+      "bounded_evidence": {
+        "native_id": "cf-templates-fnbje2phr39m-us-east-1",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "created_at": "2022-12-19T15:57:06+00:00"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/cf-templates-fnbje2phr39m-us-east-1",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/bucket/dealership-ui-dev-499876093606",
+      "display_name": "dealership-ui-dev-499876093606",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "s3",
+      "bounded_evidence": {
+        "native_id": "dealership-ui-dev-499876093606",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "created_at": "2026-05-25T16:06:47+00:00"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/dealership-ui-dev-499876093606",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/bucket/mulesoft-adesa-listings-bucket-test1",
+      "display_name": "mulesoft-adesa-listings-bucket-test1",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "s3",
+      "bounded_evidence": {
+        "native_id": "mulesoft-adesa-listings-bucket-test1",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "created_at": "2026-03-24T20:31:21+00:00"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/mulesoft-adesa-listings-bucket-test1",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/bucket/photo-review-viewer-dev-499876093606",
+      "display_name": "photo-review-viewer-dev-499876093606",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "s3",
+      "bounded_evidence": {
+        "native_id": "photo-review-viewer-dev-499876093606",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "created_at": "2026-02-26T12:26:29+00:00"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/photo-review-viewer-dev-499876093606",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/bucket/sat2-prowlerfindingsbucket-umcnbti60w6d",
+      "display_name": "sat2-prowlerfindingsbucket-umcnbti60w6d",
+      "object_type": "s3_bucket",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "s3",
+      "bounded_evidence": {
+        "native_id": "sat2-prowlerfindingsbucket-umcnbti60w6d",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "created_at": "2024-03-18T19:09:10+00:00"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/sat2-prowlerfindingsbucket-umcnbti60w6d",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    },
+    {
+      "canonical_id": "aws://499876093606/us-east-1/s3/service",
+      "display_name": "Amazon S3 - svc_dev_mdp",
+      "object_type": "aws_s3_service",
+      "platform": "AWS",
+      "account_id": "499876093606",
+      "account_name": "svc_dev_mdp",
+      "region": "us-east-1",
+      "service": "s3",
+      "bounded_evidence": {
+        "native_id": "s3",
+        "parent_id": null,
+        "columns": [],
+        "attributes": {
+          "account_id": "499876093606",
+          "region": "us-east-1",
+          "service": "s3"
+        },
+        "lineage_edges": [
+          {
+            "from": "aws://499876093606/us-east-1/account/499876093606",
+            "to": "aws://499876093606/us-east-1/s3/service",
+            "relationship_type": "contains",
+            "confidence": 0.95,
+            "reason": "Saved connector binds this AWS service to the account scope."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/dealership-ui-dev-499876093606",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/photo-review-viewer-dev-499876093606",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/cf-templates-fnbje2phr39m-us-east-1",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/sat2-prowlerfindingsbucket-umcnbti60w6d",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          },
+          {
+            "from": "aws://499876093606/us-east-1/s3/service",
+            "to": "aws://499876093606/us-east-1/s3/bucket/mulesoft-adesa-listings-bucket-test1",
+            "relationship_type": "contains",
+            "confidence": 0.78,
+            "reason": "Parent-child relationship surfaced by AWS metadata."
+          }
+        ],
+        "missing_facts": []
+      },
+      "ai_instructions": [
+        "Write plain-English support language only from bounded_evidence.",
+        "Do not infer business purpose, owner, steward, SLA, freshness, or certification from an AWS name alone.",
+        "Use \"not surfaced in metadata\" for unsupported facts.",
+        "Do not include credentials, tokens, raw S3 object values, or unrestricted payloads."
+      ]
+    }
+  ],
+  "gaps": [],
+  "failures": []
+}

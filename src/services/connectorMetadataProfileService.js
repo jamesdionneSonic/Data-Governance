@@ -12,6 +12,7 @@ const SUPPORTED_METADATA_PROFILE_TYPES = new Set([
   'ssis',
   'aws_glue',
   'aws_s3',
+  'aws_athena',
   'gcp_dataplex',
   'gcs',
   'airflow',

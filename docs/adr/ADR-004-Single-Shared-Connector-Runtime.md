@@ -22,6 +22,17 @@ This applies to troubleshooting too. AI agents, scripts, and developers must not
 
 Connection testing is a separate test-only operation. It validates the saved connector through the shared runtime and returns diagnostics; it must not run full extraction, profile planning, schedule work, or lineage harvesting.
 
+Metadata capture through the shared runtime must feed the source-agnostic delta
+contract in ADR-028 before generated DevOps, Rovo, Confluence, support-doc, or
+AI-description work runs. The shared runtime owns source acquisition and
+normalization; downstream processing owns only the objects marked new or
+changed by the delta manifest.
+
+AWS metadata capture follows the same rule. Saved AWS SSO connectors own
+acquisition through the shared runtime; the AWS lineage engine owns native
+asset identity and deterministic edge interpretation. Do not create a separate
+AWS authentication or metadata probe path outside the shared runtime.
+
 Recurring profile schedules must be live operational jobs. They cannot be persisted as dry-run-only schedules. Dry-run behavior remains valid for explicit ad-hoc planning and manual preview endpoints only.
 
 Live profile scheduling must repair missing column metadata before giving up. When selected live assets do not have columns, the scheduler must fetch the missing metadata through the saved connector, update the runtime/catalog metadata needed by the planner, and replan the same run. If enrichment fails, the run must fail or partial-fail with a clear reason. It must not report success when zero live actions were produced because metadata was missing.
@@ -33,6 +44,8 @@ Live profile scheduling must repair missing column metadata before giving up. Wh
 - Connector tests become fast and operator-friendly because they validate connectivity rather than starting harvests.
 - Profile schedules stop hiding no-op runs behind successful metadata-only summaries.
 - New source support requires extending adapters and shared runtime contracts, not adding one-off route or UI connection code.
+- Future connector families inherit one delta-first handoff instead of
+  re-implementing change detection in one-off scripts.
 
 ## Implementation Rules
 
@@ -41,6 +54,12 @@ Live profile scheduling must repair missing column metadata before giving up. Wh
 - Do not let UI buttons select or test connectors through stale wizard state when an explicit connector id is available.
 - Do not persist recurring profile schedules with `dry_run: true`.
 - Do not mark a live profile schedule successful when `selected_for_this_run > 0` and `actions_planned === 0` because required column metadata is missing.
+- Do not allow metadata-profile, lineage, support-doc, Rovo, DevOps, or
+  Confluence publication work to run from a connector capture until a delta
+  manifest has been produced or an explicit full-refresh packet has been
+  approved.
+- Do not force non-database sources such as AWS S3, Glue, Athena, or
+  QuickSight into fake SQL database/schema identities.
 - Add parity tests whenever source connectivity, connector tests, Ingestion Studio, profile schedules, or live profiling change.
 
 ## Related Documents
@@ -49,3 +68,5 @@ Live profile scheduling must repair missing column metadata before giving up. Wh
 - `docs/CONNECTOR_EXTRACTION_FRAMEWORK.md`
 - `docs/PROFILING_EXECUTION_FRAMEWORK.md`
 - `docs/CONNECTOR_RUNTIME_FIX_PLAN.md`
+- `docs/adr/ADR-028-Delta-First-Metadata-Processing-And-Publication.md`
+- `docs/adr/ADR-029-AWS-And-Non-Database-Lineage-Ingestion.md`

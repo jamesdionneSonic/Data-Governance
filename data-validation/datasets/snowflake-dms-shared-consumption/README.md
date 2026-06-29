@@ -101,6 +101,12 @@ The current output contract uses `cora_acct_code` for dealer grouping. Older
 non-source-native wording was retired because it did not match the DMS or
 vendor ecosystem.
 
+The next planned layer is the accuracy dashboard. It will turn the existing
+exception classifications into a decision scorecard that separates key match,
+value match, readiness, blockers, and candidate defects. See
+`ACCURACY_DASHBOARD_DESIGN.md`, `ACCURACY_METRIC_CONTRACT.md`, and
+`ACCURACY_DASHBOARD_WORK_PACKET.md`.
+
 ## Daily Operation
 
 Run the daily validation workflow from the repository root:

@@ -1,0 +1,2555 @@
+{
+  "generated_at": "2026-06-29T12:27:51.052Z",
+  "mode": "register_and_verify_live",
+  "aws_cli_path": "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+  "sso_start_url": "https://sonicautomotive1.awsapps.com/start",
+  "sso_session": "sonic-data-lineage",
+  "region": "us-east-1",
+  "connectors": [
+    {
+      "connector_id": "aws-s3-sonic-dev-mdp",
+      "type": "aws_s3",
+      "account_name": "svc_dev_mdp",
+      "account_id": "499876093606",
+      "aws_profile": "sonic-dev-mdp",
+      "sample_streams": ["buckets"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 5,
+      "object_count": 5,
+      "column_count": 0,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "dbf4d943-324c-4c7e-80f5-09b83da68f07",
+        "summary": {
+          "discovered_objects": 5,
+          "discovered_columns": 0,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 5,
+          "by_type": {
+            "metadata.object": 5
+          },
+          "by_stream": {
+            "buckets": 5
+          },
+          "object_count": 5,
+          "column_count": 0,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "buckets",
+            "status": "succeeded",
+            "event_count": 5,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:27:53.157Z"
+            },
+            "plan": {
+              "stream": "buckets",
+              "endpoint": "S3 ListBuckets",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": [
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "cf-templates-fnbje2phr39m-us-east-1",
+            "external_id": "cf-templates-fnbje2phr39m-us-east-1"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "dealership-ui-dev-499876093606",
+            "external_id": "dealership-ui-dev-499876093606"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "mulesoft-adesa-listings-bucket-test1",
+            "external_id": "mulesoft-adesa-listings-bucket-test1"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "photo-review-viewer-dev-499876093606",
+            "external_id": "photo-review-viewer-dev-499876093606"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "sat2-prowlerfindingsbucket-umcnbti60w6d",
+            "external_id": "sat2-prowlerfindingsbucket-umcnbti60w6d"
+          }
+        ]
+      }
+    },
+    {
+      "connector_id": "aws-glue-sonic-dev-mdp",
+      "type": "aws_glue",
+      "account_name": "svc_dev_mdp",
+      "account_id": "499876093606",
+      "aws_profile": "sonic-dev-mdp",
+      "sample_streams": ["databases", "tables", "columns", "jobs"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 5,
+      "object_count": 5,
+      "column_count": 0,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "9f4f4d85-4198-43f9-aa90-2f3f768d126c",
+        "summary": {
+          "discovered_objects": 5,
+          "discovered_columns": 0,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 5,
+          "by_type": {
+            "metadata.object": 5
+          },
+          "by_stream": {
+            "databases": 5
+          },
+          "object_count": 5,
+          "column_count": 0,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "databases",
+            "status": "succeeded",
+            "event_count": 5,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:27:57.116Z"
+            },
+            "plan": {
+              "stream": "databases",
+              "endpoint": "Glue GetDatabases",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "tables",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:00.916Z"
+            },
+            "plan": {
+              "stream": "tables",
+              "endpoint": "Glue GetTables",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "columns",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:04.736Z"
+            },
+            "plan": {
+              "stream": "columns",
+              "endpoint": "Glue table StorageDescriptor.Columns",
+              "method": "GET",
+              "canonical_type": "metadata.column",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "jobs",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:06.524Z"
+            },
+            "plan": {
+              "stream": "jobs",
+              "endpoint": "Glue GetJobs",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": [
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "default",
+            "external_id": "default"
+          },
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "sonic_mdp_athena_query_db_ankur",
+            "external_id": "sonic_mdp_athena_query_db_ankur"
+          },
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "sonic_mdp_athena_query_db_ashish",
+            "external_id": "sonic_mdp_athena_query_db_ashish"
+          },
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "sonic_mdp_athena_query_db_ciarangg",
+            "external_id": "sonic_mdp_athena_query_db_ciarangg"
+          },
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "sonic_mdp_athena_query_db_corynivens",
+            "external_id": "sonic_mdp_athena_query_db_corynivens"
+          }
+        ]
+      }
+    },
+    {
+      "connector_id": "aws-athena-sonic-dev-mdp",
+      "type": "aws_athena",
+      "account_name": "svc_dev_mdp",
+      "account_id": "499876093606",
+      "aws_profile": "sonic-dev-mdp",
+      "sample_streams": ["workgroups", "data_catalogs", "databases", "named_queries"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 11,
+      "object_count": 11,
+      "column_count": 0,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "4188694a-197f-4b76-b1be-6402e15f7a93",
+        "summary": {
+          "discovered_objects": 11,
+          "discovered_columns": 0,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 11,
+          "by_type": {
+            "metadata.object": 10,
+            "metadata.data_source": 1
+          },
+          "by_stream": {
+            "workgroups": 5,
+            "data_catalogs": 1,
+            "databases": 5
+          },
+          "object_count": 11,
+          "column_count": 0,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "workgroups",
+            "status": "succeeded",
+            "event_count": 5,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:08.634Z"
+            },
+            "plan": {
+              "stream": "workgroups",
+              "endpoint": "Athena ListWorkGroups",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "data_catalogs",
+            "status": "succeeded",
+            "event_count": 1,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:10.474Z"
+            },
+            "plan": {
+              "stream": "data_catalogs",
+              "endpoint": "Athena ListDataCatalogs",
+              "method": "GET",
+              "canonical_type": "metadata.data_source",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "databases",
+            "status": "succeeded",
+            "event_count": 5,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:14.198Z"
+            },
+            "plan": {
+              "stream": "databases",
+              "endpoint": "Athena ListDatabases",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "named_queries",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:16.025Z"
+            },
+            "plan": {
+              "stream": "named_queries",
+              "endpoint": "Athena ListNamedQueries",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": [
+          {
+            "stream": "workgroups",
+            "type": "metadata.object",
+            "name": "primary",
+            "external_id": "primary"
+          },
+          {
+            "stream": "workgroups",
+            "type": "metadata.object",
+            "name": "sonic-mdp-workgroup-ankur",
+            "external_id": "sonic-mdp-workgroup-ankur"
+          },
+          {
+            "stream": "workgroups",
+            "type": "metadata.object",
+            "name": "sonic-mdp-workgroup-ashish",
+            "external_id": "sonic-mdp-workgroup-ashish"
+          },
+          {
+            "stream": "workgroups",
+            "type": "metadata.object",
+            "name": "sonic-mdp-workgroup-ciarangg",
+            "external_id": "sonic-mdp-workgroup-ciarangg"
+          },
+          {
+            "stream": "workgroups",
+            "type": "metadata.object",
+            "name": "sonic-mdp-workgroup-corynivens",
+            "external_id": "sonic-mdp-workgroup-corynivens"
+          },
+          {
+            "stream": "data_catalogs",
+            "type": "metadata.data_source",
+            "name": "AwsDataCatalog",
+            "external_id": "AwsDataCatalog"
+          },
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "default",
+            "external_id": "AwsDataCatalog.default"
+          },
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "sonic_mdp_athena_query_db_ankur",
+            "external_id": "AwsDataCatalog.sonic_mdp_athena_query_db_ankur"
+          },
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "sonic_mdp_athena_query_db_ashish",
+            "external_id": "AwsDataCatalog.sonic_mdp_athena_query_db_ashish"
+          },
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "sonic_mdp_athena_query_db_ciarangg",
+            "external_id": "AwsDataCatalog.sonic_mdp_athena_query_db_ciarangg"
+          }
+        ]
+      }
+    },
+    {
+      "connector_id": "aws-s3-sonic-np-mdp",
+      "type": "aws_s3",
+      "account_name": "svc_np_mdp",
+      "account_id": "470660935268",
+      "aws_profile": "sonic-np-mdp",
+      "sample_streams": ["buckets"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 5,
+      "object_count": 5,
+      "column_count": 0,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "43d170e9-6957-45ec-97b4-2160ce6ec30b",
+        "summary": {
+          "discovered_objects": 5,
+          "discovered_columns": 0,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 5,
+          "by_type": {
+            "metadata.object": 5
+          },
+          "by_stream": {
+            "buckets": 5
+          },
+          "object_count": 5,
+          "column_count": 0,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "buckets",
+            "status": "succeeded",
+            "event_count": 5,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:18.050Z"
+            },
+            "plan": {
+              "stream": "buckets",
+              "endpoint": "S3 ListBuckets",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": [
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "dealership-ui-non-prod-470660935268",
+            "external_id": "dealership-ui-non-prod-470660935268"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "sonic-dealership-tf-state-np",
+            "external_id": "sonic-dealership-tf-state-np"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "sonic-mdp-artifacts-np",
+            "external_id": "sonic-mdp-artifacts-np"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "sonic-mdp-athena-query-bucket-np",
+            "external_id": "sonic-mdp-athena-query-bucket-np"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "sonic-mdp-data-dump-np",
+            "external_id": "sonic-mdp-data-dump-np"
+          }
+        ]
+      }
+    },
+    {
+      "connector_id": "aws-glue-sonic-np-mdp",
+      "type": "aws_glue",
+      "account_name": "svc_np_mdp",
+      "account_id": "470660935268",
+      "aws_profile": "sonic-np-mdp",
+      "sample_streams": ["databases", "tables", "columns", "jobs"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 156,
+      "object_count": 6,
+      "column_count": 150,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "a9f3a45e-a792-4bfe-aaed-d9fd539b7af9",
+        "summary": {
+          "discovered_objects": 6,
+          "discovered_columns": 150,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 156,
+          "by_type": {
+            "metadata.object": 6,
+            "metadata.column": 150
+          },
+          "by_stream": {
+            "databases": 2,
+            "tables": 4,
+            "columns": 150
+          },
+          "object_count": 6,
+          "column_count": 150,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "databases",
+            "status": "succeeded",
+            "event_count": 2,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:21.899Z"
+            },
+            "plan": {
+              "stream": "databases",
+              "endpoint": "Glue GetDatabases",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "tables",
+            "status": "succeeded",
+            "event_count": 4,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:25.816Z"
+            },
+            "plan": {
+              "stream": "tables",
+              "endpoint": "Glue GetTables",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "columns",
+            "status": "succeeded",
+            "event_count": 150,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:29.386Z"
+            },
+            "plan": {
+              "stream": "columns",
+              "endpoint": "Glue table StorageDescriptor.Columns",
+              "method": "GET",
+              "canonical_type": "metadata.column",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "jobs",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:31.084Z"
+            },
+            "plan": {
+              "stream": "jobs",
+              "endpoint": "Glue GetJobs",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": [
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "default",
+            "external_id": "default"
+          },
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "sonic_mdp_athena_query_db_np",
+            "external_id": "sonic_mdp_athena_query_db_np"
+          },
+          {
+            "stream": "tables",
+            "type": "metadata.object",
+            "name": "dms_individual",
+            "external_id": "default.dms_individual"
+          },
+          {
+            "stream": "tables",
+            "type": "metadata.object",
+            "name": "dms_purchase_info",
+            "external_id": "default.dms_purchase_info"
+          },
+          {
+            "stream": "tables",
+            "type": "metadata.object",
+            "name": "elead_individual",
+            "external_id": "default.elead_individual"
+          },
+          {
+            "stream": "tables",
+            "type": "metadata.object",
+            "name": "elead_sales_activity",
+            "external_id": "default.elead_sales_activity"
+          },
+          {
+            "stream": "columns",
+            "type": "metadata.column",
+            "name": "orgid",
+            "external_id": "default.dms_individual.orgid"
+          },
+          {
+            "stream": "columns",
+            "type": "metadata.column",
+            "name": "orgname",
+            "external_id": "default.dms_individual.orgname"
+          },
+          {
+            "stream": "columns",
+            "type": "metadata.column",
+            "name": "groupmemberid",
+            "external_id": "default.dms_individual.groupmemberid"
+          },
+          {
+            "stream": "columns",
+            "type": "metadata.column",
+            "name": "groupmembername",
+            "external_id": "default.dms_individual.groupmembername"
+          }
+        ]
+      }
+    },
+    {
+      "connector_id": "aws-athena-sonic-np-mdp",
+      "type": "aws_athena",
+      "account_name": "svc_np_mdp",
+      "account_id": "470660935268",
+      "aws_profile": "sonic-np-mdp",
+      "sample_streams": ["workgroups", "data_catalogs", "databases", "named_queries"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 6,
+      "object_count": 6,
+      "column_count": 0,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "d5679424-7967-498a-a62d-cc4ba794e043",
+        "summary": {
+          "discovered_objects": 6,
+          "discovered_columns": 0,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 6,
+          "by_type": {
+            "metadata.object": 5,
+            "metadata.data_source": 1
+          },
+          "by_stream": {
+            "workgroups": 3,
+            "data_catalogs": 1,
+            "databases": 2
+          },
+          "object_count": 6,
+          "column_count": 0,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "workgroups",
+            "status": "succeeded",
+            "event_count": 3,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:32.634Z"
+            },
+            "plan": {
+              "stream": "workgroups",
+              "endpoint": "Athena ListWorkGroups",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "data_catalogs",
+            "status": "succeeded",
+            "event_count": 1,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:34.476Z"
+            },
+            "plan": {
+              "stream": "data_catalogs",
+              "endpoint": "Athena ListDataCatalogs",
+              "method": "GET",
+              "canonical_type": "metadata.data_source",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "databases",
+            "status": "succeeded",
+            "event_count": 2,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:38.613Z"
+            },
+            "plan": {
+              "stream": "databases",
+              "endpoint": "Athena ListDatabases",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "named_queries",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:40.890Z"
+            },
+            "plan": {
+              "stream": "named_queries",
+              "endpoint": "Athena ListNamedQueries",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": [
+          {
+            "stream": "workgroups",
+            "type": "metadata.object",
+            "name": "primary",
+            "external_id": "primary"
+          },
+          {
+            "stream": "workgroups",
+            "type": "metadata.object",
+            "name": "sonic-mdp-workgroup-np",
+            "external_id": "sonic-mdp-workgroup-np"
+          },
+          {
+            "stream": "workgroups",
+            "type": "metadata.object",
+            "name": "temp-mdp-wg",
+            "external_id": "temp-mdp-wg"
+          },
+          {
+            "stream": "data_catalogs",
+            "type": "metadata.data_source",
+            "name": "AwsDataCatalog",
+            "external_id": "AwsDataCatalog"
+          },
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "default",
+            "external_id": "AwsDataCatalog.default"
+          },
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "sonic_mdp_athena_query_db_np",
+            "external_id": "AwsDataCatalog.sonic_mdp_athena_query_db_np"
+          }
+        ]
+      }
+    },
+    {
+      "connector_id": "aws-s3-sonic-pp-mdp",
+      "type": "aws_s3",
+      "account_name": "svc_pp_mdp",
+      "account_id": "477562029833",
+      "aws_profile": "sonic-pp-mdp",
+      "sample_streams": ["buckets"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 5,
+      "object_count": 5,
+      "column_count": 0,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "5722d070-d9b8-4e78-a7e0-b546d0116e89",
+        "summary": {
+          "discovered_objects": 5,
+          "discovered_columns": 0,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 5,
+          "by_type": {
+            "metadata.object": 5
+          },
+          "by_stream": {
+            "buckets": 5
+          },
+          "object_count": 5,
+          "column_count": 0,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "buckets",
+            "status": "succeeded",
+            "event_count": 5,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:43.224Z"
+            },
+            "plan": {
+              "stream": "buckets",
+              "endpoint": "S3 ListBuckets",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": [
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "477562029833-us-east-1-athena-results-bucket-y5hknim82j",
+            "external_id": "477562029833-us-east-1-athena-results-bucket-y5hknim82j"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "dealership-ui-pre-prod-477562029833",
+            "external_id": "dealership-ui-pre-prod-477562029833"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "mchirons-onetrust-historical-load",
+            "external_id": "mchirons-onetrust-historical-load"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "sonic-dealership-tf-state-pp",
+            "external_id": "sonic-dealership-tf-state-pp"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "sonic-mdp-artifacts-pp",
+            "external_id": "sonic-mdp-artifacts-pp"
+          }
+        ]
+      }
+    },
+    {
+      "connector_id": "aws-glue-sonic-pp-mdp",
+      "type": "aws_glue",
+      "account_name": "svc_pp_mdp",
+      "account_id": "477562029833",
+      "aws_profile": "sonic-pp-mdp",
+      "sample_streams": ["databases", "tables", "columns", "jobs"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 199,
+      "object_count": 7,
+      "column_count": 192,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "d65f7dd9-16d4-42a3-8b57-50679aa0ba1c",
+        "summary": {
+          "discovered_objects": 7,
+          "discovered_columns": 192,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 199,
+          "by_type": {
+            "metadata.object": 7,
+            "metadata.column": 192
+          },
+          "by_stream": {
+            "databases": 2,
+            "tables": 5,
+            "columns": 192
+          },
+          "object_count": 7,
+          "column_count": 192,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "databases",
+            "status": "succeeded",
+            "event_count": 2,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:47.089Z"
+            },
+            "plan": {
+              "stream": "databases",
+              "endpoint": "Glue GetDatabases",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "tables",
+            "status": "succeeded",
+            "event_count": 5,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:50.302Z"
+            },
+            "plan": {
+              "stream": "tables",
+              "endpoint": "Glue GetTables",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "columns",
+            "status": "succeeded",
+            "event_count": 192,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:53.729Z"
+            },
+            "plan": {
+              "stream": "columns",
+              "endpoint": "Glue table StorageDescriptor.Columns",
+              "method": "GET",
+              "canonical_type": "metadata.column",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "jobs",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:55.310Z"
+            },
+            "plan": {
+              "stream": "jobs",
+              "endpoint": "Glue GetJobs",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": [
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "default",
+            "external_id": "default"
+          },
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "sonic_mdp_athena_query_db_pp",
+            "external_id": "sonic_mdp_athena_query_db_pp"
+          },
+          {
+            "stream": "tables",
+            "type": "metadata.object",
+            "name": "dms_individual",
+            "external_id": "default.dms_individual"
+          },
+          {
+            "stream": "tables",
+            "type": "metadata.object",
+            "name": "dms_individual_2",
+            "external_id": "default.dms_individual_2"
+          },
+          {
+            "stream": "tables",
+            "type": "metadata.object",
+            "name": "dms_purchase_info",
+            "external_id": "default.dms_purchase_info"
+          },
+          {
+            "stream": "tables",
+            "type": "metadata.object",
+            "name": "elead_individual",
+            "external_id": "default.elead_individual"
+          },
+          {
+            "stream": "tables",
+            "type": "metadata.object",
+            "name": "elead_sales_activity",
+            "external_id": "default.elead_sales_activity"
+          },
+          {
+            "stream": "columns",
+            "type": "metadata.column",
+            "name": "orgid",
+            "external_id": "default.dms_individual.orgid"
+          },
+          {
+            "stream": "columns",
+            "type": "metadata.column",
+            "name": "orgname",
+            "external_id": "default.dms_individual.orgname"
+          },
+          {
+            "stream": "columns",
+            "type": "metadata.column",
+            "name": "groupmemberid",
+            "external_id": "default.dms_individual.groupmemberid"
+          }
+        ]
+      }
+    },
+    {
+      "connector_id": "aws-athena-sonic-pp-mdp",
+      "type": "aws_athena",
+      "account_name": "svc_pp_mdp",
+      "account_id": "477562029833",
+      "aws_profile": "sonic-pp-mdp",
+      "sample_streams": ["workgroups", "data_catalogs", "databases", "named_queries"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 7,
+      "object_count": 7,
+      "column_count": 0,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "495d6e40-509e-4506-a681-8f1add169d4a",
+        "summary": {
+          "discovered_objects": 7,
+          "discovered_columns": 0,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 7,
+          "by_type": {
+            "metadata.object": 6,
+            "metadata.data_source": 1
+          },
+          "by_stream": {
+            "workgroups": 4,
+            "data_catalogs": 1,
+            "databases": 2
+          },
+          "object_count": 7,
+          "column_count": 0,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "workgroups",
+            "status": "succeeded",
+            "event_count": 4,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:56.976Z"
+            },
+            "plan": {
+              "stream": "workgroups",
+              "endpoint": "Athena ListWorkGroups",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "data_catalogs",
+            "status": "succeeded",
+            "event_count": 1,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:28:58.738Z"
+            },
+            "plan": {
+              "stream": "data_catalogs",
+              "endpoint": "Athena ListDataCatalogs",
+              "method": "GET",
+              "canonical_type": "metadata.data_source",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "databases",
+            "status": "succeeded",
+            "event_count": 2,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:02.084Z"
+            },
+            "plan": {
+              "stream": "databases",
+              "endpoint": "Athena ListDatabases",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "named_queries",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:03.588Z"
+            },
+            "plan": {
+              "stream": "named_queries",
+              "endpoint": "Athena ListNamedQueries",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": [
+          {
+            "stream": "workgroups",
+            "type": "metadata.object",
+            "name": "mdp",
+            "external_id": "mdp"
+          },
+          {
+            "stream": "workgroups",
+            "type": "metadata.object",
+            "name": "mdp_notebook_spark",
+            "external_id": "mdp_notebook_spark"
+          },
+          {
+            "stream": "workgroups",
+            "type": "metadata.object",
+            "name": "primary",
+            "external_id": "primary"
+          },
+          {
+            "stream": "workgroups",
+            "type": "metadata.object",
+            "name": "sonic-mdp-workgroup-pp",
+            "external_id": "sonic-mdp-workgroup-pp"
+          },
+          {
+            "stream": "data_catalogs",
+            "type": "metadata.data_source",
+            "name": "AwsDataCatalog",
+            "external_id": "AwsDataCatalog"
+          },
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "default",
+            "external_id": "AwsDataCatalog.default"
+          },
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "sonic_mdp_athena_query_db_pp",
+            "external_id": "AwsDataCatalog.sonic_mdp_athena_query_db_pp"
+          }
+        ]
+      }
+    },
+    {
+      "connector_id": "aws-s3-sonic-prd-mdp",
+      "type": "aws_s3",
+      "account_name": "svc_prd_mdp",
+      "account_id": "118570350539",
+      "aws_profile": "sonic-prd-mdp",
+      "sample_streams": ["buckets"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 5,
+      "object_count": 5,
+      "column_count": 0,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "59cd237c-814e-4e8c-aa7d-257038f5273f",
+        "summary": {
+          "discovered_objects": 5,
+          "discovered_columns": 0,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 5,
+          "by_type": {
+            "metadata.object": 5
+          },
+          "by_stream": {
+            "buckets": 5
+          },
+          "object_count": 5,
+          "column_count": 0,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "buckets",
+            "status": "succeeded",
+            "event_count": 5,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:05.087Z"
+            },
+            "plan": {
+              "stream": "buckets",
+              "endpoint": "S3 ListBuckets",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": [
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "dealership-ui-prod-118570350539",
+            "external_id": "dealership-ui-prod-118570350539"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "sonic-dealership-tf-state-prod",
+            "external_id": "sonic-dealership-tf-state-prod"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "sonic-mdp-artifacts-prod",
+            "external_id": "sonic-mdp-artifacts-prod"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "sonic-mdp-athena-query-bucket-prod",
+            "external_id": "sonic-mdp-athena-query-bucket-prod"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "sonic-mdp-data-dump-prod",
+            "external_id": "sonic-mdp-data-dump-prod"
+          }
+        ]
+      }
+    },
+    {
+      "connector_id": "aws-glue-sonic-prd-mdp",
+      "type": "aws_glue",
+      "account_name": "svc_prd_mdp",
+      "account_id": "118570350539",
+      "aws_profile": "sonic-prd-mdp",
+      "sample_streams": ["databases", "tables", "columns", "jobs"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 2,
+      "object_count": 2,
+      "column_count": 0,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "6166bcf9-7f16-45d5-8acf-081ff4a27a22",
+        "summary": {
+          "discovered_objects": 2,
+          "discovered_columns": 0,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 2,
+          "by_type": {
+            "metadata.object": 2
+          },
+          "by_stream": {
+            "databases": 2
+          },
+          "object_count": 2,
+          "column_count": 0,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "databases",
+            "status": "succeeded",
+            "event_count": 2,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:08.649Z"
+            },
+            "plan": {
+              "stream": "databases",
+              "endpoint": "Glue GetDatabases",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "tables",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:11.336Z"
+            },
+            "plan": {
+              "stream": "tables",
+              "endpoint": "Glue GetTables",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "columns",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:14.327Z"
+            },
+            "plan": {
+              "stream": "columns",
+              "endpoint": "Glue table StorageDescriptor.Columns",
+              "method": "GET",
+              "canonical_type": "metadata.column",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "jobs",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:16.114Z"
+            },
+            "plan": {
+              "stream": "jobs",
+              "endpoint": "Glue GetJobs",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": [
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "default",
+            "external_id": "default"
+          },
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "sonic_mdp_athena_query_db_prod",
+            "external_id": "sonic_mdp_athena_query_db_prod"
+          }
+        ]
+      }
+    },
+    {
+      "connector_id": "aws-athena-sonic-prd-mdp",
+      "type": "aws_athena",
+      "account_name": "svc_prd_mdp",
+      "account_id": "118570350539",
+      "aws_profile": "sonic-prd-mdp",
+      "sample_streams": ["workgroups", "data_catalogs", "databases", "named_queries"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 5,
+      "object_count": 5,
+      "column_count": 0,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "e002e2fc-dab8-4504-b311-40a12ac60568",
+        "summary": {
+          "discovered_objects": 5,
+          "discovered_columns": 0,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 5,
+          "by_type": {
+            "metadata.object": 4,
+            "metadata.data_source": 1
+          },
+          "by_stream": {
+            "workgroups": 2,
+            "data_catalogs": 1,
+            "databases": 2
+          },
+          "object_count": 5,
+          "column_count": 0,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "workgroups",
+            "status": "succeeded",
+            "event_count": 2,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:17.439Z"
+            },
+            "plan": {
+              "stream": "workgroups",
+              "endpoint": "Athena ListWorkGroups",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "data_catalogs",
+            "status": "succeeded",
+            "event_count": 1,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:18.932Z"
+            },
+            "plan": {
+              "stream": "data_catalogs",
+              "endpoint": "Athena ListDataCatalogs",
+              "method": "GET",
+              "canonical_type": "metadata.data_source",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "databases",
+            "status": "succeeded",
+            "event_count": 2,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:22.317Z"
+            },
+            "plan": {
+              "stream": "databases",
+              "endpoint": "Athena ListDatabases",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "named_queries",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:23.757Z"
+            },
+            "plan": {
+              "stream": "named_queries",
+              "endpoint": "Athena ListNamedQueries",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": [
+          {
+            "stream": "workgroups",
+            "type": "metadata.object",
+            "name": "primary",
+            "external_id": "primary"
+          },
+          {
+            "stream": "workgroups",
+            "type": "metadata.object",
+            "name": "sonic-mdp-workgroup-prod",
+            "external_id": "sonic-mdp-workgroup-prod"
+          },
+          {
+            "stream": "data_catalogs",
+            "type": "metadata.data_source",
+            "name": "AwsDataCatalog",
+            "external_id": "AwsDataCatalog"
+          },
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "default",
+            "external_id": "AwsDataCatalog.default"
+          },
+          {
+            "stream": "databases",
+            "type": "metadata.object",
+            "name": "sonic_mdp_athena_query_db_prod",
+            "external_id": "AwsDataCatalog.sonic_mdp_athena_query_db_prod"
+          }
+        ]
+      }
+    },
+    {
+      "connector_id": "aws-s3-sonic-sandbox-mdp",
+      "type": "aws_s3",
+      "account_name": "SVC_Sandbox_MDP",
+      "account_id": "730335615353",
+      "aws_profile": "sonic-sandbox-mdp",
+      "sample_streams": ["buckets"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 5,
+      "object_count": 5,
+      "column_count": 0,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "c6982367-5386-4a51-af4e-8b8607712694",
+        "summary": {
+          "discovered_objects": 5,
+          "discovered_columns": 0,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 5,
+          "by_type": {
+            "metadata.object": 5
+          },
+          "by_stream": {
+            "buckets": 5
+          },
+          "object_count": 5,
+          "column_count": 0,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "buckets",
+            "status": "succeeded",
+            "event_count": 5,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:25.528Z"
+            },
+            "plan": {
+              "stream": "buckets",
+              "endpoint": "S3 ListBuckets",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": [
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "acq-listingsingestion-bucket",
+            "external_id": "acq-listingsingestion-bucket"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "acq-openlane-files-temp-holder",
+            "external_id": "acq-openlane-files-temp-holder"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "andrei-sandbox-eus1-andreicreditapp-codedeploy-bucket",
+            "external_id": "andrei-sandbox-eus1-andreicreditapp-codedeploy-bucket"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "ciaran-ciaran-eus1-apiinteg-codedeploy-bucket",
+            "external_id": "ciaran-ciaran-eus1-apiinteg-codedeploy-bucket"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "ciaran-ciaran-eus1-xmas-codedeploy-bucket",
+            "external_id": "ciaran-ciaran-eus1-xmas-codedeploy-bucket"
+          }
+        ]
+      }
+    },
+    {
+      "connector_id": "aws-glue-sonic-sandbox-mdp",
+      "type": "aws_glue",
+      "account_name": "SVC_Sandbox_MDP",
+      "account_id": "730335615353",
+      "aws_profile": "sonic-sandbox-mdp",
+      "sample_streams": ["databases", "tables", "columns", "jobs"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 0,
+      "object_count": 0,
+      "column_count": 0,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "3b5631c2-522b-47e2-a452-b6477f95d396",
+        "summary": {
+          "discovered_objects": 0,
+          "discovered_columns": 0,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 0,
+          "by_type": {},
+          "by_stream": {},
+          "object_count": 0,
+          "column_count": 0,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "databases",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:29.230Z"
+            },
+            "plan": {
+              "stream": "databases",
+              "endpoint": "Glue GetDatabases",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "tables",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:30.815Z"
+            },
+            "plan": {
+              "stream": "tables",
+              "endpoint": "Glue GetTables",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "columns",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:32.164Z"
+            },
+            "plan": {
+              "stream": "columns",
+              "endpoint": "Glue table StorageDescriptor.Columns",
+              "method": "GET",
+              "canonical_type": "metadata.column",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "jobs",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:33.746Z"
+            },
+            "plan": {
+              "stream": "jobs",
+              "endpoint": "Glue GetJobs",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": []
+      }
+    },
+    {
+      "connector_id": "aws-athena-sonic-sandbox-mdp",
+      "type": "aws_athena",
+      "account_name": "SVC_Sandbox_MDP",
+      "account_id": "730335615353",
+      "aws_profile": "sonic-sandbox-mdp",
+      "sample_streams": ["workgroups", "data_catalogs", "databases", "named_queries"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 2,
+      "object_count": 2,
+      "column_count": 0,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "021621e3-ff0f-4376-8d4f-d28148cdb12b",
+        "summary": {
+          "discovered_objects": 2,
+          "discovered_columns": 0,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 2,
+          "by_type": {
+            "metadata.object": 1,
+            "metadata.data_source": 1
+          },
+          "by_stream": {
+            "workgroups": 1,
+            "data_catalogs": 1
+          },
+          "object_count": 2,
+          "column_count": 0,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "workgroups",
+            "status": "succeeded",
+            "event_count": 1,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:35.328Z"
+            },
+            "plan": {
+              "stream": "workgroups",
+              "endpoint": "Athena ListWorkGroups",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "data_catalogs",
+            "status": "succeeded",
+            "event_count": 1,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:36.968Z"
+            },
+            "plan": {
+              "stream": "data_catalogs",
+              "endpoint": "Athena ListDataCatalogs",
+              "method": "GET",
+              "canonical_type": "metadata.data_source",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "databases",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:40.126Z"
+            },
+            "plan": {
+              "stream": "databases",
+              "endpoint": "Athena ListDatabases",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "named_queries",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:41.437Z"
+            },
+            "plan": {
+              "stream": "named_queries",
+              "endpoint": "Athena ListNamedQueries",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": [
+          {
+            "stream": "workgroups",
+            "type": "metadata.object",
+            "name": "primary",
+            "external_id": "primary"
+          },
+          {
+            "stream": "data_catalogs",
+            "type": "metadata.data_source",
+            "name": "AwsDataCatalog",
+            "external_id": "AwsDataCatalog"
+          }
+        ]
+      }
+    },
+    {
+      "connector_id": "aws-s3-northwest-motorsport-prod",
+      "type": "aws_s3",
+      "account_name": "Northwest Motorsport - Production",
+      "account_id": "120126178335",
+      "aws_profile": "northwest-motorsport-prod",
+      "sample_streams": ["buckets"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 5,
+      "object_count": 5,
+      "column_count": 0,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "3af11965-541b-4c48-b1a5-9dbb2f28f96b",
+        "summary": {
+          "discovered_objects": 5,
+          "discovered_columns": 0,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 5,
+          "by_type": {
+            "metadata.object": 5
+          },
+          "by_stream": {
+            "buckets": 5
+          },
+          "object_count": 5,
+          "column_count": 0,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "buckets",
+            "status": "succeeded",
+            "event_count": 5,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:43.172Z"
+            },
+            "plan": {
+              "stream": "buckets",
+              "endpoint": "S3 ListBuckets",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": [
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "ami.nwmsrocks.com",
+            "external_id": "ami.nwmsrocks.com"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "aws-glue-assets-120126178335-us-west-2",
+            "external_id": "aws-glue-assets-120126178335-us-west-2"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl",
+            "external_id": "beanstalkstatus-producti-serverlessdeploymentbuck-omyc7kvf25dl"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "blog.nwmsrocks.com",
+            "external_id": "blog.nwmsrocks.com"
+          },
+          {
+            "stream": "buckets",
+            "type": "metadata.object",
+            "name": "build-inventory-before.nwmsrocks.com",
+            "external_id": "build-inventory-before.nwmsrocks.com"
+          }
+        ]
+      }
+    },
+    {
+      "connector_id": "aws-glue-northwest-motorsport-prod",
+      "type": "aws_glue",
+      "account_name": "Northwest Motorsport - Production",
+      "account_id": "120126178335",
+      "aws_profile": "northwest-motorsport-prod",
+      "sample_streams": ["databases", "tables", "columns", "jobs"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 0,
+      "object_count": 0,
+      "column_count": 0,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "2c5d1782-e162-4bc1-860c-a459e012763d",
+        "summary": {
+          "discovered_objects": 0,
+          "discovered_columns": 0,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 0,
+          "by_type": {},
+          "by_stream": {},
+          "object_count": 0,
+          "column_count": 0,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "databases",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:46.412Z"
+            },
+            "plan": {
+              "stream": "databases",
+              "endpoint": "Glue GetDatabases",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "tables",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:47.779Z"
+            },
+            "plan": {
+              "stream": "tables",
+              "endpoint": "Glue GetTables",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "columns",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:49.377Z"
+            },
+            "plan": {
+              "stream": "columns",
+              "endpoint": "Glue table StorageDescriptor.Columns",
+              "method": "GET",
+              "canonical_type": "metadata.column",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "jobs",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:51.090Z"
+            },
+            "plan": {
+              "stream": "jobs",
+              "endpoint": "Glue GetJobs",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": []
+      }
+    },
+    {
+      "connector_id": "aws-athena-northwest-motorsport-prod",
+      "type": "aws_athena",
+      "account_name": "Northwest Motorsport - Production",
+      "account_id": "120126178335",
+      "aws_profile": "northwest-motorsport-prod",
+      "sample_streams": ["workgroups", "data_catalogs", "databases", "named_queries"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 2,
+      "object_count": 2,
+      "column_count": 0,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "43d40070-03b6-4bb7-ae81-76723aebae21",
+        "summary": {
+          "discovered_objects": 2,
+          "discovered_columns": 0,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 2,
+          "by_type": {
+            "metadata.object": 1,
+            "metadata.data_source": 1
+          },
+          "by_stream": {
+            "workgroups": 1,
+            "data_catalogs": 1
+          },
+          "object_count": 2,
+          "column_count": 0,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "workgroups",
+            "status": "succeeded",
+            "event_count": 1,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:52.635Z"
+            },
+            "plan": {
+              "stream": "workgroups",
+              "endpoint": "Athena ListWorkGroups",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "data_catalogs",
+            "status": "succeeded",
+            "event_count": 1,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:54.208Z"
+            },
+            "plan": {
+              "stream": "data_catalogs",
+              "endpoint": "Athena ListDataCatalogs",
+              "method": "GET",
+              "canonical_type": "metadata.data_source",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "databases",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:57.276Z"
+            },
+            "plan": {
+              "stream": "databases",
+              "endpoint": "Athena ListDatabases",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "named_queries",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:29:59.061Z"
+            },
+            "plan": {
+              "stream": "named_queries",
+              "endpoint": "Athena ListNamedQueries",
+              "method": "GET",
+              "canonical_type": "metadata.object",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": [
+          {
+            "stream": "workgroups",
+            "type": "metadata.object",
+            "name": "primary",
+            "external_id": "primary"
+          },
+          {
+            "stream": "data_catalogs",
+            "type": "metadata.data_source",
+            "name": "AwsDataCatalog",
+            "external_id": "AwsDataCatalog"
+          }
+        ]
+      }
+    },
+    {
+      "connector_id": "aws-quicksight-northwest-motorsport-prod",
+      "type": "quicksight",
+      "account_name": "Northwest Motorsport - Production",
+      "account_id": "120126178335",
+      "aws_profile": "northwest-motorsport-prod",
+      "sample_streams": ["dashboards", "datasets", "data_sources", "analyses"],
+      "persisted": true,
+      "test_status": "succeeded",
+      "sample_status": "succeeded",
+      "event_count": 0,
+      "object_count": 0,
+      "column_count": 0,
+      "warning_count": 0,
+      "sample": {
+        "status": "succeeded",
+        "run_id": "459ce69b-cb10-432d-9697-6d0485d04a5d",
+        "summary": {
+          "discovered_objects": 0,
+          "discovered_columns": 0,
+          "discovered_lineage_edges": 0,
+          "dry_run_only": false,
+          "source_contacted": true,
+          "event_count": 0,
+          "by_type": {},
+          "by_stream": {},
+          "object_count": 0,
+          "column_count": 0,
+          "metric_count": 0,
+          "lineage_edge_count": 0,
+          "warning_count": 0,
+          "connection_status": "ready",
+          "live_connection_valid": true,
+          "metadata_discovery_valid": true,
+          "connection_details": {},
+          "credential_mode": "aws_cli_profile",
+          "secret_exposed": false,
+          "raw_data_captured": false
+        },
+        "stream_results": [
+          {
+            "stream": "dashboards",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:30:00.854Z"
+            },
+            "plan": {
+              "stream": "dashboards",
+              "endpoint": "QuickSight ListDashboards",
+              "method": "GET",
+              "canonical_type": "metadata.dashboard",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "datasets",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:30:02.123Z"
+            },
+            "plan": {
+              "stream": "datasets",
+              "endpoint": "QuickSight ListDataSets",
+              "method": "GET",
+              "canonical_type": "metadata.dataset",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "data_sources",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:30:03.642Z"
+            },
+            "plan": {
+              "stream": "data_sources",
+              "endpoint": "QuickSight ListDataSources",
+              "method": "GET",
+              "canonical_type": "metadata.data_source",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          },
+          {
+            "stream": "analyses",
+            "status": "succeeded",
+            "event_count": 0,
+            "state": {
+              "cursor": null,
+              "high_watermark": "2026-06-29T12:30:05.374Z"
+            },
+            "plan": {
+              "stream": "analyses",
+              "endpoint": "QuickSight ListAnalyses",
+              "method": "GET",
+              "canonical_type": "metadata.report",
+              "incremental_cursor": null,
+              "pagination": "page"
+            }
+          }
+        ],
+        "errors": [],
+        "sample_names": []
+      }
+    }
+  ],
+  "skipped": [
+    {
+      "service": "quicksight",
+      "account_name": "svc_dev_mdp",
+      "account_id": "499876093606",
+      "reason": "QuickSight is not subscribed or not metadata-accessible for this account in the initial probe."
+    },
+    {
+      "service": "quicksight",
+      "account_name": "svc_np_mdp",
+      "account_id": "470660935268",
+      "reason": "QuickSight is not subscribed or not metadata-accessible for this account in the initial probe."
+    },
+    {
+      "service": "quicksight",
+      "account_name": "svc_pp_mdp",
+      "account_id": "477562029833",
+      "reason": "QuickSight is not subscribed or not metadata-accessible for this account in the initial probe."
+    },
+    {
+      "service": "quicksight",
+      "account_name": "svc_prd_mdp",
+      "account_id": "118570350539",
+      "reason": "QuickSight is not subscribed or not metadata-accessible for this account in the initial probe."
+    },
+    {
+      "service": "quicksight",
+      "account_name": "SVC_Sandbox_MDP",
+      "account_id": "730335615353",
+      "reason": "QuickSight is not subscribed or not metadata-accessible for this account in the initial probe."
+    },
+    {
+      "service": "redshift",
+      "account_name": "svc_dev_mdp",
+      "account_id": "499876093606",
+      "reason": "No Redshift clusters or Redshift Serverless workgroups were found in the initial us-east-1 probe."
+    },
+    {
+      "service": "redshift",
+      "account_name": "svc_np_mdp",
+      "account_id": "470660935268",
+      "reason": "No Redshift clusters or Redshift Serverless workgroups were found in the initial us-east-1 probe."
+    },
+    {
+      "service": "redshift",
+      "account_name": "svc_pp_mdp",
+      "account_id": "477562029833",
+      "reason": "No Redshift clusters or Redshift Serverless workgroups were found in the initial us-east-1 probe."
+    },
+    {
+      "service": "redshift",
+      "account_name": "svc_prd_mdp",
+      "account_id": "118570350539",
+      "reason": "No Redshift clusters or Redshift Serverless workgroups were found in the initial us-east-1 probe."
+    },
+    {
+      "service": "redshift",
+      "account_name": "SVC_Sandbox_MDP",
+      "account_id": "730335615353",
+      "reason": "No Redshift clusters or Redshift Serverless workgroups were found in the initial us-east-1 probe."
+    },
+    {
+      "service": "redshift",
+      "account_name": "Northwest Motorsport - Production",
+      "account_id": "120126178335",
+      "reason": "No Redshift clusters or Redshift Serverless workgroups were found in the initial us-east-1 probe."
+    }
+  ]
+}

@@ -12,8 +12,10 @@ Accepted
 
 Sonic support documentation is now generated from several technical platforms:
 
-- Azure Data Factory metadata from the saved connector
-  `azure-data-factory-adf-dw-marketing-prod`
+- Azure Data Factory metadata from saved ADF connectors, starting with
+  `azure-data-factory-adf-dw-marketing-prod` and the additional readable
+  production ADF connectors listed in
+  `docs/ADF_PRODUCTION_FACTORY_ACCESS_INVENTORY.md`
 - SSIS package, mapping, call-chain, and runtime evidence
 - SSRS catalog, report definition, execution, datasource, and backend SQL
   evidence
@@ -52,7 +54,8 @@ Every generated support page must lead with:
 Platform-specific evidence remains platform-specific:
 
 - ADF uses factory, trigger, pipeline, activity, dataset, linked-service,
-  schedule, run-history, and connector-profile evidence.
+  schedule, run-history, and connector-profile evidence from each approved saved
+  connector.
 - SSIS uses native folder/project/package hierarchy, package calls, classified
   reads/writes, column mapping sidecars, file/config evidence, and bounded
   runtime baselines.
@@ -64,6 +67,12 @@ The generated markdown cache is the local staging layer for human support docs.
 It must be refreshed before DevOps or Confluence publish. The DevOps runtime
 package and catalog repo are the machine-readable publication layer.
 Confluence is the human navigation layer.
+
+Support documentation refreshes must follow the delta-first publication rule in
+ADR-028. ADF, SSIS, and SSRS documentation generators may read broad metadata
+inputs when needed to maintain context, but AI-written summaries, generated page
+updates, DevOps writes, Rovo updates, and Confluence dry-runs/live publishes
+must be limited to new or changed assets and directly impacted index pages.
 
 ## Consequences
 
@@ -94,6 +103,16 @@ Confluence is the human navigation layer.
 - ADF support pages must identify root/orchestrator pipelines separately from
   child pipelines. For `adf-dw-marketing-prod`, `pl_Marketing_AWS_Export` is
   the current root orchestrator.
+- Multi-factory ADF documentation refreshes must identify the connector id,
+  factory name, resource group, active-trigger count, legacy status, and
+  ingestion/profile artifact used for each factory.
+- Newly registered ADF connectors must be ingested and documented through
+  bounded work packets in `docs/ADF_MULTI_FACTORY_INGESTION_BACKLOG.md`; do not
+  start that ingestion while another source ingestion is already running.
+- After source metadata has a baseline, support-documentation refreshes must
+  consume the delta manifest and skip unchanged pages by default.
+- A full support-doc tree regeneration requires a scoped full-refresh packet,
+  dry-run counts, and explicit approval before live DevOps or Confluence writes.
 - SSIS folder and package navigation must continue to follow
   `docs/adr/ADR-006-SSIS-Native-Hierarchy-And-Classified-Lineage.md`.
 - SSRS pages must not use generated title prefixes such as `AUTO`; page titles
@@ -112,11 +131,14 @@ A medium-intelligence Codex run may perform the refresh when the packet in
 limited to:
 
 1. refreshing sanitized metadata inputs;
-2. rebuilding local markdown support caches;
-3. exporting generated support docs to the DevOps catalog repo;
-4. rebuilding and validating the runtime package;
-5. dry-running Confluence changes;
-6. publishing only after explicit user approval and only for the reviewed
+2. producing or consuming a delta manifest;
+3. rebuilding local markdown support caches only for changed support assets and
+   directly impacted folder/index pages;
+4. exporting generated support docs to the DevOps catalog repo for the delta
+   scope;
+5. rebuilding and validating the runtime package;
+6. dry-running Confluence changes for the affected page set;
+7. publishing only after explicit user approval and only for the reviewed
    ADF/SSIS/SSRS support page trees.
 
 Stop and request stronger review before changing auth, secrets, connector
@@ -132,3 +154,7 @@ Data Lineage Confluence IA, or production ADF trigger behavior.
 - `docs/CONFLUENCE_FULL_REBUILD_SCOPE.md`
 - `docs/CONNECTOR_METADATA_PROFILE_FRAMEWORK.md`
 - `docs/CONNECTOR_EXTRACTION_FRAMEWORK.md`
+- `docs/ADF_PRODUCTION_FACTORY_ACCESS_INVENTORY.md`
+- `docs/ADF_LEGACY_FACTORY_INVENTORY.md`
+- `docs/ADF_MULTI_FACTORY_INGESTION_BACKLOG.md`
+- `docs/adr/ADR-028-Delta-First-Metadata-Processing-And-Publication.md`

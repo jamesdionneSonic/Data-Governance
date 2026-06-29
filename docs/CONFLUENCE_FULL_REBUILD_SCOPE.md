@@ -49,9 +49,11 @@ Sonic Data Lineage
     Data Product - MCI
     Data Product - MDP
   Database Catalog
-    <Database>
-      <Schema>
-        <Canonical Object Page>
+    <Platform/Product>
+      <Database>
+        <Database.Schema>
+          <Database.Schema Object Type Bucket>
+            <Canonical Object Page>
   Confidence And Known Gaps
   Operating Guides
 ```
@@ -62,9 +64,13 @@ Plain-English sections must be generated from bounded evidence packets and
 must label missing facts as `not surfaced in metadata`.
 
 The Database Catalog rebuild applies this pattern to every included cataloged
-database. It is not limited to `Sonic_DW`. Older schema pages named
+database. It is not limited to `Sonic_DW`. Under each schema, objects are
+separated into typed bucket pages such as `Sonic_DW.dbo Tables`,
+`Sonic_DW.dbo Views`, `Sonic_DW.dbo Stored Procedures`,
+`Sonic_DW.dbo Functions`, and `Sonic_DW.dbo Synonyms`; object leaf page
+titles use `<Database>.<Schema>.<Object>`. Older schema pages named
 `Schema - <Database>.<Schema>` are superseded by clean schema nodes named
-`<Schema>` under each database page. They must be reported as cleanup
+`<Database>.<Schema>` under each database page. They must be reported as cleanup
 candidates, but they must not be archived, deleted, or moved without separate
 cleanup approval after replacements are verified.
 

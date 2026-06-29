@@ -27,6 +27,7 @@ Connector metadata profile persistence, markdown summaries, profile indexes, and
 - `gcs`
 - `azure_purview`
 - `aws_glue`
+- `aws_athena`
 - `gcp_dataplex`
 - `azure_data_factory`
 - `ssis`
@@ -133,3 +134,14 @@ activity, dataset, linked-service, trigger, integration-runtime, managed-network
 lineage, and bounded run-history metadata. Manual pipeline starts are not
 metadata profiles; use `docs/adr/ADR-010-ADF-Operations-Through-Saved-Connector.md`
 and `docs/ADF_PIPELINE_OPERATIONS.md` for ADF trigger operations.
+
+For AWS, connector metadata profiles and lineage ingestion are separate but
+compatible layers. `aws_s3`, `aws_glue`, `aws_athena`, and `quicksight` use the
+shared connector runtime for metadata acquisition. AWS lineage interpretation
+belongs in `engines/connectors/aws/`, where JavaScript creates native AWS
+assets and deterministic edges before the source metadata delta engine runs.
+Current AWS connector records are explicitly routed to MDP through
+`config/aws-lineage-product-routing.json`; future AWS connectors must declare
+their own product route instead of inheriting MDP.
+See `docs/adr/ADR-029-AWS-And-Non-Database-Lineage-Ingestion.md` and
+`docs/AWS_LINEAGE_INGESTION.md`.

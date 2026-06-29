@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-06-29T14:12:46.931Z",
+  "route_id": "mdp-aws-lineage-context",
+  "product_area": "MDP",
+  "business_domain": "Marketing Data Platform",
+  "source_package_count": 6,
+  "object_count": 6471,
+  "edge_count": 6933,
+  "objects_by_type": {
+    "athena_data_catalog": 6,
+    "athena_database": 15,
+    "athena_table": 231,
+    "athena_workgroup": 21,
+    "aws_account": 6,
+    "aws_athena_service": 6,
+    "aws_glue_service": 6,
+    "aws_quicksight_service": 1,
+    "aws_s3_service": 6,
+    "glue_column": 5421,
+    "glue_database": 15,
+    "glue_table": 231,
+    "s3_bucket": 278,
+    "s3_prefix": 228
+  },
+  "edges_by_type": {
+    "contains": 1044,
+    "has_column": 5421,
+    "metadata_catalog_used_by_athena": 6,
+    "queried_by_athena": 231,
+    "storage_registered_by": 231
+  },
+  "source_packages": [
+    {
+      "source_scope": "aws-account:118570350539:us-east-1",
+      "connector_id": "aws-account-118570350539-us-east-1",
+      "generated_at": "2026-06-29T13:46:54.573Z",
+      "file_path": "C:/projects/Data Governence/docs/lineage-runtime-readbacks/aws-lineage/20260629T134654-aws-account-118570350539-us-east-1-aws-lineage-package.json",
+      "object_count": 546,
+      "edge_count": 586,
+      "gap_count": 0
+    },
+    {
+      "source_scope": "aws-account:120126178335:us-east-1",
+      "connector_id": "aws-account-120126178335-us-east-1",
+      "generated_at": "2026-06-29T13:46:54.573Z",
+      "file_path": "C:/projects/Data Governence/docs/lineage-runtime-readbacks/aws-lineage/20260629T134654-aws-account-120126178335-us-east-1-aws-lineage-package.json",
+      "object_count": 111,
+      "edge_count": 111,
+      "gap_count": 0
+    },
+    {
+      "source_scope": "aws-account:470660935268:us-east-1",
+      "connector_id": "aws-account-470660935268-us-east-1",
+      "generated_at": "2026-06-29T13:46:54.573Z",
+      "file_path": "C:/projects/Data Governence/docs/lineage-runtime-readbacks/aws-lineage/20260629T134654-aws-account-470660935268-us-east-1-aws-lineage-package.json",
+      "object_count": 709,
+      "edge_count": 757,
+      "gap_count": 0
+    },
+    {
+      "source_scope": "aws-account:477562029833:us-east-1",
+      "connector_id": "aws-account-477562029833-us-east-1",
+      "generated_at": "2026-06-29T13:46:54.573Z",
+      "file_path": "C:/projects/Data Governence/docs/lineage-runtime-readbacks/aws-lineage/20260629T134654-aws-account-477562029833-us-east-1-aws-lineage-package.json",
+      "object_count": 823,
+      "edge_count": 877,
+      "gap_count": 0
+    },
+    {
+      "source_scope": "aws-account:499876093606:us-east-1",
+      "connector_id": "aws-account-499876093606-us-east-1",
+      "generated_at": "2026-06-29T13:46:54.573Z",
+      "file_path": "C:/projects/Data Governence/docs/lineage-runtime-readbacks/aws-lineage/20260629T134654-aws-account-499876093606-us-east-1-aws-lineage-package.json",
+      "object_count": 4260,
+      "edge_count": 4580,
+      "gap_count": 0
+    },
+    {
+      "source_scope": "aws-account:730335615353:us-east-1",
+      "connector_id": "aws-account-730335615353-us-east-1",
+      "generated_at": "2026-06-29T13:46:54.573Z",
+      "file_path": "C:/projects/Data Governence/docs/lineage-runtime-readbacks/aws-lineage/20260629T134654-aws-account-730335615353-us-east-1-aws-lineage-package.json",
+      "object_count": 22,
+      "edge_count": 22,
+      "gap_count": 0
+    }
+  ]
+}

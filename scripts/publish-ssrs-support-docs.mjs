@@ -24,6 +24,10 @@ const email = process.env.CONFLUENCE_EMAIL || '';
 const apiToken = process.env.CONFLUENCE_API_TOKEN || '';
 const publish = process.argv.includes('--publish');
 
+if (publish) {
+  throw new Error('SSRS support live publish is blocked until it is delta-scoped. Refusing broad support-doc publication into AI-indexed Confluence.');
+}
+
 if (!email || !apiToken) {
   throw new Error('CONFLUENCE_EMAIL and CONFLUENCE_API_TOKEN are required.');
 }

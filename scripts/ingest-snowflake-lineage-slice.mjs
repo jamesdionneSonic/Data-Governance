@@ -5,6 +5,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import yaml from 'yaml';
 
+import { buildDeltaManifest, writeDeltaOutputs } from '../engines/connectors/metadata-delta/index.js';
 import { getConnector, upsertConnector } from '../src/services/connectorService.js';
 
 const CONNECTOR_ID = 'snowflake-bipslyv-tlb12786';
@@ -83,6 +84,21 @@ function stableJson(value) {
 
 function signature(value) {
   return hash(stableJson(value), 24);
+}
+
+function snowflakeObjectSignature(object) {
+  return signature({
+    id: object.id,
+    type: object.type,
+    owner: object.owner,
+    snowflake: object.snowflake,
+    columns: object.columns.map((column) => ({
+      name: column.name,
+      ordinal: column.ordinal,
+      data_type: column.data_type,
+      nullable: column.nullable,
+    })),
+  });
 }
 
 function normalizePath(value) {
@@ -396,6 +412,7 @@ function contextJson(row, object) {
       source_markdown_path: row.source_markdown_path,
       connector_id: CONNECTOR_ID,
       extraction_mode: 'snowflake_metadata_harvest',
+      metadata_signature: snowflakeObjectSignature(object),
     },
     support_notes: [
       'Metadata-only Snowflake object. Business definition is not surfaced in metadata.',
@@ -640,6 +657,8 @@ async function harvestSnowflake() {
 async function main() {
   const generatedAt = new Date().toISOString();
   const fullRefresh = hasFlag('--full-refresh');
+  const planOnly = hasFlag('--plan-only') || hasFlag('--dry-run');
+  const ingestMode = fullRefresh ? 'full_refresh' : planOnly ? 'plan_only' : 'incremental';
   const catalogRoot = path.resolve(argValue('--catalog-repo', process.env.CATALOG_REPO_PATH || DEFAULT_CATALOG_REPO));
   const markdownRoot = path.resolve(argValue('--markdown-root', process.env.MARKDOWN_DATA_PATH || DEFAULT_MARKDOWN_ROOT));
   const state = await loadState(catalogRoot);
@@ -649,13 +668,44 @@ async function main() {
   const existingRows = await readJsonl(path.join(catalogRoot, 'registry', 'object-registry.jsonl'));
   const nonSnowflakeRows = existingRows.filter((row) => row.server !== SERVER_ID && row.source_system !== SERVER_ID);
   const previousSnowflakeRows = existingRows.filter((row) => row.server === SERVER_ID || row.source_system === SERVER_ID);
-  const previousSnowflakeById = new Map(previousSnowflakeRows.map((row) => [row.object_id, row]));
+  const registryPath = path.join(catalogRoot, 'registry', 'object-registry.jsonl');
+  const deltaManifest = await buildDeltaManifest({
+    catalogRoot,
+    connectorId: CONNECTOR_ID,
+    sourceFamily: 'snowflake',
+    sourceScope: SERVER_ID,
+    currentObjects: objects.map((object) => ({
+      canonical_id: object.id,
+      display_name: object.name,
+      object_type: object.type,
+      database: object.database,
+      schema: object.schema,
+      object_name: object.name,
+      source_family: 'snowflake',
+      source_system: SERVER_ID,
+      metadata_signature: snowflakeObjectSignature(object),
+    })),
+    mode: ingestMode,
+    fullRefreshReason: fullRefresh ? argValue('--full-refresh-reason', 'Snowflake full refresh requested by operator.') : '',
+    generatedAt,
+    scope: {
+      server: SERVER_ID,
+      source_system: SERVER_ID,
+    },
+    baseline: {
+      registry_path: normalizePath(registryPath),
+      rows: existingRows,
+      scoped_rows: previousSnowflakeRows,
+      signatures: new Map(previousSnowflakeRows.map((row) => [row.object_id, previousSignatures[row.object_id] || null])),
+    },
+  });
+  const deltaById = new Map(deltaManifest.objects.map((object) => [object.canonical_id, object]));
 
   const newState = {
     schema_version: 1,
     connector_id: CONNECTOR_ID,
     generated_at: generatedAt,
-    mode: fullRefresh ? 'full_refresh' : 'incremental',
+    mode: ingestMode,
     objects: {},
   };
   const objectResults = [];
@@ -663,23 +713,13 @@ async function main() {
 
   for (const object of objects) {
     const row = registryRow(object);
-    const objectSignature = signature({
-      id: object.id,
-      type: object.type,
-      owner: object.owner,
-      snowflake: object.snowflake,
-      columns: object.columns.map((column) => ({
-        name: column.name,
-        ordinal: column.ordinal,
-        data_type: column.data_type,
-        nullable: column.nullable,
-      })),
-    });
-    const changed = fullRefresh || previousSignatures[object.id] !== objectSignature || !previousSnowflakeById.has(object.id);
+    const objectSignature = snowflakeObjectSignature(object);
+    const delta = deltaById.get(object.id);
+    const changed = delta?.status === 'new' || delta?.status === 'changed';
     newState.objects[object.id] = objectSignature;
-    const writes = await writeObjectArtifacts({ catalogRoot, markdownRoot, object, row, changed });
+    const writes = planOnly ? { source_markdown: false, context: false } : await writeObjectArtifacts({ catalogRoot, markdownRoot, object, row, changed });
     snowflakeRows.push(row);
-    objectResults.push({ object_id: object.id, changed, ...writes });
+    objectResults.push({ object_id: object.id, status: delta?.status || 'new', changed, ...writes });
   }
 
   const retainedRows = fullRefresh ? [] : previousSnowflakeRows.filter((row) => !newState.objects[row.object_id]);
@@ -688,50 +728,67 @@ async function main() {
   );
   const indexes = buildIndexes(mergedRows, generatedAt);
 
-  await writeJsonl(path.join(catalogRoot, 'registry', 'object-registry.jsonl'), mergedRows);
-  await writeText(
-    path.join(catalogRoot, 'registry', 'object-registry.csv'),
-    [REGISTRY_HEADERS.join(','), ...mergedRows.map((row) => REGISTRY_HEADERS.map((header) => csvCell(row[header])).join(','))].join('\n')
-  );
-  await writeJson(path.join(catalogRoot, 'registry', 'database-index.json'), indexes.databaseIndex);
-  await writeJson(path.join(catalogRoot, 'registry', 'database-artifact-index.json'), indexes.databaseArtifactIndex);
-  await writeJson(path.join(catalogRoot, 'registry', 'object-path-index.json'), indexes.objectPathIndex);
-  await writeJson(path.join(catalogRoot, 'registry', 'object-registry-summary.json'), indexes.summary);
-  await writeJsonl(path.join(catalogRoot, 'registry', 'canonical-objects.jsonl'), mergedRows);
-  await writeJsonl(path.join(catalogRoot, 'registry', 'duplicate-objects.jsonl'), []);
-  await writeJsonl(path.join(catalogRoot, 'registry', 'unresolved-server-objects.jsonl'), []);
-  await writeDatabaseReadmes(
-    catalogRoot,
-    mergedRows,
-    generatedAt,
-    [...new Set(objects.map((object) => object.database))]
-  );
+  if (!planOnly) {
+    await writeJsonl(path.join(catalogRoot, 'registry', 'object-registry.jsonl'), mergedRows);
+    await writeText(
+      path.join(catalogRoot, 'registry', 'object-registry.csv'),
+      [REGISTRY_HEADERS.join(','), ...mergedRows.map((row) => REGISTRY_HEADERS.map((header) => csvCell(row[header])).join(','))].join('\n')
+    );
+    await writeJson(path.join(catalogRoot, 'registry', 'database-index.json'), indexes.databaseIndex);
+    await writeJson(path.join(catalogRoot, 'registry', 'database-artifact-index.json'), indexes.databaseArtifactIndex);
+    await writeJson(path.join(catalogRoot, 'registry', 'object-path-index.json'), indexes.objectPathIndex);
+    await writeJson(path.join(catalogRoot, 'registry', 'object-registry-summary.json'), indexes.summary);
+    await writeJsonl(path.join(catalogRoot, 'registry', 'canonical-objects.jsonl'), mergedRows);
+    await writeJsonl(path.join(catalogRoot, 'registry', 'duplicate-objects.jsonl'), []);
+    await writeJsonl(path.join(catalogRoot, 'registry', 'unresolved-server-objects.jsonl'), []);
+    await writeDatabaseReadmes(
+      catalogRoot,
+      mergedRows,
+      generatedAt,
+      [...new Set(objects.map((object) => object.database))]
+    );
 
-  const manifest = (await readJson(path.join(catalogRoot, 'catalog-manifest.json'), {})) || {};
-  await writeJson(path.join(catalogRoot, 'catalog-manifest.json'), {
-    ...manifest,
-    schema_version: manifest.schema_version || 1,
-    generated_at: generatedAt,
-    object_count: mergedRows.length,
-    database_count: indexes.databaseIndex.database_count,
-    context_pack_count: mergedRows.length,
-    raw_source_markdown_count: (await listFilesRecursive(path.join(catalogRoot, 'servers'))).filter((file) => file.endsWith('.md')).length,
-    snowflake: {
-      connector_id: CONNECTOR_ID,
-      server: SERVER_ID,
-      last_incremental_ingest_at: generatedAt,
-      database_count: new Set(objects.map((object) => object.database)).size,
-      object_count: objects.length,
-      retained_object_count: retainedRows.length,
-    },
-  });
+    const manifest = (await readJson(path.join(catalogRoot, 'catalog-manifest.json'), {})) || {};
+    await writeJson(path.join(catalogRoot, 'catalog-manifest.json'), {
+      ...manifest,
+      schema_version: manifest.schema_version || 1,
+      generated_at: generatedAt,
+      object_count: mergedRows.length,
+      database_count: indexes.databaseIndex.database_count,
+      context_pack_count: mergedRows.length,
+      raw_source_markdown_count: (await listFilesRecursive(path.join(catalogRoot, 'servers'))).filter((file) => file.endsWith('.md')).length,
+      snowflake: {
+        connector_id: CONNECTOR_ID,
+        server: SERVER_ID,
+        last_incremental_ingest_at: generatedAt,
+        database_count: new Set(objects.map((object) => object.database)).size,
+        object_count: objects.length,
+        retained_object_count: retainedRows.length,
+      },
+    });
 
-  await writeJson(path.join(catalogRoot, 'reports', `${CONNECTOR_ID}-ingestion-state.json`), newState);
+    await writeJson(path.join(catalogRoot, 'reports', `${CONNECTOR_ID}-ingestion-state.json`), newState);
+  }
+  const deltaCatalogOutputs = planOnly
+    ? {}
+    : await writeDeltaOutputs({
+        manifest: deltaManifest,
+        outputDir: path.join(catalogRoot, 'reports', 'source-metadata-delta'),
+        basename: `${CONNECTOR_ID}-snowflake-metadata-delta`,
+      });
+  const deltaReadbackOutputs = hasFlag('--no-readback')
+    ? {}
+    : await writeDeltaOutputs({
+        manifest: deltaManifest,
+        outputDir: path.join('docs', 'lineage-runtime-readbacks', 'source-metadata-delta'),
+        basename: `${new Date().toISOString().slice(0, 10)}-${CONNECTOR_ID}-snowflake-metadata-delta`,
+      });
   const report = {
     schema_version: 1,
     generated_at: generatedAt,
     connector_id: CONNECTOR_ID,
-    mode: fullRefresh ? 'full_refresh' : 'incremental',
+    mode: ingestMode,
+    plan_only: planOnly,
     catalog_repo: normalizePath(catalogRoot),
     markdown_root: normalizePath(markdownRoot),
     visible_database_count: harvest.databases.length,
@@ -741,11 +798,21 @@ async function main() {
     changed_object_count: objectResults.filter((item) => item.changed).length,
     unchanged_object_count: objectResults.filter((item) => !item.changed).length,
     retained_stale_object_count: retainedRows.length,
+    removed_stale_object_count: fullRefresh ? previousSnowflakeRows.filter((row) => !newState.objects[row.object_id]).length : 0,
+    delta_manifest: {
+      counts: deltaManifest.counts,
+      changed_object_ids: deltaManifest.changed_object_ids.slice(0, 200),
+      catalog_manifest_path: deltaCatalogOutputs.manifest_path || '',
+      readback_manifest_path: deltaReadbackOutputs.manifest_path || '',
+      readback_path: deltaReadbackOutputs.readback_path || '',
+    },
     errors: harvest.errors,
     note:
       'Default incremental mode upserts new/changed Snowflake metadata only and does not remove stale Snowflake rows. Use --full-refresh to rewrite/remove the full Snowflake slice.',
   };
-  await writeJson(path.join(catalogRoot, 'reports', `${CONNECTOR_ID}-ingestion-report.json`), report);
+  if (!planOnly) {
+    await writeJson(path.join(catalogRoot, 'reports', `${CONNECTOR_ID}-ingestion-report.json`), report);
+  }
   await writeJson(path.join('docs', 'lineage-runtime-readbacks', `${new Date().toISOString().slice(0, 10)}-${CONNECTOR_ID}-ingestion-report.json`), report);
   console.log(JSON.stringify(report, null, 2));
 }

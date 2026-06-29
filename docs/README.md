@@ -75,6 +75,19 @@ Deprecated primary labels: `Command Center`, `Profile Operations`, `Ingestion St
 - [Profile Index Safety And Storage Specification](PROFILE_INDEX_SPEC.md)
 - [BI Profile Framework](BI_PROFILE_FRAMEWORK.md)
 - [Connector Metadata Profile Framework](CONNECTOR_METADATA_PROFILE_FRAMEWORK.md)
+- [AWS Lineage Ingestion](AWS_LINEAGE_INGESTION.md)
+- [Codex AWS Lineage Ingestion Packet](CODEX_AWS_LINEAGE_INGESTION_PACKET.md)
+- [AWS Lineage Backlog](AWS_LINEAGE_BACKLOG.md)
+- [AWS Lineage Work Packets](AWS_LINEAGE_WORK_PACKETS.md)
+
+Current AWS connector records are explicitly routed to the MDP data product by
+`../config/aws-lineage-product-routing.json`. After AWS ingestion, build the
+local MDP human/Rovo/DevOps package with:
+
+```powershell
+npm run aws:mdp:lineage:package
+```
+
 - [Data Dictionary and Metadata Enrichment](DATA_DICTIONARY_AND_METADATA_ENRICHMENT.md)
 - [Product Requirements](PRODUCT_REQUIREMENTS.md)
 - [Project Backlog](PROJECT_BACKLOG.md)
@@ -117,8 +130,12 @@ Deprecated primary labels: `Command Center`, `Profile Operations`, `Ingestion St
 - [ADR-014: Use Canonical Object Trust Signals](adr/ADR-014-Canonical-Object-Catalog-Trust-Signals-And-Medium-Backlog.md)
 - [ADR-015: Optimize AI Retrieval Artifacts For Rovo](adr/ADR-015-Rovo-Optimized-AI-Retrieval-Artifacts.md)
 - [ADR-016: Full Database Catalog Deployment And Cleanup](adr/ADR-016-Full-Database-Catalog-Deployment-And-Cleanup.md)
+- [ADR-017: Rovo-Assisted Plain-English Catalog Descriptions](adr/ADR-017-Rovo-Assisted-Plain-English-Catalog-Descriptions.md)
+- [ADR-020: Source-Agnostic Incremental Lineage Ingestion](adr/ADR-020-Source-Agnostic-Incremental-Lineage-Ingestion.md)
 - [ADR-021: Platform-Grouped Database Catalog](adr/ADR-021-Platform-Grouped-Database-Catalog.md)
 - [ADR-022: Complete Tier 2 Object Pages And Schema Hyperlinks](adr/ADR-022-Complete-Tier2-Object-Pages-And-Schema-Hyperlinks.md)
+- [ADR-028: Delta-First Metadata Processing And Publication](adr/ADR-028-Delta-First-Metadata-Processing-And-Publication.md)
+- [ADR-029: AWS And Non-Database Lineage Ingestion](adr/ADR-029-AWS-And-Non-Database-Lineage-Ingestion.md)
 - [Release Notes v0.6.0](RELEASE_NOTES_v0.6.0.md)
 - [Release Notes v1.0.0](RELEASE_NOTES_v1.0.0.md)
 - [Vuetify Final Audit 2026-05-10](VUETIFY_FINAL_AUDIT_2026-05-10.md)

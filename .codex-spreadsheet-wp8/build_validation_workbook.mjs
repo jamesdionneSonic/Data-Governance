@@ -20,6 +20,10 @@ const files = {
   openExceptions: "current/exceptions/open_exceptions.csv",
   resolved: "current/exceptions/resolved_since_last_run.csv",
   runStatus: "current/audit/run_status.csv",
+  accuracyScorecard: "current/accuracy/accuracy_scorecard.csv",
+  accuracyDefinitions: "current/accuracy/accuracy_metric_definitions.csv",
+  accuracyBlockers: "current/accuracy/accuracy_blockers.csv",
+  accuracySamples: "current/accuracy/accuracy_review_samples_manifest.csv",
   taxonomy: "config/review-classification-taxonomy.yml",
 };
 
@@ -100,6 +104,31 @@ function cellValue(rows, columnName) {
 function numberValue(value) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function percentValue(value) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return "";
+  return `${(parsed * 100).toFixed(2)}%`;
+}
+
+function csvObjectRows(rows) {
+  if (!rows.length) return [];
+  const [header, ...dataRows] = rows;
+  return dataRows.map((row) => Object.fromEntries(header.map((column, index) => [column, row[index] || ""])));
+}
+
+function displaySubject(value) {
+  return String(value || "")
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function statusFill(status) {
+  if (status === "candidate_ready") return "#D9EAD3";
+  if (status === "review_needed") return "#FFF2CC";
+  if (status === "not_ready") return "#F4CCCC";
+  return "#E7E6E6";
 }
 
 function sheetName(name) {
@@ -374,6 +403,147 @@ function addDashboard(workbook, data) {
   groupChart.setPosition(`H34`, `W48`);
 }
 
+function addAccuracyDashboard(workbook, data) {
+  const sheet = workbook.worksheets.add("Accuracy Dashboard");
+  sheet.showGridLines = false;
+
+  const scorecard = csvObjectRows(data.accuracyScorecard);
+  const blockers = csvObjectRows(data.accuracyBlockers);
+  const definitions = csvObjectRows(data.accuracyDefinitions);
+  const samples = csvObjectRows(data.accuracySamples);
+  const runId = scorecard[0]?.run_id || cellValue(data.runStatus, "run_id");
+  const overallNotReady = scorecard.some((row) => row.decision_status === "not_ready");
+  const overallReview = scorecard.some((row) => row.decision_status === "review_needed");
+  const overallStatus = overallNotReady ? "not_ready" : overallReview ? "review_needed" : "candidate_ready";
+  const overallReadout = overallStatus === "not_ready"
+    ? "Snowflake is not ready for a trust claim across this validation because at least one subject area has material blockers."
+    : overallStatus === "review_needed"
+      ? "Snowflake is directionally useful, but open review items still prevent a full trust claim."
+      : "Snowflake is inside the conservative trust thresholds for the scored subject areas.";
+
+  const rows = [
+    ["Snowflake / DMS Accuracy Dashboard", "", "", "", "", "", "", ""],
+    ["Run ID", runId, "Overall Decision", overallStatus, "Source of Record", "DMS", "Candidate Source", "Snowflake"],
+    [`Plain-English Readout: ${overallReadout}`, "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", ""],
+    ["Subject Area", "Decision", "Key Match", "Value Match", "Readiness", "Candidate Defects", "Blockers", "Confidence"],
+    ...scorecard.map((row) => [
+      displaySubject(row.subject_area),
+      row.decision_status,
+      percentValue(row.key_match_rate),
+      percentValue(row.raw_value_match_rate),
+      percentValue(row.classification_adjusted_readiness_rate),
+      row.candidate_defect_records,
+      row.migration_blocker_count,
+      row.confidence,
+    ]),
+    ["", "", "", "", "", "", "", ""],
+    ["Subject Area", "DMS Rows", "Snowflake Rows", "Matched Keys", "Missing From Snowflake", "Snowflake Only", "Mapping Review", "Formula Review"],
+    ...scorecard.map((row) => [
+      displaySubject(row.subject_area),
+      row.dms_scoped_records,
+      row.snowflake_scoped_records,
+      row.matched_key_records,
+      row.missing_from_snowflake,
+      row.snowflake_only,
+      row.mapping_review_records,
+      row.formula_definition_review_records,
+    ]),
+    ["", "", "", "", "", "", "", ""],
+    ["Blocker Type", "Subject Area", "Rows", "Severity", "First Action", "", "", ""],
+    ...blockers.map((row) => [
+      row.blocker_type,
+      displaySubject(row.subject_area),
+      row.blocker_count,
+      row.severity,
+      row.first_action,
+      "",
+      "",
+      "",
+    ]),
+    ["", "", "", "", "", "", "", ""],
+    ["Metric", "Type", "Denominator", "Plain-English Meaning", "Caveat", "", "", ""],
+    ...definitions.map((row) => [
+      row.metric_name,
+      row.metric_type,
+      row.denominator,
+      row.plain_english,
+      row.caveat,
+      "",
+      "",
+      "",
+    ]),
+    ["", "", "", "", "", "", "", ""],
+    ["Sample", "Path", "Classification", "Rows", "Description", "", "", ""],
+    ...samples.map((row) => [
+      row.sample_name,
+      row.path,
+      row.classification,
+      row.row_count,
+      row.description,
+      "",
+      "",
+      "",
+    ]),
+  ];
+
+  writeMatrix(sheet, "A1", rows);
+  sheet.getRange("A1:H1").merge();
+  sheet.getRange("A3:H3").merge();
+  sheet.getRange("A1").format = {
+    fill: "#17324D",
+    font: { bold: true, color: "#FFFFFF", size: 16 },
+  };
+  sheet.getRange("A2:H3").format = {
+    fill: "#EAF2F8",
+    font: { color: "#172033" },
+    wrapText: true,
+  };
+  sheet.getRange("D2").format = {
+    fill: statusFill(overallStatus),
+    font: { bold: true, color: "#172033" },
+  };
+
+  const scoreHeader = 5;
+  const populationHeader = scoreHeader + scorecard.length + 2;
+  const blockerHeader = populationHeader + scorecard.length + 2;
+  const definitionsHeader = blockerHeader + blockers.length + 2;
+  const samplesHeader = definitionsHeader + definitions.length + 2;
+  for (const rowNumber of [scoreHeader, populationHeader, blockerHeader, definitionsHeader, samplesHeader]) {
+    sheet.getRange(`A${rowNumber}:H${rowNumber}`).format = {
+      fill: "#1F4E78",
+      font: { bold: true, color: "#FFFFFF" },
+      wrapText: true,
+    };
+  }
+  for (let i = 0; i < scorecard.length; i += 1) {
+    sheet.getRange(`B${scoreHeader + 1 + i}`).format = {
+      fill: statusFill(scorecard[i].decision_status),
+      font: { bold: true, color: "#172033" },
+    };
+  }
+  sheet.getRange(`A1:H${rows.length}`).format.borders = { preset: "outside", style: "thin", color: "#B8C7D9" };
+  sheet.getRange(`A${blockerHeader + 1}:E${definitionsHeader - 2}`).format.wrapText = true;
+  sheet.getRange(`D${definitionsHeader + 1}:E${samplesHeader - 2}`).format.wrapText = true;
+  sheet.getRange(`B${samplesHeader + 1}:E${rows.length}`).format.wrapText = true;
+  setWidths(sheet, [30, 24, 24, 24, 56, 22, 22, 20]);
+  sheet.freezePanes.freezeRows(4);
+
+  const populationRange = sheet.getRange(`A${populationHeader}:D${populationHeader + scorecard.length}`);
+  const populationChart = sheet.charts.add("bar", populationRange);
+  populationChart.title = "Population And Key Coverage";
+  populationChart.hasLegend = true;
+  populationChart.setPosition("J2", "X17");
+
+  if (blockers.length) {
+    const blockerRange = sheet.getRange(`A${blockerHeader}:C${blockerHeader + blockers.length}`);
+    const blockerChart = sheet.charts.add("bar", blockerRange);
+    blockerChart.title = "Accuracy Blockers";
+    blockerChart.hasLegend = false;
+    blockerChart.setPosition("J19", "X34");
+  }
+}
+
 function addSourcesSheet(workbook) {
   const sheet = workbook.worksheets.add("Sources");
   const rows = [
@@ -393,6 +563,10 @@ function addSourcesSheet(workbook) {
     ["Vehicle missing from DMS", files.vehicleMissingDms],
     ["Repair orders missing from Snowflake", files.repairMissingSf],
     ["Repair orders missing from DMS", files.repairMissingDms],
+    ["Accuracy scorecard", files.accuracyScorecard],
+    ["Accuracy metric definitions", files.accuracyDefinitions],
+    ["Accuracy blockers", files.accuracyBlockers],
+    ["Accuracy review samples manifest", files.accuracySamples],
     ["Run status", files.runStatus],
   ];
   writeMatrix(sheet, "A1", rows);
@@ -404,7 +578,7 @@ function addSourcesSheet(workbook) {
     fill: "#1F4E78",
     font: { bold: true, color: "#FFFFFF" },
   };
-  sheet.getRange("A1:B16").format.borders = { preset: "outside", style: "thin", color: "#B8C7D9" };
+  sheet.getRange("A1:B20").format.borders = { preset: "outside", style: "thin", color: "#B8C7D9" };
   setWidths(sheet, [30, 120]);
   sheet.showGridLines = false;
 }
@@ -417,11 +591,16 @@ async function build() {
   data.classificationDefinitions = parseClassificationDefinitions(data.taxonomy);
 
   const workbook = Workbook.create();
+  addAccuracyDashboard(workbook, data);
   addDashboard(workbook, data);
   addDefinitionsSheet(workbook, data.classificationDefinitions);
   addSourcesSheet(workbook);
 
   const sheetDefs = [
+    ["Accuracy Scorecard", data.accuracyScorecard, "AccuracyScorecard"],
+    ["Accuracy Blockers", data.accuracyBlockers, "AccuracyBlockers"],
+    ["Accuracy Metric Defs", data.accuracyDefinitions, "AccuracyMetricDefinitions"],
+    ["Accuracy Samples", data.accuracySamples, "AccuracySamples"],
     ["Vehicle Daily", data.vehicleSummary, "VehicleDaily"],
     ["Repair Daily", data.repairSummary, "RepairDaily"],
     ["Open Exceptions", data.openExceptions, "OpenExceptions"],
@@ -442,6 +621,7 @@ async function build() {
 
   await fs.mkdir(previewDir, { recursive: true });
   const sheetsToRender = [
+    { name: "Accuracy Dashboard", range: "A1:X42" },
     { name: "Dashboard", range: "A1:W48" },
     { name: "Classification Definitions", range: "A1:E28" },
     { name: "Vehicle Daily", range: "A1:K30" },

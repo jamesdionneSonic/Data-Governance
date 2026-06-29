@@ -13,6 +13,7 @@ import {
 import path from 'path';
 import { deriveSemanticLineageGroups } from '../src/services/semanticLineageRuntimeGrouping.js';
 import { buildDatabaseCatalogAnswer } from '../src/services/lineageCatalogAnswerService.js';
+import { createDeltaScope, loadDeltaManifest } from '../engines/connectors/metadata-delta/index.js';
 
 const DEFAULT_SOURCE_REPO = '../Sonic-data-lineage';
 const DEFAULT_PACKAGE_ROOT = './data/lineage-runtime-package/sonic-data-lineage-runtime';
@@ -990,7 +991,8 @@ function addToMapList(map, key, row) {
   map.get(key).push(row);
 }
 
-async function buildRuntimeIndexes(packageRoot, previousState = {}) {
+async function buildRuntimeIndexes(packageRoot, previousState = {}, options = {}) {
+  const deltaScope = options.deltaScope || createDeltaScope(null);
   const rows = await readRegistryRows(packageRoot);
   const previousObjects = previousState.objects || {};
   const nextObjects = {};
@@ -1063,6 +1065,18 @@ async function buildRuntimeIndexes(packageRoot, previousState = {}) {
     };
     row.answer_cards = answerCards;
     row.compact_context_pack_path = `context-packs/objects/by-id/${objectHash}.json`;
+    if (deltaScope.active && deltaScope.includesObjectId(row.object_id)) {
+      for (const artifactPath of [
+        answerCards.summary,
+        answerCards.usage_count,
+        answerCards.upstream,
+        answerCards.downstream,
+        answerCards.profile_teaser,
+        row.compact_context_pack_path,
+      ]) {
+        deltaScope.recordTargetArtifact(row.object_id, 'runtime-package', artifactPath);
+      }
+    }
 
     const previousObject = previousObjects[row.object_id];
     const reusable =
@@ -2564,6 +2578,7 @@ async function main() {
   );
   const packageName = argValue('--name') || process.env.LINEAGE_RUNTIME_PACKAGE_NAME || DEFAULT_PACKAGE_NAME;
   const version = argValue('--version') || process.env.LINEAGE_RUNTIME_PACKAGE_VERSION || defaultVersion();
+  const deltaScope = createDeltaScope(await loadDeltaManifest(argValue('--delta-manifest')));
   const buildStatePath = path.resolve(
     process.cwd(),
     argValue('--state') || process.env.LINEAGE_RUNTIME_BUILD_STATE || defaultBuildStatePath(packageRoot)
@@ -2620,7 +2635,7 @@ async function main() {
     }
   }
 
-  const runtimeBuild = await buildRuntimeIndexes(packageRoot, canReusePackageRoot ? previousState : {});
+  const runtimeBuild = await buildRuntimeIndexes(packageRoot, canReusePackageRoot ? previousState : {}, { deltaScope });
   const profileIndexManifest = await buildProfileIndex(packageRoot, {
     runtimeRows: runtimeBuild.runtimeRows || [],
   });
@@ -2687,6 +2702,7 @@ async function main() {
       incremental_enabled: true,
       reused_previous_package_root: canReusePackageRoot,
       force_rebuild: forceRebuild,
+      delta_scope: deltaScope.summary(),
       build_state_path: normalizePath(buildStatePath),
       changed_source_file_count: copied.copiedFileCount,
       skipped_source_file_count: copied.skippedFileCount,
@@ -2782,6 +2798,8 @@ async function main() {
     payload: compactPayload,
     artifact_manifest: artifactManifest,
     profile_index_manifest: profileIndexManifest,
+    delta_scope: deltaScope.summary(),
+    delta_target_artifacts: deltaScope.manifest?.target_artifacts || [],
     runtime_content_hash: runtimeHash,
     content_hashes: contentHashes,
   };

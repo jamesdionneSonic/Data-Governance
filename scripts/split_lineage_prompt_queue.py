@@ -34,6 +34,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Split a combined lineage prompt file into one file per investigation.")
     parser.add_argument("--source", default=str(DEFAULT_SOURCE), help="Combined prompt file to split.")
     parser.add_argument("--queue-root", default=str(DEFAULT_QUEUE_ROOT), help="Root folder for queue files.")
+    parser.add_argument("--delta-manifest", required=True, help="Source metadata delta manifest. Required before prompt queue creation.")
     return parser.parse_args()
 
 
@@ -109,8 +110,23 @@ def write_summary(path: Path, items: Iterable[PromptItem]) -> None:
     path.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
 
 
+def changed_ids(delta_manifest_path: Path) -> List[str]:
+    manifest = json.loads(delta_manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("schema_version") != "1.0":
+      raise ValueError(f"Unsupported source metadata delta schema_version: {manifest.get('schema_version')}")
+    return [
+        str(item.get("canonical_id"))
+        for item in manifest.get("objects", [])
+        if item.get("status") in {"new", "changed"} and item.get("canonical_id")
+    ]
+
+
 def main() -> int:
     args = parse_args()
+    ids = changed_ids(Path(args.delta_manifest).resolve())
+    if not ids:
+        print("No new or changed objects in delta manifest. Prompt queue creation skipped.")
+        return 0
     source = Path(args.source).resolve()
     queue_root = Path(args.queue_root).resolve()
     pending_dir = queue_root / PENDING_DIR
@@ -128,7 +144,11 @@ def main() -> int:
         path.unlink(missing_ok=True)
 
     text = source.read_text(encoding="utf-8", errors="replace")
-    sections = chunk_sections(text)
+    sections = [
+        section
+        for section in chunk_sections(text)
+        if any(changed_id in section for changed_id in ids)
+    ]
 
     items: List[PromptItem] = []
     for index, section in enumerate(sections, start=1):

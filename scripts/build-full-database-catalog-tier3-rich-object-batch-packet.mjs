@@ -462,6 +462,7 @@ async function main() {
       status: failures.length === 0 ? 'passed' : 'failed',
       failures,
     },
+    delta_scope: tier2Packet.delta_scope || null,
   };
 
   await writeText(path.join(packetRoot, `${packetSlug}.json`), JSON.stringify(packet, null, 2));

@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "default_policy": "require_explicit_product_route",
+  "notes": [
+    "Current AWS metadata collected for the lineage pilot is MDP-specific.",
+    "Do not automatically place future AWS accounts, services, or connectors under MDP.",
+    "A future AWS connector must declare product_area, product_route_id, and human_catalog_root before product-specific Confluence, Rovo, or DevOps packaging."
+  ],
+  "routes": [
+    {
+      "route_id": "mdp-aws-lineage-context",
+      "product_area": "MDP",
+      "business_domain": "Marketing Data Platform",
+      "platform": "AWS",
+      "human_root_path": "Sonic Data Lineage / Data Product Catalog / MDP AWS Lineage Context",
+      "rovo_root_path": "Sonic Data Lineage / AI Retrieval Artifacts",
+      "devops_root_path": "reports/aws/mdp",
+      "ownership_boundary": {
+        "system_owner": "MDP team",
+        "data_team_role": "feed contributor and lineage consumer",
+        "ownership_note": "The data team feeds some data to this system but does not own the full MDP AWS estate."
+      },
+      "current_connector_ids": [
+        "aws-athena-northwest-motorsport-prod",
+        "aws-athena-sonic-dev-mdp",
+        "aws-athena-sonic-np-mdp",
+        "aws-athena-sonic-pp-mdp",
+        "aws-athena-sonic-prd-mdp",
+        "aws-athena-sonic-sandbox-mdp",
+        "aws-glue-northwest-motorsport-prod",
+        "aws-glue-sonic-dev-mdp",
+        "aws-glue-sonic-np-mdp",
+        "aws-glue-sonic-pp-mdp",
+        "aws-glue-sonic-prd-mdp",
+        "aws-glue-sonic-sandbox-mdp",
+        "aws-quicksight-northwest-motorsport-prod",
+        "aws-s3-northwest-motorsport-prod",
+        "aws-s3-sonic-dev-mdp",
+        "aws-s3-sonic-np-mdp",
+        "aws-s3-sonic-pp-mdp",
+        "aws-s3-sonic-prd-mdp",
+        "aws-s3-sonic-sandbox-mdp"
+      ],
+      "current_account_ids": [
+        "118570350539",
+        "120126178335",
+        "470660935268",
+        "477562029833",
+        "499876093606",
+        "730335615353"
+      ]
+    }
+  ]
+}

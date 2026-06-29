@@ -23,6 +23,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Stage prompt files for Codex one at a time and archive them after dispatch.")
     parser.add_argument("--queue-root", default=str(DEFAULT_QUEUE_ROOT), help="Queue root containing pending, working, and archive folders.")
     parser.add_argument("--max-items", type=int, default=DEFAULT_MAX_ITEMS, help="Maximum prompts to process in one run.")
+    parser.add_argument("--delta-manifest", required=True, help="Source metadata delta manifest. Required before any AI prompt is staged.")
     return parser.parse_args()
 
 
@@ -33,8 +34,23 @@ def load_manifest(queue_root: Path) -> List[dict]:
     return json.loads(manifest_path.read_text(encoding="utf-8"))
 
 
+def changed_ids(delta_manifest_path: Path) -> List[str]:
+    manifest = json.loads(delta_manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("schema_version") != "1.0":
+        raise ValueError(f"Unsupported source metadata delta schema_version: {manifest.get('schema_version')}")
+    return [
+        str(item.get("canonical_id"))
+        for item in manifest.get("objects", [])
+        if item.get("status") in {"new", "changed"} and item.get("canonical_id")
+    ]
+
+
 def main() -> int:
     args = parse_args()
+    ids = changed_ids(Path(args.delta_manifest).resolve())
+    if not ids:
+        print("No new or changed objects in delta manifest. AI prompt staging skipped.")
+        return 0
     queue_root = Path(args.queue_root).resolve()
     pending_dir = queue_root / PENDING_DIR
     working_dir = queue_root / WORKING_DIR
@@ -42,7 +58,11 @@ def main() -> int:
     working_dir.mkdir(parents=True, exist_ok=True)
     archive_dir.mkdir(parents=True, exist_ok=True)
 
-    pending_files = sorted(pending_dir.glob("*.txt"))[: max(args.max_items, 0)]
+    pending_files = [
+        path
+        for path in sorted(pending_dir.glob("*.txt"))
+        if any(changed_id in path.read_text(encoding="utf-8", errors="replace") for changed_id in ids)
+    ][: max(args.max_items, 0)]
     if not pending_files:
         print("No pending prompts found.")
         return 0

@@ -134,6 +134,9 @@ async function writeJson(file, value) {
 async function loadPilotPages() {
   if (packetPath) return loadPacketPlan(packetPath);
   const manifest = await readJson(path.join(publishOutputRoot, 'manifest.json'));
+  if (manifest.delta_scope?.active !== true) {
+    throw new Error('Human catalog publish requires a delta-scoped dry-run manifest.');
+  }
   if (!Array.isArray(manifest.pages)) throw new Error('Dry-run manifest does not include a pages array.');
   const pages = [];
   for (const entry of manifest.pages) {
@@ -156,6 +159,9 @@ async function loadPilotPages() {
 
 async function loadPacketPlan(file) {
   const packet = await readJson(file);
+  if (packet.delta_scope?.active !== true) {
+    throw new Error(`Publish packet is not delta-scoped: ${file}`);
+  }
   if (!Array.isArray(packet.planned_pages)) throw new Error(`Publish packet does not include planned_pages: ${file}`);
   const packetLabels = Array.isArray(packet.required_labels) && packet.required_labels.length > 0 ? packet.required_labels : defaultLabels;
   const pages = [];

@@ -3,9 +3,17 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import yaml from 'yaml';
 
+import { createDeltaScope, requireDeltaScopeForAi } from '../engines/connectors/metadata-delta/index.js';
+
+function valueAfter(flag) {
+  const index = process.argv.indexOf(flag);
+  return index >= 0 ? process.argv[index + 1] || '' : '';
+}
+
 const outputRoot = path.resolve('data/confluence/rovo-ai-retrieval-dry-run');
 const runtimePackageRoot = path.resolve('data/lineage-runtime-package/sonic-data-lineage-runtime');
 const runtimeRegistryPath = path.join(runtimePackageRoot, 'registry', 'canonical-objects.jsonl');
+const deltaManifestPath = valueAfter('--delta-manifest');
 const humanDryRunManifestPath = path.resolve('data/confluence/human-catalog-dry-run/manifest.json');
 const tier2PilotRefreshPacketPath = path.resolve(
   'docs/confluence-full-database-catalog-deployment/T2P-06-sonic-dw-dbo-pilot-refresh-packet.json'
@@ -76,14 +84,15 @@ async function readMarkdownMetadata(sourceMarkdownPath) {
   }
 }
 
-async function readRuntimeRows() {
+async function readRuntimeRows(deltaScope = createDeltaScope(null)) {
   const text = await fs.readFile(runtimeRegistryPath, 'utf8');
-  return text
+  const rows = text
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter(Boolean)
     .map((line) => JSON.parse(line))
     .filter((row) => !isHumanCatalogExcludedObject(row));
+  return deltaScope.filterRows(rows, (row) => row.object_id);
 }
 
 function humanCatalogObjectExclusionReason(row) {
@@ -323,8 +332,20 @@ function objectScore(row) {
   return Number(row.downstream_count || 0) * 10 + Number(row.upstream_count || 0) * 3 + Number(row.column_count || 0);
 }
 
-function selectTargetRows(rows) {
+function selectTargetRows(rows, deltaScope = createDeltaScope(null)) {
   const vendorRows = rows.filter((row) => String(row.database || '').toLowerCase() === 'vendordata');
+  if (deltaScope.active) {
+    const deltaDatabase = vendorRows.length ? 'VendorData' : rows[0]?.database || 'Delta Scope';
+    const deltaDatabaseRows = rows.filter((row) => String(row.database || '') === deltaDatabase);
+    return {
+      databaseName: deltaDatabase,
+      databaseRows: deltaDatabaseRows.length ? deltaDatabaseRows : rows,
+      vendorRows,
+      selectedRows: [...rows].sort(
+        (left, right) => objectScore(right) - objectScore(left) || String(left.object_id).localeCompare(String(right.object_id))
+      ),
+    };
+  }
   const topVendorRows = [...vendorRows]
     .sort((left, right) => objectScore(right) - objectScore(left) || String(left.object_id).localeCompare(String(right.object_id)))
     .slice(0, 60);
@@ -340,15 +361,16 @@ function selectTargetRows(rows) {
   });
   const byId = new Map();
   for (const row of [...requestedRows, ...topVendorRows]) byId.set(row.object_id, row);
-  return { vendorRows, selectedRows: [...byId.values()] };
+  return { databaseName: 'VendorData', databaseRows: vendorRows, vendorRows, selectedRows: [...byId.values()] };
 }
 
-function databaseContext(vendorRows, humanPages) {
-  const schemas = [...new Set(vendorRows.map((row) => row.schema).filter(Boolean))].sort();
-  const humanPage = databaseHumanPage('VendorData', 'SQL Server', humanPages);
+function databaseContext(databaseRows, humanPages, databaseName = 'VendorData') {
+  const schemas = [...new Set(databaseRows.map((row) => row.schema).filter(Boolean))].sort();
+  const platform = databaseRows[0]?.platform || databaseRows[0]?.source_platform || 'SQL Server';
+  const humanPage = databaseHumanPage(databaseName, platform, humanPages);
   const objectCounts = {};
-  for (const row of vendorRows) objectCounts[row.object_type || 'object'] = (objectCounts[row.object_type || 'object'] || 0) + 1;
-  const taggedObjects = [...vendorRows]
+  for (const row of databaseRows) objectCounts[row.object_type || 'object'] = (objectCounts[row.object_type || 'object'] || 0) + 1;
+  const taggedObjects = [...databaseRows]
     .sort((left, right) => objectScore(right) - objectScore(left))
     .slice(0, 20)
     .map((row) => ({
@@ -359,11 +381,11 @@ function databaseContext(vendorRows, humanPages) {
       confidence: row.confidence_label || 'not surfaced',
     }));
   const context = {
-    canonical_id: databaseCanonicalId('VendorData'),
-    database: 'VendorData',
-    aliases: databaseAliases('VendorData'),
+    canonical_id: databaseCanonicalId(databaseName),
+    database: databaseName,
+    aliases: databaseAliases(databaseName),
     plain_english_summary:
-      'VendorData is a cataloged database containing vendor and third-party feed objects. The exact business owner, SLA, lifecycle/status, live freshness, and certification are not surfaced in metadata.',
+      `${databaseName} is a cataloged database. The exact business owner, SLA, lifecycle/status, live freshness, and certification are not surfaced in metadata.`,
     schemas,
     object_counts: objectCounts,
     tagged_objects: taggedObjects,
@@ -709,8 +731,14 @@ Rovo should fail evaluation if it invents owners, SLAs, lifecycle/status, live f
 - Evidence hash: \`${packet.evidence_hash}\``;
 }
 
-function ensureAcceptance({ locatorRows, ambiguity, databaseRecord, summaryObjects, factLineage }) {
+function ensureAcceptance({ locatorRows, ambiguity, databaseRecord, summaryObjects, factLineage, deltaScope }) {
   const failures = [];
+  if (deltaScope?.active) {
+    if (!locatorRows.length && deltaScope.changed_object_ids.size > 0) {
+      failures.push('Delta-scoped Rovo dry run produced no locator rows for changed objects.');
+    }
+    return failures;
+  }
   const vendorLocator = locatorRows.find((row) => row.canonical_id === databaseCanonicalId('VendorData'));
   if (!vendorLocator) failures.push('VendorData database locator row is missing.');
   if (!summaryObjects.some((object) => normalizeLookup(object.object) === 'dimvehicle')) {
@@ -758,9 +786,10 @@ function ensureAcceptance({ locatorRows, ambiguity, databaseRecord, summaryObjec
 }
 
 async function main() {
-  const rows = await readRuntimeRows();
+  const deltaScope = await requireDeltaScopeForAi(deltaManifestPath, 'Rovo AI retrieval dry run');
+  const rows = await readRuntimeRows(deltaScope);
   const humanPages = await humanPagePathIndex();
-  const { vendorRows, selectedRows } = selectTargetRows(rows);
+  const { databaseName, databaseRows, selectedRows } = selectTargetRows(rows, deltaScope);
   const objectRecords = [];
   for (const row of selectedRows) {
     // eslint-disable-next-line no-await-in-loop
@@ -768,16 +797,16 @@ async function main() {
     objectRecords.push(objectSummary(row, metadata, humanPages));
   }
 
-  const databaseRecord = databaseContext(vendorRows, humanPages);
+  const databaseRecord = databaseContext(databaseRows, humanPages, databaseName);
   const schemaEntities = databaseRecord.schemas.map((schema) => ({
-    canonical_id: schemaCanonicalId('VendorData', schema),
+    canonical_id: schemaCanonicalId(databaseName, schema),
     type: 'schema',
-    database: 'VendorData',
+    database: databaseName,
     schema,
     object: 'not applicable',
-    aliases: schemaAliases('VendorData', schema),
+    aliases: schemaAliases(databaseName, schema),
     quick_context_page: 'Rovo Database Context 001',
-    ...schemaHumanPage('VendorData', schema, 'SQL Server', humanPages),
+    ...schemaHumanPage(databaseName, schema, databaseRows[0]?.platform || 'SQL Server', humanPages),
     confidence: 'high',
     evidence_hash: databaseRecord.evidence_hash,
   }));
@@ -813,15 +842,34 @@ async function main() {
   const evaluation = await readJson(evaluationPromptPath, { prompts: [] });
   const factRecord =
     objectRecords.find((record) => record.full_name === 'Sonic_DW.dbo.FactOpportunity') ||
-    objectRecords.find((record) => record.object === 'FactOpportunity');
-  const factLineage = lineageContext(factRecord);
-  const summaryObjects = objectRecords
-    .filter((record) =>
-      ['dimvehicle', 'dimvehicle', 'factopportunity', 'factopportunity'].includes(normalizeLookup(record.object))
-    )
+    objectRecords.find((record) => record.object === 'FactOpportunity') ||
+    objectRecords[0];
+  const factLineage = factRecord
+    ? lineageContext(factRecord)
+    : {
+        canonical_id: 'not applicable',
+        full_name: 'No changed object was available for lineage context',
+        upstream_sources: [],
+        upstream_loaders: [],
+        orchestrators: [],
+        downstream_consumers: [],
+        downstream_reports: [],
+        maintenance_reads: [],
+        relationship_confidence: 'not applicable',
+        caveats: ['Delta manifest did not match any runtime registry object.'],
+        canonical_human_page: 'not created yet',
+        canonical_human_page_status: 'pending',
+        canonical_human_page_source: 'not applicable',
+        source_artifact_paths: [],
+      };
+  const summaryObjects = (deltaScope.active
+    ? objectRecords
+    : objectRecords.filter((record) =>
+        ['dimvehicle', 'dimvehicle', 'factopportunity', 'factopportunity'].includes(normalizeLookup(record.object))
+      ))
     .map(({ metadata, ...record }) => record)
     .sort((left, right) => left.full_name.localeCompare(right.full_name));
-  const acceptanceFailures = ensureAcceptance({ locatorRows, ambiguity, databaseRecord, summaryObjects, factLineage });
+  const acceptanceFailures = ensureAcceptance({ locatorRows, ambiguity, databaseRecord, summaryObjects, factLineage, deltaScope });
 
   const artifactPages = [
     'Rovo Start Here',
@@ -840,6 +888,7 @@ async function main() {
     page_tree_path: [...rovoRootPath, 'Rovo Start Here'],
     generated_at: generatedAt,
     artifact_pages: artifactPages,
+    delta_scope: deltaScope.summary(),
   };
   startPacket.evidence_hash = `sha256:${hashJson(startPacket)}`;
   await writePage('rovo-start-here', startPacket, startHereMarkdown(startPacket));
@@ -915,12 +964,38 @@ async function main() {
   evaluationPacket.evidence_hash = `sha256:${hashJson(evaluationPacket)}`;
   await writePage('rovo-evaluation-prompts', evaluationPacket, evaluationPromptsMarkdown(evaluationPacket));
 
+  if (deltaScope.active) {
+    for (const record of objectRecords) {
+      for (const artifactPath of [
+        'data/confluence/rovo-ai-retrieval-dry-run/rovo-object-locator-001.md',
+        'data/confluence/rovo-ai-retrieval-dry-run/rovo-object-summary-context-001.md',
+        'data/confluence/rovo-ai-retrieval-dry-run/rovo-database-context-001.md',
+      ]) {
+        deltaScope.recordTargetArtifact(record.canonical_id, 'rovo', artifactPath);
+      }
+    }
+    if (factRecord?.canonical_id) {
+      deltaScope.recordTargetArtifact(
+        factRecord.canonical_id,
+        'rovo',
+        'data/confluence/rovo-ai-retrieval-dry-run/rovo-upstream-context-001.md'
+      );
+      deltaScope.recordTargetArtifact(
+        factRecord.canonical_id,
+        'rovo',
+        'data/confluence/rovo-ai-retrieval-dry-run/rovo-downstream-context-001.md'
+      );
+    }
+  }
+
   await fs.writeFile(
     path.join(outputRoot, 'manifest.json'),
     `${JSON.stringify(
       {
         generated_at: generatedAt,
         root: pagePath(rovoRootPath),
+        delta_scope: deltaScope.summary(),
+        delta_target_artifacts: deltaScope.manifest?.target_artifacts || [],
         pages,
         acceptance: {
           status: acceptanceFailures.length === 0 ? 'passed' : 'failed',

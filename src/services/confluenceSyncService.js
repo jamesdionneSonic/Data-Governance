@@ -713,6 +713,18 @@ export async function syncConfluenceExport(options = {}) {
     options.exportRoot || process.env.CONFLUENCE_EXPORT_PATH || DEFAULT_EXPORT_ROOT
   );
   const manifest = await loadManifest(exportRoot);
+  if (manifest.delta_scope?.active !== true) {
+    return {
+      mode: 'blocked',
+      status: 'blocked',
+      missing: [],
+      pages: [],
+      attachments: [],
+      warnings: [
+        'Confluence sync requires a delta-scoped export manifest. Rebuild export with --delta-manifest.',
+      ],
+    };
+  }
   const config = loadConfluenceSyncConfig(process.env, options.config || {});
   const dryRun = options.dryRun ?? config.dryRun ?? true;
   const validation = validateConfluenceSyncConfig(config, { requireCredentials: !dryRun });

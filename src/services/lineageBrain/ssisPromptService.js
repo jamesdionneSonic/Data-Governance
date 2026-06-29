@@ -14,6 +14,7 @@ import { isExpectedHighFanoutSSIS } from './anomalyRules.js';
 import { renderLineageMarkdownTemplate } from './markdownTemplateRenderer.js';
 import { writeCorrectedMarkdown } from './markdownCorrectionWriter.js';
 import { templateValuesFromRecord } from './provenance.js';
+import { requireDeltaScopeForAiSync } from '../../../engines/connectors/metadata-delta/index.js';
 
 function listMarkdownFiles(rootDir) {
   const files = [];
@@ -52,6 +53,9 @@ function buildSnippet(xmlText, packageName, hint) {
 
 export function generateSsisPrompts(outputFile = 'generated_llm_prompts.txt', options = {}) {
   const { writeCorrection = false, correctionOutputPath = null } = options;
+  const deltaScope =
+    options.deltaScope ||
+    requireDeltaScopeForAiSync(options.deltaManifestPath, 'SSIS lineage LLM prompt generation');
   const hardThreshold = DEFAULT_EDGE_HARD_THRESHOLD;
   const files = listMarkdownFiles(SSIS_CURATED_ROOT).filter((path) =>
     path.includes('ssis_packages')
@@ -80,18 +84,39 @@ export function generateSsisPrompts(outputFile = 'generated_llm_prompts.txt', op
     };
   });
 
-  const anomalies = records.filter(
+  const scopedRecords = records.filter((record) =>
+    deltaScope.includesAny([
+      record.markdownPath,
+      record.rawXmlPath,
+      record.packageName,
+      record.displayName,
+      record.metadata?.id,
+      record.metadata?.object_id,
+      record.metadata?.canonical_id,
+      record.metadata?.package_name,
+      record.metadata?.name,
+    ])
+  );
+  if (deltaScope.active && scopedRecords.length === 0) {
+    writeTextFile(
+      outputFile,
+      '=== SSIS ANOMALY DETECTOR REPORT ===\n[EMPTY] No changed SSIS records matched the delta manifest; AI prompt generation skipped.\n'
+    );
+    return { outputFile, baseline: null, anomaly: null, anomalies: [], correctionMarkdown: '' };
+  }
+
+  const anomalies = scopedRecords.filter(
     (record) =>
       record.edgeCount > hardThreshold &&
       !isExpectedHighFanoutSSIS(record, SSIS_HIGH_FANOUT_ALLOWLIST)
   );
   const baseline =
-    records.find((record) =>
+    scopedRecords.find((record) =>
       record.packageName.toLowerCase().includes('dimvehicle_dim_dimvehicle')
     ) ||
-    records.find((record) => record.packageName.toLowerCase().includes('dimvehicle')) ||
-    records[0];
-  const anomaly = anomalies.sort((a, b) => b.edgeCount - a.edgeCount)[0] || records[0];
+    scopedRecords.find((record) => record.packageName.toLowerCase().includes('dimvehicle')) ||
+    scopedRecords[0];
+  const anomaly = anomalies.sort((a, b) => b.edgeCount - a.edgeCount)[0] || scopedRecords[0];
 
   const baselineSnippet = baseline.rawXmlPath
     ? buildSnippet(readTextFile(baseline.rawXmlPath), baseline.packageName, baseline.displayName)

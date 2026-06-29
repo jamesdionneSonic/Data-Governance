@@ -59,6 +59,17 @@ Supported platform/product titles include `SQL Server` and `Snowflake`. The
 platform is derived from source metadata such as server, source system, or
 connector type; do not infer it from database-name suffixes such as `_SF`.
 
+AWS and other non-database assets should not be forced into this database-shaped
+tree unless a reviewed catalog design says otherwise. Current AWS metadata is
+MDP-specific and belongs under:
+
+```text
+Sonic Data Lineage / Data Product Catalog / MDP AWS Lineage Context
+```
+
+Rovo AWS lookup/context pages remain under `AI Retrieval Artifacts`, and DevOps
+AWS JSON/JSONL files remain the machine-readable record.
+
 Do not use generated schema page titles such as:
 
 ```text

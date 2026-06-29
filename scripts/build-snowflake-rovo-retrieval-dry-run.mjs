@@ -2,6 +2,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
 
+import { requireDeltaScopeForAi } from '../engines/connectors/metadata-delta/index.js';
+
 const outputRoot = path.resolve('data/confluence/snowflake-rovo-ai-retrieval-dry-run');
 const runtimeRegistryPath = path.resolve(
   'data/lineage-runtime-package/sonic-data-lineage-runtime/registry/canonical-objects.jsonl'
@@ -11,6 +13,7 @@ const snowflakeServer = 'snowflake-bipslyv-tlb12786';
 const rovoRootPath = ['Sonic Data Lineage', 'AI Retrieval Artifacts', 'Snowflake'];
 const generatedAt = new Date().toISOString();
 const pages = [];
+const deltaManifestPath = argValue('--delta-manifest');
 
 function argValue(name, fallback = '') {
   const prefix = `${name}=`;
@@ -65,16 +68,17 @@ async function readJson(file, fallback = null) {
   }
 }
 
-async function readRuntimeRows() {
+async function readRuntimeRows(deltaScope) {
   const targetDatabases = databaseFilter();
   const text = await fs.readFile(runtimeRegistryPath, 'utf8');
-  return text
+  const rows = text
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter(Boolean)
     .map((line) => JSON.parse(line))
     .filter((row) => row.server === snowflakeServer || row.source_system === snowflakeServer)
     .filter((row) => targetDatabases.size === 0 || targetDatabases.has(row.database));
+  return deltaScope.filterRows(rows, (row) => row.object_id);
 }
 
 async function humanPagePathIndex() {
@@ -289,9 +293,10 @@ function objectMarkdown(packet) {
 }
 
 async function main() {
+  const deltaScope = await requireDeltaScopeForAi(deltaManifestPath, 'Snowflake Rovo AI retrieval dry run');
   await fs.rm(outputRoot, { recursive: true, force: true });
   await fs.mkdir(outputRoot, { recursive: true });
-  const rows = await readRuntimeRows();
+  const rows = await readRuntimeRows(deltaScope);
   const humanPaths = await humanPagePathIndex();
   const databases = [...new Set(rows.map((row) => row.database))].sort();
   const databaseRecords = databaseContexts(rows, humanPaths);
@@ -347,9 +352,30 @@ async function main() {
   objectPacket.evidence_hash = `sha256:${hashJson(objectPacket)}`;
   await writePage('snowflake-rovo-object-summary-context', objectPacket, objectMarkdown(objectPacket));
 
+  for (const record of objectRecords) {
+    const sourceObjectId = String(record.canonical_id || '').replace(/^object:/, '');
+    for (const artifactPath of [
+      'data/confluence/snowflake-rovo-ai-retrieval-dry-run/snowflake-rovo-object-locator.md',
+      'data/confluence/snowflake-rovo-ai-retrieval-dry-run/snowflake-rovo-object-summary-context.md',
+      'data/confluence/snowflake-rovo-ai-retrieval-dry-run/snowflake-rovo-database-context.md',
+    ]) {
+      deltaScope.recordTargetArtifact(sourceObjectId, 'rovo', artifactPath);
+    }
+  }
+
   await fs.writeFile(
     path.join(outputRoot, 'manifest.json'),
-    `${JSON.stringify({ generated_at: generatedAt, root: pagePath(rovoRootPath), pages }, null, 2)}\n`,
+    `${JSON.stringify(
+      {
+        generated_at: generatedAt,
+        root: pagePath(rovoRootPath),
+        delta_scope: deltaScope.summary(),
+        delta_target_artifacts: deltaScope.manifest?.target_artifacts || [],
+        pages,
+      },
+      null,
+      2
+    )}\n`,
     'utf8'
   );
   console.log(
@@ -362,6 +388,7 @@ async function main() {
         databaseFilter: [...databaseFilter()],
         objects: rows.length,
         locatorRows: locator.length,
+        deltaScope: deltaScope.summary(),
       },
       null,
       2

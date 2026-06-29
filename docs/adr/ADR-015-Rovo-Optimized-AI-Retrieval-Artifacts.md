@@ -32,6 +32,12 @@ These questions require fast object/database resolution, aliases, concise
 summary facts, upstream/downstream lineage, column context, confidence, and
 links back to canonical human pages.
 
+As cloud metadata is added, Rovo must also resolve non-database assets such as
+AWS S3 buckets, Glue tables, Athena workgroups/tables/named queries, and
+QuickSight assets. These assets must keep their native canonical ids and must
+not be described as SQL objects unless the metadata actually represents a SQL
+or table abstraction.
+
 Atlassian Rovo guidance supports this direction:
 
 - Rovo agents can use scoped knowledge sources.
@@ -68,6 +74,12 @@ Sonic Data Lineage
 
 Do not make these pages the primary human navigation path. Human users should
 start with `Data Product Catalog` or `Database Catalog`.
+
+Rovo artifact generation must follow ADR-028. Rovo pages are downstream
+retrieval surfaces, not the baseline for determining metadata change. Routine
+refreshes must update only the locator/context shards, ambiguity groups,
+profile/lineage contexts, and evaluation prompts impacted by the delta manifest.
+Whole-artifact regeneration requires a scoped full-refresh packet.
 
 ## Required Answer Capabilities
 
@@ -123,18 +135,18 @@ Rovo pages should be table-first and compact.
 
 Object locator rows should include:
 
-| Field                  | Purpose                                                                 |
-| ---------------------- | ----------------------------------------------------------------------- |
-| `lookup_key`           | Name or alias Rovo is likely to search.                                 |
-| `canonical_id`         | Stable object or database id.                                           |
-| `type`                 | Database, schema, table, view, procedure, report, package, or pipeline. |
-| `database`             | Database name when applicable.                                          |
-| `schema`               | Schema name when applicable.                                            |
-| `object`               | Object name when applicable.                                            |
-| `aliases`              | Deterministic and surfaced aliases.                                     |
-| `quick_context_page`   | Best first page for Rovo to read.                                       |
-| `canonical_human_page` | Human page to cite or send the user to.                                 |
-| `confidence`           | Retrieval confidence and caveat.                                        |
+| Field                  | Purpose                                                                              |
+| ---------------------- | ------------------------------------------------------------------------------------ |
+| `lookup_key`           | Name or alias Rovo is likely to search.                                              |
+| `canonical_id`         | Stable object or database id.                                                        |
+| `type`                 | Database, schema, table, view, procedure, report, package, pipeline, or cloud asset. |
+| `database`             | Database name when applicable.                                                       |
+| `schema`               | Schema name when applicable.                                                         |
+| `object`               | Object name when applicable.                                                         |
+| `aliases`              | Deterministic and surfaced aliases.                                                  |
+| `quick_context_page`   | Best first page for Rovo to read.                                                    |
+| `canonical_human_page` | Human page to cite or send the user to.                                              |
+| `confidence`           | Retrieval confidence and caveat.                                                     |
 
 Quick-context pages should be smaller than the old broad shard pattern. Start
 with about 50 objects per quick-context page and validate with Rovo evaluation
@@ -180,6 +192,10 @@ Use bounded LLM generation only for:
 - support impact wording;
 - readable lineage explanation from already-classified relationships.
 
+LLM generation is allowed only for new or changed Rovo evidence records or
+directly impacted retrieval pages. Do not run the LLM over the full Rovo corpus
+when the source metadata delta is smaller.
+
 The LLM must not:
 
 - decide lineage;
@@ -218,10 +234,14 @@ Allowed:
 - add Rovo evaluation prompt files;
 - tune quick-context page size with local dry-run output;
 - update validators for size, required columns, ambiguity handling, and safety.
+- update Rovo shards for the objects and index rows named in a reviewed delta
+  manifest.
 
 Not allowed without stronger review or explicit approval:
 
 - broad live Confluence publish;
+- full Rovo retrieval corpus regeneration when only a source metadata delta is
+  available;
 - changing ingestion/parser/scoring behavior;
 - unrestricted LLM summarization;
 - publishing raw source rows, samples, secrets, or credentials;
@@ -238,6 +258,8 @@ Not allowed without stronger review or explicit approval:
 - The catalog remains honest about facts not surfaced in metadata.
 - Rovo quality becomes measurable through evaluation prompts instead of judged
   only by ad hoc conversation.
+- Rovo publication scope becomes explainable because every changed retrieval
+  artifact can point back to the source metadata delta that required it.
 
 ## Related Documents
 
@@ -248,6 +270,8 @@ Not allowed without stronger review or explicit approval:
 - `docs/adr/ADR-013-Complete-Database-Catalog-And-Object-Library-Pages.md`
 - `docs/adr/ADR-014-Canonical-Object-Catalog-Trust-Signals-And-Medium-Backlog.md`
 - `docs/adr/ADR-016-Full-Database-Catalog-Deployment-And-Cleanup.md`
+- `docs/adr/ADR-028-Delta-First-Metadata-Processing-And-Publication.md`
+- `docs/adr/ADR-029-AWS-And-Non-Database-Lineage-Ingestion.md`
 - `docs/CONFLUENCE_LINEAGE_REPOSITORY.md`
 - `docs/CONFLUENCE_DATABASE_CATALOG_LAYOUT.md`
 - `docs/DATABASE_CATALOG_FULL_DEPLOYMENT_WORK_PACKETS.md`
