@@ -53,6 +53,8 @@
     "adf:support:generate:multi-factory": "node scripts/generate-adf-multi-factory-support-pages.mjs",
     "adf:support:dry-run": "node scripts/publish-adf-support-docs.mjs",
     "adf:support:publish": "node scripts/publish-adf-support-docs.mjs --publish",
+    "adf:support:dry-run:multi-factory": "node scripts/publish-adf-multi-factory-support-docs.mjs",
+    "adf:support:publish:multi-factory": "node scripts/publish-adf-multi-factory-support-docs.mjs --publish",
     "adf:metadata-profile:batch": "node scripts/run-adf-metadata-profile-batch.mjs",
     "adf:lineage-edge-review": "node scripts/build-adf-lineage-edge-review.mjs",
     "adf:multi-factory:status": "node scripts/build-adf-multi-factory-status-readback.mjs",
