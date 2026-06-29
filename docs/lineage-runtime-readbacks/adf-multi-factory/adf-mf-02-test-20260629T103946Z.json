@@ -1,0 +1,47 @@
+{
+  "status": "succeeded",
+  "generated_at": "2026-06-29T10:39:46.848Z",
+  "started_at": "2026-06-29T10:39:46.839Z",
+  "mode": "test",
+  "connector_count": 2,
+  "success_count": 2,
+  "failure_count": 0,
+  "raw_data_captured": false,
+  "secret_exposed": false,
+  "lookback_days": 7,
+  "connectors": ["azure-data-factory-adf-ganalytics-d1", "azure-data-factory-adf-elead-d1"],
+  "results": [
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "run_id": "connector-test-61e7bb96-e71",
+      "status": "succeeded",
+      "mode": "connection_test",
+      "started_at": "2026-06-29T10:39:46.844Z",
+      "completed_at": "2026-06-29T10:39:46.845Z",
+      "credential_mode": "azure_cli",
+      "live_connection_valid": true,
+      "metadata_discovery_valid": true,
+      "phase": "connection_validation",
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "run_id": "connector-test-e423004d-721",
+      "status": "succeeded",
+      "mode": "connection_test",
+      "started_at": "2026-06-29T10:39:46.847Z",
+      "completed_at": "2026-06-29T10:39:46.847Z",
+      "credential_mode": "azure_cli",
+      "live_connection_valid": true,
+      "metadata_discovery_valid": true,
+      "phase": "connection_validation",
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "errors": [],
+      "warnings": []
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "status": "succeeded",
+  "generated_at": "2026-06-29T10:46:40.589Z",
+  "started_at": "2026-06-29T10:46:40.585Z",
+  "mode": "plan",
+  "connector_count": 1,
+  "success_count": 1,
+  "failure_count": 0,
+  "raw_data_captured": false,
+  "secret_exposed": false,
+  "lookback_days": 7,
+  "connectors": ["azure-data-factory-adf-pricefx-d1"],
+  "results": [
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "status": "planned",
+      "requires_live_call": false,
+      "stream_count": 14,
+      "streams": [
+        {
+          "stream": "factory",
+          "canonical_type": "metadata.object",
+          "method": "GET",
+          "expected_metadata": ["factory identity", "location", "tags", "repo configuration"]
+        },
+        {
+          "stream": "pipelines",
+          "canonical_type": "metadata.object",
+          "method": "GET",
+          "expected_metadata": ["pipelines", "parameters", "activities"]
+        },
+        {
+          "stream": "tasks",
+          "canonical_type": "metadata.object",
+          "method": "GET",
+          "expected_metadata": ["activities", "dependencies", "input/output dataset references"]
+        },
+        {
+          "stream": "datasets",
+          "canonical_type": "metadata.dataset",
+          "method": "GET",
+          "expected_metadata": ["datasets"]
+        },
+        {
+          "stream": "connections",
+          "canonical_type": "metadata.data_source",
+          "method": "GET",
+          "expected_metadata": ["linked services"]
+        },
+        {
+          "stream": "schedules",
+          "canonical_type": "metadata.object",
+          "method": "GET",
+          "expected_metadata": ["triggers"]
+        },
+        {
+          "stream": "dataflows",
+          "canonical_type": "metadata.object",
+          "method": "GET",
+          "expected_metadata": ["mapping data flows", "sources", "sinks", "script"]
+        },
+        {
+          "stream": "integration_runtimes",
+          "canonical_type": "metadata.object",
+          "method": "GET",
+          "expected_metadata": ["integration runtimes", "compute/connectivity runtime"]
+        },
+        {
+          "stream": "managed_virtual_networks",
+          "canonical_type": "metadata.object",
+          "method": "GET",
+          "expected_metadata": ["managed virtual networks"]
+        },
+        {
+          "stream": "managed_private_endpoints",
+          "canonical_type": "metadata.data_source",
+          "method": "GET",
+          "expected_metadata": ["private endpoints", "private link targets", "connection state"]
+        },
+        {
+          "stream": "pipeline_runs",
+          "canonical_type": "usage.event",
+          "method": "POST",
+          "expected_metadata": ["bounded run history", "status", "duration", "run group"]
+        },
+        {
+          "stream": "trigger_runs",
+          "canonical_type": "usage.event",
+          "method": "POST",
+          "expected_metadata": ["bounded trigger run history", "status"]
+        },
+        {
+          "stream": "activity_runs",
+          "canonical_type": "usage.event",
+          "method": "POST",
+          "expected_metadata": [
+            "bounded activity run history",
+            "status",
+            "duration",
+            "error/output summary"
+          ]
+        },
+        {
+          "stream": "lineage",
+          "canonical_type": "lineage.edge",
+          "method": "GET",
+          "expected_metadata": [
+            "pipeline lineage",
+            "activity dependencies",
+            "dataset links",
+            "dataflow links"
+          ]
+        }
+      ],
+      "safety": {
+        "raw_values_retained": false,
+        "credentials_returned": false,
+        "metadata_only": true,
+        "unsupported_next_pass": []
+      }
+    }
+  ]
+}

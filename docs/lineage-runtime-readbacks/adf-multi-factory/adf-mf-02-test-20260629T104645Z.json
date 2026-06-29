@@ -1,0 +1,31 @@
+{
+  "status": "succeeded",
+  "generated_at": "2026-06-29T10:46:45.980Z",
+  "started_at": "2026-06-29T10:46:45.973Z",
+  "mode": "test",
+  "connector_count": 1,
+  "success_count": 1,
+  "failure_count": 0,
+  "raw_data_captured": false,
+  "secret_exposed": false,
+  "lookback_days": 7,
+  "connectors": ["azure-data-factory-adf-pricefx-d1"],
+  "results": [
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "run_id": "connector-test-282216d3-492",
+      "status": "succeeded",
+      "mode": "connection_test",
+      "started_at": "2026-06-29T10:46:45.978Z",
+      "completed_at": "2026-06-29T10:46:45.979Z",
+      "credential_mode": "azure_cli",
+      "live_connection_valid": true,
+      "metadata_discovery_valid": true,
+      "phase": "connection_validation",
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "errors": [],
+      "warnings": []
+    }
+  ]
+}

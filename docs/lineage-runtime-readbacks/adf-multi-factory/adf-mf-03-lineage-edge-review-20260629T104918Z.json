@@ -1,0 +1,195 @@
+{
+  "status": "complete",
+  "generated_at": "2026-06-29T10:49:18.412Z",
+  "source_readback": "C:\\projects\\Data Governence\\docs\\lineage-runtime-readbacks\\adf-multi-factory\\adf-mf-02-run-20260629T104911Z.json",
+  "summary": {
+    "connector_count": 1,
+    "accepted_count": 1,
+    "review_needed_count": 0,
+    "blocked_count": 0,
+    "pipeline_count": 98,
+    "task_count": 699,
+    "dataset_count": 64,
+    "connection_count": 19,
+    "schedule_count": 17,
+    "lineage_edge_count": 1767
+  },
+  "connectors": [
+    {
+      "connector_id": "azure-data-factory-adf-pricefx-d1",
+      "run_id": "ea190808-2542-4272-b648-bcc818870f5e",
+      "status": "succeeded",
+      "pipeline_count": 98,
+      "task_count": 699,
+      "dataset_count": 64,
+      "connection_count": 19,
+      "schedule_count": 17,
+      "lineage_edge_count": 1767,
+      "inventory_by_role": {
+        "object": 7,
+        "dataset": 64,
+        "connection": 19,
+        "pipeline": 98,
+        "task": 699,
+        "schedule": 17
+      },
+      "lineage_by_type": {
+        "lineage_edge": 1767
+      },
+      "lineage_edges_sample": [
+        {
+          "from": "linkedService:LS_SQL_D1DASQL",
+          "to": "dataset:DS_SQL_DAGroup",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_Vehiclemart",
+          "to": "dataset:DS_SQL_vehiclemart",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_SSIS",
+          "to": "dataset:DS_SQL_SSIS",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SFTP_US_EAST_1",
+          "to": "dataset:DS_SFTP_US_EAST_1",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ProcessManagement",
+          "to": "dataset:ds_child_process_params",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_eLeadDW",
+          "to": "dataset:DS_SQL_EleadDW",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_PriceFX",
+          "to": "dataset:ds_pricefx_eleadvehicle",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_PriceFX",
+          "to": "dataset:ds_pricefx_eleadappointmentactivities",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_PriceFX",
+          "to": "dataset:ds_pricefx_eleadopportunity",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ProcessManagement",
+          "to": "dataset:ds_Master_Process_Params",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_PriceFX",
+          "to": "dataset:ds_pricefx_salestransactions",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_PriceFX",
+          "to": "dataset:ds_pricefx_listingsmaster",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_PriceFX",
+          "to": "dataset:ds_pricefx_marketdetails",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_PriceFX",
+          "to": "dataset:ds_pricefx_listingsinventory",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_PriceFX",
+          "to": "dataset:RECON_PriceFxDB",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_SIMS6200_EP",
+          "to": "dataset:DS_SQL_SIMS_EP",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_SIMS6200_EP",
+          "to": "dataset:EPSIMS",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_Sonic_DW",
+          "to": "dataset:DIMSQL",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_D1DASQL",
+          "to": "dataset:RECON",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_PriceFX",
+          "to": "dataset:DS_pricefx_tmp_vehicledetails_dagroup",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_PriceFX",
+          "to": "dataset:ds_pricefx_CarGurus",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_PriceFX",
+          "to": "dataset:EPSIMS_PriceFxDB",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_PriceFX",
+          "to": "dataset:DS_pricefx_tmp_vehciledetails_sims",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_PriceFX",
+          "to": "dataset:DS_pricefx_vehicledetails",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_PriceFX",
+          "to": "dataset:DS_pricefx_tmp_vehicledetails_eppricing",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        }
+      ],
+      "review_status": "accepted",
+      "review_reason": "Deterministic lineage edges were surfaced by the connector profile."
+    }
+  ]
+}

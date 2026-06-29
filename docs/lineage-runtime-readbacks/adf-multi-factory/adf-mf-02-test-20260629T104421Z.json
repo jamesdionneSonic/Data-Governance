@@ -1,0 +1,31 @@
+{
+  "status": "succeeded",
+  "generated_at": "2026-06-29T10:44:21.196Z",
+  "started_at": "2026-06-29T10:44:21.189Z",
+  "mode": "test",
+  "connector_count": 1,
+  "success_count": 1,
+  "failure_count": 0,
+  "raw_data_captured": false,
+  "secret_exposed": false,
+  "lookback_days": 7,
+  "connectors": ["azure-data-factory-adf-inbounddataetl-prod"],
+  "results": [
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "run_id": "connector-test-6feb19ac-ca9",
+      "status": "succeeded",
+      "mode": "connection_test",
+      "started_at": "2026-06-29T10:44:21.194Z",
+      "completed_at": "2026-06-29T10:44:21.195Z",
+      "credential_mode": "azure_cli",
+      "live_connection_valid": true,
+      "metadata_discovery_valid": true,
+      "phase": "connection_validation",
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "errors": [],
+      "warnings": []
+    }
+  ]
+}

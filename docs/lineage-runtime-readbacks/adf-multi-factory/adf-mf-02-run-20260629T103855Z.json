@@ -1,0 +1,574 @@
+{
+  "status": "succeeded",
+  "generated_at": "2026-06-29T10:38:55.361Z",
+  "started_at": "2026-06-29T10:33:09.799Z",
+  "mode": "run",
+  "connector_count": 3,
+  "success_count": 3,
+  "failure_count": 0,
+  "raw_data_captured": false,
+  "secret_exposed": false,
+  "lookback_days": 7,
+  "connectors": [
+    "azure-data-factory-adf-facebookads-d1",
+    "azure-data-factory-adf-reconpro-d1",
+    "azure-data-factory-adf-mci-d1"
+  ],
+  "results": [
+    {
+      "connector_id": "azure-data-factory-adf-facebookads-d1",
+      "run_id": "594847ac-c07a-4c43-9ce6-d0688eb80812",
+      "status": "succeeded",
+      "mode": "connector_metadata_profile",
+      "started_at": "2026-06-29T10:33:09.803Z",
+      "completed_at": "2026-06-29T10:33:50.098Z",
+      "artifact_path": null,
+      "inventory_count": 199,
+      "pipeline_count": 13,
+      "task_count": 99,
+      "dataset_count": 11,
+      "connection_count": 10,
+      "schedule_count": 4,
+      "lineage_edge_count": 349,
+      "warning_count": 0,
+      "error_count": 0,
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "inventory_by_role": {
+        "object": 62,
+        "dataset": 11,
+        "connection": 10,
+        "pipeline": 13,
+        "task": 99,
+        "schedule": 4
+      },
+      "lineage_by_type": {
+        "lineage_edge": 349
+      },
+      "lineage_edges_sample": [
+        {
+          "from": "linkedService:LS_ABLB_InboundSocialMedia",
+          "to": "dataset:DS_ABLB_FBAds_Files_Archive",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ABLB_InboundSocialMedia",
+          "to": "dataset:DS_ABLB_FBAds_Files",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ABLB_InboundSocialMedia",
+          "to": "dataset:DS_ABLB_FBAds_Files_Src",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_SSIS_02",
+          "to": "dataset:DS_SQL_FB_SM_SSIS_ProcessedFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_ETL_Staging",
+          "to": "dataset:DS_SQL_FBAds_ETLStaging",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_VendorData",
+          "to": "dataset:DS_SQL_FBAds_VendorData",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_Sonic_DW",
+          "to": "dataset:DS_SQL_FBAds_SonicDW",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_StagingDb",
+          "to": "dataset:DS_SQL_FBAds_Staging",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ABLB_InboundSocialMedia",
+          "to": "dataset:DS_ABLB_FBAdsOfflineMetrices_Files_Archive",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ABLB_InboundSocialMedia",
+          "to": "dataset:DS_ABLB_FBAdsOfflineMetrices_Files_Src",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ABLB_InboundSocialMedia",
+          "to": "dataset:DS_ABLB_FBAdsOfflineMetrices_Files",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_FBAds_Load_Phase2MonthlyData",
+          "to": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_COPY_SourceToStagingMonthly",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "dataset:DS_SQL_FBAds_VendorData",
+          "to": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_COPY_SourceToStagingMonthly",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_COPY_SourceToStagingMonthly",
+          "to": "dataset:DS_SQL_FBAds_ETLStaging",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_LKP_MaxMetaLoaddateMonthly",
+          "to": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_COPY_SourceToStagingMonthly",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_FBAds_Load_Phase2MonthlyData",
+          "to": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_SP_LoadDimEntityRelationship",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_COPY_SourceToStagingMonthly",
+          "to": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_SP_LoadDimEntityRelationship",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_FBAds_Load_Phase2MonthlyData",
+          "to": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_SP_LoadDimFBCampaign",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_COPY_SourceToStagingMonthly",
+          "to": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_SP_LoadDimFBCampaign",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_FBAds_Load_Phase2MonthlyData",
+          "to": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_SP_LoadFactFBCampaignMonthly",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_SP_LoadDimEntityRelationship",
+          "to": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_SP_LoadFactFBCampaignMonthly",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_SP_LoadDimFBCampaign",
+          "to": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_SP_LoadFactFBCampaignMonthly",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_FBAds_Load_Phase2MonthlyData",
+          "to": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_SP_InsertAuditDetailsMonthly",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_SP_LoadFactFBCampaignMonthly",
+          "to": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_SP_InsertAuditDetailsMonthly",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_FBAds_Load_Phase2MonthlyData",
+          "to": "activity:PL_FBAds_Load_Phase2MonthlyData/ACT_LKP_MaxMetaLoaddateMonthly",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        }
+      ],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "connector_id": "azure-data-factory-adf-reconpro-d1",
+      "run_id": "99482e31-df3e-4e9d-a5f0-9226a03807f7",
+      "status": "succeeded",
+      "mode": "connector_metadata_profile",
+      "started_at": "2026-06-29T10:33:50.219Z",
+      "completed_at": "2026-06-29T10:36:22.878Z",
+      "artifact_path": null,
+      "inventory_count": 293,
+      "pipeline_count": 26,
+      "task_count": 149,
+      "dataset_count": 46,
+      "connection_count": 8,
+      "schedule_count": 3,
+      "lineage_edge_count": 525,
+      "warning_count": 0,
+      "error_count": 0,
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "inventory_by_role": {
+        "object": 61,
+        "dataset": 46,
+        "connection": 8,
+        "pipeline": 26,
+        "task": 149,
+        "schedule": 3
+      },
+      "lineage_by_type": {
+        "lineage_edge": 525
+      },
+      "lineage_edges_sample": [
+        {
+          "from": "linkedService:LS_ABLB_ReconPro",
+          "to": "dataset:DS_BLB_DeleteFile",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ABLB_ReconPro",
+          "to": "dataset:DS_ABLB_ReconPro_Files_Archive",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ABLB_ReconPro",
+          "to": "dataset:DS_ABLB_ReconPro_Files_Lookup_Src",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ABLB_ReconPro",
+          "to": "dataset:DS_ABLB_ReconPro_Files_Src",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_StageStagingDbSQL",
+          "to": "dataset:DS_SQL_StageStagingDB",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_StageVendorDataSQL",
+          "to": "dataset:DS_SQL_StageVendordata",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_SourceStageVendordataSQL",
+          "to": "dataset:DS_SQL_SourceStageVendordata",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_MetaSsisSQL",
+          "to": "dataset:DS_SQL_MetaSsis",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_SourceMetaSsisSQL",
+          "to": "dataset:DS_SQL_SourceMetaSsis",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_MetaMsdbSQL",
+          "to": "dataset:DS_SQL_MetaMsdb",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_StageStagingDbSQL",
+          "to": "dataset:DS_SQL_StageStagingDB52",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_StageVendorDataSQL",
+          "to": "dataset:DS_SQL_StageVendordata53",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ABLB_ReconPro",
+          "to": "dataset:DS_ABLB_ReconPro_Files_Lookup_Src5",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ABLB_ReconPro",
+          "to": "dataset:DS_ABLB_ReconPro_Files_Archive5",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_MetaSsisSQL",
+          "to": "dataset:DS_SQL_MetaSsis51",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_StageVendorDataSQL",
+          "to": "dataset:DS_SQL_StageVendordata51",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_StageStagingDbSQL",
+          "to": "dataset:DS_SQL_StageStagingDB5",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_MetaSsisSQL",
+          "to": "dataset:DS_SQL_MetaSsis53",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_StageVendorDataSQL",
+          "to": "dataset:DS_SQL_StageVendordata52",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ABLB_ReconPro",
+          "to": "dataset:DS_ABLB_ReconPro_Files_Archive52",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_MetaSsisSQL",
+          "to": "dataset:DS_SQL_MetaSsis5",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ABLB_ReconPro",
+          "to": "dataset:DS_ABLB_ReconPro_Files_Lookup_Src53",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_StageStagingDbSQL",
+          "to": "dataset:DS_SQL_StageStagingDB53",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ABLB_ReconPro",
+          "to": "dataset:DS_ABLB_ReconPro_Files_Lookup_Src52",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_MetaSsisSQL",
+          "to": "dataset:DS_SQL_MetaSsis52",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        }
+      ],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "connector_id": "azure-data-factory-adf-mci-d1",
+      "run_id": "34f3170a-d1ea-4186-b53f-3f09641fbeae",
+      "status": "succeeded",
+      "mode": "connector_metadata_profile",
+      "started_at": "2026-06-29T10:36:23.336Z",
+      "completed_at": "2026-06-29T10:38:55.091Z",
+      "artifact_path": null,
+      "inventory_count": 250,
+      "pipeline_count": 18,
+      "task_count": 175,
+      "dataset_count": 22,
+      "connection_count": 15,
+      "schedule_count": 4,
+      "lineage_edge_count": 398,
+      "warning_count": 0,
+      "error_count": 0,
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "inventory_by_role": {
+        "object": 16,
+        "dataset": 22,
+        "connection": 15,
+        "pipeline": 18,
+        "task": 175,
+        "schedule": 4
+      },
+      "lineage_by_type": {
+        "lineage_edge": 398
+      },
+      "lineage_edges_sample": [
+        {
+          "from": "linkedService:LS_SFTP_EPLeadSale",
+          "to": "dataset:DS_SFTP_EPLeadSale",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SFPT_EPCallsource",
+          "to": "dataset:DS_SFTP_EPCallsource",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_SonicDW",
+          "to": "dataset:DS_SQL_EPLeadSale",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_SSIS",
+          "to": "dataset:DS_SQL_SSIS_Meta",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_VendorData",
+          "to": "dataset:DS_SQL_EPCallSource",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_SSIS01",
+          "to": "dataset:DS_SQL_SSIS01_Meta",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_MSDB",
+          "to": "dataset:DS_SQL_MSDB",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SFTP_Test",
+          "to": "dataset:DS_SFTP_CarGurus_copy1",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SFTP_MCIAquisition",
+          "to": "dataset:DS_SFTP_MCIAquisition",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SFTP_CarGurus",
+          "to": "dataset:DS_SFTP_CarGurus",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_VendorData",
+          "to": "dataset:DS_SQL_MCICarGurus",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_EPSIMS6200",
+          "to": "dataset:DS_MCI_Acquisition",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_MSDB",
+          "to": "dataset:DS_SQL_MSDB1",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_SonicDW",
+          "to": "dataset:DS_SQL_EPLeadSale1",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:ABS_adlsdwsadev",
+          "to": "dataset:DS_ADL_NWMSTrafficLeadSale_csv",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_SSIS",
+          "to": "dataset:DS_SQL_SSIS_Meta1",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SFTP_NWMSTrafficLeadSale",
+          "to": "dataset:DS_SFTP_NWMSTrafficLeadSale",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:ABS_adlsdwsadev",
+          "to": "dataset:DS_ADL_EPTrafficLeadSale_csv",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_SonicDW",
+          "to": "dataset:DS_SQL_EPLeadSale2",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SFTP_EPTrafficLeadSale",
+          "to": "dataset:DS_SFTP_EPTrafficLeadSale",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_SSIS",
+          "to": "dataset:DS_SQL_SSIS_Meta2",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_MSDB",
+          "to": "dataset:DS_SQL_MSDB2",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_MCI_EPLeadSale",
+          "to": "activity:PL_MCI_EPLeadSale/SET EPLeadSale Count",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_MCI_EPLeadSale/Load EPLeadSaleFile_SQL To SFTP",
+          "to": "activity:PL_MCI_EPLeadSale/SET EPLeadSale Count",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_MCI_EPLeadSale",
+          "to": "activity:PL_MCI_EPLeadSale/SP_InsertAuditLog",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        }
+      ],
+      "errors": [],
+      "warnings": []
+    }
+  ]
+}

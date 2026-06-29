@@ -1,0 +1,195 @@
+{
+  "status": "complete",
+  "generated_at": "2026-06-29T10:16:44.278Z",
+  "source_readback": "C:\\projects\\Data Governence\\docs\\lineage-runtime-readbacks\\adf-multi-factory\\adf-mf-02-run-20260629T101634Z.json",
+  "summary": {
+    "connector_count": 1,
+    "accepted_count": 1,
+    "review_needed_count": 0,
+    "blocked_count": 0,
+    "pipeline_count": 12,
+    "task_count": 44,
+    "dataset_count": 7,
+    "connection_count": 13,
+    "schedule_count": 2,
+    "lineage_edge_count": 225
+  },
+  "connectors": [
+    {
+      "connector_id": "azure-data-factory-adf-reputationmgmt-d1",
+      "run_id": "e6bc6e30-cbf6-451f-bf23-2f2942845302",
+      "status": "succeeded",
+      "pipeline_count": 12,
+      "task_count": 44,
+      "dataset_count": 7,
+      "connection_count": 13,
+      "schedule_count": 2,
+      "lineage_edge_count": 225,
+      "inventory_by_role": {
+        "object": 51,
+        "dataset": 7,
+        "connection": 13,
+        "pipeline": 12,
+        "task": 44,
+        "schedule": 2
+      },
+      "lineage_by_type": {
+        "lineage_edge": 225
+      },
+      "lineage_edges_sample": [
+        {
+          "from": "linkedService:LS_ABLB_InboundSocialMedia",
+          "to": "dataset:DS_ABLB_RM_Files",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ABLB_InboundSocialMedia",
+          "to": "dataset:DS_ABLB_RM_Files_Src",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_SSIS_02",
+          "to": "dataset:DS_SQL_RM_SSIS_ProcessedFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_VendorData",
+          "to": "dataset:DS_SQL_RM_VendorData",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_Sonic_DW",
+          "to": "dataset:DS_SQL_RM_SonicDW",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_ETL_Staging",
+          "to": "dataset:DS_SQL_RM_ETLStaging",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_StagingDb",
+          "to": "dataset:DS_SQL_RM_Staging",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:RepMgmt_InsertFileLogs",
+          "to": "activity:RepMgmt_InsertFileLogs/FilterFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:RepMgmt_InsertFileLogs/GetTodayFiles",
+          "to": "activity:RepMgmt_InsertFileLogs/FilterFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:RepMgmt_InsertFileLogs",
+          "to": "activity:RepMgmt_InsertFileLogs/LogAvailableFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:RepMgmt_InsertFileLogs/FilterFiles",
+          "to": "activity:RepMgmt_InsertFileLogs/LogAvailableFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:RepMgmt_InsertFileLogs",
+          "to": "activity:RepMgmt_InsertFileLogs/InsertLogDetails",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:RepMgmt_InsertFileLogs",
+          "to": "activity:RepMgmt_InsertFileLogs/ArchiveDeleteOldFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:RepMgmt_InsertFileLogs",
+          "to": "activity:RepMgmt_InsertFileLogs/ArchiveOldFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "dataset:DS_ABLB_RM_Files",
+          "to": "activity:RepMgmt_InsertFileLogs/ArchiveOldFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:RepMgmt_InsertFileLogs/ArchiveOldFiles",
+          "to": "dataset:DS_ABLB_RM_Files",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:RepMgmt_InsertFileLogs",
+          "to": "activity:RepMgmt_InsertFileLogs/DeleteOldFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:RepMgmt_InsertFileLogs/ArchiveOldFiles",
+          "to": "activity:RepMgmt_InsertFileLogs/DeleteOldFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:RepMgmt_InsertFileLogs",
+          "to": "activity:RepMgmt_InsertFileLogs/GetTodayFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:RepMgmt_InsertFileLogs/ArchiveDeleteOldFiles",
+          "to": "activity:RepMgmt_InsertFileLogs/GetTodayFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:RepMgmt_IncrementalLoad",
+          "to": "activity:RepMgmt_IncrementalLoad/ForEachFile",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:RepMgmt_IncrementalLoad/IsPipelineEnabled",
+          "to": "activity:RepMgmt_IncrementalLoad/ForEachFile",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:RepMgmt_IncrementalLoad",
+          "to": "activity:RepMgmt_IncrementalLoad/GetOldFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:RepMgmt_IncrementalLoad",
+          "to": "activity:RepMgmt_IncrementalLoad/FilterForFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:RepMgmt_IncrementalLoad/GetOldFiles",
+          "to": "activity:RepMgmt_IncrementalLoad/FilterForFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        }
+      ],
+      "review_status": "accepted",
+      "review_reason": "Deterministic lineage edges were surfaced by the connector profile."
+    }
+  ]
+}

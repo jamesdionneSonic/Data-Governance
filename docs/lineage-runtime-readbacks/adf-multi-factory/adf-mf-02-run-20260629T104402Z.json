@@ -1,0 +1,385 @@
+{
+  "status": "succeeded",
+  "generated_at": "2026-06-29T10:44:02.039Z",
+  "started_at": "2026-06-29T10:40:24.192Z",
+  "mode": "run",
+  "connector_count": 2,
+  "success_count": 2,
+  "failure_count": 0,
+  "raw_data_captured": false,
+  "secret_exposed": false,
+  "lookback_days": 7,
+  "connectors": ["azure-data-factory-adf-ganalytics-d1", "azure-data-factory-adf-elead-d1"],
+  "results": [
+    {
+      "connector_id": "azure-data-factory-adf-ganalytics-d1",
+      "run_id": "594902fe-3591-404d-b693-88159eebfa46",
+      "status": "succeeded",
+      "mode": "connector_metadata_profile",
+      "started_at": "2026-06-29T10:40:24.196Z",
+      "completed_at": "2026-06-29T10:42:03.682Z",
+      "artifact_path": null,
+      "inventory_count": 117,
+      "pipeline_count": 17,
+      "task_count": 78,
+      "dataset_count": 4,
+      "connection_count": 11,
+      "schedule_count": 4,
+      "lineage_edge_count": 161,
+      "warning_count": 0,
+      "error_count": 0,
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "inventory_by_role": {
+        "object": 3,
+        "dataset": 4,
+        "connection": 11,
+        "pipeline": 17,
+        "task": 78,
+        "schedule": 4
+      },
+      "lineage_by_type": {
+        "lineage_edge": 161
+      },
+      "lineage_edges_sample": [
+        {
+          "from": "linkedService:LS_SQL_SSIS_01",
+          "to": "dataset:DS_SQL_AdQ_SSIS",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_Sonic_DW",
+          "to": "dataset:DS_SQL_AdQ_SonicDW",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_DynServer",
+          "to": "dataset:DS_SQL_AdQ_DynServer",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_VendorData",
+          "to": "dataset:DS_SQL_VendorData",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_LoadAQ_RefreshMSTRCubes",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_LKP_CheckStatus",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_LoadAQ_RefreshMSTRCubes",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_IF_IsPipelineEnabled",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_LKP_CheckStatus",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_IF_IsPipelineEnabled",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_LoadAQ_RefreshMSTRCubes",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/PipelineEnabled",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_LoadAQ_RefreshMSTRCubes",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/PipelineDisabled",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_LoadAQ_RefreshMSTRCubes",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_LKP_GetTriggers",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_IF_IsPipelineEnabled",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_LKP_GetTriggers",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_LoadAQ_RefreshMSTRCubes",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_FE_MSTRCubes",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_LKP_GetTriggers",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_FE_MSTRCubes",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_WEB_GetAuthToken",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_FE_MSTRCubes",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_LoadAQ_RefreshMSTRCubes",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_Web_TriggerMSTRCube",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_SCR_UpdateTrgStat",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_Web_TriggerMSTRCube",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_LoadAQ_RefreshMSTRCubes",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_Wait_30Sec",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_Web_TriggerMSTRCube",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_Wait_30Sec",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_LoadAQ_RefreshMSTRCubes",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_SCR_UpdateLoadDate",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_Web_TriggerMSTRCube",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_SCR_UpdateLoadDate",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_LoadAQ_RefreshMSTRCubes",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_SCR_UpdateTrgStat",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_LoadAQ_RefreshMSTRCubes",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_WEB_GetAuthToken",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_IF_IsPipelineEnabled",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_WEB_GetAuthToken",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_LoadAQ_RefreshMSTRCubes",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_IF_CubesRefreshCount0",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_LKP_CubesRefreshCount",
+          "to": "activity:PL_LoadAQ_RefreshMSTRCubes/ACT_IF_CubesRefreshCount0",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        }
+      ],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "connector_id": "azure-data-factory-adf-elead-d1",
+      "run_id": "338405aa-fbbd-4157-a7ed-ad8c0fb8bdc3",
+      "status": "succeeded",
+      "mode": "connector_metadata_profile",
+      "started_at": "2026-06-29T10:42:03.830Z",
+      "completed_at": "2026-06-29T10:44:01.752Z",
+      "artifact_path": null,
+      "inventory_count": 319,
+      "pipeline_count": 34,
+      "task_count": 166,
+      "dataset_count": 10,
+      "connection_count": 11,
+      "schedule_count": 6,
+      "lineage_edge_count": 520,
+      "warning_count": 0,
+      "error_count": 0,
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "inventory_by_role": {
+        "object": 92,
+        "dataset": 10,
+        "connection": 11,
+        "pipeline": 34,
+        "task": 166,
+        "schedule": 6
+      },
+      "lineage_by_type": {
+        "lineage_edge": 520
+      },
+      "lineage_edges_sample": [
+        {
+          "from": "linkedService:LS_SFTP_AutoTrader",
+          "to": "dataset:DS_SFTP_TEXT_AutoTrader",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SFTP_Elead_New",
+          "to": "dataset:DS_SFTP_Elead_Files_Src_New",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SFTP_CarMax",
+          "to": "dataset:DS_SFTP_TEXT_Carmax_zip",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SFTP_Elead_New",
+          "to": "dataset:DS_SFTP_Elead_Files_Dest",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ABLB_Elead",
+          "to": "dataset:DS_ABLB_Elead_Files_Src",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_SSIS",
+          "to": "dataset:DS_SQL_SSIS_Elead_ProcessedFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_StagingDb",
+          "to": "dataset:DS_SQL_Elead_Stage_Data",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_SourceStageVendordataSQL",
+          "to": "dataset:DS_SQL_Elead_Historical_Data_Src",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ABLB_Elead",
+          "to": "dataset:DS_ABLB_Elead_Files_Archive",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_VendorData",
+          "to": "dataset:DS_SQL_Elead_ProcessedData",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_AT_CopyFilesFromSFTP",
+          "to": "activity:PL_AT_CopyFilesFromSFTP/Copy data1",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "dataset:DS_SFTP_TEXT_AutoTrader",
+          "to": "activity:PL_AT_CopyFilesFromSFTP/Copy data1",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_AT_CopyFilesFromSFTP/Copy data1",
+          "to": "dataset:DS_SFTP_TEXT_Carmax_zip",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_AT_CopyFilesFromSFTP/Delete1",
+          "to": "activity:PL_AT_CopyFilesFromSFTP/Copy data1",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_AT_CopyFilesFromSFTP",
+          "to": "activity:PL_AT_CopyFilesFromSFTP/Delete1",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_AT_CopyFilesFromSFTP/ACT_SET_FileName",
+          "to": "activity:PL_AT_CopyFilesFromSFTP/Delete1",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_AT_CopyFilesFromSFTP",
+          "to": "activity:PL_AT_CopyFilesFromSFTP/ACT_SET_FileName",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Adhoc_UpdatePackageLoadDateSync",
+          "to": "activity:PL_Adhoc_UpdatePackageLoadDateSync/Update PackageLoadDateSync",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_Adhoc_UpdatePackageLoadDateSync/SetUserNameForLS",
+          "to": "activity:PL_Adhoc_UpdatePackageLoadDateSync/Update PackageLoadDateSync",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Adhoc_UpdatePackageLoadDateSync",
+          "to": "activity:PL_Adhoc_UpdatePackageLoadDateSync/SetUserNameForLS",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Adhoc_UpdatePackageLoadDateSync_copy1",
+          "to": "activity:PL_Adhoc_UpdatePackageLoadDateSync_copy1/Update PackageLoadDateSync",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_Adhoc_UpdatePackageLoadDateSync_copy1/SetUserNameForLS",
+          "to": "activity:PL_Adhoc_UpdatePackageLoadDateSync_copy1/Update PackageLoadDateSync",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Adhoc_UpdatePackageLoadDateSync_copy1",
+          "to": "activity:PL_Adhoc_UpdatePackageLoadDateSync_copy1/SetUserNameForLS",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Meta_InsertLogs",
+          "to": "activity:PL_Meta_InsertLogs/ForEachFilteredFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Meta_InsertLogs",
+          "to": "activity:PL_Meta_InsertLogs/InsertLogsDaily",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        }
+      ],
+      "errors": [],
+      "warnings": []
+    }
+  ]
+}

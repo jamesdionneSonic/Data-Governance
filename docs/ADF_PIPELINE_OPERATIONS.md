@@ -18,6 +18,18 @@ Use the saved connector first:
 - tenant id: `b7944855-1c04-4fee-8f07-749ae6f28735`
 - credential mode: `azure_cli`
 
+Additional readable production ADF factories in the same subscription are
+registered as individual saved connectors by
+`scripts/register-production-adf-connectors.mjs`. See
+`docs/ADF_PRODUCTION_FACTORY_ACCESS_INVENTORY.md` for the current connector ids,
+resource groups, pipeline visibility, trigger visibility, and active-trigger
+inventory.
+
+Before ingesting newly registered ADF factories for metadata, lineage, DevOps
+artifacts, or support documentation, use
+`docs/ADF_MULTI_FACTORY_INGESTION_BACKLOG.md`. That backlog has a hard stop:
+do not start ADF ingestion while another source ingestion is already running.
+
 ADF metadata and lineage must stay in the shared connector runtime. Direct Azure
 Management API calls are allowed only for operational actions that the connector
 service does not yet expose, such as `createRun` and immediate run-status

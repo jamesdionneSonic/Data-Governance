@@ -1,0 +1,201 @@
+{
+  "status": "succeeded",
+  "generated_at": "2026-06-29T10:46:29.468Z",
+  "started_at": "2026-06-29T10:44:27.627Z",
+  "mode": "run",
+  "connector_count": 1,
+  "success_count": 1,
+  "failure_count": 0,
+  "raw_data_captured": false,
+  "secret_exposed": false,
+  "lookback_days": 7,
+  "connectors": ["azure-data-factory-adf-inbounddataetl-prod"],
+  "results": [
+    {
+      "connector_id": "azure-data-factory-adf-inbounddataetl-prod",
+      "run_id": "0c8e98f2-1277-45d8-864a-42cd5d44bb03",
+      "status": "succeeded",
+      "mode": "connector_metadata_profile",
+      "started_at": "2026-06-29T10:44:27.630Z",
+      "completed_at": "2026-06-29T10:46:28.895Z",
+      "artifact_path": null,
+      "inventory_count": 987,
+      "pipeline_count": 82,
+      "task_count": 236,
+      "dataset_count": 254,
+      "connection_count": 32,
+      "schedule_count": 8,
+      "lineage_edge_count": 1578,
+      "warning_count": 0,
+      "error_count": 0,
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "inventory_by_role": {
+        "storage_location": 1,
+        "object": 374,
+        "dataset": 254,
+        "connection": 32,
+        "pipeline": 82,
+        "task": 236,
+        "schedule": 8
+      },
+      "lineage_by_type": {
+        "lineage_edge": 1578
+      },
+      "lineage_edges_sample": [
+        {
+          "from": "linkedService:L1DWASQL02_StagingDb",
+          "to": "dataset:SqlWrkGadCampaign",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:DataLake_inboundsocialmedia",
+          "to": "dataset:AdlsSupermetricsDataFolder",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:DataLake_inboundsocialmedia",
+          "to": "dataset:AdlsGoogleAdsDataLoadFile",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:DataLake_inboundsocialmedia",
+          "to": "dataset:AdlsGoogleAdsDataLoadArchiveFile",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:L1DWASQL02_StagingDb",
+          "to": "dataset:SqlWrkGadConversion",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:DataLake_inboundsocialmedia",
+          "to": "dataset:AdlsGoogleAdsDataLoadConversionArchiveFile",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:DataLake_inboundsocialmedia",
+          "to": "dataset:AdlsSupermetricsDataConversionFolder",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:DataLake_inboundsocialmedia",
+          "to": "dataset:AdlsGoogleAdsDataLoadConversionFile",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:MktCarNow_SFTP",
+          "to": "dataset:SFTP_Archive",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:L1DWASQL02_VendorData",
+          "to": "dataset:ds_SonicChatNow_VendorData",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:DataLake_MktCarNow",
+          "to": "dataset:ds_ADLS_FIle",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:DataLake_MktCarNow",
+          "to": "dataset:ADLS_File_Sink",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:DataLake_MktCarNow",
+          "to": "dataset:ADLSCarNowChatFile",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:DataLake_MktCarNow",
+          "to": "dataset:ds_ChatFile_Src_Alt",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:DataLake_MktCarNow",
+          "to": "dataset:ADLS_Source_File",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:MktCarNow_SFTP",
+          "to": "dataset:ds_SFTP_MktCarNow_File_List",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:L1DWASQL02_StagingDb",
+          "to": "dataset:ds_SonicChatNow_Staging",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:MktCarNow_SFTP",
+          "to": "dataset:ds_MktCarNow_ChatFile",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:DataLake_MktCarNow",
+          "to": "dataset:ds_ChatNow",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:MktCarNow_SFTP",
+          "to": "dataset:SonicCarNowChatFileSource",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:L1DWASQL02_VendorData",
+          "to": "dataset:ds_SonicCarNowChat",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:DataLake_MktCarNow",
+          "to": "dataset:SonicCarNowChatArchive",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:MktCarNow_SFTP",
+          "to": "dataset:ListOfFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:DataLake_MktCarNow",
+          "to": "dataset:ds_ChatFile_Src",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:DataLake_stinboundfilesprod",
+          "to": "dataset:AdsUipathCarNowAgentFolder",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        }
+      ],
+      "errors": [],
+      "warnings": []
+    }
+  ]
+}

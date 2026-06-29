@@ -11,8 +11,10 @@ Accepted
 ## Context
 
 The team added a real saved Azure Data Factory connector for
-`adf-dw-marketing-prod` in `rg-data-warehouse-prod`. The connector stores
-source configuration and uses the shared connector runtime to collect ADF
+`adf-dw-marketing-prod` in `rg-data-warehouse-prod`. On 2026-06-26, the team
+expanded the saved ADF connector inventory to additional readable production ADF
+factories in the same production subscription. The connector records store
+source configuration and use the shared connector runtime to collect ADF
 metadata, activities, datasets, linked services, triggers, integration runtimes,
 lineage, and bounded run telemetry.
 
@@ -25,9 +27,9 @@ based on the saved connector inventory.
 ## Decision
 
 ADF metadata discovery, pipeline queue construction, run-history checks, and
-manual pipeline starts must use the saved ADF connector as the source of truth.
+manual pipeline starts must use a saved ADF connector as the source of truth.
 
-For the current Sonic production marketing ADF factory, the saved connector is:
+For the original Sonic production marketing ADF factory, the saved connector is:
 
 - connector id: `azure-data-factory-adf-dw-marketing-prod`
 - tenant id: `b7944855-1c04-4fee-8f07-749ae6f28735`
@@ -35,6 +37,12 @@ For the current Sonic production marketing ADF factory, the saved connector is:
 - resource group: `rg-data-warehouse-prod`
 - factory name: `adf-dw-marketing-prod`
 - credential mode: `azure_cli`
+
+Additional readable production factories are documented in
+`docs/ADF_PRODUCTION_FACTORY_ACCESS_INVENTORY.md` and registered by
+`scripts/register-production-adf-connectors.mjs`. `adf-XTime-D1` and
+`adf-GoogleSearch-D1` are explicitly documented as legacy ADFs in
+`docs/ADF_LEGACY_FACTORY_INVENTORY.md`.
 
 An operator or AI agent may start ADF pipelines only after:
 
@@ -62,6 +70,11 @@ outside the connector runtime.
   trigger, and monitoring process is deterministic.
 - Pipeline starts remain explicit, one-at-a-time, and auditable.
 - ADF metadata and lineage stay governed by the shared connector runtime.
+- Multi-factory ADF ingestion must be planned as bounded work packets, one
+  connector or small connector batch at a time.
+- ADF ingestion must not start while another source ingestion is actively
+  running unless the user explicitly clears the current ingestion and approves
+  the ADF packet.
 - Broad parallel triggering, parameter guessing, and hidden retries are not
   allowed.
 - A future implementation should add a guarded connector-service action so the
@@ -72,8 +85,13 @@ outside the connector runtime.
 - Use `docs/ADF_PIPELINE_OPERATIONS.md` before triggering an ADF pipeline.
 - Use `docs/CODEX_ADF_OPERATION_PACKET.md` for any multi-pipeline or repeated
   ADF operation.
+- Use `docs/ADF_MULTI_FACTORY_INGESTION_BACKLOG.md` before ingesting newly
+  registered ADF connectors for metadata, lineage, runtime package, DevOps, or
+  documentation output.
 - Use `.agents/skills/adf-operations/SKILL.md` when Codex is asked to inspect,
   queue, trigger, monitor, or report on ADF pipelines.
+- Do not begin multi-factory ADF ingestion while another source ingestion is in
+  progress.
 - Do not invent pipeline names from Jira story titles or business wording.
 - Do not start a second pipeline until the first run id and status are captured.
 - Do not pass parameters unless they are provided by the user, documented by the

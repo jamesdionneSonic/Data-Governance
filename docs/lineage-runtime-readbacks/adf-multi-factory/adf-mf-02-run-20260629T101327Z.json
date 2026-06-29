@@ -1,0 +1,501 @@
+{
+  "status": "succeeded",
+  "generated_at": "2026-06-29T10:13:27.103Z",
+  "started_at": "2026-06-29T10:11:29.253Z",
+  "mode": "run",
+  "connector_count": 6,
+  "success_count": 6,
+  "failure_count": 0,
+  "raw_data_captured": false,
+  "secret_exposed": false,
+  "lookback_days": 7,
+  "connectors": [
+    "azure-data-factory-adf-admin-d1",
+    "azure-data-factory-adf-dw-caroffer-prod",
+    "azure-data-factory-adf-dw-lightspeed-prod",
+    "azure-data-factory-adf-dw-postgres-prod",
+    "azure-data-factory-adf-googlesearch-d1",
+    "azure-data-factory-adf-xtime-d1"
+  ],
+  "results": [
+    {
+      "connector_id": "azure-data-factory-adf-admin-d1",
+      "run_id": "11741f90-76f8-47ce-ab4c-f5d6fa3faf27",
+      "status": "succeeded",
+      "mode": "connector_metadata_profile",
+      "started_at": "2026-06-29T10:11:29.255Z",
+      "completed_at": "2026-06-29T10:11:48.578Z",
+      "artifact_path": null,
+      "inventory_count": 2,
+      "pipeline_count": 0,
+      "task_count": 0,
+      "dataset_count": 0,
+      "connection_count": 0,
+      "schedule_count": 0,
+      "lineage_edge_count": 0,
+      "warning_count": 0,
+      "error_count": 0,
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "inventory_by_role": {
+        "object": 2
+      },
+      "lineage_by_type": {},
+      "lineage_edges_sample": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "connector_id": "azure-data-factory-adf-dw-caroffer-prod",
+      "run_id": "f1bf09ab-b68c-44bf-96d6-9743f092ebcf",
+      "status": "succeeded",
+      "mode": "connector_metadata_profile",
+      "started_at": "2026-06-29T10:11:48.594Z",
+      "completed_at": "2026-06-29T10:12:08.135Z",
+      "artifact_path": null,
+      "inventory_count": 1,
+      "pipeline_count": 0,
+      "task_count": 0,
+      "dataset_count": 0,
+      "connection_count": 0,
+      "schedule_count": 0,
+      "lineage_edge_count": 0,
+      "warning_count": 0,
+      "error_count": 0,
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "inventory_by_role": {
+        "object": 1
+      },
+      "lineage_by_type": {},
+      "lineage_edges_sample": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "connector_id": "azure-data-factory-adf-dw-lightspeed-prod",
+      "run_id": "1fc50dd7-9106-46e8-af4f-0ffd856bbbbc",
+      "status": "succeeded",
+      "mode": "connector_metadata_profile",
+      "started_at": "2026-06-29T10:12:08.149Z",
+      "completed_at": "2026-06-29T10:12:27.404Z",
+      "artifact_path": null,
+      "inventory_count": 1,
+      "pipeline_count": 0,
+      "task_count": 0,
+      "dataset_count": 0,
+      "connection_count": 0,
+      "schedule_count": 0,
+      "lineage_edge_count": 0,
+      "warning_count": 0,
+      "error_count": 0,
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "inventory_by_role": {
+        "object": 1
+      },
+      "lineage_by_type": {},
+      "lineage_edges_sample": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "connector_id": "azure-data-factory-adf-dw-postgres-prod",
+      "run_id": "144774c9-f3bd-41e5-9a48-caa004b8682a",
+      "status": "succeeded",
+      "mode": "connector_metadata_profile",
+      "started_at": "2026-06-29T10:12:27.414Z",
+      "completed_at": "2026-06-29T10:12:47.462Z",
+      "artifact_path": null,
+      "inventory_count": 2,
+      "pipeline_count": 1,
+      "task_count": 0,
+      "dataset_count": 0,
+      "connection_count": 0,
+      "schedule_count": 0,
+      "lineage_edge_count": 0,
+      "warning_count": 0,
+      "error_count": 0,
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "inventory_by_role": {
+        "object": 1,
+        "pipeline": 1
+      },
+      "lineage_by_type": {},
+      "lineage_edges_sample": [],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "connector_id": "azure-data-factory-adf-googlesearch-d1",
+      "run_id": "7a609b5f-65c7-491c-bb59-b36c758eb21b",
+      "status": "succeeded",
+      "mode": "connector_metadata_profile",
+      "started_at": "2026-06-29T10:12:47.473Z",
+      "completed_at": "2026-06-29T10:13:07.708Z",
+      "artifact_path": null,
+      "inventory_count": 107,
+      "pipeline_count": 8,
+      "task_count": 48,
+      "dataset_count": 7,
+      "connection_count": 9,
+      "schedule_count": 2,
+      "lineage_edge_count": 169,
+      "warning_count": 0,
+      "error_count": 0,
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "inventory_by_role": {
+        "object": 33,
+        "dataset": 7,
+        "connection": 9,
+        "pipeline": 8,
+        "task": 48,
+        "schedule": 2
+      },
+      "lineage_by_type": {
+        "lineage_edge": 169
+      },
+      "lineage_edges_sample": [
+        {
+          "from": "linkedService:LS_ABLB_InboundSocialMedia",
+          "to": "dataset:DS_ABLB_GSC_Files_Lookup_Src",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_StagingDb",
+          "to": "dataset:DS_SQL_GSC_StgTables",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_Sonic_DW",
+          "to": "dataset:DS_SQL_GSC_SonicDW",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_SSIS_02",
+          "to": "dataset:DS_SQL_SSIS",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_ETL_Staging",
+          "to": "dataset:DS_SQL_GSC_ETLStaging",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_VendorData",
+          "to": "dataset:DS_SQL_GSC_VendorData",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_ABLB_InboundSocialMedia",
+          "to": "dataset:DS_ABLB_GSC_SourceFiles_Raw",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:GoogleSearchConsole_Master",
+          "to": "activity:GoogleSearchConsole_Master/ACT_LKP_InitMetaColumns",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:GoogleSearchConsole_Master/ACT_LKP_SetUserNameForLS",
+          "to": "activity:GoogleSearchConsole_Master/ACT_LKP_InitMetaColumns",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:GoogleSearchConsole_Master",
+          "to": "activity:GoogleSearchConsole_Master/ACT_LKP_SetUserNameForLS",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:GoogleSearchConsole_Master",
+          "to": "activity:GoogleSearchConsole_Master/ACT_LKP_CreateRelationshipTypeGuid",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:GoogleSearchConsole_Master/ACT_LKP_SetUserNameForLS",
+          "to": "activity:GoogleSearchConsole_Master/ACT_LKP_CreateRelationshipTypeGuid",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:GoogleSearchConsole_Master",
+          "to": "activity:GoogleSearchConsole_Master/ACT_EXECPL_GSC_Incremental_Load",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:GoogleSearchConsole_Master/ACT_LKP_CreateRelationshipTypeGuid",
+          "to": "activity:GoogleSearchConsole_Master/ACT_EXECPL_GSC_Incremental_Load",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:GoogleSearchConsole_Master/ACT_LKP_InitMetaColumns",
+          "to": "activity:GoogleSearchConsole_Master/ACT_EXECPL_GSC_Incremental_Load",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:GoogleSearchConsole_Master/ACT_LKP_GetSuccessAndFailureEmailList",
+          "to": "activity:GoogleSearchConsole_Master/ACT_EXECPL_GSC_Incremental_Load",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:GoogleSearchConsole_Master",
+          "to": "activity:GoogleSearchConsole_Master/ACT_IF_PLDisabled",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:GoogleSearchConsole_Master/ACT_EXECPL_GSC_Incremental_Load",
+          "to": "activity:GoogleSearchConsole_Master/ACT_IF_PLDisabled",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:GoogleSearchConsole_Master",
+          "to": "activity:GoogleSearchConsole_Master/ACT_WAIT_PLDISABLED",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:GoogleSearchConsole_Master",
+          "to": "activity:GoogleSearchConsole_Master/ACT_SP_LogFailureDetails",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:GoogleSearchConsole_Master",
+          "to": "activity:GoogleSearchConsole_Master/ACT_LKP_GetErrorFileLists",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:GoogleSearchConsole_Master/ACT_IF_PLDisabled",
+          "to": "activity:GoogleSearchConsole_Master/ACT_LKP_GetErrorFileLists",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:GoogleSearchConsole_Master",
+          "to": "activity:GoogleSearchConsole_Master/ACT_SP_GSCFailureMailAlert",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:GoogleSearchConsole_Master/ACT_LKP_GetErrorFileLists",
+          "to": "activity:GoogleSearchConsole_Master/ACT_SP_GSCFailureMailAlert",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:GoogleSearchConsole_Master",
+          "to": "activity:GoogleSearchConsole_Master/ACT_LKP_UpdateDim_ETLExecution",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        }
+      ],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "connector_id": "azure-data-factory-adf-xtime-d1",
+      "run_id": "22cec896-d7e0-42fe-b489-d705857e7fcf",
+      "status": "succeeded",
+      "mode": "connector_metadata_profile",
+      "started_at": "2026-06-29T10:13:07.744Z",
+      "completed_at": "2026-06-29T10:13:27.065Z",
+      "artifact_path": null,
+      "inventory_count": 55,
+      "pipeline_count": 2,
+      "task_count": 19,
+      "dataset_count": 5,
+      "connection_count": 7,
+      "schedule_count": 1,
+      "lineage_edge_count": 84,
+      "warning_count": 0,
+      "error_count": 0,
+      "raw_data_captured": false,
+      "secret_exposed": false,
+      "inventory_by_role": {
+        "object": 21,
+        "dataset": 5,
+        "connection": 7,
+        "pipeline": 2,
+        "task": 19,
+        "schedule": 1
+      },
+      "lineage_by_type": {
+        "lineage_edge": 84
+      },
+      "lineage_edges_sample": [
+        {
+          "from": "linkedService:LS_ABLB_Xtime",
+          "to": "dataset:DS_ABLB_XTime_Archive",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SFTP_Xtimes",
+          "to": "dataset:DS_SFTP_XTime_src",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_VendorData",
+          "to": "dataset:DS_SQL_VendorData_Xtime",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_SSIS",
+          "to": "dataset:DS_SQL_SSIS_Xtime",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_SQL_StagingDB",
+          "to": "dataset:DS_SQL_StagingDB_Xtime",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Xtime_Incremental_Load",
+          "to": "activity:PL_Xtime_Incremental_Load/Get_FilesSFTP",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_Xtime_Incremental_Load/Set StartDate",
+          "to": "activity:PL_Xtime_Incremental_Load/Get_FilesSFTP",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Xtime_Incremental_Load",
+          "to": "activity:PL_Xtime_Incremental_Load/Set StartDate",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Xtime_Incremental_Load",
+          "to": "activity:PL_Xtime_Incremental_Load/FEC-CheckEmptyFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_Xtime_Incremental_Load/ACT_LKP_GetFileLogs",
+          "to": "activity:PL_Xtime_Incremental_Load/FEC-CheckEmptyFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Xtime_Incremental_Load",
+          "to": "activity:PL_Xtime_Incremental_Load/GetFileSize",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Xtime_Incremental_Load",
+          "to": "activity:PL_Xtime_Incremental_Load/ACT_LKP_CheckForEmptyFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_Xtime_Incremental_Load/GetFileSize",
+          "to": "activity:PL_Xtime_Incremental_Load/ACT_LKP_CheckForEmptyFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Xtime_Incremental_Load",
+          "to": "activity:PL_Xtime_Incremental_Load/IdentifyEmptyFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_Xtime_Incremental_Load/ACT_LKP_CheckForEmptyFiles",
+          "to": "activity:PL_Xtime_Incremental_Load/IdentifyEmptyFiles",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Xtime_Incremental_Load",
+          "to": "activity:PL_Xtime_Incremental_Load/Get List of Empty Files",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Xtime_Incremental_Load",
+          "to": "activity:PL_Xtime_Incremental_Load/Get List of Files To Load",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Xtime_Incremental_Load",
+          "to": "activity:PL_Xtime_Incremental_Load/ACT_LKP_GetFileLogs",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_Xtime_Incremental_Load/FEC-InsertLogs",
+          "to": "activity:PL_Xtime_Incremental_Load/ACT_LKP_GetFileLogs",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Xtime_Incremental_Load",
+          "to": "activity:PL_Xtime_Incremental_Load/FEC-InsertLogs",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_Xtime_Incremental_Load/Filter Files",
+          "to": "activity:PL_Xtime_Incremental_Load/FEC-InsertLogs",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Xtime_Incremental_Load",
+          "to": "activity:PL_Xtime_Incremental_Load/ACT_LKP_InsertIntoFileProcessedLog",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Xtime_Incremental_Load",
+          "to": "activity:PL_Xtime_Incremental_Load/Filter Files",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "activity:PL_Xtime_Incremental_Load/Get_FilesSFTP",
+          "to": "activity:PL_Xtime_Incremental_Load/Filter Files",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "pipeline:PL_Xtime_Incremental_Load",
+          "to": "activity:PL_Xtime_Incremental_Load/ACT_LKP_GetEmailList",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        }
+      ],
+      "errors": [],
+      "warnings": []
+    }
+  ]
+}

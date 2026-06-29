@@ -1,0 +1,195 @@
+{
+  "status": "complete",
+  "generated_at": "2026-06-29T10:50:18.803Z",
+  "source_readback": "C:\\projects\\Data Governence\\docs\\lineage-runtime-readbacks\\adf-multi-factory\\adf-mf-02-run-20260629T105013Z.json",
+  "summary": {
+    "connector_count": 1,
+    "accepted_count": 1,
+    "review_needed_count": 0,
+    "blocked_count": 0,
+    "pipeline_count": 19,
+    "task_count": 119,
+    "dataset_count": 152,
+    "connection_count": 31,
+    "schedule_count": 6,
+    "lineage_edge_count": 579
+  },
+  "connectors": [
+    {
+      "connector_id": "azure-data-factory-adf-vehiclemart-prod",
+      "run_id": "a59436b0-d570-4f84-beb9-99db50a52663",
+      "status": "succeeded",
+      "pipeline_count": 19,
+      "task_count": 119,
+      "dataset_count": 152,
+      "connection_count": 31,
+      "schedule_count": 6,
+      "lineage_edge_count": 579,
+      "inventory_by_role": {
+        "object": 84,
+        "dataset": 152,
+        "connection": 31,
+        "pipeline": 19,
+        "task": 119,
+        "schedule": 6
+      },
+      "lineage_by_type": {
+        "lineage_edge": 579
+      },
+      "lineage_edges_sample": [
+        {
+          "from": "linkedService:Sonic_Shared_folder",
+          "to": "dataset:AT_Src_Binary_SharedFolder",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:Sonic_Shared_folder",
+          "to": "dataset:AT_Src_SharedFolder",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:BlobStorage",
+          "to": "dataset:AT_Blob_Archive",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_Hyp_Prod_Vehiclemart",
+          "to": "dataset:AT_Hyp_Test_StageTable",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:Sonic_Shared_folder",
+          "to": "dataset:AT_Sonic_Input",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:Sonic_Shared_folder",
+          "to": "dataset:AT_Sonic_SharedFolder_Binary",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:AT_AWS_Source",
+          "to": "dataset:AWS_FTP_file_Param_woFN",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:AT_AWS_Source",
+          "to": "dataset:AWS_Src_DAY_Param",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_OnPrem_D1_SSIS_01",
+          "to": "dataset:AT_Meta_FileLoaded",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_Hyp_Prod_Vehiclemart",
+          "to": "dataset:AT_Hyp_Test_StageTable_Auto",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_OnPrem_D1_SSIS_01",
+          "to": "dataset:DS_TBL_SS_AT_ArchiveLog",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_OnPrem_U1_SSIS_01",
+          "to": "dataset:AT_Meta_FileLoaded_UAT",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_OnPrem_U1_SSIS_01",
+          "to": "dataset:DS_TBL_SS_AT_ArchiveLog_UAT",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_Hyp_UAT_Vehiclemart",
+          "to": "dataset:AT_Hyp_Test_StageTable_UAT",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_OnPrem_Vehiclemart",
+          "to": "dataset:Prod_AgeGender_DailyMain",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_OnPrem_V1_SSIS_01",
+          "to": "dataset:Test_AgeGender_dailyMain",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_OnPrem_V1_SSIS_01",
+          "to": "dataset:Test_AgeGender_dailyMetrics",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_OnPrem_Vehiclemart",
+          "to": "dataset:Prod_AgeGender_dailyMetrics",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_OnPrem_V1_SSIS_01",
+          "to": "dataset:Test_Device_DailyMain",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_OnPrem_Vehiclemart",
+          "to": "dataset:Prod_Device_DailyMain",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_OnPrem_V1_SSIS_01",
+          "to": "dataset:Test_Device_DailyMetrics",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_OnPrem_Vehiclemart",
+          "to": "dataset:Prod_Device_DailyMetrics",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_OnPrem_Vehiclemart",
+          "to": "dataset:Prod_Region_DailyMetrics",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_OnPrem_V1_SSIS_01",
+          "to": "dataset:Test_DevicePlatform_DailyMetrics",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        },
+        {
+          "from": "linkedService:LS_OnPrem_Vehiclemart",
+          "to": "dataset:Prod_DevicePlatform_DailyMain",
+          "relationship_type": "lineage_edge",
+          "confidence": 0.78
+        }
+      ],
+      "review_status": "accepted",
+      "review_reason": "Deterministic lineage edges were surfaced by the connector profile."
+    }
+  ]
+}
